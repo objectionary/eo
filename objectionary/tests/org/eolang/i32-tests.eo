@@ -24,123 +24,123 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-has-valid-bytes
   eq. > @
     42.as-i64.as-i32.as-bytes
     00-00-00-2A
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > negative-i32-has-valid-bytes
   eq. > @
     -200.as-i64.as-i32.as-bytes
     FF-FF-FF-38
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-to-i16-and-back
   eq. > @
     123.as-i64.as-i32
     123.as-i64.as-i32.as-i16.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > negative-i32-to-i16-and-back
   eq. > @
     -123.as-i64.as-i32
     -123.as-i64.as-i32.as-i16.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-less-true
   lt. > @
     10.as-i64.as-i32
     50.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-less-equal
   not. > @
     lt.
       10.as-i64.as-i32
       10.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-less-false
   not. > @
     lt.
       10.as-i64.as-i32
       -5.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-greater-true
   gt. > @
     -200.as-i64.as-i32
     -1000.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-greater-false
   not. > @
     gt.
       0.as-i64.as-i32
       100.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-greater-equal
   not. > @
     gt.
       0.as-i64.as-i32
       0.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-lte-true
   lte. > @
     -200.as-i64.as-i32
     -100.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-lte-equal
   lte. > @
     50.as-i64.as-i32
     50.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-lte-false
   not. > @
     lte.
       0.as-i64.as-i32
       -10.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-gte-true
   gte. > @
     -1000.as-i64.as-i32
     -1100.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-gte-equal
   gte. > @
     113.as-i64.as-i32
     113.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-gte-false
   not. > @
     gte.
       0.as-i64.as-i32
       10.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-zero-eq-to-i32-zero
   eq. > @
     0.as-i64.as-i32
     0.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-eq-true
   eq. > @
     123.as-i64.as-i32
     123.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-eq-false
   not. > @
     eq.
@@ -153,7 +153,7 @@
     1.as-i64.as-i32.plus 1.as-i64.as-i32
     2.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-plus-with-overflow
   eq. > @
     2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
@@ -165,19 +165,19 @@
     1.as-i64.as-i32.minus 1.as-i64.as-i32
     0.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-minus-with-overflow
   eq. > @
     -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
     2147483647.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 2.as-i64.as-i32.div 0.as-i64.as-i32 > [] > throws-on-division-i32-by-i32-zero
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 247483647.as-i64.as-i32.as-i16 > [] > throws-on-converting-to-i16-if-out-of-bounds
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 # Checks that division by one returns the dividend.
 [] > i32-div-by-i32-one
   -235.as-i64.as-i32 > dividend
@@ -185,26 +185,26 @@
     dividend.div 1.as-i64.as-i32
     dividend
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 # Checks div with remainder
 [] > i32-div-with-remainder
   eq. > @
     13.as-i64.as-i32.div -5.as-i64.as-i32
     -2.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-div-less-than-i32-one
   lt. > @
     1.as-i64.as-i32.div 5.as-i64.as-i32
     1.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-multiply-by-zero
   eq. > @
     1000.as-i64.as-i32.times 0.as-i64.as-i32
     0.as-i64.as-i32
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > i32-times-with-overflow
   eq. > @
     2147483647.as-i64.as-i32.times 2.as-i64.as-i32

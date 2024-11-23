@@ -25,16 +25,16 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 tmpdir.exists > [] > global-temp-dir-exists
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 tmpdir.is-directory > [] > global-temp-dir-is-directory
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 tmpdir.path.eq tmpdir.path > [] > returns-the-same-tmpdir
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 tmpdir.tmpfile.exists > [] > creates-tmpfile

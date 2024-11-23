@@ -24,57 +24,57 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-two-bools
   eq. > @
     true
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > true-as-bool
   true.as-bool > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-two-different-types
   not. > @
     eq.
       true
       42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-bool-to-bytes
   and. > @
     true.eq 01-
     false.eq 00-
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-bool-to-string
   and. > @
     true.eq "\001"
     false.eq "\000"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-bool-to-bytes-reverse
   and. > @
     01-.as-bytes.eq true
     00-.as-bytes.eq false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > true-not-is-false
   eq. > @
     true.not
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > true-and-false-is-false
   not. > @
     and.
       true
       false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > forks-on-true-condition
   eq. > @
     if.
@@ -83,7 +83,7 @@
       42
     123
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > forks-on-false-condition
   eq. > @
     if.

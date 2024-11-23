@@ -25,9 +25,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.math
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > random-with-seed
   random 51 > r
   not. > @
@@ -35,13 +35,13 @@
       r.next
       r.next.next
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seeded-randoms-are-equal
   eq. > @
     (random 1654).next.next.next
     (random 1654).next.next.next
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > random-is-in-range
   (random 123).fixed > r
   and. > @
@@ -56,7 +56,7 @@
       r.next.next.lt 1
       (r.next.next.lt 0).not
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > two-random-numbers-not-equal
   not. > @
     random.pseudo.eq random.pseudo

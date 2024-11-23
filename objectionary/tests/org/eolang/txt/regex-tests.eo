@@ -25,17 +25,17 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > matches-regex-against-the-pattern
   (regex "/[a-z]+/").compiled.matches "hello" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-matches-regex-against-the-pattern
   ((regex "/[a-z]+/").compiled.matches "123").not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > matched-sequence-has-right-border-indexes
   ((regex "/[a-z]+/").match "!hello!").next > n
   and. > @
@@ -44,11 +44,11 @@
       1.eq n.from
       6.eq n.to
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-returns-valid-matched-string-sequence
   ((regex "/[a-z]+/").match "!hello!").next.text.eq "hello" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-returns-valid-second-matched-block
   ((regex "/[a-z]+/").match "!hello!world!").next.next > second
   and. > @
@@ -61,35 +61,35 @@
       second.from.eq 7
     second.to.eq 12
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-next-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.next > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-from-position-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.from > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-to-position-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.to > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-groups-count-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.groups-count > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-groups-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.groups > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-specified-group-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.group 1 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-text-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.text > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-dotall-option
   regex
     "/(.*)/s"
@@ -97,7 +97,7 @@
   .matches > @
     "too \\n many \\n line \\n Feed\\n"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-with-case-insensitive-option
   regex
     "/(string)/i"
@@ -105,7 +105,7 @@
   .matches > @
     "StRiNg"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-with-multiline-option
   regex
     "/(^([0-9]+).*)/m"
@@ -113,7 +113,7 @@
   .matches > @
     "1 bottle of water on the wall. \\n1 bottle of water."
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-entire-pattern
   regex
     "/[0-9]/\\d+/"
@@ -121,7 +121,7 @@
   .matches > @
     "2/75"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-with-regex-unix-lines
   regex
     "/(.+)/d"
@@ -129,7 +129,7 @@
   .matches > @
     "A\\r\\nB\\rC\\nD"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-with-regex-case-insensitive-and-caps
   regex
     "/(word)/i"
@@ -137,7 +137,7 @@
   .matches > @
     "WORD"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-ignores-comments-in-string
   regex
     "/(\\d) #ignore this comment/x"
@@ -145,7 +145,7 @@
   .matches > @
     "4"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-matches-with-unicode-case-and-insensitive
   regex
     "/(yildirim)/ui"
@@ -153,11 +153,11 @@
   .matches > @
     "Yıldırım"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-missing-first-slash-in-regex
   (regex "(.)+").compiled > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > regex-contains-valid-groups-on-each-matched-block
   ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
   first.next > second

@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -61,7 +61,7 @@
     r
     2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-returns-negative-int
   QQ.rust > r
     """
@@ -79,7 +79,7 @@
     r
     -10
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-returns-positive-double
   QQ.rust > r
     """
@@ -97,7 +97,7 @@
     r
     1.23456789
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-returns-negative-double
   QQ.rust > r
     """
@@ -115,7 +115,7 @@
     r
     -1.23456789
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-is-byte-array
   QQ.rust > my-bytes
     """
@@ -139,7 +139,7 @@
     my-bytes
     00-1A-EE
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-find-returns-number
   123 > a
   QQ.rust > r
@@ -161,7 +161,7 @@
       r
       0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-returns-vertex
   "content" > book
   QQ.rust > read
@@ -181,7 +181,7 @@
     read
     "content"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-is-string
   QQ.rust > content
     """
@@ -199,7 +199,7 @@
     content
     "Привет world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-invalid-put
   "Error in the " > message
   QQ.rust > put
@@ -229,7 +229,7 @@
       message.as-bytes.size
     message
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-invalid-bind
   1 > a
   2 > b
@@ -257,7 +257,7 @@
     res.slice 0 to-check.as-bytes.size
     to-check
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-copy-not-fails
   123 > a
   QQ.rust > copy
@@ -278,7 +278,7 @@
     copy
     123
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-dataize-not-fails
   1 > a
   QQ.rust > dataized
@@ -300,7 +300,7 @@
       dataized
       0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-plus
   5 > a
   10 > b
@@ -329,7 +329,7 @@
     plus
     15
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-error
   "Error in the " > message
   QQ.rust > err
@@ -352,7 +352,7 @@
     res.slice 0 message.as-bytes.size
     message
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-put-to-copy
   QQ.rust > data
     """
@@ -373,7 +373,7 @@
     data
     00-1A-EE
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-bind-to-copy
   # Book.
   [content] > book
@@ -398,7 +398,7 @@
     applied.content
     "qwerty"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 # The bytes represent the next rust code:
 # ```
 # use eo::Portal;
@@ -442,7 +442,7 @@
       .bytes:0
         40-00-00-00-00-00-00-00
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 # The bytes represent the next rust code:
 # ```
 # use eo::Portal;
@@ -486,7 +486,7 @@
             Q
         40-00-00-00-00-00-00-00
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 # The bytes represent the next rust code:
 # ```
 # use eo::Portal;

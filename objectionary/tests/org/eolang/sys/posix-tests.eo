@@ -26,9 +26,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > invokes-getpid-correctly
   or. > @
     os.is-windows
@@ -39,7 +39,7 @@
           tuple.empty
       0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > opens-posix-tcp-socket
   code. > sd
     posix
@@ -55,7 +55,7 @@
           "close"
           * sd
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > closes-posix-tcp-socket
   code. > sd
     posix
@@ -74,7 +74,7 @@
                 * sd
             -1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-posix-inet-addr-for-localhost
   code. > addr
     posix

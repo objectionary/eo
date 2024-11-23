@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.42.0
++version 0.43.0
 
 # Equal to.
 [] > positive-infinity-is-equal-to-one-div-zero
@@ -32,34 +32,34 @@
     positive-infinity
     1.0.div 0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-eq-positive-infinity
   eq. > @
     positive-infinity
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-eq-negative-infinity
   not. > @
     eq.
       positive-infinity
       negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-eq-nan
   not. > @
     eq.
       positive-infinity
       nan
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-eq-int
   not. > @
     eq.
       positive-infinity
       42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-eq-float
   not. > @
     eq.
@@ -72,25 +72,25 @@
     positive-infinity.lt positive-infinity
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lt-negative-infinity
   eq. > @
     positive-infinity.lt negative-infinity
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lt-nan
   eq. > @
     positive-infinity.lt nan
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lt-int
   eq. > @
     positive-infinity.lt 42
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lt-float
   eq. > @
     positive-infinity.lt 42.5
@@ -102,25 +102,25 @@
     positive-infinity.lte positive-infinity
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lte-negative-infinity
   eq. > @
     positive-infinity.lte negative-infinity
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lte-nan
   eq. > @
     positive-infinity.lte nan
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lte-int
   eq. > @
     positive-infinity.lte 42
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-lte-float
   eq. > @
     positive-infinity.lte 42.5
@@ -133,26 +133,26 @@
       positive-infinity
       positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gt-negative-infinity
   gt. > @
     positive-infinity
     negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-gt-nan
   not. > @
     gt.
       positive-infinity
       nan
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gt-int
   gt. > @
     positive-infinity
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gt-float
   gt. > @
     positive-infinity
@@ -164,31 +164,31 @@
     positive-infinity.gte positive-infinity
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gte-negative-infinity
   eq. > @
     positive-infinity.gte negative-infinity
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-not-gte-nan
   eq. > @
     positive-infinity.gte nan
     false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gte-int
   eq. > @
     positive-infinity.gte 42
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-gte-float
   eq. > @
     positive-infinity.gte 42.5
     true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > float-equal-to-nan-and-infinites-is-false-highload
   negative-infinity > neg-inf
   eq. > @
@@ -218,239 +218,239 @@
     true
 
 # Times.
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-float-zero
   eq. > @
     as-bytes.
       positive-infinity.times 0.0
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-neg-float-zero
   eq. > @
     as-bytes.
       positive-infinity.times -0.0
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-int-zero
   eq. > @
     as-bytes.
       positive-infinity.times 0
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-nan
   eq. > @
     as-bytes.
       positive-infinity.times nan
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     positive-infinity.times neg-inf
     neg-inf
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-positive-infinity
   eq. > @
     positive-infinity.times positive-infinity
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-positive-float
   eq. > @
     positive-infinity.times 42.5
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-positive-int
   eq. > @
     positive-infinity.times 42
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-negative-float
   eq. > @
     positive-infinity.times -42.5
     negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-times-negative-int
   eq. > @
     positive-infinity.times -42
     negative-infinity
 
 # Plus
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-plus-nan
   eq. > @
     as-bytes.
       positive-infinity.plus nan
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-plus-negative-infinity
   eq. > @
     as-bytes.
       positive-infinity.plus negative-infinity
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-plus-positive-infinity
   eq. > @
     positive-infinity.plus positive-infinity
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-plus-positive-float
   eq. > @
     positive-infinity.plus 42.5
     positive-infinity
 
 # Negation
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-neg-is-negative-infinity
   eq. > @
     positive-infinity.neg
     negative-infinity
 
 # Minus
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-nan
   eq. > @
     as-bytes.
       positive-infinity.minus nan
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-positive-infinity
   eq. > @
     as-bytes.
       positive-infinity.minus positive-infinity
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-negative-infinity
   eq. > @
     positive-infinity.minus negative-infinity
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-positive-float
   eq. > @
     positive-infinity.minus 42.5
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-positive-int
   eq. > @
     positive-infinity.minus 42
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-negative-float
   eq. > @
     positive-infinity.minus -42.5
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-minus-negative-int
   eq. > @
     positive-infinity.minus -42
     positive-infinity
 
 # Division
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-float-zero
   eq. > @
     positive-infinity.div 0.0
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-neg-float-zero
   eq. > @
     positive-infinity.div -0.0
     negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-int-zero
   eq. > @
     positive-infinity.div 0
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-neg-int-zero
   eq. > @
     positive-infinity.div -0
     negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-nan
   eq. > @
     as-bytes.
       positive-infinity.div nan
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-negative-infinity
   eq. > @
     as-bytes.
       positive-infinity.div negative-infinity
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-positive-infinity
   eq. > @
     as-bytes.
       positive-infinity.div positive-infinity
     nan.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-positive-float
   eq. > @
     positive-infinity.div 42.5
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-positive-int
   eq. > @
     positive-infinity.div 42
     positive-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-negative-float
   eq. > @
     positive-infinity.div -42.5
     negative-infinity
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-div-negative-int
   eq. > @
     positive-infinity.div -42
     negative-infinity
 
 # Bytes.
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-as-bytes-is-valid
   eq. > @
     positive-infinity.as-bytes
     (1.0.div 0.0).as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-floor-is-equal-to-self
   positive-infinity.floor.eq positive-infinity > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-is-not-nan
   positive-infinity.is-nan.not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-is-not-finite
   positive-infinity.is-finite.not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > positive-infinity-is-not-integer
   positive-infinity.is-integer.not > @

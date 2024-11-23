@@ -26,9 +26,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > determines-separator-depending-on-os
   eq. > @
     path.separator
@@ -37,13 +37,13 @@
       path.win32.separator
       path.posix.separator
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > detects-absolute-posix-path
   and. > @
     (path.posix "/var/www/html").is-absolute
     (path.posix "foo/bar/baz").is-absolute.not
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > detects-absolute-win32-path
   and. > @
     and.
@@ -51,151 +51,151 @@
       (path.win32 "\\Windows\\Users").is-absolute
     (path.win32 "temp\\var").is-absolute.not
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-posix-path
   eq. > @
     (path.posix "/foo/bar/.//./baz//../x/").normalized
     "/foo/bar/x/"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-posix-relative-path
   eq. > @
     (path.posix "../../foo/./bar/../x/../y").normalized
     "../../foo/y"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-empty-posix-path-to-current-dir
   eq. > @
     (path.posix "").normalized
     "."
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-path-to-root
   eq. > @
     (path.posix "/foo/bar/baz/../../../../").normalized
     "/"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-absolute-win32-path-without-drive
   eq. > @
     (path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\").normalized
     "\\Windows\\App\\Local\\"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-absolute-win32-path-with-drive
   eq. > @
     (path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal").normalized
     "C:\\Users\\AppLocal"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-relative-win32-path
   eq. > @
     (path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\").normalized
     "..\\..\\foo\\x\\y\\"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-empty-win32-driveless-path-to-current-dir
   eq. > @
     (path.win32 "").normalized
     "."
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-win32-path-down-to-drive-with-separator
   eq. > @
     (path.win32 "C:\\Windows\\..").normalized
     "C:\\"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-win32-path-down-to-drive-without-separator
   eq. > @
     (path.win32 "C:hello\\..").normalized
     "C:"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > normalizes-win32-path-with-replacing-slashes
   eq. > @
     (path.win32 "/var/www/../html/").normalized
     "\\var\\html\\"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-posix-absolute-path-against-other-absolute-path
   eq. > @
     (path.posix "/var/temp").resolved "/www/html"
     "/www/html"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-posix-absolute-path-against-other-relative-path
   eq. > @
     (path.posix "/var/temp").resolved "./www/html"
     "/var/temp/www/html"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-posix-relative-path-against-other-absolute-path
   eq. > @
     (path.posix "./var/temp").resolved "/www/html"
     "/www/html"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-posix-relative-path-against-other-relative-path
   eq. > @
     (path.posix "./var/temp").resolved "../www/html"
     "var/www/html"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-relative-path-against-other-relative-path
   eq. > @
     (path.win32 ".\\temp\\var").resolved ".\\..\\x"
     "temp\\x"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-relative-path-against-other-drive-relative-path
   eq. > @
     (path.win32 ".\\temp\\var").resolved "C:\\Windows\\Users"
     "C:\\Windows\\Users"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-relative-path-against-other-root-relative-path
   eq. > @
     (path.win32 ".\\temp\\var").resolved "\\Windows\\Users"
     "\\Windows\\Users"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-drive-relative-path-against-other-relative-path
   eq. > @
     (path.win32 "C:\\users\\local").resolved ".\\var\\temp"
     "C:\\users\\local\\var\\temp"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-drive-relative-path-against-other-drive-relative-path
   eq. > @
     (path.win32 "C:\\users\\local").resolved "D:\\local\\var"
     "D:\\local\\var"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-drive-relative-path-against-other-root-relative-path
   eq. > @
     (path.win32 "C:\\users\\local").resolved "\\local\\var"
     "C:\\local\\var"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-root-relative-path-against-other-relative-path
   eq. > @
     (path.win32 "\\users\\local").resolved ".\\hello\\var"
     "\\users\\local\\hello\\var"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-root-relative-path-against-other-drive-relative-path
   eq. > @
     (path.win32 "\\users\\local").resolved "D:\\hello\\var"
     "D:\\hello\\var"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-win32-root-relative-path-against-other-root-relative-path
   eq. > @
     (path.win32 "\\users\\local").resolved "\\hello\\var"
     "\\hello\\var"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > takes-valid-basename
   eq. > @
     basename.
@@ -203,7 +203,7 @@
         * "var" "www" "html" "hello.eo"
     "hello.eo"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-empty-basename-from-path-ended-with-separator
   eq. > @
     basename.
@@ -211,19 +211,19 @@
         * "var" "www" "html" path.separator
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-base-with-backslash-in-path-on-posix
   eq. > @
     (path.posix "/var/www/html/foo\\bar").basename
     "foo\\bar"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-the-same-string-if-no-separator-is-found
   eq. > @
     (path "Somebody").basename
     "Somebody"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > takes-file-extname
   eq. > @
     extname.
@@ -231,7 +231,7 @@
         * "var" "www" "hello.txt"
     ".txt"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-take-extname-on-file-without-extension
   eq. > @
     extname.
@@ -239,7 +239,7 @@
         * "var" "www" "html"
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-take-extname-if-ends-with-separator
   eq. > @
     extname.
@@ -247,7 +247,7 @@
         * "var" "www" path.separator
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-dirname-from-file-path
   eq. > @
     dirname.
@@ -256,7 +256,7 @@
     path.joined
       * "var" "www"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-dirname-from-dir-path
   eq. > @
     dirname.
@@ -265,7 +265,7 @@
     path.joined
       * "var" "www"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-dirname-from-file-path-without-extension
   eq. > @
     dirname.

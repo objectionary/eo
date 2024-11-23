@@ -24,9 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > dataized-does-not-do-recalculation
   eq. > @
     malloc.for
@@ -43,7 +43,7 @@
             m
     1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > dataizes-as-bytes-behaves-as-exclamationed
   # Func.
   [] > func

@@ -29,51 +29,51 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > check-if-current-directory-is-directory
   (file ".").is-directory > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > check-if-absent-file-does-not-exist
   (file "absent.txt").exists.not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-self-after-deleting
   tmpdir.tmpfile > temp
   temp.deleted.path.eq temp.path > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-self-after-touching
   tmpdir.tmpfile > temp
   temp.deleted.touched.path.eq temp.path > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-file-does-not-exist-after-deleting
   tmpdir.tmpfile.deleted.exists.not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > touches-a-file
   tmpdir.tmpfile.deleted.touched.exists > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > measures-empty-file-after-touching
   tmpdir.tmpfile.deleted.touched.size.eq 0 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-fail-on-double-touching
   tmpdir.tmpfile.deleted.touched.touched.exists > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-fail-on-double-deleting
   tmpdir.tmpfile.deleted.deleted.exists.not > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-an-error-on-touching-temp-file-in-absent-dir
   (tmpdir.as-path.resolved "foo").as-dir.tmpfile > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > resolves-and-touches
   (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
   resolved.tmpfile > f
@@ -88,7 +88,7 @@
             text path.separator
             * "foo" "bar"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > moves-a-file
   tmpdir.tmpfile > temp
   sprintf > dest
@@ -98,7 +98,7 @@
     (temp.moved dest).exists
     temp.exists.not
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-opening-with-wrong-mode
   tmpdir
   .tmpfile
@@ -106,7 +106,7 @@
     "x"
     f > [f]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-reading-from-not-existed-file
   tmpdir
   .tmpfile
@@ -115,7 +115,7 @@
     "r"
     f > [f]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-reading-or-writing-from-not-existed-file
   tmpdir
   .tmpfile
@@ -164,7 +164,7 @@
     true > [f]
   .exists > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-data-to-file
   tmpdir
   .tmpfile
@@ -174,7 +174,7 @@
   .size
   .eq 12 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > appending-data-to-file
   tmpdir
   .tmpfile
@@ -187,7 +187,7 @@
   .size
   .eq 13 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > truncates-file-opened-for-writing
   tmpdir
   .tmpfile
@@ -200,7 +200,7 @@
   .size
   .eq 0 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > truncates-file-opened-for-writing-or-reading
   tmpdir
   .tmpfile
@@ -213,7 +213,7 @@
   .size
   .eq 0 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-truncate-file-opened-for-appending
   tmpdir
   .tmpfile
@@ -226,7 +226,7 @@
   .size
   .eq 12 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-truncate-file-opened-for-reading-or-appending
   tmpdir
   .tmpfile
@@ -239,7 +239,7 @@
   .size
   .eq 12 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-truncate-file-opened-for-reading
   tmpdir
   .tmpfile
@@ -252,7 +252,7 @@
   .size
   .eq 12 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-writing-with-wrong-mode
   tmpdir
   .tmpfile
@@ -260,7 +260,7 @@
     "r"
     f.write "Hello" > [f]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-file
   malloc
   .of
@@ -281,7 +281,7 @@
           m
   .eq "Hello, world" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-reading-from-file-with-wrong-mode
   tmpdir
   .tmpfile
@@ -289,7 +289,7 @@
     "w"
     f.read 12 > [f]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-file-from-different-instances
   tmpdir.tmpfile > temp
   temp.path > src
@@ -315,7 +315,7 @@
               m
       .eq "Shrek is love"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-to-file-from-different-instances
   tmpdir.tmpfile > temp
   temp.path > src
@@ -344,7 +344,7 @@
               m
       .eq "Shrek is love!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-file-sequentially
   malloc
   .of
@@ -366,7 +366,7 @@
           m
   .eq "world" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-to-file-sequentially
   tmpdir
   .tmpfile

@@ -26,9 +26,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-bytes-to-array
   eq. > @
     list
@@ -36,7 +36,7 @@
         20-1F-EE-B5-FF
     * 20- 1F- EE- B5- FF-
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > single-byte-to-array
   eq. > @
     list
@@ -44,7 +44,7 @@
         1F-
     * 1F-
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > zero-bytes-to-array
   eq. > @
     list

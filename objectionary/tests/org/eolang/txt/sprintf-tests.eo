@@ -25,9 +25,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > prints-simple-string
   eq. > @
     "Hello, Jeffrey!"
@@ -35,7 +35,7 @@
       "Hello, %s!"
       * "Jeffrey"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > prints-complex-string
   eq. > @
     "Привет 3.140000 Jeff X!"
@@ -43,7 +43,7 @@
       "Привет %f %s %s!"
       * 3.14 "Jeff" "X"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > prints-bytes-string
   eq. > @
     "40-45-00-00-00-00-00-00"
@@ -51,7 +51,7 @@
       "%x"
       * 42.as-bytes
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > formats-all-objects
   eq. > @
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
@@ -59,13 +59,13 @@
       "string %s, bytes %x, float %f, int %d, bool %b"
       * "Jeff" "Jeff".as-bytes 42.3 14 false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-sprintf-with-arguments-that-does-not-match
   sprintf > @
     "%s%s"
     * "Jeff"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sprintf-does-not-fail-if-arguments-more-than-formats
   eq. > @
     "Hey"
@@ -73,11 +73,11 @@
       "%s"
       * "Hey" "Jeff"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-sprintf-unsupported-format
   sprintf "%o" * > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sprintf-prints-percents
   eq. > @
     "%Jeff"
@@ -85,7 +85,7 @@
       "%%%s"
       * "Jeff"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sprintf-does-not-print-i64
   not. > @
     eq.
@@ -94,7 +94,7 @@
         * 42.as-i64
       "42"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sprintf-prints-i64-as-number
   eq. > @
     "42"

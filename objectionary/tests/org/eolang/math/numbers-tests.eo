@@ -25,57 +25,57 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.math
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 (numbers *).max > [] > throws-on-taking-max-from-empty-sequence-of-numbers
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 (numbers *).min > [] > throws-on-taking-min-from-empty-sequence-of-numbers
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > max-of-one-item-array
   eq. > @
     (numbers (* 42)).max
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > min-of-one-item-array
   eq. > @
     (numbers (* 42)).min
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > max-of-array-is-first
   eq. > @
     (numbers (* 25 12 -2)).max
     25
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > max-of-array-is-in-the-center
   eq. > @
     (numbers (* 12 25 -2)).max
     25
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > max-of-array-is-last
   eq. > @
     (numbers (* 12 -2 25)).max
     25
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > min-of-array-is-first
   eq. > @
     (numbers (* -2 25 12)).min
     -2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > min-of-array-is-in-the-center
   eq. > @
     (numbers (* 12 -2 25)).min
     -2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > min-of-array-is-last
   eq. > @
     (numbers (* 12 25 -2)).min

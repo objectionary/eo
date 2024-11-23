@@ -27,34 +27,34 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-string
   eq. > @
     "hello"
     tail.
       sscanf "%s" "hello"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-int
   eq. > @
     33
     tail.
       sscanf "%d" "33"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-float
   eq. > @
     0.24
     tail.
       sscanf "%f" "0.24"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-sscanf-with-wrong-format
   sscanf "%l" "error" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-string-int-float
   eq. > @
     list
@@ -63,35 +63,35 @@
         "hello 33 0.24"
     * "hello" 33 0.24
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-string-with-ending
   eq. > @
     "hello"
     tail.
       sscanf "%s!" "hello!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-string
   eq. > @
     "test"
     tail.
       sscanf "some%sstring" "someteststring"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-int
   eq. > @
     734987259
     tail.
       sscanf "!%d!" "!734987259!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-float
   eq. > @
     1991.01
     tail.
       sscanf "this will be=%f" "this will be=1991.01"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-sprintf
   eq. > @
     list
@@ -102,7 +102,7 @@
           * "This" 8
     * "This" 8
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-complex-case
   eq. > @
     list

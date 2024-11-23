@@ -24,9 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-float-less
   malloc.of > @
     1
@@ -42,7 +42,7 @@
                   m.as-number
               1.1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-float-greater
   malloc.of > @
     1
@@ -58,7 +58,7 @@
                   m.as-number
               0.9
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-int-less
   malloc.of > @
     1
@@ -74,7 +74,7 @@
                   m.as-number
               2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-int-less-or-equal
   malloc.of > @
     1
@@ -139,7 +139,7 @@
         true
         true
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-int-equal-to-test
   malloc.of > @
     1
@@ -156,7 +156,7 @@
                   m.as-number
               1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-single-dataization-int-equal-to-cache-problem-test
   malloc.of > @
     1
@@ -175,7 +175,7 @@
                   m
               1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-calculates-and-returns
   eq. > @
     1
@@ -184,7 +184,7 @@
         0
         1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > seq-calculates-and-returns-object
   eq. > @
     "Hello!"

@@ -25,9 +25,9 @@
 +tests
 +package org.eolang
 +unlint abstract-decoratee
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > understands-this-correctly
   [x] > a
     $.x > @
@@ -35,7 +35,7 @@
     a 42
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > takes-parent-object
   [x] > a
     [] > take
@@ -45,7 +45,7 @@
     a 42
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > makes-object-a-constant
   [] > foo
     times. > @
@@ -56,7 +56,7 @@
     f
     f
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > takes-parent-through-attribute
   42 > x
   $ > this
@@ -67,14 +67,14 @@
           this.x
           42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-when-applies-to-closed-object
   [x] > a
     x > @
   a false > closed
   closed true > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > makes-deep-object-recursively
   eq. > @
     x 5
@@ -86,7 +86,7 @@
       x
         i.minus 1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > calculates-only-once
   eq. > @
     malloc.for
@@ -103,7 +103,7 @@
             m
     1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-cage-to-malloc
   (cage number.plus).new > f2
   eq. > @
@@ -121,7 +121,7 @@
                 f1.put f2
     3
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > recursion-without-arguments
   [n] > func
     if. > @
@@ -138,19 +138,19 @@
         ^.func m > @
     0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > unescapes-slashes
   eq. > @
     "x\\b\\f\\u\\r\\t\\n\\'"
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > unescapes-symbols
   eq. > @
     "\b\f\n\r\t\u27E6"
     08-0C-0A-0D-09-E2-9F-A6
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > compiles-correctly-with-long-duplicate-names
   [] > long-object-name
     [] > long-object-name
@@ -160,14 +160,14 @@
             42 > x
   true > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > named-inner-abstract-object
   seq > @
     *
       [] > a
         true > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > app-that-calls-func
   [] > app
     [args] > f
@@ -180,7 +180,7 @@
     output
     2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > directly-accesses-objects-from-root
   eq. > @
     Q.org.eolang.malloc.of
@@ -193,7 +193,7 @@
               m.as-number.minus 2
     40
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > directly-accesses-objects-from-standard-root
   eq. > @
     QQ.malloc.of
@@ -206,7 +206,7 @@
               m.as-number.minus 2
     40
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > standard-root-and-root
   QQ.sys.os > stand-root
   Q.org.eolang.sys.os > root
@@ -214,7 +214,7 @@
     root
     stand-root
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > extract-attribute-from-decoratee
   [foo] > return
   [] > a
@@ -226,7 +226,7 @@
     a.foo
     43
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > constant-defends-against-side-effects
   [x] > inc
     seq > @
@@ -246,7 +246,7 @@
             num
     64
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > parent-in-vertical-notation
   5 > m
   [] > value
@@ -258,7 +258,7 @@
     value
     5
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > parent-in-horizontal-notation
   5 > m
   [] > value
@@ -268,7 +268,7 @@
     value
     5
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > phi-in-vertical-notation
   [] > value
     [] > @
@@ -278,7 +278,7 @@
       value
     100
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > phi-in-horizontal-notation
   [] > value
     [] > @
@@ -287,7 +287,7 @@
     value.@
     100
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > right-way-to-use-hierarchy
   # Bool mock
   [value] > pybool
@@ -299,7 +299,7 @@
       ^.^.pyint (^.value.plus x.value) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > check-triple-quotes
   eq. > @
     """
@@ -309,7 +309,7 @@
     """
     "Hello\n\nHello"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > correctly-handles-same-name-attrs-simplified
   [first second] > calc
     plus. > @
@@ -327,7 +327,7 @@
           y > @
     3
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > correctly-handles-same-name-attrs
   [f s] > calc
     plus. > @

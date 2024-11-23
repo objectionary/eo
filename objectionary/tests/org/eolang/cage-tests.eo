@@ -25,9 +25,9 @@
 +tests
 +package org.eolang
 +unlint abstract-decoratee
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > encages-into-cage
   # Object with free attribute.
   [z] > a
@@ -38,7 +38,7 @@
         a 7
       x.z.eq 7
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-forma-and-fixes
   (cage 0).new > x
   (cage number.plus).new > sum
@@ -50,7 +50,7 @@
       x.encage 7
       sum.eq 43
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > dataizes-encaged-object-lazily-second
   (cage 0).new > x
   (cage number.plus).new > sum
@@ -62,14 +62,14 @@
       x.encage 7
       sum.eq 8
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > stores-abstract-object-into-cage
   new. > c
     cage
       112 > []
   c.eq 112 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > multi-layer-volatility
   (cage a).new > ca
   [] > a
@@ -97,7 +97,7 @@
         cb.z
         cb.z.as-number.plus 40
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > infinite-loop-check
   [value] > pyint
     [y] > add
@@ -112,7 +112,7 @@
         x.add (pyint 1)
       tmp.value.eq 1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > catches-encaging-objects-of-different-formas
   (cage number).new > cge
   seq > @
@@ -134,7 +134,7 @@
       cge
       false
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > applies-after-retrieval
   new. > c
     cage

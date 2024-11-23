@@ -27,121 +27,121 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-slices-the-origin-string
   eq. > @
     (text "Hello, world!").slice 7 5
     "world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > trimmed-left-empty-text
   eq. > @
     (text "").trimmed-left
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-left-one-space
   eq. > @
     (text " s").trimmed-left
     "s"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-left-many-spaces
   eq. > @
     (text "     some").trimmed-left
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-left-only-spaces
   eq. > @
     (text "     ").trimmed-left
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > trimmed-right-empty-text
   eq. > @
     (text "").trimmed-right
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-right-one-space
   eq. > @
     (text "s ").trimmed-right
     "s"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-right-many-spaces
   eq. > @
     (text "some     ").trimmed-right
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-right-only-spaces
   eq. > @
     (text "     ").trimmed-right
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-one-space-left
   eq. > @
     (text " some").trimmed
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-one-space-right
   eq. > @
     (text "some ").trimmed
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-one-space-both
   eq. > @
     (text " some ").trimmed
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-many-spaces
   eq. > @
     (text "    some     ").trimmed
     "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-empty
   eq. > @
     (text "").trimmed
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-trimmed-only-spaces
   eq. > @
     (text "        ").trimmed
     ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-first-char
   eq. > @
     "s"
     (text "some").at 0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-third-char
   eq. > @
     "m"
     (text "some").at 2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-char-at-negative-index
   eq. > @
     "m"
     (text "some").at -2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-text-at-index-more-than-length
   (text "some").at 10 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > chains-with-other-strings
   eq. > @
     "Hello, world!"
@@ -152,7 +152,7 @@
         "world"
         "!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-same-text-on-chaining-with-no-strings
   eq. > @
     "Some"
@@ -160,132 +160,132 @@
       text "Some"
       *
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > joined-no-strings
   eq. > @
     ""
     (text "-").joined *
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > joined-one-string
   eq. > @
     "some"
     (text "-").joined
       * "some"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > joined-many-strings
   eq. > @
     "hello-world-dear-friend"
     (text "-").joined
       * "hello" "world" "dear" "friend"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-text-repeating-less-than-zero-times
   (text "").repeated -1 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-repeated-zero-times-is-empty
   eq. > @
     ""
     (text "some").repeated 0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-repeated-five-times
   eq. > @
     "heyheyheyheyhey"
     (text "hey").repeated 5
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > index-of-non-existed-substring-with-more-length
   eq. > @
     -1
     (text "Hello").index-of "Somebody"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > index-of-non-existed-substring-with-same-length
   eq. > @
     -1
     (text "Hello").index-of "world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-index-of-substring
   eq. > @
     3
     (text "Hello world").index-of "lo wo"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-index-of-substring-in-the-end
   eq. > @
     6
     (text "Hello world").index-of "world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > starts-with-substring
   (text "Hello, world").starts-with "Hello" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-start-with-substring
   not. > @
     (text "Hello, world").starts-with "world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > ends-with-substring
   (text "Hello world!").ends-with "world!" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-end-with-substring
   not. > @
     (text "Hello world!").ends-with "Hello"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-contains-substring
   (text "Hello, world!").contains "o, wo" > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > text-does-not-contain-substring
   not. > @
     (text "Hello, world!").contains "Hey"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > finds-last-index-of-substring
   eq. > @
     5
     (text "Hey, Hey, Hey").last-index-of "Hey,"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > finds-last-index-of-the-same-string
   eq. > @
     0
     (text "Hello").last-index-of "Hello"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > last-index-of-non-existed-substring
   eq. > @
     -1
     (text "Hello, world").last-index-of "somebody"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > splits-text-by-dash
   eq. > @
     list
       (text "a-b-c").split "-"
     * "a" "b" "c"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > splits-text-with-empty-strings
   eq. > @
     list
       (text "-a-b-").split "-"
     * "" "a" "b" ""
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-text-to-upper-case
   eq. > @
     "HELLO"
     (text "hello").up-cased
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > splits-and-returns-strings
   eq. > @
     length.
@@ -296,99 +296,99 @@
         1
     6
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-text-with-upper-letters-to-upper-case
   eq. > @
     "HELLO"
     (text "HeLlO").up-cased
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-text-to-lower-case
   eq. > @
     "hello"
     (text "HELLO").low-cased
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-text-with-low-letters-to-lower-case
   eq. > @
     "hello"
     (text "HeLlO").low-cased
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-text-to-number
   eq. > @
     5
     (text "5").as-number
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-converting-text-to-number
   (text "Hello").as-number > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-float-text-to-number
   eq. > @
     3.14
     (text "3.14").as-number
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-text-is-ascii
   is-ascii. > @
     text
       "H311oW"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-emoji-is-not-ascii
   not. > @
     is-ascii.
       text
         "🌵"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-string-of-numbers-is-ascii
   is-ascii. > @
     text
       "123"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-simple-text-is-alphanumeric
   is-alphanumeric. > @
     text
       "eEo"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-text-with-number-is-alphanumeric
   is-alphanumeric. > @
     text
       "ab3d"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-text-with-dashes-is-not-alphanumeric
   not. > @
     is-alphanumeric.
       text
         "-w-"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-simple-text-is-alpha
   is-alpha. > @
     text
       "eEo"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-text-with-number-is-not-alpha
   not. > @
     is-alpha.
       text
         "ab3d"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > checks-if-text-with-dashes-is-not-alpha
   not. > @
     is-alpha.
       text
         "-w-"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-replaces-if-regex-not-found
   text
     "Hello, world"
@@ -399,7 +399,7 @@
   .eq > @
     "Hello, world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > replaces-digits-with-string
   text
     "Hell0, w0rld"
@@ -410,7 +410,7 @@
   .eq > @
     "Hello, world"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > replaces-slashes-to-windows-separator
   text
     "C:\\Windows/foo\\bar/hello.txt"
@@ -421,7 +421,7 @@
   .eq > @
     "C:\\Windows\\foo\\bar\\hello.txt"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > replaces-windows-path-with-slash
   text
     "C:\\Windows\\Users\\AppLocal\\shrek"
@@ -432,7 +432,7 @@
   .eq > @
     "C/Windows/Users/AppLocal/shrek"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > sanitizes-windows-path-with-regex
   text
     "foo\\bar<:>?*\"|baz\\asdf"

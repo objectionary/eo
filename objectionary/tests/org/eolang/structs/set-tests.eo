@@ -25,16 +25,16 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > set-rebuilds-itself
   eq. > @
     set
       * 1 2 2
     * 1 2
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > does-not-append-existed-item-to-set
   set
     * 1 2
@@ -42,14 +42,14 @@
   .size
   .eq 2 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > appends-new-item-to-set
   set
     * 1 2
   .with 3
   .has 3 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > empty-set-has-size-of-zero
   set
     *

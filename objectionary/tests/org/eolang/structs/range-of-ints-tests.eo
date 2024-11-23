@@ -25,38 +25,38 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > simple-range-of-ints-from-one-to-ten
   eq. > @
     range-of-ints 1 10
     * 1 2 3 4 5 6 7 8 9
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > range-of-ints-from-ten-to-ten-is-empty
   is-empty. > @
     range-of-ints 10 10
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > range-of-descending-ints-is-empty
   is-empty. > @
     range-of-ints 10 1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > range-of-negative-ints-works-as-well
   eq. > @
     range-of-ints -5 0
     * -5 -4 -3 -2 -1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-range-of-ints-with-non-int-start
   range-of-ints 1.2 3 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-range-of-ints-with-not-int-end
   range-of-ints 1 2.5 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-range-of-not-ints
   range-of-ints 1.5 5.2 > @

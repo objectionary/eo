@@ -28,9 +28,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-all-bytes-and-returns-length
   eq. > @
     input-length
@@ -38,7 +38,7 @@
         01-02-03-04-05-06-07-08-09-10
     10
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > copies-all-bytes-to-output-and-returns-length
   eq. > @
     malloc.of

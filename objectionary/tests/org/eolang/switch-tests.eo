@@ -24,9 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.42.0
++version 0.43.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-simple-case
   eq. > @
     switch
@@ -39,7 +39,7 @@
           "2"
     "2"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-strings-case
   "swordfish" > password
   eq. > @
@@ -56,7 +56,7 @@
           "password is wrong"
     "password is correct!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-with-several-true-cases
   eq. > @
     switch
@@ -72,7 +72,7 @@
           "TRUE2"
     "TRUE1"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-with-all-false-cases
   switch > @
     *
@@ -83,11 +83,11 @@
         false
         "false2"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-empty-switch
   switch * > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-complex-case
   [] > c1
     false > @
