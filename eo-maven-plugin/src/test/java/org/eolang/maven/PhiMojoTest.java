@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
@@ -102,6 +103,22 @@ final class PhiMojoTest {
                 f.exec("eo:register", "eo:parse", "eo:optimize");
                 f.exec("eo:xmir-to-phi");
             }
+        );
+        MatcherAssert.assertThat(
+            "the .xmir file is generated",
+            XhtmlMatchers.xhtml(
+                new String(
+                    Files.readAllBytes(
+                        temp.resolve("target/eo/2-optimize/org/eolang/bytes.xmir")
+                    ),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/program/objects/o[@name='bytes']",
+                "/program/objects/o/o[@base='.eq']",
+                "/program/objects/o/o/o[@base='org.eolang.bytes' and text()='01-']"
+            )
         );
         MatcherAssert.assertThat(
             "the .phi file is generated",
