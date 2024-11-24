@@ -223,6 +223,15 @@
               b.put
                 (m.read 2 5).eq "Hello"
 
+# Creates memory block of zero bytes (this should be a legal operation)
+[] > allocates-zero-bytes
+  eq. > @
+    0
+    malloc.of
+      0
+      [m]
+        m.size > @
+
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-increases-block-size
   malloc.of > @
