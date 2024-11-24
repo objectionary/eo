@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.43.0" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.43.1" elementFormDefault="qualified">
   <xs:annotation>
     <xs:appinfo>XML schema for XMIR documents</xs:appinfo>
     <xs:documentation>
@@ -40,8 +40,24 @@ SOFTWARE.
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="line" type="xs:decimal"/>
-    <xs:attribute name="pos" type="xs:decimal"/>
+    <xs:attribute name="line" type="xs:decimal">
+      <xs:annotation>
+        <xs:appinfo>The line of code where the object has been seen</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the number of code line (starting from 1),
+          where the object has been met during the scanning of the source code.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="pos" type="xs:decimal">
+      <xs:annotation>
+        <xs:appinfo>The position in the code line where the object has been seen</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the position in the code line (starting from 1),
+          where the object has been met during the scanning of the source code.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
     <xs:attribute name="star" type="empty"/>
@@ -54,7 +70,18 @@ SOFTWARE.
   </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
-      <xs:element name="listing" type="xs:string"/>
+      <xs:element name="listing" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>The entire listing of the source code program, in EO</xs:appinfo>
+          <xs:documentation>
+            The element contains the entire listing of the source code program,
+            in EO language, as it was seen by the scanner. This element doesn't
+            have any structure and may be omitted. However, it is recommended to
+            provide the listing in order to simplify debugging and enable
+            traceability.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -70,16 +97,62 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="errors">
+      <xs:element name="errors" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>The list of errors already detected in the program</xs:appinfo>
+          <xs:documentation>
+            The element may contain a collection of errors that has already
+            been found in the program, either by EO parser or any other
+            additional analyzers, like style checkers or linters. The list
+            may grow when the XMIR is being sent through any optimization or
+            transformation pipelines. It is up to the consumers of the XMIR,
+            whether to pay attention to the errors or ignore then and proceed
+            further.
+          </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
           <xs:sequence>
             <xs:element name="error" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>The error found in the program</xs:appinfo>
+                <xs:documentation>
+                  The element explains what kind of problem is found
+                  in the program, where exactly, and what is the severity
+                  of it.
+                </xs:documentation>
+              </xs:annotation>
               <xs:complexType>
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
-                    <xs:attribute name="check"/>
-                    <xs:attribute name="line" type="xs:decimal"/>
+                    <xs:attribute name="check">
+                      <xs:annotation>
+                        <xs:appinfo>The name of the checker that found the error</xs:appinfo>
+                        <xs:documentation>
+                          The element contains the name of the style checker or
+                          any other submodule that found the error in the program.
+                        </xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="line" type="xs:decimal">
+                      <xs:annotation>
+                        <xs:appinfo>The number of the line of code where the error was found</xs:appinfo>
+                        <xs:documentation>
+                          The element contains the number of the code line (starting from 1),
+                          where the error was found. If the element is omitted, the problem
+                          is related to the entire program, not to any particular line in it.
+                        </xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
                     <xs:attribute name="severity" use="required">
+                      <xs:annotation>
+                        <xs:appinfo>The severity of the error</xs:appinfo>
+                        <xs:documentation>
+                          The element contains the severity of the error, thus providing
+                          advice to the processor of the document on whether the error
+                          may be ignored (when it is a "warning") or the processing must
+                          stop immediately (when it is a "critical").
+                        </xs:documentation>
+                      </xs:annotation>
                       <xs:simpleType>
                         <xs:restriction base="xs:string">
                           <xs:enumeration value="critical"/>
@@ -95,7 +168,7 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="sheets">
+      <xs:element name="sheets" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="sheet" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
@@ -103,7 +176,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="license" type="xs:string" minOccurs="0"/>
-      <xs:element name="metas">
+      <xs:element name="metas" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">
@@ -127,13 +200,67 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:all>
-    <xs:attribute name="ms" type="xs:decimal" use="required"/>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="time" type="xs:dateTime" use="required"/>
-    <xs:attribute name="version" type="xs:string" use="required"/>
-    <xs:attribute name="revision" type="xs:string" use="required"/>
-    <xs:attribute name="dob" type="xs:dateTime" use="required"/>
-    <xs:attribute name="source" type="xs:string"/>
+    <xs:attribute name="ms" type="xs:decimal">
+      <xs:annotation>
+        <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
+        <xs:documentation>
+          The element contains a positive integer, which is the number of milliseconds
+          that were spent by the parser to generate this document. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="time" type="xs:dateTime">
+      <xs:annotation>
+        <xs:appinfo>The date and time when the document was created</xs:appinfo>
+        <xs:documentation>
+          The element contains the date and time of the moment when the
+          document was generated by the parser. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="version" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>The version of the parser that created the document</xs:appinfo>
+        <xs:documentation>
+          The element contains the version of the parser that created
+          the document, preferably in SemVer format. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="revision" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>The Git SHA of the release of the parser that created the document</xs:appinfo>
+        <xs:documentation>
+          The element contains the Git SHA of the release of the parser that created
+          the document. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="dob" type="xs:dateTime">
+      <xs:annotation>
+        <xs:appinfo>The date-of-birth of the parser that created the document</xs:appinfo>
+        <xs:documentation>
+          The element contains the date and time of the release of the parser
+          that created the document. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="source" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>The absolute path of the source file that was parsed</xs:appinfo>
+        <xs:documentation>
+          The element contains the absolute file path of the source EO file
+          that was parsed in order to generate the XMIR document. This information
+          is valuable for debugging purposes and may be omitted in production systems.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:element name="program" type="program"/>
 </xs:schema>
