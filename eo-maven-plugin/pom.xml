@@ -420,6 +420,24 @@ SOFTWARE.
               <goal>resources</goal>
             </goals>
           </execution>
+          <execution>
+            <id>copy-descriptor</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}/META-INF/maven</directory>
+                  <includes>
+                    <include>plugin.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>

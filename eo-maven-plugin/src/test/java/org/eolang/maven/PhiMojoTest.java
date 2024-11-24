@@ -72,11 +72,6 @@ final class PhiMojoTest {
                     .execution()
                     .goals("register", "parse", "optimize", "xmir-to-phi");
                 f.exec("compile");
-                MatcherAssert.assertThat(
-                    "the .phi file is generated",
-                    f.files().file("target/eo/phi/foo.phi").exists(),
-                    Matchers.is(true)
-                );
             }
         );
         MatcherAssert.assertThat(

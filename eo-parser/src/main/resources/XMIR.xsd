@@ -54,7 +54,7 @@ SOFTWARE.
   </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
-      <xs:element name="listing" type="xs:string"/>
+      <xs:element name="listing" type="xs:string" minOccurs="0"/>
       <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -70,7 +70,7 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="errors">
+      <xs:element name="errors" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="error" minOccurs="0" maxOccurs="unbounded">
@@ -95,7 +95,7 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="sheets">
+      <xs:element name="sheets" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="sheet" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
@@ -103,7 +103,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="license" type="xs:string" minOccurs="0"/>
-      <xs:element name="metas">
+      <xs:element name="metas" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">
@@ -127,12 +127,12 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:all>
-    <xs:attribute name="ms" type="xs:decimal" use="required"/>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="time" type="xs:dateTime" use="required"/>
-    <xs:attribute name="version" type="xs:string" use="required"/>
-    <xs:attribute name="revision" type="xs:string" use="required"/>
-    <xs:attribute name="dob" type="xs:dateTime" use="required"/>
+    <xs:attribute name="ms" type="xs:decimal"/>
+    <xs:attribute name="time" type="xs:dateTime"/>
+    <xs:attribute name="version" type="xs:string"/>
+    <xs:attribute name="revision" type="xs:string"/>
+    <xs:attribute name="dob" type="xs:dateTime"/>
     <xs:attribute name="source" type="xs:string"/>
   </xs:complexType>
   <xs:element name="program" type="program"/>
