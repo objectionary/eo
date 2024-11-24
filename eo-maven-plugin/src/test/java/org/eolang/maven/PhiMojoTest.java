@@ -40,6 +40,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -83,6 +84,42 @@ final class PhiMojoTest {
                 StandardCharsets.UTF_8
             ),
             Matchers.containsString("α0 ↦ ⟦ Δ ⤍ ")
+        );
+    }
+
+    @Test
+    @Disabled
+    void convertsSimpleXmirToPhi(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/2-optimize/foo.xmir").write(
+                    String.join(
+                        " ",
+                        "<program name='foo'><objects>",
+                        "<o abstract='' name='foo'>",
+                        "<o name='bar' base='xxx'>",
+                        "<o base='org.eolang.bytes'>01 02 03</o>",
+                        "</o></o></objects></program>"
+                    ).getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("xmir-to-phi");
+                f.exec("compile");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .phi file is generated",
+            new String(
+                Files.readAllBytes(
+                    temp.resolve("target/eo/phi/foo.phi")
+                ),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01-02-03 ⟧")
         );
     }
 
