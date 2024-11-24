@@ -21,48 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package EOorg.EOeolang; // NOPMD
-
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Number.times object.
+ * Test for {@link Expect}.
  *
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 1.0
  */
-@Versionized
-@XmirObject(oname = "number.times")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOtimes extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOnumber$EOtimes() {
-        this.add("x", new AtVoid("x"));
+final class ExpectTest {
+
+    @Test
+    void buildsAndChecks() {
+        MatcherAssert.assertThat(
+            "passes through and throws correctly",
+            new Expect<>("something", () -> 42)
+                .must(i -> i > 0)
+                .otherwise("must be positive")
+                .that(i -> Integer.toString(i))
+                .must(s -> !s.isEmpty())
+                .it(),
+            Matchers.equalTo("42")
+        );
     }
 
-    @Override
-    public Phi lambda() {
-        final Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        final Double right = Expect.at(this, "x")
-            .that(phi -> new Dataized(phi).asNumber())
-            .it();
-        return new Data.ToPhi(left * right);
+    @Test
+    void failsWithCorrectTrace() {
+        MatcherAssert.assertThat(
+            "error message is correct",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42)
+                    .must(i -> i < 0)
+                    .otherwise("must be negative")
+                    .it(),
+                "fails on check"
+            ).getMessage(),
+            Matchers.containsString("negative")
+        );
     }
 }

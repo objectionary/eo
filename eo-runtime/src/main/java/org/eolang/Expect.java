@@ -24,46 +24,113 @@
 
 package org.eolang;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 /**
  * This wrapper helps us explain our expectations in an error
  * message that we throw.
  *
- * @param <T> Type of returned value
+ * @param <T> The type of result
  * @since 0.41.0
  */
-public final class Expect<T> {
+@SuppressWarnings("PMD.ShortMethodName")
+public class Expect<T> {
 
     /**
-     * The action.
+     * The subject being tested.
      */
-    private final Action<T> action;
+    private final String subject;
 
     /**
-     * The message.
+     * The supplier.
      */
-    private final String message;
+    private final Supplier<T> sup;
 
     /**
      * Ctor.
-     * @param act The action
-     * @param msg Additional explanation
+     * @param subj The subject
+     * @param supplier The supplier
      */
-    public Expect(final Action<T> act, final String msg) {
-        this.action = act;
-        this.message = msg;
+    public Expect(final String subj, final Supplier<T> supplier) {
+        this.subject = subj;
+        this.sup = supplier;
     }
 
     /**
-     * Take the value from the lambda.
-     * @return The value
-     * @checkstyle MethodNameCheck (3 lines)
+     * Starting point.
+     * @param phi The object
+     * @param attr Attribute name
+     * @return Expect pipeline
+     * @checkstyle MethodNameCheck (5 lines)
      */
-    @SuppressWarnings("PMD.ShortMethodName")
-    public T it() {
-        try {
-            return this.action.act();
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.message, ex);
-        }
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static Expect<Phi> at(final Phi phi, final String attr) {
+        return new Expect<>(
+            String.format("the '%s' attribute", attr),
+            () -> phi.take(attr)
+        );
     }
+
+    /**
+     * Assert that it passes.
+     * @param fun The function to transform
+     * @param <R> Type of result
+     * @return New object
+     */
+    public <R> Expect<R> that(final Function<T, R> fun) {
+        return new Expect<>(
+            this.subject,
+            () -> fun.apply(this.sup.get())
+        );
+    }
+
+    /**
+     * Fail with this message otherwise.
+     * @param message The error message
+     * @return Next object
+     */
+    public Expect<T> otherwise(final String message) {
+        return new Expect<>(
+            this.subject,
+            () -> {
+                try {
+                    return this.sup.get();
+                } catch (final ExFailure ex) {
+                    throw new ExFailure(
+                        String.format("%s %s", this.subject, message),
+                        ex
+                    );
+                }
+            }
+        );
+    }
+
+    /**
+     * Assert on it.
+     * @param fun The check.
+     * @return Next object
+     */
+    public Expect<T> must(final Function<T, Boolean> fun) {
+        return new Expect<>(
+            this.subject,
+            () -> {
+                final T ret = this.sup.get();
+                if (!fun.apply(ret)) {
+                    throw new ExFailure(this.subject);
+                }
+                return ret;
+            }
+        );
+    }
+
+    /**
+     * Return it.
+     * @return The token
+     * @checkstyle MethodNameCheck (5 lines)
+     */
+    public T it() {
+        return this.sup.get();
+    }
+
 }

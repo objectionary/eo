@@ -34,6 +34,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -60,8 +61,24 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final int start = new Dataized(this.take("start")).asNumber().intValue();
-        final int length = new Dataized(this.take("len")).asNumber().intValue();
+        final int start = Expect.at(this, "start")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .must(number -> number % 1 == 0)
+            .that(Double::intValue)
+            .otherwise("must be an integer")
+            .must(integer -> integer >= 0)
+            .otherwise("must be a positive integer")
+            .it();
+        final int length = Expect.at(this, "len")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .must(number -> number % 1 == 0)
+            .that(Double::intValue)
+            .otherwise("must be an integer")
+            .must(integer -> integer >= 0)
+            .otherwise("must be a positive integer")
+            .it();
         final byte[] array = new Dataized(this.take(Attr.RHO)).take();
         return new Data.ToPhi(
             Arrays.copyOfRange(array, start, start + length)
