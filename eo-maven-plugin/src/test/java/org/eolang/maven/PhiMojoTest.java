@@ -95,7 +95,7 @@ final class PhiMojoTest {
                         "# to how it is defined in org.eolang package, trying to",
                         "# reproduce the error.",
                         "[] > bytes",
-                        "  $.eq 01- > yes",
+                        "  $.eq 01-02-03 > yes",
                         ""
                     ).getBytes()
                 );
@@ -117,7 +117,7 @@ final class PhiMojoTest {
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@name='bytes']",
                 "/program/objects/o/o[@base='.eq']",
-                "/program/objects/o/o/o[@base='org.eolang.bytes' and text()='01-']"
+                "/program/objects/o/o/o[@base='org.eolang.bytes' and text()='01-02-03']"
             )
         );
         MatcherAssert.assertThat(
@@ -130,7 +130,7 @@ final class PhiMojoTest {
             ),
             Matchers.allOf(
                 Matchers.containsString("α0 ↦ Φ.org.eolang.bytes("),
-                Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01- ⟧"),
+                Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01-02-03 ⟧"),
                 Matchers.containsString("yes ↦ ξ.eq(")
             )
         );
