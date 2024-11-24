@@ -24,7 +24,7 @@ tests:
   - /program/errors[count(*)=0]
   - //o[@name='foo' and count(o)=2]
   - //o[@name='x']
-  - //o[@name='y' and @abstract]
+  - //o[@name='y' and not(@base)]
 eo: |
   +home https://github.com/objectionary/eo
   +package test

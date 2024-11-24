@@ -29,7 +29,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:abstract" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="not(exists($o/@base)) and (exists($o/o) or $o/@atom or $o/@abstract)"/>
+    <xsl:sequence select="not($o/@base)"/>
   </xsl:function>
   <xsl:function name="eo:attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>

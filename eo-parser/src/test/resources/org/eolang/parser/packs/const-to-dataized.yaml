@@ -22,7 +22,7 @@
 ---
 tests:
   - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.number' and not(@name)]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@abstract and @name='m-3' and count(o)=2]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@name='m-3' and count(o)=2]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]
   - //objects[count(//o[@const])=0]
