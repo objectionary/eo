@@ -96,7 +96,10 @@ final class EObytesEOsliceTest {
         MatcherAssert.assertThat(
             "error message is correct",
             baos.toString(),
-            Matchers.containsString("the 'len' attribute must be a positive integer")
+            Matchers.allOf(
+                Matchers.containsString("the 'len' attribute must be a positive integer"),
+                Matchers.containsString("the 'len' attribute (-5)")
+            )
         );
     }
 

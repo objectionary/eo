@@ -117,7 +117,9 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExFailure(this.subject);
+                    throw new ExFailure(
+                        String.format("%s (%s)", this.subject, ret)
+                    );
                 }
                 return ret;
             }
