@@ -74,6 +74,7 @@ jobs:
               printf '(https://github.com/objectionary/%s/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22))\n' \
                 "${r}"
             done
+            printf '\nDo not forget to give us your GitHub stars, this is what we work for!'
           ) > message.md
       - uses: appleboy/telegram-action@master
         with:
