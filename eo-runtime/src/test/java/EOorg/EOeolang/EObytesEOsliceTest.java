@@ -103,4 +103,26 @@ final class EObytesEOsliceTest {
         );
     }
 
+    @Test
+    void takesTooManyBytes() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new Data.ToPhi("abc")
+                            .take("as-bytes")
+                            .take("slice")
+                            .copy(),
+                        "start",
+                        new Data.ToPhi(0)
+                    ),
+                    "len",
+                    new Data.ToPhi(100)
+                )
+            ).asString(),
+            "fails because not enough bytes"
+        );
+    }
+
 }

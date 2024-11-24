@@ -61,6 +61,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        final byte[] array = new Dataized(this.take(Attr.RHO)).take();
         final int start = Expect.at(this, "start")
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")
@@ -69,6 +70,8 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .otherwise("must be an integer")
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
+            .must(integer -> integer < array.length)
+            .otherwise(String.format("must be smaller than %d", array.length))
             .it();
         final int length = Expect.at(this, "len")
             .that(phi -> new Dataized(phi).asNumber())
@@ -78,8 +81,9 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .otherwise("must be an integer")
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
+            .must(integer -> integer < 1 + array.length - start)
+            .otherwise(String.format("must be smaller than %d", 1 + array.length - start))
             .it();
-        final byte[] array = new Dataized(this.take(Attr.RHO)).take();
         return new Data.ToPhi(
             Arrays.copyOfRange(array, start, start + length)
         );
