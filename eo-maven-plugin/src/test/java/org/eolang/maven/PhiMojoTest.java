@@ -79,6 +79,16 @@ final class PhiMojoTest {
                 );
             }
         );
+        MatcherAssert.assertThat(
+            "the .phi file is generated",
+            new String(
+                Files.readAllBytes(
+                    temp.resolve("target/eo/phi/foo.phi")
+                ),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.containsString("α0 ↦ ⟦ Δ ⤍ ")
+        );
     }
 
     @Test
