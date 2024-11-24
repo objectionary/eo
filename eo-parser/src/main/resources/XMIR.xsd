@@ -40,8 +40,24 @@ SOFTWARE.
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="line" type="xs:decimal"/>
-    <xs:attribute name="pos" type="xs:decimal"/>
+    <xs:attribute name="line" type="xs:decimal">
+      <xs:annotation>
+        <xs:appinfo>The line of code where the object has been seen</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the number of code line (starting from 1),
+          where the object has been met during the scanning of the source code.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="pos" type="xs:decimal">
+      <xs:annotation>
+        <xs:appinfo>The position in the code line where the object has been seen</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the position in the code line (starting from 1),
+          where the object has been met during the scanning of the source code.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
     <xs:attribute name="star" type="empty"/>
@@ -54,7 +70,18 @@ SOFTWARE.
   </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
-      <xs:element name="listing" type="xs:string" minOccurs="0"/>
+      <xs:element name="listing" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>The entire listing of the source code program, in EO</xs:appinfo>
+          <xs:documentation>
+            The element contains the entire listing of the source code program,
+            in EO language, as it was seen by the scanner. This element doesn't
+            have any structure and may be omitted. However, it is recommended to
+            provide the listing in order to simplify debugging and enable
+            traceability.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
