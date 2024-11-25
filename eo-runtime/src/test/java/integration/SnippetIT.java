@@ -73,8 +73,8 @@ final class SnippetIT {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files().file("src/main/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main/eo")
+                f.files().file("src/main").save(
+                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
                 );
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
