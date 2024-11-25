@@ -130,6 +130,20 @@ SOFTWARE.
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="comment">
+    <xs:annotation>
+      <xs:appinfo>The comment found attached to an object</xs:appinfo>
+      <xs:documentation>
+        Comments may be attached to objects in EO programs, but only to
+        the highest-level formations.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="line" use="required" type="whole"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
       <xs:element name="listing" type="xs:string" minOccurs="0">
@@ -147,15 +161,7 @@ SOFTWARE.
       <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="line" use="required" type="whole"/>
-                  </xs:extension>
-                </xs:simpleContent>
-              </xs:complexType>
-            </xs:element>
+            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded" type="comment"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
