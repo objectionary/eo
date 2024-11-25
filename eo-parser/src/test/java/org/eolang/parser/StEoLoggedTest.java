@@ -119,8 +119,6 @@ final class StEoLoggedTest {
             String.join(
                 "\n",
                 "<program>",
-                "  <errors/>",
-                "  <sheets/>",
                 "  <objects>",
                 "    <o abstract=\"\" line=\"1\" name=\"main\" pos=\"0\">",
                 "      <o base=\"true\" line=\"2\" name=\"x\" pos=\"2\"/>",
