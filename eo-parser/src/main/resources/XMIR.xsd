@@ -172,6 +172,21 @@ SOFTWARE.
       <xs:extension base="xs:string"/>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="meta">
+    <xs:annotation>
+      <xs:appinfo>The meta found in the source code</xs:appinfo>
+      <xs:documentation>
+        The element contains information about a meta found
+        in the source code, before all objects.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="head" type="xs:string"/>
+      <xs:element name="tail" type="xs:string"/>
+      <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="line" type="whole"/>
+  </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
       <xs:element name="listing" type="listing" minOccurs="0"/>
@@ -229,16 +244,7 @@ SOFTWARE.
       <xs:element name="metas" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="head" type="xs:string"/>
-                  <xs:element name="tail" type="xs:string"/>
-                  <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-                </xs:sequence>
-                <xs:attribute name="line" type="whole"/>
-              </xs:complexType>
-            </xs:element>
+            <xs:element name="meta" minOccurs="0" maxOccurs="unbounded" type="meta"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
