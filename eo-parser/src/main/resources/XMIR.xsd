@@ -193,7 +193,13 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="head" type="xs:string"/>
+      <xs:element name="head">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[a-z]+[a-z0-9]*"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
       <xs:element name="tail" type="xs:string"/>
       <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
