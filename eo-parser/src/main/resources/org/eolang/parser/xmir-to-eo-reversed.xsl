@@ -38,7 +38,7 @@ SOFTWARE.
   <xsl:template match="program">
     <eo>
       <xsl:apply-templates select="license"/>
-      <xsl:apply-templates select="metas[meta]"/>
+      <xsl:apply-templates select="metas"/>
       <xsl:apply-templates select="objects"/>
     </eo>
   </xsl:template>

@@ -75,7 +75,7 @@ final class TrParsingTest {
             ).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)>1]",
-                "/program/errors[not(error)]"
+                "/program[not(errors)]"
             )
         );
     }
