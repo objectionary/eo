@@ -40,8 +40,8 @@ import org.eolang.XmirObject;
 
 /**
  * Malloc.of.allocated.resized object.
- * @checkstyle TypeNameCheck (5 lines)
  * @since 0.41.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "malloc.of.allocated.resized")
