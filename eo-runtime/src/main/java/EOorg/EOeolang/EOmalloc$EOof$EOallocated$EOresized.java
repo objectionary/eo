@@ -31,36 +31,44 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.of.allocated.resize object.
+ * Malloc.of.allocated.resized object.
  * @since 0.41.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.of.allocated.resize")
+@XmirObject(oname = "malloc.of.allocated.resized")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOallocated$EOresize extends PhDefault implements Atom {
+public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault implements Atom {
     /**
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    EOmalloc$EOof$EOallocated$EOresize() {
-        this.add("size", new AtVoid("size"));
+    EOmalloc$EOof$EOallocated$EOresized() {
+        this.add("new-size", new AtVoid("new-size"));
     }
 
     @Override
     public Phi lambda() {
-        Heaps.INSTANCE.resize(
-            new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
-            new Dataized(this.take("size")).asNumber().intValue()
-        );
-        return new Data.ToPhi(true);
+        final Phi rho = this.take(Attr.RHO);
+        final int id = Expect.at(rho, "id")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .that(Double::intValue)
+            .it();
+        final int size = Expect.at(this, "new-size")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .that(Double::intValue)
+            .it();
+        Heaps.INSTANCE.resize(id, size);
+        return rho;
     }
 }
