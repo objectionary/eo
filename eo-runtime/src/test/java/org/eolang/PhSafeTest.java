@@ -23,7 +23,9 @@
  */
 package org.eolang;
 
-import java.io.IOException;
+import EOorg.EOeolang.EOerror;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -36,18 +38,22 @@ final class PhSafeTest {
 
     @Test
     void rendersMultiLayeredErrorMessageCorrectly() {
-        Assertions.assertEquals(
-            new PhSafe.ErrorMsg(
-                new IOException(
-                    "oops2",
-                    new IOException(
-                        "oops1",
-                        new IOException("yes!")
+        MatcherAssert.assertThat(
+            "rethrows correctly",
+            Assertions.assertThrows(
+                EOerror.ExError.class,
+                () -> new PhSafe(
+                    new PhWith(
+                        new EOerror(),
+                        "message",
+                        new Data.ToPhi("oops")
                     )
-                )
-            ).get(),
-            "IOException: oops2; caused by IOException: oops1; caused by IOException: yes!",
-            "Must render all layers nicely"
+                ).take("foo"),
+                "throws correct class"
+            ),
+            Matchers.hasToString(
+                Matchers.containsString("Δ = [0x6F6F7073-] = \"oops\"")
+            )
         );
     }
 
