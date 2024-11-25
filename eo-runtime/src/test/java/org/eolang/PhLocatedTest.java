@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,9 +39,33 @@ final class PhLocatedTest {
     void savesLocationAfterCopying() {
         final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "saves location",
             located.copy().locator(),
             Matchers.equalTo(located.locator())
         );
     }
+
+    @Test
+    void catchesRuntimeException() {
+        MatcherAssert.assertThat(
+            "rethrows correctly",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new PhLocated(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new IllegalArgumentException("oops");
+                        }
+                    },
+                    10, 20
+                ).delta(),
+                "throws correct class"
+            ),
+            Matchers.hasToString(
+                Matchers.containsString("Error in the \"?.Δ\" attribute at 10:20")
+            )
+        );
+    }
+
 }
