@@ -31,17 +31,15 @@ SOFTWARE.
       supplementary information, such as metas, license, and so on.
     </xs:documentation>
   </xs:annotation>
-  <xs:simpleType name="milliseconds">
+  <xs:simpleType name="whole">
     <xs:annotation>
-      <xs:appinfo>Number of milliseconds</xs:appinfo>
+      <xs:appinfo>Whole number</xs:appinfo>
       <xs:documentation>
-        Total number of milliseconds that were spent on document
-        generation or any other activity.
+        Whole numbers, include zero.
       </xs:documentation>
     </xs:annotation>
-    <xs:restriction base="xs:decimal">
+    <xs:restriction base="xs:integer">
       <xs:minInclusive value="0"/>
-      <xs:fractionDigits value="0"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="empty">
@@ -53,7 +51,7 @@ SOFTWARE.
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="line" type="xs:decimal">
+    <xs:attribute name="line" type="whole">
       <xs:annotation>
         <xs:appinfo>The line of code where the object has been seen</xs:appinfo>
         <xs:documentation>
@@ -62,7 +60,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="pos" type="xs:decimal">
+    <xs:attribute name="pos" type="whole">
       <xs:annotation>
         <xs:appinfo>The position in the code line where the object has been seen</xs:appinfo>
         <xs:documentation>
@@ -102,7 +100,7 @@ SOFTWARE.
               <xs:complexType>
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
-                    <xs:attribute name="line" use="required" type="xs:decimal"/>
+                    <xs:attribute name="line" use="required" type="whole"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -146,7 +144,7 @@ SOFTWARE.
                         </xs:documentation>
                       </xs:annotation>
                     </xs:attribute>
-                    <xs:attribute name="line" type="xs:decimal">
+                    <xs:attribute name="line" type="whole">
                       <xs:annotation>
                         <xs:appinfo>The number of the line of code where the error was found</xs:appinfo>
                         <xs:documentation>
@@ -199,7 +197,7 @@ SOFTWARE.
                   <xs:element name="tail" type="xs:string"/>
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="line"/>
+                <xs:attribute name="line" type="whole"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
@@ -214,7 +212,7 @@ SOFTWARE.
       </xs:element>
     </xs:all>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="ms" type="milliseconds">
+    <xs:attribute name="ms" type="whole">
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
         <xs:documentation>
