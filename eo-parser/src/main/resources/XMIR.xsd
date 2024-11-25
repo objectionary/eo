@@ -144,21 +144,46 @@ SOFTWARE.
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="listing">
+    <xs:annotation>
+      <xs:appinfo>The entire listing of the source code program, in EO</xs:appinfo>
+      <xs:documentation>
+        The element contains the entire listing of the source code program,
+        in EO language, as it was seen by the scanner. This element doesn't
+        have any structure and may be omitted. However, it is recommended to
+        provide the listing in order to simplify debugging and enable
+        traceability.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="sheet">
+    <xs:annotation>
+      <xs:appinfo>The XSL stylesheet that was applied to the XMIR</xs:appinfo>
+      <xs:documentation>
+        The element contains information about XSL stylesheet
+        that was applied to the XMIR during its optimization
+        and/or transformation.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
-      <xs:element name="listing" type="xs:string" minOccurs="0">
+      <xs:element name="listing" type="listing" minOccurs="0"/>
+      <xs:element name="comments" minOccurs="0">
         <xs:annotation>
-          <xs:appinfo>The entire listing of the source code program, in EO</xs:appinfo>
+          <xs:appinfo>The list of comments found in the source code</xs:appinfo>
           <xs:documentation>
-            The element contains the entire listing of the source code program,
-            in EO language, as it was seen by the scanner. This element doesn't
-            have any structure and may be omitted. However, it is recommended to
-            provide the listing in order to simplify debugging and enable
-            traceability.
+            The element may contain a collection of comments
+            found in the source code attached to the highest-level
+            EO formations.
           </xs:documentation>
         </xs:annotation>
-      </xs:element>
-      <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="comment" minOccurs="0" maxOccurs="unbounded" type="comment"/>
@@ -185,9 +210,18 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="sheets" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>The list of XSL stylesheets that were applied to the XMIR</xs:appinfo>
+          <xs:documentation>
+            The element may contain a collection of XSL stylesheets
+            (their names) that were applied to the XMIR during its
+            optimization or any other transformations. This element
+            exists mostly for debugging purposes.
+          </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="sheet" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sheet" type="sheet" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
