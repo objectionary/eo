@@ -138,17 +138,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up();
+            .add("listing").set(new SourceText(ctx)).up();
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .xpath("/program/errors")
+            .xpath("/program").addIf("errors")
             .append(this.errors).up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();

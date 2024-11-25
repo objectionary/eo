@@ -45,7 +45,7 @@ public final class TrStepped extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final XSL EACH = new XSLDocument(
-        TrStepped.class.getResourceAsStream("_each.xsl"),
+        TrStepped.class.getResourceAsStream("_stepped.xsl"),
         "each.xsl"
     ).with(new ClasspathSources(TrStepped.class));
 

@@ -98,12 +98,14 @@ final class ParsingErrors extends BaseErrorListener
         return new org.cactoos.iterable.Joined<>(
             new Mapped<Iterable<Directive>>(
                 error -> new Directives()
-                    .xpath("/program/errors")
+                    .xpath("/program")
+                    .strict(1)
+                    .addIf("errors")
+                    .strict(1)
                     .add("error")
                     .attr("line", error.line())
                     .attr("severity", "critical")
-                    .set(error.getMessage())
-                    .up(),
+                    .set(error.getMessage()),
                 this.errors
             )
         ).iterator();

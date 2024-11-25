@@ -22,16 +22,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="_each" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="_stepped" version="2.0">
   <xsl:param name="step"/>
   <xsl:param name="sheet"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="sheets">
+  <xsl:template match="/program/sheets">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="sheet">
         <xsl:value-of select="$sheet"/>
       </xsl:element>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="/program[not(sheets)]">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <sheets>
+        <xsl:element name="sheet">
+          <xsl:value-of select="$sheet"/>
+        </xsl:element>
+      </sheets>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

@@ -42,6 +42,17 @@ SOFTWARE.
       <xs:minInclusive value="0"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="non-empty">
+    <xs:annotation>
+      <xs:appinfo>A non-empty string</xs:appinfo>
+      <xs:documentation>
+        The value that is not empty (contains at least one character).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="empty">
     <xs:annotation>
       <xs:appinfo>Just empty string</xs:appinfo>
@@ -75,12 +86,12 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="name"/>
-    <xs:attribute name="base"/>
+    <xs:attribute name="name" type="non-empty"/>
+    <xs:attribute name="base" type="non-empty"/>
     <xs:attribute name="star" type="empty"/>
-    <xs:attribute name="as"/>
-    <xs:attribute name="atom"/>
-    <xs:attribute name="loc"/>
+    <xs:attribute name="as" type="non-empty"/>
+    <xs:attribute name="atom" type="non-empty"/>
+    <xs:attribute name="loc" type="non-empty"/>
     <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
@@ -95,7 +106,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="xs:string">
+      <xs:extension base="non-empty">
         <xs:attribute name="check">
           <xs:annotation>
             <xs:appinfo>The name of the checker that found the error</xs:appinfo>
@@ -145,7 +156,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="xs:string">
+      <xs:extension base="non-empty">
         <xs:attribute name="line" use="required" type="whole"/>
       </xs:extension>
     </xs:simpleContent>
@@ -162,7 +173,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="xs:string"/>
+      <xs:extension base="non-empty"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="license">
@@ -174,7 +185,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="xs:string"/>
+      <xs:extension base="non-empty"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="sheet">
@@ -187,7 +198,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="xs:string"/>
+      <xs:extension base="non-empty"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="meta">
@@ -207,13 +218,7 @@ SOFTWARE.
         </xs:simpleType>
       </xs:element>
       <xs:element name="tail" type="xs:string"/>
-      <xs:element name="part" minOccurs="0" maxOccurs="unbounded">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
+      <xs:element name="part" minOccurs="0" maxOccurs="unbounded" type="non-empty"/>
     </xs:sequence>
     <xs:attribute name="line" type="whole"/>
   </xs:complexType>
@@ -286,7 +291,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:all>
-    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="non-empty" use="required"/>
     <xs:attribute name="ms" type="whole">
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
@@ -307,7 +312,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="version" type="xs:string">
+    <xs:attribute name="version" type="non-empty">
       <xs:annotation>
         <xs:appinfo>The version of the parser that created the document</xs:appinfo>
         <xs:documentation>
@@ -317,7 +322,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="revision" type="xs:string">
+    <xs:attribute name="revision" type="non-empty">
       <xs:annotation>
         <xs:appinfo>The Git SHA of the release of the parser that created the document</xs:appinfo>
         <xs:documentation>
@@ -337,7 +342,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="source" type="xs:string">
+    <xs:attribute name="source" type="non-empty">
       <xs:annotation>
         <xs:appinfo>The absolute path of the source file that was parsed</xs:appinfo>
         <xs:documentation>
