@@ -60,10 +60,9 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        final Double right = new Expect<>(
-            new Dataized(this.take("x"))::asNumber,
-            "number.times expects its argument to be a number"
-        ).it();
+        final Double right = Expect.at(this, "x")
+            .that(phi -> new Dataized(phi).asNumber())
+            .it();
         return new Data.ToPhi(left * right);
     }
 }

@@ -25,6 +25,8 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * An object with coordinates (line and position).
@@ -162,7 +164,9 @@ public final class PhLocated implements Phi, Atom {
      * @param suffix The suffix to add to the label
      * @param <T> Type of result
      * @return Result
+     * @checkstyle IllegalCatchCheck (20 lines)
      */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private <T> T through(final Action<T> action, final String suffix) {
         try {
             return action.act();
@@ -174,7 +178,30 @@ public final class PhLocated implements Phi, Atom {
             throw new EOerror.ExError(ex, this.label(suffix));
         } catch (final ExAbstract ex) {
             throw new ExFailure(this.label(suffix), ex);
+        } catch (final RuntimeException ex) {
+            throw this.wrap(ex, suffix);
         }
+    }
+
+    /**
+     * Wrap the exception into a new one.
+     * @param cause Original
+     * @param suffix Te suffix
+     * @return New exception
+     */
+    private RuntimeException wrap(final RuntimeException cause,
+        final String suffix) {
+        final String label = this.label(suffix);
+        RuntimeException ret;
+        try {
+            final Constructor<? extends RuntimeException> ctor =
+                cause.getClass().getConstructor(String.class, Throwable.class);
+            ret = ctor.newInstance(label, cause);
+        } catch (final NoSuchMethodException | InstantiationException
+            | IllegalAccessException | InvocationTargetException ex) {
+            ret = new ExFailure(label, cause);
+        }
+        return ret;
     }
 
     /**

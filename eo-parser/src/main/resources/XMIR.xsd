@@ -31,6 +31,17 @@ SOFTWARE.
       supplementary information, such as metas, license, and so on.
     </xs:documentation>
   </xs:annotation>
+  <xs:simpleType name="whole">
+    <xs:annotation>
+      <xs:appinfo>Whole number</xs:appinfo>
+      <xs:documentation>
+        Whole numbers, include zero.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
@@ -40,7 +51,7 @@ SOFTWARE.
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="line" type="xs:decimal">
+    <xs:attribute name="line" type="whole">
       <xs:annotation>
         <xs:appinfo>The line of code where the object has been seen</xs:appinfo>
         <xs:documentation>
@@ -49,7 +60,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="pos" type="xs:decimal">
+    <xs:attribute name="pos" type="whole">
       <xs:annotation>
         <xs:appinfo>The position in the code line where the object has been seen</xs:appinfo>
         <xs:documentation>
@@ -68,6 +79,71 @@ SOFTWARE.
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
   </xs:complexType>
+  <xs:complexType name="error">
+    <xs:annotation>
+      <xs:appinfo>The error found in the program</xs:appinfo>
+      <xs:documentation>
+        The element explains what kind of problem is found
+        in the program, where exactly, and what is the severity
+        of it.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="check">
+          <xs:annotation>
+            <xs:appinfo>The name of the checker that found the error</xs:appinfo>
+            <xs:documentation>
+              The element contains the name of the style checker or
+              any other submodule that found the error in the program.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="line" type="whole">
+          <xs:annotation>
+            <xs:appinfo>The number of the line of code where the error was found</xs:appinfo>
+            <xs:documentation>
+              The element contains the number of the code line (starting from 1),
+              where the error was found. If the element is omitted, the problem
+              is related to the entire program, not to any particular line in it.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="severity" use="required">
+          <xs:annotation>
+            <xs:appinfo>The severity of the error</xs:appinfo>
+            <xs:documentation>
+              The element contains the severity of the error, thus providing
+              advice to the processor of the document on whether the error
+              may be ignored (when it is a "warning") or the processing must
+              stop immediately (when it is a "critical").
+            </xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="critical"/>
+              <xs:enumeration value="error"/>
+              <xs:enumeration value="warning"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="comment">
+    <xs:annotation>
+      <xs:appinfo>The comment found attached to an object</xs:appinfo>
+      <xs:documentation>
+        Comments may be attached to objects in EO programs, but only to
+        the highest-level formations.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="line" use="required" type="whole"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="program">
     <xs:all>
       <xs:element name="listing" type="xs:string" minOccurs="0">
@@ -85,15 +161,7 @@ SOFTWARE.
       <xs:element name="comments" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="line" use="required" type="xs:decimal"/>
-                  </xs:extension>
-                </xs:simpleContent>
-              </xs:complexType>
-            </xs:element>
+            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded" type="comment"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -112,59 +180,7 @@ SOFTWARE.
         </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="error" minOccurs="0" maxOccurs="unbounded">
-              <xs:annotation>
-                <xs:appinfo>The error found in the program</xs:appinfo>
-                <xs:documentation>
-                  The element explains what kind of problem is found
-                  in the program, where exactly, and what is the severity
-                  of it.
-                </xs:documentation>
-              </xs:annotation>
-              <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="check">
-                      <xs:annotation>
-                        <xs:appinfo>The name of the checker that found the error</xs:appinfo>
-                        <xs:documentation>
-                          The element contains the name of the style checker or
-                          any other submodule that found the error in the program.
-                        </xs:documentation>
-                      </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="line" type="xs:decimal">
-                      <xs:annotation>
-                        <xs:appinfo>The number of the line of code where the error was found</xs:appinfo>
-                        <xs:documentation>
-                          The element contains the number of the code line (starting from 1),
-                          where the error was found. If the element is omitted, the problem
-                          is related to the entire program, not to any particular line in it.
-                        </xs:documentation>
-                      </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="severity" use="required">
-                      <xs:annotation>
-                        <xs:appinfo>The severity of the error</xs:appinfo>
-                        <xs:documentation>
-                          The element contains the severity of the error, thus providing
-                          advice to the processor of the document on whether the error
-                          may be ignored (when it is a "warning") or the processing must
-                          stop immediately (when it is a "critical").
-                        </xs:documentation>
-                      </xs:annotation>
-                      <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                          <xs:enumeration value="critical"/>
-                          <xs:enumeration value="error"/>
-                          <xs:enumeration value="warning"/>
-                        </xs:restriction>
-                      </xs:simpleType>
-                    </xs:attribute>
-                  </xs:extension>
-                </xs:simpleContent>
-              </xs:complexType>
-            </xs:element>
+            <xs:element name="error" minOccurs="0" maxOccurs="unbounded" type="error"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -186,7 +202,7 @@ SOFTWARE.
                   <xs:element name="tail" type="xs:string"/>
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="line"/>
+                <xs:attribute name="line" type="whole"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
@@ -201,7 +217,7 @@ SOFTWARE.
       </xs:element>
     </xs:all>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="ms" type="xs:decimal">
+    <xs:attribute name="ms" type="whole">
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
         <xs:documentation>

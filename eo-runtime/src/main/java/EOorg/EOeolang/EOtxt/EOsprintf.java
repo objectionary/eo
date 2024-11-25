@@ -83,15 +83,14 @@ public final class EOsprintf extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
-        final Phi args = this.take("args");
-        final Phi retriever = new Expect<>(
-            () -> args.take("at"),
-            "sprintf expects its second argument to be a tuple with the 'at' attribute"
-        ).it();
-        final long length = new Expect<>(
-            () -> new Dataized(args.take("length")).asNumber().longValue(),
-            "sprintf expects its second argument to be a tuple with the 'length' attribute"
-        ).it();
+        final Phi retriever = Expect.at(this, "args")
+            .that(phi -> phi.take("at"))
+            .otherwise("be a tuple with the 'at' attribute")
+            .it();
+        final long length = Expect.at(this, "args")
+            .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
+            .otherwise("be a tuple with the 'length' attribute")
+            .it();
         final List<Object> arguments = new ArrayList<>(0);
         String pattern = format;
         long index = 0;

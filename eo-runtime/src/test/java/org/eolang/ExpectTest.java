@@ -29,43 +29,39 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhLocatedTest}.
+ * Test for {@link Expect}.
  *
- * @since 0.36.0
+ * @since 1.0
  */
-final class PhLocatedTest {
+final class ExpectTest {
 
     @Test
-    void savesLocationAfterCopying() {
-        final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
+    void buildsAndChecks() {
         MatcherAssert.assertThat(
-            "saves location",
-            located.copy().locator(),
-            Matchers.equalTo(located.locator())
+            "passes through and throws correctly",
+            new Expect<>("something", () -> 42)
+                .must(i -> i > 0)
+                .otherwise("must be positive")
+                .that(i -> Integer.toString(i))
+                .must(s -> !s.isEmpty())
+                .it(),
+            Matchers.equalTo("42")
         );
     }
 
     @Test
-    void catchesRuntimeException() {
+    void failsWithCorrectTrace() {
         MatcherAssert.assertThat(
-            "rethrows correctly",
+            "error message is correct",
             Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> new PhLocated(
-                    new PhDefault() {
-                        @Override
-                        public byte[] delta() {
-                            throw new IllegalArgumentException("oops");
-                        }
-                    },
-                    10, 20
-                ).delta(),
-                "throws correct class"
-            ),
-            Matchers.hasToString(
-                Matchers.containsString("Error in the \"?.Δ\" attribute at 10:20")
-            )
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42)
+                    .must(i -> i < 0)
+                    .otherwise("must be negative")
+                    .it(),
+                "fails on check"
+            ).getMessage(),
+            Matchers.containsString("negative")
         );
     }
-
 }

@@ -63,9 +63,18 @@ jobs:
             printf 'and [%d atoms](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/java/EOorg/EOeolang) ' \
               "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
             printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module; '
-            printf 'There are [%d issues](https://github.com/objectionary/eo/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22) ' \
+            printf '[%d issues](https://github.com/objectionary/eo/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22) ' \
               "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
-            printf 'in the backlog, where your help is needed!'
+            printf 'in the backlog, where your help is needed!\n\n'
+            printf 'You may also be interested in helping us in these repositories:\n\n'
+            for r in jeo lints eoc eo2js; do
+              printf '  - [objectionary/%s](https://github.com/objectionary/%s) ' "${r}" "${r}"
+              printf '([%d issues]' \
+                "$(curl --silent "https://api.github.com/repos/objectionary/${r}/issues?state=open&per_page=100&labels=help%20wanted" | jq length)"
+              printf '(https://github.com/objectionary/%s/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22))\n' \
+                "${r}"
+            done
+            printf '\nDo not forget to give us your GitHub stars, this is what we work for!'
           ) > message.md
       - uses: appleboy/telegram-action@master
         with:
