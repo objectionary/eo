@@ -43,6 +43,12 @@ SOFTWARE.
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="empty">
+    <xs:annotation>
+      <xs:appinfo>Just empty string</xs:appinfo>
+      <xs:documentation>
+        Empty string, to be used in attributes.
+      </xs:documentation>
+    </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
     </xs:restriction>
