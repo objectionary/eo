@@ -31,6 +31,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,18 +68,13 @@ final class UnphiMojoTest {
             f -> {
                 f.clean();
                 f.files().file("target/eo/phi/foo.phi").write(
-                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( α0 ↦ ⟦ Δ ⤍ 00- ⟧ ) ⟧}".getBytes()
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( α0 ↦ ⟦ Δ ⤍ 00- ⟧ ) ⟧}".getBytes(
+                        StandardCharsets.UTF_8
+                    )
                 );
                 f.build()
                     .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
-                    )
+                    .appendItself()
                     .execution()
                     .phase("initialize")
                     .goals("phi-to-xmir");
@@ -104,18 +100,11 @@ final class UnphiMojoTest {
             f -> {
                 f.clean();
                 f.files().file("target/eo/phi/foo.phi").write(
-                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( Δ ⤍ 00- ) ⟧}".getBytes()
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( Δ ⤍ 00- ) ⟧}".getBytes(StandardCharsets.UTF_8)
                 );
                 f.build()
                     .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
-                    )
+                    .appendItself()
                     .execution()
                     .phase("initialize")
                     .goals("phi-to-xmir");
