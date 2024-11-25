@@ -31,6 +31,19 @@ SOFTWARE.
       supplementary information, such as metas, license, and so on.
     </xs:documentation>
   </xs:annotation>
+  <xs:simpleType name="milliseconds">
+    <xs:annotation>
+      <xs:appinfo>Number of milliseconds</xs:appinfo>
+      <xs:documentation>
+        Total number of milliseconds that were spent on document
+        generation or any other activity.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0"/>
+      <xs:fractionDigits value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
@@ -201,7 +214,7 @@ SOFTWARE.
       </xs:element>
     </xs:all>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="ms" type="xs:decimal">
+    <xs:attribute name="ms" type="milliseconds">
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
         <xs:documentation>
