@@ -191,14 +191,15 @@ public final class PhLocated implements Phi, Atom {
      */
     private RuntimeException wrap(final RuntimeException cause,
         final String suffix) {
+        final String label = this.label(suffix);
         RuntimeException ret;
         try {
             final Constructor<? extends RuntimeException> ctor =
                 cause.getClass().getConstructor(String.class, Throwable.class);
-            ret = ctor.newInstance(this.label(suffix), cause);
+            ret = ctor.newInstance(label, cause);
         } catch (final NoSuchMethodException | InstantiationException
             | IllegalAccessException | InvocationTargetException ex) {
-            ret = cause;
+            ret = new ExFailure(label, cause);
         }
         return ret;
     }
