@@ -48,7 +48,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,16 +57,11 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
- * @todo #3540:30min Enable the test {@link UnphiMojoTest#convertsPhiToXmir}. The test is disabled
- *  because it fails on {@code .appendItself()} action. Most likely it's related to some problem
- *  inside {@link Farea}. We need to figure out what's going on, make sure the test work and enable
- *  it.
  */
 @ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
 
     @Test
-    @Disabled
     void convertsPhiToXmir(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -77,7 +71,14 @@ final class UnphiMojoTest {
                 );
                 f.build()
                     .plugins()
-                    .appendItself()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty(
+                            "eo.version",
+                            "1.0-SNAPSHOT"
+                        )
+                    )
                     .execution()
                     .phase("initialize")
                     .goals("phi-to-xmir");
@@ -107,7 +108,14 @@ final class UnphiMojoTest {
                 );
                 f.build()
                     .plugins()
-                    .appendItself()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty(
+                            "eo.version",
+                            "1.0-SNAPSHOT"
+                        )
+                    )
                     .execution()
                     .phase("initialize")
                     .goals("phi-to-xmir");
