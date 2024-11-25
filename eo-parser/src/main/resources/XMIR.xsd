@@ -159,6 +159,18 @@ SOFTWARE.
       <xs:extension base="xs:string"/>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="license">
+    <xs:annotation>
+      <xs:appinfo>The entire license found in the source code</xs:appinfo>
+      <xs:documentation>
+        The element contains the entire text of the license
+        found in the source code.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="sheet">
     <xs:annotation>
       <xs:appinfo>The XSL stylesheet that was applied to the XMIR</xs:appinfo>
@@ -240,7 +252,7 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="license" type="xs:string" minOccurs="0"/>
+      <xs:element name="license" type="license" minOccurs="0"/>
       <xs:element name="metas" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
