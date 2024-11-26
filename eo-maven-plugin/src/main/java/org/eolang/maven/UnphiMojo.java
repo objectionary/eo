@@ -136,12 +136,13 @@ public final class UnphiMojo extends SafeMojo {
                             "Parsed to xmir: %[file]s -> %[file]s",
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
-                        if (!result.nodes("//errors/error").isEmpty()) {
+                        final List<String> here = result.xpath("//errors/error/text()");
+                        if (!here.isEmpty()) {
                             errors.add(
                                 Logger.format(
                                     "%[file]s:\n\t%s\n",
                                     xmir,
-                                    String.join("\n\t", result.xpath("//errors/error/text()"))
+                                    String.join("\n\t", here)
                                 )
                             );
                         }
