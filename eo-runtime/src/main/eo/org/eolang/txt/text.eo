@@ -33,17 +33,14 @@
 # Text.
 [origin] > text
   origin > @
-
   # Check that all signs in string are numbers or letters.
   # Works only for english letters.
-  (regex "/^[A-Za-z0-9]+$/").matches ^.origin > [] > is-alphanumeric
-
+  (regex "/^[A-Za-z0-9]+$/").matches origin > is-alphanumeric
   # Check that all signs in string are letters.
   # Works only for english letters.
-  (regex "/^[a-zA-Z]+$/").matches ^.origin > [] > is-alpha
-
+  (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
-  (regex "/^[\\x00-\\x7F]*$/").matches ^.origin > [] > is-ascii
+  (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
   # Takes a piece of a `text` as another `text`.
   # Here `start` must be an integer index to start slicing from,
