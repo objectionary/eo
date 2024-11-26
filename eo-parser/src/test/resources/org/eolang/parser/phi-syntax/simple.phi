@@ -1,5 +1,8 @@
-{⟦ k ↦ ⟦
-  x ↦ ξ.t (z ↦ ξ.f) (p ↦ ξ.ρ.ρ.ρ.f), t ↦ ∅ ⟧.k,
+{⟦
+  k ↦ ⟦
+    x ↦ ξ.t (z ↦ ξ.f) (p ↦ ξ.ρ.ρ.ρ.f),
+    t ↦ ∅
+  ⟧.thank.you (z ↦ ξ.f) . very (z ↦ ξ.f) . much (z ↦ ξ.f),
   error-on-purpose ↦ ⊥,
   the-атрибут ↦ Φ.ρ,
   k ↦ ⟦ λ ⤍ Fn ⟧
