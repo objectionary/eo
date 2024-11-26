@@ -111,6 +111,7 @@ public final class UnphiMojo extends SafeMojo {
         final Home home = new HmBase(this.unphiOutputDir);
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
+        final long start = System.currentTimeMillis();
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -152,7 +153,11 @@ public final class UnphiMojo extends SafeMojo {
                 )
             )
         ).intValue();
-        Logger.info(this, "Parsed %d phi files to xmir", count);
+        Logger.info(
+            this,
+            "Parsed %d phi files to xmir in %[ms]s",
+            count, System.currentTimeMillis() - start
+        );
         if (!errors.isEmpty()) {
             throw new IllegalStateException(
                 String.format(
