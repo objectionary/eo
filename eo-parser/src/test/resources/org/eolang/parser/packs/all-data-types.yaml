@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //objects[count(o[@base='bytes'])=6]
   - //o[@base='bytes' and @name='bytesX']
   - //o[@base='bytes' and @name='ml']

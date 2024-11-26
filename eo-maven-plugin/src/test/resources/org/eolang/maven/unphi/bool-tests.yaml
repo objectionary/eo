@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - //errors[count(error)=0]
+  - /program[not(errors)]
 phi: |-
   {
     ⟦

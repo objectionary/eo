@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - //errors[count(error)=0]
+  - /program[not(errors)]
 eo: |
   +package org.eolang
 

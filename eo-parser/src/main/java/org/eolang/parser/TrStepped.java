@@ -29,7 +29,6 @@ import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
-import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
@@ -45,7 +44,7 @@ public final class TrStepped extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final XSL EACH = new XSLDocument(
-        TrStepped.class.getResourceAsStream("_each.xsl"),
+        TrStepped.class.getResourceAsStream("_stepped.xsl"),
         "each.xsl"
     ).with(new ClasspathSources(TrStepped.class));
 
@@ -57,18 +56,14 @@ public final class TrStepped extends TrEnvelope {
         super(
             new TrLambda(
                 train,
-                shift -> new StSequence(
-                    shift.uid(),
-                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                    new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> TrStepped.EACH
-                                .with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
-                        )
+                shift -> new StAfter(
+                    shift,
+                    new StLambda(
+                        shift::uid,
+                        (pos, xml) -> TrStepped.EACH
+                            .with("step", pos)
+                            .with("sheet", shift.uid())
+                            .transform(xml)
                     )
                 )
             )

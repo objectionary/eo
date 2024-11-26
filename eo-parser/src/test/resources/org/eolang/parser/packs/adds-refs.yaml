@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/parser/add-refs.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=3]
   - //objects[not(//o[@ref and @base='@'])]
   - //o[@base='x' and @ref='2']

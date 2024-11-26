@@ -25,7 +25,7 @@ xsls:
   - /org/eolang/parser/expand-qqs.xsl
   - /org/eolang/parser/add-probes.xsl
 tests:
-  - /program/errors[count(error)=0]
+  - /program[not(errors)]
   - /program/sheets/sheet[contains(text(),'add-probes')]
   - //metas[count(.//meta[head/text()='probe'])=3]
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']

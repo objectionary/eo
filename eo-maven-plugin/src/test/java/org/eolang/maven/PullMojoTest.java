@@ -324,7 +324,7 @@ final class PullMojoTest {
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(
-                line -> line.contains("Failed to pull object 'org.eolang.org' discovered at")
+                line -> line.contains("Failed to pull 'org.eolang.org' earlier discovered at")
             ),
             "Log should contain info where failed to pull object was discovered at, but it does not"
         );
@@ -424,11 +424,9 @@ final class PullMojoTest {
 
     @Test
     void getsAlreadyPulledResultsFromCache(@Mktmp final Path temp) throws Exception {
-        final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/sum.eo")
-        );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
+        final String cached = "# test.\n[] > just-something\n";
         new Saved(
             cached,
             cache
@@ -449,7 +447,7 @@ final class PullMojoTest {
         );
         new FakeMaven(temp)
             .withProgram(
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# Test.",
                 "[] > app",
                 "  QQ.io.stdout > @"
             )
@@ -469,7 +467,7 @@ final class PullMojoTest {
                     )
                 ).asBytes()
             ).asString(),
-            Matchers.is(cached.asString())
+            Matchers.is(cached)
         );
     }
 

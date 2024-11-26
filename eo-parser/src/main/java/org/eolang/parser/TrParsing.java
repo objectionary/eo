@@ -71,7 +71,7 @@ public final class TrParsing extends TrEnvelope {
                                     )
                                 ),
                                 new TrClasspath<>(
-                                    "/org/eolang/parser/cti/cti-adds-errors.xsl",
+                                    "/org/eolang/parser/cti-adds-errors.xsl",
                                     "/org/eolang/parser/add-refs.xsl",
                                     "/org/eolang/parser/wrap-method-calls.xsl",
                                     "/org/eolang/parser/expand-qqs.xsl",

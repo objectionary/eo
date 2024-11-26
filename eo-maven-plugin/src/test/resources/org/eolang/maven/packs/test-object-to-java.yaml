@@ -27,7 +27,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), '  @Test')]
   - //java[contains(text(), '  public void works() throws java.lang.Exception {')]
   - //java[contains(text(), '    new Dataized(')]

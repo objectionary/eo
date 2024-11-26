@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(error)=0]
+  - /program[not(errors)]
   - /program/license[text()!='']
   - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']

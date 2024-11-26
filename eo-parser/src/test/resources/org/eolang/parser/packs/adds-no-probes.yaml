@@ -22,34 +22,9 @@
 ---
 tests:
   - /program[not(errors)]
-  - /program/objects[count(o)=1]
-  - //o[@base='.and']
+  - /program[not(metas)]
+  - /program/sheets[sheet='add-probes']
 eo: |
-  # This program is from the EOLANG original paper
-  # and must produce a working command line tool
-  #
-  # License is MIT
-
-  +alias org.eolang.io.stdin
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.scanner
-  +home https://github.com/objectionary/eo
-  +package test
-  +version 0.0.0
-
-  # This is the default 64+ symbols comment in front of abstract object.
-  [args] > main
-    # This is the default 64+ symbols comment in front of abstract object.
-    [y] > leap
-      or. > @
-        and.
-          eq. (mod. y 4) 0
-          not. (eq. (mod. y 100) 0)
-        eq. (mod. y 400) 0
-    and > @
-      stdout "Enter a year:"
-      stdout
-        sprintf
-          "%s is %sa leap year!"
-          (scanner stdin).nextInt > year!
-          if (leap year:y) "" "not "
+  # Test.
+  [] > app
+    42 > @

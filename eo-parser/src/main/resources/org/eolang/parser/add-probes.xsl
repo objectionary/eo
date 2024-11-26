@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0" exclude-result-prefixes="eo xs">
   <!--
   For every object that starts with '.' add probe meta
   with fully qualified name of the object.
@@ -57,35 +57,48 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="/program/metas">
-    <xsl:variable name="mts">
-      <xsl:copy>
-        <xsl:apply-templates select="node()|@*"/>
-        <xsl:for-each select="//o[starts-with(@base, '.')]">
-          <xsl:variable name="p" select="eo:qualify(.)"/>
-          <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
-          <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
-            <xsl:element name="meta">
-              <xsl:attribute name="line">
-                <xsl:value-of select="if (@line) then @line else '0'"/>
-              </xsl:attribute>
-              <xsl:element name="head">
-                <xsl:text>probe</xsl:text>
-              </xsl:element>
-              <xsl:element name="tail">
-                <xsl:value-of select="string-join(($p, @ver),'|')"/>
-              </xsl:element>
-              <xsl:element name="part">
-                <xsl:value-of select="$p"/>
-              </xsl:element>
-            </xsl:element>
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:copy>
+  <xsl:template match="/program[not(metas)]">
+    <xsl:variable name="candidates">
+      <metas>
+        <xsl:apply-templates select="//o[starts-with(@base, '.')]" mode="create"/>
+      </metas>
     </xsl:variable>
-    <xsl:apply-templates select="$mts"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="$candidates"/>
+    </xsl:copy>
   </xsl:template>
+  <xsl:template match="/program/metas">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:variable name="candidates">
+        <xsl:apply-templates select="//o[starts-with(@base, '.')]" mode="create"/>
+      </xsl:variable>
+      <xsl:apply-templates select="$candidates"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="metas[not(meta)]"/>
   <xsl:template match="meta[head/text() = 'probe' and tail/text() = following::meta/tail/text()]"/>
+  <xsl:template match="o" mode="create">
+    <xsl:variable name="p" select="eo:qualify(.)"/>
+    <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
+    <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
+      <xsl:element name="meta">
+        <xsl:attribute name="line">
+          <xsl:value-of select="if (@line) then @line else '0'"/>
+        </xsl:attribute>
+        <xsl:element name="head">
+          <xsl:text>probe</xsl:text>
+        </xsl:element>
+        <xsl:element name="tail">
+          <xsl:value-of select="string-join(($p, @ver),'|')"/>
+        </xsl:element>
+        <xsl:element name="part">
+          <xsl:value-of select="$p"/>
+        </xsl:element>
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

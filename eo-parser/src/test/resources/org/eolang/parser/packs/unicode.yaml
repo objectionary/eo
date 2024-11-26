@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='4']
 eo: |

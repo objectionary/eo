@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/parser/add-refs.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(.//o[@ref])=0]
 eo: |
   +package org.eolang

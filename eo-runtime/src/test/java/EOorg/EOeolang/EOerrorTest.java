@@ -88,7 +88,7 @@ final class EOerrorTest {
     }
 
     /**
-     * Static method providing sources for parametrized test.
+     * Static method providing sources for parameterized test.
      * @return Stream of sources.
      */
     private static Stream<Arguments> getTestSources() {
