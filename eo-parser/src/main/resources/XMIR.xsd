@@ -35,7 +35,7 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>Whole number</xs:appinfo>
       <xs:documentation>
-        Whole numbers, include zero.
+        Whole numbers, include zero. This type is used for line numbers, positions, etc.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:integer">
@@ -47,6 +47,7 @@ SOFTWARE.
       <xs:appinfo>A non-empty string</xs:appinfo>
       <xs:documentation>
         The value that is not empty (contains at least one character).
+        This type is used for names, etc.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
@@ -86,8 +87,24 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="name" type="non-empty"/>
-    <xs:attribute name="base" type="non-empty"/>
+    <xs:attribute name="name" type="non-empty">
+      <xs:annotation>
+        <xs:appinfo>The name of the EO object inside its scope of visibility (another object or global)</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the name of the EO object inside its scope of visibility.
+          The name is used to reference the object from other objects or from the global scope.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="base" type="non-empty">
+      <xs:annotation>
+        <xs:appinfo>The name of the object of which this one is a copy</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the name of the object of which this one is a copy.
+          The base object is used to define the structure of the current object.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="star" type="empty"/>
     <xs:attribute name="as" type="non-empty"/>
     <xs:attribute name="atom" type="non-empty"/>

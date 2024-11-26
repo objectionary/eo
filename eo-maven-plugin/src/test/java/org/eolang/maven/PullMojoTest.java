@@ -324,7 +324,7 @@ final class PullMojoTest {
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(
-                line -> line.contains("Failed to pull object 'org.eolang.org' discovered at")
+                line -> line.contains("Failed to pull 'org.eolang.org' earlier discovered at")
             ),
             "Log should contain info where failed to pull object was discovered at, but it does not"
         );

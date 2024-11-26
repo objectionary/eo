@@ -242,7 +242,9 @@ final class AssembleMojoTest {
         MatcherAssert.assertThat(
             "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
             String.join("\n", out.captured()),
-            Matchers.containsString("No programs were pulled because eo.offline flag is TRUE")
+            Matchers.containsString(
+                "No programs were pulled because eo.offline flag is set to TRUE"
+            )
         );
     }
 
