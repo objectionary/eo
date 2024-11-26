@@ -106,12 +106,27 @@ public final class PullMojo extends SafeMojo {
     private boolean overWrite;
 
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
     public void exec() throws IOException {
         if (this.offline) {
             Logger.info(
                 this,
-                "No programs were pulled because eo.offline flag is TRUE"
+                "No programs were pulled because eo.offline flag is set to TRUE"
+            );
+        } else {
+            this.pull();
+        }
+    }
+
+    /**
+     * Pull them all.
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    private void pull() throws IOException {
+        if (this.offline) {
+            Logger.info(
+                this,
+                "No programs were pulled because eo.offline flag is set to TRUE"
             );
         } else {
             final long start = System.currentTimeMillis();
@@ -148,13 +163,21 @@ public final class PullMojo extends SafeMojo {
                 }
                 names.add(object);
             }
-            Logger.info(
-                this,
-                "%d program(s) were pulled in %[ms]s: %s",
-                tojos.size(),
-                System.currentTimeMillis() - start,
-                names
-            );
+            if (tojos.isEmpty()) {
+                Logger.info(
+                    this,
+                    "No programs were pulled in %[ms]s",
+                    System.currentTimeMillis() - start
+                );
+            } else {
+                Logger.info(
+                    this,
+                    "%d program(s) were pulled in %[ms]s: %s",
+                    tojos.size(),
+                    System.currentTimeMillis() - start,
+                    names
+                );
+            }
         }
     }
 
