@@ -151,8 +151,10 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>The comment found attached to an object</xs:appinfo>
       <xs:documentation>
-        Comments may be attached to objects in EO programs, but only to
-        the highest-level formations.
+        Comments may be attached to objects in EO programs, but only to the highest-level formations. These comments
+        provide additional context or explanations for the code, which can be useful for understanding the program's
+        logic and intent. Comments are typically used to document the purpose of the code, describe complex logic, or
+        provide other relevant information that can aid in code maintenance and readability.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
@@ -165,11 +167,11 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>The entire listing of the source code program, in EO</xs:appinfo>
       <xs:documentation>
-        The element contains the entire listing of the source code program,
-        in EO language, as it was seen by the scanner. This element doesn't
-        have any structure and may be omitted. However, it is recommended to
-        provide the listing in order to simplify debugging and enable
-        traceability.
+        The `listing` element contains the entire listing of the source code program, in EO language, as it was seen by
+        the scanner. This element does not have any structure and may be omitted. However, it is recommended to provide
+        the listing to simplify debugging and enable traceability. By including the full source code listing, developers
+        can easily reference the original code, which helps in understanding the context of the program and aids in
+        troubleshooting any issues that may arise during the processing or execution of the program.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
@@ -180,8 +182,11 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>The entire license found in the source code</xs:appinfo>
       <xs:documentation>
-        The element contains the entire text of the license
-        found in the source code.
+        The element contains the entire text of the license found in the source code. This information is crucial for
+        understanding the legal terms under which the code can be used, modified, and distributed. By including the full
+        license text, developers and users can easily reference the licensing terms without needing to look up the
+        original source. This practice helps ensure compliance with the license and provides transparency regarding the
+        legal framework governing the code.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
@@ -192,9 +197,11 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>The XSL stylesheet that was applied to the XMIR</xs:appinfo>
       <xs:documentation>
-        The element contains information about XSL stylesheet
-        that was applied to the XMIR during its optimization
-        and/or transformation.
+        The element contains information about the XSL stylesheet that was applied to the XMIR during its optimization
+        and/or transformation. This information is crucial for understanding the changes made to the XMIR document
+        during these processes. The XSL stylesheet can include various transformations that optimize the structure,
+        improve performance, or adapt the document for different purposes. By documenting the applied stylesheet,
+        developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
@@ -205,8 +212,13 @@ SOFTWARE.
     <xs:annotation>
       <xs:appinfo>The meta found in the source code</xs:appinfo>
       <xs:documentation>
-        The element contains information about a meta found
-        in the source code, before all objects.
+        The element contains information about a meta found in the source code, before all objects. A "meta" in this
+        context refers to metadata that provides additional information about the EO program. This metadata can include
+        various details such as configuration settings, annotations, or other descriptive information that is not part
+        of the main program logic but is essential for understanding, processing, or managing the program. Metas are
+        typically used to convey information that can influence how the program is compiled, optimized, or executed.
+        They can also be used for documentation purposes, to provide insights into the program's structure,
+        dependencies, or other relevant attributes.
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -229,9 +241,11 @@ SOFTWARE.
         <xs:annotation>
           <xs:appinfo>The list of comments found in the source code</xs:appinfo>
           <xs:documentation>
-            The element may contain a collection of comments
-            found in the source code attached to the highest-level
-            EO formations.
+            The element may contain a collection of comments found in the source code attached to the highest-level EO
+            formations. These comments provide additional context or explanations for the code, which can be useful for
+            understanding the program's logic and intent. Comments are typically used to document the purpose of the
+            code, describe complex logic, or provide other relevant information that can aid in code maintenance and
+            readability.
           </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -244,13 +258,25 @@ SOFTWARE.
         <xs:annotation>
           <xs:appinfo>The list of errors already detected in the program</xs:appinfo>
           <xs:documentation>
-            The errors element may contain a collection of error elements that have already been identified in the
+            The `errors` element may contain a collection of `error` elements that have already been identified in the
             program. These errors can be detected by the EO parser or any other additional analyzers, such as style
             checkers or linters. As the XMIR document undergoes various optimization or transformation pipelines, the
             list of errors may expand. It is up to the consumers of the XMIR document to decide whether to address these
-            errors or to ignore them and continue processing. Each error element provides detailed information about the
-            nature of the error, including its severity, the line of code where it was found, and the specific checker
-            that identified it. This information is crucial for debugging and ensuring the quality of the EO program.
+            errors or to ignore them and continue processing. Each `error` element provides detailed information about
+            the nature of the error, including its severity, the line of code where it was found, and the specific
+            checker that identified it. This information is crucial for debugging and ensuring the quality of the EO
+            program.
+
+            The `errors` element is designed to help developers identify and resolve issues in their EO programs. By
+            providing detailed information about each error, developers can quickly pinpoint the source of the problem
+            and take appropriate action. The severity attribute indicates the importance of the error, allowing
+            developers to prioritize their efforts. Critical errors may require immediate attention, while warnings can
+            be addressed at a later time.
+
+            Additionally, the `errors` element supports the continuous improvement of EO programs. As new analyzers and
+            checkers are introduced, they can add their findings to the `errors` element, ensuring that all potential
+            issues are documented in a single location. This centralized approach simplifies the debugging process and
+            helps maintain the overall quality of the program.
           </xs:documentation>
         </xs:annotation>
         <xs:complexType>
