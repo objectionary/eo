@@ -91,7 +91,7 @@ SOFTWARE.
     <!-- This is required for later correct replacement of argLine -->
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
-    <stack-size>384M</stack-size>
+    <stack-size>256M</stack-size>
     <!-- This is the size of the heap, which you can modify from command line -->
     <heap-size>4G</heap-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
