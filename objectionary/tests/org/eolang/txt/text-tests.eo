@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.43.1
++version 0.43.2
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > text-slices-the-origin-string
@@ -211,8 +211,10 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-index-of-substring
   eq. > @
-    3
-    (text "Hello world").index-of "lo wo"
+    6
+    index-of.
+      text "Hello \n world"
+      "\n"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-index-of-substring-in-the-end
