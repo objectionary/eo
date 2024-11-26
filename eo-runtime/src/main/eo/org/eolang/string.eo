@@ -115,7 +115,7 @@
         num-len
         sprintf
           "Start index + length to slice (%d) is out of string bounds"
-          * num-start.plus num-len
+          * (num-start.plus num-len)
       bts-start
     if. > @
       num-start.lt 0
