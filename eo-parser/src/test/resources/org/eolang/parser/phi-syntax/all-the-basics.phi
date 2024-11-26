@@ -4,6 +4,8 @@
     t ↦ ∅,
     Δ ⤍ 42-41-40
   ⟧.thank.you (z ↦ ξ.f) . very (z ↦ ξ.f) . much (z ↦ ξ.f),
+  self ↦ ξ,
+  copy_Of_Self ↦ ξ(z ↦ ξ.f),
   error-on-purpose ↦ ⊥,
   the-атрибут ↦ Φ.ρ,
   af ↦ Φ () () (),
