@@ -1,10 +1,11 @@
 {⟦
   k ↦ ⟦
-    x ↦ ξ.t (z ↦ ξ.f) (p ↦ ξ.ρ.ρ.ρ.f),
+    x ↦ ξ.t (z ↦ ξ.f) . the-атрибут (p ↦ ξ.ρ.ρ.ρ.f),
     t ↦ ∅,
     Δ ⤍ 42-41-40
   ⟧.thank.you (z ↦ ξ.f) . very (z ↦ ξ.f) . much (z ↦ ξ.f),
   self ↦ ξ,
+  φ ↦ ξ.φ,
   copy_Of_Self ↦ ξ(z ↦ ξ.f),
   error-on-purpose ↦ ⊥,
   the-атрибут ↦ Φ.ρ,
