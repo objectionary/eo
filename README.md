@@ -165,15 +165,16 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```eo
+# Multiplication table.
 [args] > app
-  malloc.for > @ 
+  malloc.for > @
     0
-    [m] >>
+    [x] >>
       seq > @
         *
-          x.write 2
-          while.
-            x.lt 6
+          x.put 2
+          while
+            x.as-number.lt 6 > [i]
             [i] >>
               seq > @
                 *
@@ -181,12 +182,12 @@ This is how you iterate:
                     QQ.txt.sprintf
                       "%d x %d = %d\n"
                       *
-                        x
-                        x
-                        x.times x
-                  x.write
-                    x.plus 1
-        true
+                        ^.x
+                        ^.x
+                        ^.x.as-number.times ^.x
+                  ^.x.put
+                    ^.x.as-number.plus 1
+          true
 ```
 
 This code will print this:
