@@ -43,7 +43,7 @@ SOFTWARE.
       </xsl:if>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="//o[@base='cti']" mode="create">
+  <xsl:template match="o[@base='cti']" mode="create">
     <xsl:element name="error">
       <xsl:attribute name="check">
         <xsl:text>cti</xsl:text>
