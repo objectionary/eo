@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 xsls:
-  - /org/eolang/parser/cti/cti-adds-errors.xsl
+  - /org/eolang/parser/cti-adds-errors.xsl
 tests:
   - /program/errors[count(*)=1]
   - /program/errors/error[@check='cti']

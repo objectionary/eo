@@ -30,7 +30,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), 'new PhLocated(ret, 3, 2, "Φ.foo.φ")')]
   - //java[contains(text(), 'new PhLocated(ret_base, 6, 4, "Φ.foo.other.φ.ρ")')]
   - //java[contains(text(), 'new PhLocated(ret, 6, 6, "Φ.foo.other.φ")')]

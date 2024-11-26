@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program[@name != '']
   - /program[@version != '']
   - /program[@time != '']

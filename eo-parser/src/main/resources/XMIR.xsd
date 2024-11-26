@@ -236,7 +236,7 @@ SOFTWARE.
         </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded" type="comment"/>
+            <xs:element name="comment" maxOccurs="unbounded" type="comment"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -255,7 +255,7 @@ SOFTWARE.
         </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="error" minOccurs="0" maxOccurs="unbounded" type="error"/>
+            <xs:element name="error" maxOccurs="unbounded" type="error"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -271,7 +271,7 @@ SOFTWARE.
         </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="sheet" type="sheet" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sheet" type="sheet" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -279,7 +279,7 @@ SOFTWARE.
       <xs:element name="metas" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="meta" minOccurs="0" maxOccurs="unbounded" type="meta"/>
+            <xs:element name="meta" maxOccurs="unbounded" type="meta"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

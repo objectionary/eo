@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //o[@base='.if' and o[@base='string' and @as='0']]
   - //o[@base='.if' and o[@base='string' and @as='1']]
   - //o[@base='.if' and o[@base='number' and @as='a']]

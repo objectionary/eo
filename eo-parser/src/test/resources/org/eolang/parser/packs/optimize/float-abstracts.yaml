@@ -27,7 +27,7 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
 tests:
   - /program/objects[count(o)=9]
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //objects[not(.//o[@name=''])]
   - //o[@name='first$t2$native']
   - //o[@base='first$t2$native']

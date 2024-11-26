@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //objects[not(o[@method])]
   - //o[@base='sprintf' and count(./o)=3]

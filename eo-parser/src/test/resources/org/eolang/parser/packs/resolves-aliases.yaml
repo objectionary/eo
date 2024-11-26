@@ -25,7 +25,7 @@ xsls:
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo' and @line='4']
   - /program/metas[count(meta)=4]

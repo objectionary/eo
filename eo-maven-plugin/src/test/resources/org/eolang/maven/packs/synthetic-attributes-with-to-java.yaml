@@ -49,7 +49,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
 eo: |
   +architect volodya.lombrozo@gmail.com
   +home https://github.com/objectionary/eo

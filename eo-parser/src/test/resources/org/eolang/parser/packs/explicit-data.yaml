@@ -26,7 +26,7 @@ xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //o[@base='org.eolang.number' and @name='first' and o[@base='org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']]
   - //o[@base='org.eolang.number' and @name='bts' and o[@base='org.eolang.bytes' and text()='11-21']]
   - //o[@base='org.eolang.number' and @name='second' and o[@base='org.eolang.bytes' and text()='40-36-33-33-33-33-33-33']]

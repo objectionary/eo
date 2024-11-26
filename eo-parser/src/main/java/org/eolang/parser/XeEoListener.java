@@ -70,12 +70,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private static final XmirInfo INFO = new XmirInfo();
 
     /**
-     * Minimum allowed comment length.
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    private static final int MIN_COMMENT_LENGTH = 64;
-
-    /**
      * Meta for testing.
      */
     private static final String TESTS_META = "tests";
@@ -96,11 +90,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final Objects objects;
 
     /**
-     * Xembly directives to build errors.
-     */
-    private final Directives errors;
-
-    /**
      * When we start.
      */
     private final long start;
@@ -118,7 +107,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
-        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -144,8 +132,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .xpath("/program").addIf("errors")
-            .append(this.errors).up()
+            .xpath("/program")
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }

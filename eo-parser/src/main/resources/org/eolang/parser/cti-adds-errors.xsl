@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="cti-adds-errors" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="cti-adds-errors" version="2.0" exclude-result-prefixes="eo">
   <!--
   For every cti objects add error messages.
   -->
@@ -30,21 +30,32 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@base='cti']">
-        <xsl:element name="error">
-          <xsl:attribute name="check">
-            <xsl:text>cti</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="line">
-            <xsl:value-of select="@line"/>
-          </xsl:attribute>
-          <xsl:attribute name="severity">
-            <xsl:value-of select="eo:hex-to-utf8(element()[last() - 1])"/>
-          </xsl:attribute>
-          <xsl:value-of select="eo:hex-to-utf8(element()[last()])"/>
-        </xsl:element>
-      </xsl:for-each>
+      <xsl:apply-templates select="//o[@base='cti']" mode="create"/>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="/program[not(errors)]">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:if test="//o[@base='cti']">
+        <errors>
+          <xsl:apply-templates select="//o[@base='cti']" mode="create"/>
+        </errors>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="//o[@base='cti']" mode="create">
+    <xsl:element name="error">
+      <xsl:attribute name="check">
+        <xsl:text>cti</xsl:text>
+      </xsl:attribute>
+      <xsl:attribute name="line">
+        <xsl:value-of select="@line"/>
+      </xsl:attribute>
+      <xsl:attribute name="severity">
+        <xsl:value-of select="eo:hex-to-utf8(element()[last() - 1])"/>
+      </xsl:attribute>
+      <xsl:value-of select="eo:hex-to-utf8(element()[last()])"/>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

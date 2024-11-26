@@ -29,7 +29,7 @@ xsls:
   - /org/eolang/maven/pre/remove-high-level-inner-classes.xsl
   - /org/eolang/maven/pre/rename-tests-inners.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(class)=1]
   - /program/objects/class[count(class)=4]
   - /program[count(objects/class/class//class)=0]

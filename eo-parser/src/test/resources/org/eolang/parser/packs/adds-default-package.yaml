@@ -26,7 +26,7 @@ xsls:
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@base='org.eolang.and' and @line='9']
   - //o[@base='foo']

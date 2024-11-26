@@ -289,7 +289,7 @@ final class UnphiMojoTest {
                     )
                 )
             ).parsed(),
-            XhtmlMatchers.hasXPath("//errors[count(error)=0]")
+            XhtmlMatchers.hasXPath("/program[not(errors)]")
         );
     }
 }

@@ -27,7 +27,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java/text()[contains(., 'new PhWith(ret, 0')]
   - //java/text()[contains(., 'new PhWith(ret, "text"')]
 eo: |

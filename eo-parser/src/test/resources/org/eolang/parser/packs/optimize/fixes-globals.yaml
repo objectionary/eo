@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=2]
   - //objects/o[@name='pi']/o[@name='@' and @base='number' and text()='40-09-21-FB-4D-12-D8-4A']
   - //objects/o[@name='b']
