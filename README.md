@@ -104,7 +104,7 @@ This is how a copy of the object `stdout` is made:
 
 ```eo
 QQ.io.stdout
-  "Hello, world!"
+  "Hello, world!\n"
 ```
 
 The indentation in EO is important, just like in Python.
@@ -126,7 +126,7 @@ argument: a copy of the object `sprintf`:
   QQ.io.stdout > @
     QQ.txt.sprintf
       "Hello, %s!"
-      "Jeffrey"
+      * "Jeffrey"
 ```
 
 Here, the object `sprintf` is also
@@ -139,7 +139,7 @@ This program can be written using horizontal notation:
 +alias org.eolang.txt.sprintf
 
 [] > app
-  (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
+  (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
 ```
 
 The special attribute `@` denotes an object that is being
@@ -155,7 +155,7 @@ inside `app` and use it to build the output string:
 [] > app
   QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    QQ.txt.sprintf "Hello, %s!" name > @
+    QQ.txt.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
@@ -166,24 +166,27 @@ This is how you iterate:
 
 ```eo
 [args] > app
-  memory 0 > x
-  seq > @
-    *
-      x.write 2
-      while.
-        x.lt 6
-        [i]
-          seq > @
-            * 
-              QQ.io.stdout
-                QQ.txt.sprintf
-                  "%d x %d = %d\n"
-                  x
-                  x
-                  x.times x
-              x.write
-                x.plus 1
-    true
+  malloc.for > @ 
+    0
+    [m] >>
+      seq > @
+        *
+          x.write 2
+          while.
+            x.lt 6
+            [i] >>
+              seq > @
+                *
+                  QQ.io.stdout
+                    QQ.txt.sprintf
+                      "%d x %d = %d\n"
+                      *
+                        x
+                        x
+                        x.times x
+                  x.write
+                    x.plus 1
+        true
 ```
 
 This code will print this:
