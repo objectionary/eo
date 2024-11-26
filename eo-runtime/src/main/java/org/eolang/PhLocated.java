@@ -176,7 +176,7 @@ public final class PhLocated implements Phi, Atom {
             throw new ExReadOnly(this.label(suffix), ex);
         } catch (final EOerror.ExError ex) {
             throw new EOerror.ExError(ex, this.label(suffix));
-        } catch (final ExAbstract ex) {
+        } catch (final ExAbstract | Error ex) {
             throw new ExFailure(this.label(suffix), ex);
         } catch (final RuntimeException ex) {
             throw this.wrap(ex, suffix);
