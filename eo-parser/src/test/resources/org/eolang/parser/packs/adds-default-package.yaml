@@ -35,10 +35,10 @@ tests:
   - //o[@base='Q']
 eo: |
   +alias foo
-  +alias scanner org.eolang.txt.scanner
-  +alias stdin org.eolang.io.stdin
-  +alias stdout org.eolang.io.stdout
-  +foo Some other meta
+  +alias org.eolang.txt.scanner
+  +alias org.eolang.io.stdin
+  +alias org.eolang.io.stdout
+  +foo Some-other-meta
 
   # This is the default 64+ symbols comment in front of abstract object.
   [args] > main
