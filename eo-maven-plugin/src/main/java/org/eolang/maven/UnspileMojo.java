@@ -37,7 +37,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -99,18 +98,18 @@ public final class UnspileMojo extends SafeMojo {
         }
         if (all.isEmpty()) {
             Logger.warn(
-                this, "No .class files in %s including %s, nothing to unspile",
-                new Rel(this.classesDir), this.includes
+                this, "No .class files in %[file]s including %s, nothing to unspile",
+                this.classesDir, this.includes
             );
         } else if (unspiled == 0) {
             Logger.info(
-                this, "No .class files out of %d deleted in %s including %s",
-                all.size(), new Rel(this.classesDir), this.includes
+                this, "No .class files out of %d deleted in %[file]s including %s",
+                all.size(), this.classesDir, this.includes
             );
         } else {
             Logger.info(
-                this, "Deleted %d .class files out of %d in %s",
-                unspiled, all.size(), new Rel(this.classesDir)
+                this, "Deleted %d .class files out of %d in %[file]s",
+                unspiled, all.size(), this.classesDir
             );
         }
     }
@@ -141,16 +140,10 @@ public final class UnspileMojo extends SafeMojo {
         boolean deleted = false;
         if (Files.exists(java)) {
             Files.delete(file);
-            Logger.debug(
-                this, "Deleted %s since %s is present",
-                new Rel(file), new Rel(java)
-            );
+            Logger.debug(this, "Deleted %[file]s since %[file]s is present", file, java);
             deleted = true;
         } else {
-            Logger.debug(
-                this, "Not deleted %s since %s is absent",
-                new Rel(file), new Rel(java)
-            );
+            Logger.debug(this, "Not deleted %[file]s since %[file]s is absent", file, java);
         }
         return deleted;
     }

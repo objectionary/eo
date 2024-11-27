@@ -75,10 +75,7 @@ public final class HmBase implements Home {
             (input, path) -> {
                 final Path target = this.absolute(this.onlyRelative(path));
                 if (target.toFile().getParentFile().mkdirs()) {
-                    Logger.debug(
-                        this, "Directory created: %s",
-                        new Rel(target.getParent())
-                    );
+                    Logger.debug(this, "Directory created: %[file]s", target.getParent());
                 }
                 try {
                     final long bytes = new IoChecked<>(
