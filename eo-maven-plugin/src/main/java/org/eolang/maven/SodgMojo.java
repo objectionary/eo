@@ -68,7 +68,6 @@ import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Rel;
 import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -369,8 +368,8 @@ public final class SodgMojo extends SafeMojo {
             final Path xmir = tojo.shaken();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
-                    this, "Already converted %s to %s (it's newer than the source)",
-                    name, new Rel(sodg)
+                    this, "Already converted %s to %[file]s (it's newer than the source)",
+                    name, sodg
                 );
                 continue;
             }
@@ -378,8 +377,8 @@ public final class SodgMojo extends SafeMojo {
             instructions += extra;
             tojo.withSodg(sodg.toAbsolutePath());
             Logger.info(
-                this, "SODG for %s saved to %s (%d instructions)",
-                name, new Rel(sodg), extra
+                this, "SODG for %s saved to %[file]s (%d instructions)",
+                name, sodg, extra
             );
             ++total;
         }
@@ -391,8 +390,8 @@ public final class SodgMojo extends SafeMojo {
             }
         } else {
             Logger.info(
-                this, "Converted %d .xmir to SODGs, saved to %s, %d instructions",
-                total, new Rel(home), instructions
+                this, "Converted %d .xmir to SODGs, saved to %[file]s, %d instructions",
+                total, home, instructions
             );
         }
     }

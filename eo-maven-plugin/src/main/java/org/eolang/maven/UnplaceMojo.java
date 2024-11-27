@@ -40,7 +40,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.FileHash;
-import org.eolang.maven.util.Rel;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.
@@ -80,8 +79,8 @@ public final class UnplaceMojo extends SafeMojo {
         if (this.placedTojos.isEmpty()) {
             Logger.info(
                 this,
-                "The list of placed binaries is absent: %s",
-                new Rel(this.placed)
+                "The list of placed binaries is absent: %[file]s",
+                this.placed
             );
         } else {
             this.unplaceClasses();
@@ -116,23 +115,23 @@ public final class UnplaceMojo extends SafeMojo {
         deleted += this.killThem(classes);
         if (classes.isEmpty()) {
             Logger.info(
-                this, "No binaries were placed into %s, nothing to uplace",
-                new Rel(this.placed)
+                this, "No binaries were placed into %[file]s, nothing to uplace",
+                this.placed
             );
         } else if (deleted == 0) {
             Logger.info(
-                this, "No binaries out of %d deleted in %s",
-                classes.size(), new Rel(this.placed)
+                this, "No binaries out of %d deleted in %[file]s",
+                classes.size(), this.placed
             );
         } else if (deleted == classes.size()) {
             Logger.info(
-                this, "All %d binari(es) deleted, which were found in %s",
-                classes.size(), new Rel(this.placed)
+                this, "All %d binari(es) deleted, which were found in %[file]s",
+                classes.size(), this.placed
             );
         } else {
             Logger.info(
-                this, "Just %d binari(es) out of %d deleted in %s",
-                deleted, classes.size(), new Rel(this.placed)
+                this, "Just %d binari(es) out of %d deleted in %[file]s",
+                deleted, classes.size(), this.placed
             );
         }
     }
@@ -179,13 +178,13 @@ public final class UnplaceMojo extends SafeMojo {
                 unplaced += 1;
                 tojo.unplace();
                 Logger.debug(
-                    this, "Binary %s of %s deleted",
-                    new Rel(path), tojo.dependency()
+                    this, "Binary %[file]s of %s deleted",
+                    path, tojo.dependency()
                 );
             } else {
                 Logger.debug(
-                    this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.dependency()
+                    this, "Binary %[file]s of %s already deleted",
+                    path, tojo.dependency()
                 );
             }
         }
@@ -219,8 +218,8 @@ public final class UnplaceMojo extends SafeMojo {
                 );
             } else {
                 Logger.debug(
-                    this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.dependency()
+                    this, "Binary %[file]s of %s already deleted",
+                    path, tojo.dependency()
                 );
             }
         }
@@ -273,11 +272,7 @@ public final class UnplaceMojo extends SafeMojo {
             final Path curdir = dir;
             dir = curdir.getParent();
             Files.delete(curdir);
-            Logger.debug(
-                UnplaceMojo.class,
-                "Empty directory deleted too: %s",
-                new Rel(dir)
-            );
+            Logger.debug(UnplaceMojo.class, "Empty directory deleted too: %[file]s", dir);
         }
         return deleted;
     }

@@ -30,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import org.eolang.maven.Coordinates;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.util.Rel;
 
 /**
  * Foreign tojo.
@@ -156,10 +155,7 @@ public final class ForeignTojo {
         if (this.delegate.exists(ForeignTojos.Attribute.OPTIMIZED.getKey())) {
             final Path tgt = this.optimized();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already optimized %s to %s",
-                    new Rel(src), new Rel(tgt)
-                );
+                Logger.debug(this, "Already optimized %[file]s to %[file]s", src, tgt);
                 res = false;
             }
         }
@@ -176,10 +172,7 @@ public final class ForeignTojo {
         if (this.delegate.exists(ForeignTojos.Attribute.SHAKEN.getKey())) {
             final Path tgt = this.shaken();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already shaken %s to %s",
-                    new Rel(src), new Rel(tgt)
-                );
+                Logger.debug(this, "Already shaken %[file]s to %[file]s", src, tgt);
                 res = false;
             }
         }
@@ -197,10 +190,7 @@ public final class ForeignTojo {
         if (this.delegate.exists(ForeignTojos.Attribute.VERIFIED.getKey())) {
             final Path tgt = this.verified();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already verified %s to %s",
-                    new Rel(src), new Rel(tgt)
-                );
+                Logger.debug(this, "Already verified %[file]s to %[file]s", src, tgt);
                 res = false;
             }
         }
@@ -218,8 +208,8 @@ public final class ForeignTojo {
             final Path xmir = this.xmir();
             if (xmir.toFile().lastModified() >= this.source().toFile().lastModified()) {
                 Logger.debug(
-                    this, "Already parsed %s to %s (it's newer than the source)",
-                    this.identifier(), new Rel(xmir)
+                    this, "Already parsed %s to %[file]s (it's newer than the source)",
+                    this.identifier(), xmir
                 );
                 res = false;
             }

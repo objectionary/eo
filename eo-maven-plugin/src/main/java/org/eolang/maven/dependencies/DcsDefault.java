@@ -36,7 +36,6 @@ import org.eolang.maven.Coordinates;
 import org.eolang.maven.ParseMojo;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.util.Rel;
 
 /**
  * It is a list of dependencies that are needed by the build.
@@ -153,10 +152,7 @@ public final class DcsDefault implements Iterable<Dependency> {
             dep = Optional.of(dependency);
         } else {
             throw new IllegalStateException(
-                String.format(
-                    "Too many (%d) dependencies at %s",
-                    coords.size(), new Rel(file)
-                )
+                Logger.format("Too many (%d) dependencies at %[file]s", coords.size(), file)
             );
         }
         return dep;

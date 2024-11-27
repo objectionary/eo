@@ -42,7 +42,6 @@ import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.HmOptional;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -285,10 +284,8 @@ public final class PlaceMojo extends SafeMojo {
                 && (this.sameLength(target, file) || !tojo.get().unplaced())) {
                 Logger.debug(
                     this,
-                    "The same file %s is already placed to %s maybe by %s, skipping",
-                    new Rel(file),
-                    new Rel(target),
-                    tojo.get().dependency()
+                    "The same file %[file]s is already placed to %[file]s maybe by %s, skipping",
+                    file, target, tojo.get().dependency()
                 );
                 res = false;
             } else {
