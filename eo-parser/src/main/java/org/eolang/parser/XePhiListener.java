@@ -130,11 +130,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
             )
-            .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up();
+            .add("listing").set(new SourceText(ctx)).up();
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().start();
         }
@@ -144,7 +140,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitProgram(final PhiParser.ProgramContext ctx) {
         if (!this.packages.isEmpty()) {
             final String pckg = String.join(".", this.packages);
-            this.dirs.xpath("metas[last()]").strict(1)
+            this.dirs.addIf("metas").up()
+                .xpath("metas[last()]").strict(1)
                 .add("meta")
                 .attr("line", 1)
                 .add("head").set("package").up()

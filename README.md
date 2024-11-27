@@ -104,7 +104,7 @@ This is how a copy of the object `stdout` is made:
 
 ```eo
 QQ.io.stdout
-  "Hello, world!"
+  "Hello, world!\n"
 ```
 
 The indentation in EO is important, just like in Python.
@@ -126,7 +126,7 @@ argument: a copy of the object `sprintf`:
   QQ.io.stdout > @
     QQ.txt.sprintf
       "Hello, %s!"
-      "Jeffrey"
+      * "Jeffrey"
 ```
 
 Here, the object `sprintf` is also
@@ -139,7 +139,7 @@ This program can be written using horizontal notation:
 +alias org.eolang.txt.sprintf
 
 [] > app
-  (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
+  (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
 ```
 
 The special attribute `@` denotes an object that is being
@@ -155,7 +155,7 @@ inside `app` and use it to build the output string:
 [] > app
   QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    QQ.txt.sprintf "Hello, %s!" name > @
+    QQ.txt.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
@@ -165,25 +165,29 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```eo
+# Multiplication table.
 [args] > app
-  memory 0 > x
-  seq > @
-    *
-      x.write 2
-      while.
-        x.lt 6
-        [i]
-          seq > @
-            * 
-              QQ.io.stdout
-                QQ.txt.sprintf
-                  "%d x %d = %d\n"
-                  x
-                  x
-                  x.times x
-              x.write
-                x.plus 1
-    true
+  malloc.for > @
+    0
+    [x] >>
+      seq > @
+        *
+          x.put 2
+          while
+            x.as-number.lt 6 > [i]
+            [i] >>
+              seq > @
+                *
+                  QQ.io.stdout
+                    QQ.txt.sprintf
+                      "%d x %d = %d\n"
+                      *
+                        ^.x
+                        ^.x
+                        ^.x.as-number.times ^.x
+                  ^.x.put
+                    ^.x.as-number.plus 1
+          true
 ```
 
 This code will print this:
@@ -249,28 +253,28 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          42908  38.18%
-add-refs.xsl                         9815   8.73%
-stars-to-tuples.xsl                  9180   8.17%
-set-locators.xsl                     6401   5.70%
-tests.xsl                            5514   4.91%
-rename-tests-inners.xsl              4905   4.37%
-package.xsl                          2786   2.48%
-add-probes.xsl                       2768   2.46%
-classes.xsl                          2741   2.44%
-vars-float-up.xsl                    2736   2.43%
-resolve-aliases.xsl                  2705   2.41%
-explicit-data.xsl                    2587   2.30%
-add-default-package.xsl              2522   2.24%
-cti-adds-errors.xsl                  2384   2.12%
-const-to-dataized.xsl                2003   1.78%
-wrap-method-calls.xsl                1886   1.68%
+to-java.xsl                          41011  34.79%
+add-refs.xsl                         11386  9.66%
+stars-to-tuples.xsl                  8669   7.35%
+set-locators.xsl                     7047   5.98%
+tests.xsl                            5408   4.59%
+rename-tests-inners.xsl              4647   3.94%
+resolve-aliases.xsl                  3456   2.93%
+add-probes.xsl                       3292   2.79%
+vars-float-up.xsl                    3231   2.74%
+package.xsl                          3166   2.69%
+explicit-data.xsl                    3135   2.66%
+add-default-package.xsl              3128   2.65%
+cti-adds-errors.xsl                  2849   2.42%
+classes.xsl                          2790   2.37%
+const-to-dataized.xsl                2688   2.28%
+expand-qqs.xsl                       2402   2.04%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-24 at 18:45,
+on 2024-11-26 at 12:21,
 on Linux with 4 CPUs.
-The total is 112369 milliseconds.
+The total is 117897 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -313,4 +317,4 @@ to enhance the performance of EO components:
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11998586030
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12030199693

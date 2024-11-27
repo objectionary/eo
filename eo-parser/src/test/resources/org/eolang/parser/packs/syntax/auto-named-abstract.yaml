@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - //errors[count(error)=0]
+  - /program[not(errors)]
   - //o[@abstract and @name='auto-named-attr-at-2-4' and o[@name='five']]
   - //o[@abstract and @name='auto-named-attr-at-4-2' and o[@name='ten']]
   - //o[@abstract and @name='auto-named-attr-at-8-10' and @as='hello' and o[@name='eleven']]

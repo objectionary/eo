@@ -67,7 +67,7 @@ jobs:
               "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
             printf 'in the backlog, where your help is needed!\n\n'
             printf 'You may also be interested in helping us in these repositories:\n\n'
-            for r in jeo lints eoc eo2js; do
+            for r in jeo-maven-plugin lints eoc eo2js; do
               printf '  - [objectionary/%s](https://github.com/objectionary/%s) ' "${r}" "${r}"
               printf '([%d issues]' \
                 "$(curl --silent "https://api.github.com/repos/objectionary/${r}/issues?state=open&per_page=100&labels=help%20wanted" | jq length)"

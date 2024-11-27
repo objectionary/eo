@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -41,7 +42,6 @@ import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
@@ -107,10 +107,11 @@ public final class UnphiMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final List<String> errors = new ListOf<>();
+        final List<String> errors = new CopyOnWriteArrayList<>();
         final Home home = new HmBase(this.unphiOutputDir);
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
+        final long start = System.currentTimeMillis();
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -136,12 +137,13 @@ public final class UnphiMojo extends SafeMojo {
                             "Parsed to xmir: %[file]s -> %[file]s",
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
-                        if (result.nodes("//errors[count(error)=0]").isEmpty()) {
+                        final List<String> here = result.xpath("//errors/error/text()");
+                        if (!here.isEmpty()) {
                             errors.add(
-                                String.format(
-                                    "%s:\n\t%s\n",
-                                    relative,
-                                    String.join("\n\t", result.xpath("//errors/error/text()"))
+                                Logger.format(
+                                    "%[file]s:\n\t%s\n",
+                                    xmir,
+                                    String.join("\n\t", here)
                                 )
                             );
                         }
@@ -151,7 +153,11 @@ public final class UnphiMojo extends SafeMojo {
                 )
             )
         ).intValue();
-        Logger.info(this, "Parsed %d phi files to xmir", count);
+        Logger.info(
+            this,
+            "Parsed %d phi files to xmir in %[ms]s",
+            count, System.currentTimeMillis() - start
+        );
         if (!errors.isEmpty()) {
             throw new IllegalStateException(
                 String.format(
@@ -192,7 +198,8 @@ public final class UnphiMojo extends SafeMojo {
                                 );
                             }
                             final Directives dirs = new Directives()
-                                .xpath("/program/metas")
+                                .xpath("/program")
+                                .addIf("metas")
                                 .add("meta")
                                 .add("head").set(head).up()
                                 .add("tail");

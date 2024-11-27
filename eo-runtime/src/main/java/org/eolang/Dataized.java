@@ -99,7 +99,22 @@ public final class Dataized {
     }
 
     /**
-     * Extract the data from the object.
+     * Extracts the data from the EO object as a byte array.
+     *
+     * <p>This method performs the dataization process, which involves converting
+     * the EO object into a byte array. It logs the dataization process if the
+     * logging level is set to FINE and the current dataization level is within
+     * the maximum allowed level. If an error occurs during dataization, it logs
+     * the error details and rethrows the exception.</p>
+     *
+     * <p>Usage example:</p>
+     *
+     * <pre>{@code
+     * Phi phi = ...; // Initialize your EO object
+     * Dataized dataized = new Dataized(phi);
+     * byte[] data = dataized.take();
+     * }</pre>
+     *
      * @return The data
      */
     public byte[] take() {

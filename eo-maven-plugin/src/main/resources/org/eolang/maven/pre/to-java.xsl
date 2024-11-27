@@ -127,7 +127,7 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
-      <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/program/metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
         <xsl:text>.</xsl:text>

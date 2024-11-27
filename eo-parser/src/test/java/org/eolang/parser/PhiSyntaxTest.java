@@ -24,7 +24,9 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import java.io.IOException;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -89,6 +91,28 @@ final class PhiSyntaxTest {
                 "/program/objects/o[@base='.org' and @method]",
                 "/program/objects/o[@base='.eolang' and @method]"
             )
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-syntax/", glob = "**.phi")
+    void checksValidExpressions(final String phi) throws IOException {
+        final XML xml = new PhiSyntax(phi).parsed();
+        MatcherAssert.assertThat(
+            "syntax is valid, can be parsed without errors",
+            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.hasXPaths("/program[not(errors)]")
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-typos/", glob = "**.phi")
+    void checksBrokenExressions(final String phi) throws IOException {
+        final XML xml = new PhiSyntax(phi).parsed();
+        MatcherAssert.assertThat(
+            "syntax is broken, can't be parsed without errors",
+            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );
     }
 }

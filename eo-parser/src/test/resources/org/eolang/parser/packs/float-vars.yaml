@@ -24,7 +24,7 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=3]
   - //o[@base='input' and @name='t' and @line='8' and @const and count(o)=2]
   - //objects[count(.//o[@base='string'])=1]

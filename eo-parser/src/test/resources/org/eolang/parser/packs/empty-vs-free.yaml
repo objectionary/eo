@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //o[@name='foo' and count(o)=2]
   - //o[@name='x']
   - //o[@name='y' and not(@base)]

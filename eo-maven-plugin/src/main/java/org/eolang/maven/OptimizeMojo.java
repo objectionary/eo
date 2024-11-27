@@ -173,19 +173,23 @@ public final class OptimizeMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private static XML lint(final XML xmir) throws IOException {
-        final Directives dirs = new Directives().xpath("/program").addIf("errors").strict(1);
-        for (final Defect defect : new Program(xmir).defects()) {
-            if (OptimizeMojo.suppressed(xmir, defect)) {
-                continue;
+        final Directives dirs = new Directives();
+        final Collection<Defect> defects = new Program(xmir).defects();
+        if (!defects.isEmpty()) {
+            dirs.xpath("/program").addIf("errors").strict(1);
+            for (final Defect defect : defects) {
+                if (OptimizeMojo.suppressed(xmir, defect)) {
+                    continue;
+                }
+                dirs.add("error")
+                    .attr("check", defect.rule())
+                    .attr("severity", defect.severity().toString().toLowerCase(Locale.ENGLISH))
+                    .set(defect.text());
+                if (defect.line() > 0) {
+                    dirs.attr("line", defect.line());
+                }
+                dirs.up();
             }
-            dirs.add("error")
-                .attr("check", defect.rule())
-                .attr("severity", defect.severity().toString().toLowerCase(Locale.ENGLISH))
-                .set(defect.text());
-            if (defect.line() > 0) {
-                dirs.attr("line", defect.line());
-            }
-            dirs.up();
         }
         final Node node = xmir.node();
         new Xembler(dirs).applyQuietly(node);

@@ -31,7 +31,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), 'Phi ret = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '  Phi ret_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]

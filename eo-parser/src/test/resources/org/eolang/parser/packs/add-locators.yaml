@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/errors[count(error)=0]
+  - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a']
   - //o[@base='x' and @loc='Φ.org.abc.a.φ.α0']
   - //o[@base='org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']

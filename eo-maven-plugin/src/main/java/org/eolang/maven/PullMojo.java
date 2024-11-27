@@ -106,48 +106,64 @@ public final class PullMojo extends SafeMojo {
     private boolean overWrite;
 
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
     public void exec() throws IOException {
         if (this.offline) {
             Logger.info(
                 this,
-                "No programs were pulled because eo.offline flag is TRUE"
+                "No programs were pulled because eo.offline flag is set to TRUE"
             );
         } else {
-            final long start = System.currentTimeMillis();
-            if (this.hash == null) {
-                this.hash = new ChCached(
-                    new ChNarrow(
-                        new ChRemote(this.tag)
-                    )
+            this.pull();
+        }
+    }
+
+    /**
+     * Pull them all.
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    private void pull() throws IOException {
+        final long start = System.currentTimeMillis();
+        if (this.hash == null) {
+            this.hash = new ChCached(
+                new ChNarrow(
+                    new ChRemote(this.tag)
+                )
+            );
+        }
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+        final Collection<ObjectName> names = new ArrayList<>(0);
+        final Path base = this.targetDir.toPath().resolve(PullMojo.DIR);
+        final String hsh = this.hash.value();
+        for (final ForeignTojo tojo : tojos) {
+            final ObjectName object = new OnCached(
+                new OnSwap(
+                    this.withVersions,
+                    new OnVersioned(tojo.identifier(), hsh)
+                )
+            );
+            try {
+                tojo.withSource(this.pulled(object, base, hsh))
+                    .withHash(new ChNarrow(this.hash));
+            } catch (final IOException exception) {
+                throw new IOException(
+                    String.format(
+                        "Failed to pull '%s' earlier discovered at %s",
+                        tojo.identifier(),
+                        tojo.discoveredAt()
+                    ),
+                    exception
                 );
             }
-            final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
-            final Collection<ObjectName> names = new ArrayList<>(0);
-            final Path base = this.targetDir.toPath().resolve(PullMojo.DIR);
-            final String hsh = this.hash.value();
-            for (final ForeignTojo tojo : tojos) {
-                final ObjectName object = new OnCached(
-                    new OnSwap(
-                        this.withVersions,
-                        new OnVersioned(tojo.identifier(), hsh)
-                    )
-                );
-                try {
-                    tojo.withSource(this.pulled(object, base, hsh))
-                        .withHash(new ChNarrow(this.hash));
-                } catch (final IOException exception) {
-                    throw new IOException(
-                        String.format(
-                            "Failed to pull object '%s' discovered at %s",
-                            tojo.identifier(),
-                            tojo.discoveredAt()
-                        ),
-                        exception
-                    );
-                }
-                names.add(object);
-            }
+            names.add(object);
+        }
+        if (tojos.isEmpty()) {
+            Logger.info(
+                this,
+                "No programs were pulled in %[ms]s",
+                System.currentTimeMillis() - start
+            );
+        } else {
             Logger.info(
                 this,
                 "%d program(s) were pulled in %[ms]s: %s",

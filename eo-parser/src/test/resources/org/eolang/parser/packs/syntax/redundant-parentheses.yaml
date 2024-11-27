@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
 eo: |
   1.add (a.add 5) 4 > x
   add. 1 (a.add 5) > x

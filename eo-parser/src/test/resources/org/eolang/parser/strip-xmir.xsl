@@ -39,7 +39,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <!-- Not important -->
   </xsl:template>
-  <xsl:template match="program/sheets">
+  <xsl:template match="/program/sheets">
     <!-- Not important -->
   </xsl:template>
   <xsl:template match="@line">
