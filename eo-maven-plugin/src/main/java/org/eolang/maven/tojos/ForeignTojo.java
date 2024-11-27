@@ -190,7 +190,7 @@ public final class ForeignTojo {
         if (this.delegate.exists(ForeignTojos.Attribute.VERIFIED.getKey())) {
             final Path tgt = this.verified();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(this, "Already verified %[file]s to %[file]s",src, tgt);
+                Logger.debug(this, "Already verified %[file]s to %[file]s", src, tgt);
                 res = false;
             }
         }
