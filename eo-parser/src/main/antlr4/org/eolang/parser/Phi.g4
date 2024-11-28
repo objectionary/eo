@@ -34,8 +34,7 @@ program
 
 object
     : formation (dispatch applicationsOrDispatches)?
-    | scoped applicationsOrDispatches
-    | termination
+    | (scoped | termination) applicationsOrDispatches
     ;
 
 formation
