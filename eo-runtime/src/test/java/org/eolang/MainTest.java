@@ -132,7 +132,9 @@ final class MainTest {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
-            Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
+            Matchers.containsString(
+                "Error in the \"Φ.org.eolang.io.stdout.φ.Δ\" attribute"
+            )
         );
     }
 
@@ -156,7 +158,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8
+                StandardCharsets.UTF_8.name()
             )
         );
         MatcherAssert.assertThat(
@@ -177,7 +179,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8
+                StandardCharsets.UTF_8.name()
             )
         );
         MatcherAssert.assertThat(

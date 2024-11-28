@@ -29,6 +29,7 @@
 package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -50,7 +51,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOregex$EOcompiled extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi regex = this.take(Attr.RHO);
         final String expression = new Dataized(regex.take("expression")).asString();
         if (!expression.startsWith("/")) {
@@ -63,9 +64,9 @@ public final class EOregex$EOcompiled extends PhDefault implements Atom {
         }
         builder.append(expression, 1, last);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream ous = new ObjectOutputStream(baos);
         final Phi pattern = regex.take("pattern");
         try {
+            final ObjectOutputStream ous = new ObjectOutputStream(baos);
             final Pattern compiled = Pattern.compile(builder.toString());
             ous.writeObject(compiled);
             pattern.put(0, new Data.ToPhi(baos.toByteArray()));
@@ -76,6 +77,8 @@ public final class EOregex$EOcompiled extends PhDefault implements Atom {
                 "Regular expression syntax is invalid",
                 exception
             );
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 }

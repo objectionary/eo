@@ -23,7 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,7 +51,7 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -55,7 +59,31 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@ExtendWith(MktmpResolver.class)
 final class OptimizeMojoTest {
+
+    @Test
+    void optimizesSimpleObject(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize");
+                f.exec("compile");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .xmir file contains lint defects",
+            new XMLDocument(temp.resolve("target/eo/2-optimize/foo.xmir")),
+            XhtmlMatchers.hasXPaths("/program/errors/error")
+        );
+    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
@@ -74,7 +102,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void skipsAlreadyOptimized(@TempDir final Path temp) throws IOException {
+    void skipsAlreadyOptimized(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Optimize());
@@ -91,7 +119,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void optimizesIfExpired(@TempDir final Path temp) throws Exception {
+    void optimizesIfExpired(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
             .withHelloWorld()
@@ -119,7 +147,7 @@ final class OptimizeMojoTest {
      * @throws Exception if unexpected error happened.
      */
     @Test
-    void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
+    void getsAlreadyOptimizedResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf cached = new TextOf(
             new ResourceOf("org/eolang/maven/optimize/main.xml")
         );
@@ -166,7 +194,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void savesOptimizedResultsToCache(@TempDir final Path temp) throws IOException {
+    void savesOptimizedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
@@ -185,20 +213,13 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void optimizesSuccessfully(@TempDir final Path temp) throws IOException {
+    void optimizesSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withHelloWorld()
             .with("trackOptimizationSteps", true)
             .execute(new FakeMaven.Optimize())
             .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res,
-            Matchers.hasKey(
-                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
-            )
-        );
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             res,
@@ -215,7 +236,7 @@ final class OptimizeMojoTest {
      * @throws java.io.IOException If problem with filesystem happened.
      */
     @Test
-    void optimizesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+    void optimizesConcurrentlyWithLotsOfPrograms(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 20;
         for (int program = 0; program < total; ++program) {
@@ -241,7 +262,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)

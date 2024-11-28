@@ -21,13 +21,9 @@
 # SOFTWARE.
 ---
 xsls:
-  - /org/eolang/parser/critical-errors/duplicate-names.xsl
-  - /org/eolang/parser/errors/self-naming.xsl
-  - /org/eolang/parser/errors/same-line-names.xsl
   - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/errors/broken-refs.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=3]
   - //objects[not(//o[@ref and @base='@'])]
   - //o[@base='x' and @ref='2']

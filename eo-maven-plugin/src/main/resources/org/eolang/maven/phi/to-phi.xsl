@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-phi" version="2.0">
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
   <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
@@ -48,14 +49,14 @@ SOFTWARE.
     <select>λ</select>
   </xsl:variable>
   <xsl:variable name="arrow">
-    <xsl:text> </xsl:text>
+    <xsl:value-of select="$space"/>
     <select>↦</select>
-    <xsl:text> </xsl:text>
+    <xsl:value-of select="$space"/>
   </xsl:variable>
   <xsl:variable name="dashed-arrow">
-    <xsl:text> </xsl:text>
+    <xsl:value-of select="$space"/>
     <select>⤍</select>
-    <xsl:text> </xsl:text>
+    <xsl:value-of select="$space"/>
   </xsl:variable>
   <xsl:variable name="lb">
     <select>⟦</select>
@@ -65,6 +66,9 @@ SOFTWARE.
   </xsl:variable>
   <xsl:variable name="empty">
     <select>∅</select>
+  </xsl:variable>
+  <xsl:variable name="space">
+    <xsl:text> </xsl:text>
   </xsl:variable>
   <!-- Functions -->
   <!-- ADD XI OR NOT -->
@@ -120,27 +124,6 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:value-of select="eo:add-xi(not($is-name))"/>
         <xsl:value-of select="$n"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-  <!-- TOKENIZE BYTES -->
-  <xsl:function name="eo:bytes">
-    <xsl:param name="bts"/>
-    <xsl:choose>
-      <xsl:when test="string-length($bts)&gt;2">
-        <xsl:for-each select="tokenize($bts, ' ')">
-          <xsl:if test="position()&gt;1">
-            <xsl:text>-</xsl:text>
-          </xsl:if>
-          <xsl:value-of select="."/>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:when test="string-length($bts)=2">
-        <xsl:value-of select="$bts"/>
-        <xsl:text>-</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>--</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -269,7 +252,7 @@ SOFTWARE.
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:choose>
-          <xsl:when test="@ref and not(@data)">
+          <xsl:when test="@ref and not(eo:has-data(.))">
             <xsl:value-of select="eo:add-xi(true())"/>
             <xsl:apply-templates select="." mode="path">
               <xsl:with-param name="find" select="@base"/>
@@ -317,18 +300,19 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <!-- Data -->
-    <xsl:if test="@data">
-      <xsl:if test="not(@data='bytes')">
-        <xsl:message terminate="yes">
-          <xsl:text>Only 'bytes' is allowed as 'data' attribute to convert to phi-calculus expression. Given: </xsl:text>
-          <xsl:value-of select="@data"/>
-        </xsl:message>
-      </xsl:if>
+    <xsl:if test="eo:has-data(.)">
       <xsl:text>(</xsl:text>
       <xsl:value-of select="eo:eol($tabs+1)"/>
+      <xsl:value-of select="$alpha"/>
+      <xsl:text>0</xsl:text>
+      <xsl:value-of select="$arrow"/>
+      <xsl:value-of select="$lb"/>
+      <xsl:value-of select="$space"/>
       <xsl:value-of select="$delta"/>
       <xsl:value-of select="$dashed-arrow"/>
-      <xsl:value-of select="eo:bytes(.)"/>
+      <xsl:value-of select="text()[last()]"/>
+      <xsl:value-of select="$space"/>
+      <xsl:value-of select="$rb"/>
       <xsl:value-of select="eo:eol($tabs)"/>
       <xsl:text>)</xsl:text>
     </xsl:if>

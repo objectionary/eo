@@ -26,21 +26,33 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-into-memory-of
   malloc.of > mem
     8
-    m.write 0 10 > [m]
+    [m]
+      seq > @
+        *
+          m.write 0 10
+          m
   mem.eq 10 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > puts-into-memory-for
   malloc.for > mem
     0
     m.put 10 > [m]
   mem.eq 10 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > returns-size-from-scope
+  eq. > @
+    malloc.of
+      5
+      m.size > [m]
+    5
+
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-scope-is-dataized-twice
   eq. > @
     2
@@ -56,15 +68,15 @@
             second
             second
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-for-writes-first-init-value
   eq. > @
     malloc.for
       42
-      true > [m]
+      m > [m]
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-puts-over-the-previous-data
   malloc.of > mem
     13
@@ -78,7 +90,7 @@
       "orld!".as-bytes
     mem
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-rewrites-and-increments-itself
   malloc.of > mem
     8
@@ -89,7 +101,7 @@
           m.put (m.as-number.plus 5)
   mem.eq 6 > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-into-two-malloc-objects
   malloc.of > a
     8
@@ -101,19 +113,19 @@
     a.eq 10
     b.eq 20
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-overflow-boolean-malloc
   malloc.for > @
     false
     m.put 86124867.88 > [m]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-overflow-string-malloc
   malloc.for > @
     "Hello"
     m.put "Much longer string!" > [m]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-is-strictly-sized-int
   eq. > @
     malloc.for
@@ -121,7 +133,7 @@
       m.put 2556 > [m]
     2556
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-is-strictly-typed-float
   eq. > @
     malloc.for
@@ -129,7 +141,7 @@
       m.put 82.22 > [m]
     82.22
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > memory-is-strictly-sized-string
   eq. > @
     malloc.for
@@ -137,19 +149,19 @@
       m.put "Prot" > [m]
     "Proto"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-is-strictly-typed-bool
   malloc.for > @
     false
     m.put true > [m]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-gives-id-to-allocated-block
   malloc.of > @
     1
     m.put (m.id.gt 0) > [m]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-allocates-right-size-block
   malloc.of > @
     1
@@ -159,7 +171,7 @@
         [m] >>
           b.put (m.size.eq 10) > @
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-writes-and-reads
   malloc.of > @
     1
@@ -176,7 +188,7 @@
                   m.read 0 12
                   "Hello, Jeff!"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-concacts-strings-with-offset
   malloc.of > @
     1
@@ -191,13 +203,13 @@
               b.put
                 (m.read 0 3).eq "XYX"
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-writing-more-than-allocated-to-malloc-with-offset
   malloc.of > @
     1
     m.write 1 true > [m]
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-reads-with-offset-and-length
   malloc.of > @
     1
@@ -211,7 +223,16 @@
               b.put
                 (m.read 2 5).eq "Hello"
 
-# Test.
+# Creates memory block of zero bytes (this should be a legal operation)
+[] > allocates-zero-bytes
+  eq. > @
+    0
+    malloc.of
+      0
+      [m]
+        m.size > @
+
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-increases-block-size
   malloc.of > @
     1
@@ -219,15 +240,12 @@
       malloc.for > @
         01-02-03-04
         [m] >>
-          seq > @
-            *
-              m.resize 6
-              ^.b.put
-                and.
-                  m.size.eq 6
-                  m.get.eq 01-02-03-04-00-00
+          ^.b.put > @
+            and.
+              (m.resized 6).size.eq 6
+              m.get.eq 01-02-03-04-00-00
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-decreases-block-size
   malloc.of > @
     1
@@ -235,16 +253,13 @@
       malloc.for > @
         01-02-03-04-05
         [m] >>
-          seq > @
-            *
-              m.resize 3
-              ^.b.put
-                and.
-                  m.size.eq 3
-                  m.get.eq 01-02-03
+          ^.b.put > @
+            and.
+              (m.resized 3).size.eq 3
+              m.get.eq 01-02-03
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-changing-size-to-negative
   malloc.of > @
     1
-    m.resize -1 > [m]
+    m.resized -1 > [m]

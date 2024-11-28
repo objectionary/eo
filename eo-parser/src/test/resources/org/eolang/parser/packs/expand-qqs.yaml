@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/parser/expand-qqs.xsl
 tests:
-  - /program/errors[count(error)=0]
+  - /program[not(errors)]
   - //objects[count(.//o[starts-with(@base, 'QQ')])=0]
   - //objects[count(.//o[starts-with(@base, 'Q')])=1]
   - //objects[count(.//o[contains(@base, '.org')])=1]

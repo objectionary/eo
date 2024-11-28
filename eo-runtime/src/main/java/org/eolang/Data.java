@@ -35,19 +35,6 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("PMD.TooManyMethods")
 public interface Data {
     /**
-     * Attach data to the object.
-     * @param data Data.
-     * @todo #2931:60min Change the data storage architecture. Current implementation allows the
-     *  presence of two methods for data manipulations: {@link Data#attach(byte[])} to set data and
-     *  {@link Data#delta()} to get data; which does not seem to be object oriented. It also
-     *  requires every object to have reserved place for possible injected data. In our case, every
-     *  {@link PhDefault} has {@link PhDefault#data} variable. It would be much better to have this
-     *  data only inside some decorator. The main difficulty here is - child attributes of
-     *  decorated object should know that their \rho is decorated and contains data.
-     */
-    void attach(byte[] data);
-
-    /**
      * Take the data.
      * @return The data
      */
@@ -128,11 +115,6 @@ public interface Data {
         }
 
         @Override
-        public void attach(final byte[] data) {
-            this.object.attach(data);
-        }
-
-        @Override
         public byte[] delta() {
             return this.object.delta();
         }
@@ -166,7 +148,7 @@ public interface Data {
                 phi = argument;
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
-                phi.attach((byte[]) obj);
+                phi.put(0, new PhDefault((byte[]) obj));
             } else if (obj instanceof Number) {
                 final double value = ((Number) obj).doubleValue();
                 if (Double.isNaN(value)) {
@@ -178,13 +160,13 @@ public interface Data {
                 } else {
                     phi = eolang.take("number").copy();
                     final Phi bts = eolang.take("bytes").copy();
-                    bts.attach(new BytesOf(value).take());
+                    bts.put(0, new PhDefault(new BytesOf(value).take()));
                     phi.put(0, bts);
                 }
             } else if (obj instanceof String) {
                 phi = eolang.take("string").copy();
                 final Phi bts = eolang.take("bytes").copy();
-                bts.attach(((String) obj).getBytes(StandardCharsets.UTF_8));
+                bts.put(0, new PhDefault(((String) obj).getBytes(StandardCharsets.UTF_8)));
                 phi.put(0, bts);
             } else {
                 throw new IllegalArgumentException(

@@ -25,7 +25,6 @@
 package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,16 +120,6 @@ final class PhPackage implements Phi {
             String.format(
                 "Can't #put(%s, %s) to package object \"%s\"",
                 name, object, this.pkg
-            )
-        );
-    }
-
-    @Override
-    public void attach(final byte[] data) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #attach(%s) to package object \"%s\"",
-                Arrays.toString(data), this.pkg
             )
         );
     }

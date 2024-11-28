@@ -37,12 +37,12 @@ import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
- * Copy all .eo files from src/main/eo to target/classes/EO-SOURCES
- * and replace 0.0.0 versions in them to the right numbers.
+ * Copy all {@code .eo} files from the {@code src/main/eo} directory
+ * to the {@code target/classes/EO-SOURCES} directory
+ * and replace {@code 0.0.0} versions in them to the right version numbers.
  *
  * @since 0.11
  */
@@ -121,14 +121,13 @@ public final class CopyMojo extends SafeMojo {
         }
         if (sources.isEmpty()) {
             Logger.warn(
-                this, "No sources copied from %s to %s",
-                new Rel(this.sourcesDir), new Rel(target)
+                this, "No sources copied from %[file]s to %[file]s",
+                this.sourcesDir, target
             );
         } else {
             Logger.info(
-                this, "%d source(s) copied from %s to %s",
-                sources.size(), new Rel(this.sourcesDir),
-                new Rel(target)
+                this, "%d source(s) copied from %[file]s to %[file]s",
+                sources.size(), this.sourcesDir, target
             );
         }
     }

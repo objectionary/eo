@@ -244,20 +244,23 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(PlaceMojo.class),
         };
         while (true) {
-            final long start = System.nanoTime();
+            final long start = System.currentTimeMillis();
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
             final String after = this.scopedTojos().status();
             ++cycle;
-            if (Logger.isInfoEnabled(this)) {
-                Logger.info(
-                    this, "Assemble cycle #%d (%s -> %s), took %[nano]s",
-                    cycle, before, after, System.nanoTime() - start
-                );
-            }
             if (after.equals(before)) {
+                Logger.info(
+                    this, "Last assemble cycle #%d (%s), took %[ms]s",
+                    cycle, after, System.currentTimeMillis() - start
+                );
                 break;
+            } else {
+                Logger.info(
+                    this, "Assemble cycle #%d (%s -> %s), took %[ms]s",
+                    cycle, before, after, System.currentTimeMillis() - start
+                );
             }
             before = after;
         }

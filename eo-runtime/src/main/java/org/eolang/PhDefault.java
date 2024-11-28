@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -67,10 +67,15 @@ public class PhDefault implements Phi, Cloneable {
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
+     * From Java class name to forma.
+     */
+    private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
+
+    /**
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    private AtomicReference<byte[]> data;
+    private final Optional<byte[]> data;
 
     /**
      * Forma of it.
@@ -88,12 +93,20 @@ public class PhDefault implements Phi, Cloneable {
     private Map<String, Attr> attrs;
 
     /**
+     * Default ctor.
+     */
+    public PhDefault() {
+        this(null);
+    }
+
+    /**
      * Ctor.
+     * @param dta Object data
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public PhDefault() {
-        this.data = new AtomicReference<>(null);
-        this.form = this.getClass().getName();
+    public PhDefault(final byte[] dta) {
+        this.data = Optional.ofNullable(dta);
+        this.form = PhDefault.TO_FORMA.matcher(this.getClass().getName()).replaceAll("$1");
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
@@ -113,13 +126,13 @@ public class PhDefault implements Phi, Cloneable {
     public String φTerm() {
         final List<String> list = new ArrayList<>(this.attrs.size());
         final String format = "%s ↦ %s";
-        if (this.data.get() != null) {
-            list.add(
+        this.data.ifPresent(
+            bytes -> list.add(
                 String.format(
-                    format, Attr.DELTA, new BytesOf(this.data.get()).asString()
+                    format, Attr.DELTA, new BytesOf(bytes).asString()
                 )
-            );
-        }
+            )
+        );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
             e -> !e.getKey().equals(Attr.RHO)
         ).collect(Collectors.toList())) {
@@ -151,7 +164,7 @@ public class PhDefault implements Phi, Cloneable {
             this.getClass().getCanonicalName(),
             this.hashCode()
         );
-        if (this.data.get() != null) {
+        if (this.data.isPresent()) {
             result = String.format(
                 "%s=%s",
                 result,
@@ -165,7 +178,6 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.data = new AtomicReference<>(this.data.get());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
@@ -192,7 +204,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        return new AtSafe(this.named(this.attrs.get(name), name)).put(object);
+        return this.attrs.get(name).put(object);
     }
 
     @Override
@@ -200,51 +212,36 @@ public class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
-            object = new AtSafe(
-                this.named(
-                    new AtSetRho(
-                        this.attrs.get(name),
-                        this,
-                        name
-                    ),
-                    name
-                )
+            object = new AtSetRho(
+                this.attrs.get(name),
+                this,
+                name
             ).get();
         } else if (name.equals(Attr.LAMBDA)) {
-            object = new AtSafe(
-                this.named(
-                    new AtSetRho(
-                        new AtFormed(new AtomSafe((Atom) this)::lambda),
-                        this,
-                        name
-                    ),
-                    name
-                )
+            object = new AtSetRho(
+                new AtFormed(new AtomSafe((Atom) this)::lambda),
+                this,
+                name
             ).get();
         } else if (this instanceof Atom) {
             object = this.take(Attr.LAMBDA).take(name);
         } else if (this.attrs.containsKey(Attr.PHI)) {
             object = this.take(Attr.PHI).take(name);
         } else {
-            object = new AtSafe(
-                this.named(
-                    new AtGetOnly(
-                        () -> {
-                            throw new ExUnset(
-                                String.format(
-                                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
-                                    name,
-                                    this.attrs.size(),
-                                    this.form,
-                                    String.join(", ", this.attrs.keySet()),
-                                    Attr.PHI,
-                                    Attr.LAMBDA
-                                )
-                            );
-                        }
-                    ),
-                    name
-                )
+            object = new AtGetOnly(
+                () -> {
+                    throw new ExUnset(
+                        String.format(
+                            "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                            name,
+                            this.attrs.size(),
+                            this.form,
+                            String.join(", ", this.attrs.keySet()),
+                            Attr.PHI,
+                            Attr.LAMBDA
+                        )
+                    );
+                }
             ).get();
         }
         PhDefault.debug(
@@ -261,21 +258,9 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public void attach(final byte[] bytes) {
-        synchronized (this.data) {
-            if (this.data.get() != null) {
-                throw new ExFailure(
-                    "Some data is already attached to the object, can't reattach"
-                );
-            }
-            this.data.set(bytes);
-        }
-    }
-
-    @Override
     public byte[] delta() {
         final byte[] bytes;
-        if (this.data.get() != null) {
+        if (this.data.isPresent()) {
             bytes = this.data.get();
         } else if (this instanceof Atom) {
             bytes = this.take(Attr.LAMBDA).delta();
@@ -302,9 +287,10 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Add new attribute.
      *
-     * This method can only be called from child classes, in their
+     * <p>This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
-     * protected. Not the brightest design, I admit.
+     * protected. Not the brightest design, I admit.</p>
+     *
      * @param name The name
      * @param attr The attr
      */
@@ -348,27 +334,6 @@ public class PhDefault implements Phi, Cloneable {
             );
         }
         return this.order.get(pos);
-    }
-
-    /**
-     * Make named attribute.
-     * @param attr The original attr
-     * @param name The name of it
-     * @return Named one
-     */
-    private Attr named(final Attr attr, final String name) {
-        return new AtNamed(
-            String.format(
-                "%s#%s",
-                this.getClass().getCanonicalName(), name
-            ),
-            String.format(
-                "%s.%s",
-                this.oname(), name
-            ),
-            this,
-            attr
-        );
     }
 
     /**

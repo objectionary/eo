@@ -23,9 +23,10 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.RequisiteMatcher;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,7 +49,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -56,10 +56,11 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(MktmpResolver.class)
 final class ParseMojoTest {
 
     @Test
-    void parsesSimpleFile(@TempDir final Path temp) throws Exception {
+    void parsesSimpleFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -73,11 +74,6 @@ final class ParseMojoTest {
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
                 MatcherAssert.assertThat(
-                    "build has no problems",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
-                MatcherAssert.assertThat(
                     "the XMIR file is generated",
                     f.files().file("target/eo/1-parse/foo.xmir").exists(),
                     Matchers.is(true)
@@ -87,7 +83,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void parsesSuccessfully(@TempDir final Path temp) throws Exception {
+    void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
@@ -106,7 +102,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void failsOnTimeout(@TempDir final Path temp) {
+    void failsOnTimeout(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -119,7 +115,7 @@ final class ParseMojoTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    void parsesWithCache(@TempDir final Path temp) throws Exception {
+    void parsesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram("invalid content")
@@ -127,7 +123,7 @@ final class ParseMojoTest {
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
-        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
+        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(ParseMojo.DIR);
         final Path target = new Place("foo.x.main").make(base, AssembleMojo.XMIR);
         new FpDefault(
@@ -166,7 +162,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
@@ -180,7 +176,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void doesNotParseIfAlreadyParsed(@TempDir final Path temp) throws IOException {
+    void doesNotParseIfAlreadyParsed(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
             .withHelloWorld()
@@ -206,7 +202,7 @@ final class ParseMojoTest {
      * @throws IOException If problem with filesystem happened.
      */
     @Test
-    void parsesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+    void parsesConcurrentlyWithLotsOfPrograms(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
         for (int program = 0; program < total; ++program) {

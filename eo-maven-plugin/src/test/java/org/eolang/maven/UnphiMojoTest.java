@@ -23,10 +23,16 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -44,7 +50,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.yaml.snakeyaml.Yaml;
@@ -53,9 +59,66 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
  */
+@ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
+
     @Test
-    void createsFile(@TempDir final Path temp) throws Exception {
+    void convertsPhiToXmir(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/phi/foo.phi").write(
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( α0 ↦ ⟦ Δ ⤍ 00- ⟧ ) ⟧}".getBytes(
+                        StandardCharsets.UTF_8
+                    )
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .phase("initialize")
+                    .goals("phi-to-xmir");
+                f.exec("initialize");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .xmir file is generated",
+            XhtmlMatchers.xhtml(
+                new String(
+                    Files.readAllBytes(
+                        temp.resolve("target/eo/1-parse/foo.xmir")
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths("/program/objects/o[text()='00-']")
+        );
+    }
+
+    @Test
+    void failsOnBrokenPhiSyntax(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/phi/foo.phi").write(
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( Δ ⤍ 00- ) ⟧}".getBytes(StandardCharsets.UTF_8)
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .phase("initialize")
+                    .goals("phi-to-xmir");
+                MatcherAssert.assertThat(
+                    "fails because of broken phi syntax",
+                    f.execQuiet("initialize"),
+                    Matchers.not(Matchers.equalTo(0))
+                );
+            }
+        );
+    }
+
+    @Test
+    void createsFile(@Mktmp final Path temp) throws Exception {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/phi/std.phi")
@@ -73,7 +136,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void failsIfParsedWithErrors(@TempDir final Path temp) throws IOException {
+    void failsIfParsedWithErrors(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
             Paths.get("target/phi/std.phi")
@@ -87,7 +150,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void addsMetas(@TempDir final Path temp) throws IOException {
+    void addsMetas(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
@@ -112,7 +175,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void failsIfPackageMetaIsAdded(@TempDir final Path temp) throws IOException {
+    void failsIfPackageMetaIsAdded(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
@@ -128,7 +191,7 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
-    void checksUnphiPacks(final String pack, @TempDir final Path temp) throws Exception {
+    void checksUnphiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         final String phi = map.get("phi").toString();
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
@@ -141,6 +204,7 @@ final class UnphiMojoTest {
                 )
             ).asString()
         );
+        Logger.debug(this, "Parsed phi:\n%s", doc);
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
@@ -159,12 +223,10 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
-    void convertsToXmirAndBack(final String pack, @TempDir final Path temp) throws Exception {
+    void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         if (map.get("skip") != null) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
+            Assumptions.abort(String.format("%s is not ready", pack));
         }
         final String phi = map.get("phi").toString();
         final String main = "target/phi/main.phi";
@@ -172,13 +234,17 @@ final class UnphiMojoTest {
         new HmBase(temp).save(phi, path);
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
-        maven.foreignTojos().add("name")
-            .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
+        final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
+        Logger.debug(this, "Unphied: \n%s", new TextOf(xmir).asString());
+        maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .execute(OptimizeMojo.class)
+            .with("phiFailOnCritical", false)
+            .with("phiFailOnError", false)
             .execute(PhiMojo.class)
             .result()
             .get(main);
+        Logger.debug(this, "Phied: \n%s", new TextOf(result).asString());
         MatcherAssert.assertThat(
             String.format("%s should have been rewritten after optimization, but it wasn't", main),
             result.toFile().lastModified(),
@@ -186,16 +252,14 @@ final class UnphiMojoTest {
         );
         MatcherAssert.assertThat(
             "Origin phi should equal to phi got from \"unphied\" xmir, but it isn't",
-            phi,
-            Matchers.equalTo(
-                new TextOf(result).asString()
-            )
+            new TextOf(result).asString(),
+            Matchers.equalTo(phi)
         );
     }
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void convertsValidXmirAndParsableEO(final boolean reversed, @TempDir final Path temp)
+    void convertsValidXmirAndParsableEO(final boolean reversed, @Mktmp final Path temp)
         throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
@@ -225,7 +289,7 @@ final class UnphiMojoTest {
                     )
                 )
             ).parsed(),
-            XhtmlMatchers.hasXPath("//errors[count(error)=0]")
+            XhtmlMatchers.hasXPath("/program[not(errors)]")
         );
     }
 }

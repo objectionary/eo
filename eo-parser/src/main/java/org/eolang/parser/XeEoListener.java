@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
@@ -69,12 +70,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private static final XmirInfo INFO = new XmirInfo();
 
     /**
-     * Minimum allowed comment length.
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    private static final int MIN_COMMENT_LENGTH = 64;
-
-    /**
      * Meta for testing.
      */
     private static final String TESTS_META = "tests";
@@ -95,11 +90,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final Objects objects;
 
     /**
-     * Xembly directives to build errors.
-     */
-    private final Directives errors;
-
-    /**
      * When we start.
      */
     private final long start;
@@ -117,14 +107,15 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
-        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
 
     @Override
     public void enterProgram(final EoParser.ProgramContext ctx) {
-        this.dirs.add("program")
+        this.dirs
+            .comment(XeEoListener.INFO)
+            .add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
@@ -135,19 +126,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .comment(XeEoListener.INFO)
-            .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up();
+            .add("listing").set(new SourceText(ctx)).up();
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .xpath("/program/errors")
-            .append(this.errors).up()
+            .xpath("/program")
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
@@ -233,7 +218,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentOptional(final EoParser.CommentOptionalContext ctx) {
-        this.validateComment(ctx, ctx.comment());
+        this.putComment(ctx.comment(), ctx.getStop());
     }
 
     @Override
@@ -243,7 +228,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        this.validateComment(ctx, ctx.comment());
+        this.putComment(ctx.comment(), ctx.getStop());
     }
 
     @Override
@@ -1197,16 +1182,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
-        final String type;
         final String data;
         final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
-            type = "bytes";
             base = "bytes";
-            data = text.replaceAll("\\s+", "").replace("-", " ").trim();
+            data = text.replaceAll("\\s+", "").trim();
         } else if (ctx.FLOAT() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1215,7 +1197,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.INT() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1224,7 +1205,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.HEX() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1233,7 +1213,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.STRING() != null) {
-            type = "bytes";
             base = "string";
             data = XeEoListener.bytesToHex(
                 StringEscapeUtils.unescapeJava(
@@ -1241,7 +1220,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         } else if (ctx.TEXT() != null) {
-            type = "bytes";
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeEoListener.bytesToHex(
@@ -1259,9 +1237,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ctx.getStart().getLine()
             );
         }
-        this.objects.prop("data", type);
-        this.objects.prop("base", base);
-        this.objects.data(data);
+        this.objects.prop("base", base).data(data);
     }
 
     @Override
@@ -1323,80 +1299,21 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Validate comment in front of abstract objects.
-     * @param ctx Context
-     * @param comments List of comment contexts
+     * Build comment from context.
+     * @param comment As they come from the parser
+     * @param stop Stop line of the comment
      */
-    private void validateComment(
-        final ParserRuleContext ctx,
-        final List<EoParser.CommentContext> comments
-    ) {
-        if(this.tests || comments.isEmpty()) {
-            return;
+    private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
+        if (!comment.isEmpty()) {
+            this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
+                String.join(
+                    "",
+                    comment.stream().map(
+                        context -> context.COMMENTARY().getText().substring(1).trim()
+                    ).collect(Collectors.joining(""))
+                )
+            ).attr("line", stop.getLine() + 1).pop();
         }
-        final String comment = String.join(
-            "",
-            comments.stream().map(
-                context -> context.COMMENTARY().getText().substring(1).trim()
-            ).collect(Collectors.joining(""))
-        );
-        final String length = String.format(
-            "Comment must be at least %d characters long",
-            XeEoListener.MIN_COMMENT_LENGTH
-        );
-        final String warning = "warning";
-        if (comment.isEmpty()) {
-            this.addError(ctx, "comment-length-check", warning, length);
-        } else {
-            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
-                this.addError(ctx, "comment-length-check", warning, length);
-            }
-            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
-                this.addError(
-                    ctx,
-                    "comment-content-check",
-                    warning,
-                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
-                );
-            }
-            if (!Character.isUpperCase(comment.charAt(0))) {
-                this.addError(
-                    ctx,
-                    "comment-start-character-check",
-                    warning,
-                    "Comment must start with capital letter"
-                );
-            }
-            if (comment.charAt(comment.length() - 1) != '.') {
-                this.addError(
-                    ctx,
-                    "comment-ending-check",
-                    warning,
-                    "Comment must end with dot"
-                );
-            }
-        }
-    }
-
-    /**
-     * Add error to {@link XeEoListener#errors} directives.
-     * @param ctx Context
-     * @param check Check type
-     * @param severity Error severity level
-     * @param message Error message
-     */
-    private void addError(
-        final ParserRuleContext ctx,
-        final String check,
-        final String severity,
-        final String message
-    ) {
-        this.errors.add("error")
-            .attr("line", ctx.getStart().getLine())
-            .attr("check", check)
-            .attr("severity", severity)
-            .set(message)
-            .up();
     }
 
     /**
@@ -1431,10 +1348,19 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Hexadecimal value as string.
      */
     private static String bytesToHex(final byte... bytes) {
-        final StringJoiner out = new StringJoiner(" ");
-        for (final byte bty : bytes) {
-            out.add(String.format("%02X", bty));
+        final String hex;
+        if (bytes.length == 0) {
+            hex = "--";
+        } else {
+            final StringJoiner out = new StringJoiner("-");
+            for (final byte bty : bytes) {
+                out.add(String.format("%02X", bty));
+            }
+            if (bytes.length == 1) {
+                out.add("");
+            }
+            hex = out.toString();
         }
-        return out.toString();
+        return hex;
     }
 }

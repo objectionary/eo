@@ -36,7 +36,6 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
     <xsl:copy>
-      <xsl:attribute name="expanded"/>
       <xsl:apply-templates select="node() except tail except part|@*"/>
       <xsl:variable name="parts" select="tokenize(tail, '\.')"/>
       <xsl:element name="tail">

@@ -52,10 +52,9 @@ public final class StUnhex extends StEnvelope {
                     new StXPath(
                         StUnhex.xpath("number"),
                         xml -> StUnhex.append(
-                            "number",
                             StUnhex.number(
                                 StUnhex.buffer(
-                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
+                                    StUnhex.undash(xml.xpath("./o/text()").get(0))
                                 ).getDouble()
                             )
                         )
@@ -63,13 +62,15 @@ public final class StUnhex extends StEnvelope {
                     new StXPath(
                         StUnhex.xpath("string"),
                         xml -> StUnhex.append(
-                            "string",
-                            StringEscapeUtils.escapeJava(
-                                new String(
-                                    StUnhex.buffer(
-                                        StUnhex.unspace(xml.xpath("./o/text()").get(0))
-                                    ).array(),
-                                    StandardCharsets.UTF_8
+                            String.format(
+                                "\"%s\"",
+                                StringEscapeUtils.escapeJava(
+                                    new String(
+                                        StUnhex.buffer(
+                                            StUnhex.undash(xml.xpath("./o/text()").get(0))
+                                        ).array(),
+                                        StandardCharsets.UTF_8
+                                    )
                                 )
                             )
                         )
@@ -105,24 +106,29 @@ public final class StUnhex extends StEnvelope {
      * @return The buffer of bytes
      */
     private static ByteBuffer buffer(final String txt) {
-        final String[] parts = txt.split("(?<=\\G.{2})");
-        final ByteBuffer buffer = ByteBuffer.allocate(parts.length);
-        for (final String pair : parts) {
-            buffer.put((byte) Integer.parseInt(pair, 16));
+        final ByteBuffer buffer;
+        if (txt.isEmpty()) {
+            buffer = ByteBuffer.allocate(0);
+        } else {
+            final String[] parts = txt.split("(?<=\\G.{2})");
+            buffer = ByteBuffer.allocate(parts.length);
+            for (final String pair : parts) {
+                buffer.put((byte) Integer.parseInt(pair, 16));
+            }
+            buffer.position(0);
         }
-        buffer.position(0);
         return buffer;
     }
 
     /**
-     * Remove all spaces from the given text, like "0A 7E 43" to "0A7E43".
+     * Remove all dashes from the given text, like "0A-7E-43" to "0A7E43".
      * @param txt The text
-     * @return The same text, but without spaces
+     * @return The same text, but without dashes
      */
-    private static String unspace(final String txt) {
+    private static String undash(final String txt) {
         final StringBuilder out = new StringBuilder(txt.length());
         for (final char chr : txt.toCharArray()) {
-            if (chr == ' ') {
+            if (chr == '-') {
                 continue;
             }
             out.append(chr);
@@ -137,19 +143,18 @@ public final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
+            "(//o[not(o) and string-length(normalize-space(text())) > 0 and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
             type
         );
     }
 
     /**
      * Append Xemply instructions.
-     * @param type The type to match
      * @param after Value after
      * @return Dirs
      */
-    private static Iterable<Directive> append(final String type, final String after) {
-        return new Directives().set(after).attr("data", type);
+    private static Iterable<Directive> append(final String after) {
+        return new Directives().set(after);
     }
 }
 

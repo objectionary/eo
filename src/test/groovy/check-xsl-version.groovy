@@ -37,6 +37,7 @@ project.traverse(
   nameFilter   : ~/.*\.xsl/
 ) {
   it ->
+    if (it.getName() == 'xs3p.xsl') { return }
     String version = new XmlSlurper().parse(it).@version
     assert version == '2.0'
 }

@@ -99,7 +99,9 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void put(final int vertex, final byte[] bytes) {
-        this.indexed.put(vertex, new PhData(this.get(vertex), bytes));
+        final Phi phi = this.get(vertex).copy();
+        phi.put(0, new PhDefault(bytes));
+        this.indexed.put(vertex, phi);
     }
 
     @Override

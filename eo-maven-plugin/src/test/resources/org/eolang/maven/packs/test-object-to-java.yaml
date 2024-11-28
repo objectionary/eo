@@ -27,17 +27,18 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), '  @Test')]
   - //java[contains(text(), '  public void works() throws java.lang.Exception {')]
-  - //java[contains(text(), '    Boolean obj = new Dataized(new EOcompares_two_bools()).asBool();')]
-  - //java[contains(text(), '    Assertions.assertTrue(obj);')]
+  - //java[contains(text(), '    new Dataized(')]
+  - //java[contains(text(), 'new EOcompares_two_bools()')]
+  - //java[contains(text(), '    Assertions.assertTrue(')]
   - //java[contains(text(), '  }')]
 eo: |
   +tests
   +version 0.0.0
 
-  # Test.
+  # This unit test is supposed to check the functionality of the corresponding object.
   [] > compares-two-bools
   eq. > @
     true

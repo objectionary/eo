@@ -33,11 +33,11 @@ SOFTWARE.
   - QQ.string "H" => QQ.string "H"
 
   In the level of xmir it looks like:
-  - <o base="org.eolang.bytes" data="bytes">         <o base="org.eolang.bytes" data="bytes">
+  - <o base="org.eolang.bytes">                      <o base="org.eolang.bytes">
       22-32                                      =>    22-32
     </o>                                             </o>
   - <o base="org.eolang.number" name="num">          <o base="org.eolang.number" name="num">
-      <o base="org.eolang.number" data="bytes">        <o base=org.eolang.bytes data="bytes">
+      <o base="org.eolang.number">                     <o base=org.eolang.bytes>
         00 00 00 00 00 00 00 01                  =>      00 00 00 00 00 00 00 01
       </o>                                             </o>
     </o>                                             </o>
@@ -47,7 +47,7 @@ SOFTWARE.
           <o base="Q"></o>                                 <o base="Q"/>
         </o>                                             </o>
       </o>                                             </o>
-      <o base="org.eolang.number" data="bytes">  =>  <o base="org.eolang.bytes" data="bytes">
+      <o base="org.eolang.number">               =>    <o base="org.eolang.bytes">
         01                                               01
       </o>                                             </o>
     </o>                                             </o>
@@ -61,30 +61,27 @@ SOFTWARE.
       </a>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:template match="o[@data]">
+  <xsl:template match="o[not(o)]">
+    <xsl:apply-templates select="." mode="no-children"/>
+  </xsl:template>
+  <xsl:template match="o[string-length(normalize-space(text())) &gt; 0]" mode="no-children">
     <xsl:apply-templates select="." mode="with-data"/>
   </xsl:template>
   <xsl:template match="o[not(@base='org.eolang.bytes' or @base='bytes')]" mode="with-data">
     <xsl:choose>
       <xsl:when test="parent::*[$literal-objects/text()=@base or ($reversed/text()=@base and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]])]">
         <o base="org.eolang.bytes">
-          <xsl:attribute name="data">
-            <xsl:value-of select="./@data"/>
-          </xsl:attribute>
           <xsl:value-of select="."/>
         </o>
       </xsl:when>
       <xsl:when test="parent::*[not(@base) or ($literal-objects/text()!=@base and $reversed/text()!=@base)]">
         <o>
-          <xsl:for-each select="@*[name()!='data']">
+          <xsl:for-each select="@*">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>
           </xsl:for-each>
           <o base="org.eolang.bytes">
-            <xsl:attribute name="data">
-              <xsl:value-of select="./@data"/>
-            </xsl:attribute>
             <xsl:value-of select="."/>
           </o>
         </o>
@@ -99,28 +96,22 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[@ref]" mode="base-bytes">
     <o base="org.eolang.bytes">
-      <xsl:for-each select="@*[name()!='data' and name()!='base']">
+      <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}">
           <xsl:value-of select="."/>
         </xsl:attribute>
       </xsl:for-each>
-      <xsl:attribute name="data">
-        <xsl:text>bytes</xsl:text>
-      </xsl:attribute>
       <xsl:value-of select="text()"/>
     </o>
   </xsl:template>
-  <xsl:template match="o[((@base='.bytes' and o[@base='.eolang' and o[@base='.org' and o[@base='Q']]]) or @base='org.eolang.bytes') and o[last() and @data]]">
+  <xsl:template match="o[((@base='.bytes' and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]) or @base='org.eolang.bytes') and o[last() and not(o) and string-length(normalize-space(text())) &gt; 0]]">
     <o base="org.eolang.bytes">
-      <xsl:for-each select="@*[name()!='data' and name()!='base']">
+      <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}">
           <xsl:value-of select="."/>
         </xsl:attribute>
       </xsl:for-each>
-      <xsl:attribute name="data">
-        <xsl:text>bytes</xsl:text>
-      </xsl:attribute>
-      <xsl:value-of select="o[@data]/text()"/>
+      <xsl:value-of select="o[last()]/text()"/>
     </o>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">

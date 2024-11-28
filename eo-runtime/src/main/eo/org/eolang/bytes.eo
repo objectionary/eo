@@ -31,7 +31,8 @@
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
 # and `float` encapsulate `bytes`.
-[] > bytes
+[data] > bytes
+  data > @
   $ > as-bytes
   $.eq 01- > as-bool
   string $ > as-string

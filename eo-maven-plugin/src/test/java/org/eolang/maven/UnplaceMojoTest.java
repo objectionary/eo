@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +43,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +55,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@ExtendWith(MktmpResolver.class)
 final class UnplaceMojoTest {
 
     /**
@@ -66,7 +69,7 @@ final class UnplaceMojoTest {
     private static final String DEFAULT_JAR = "eo-lib";
 
     @Test
-    void cleansClasses(@TempDir final Path temp) throws IOException {
+    void cleansClasses(@Mktmp final Path temp) throws IOException {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
@@ -85,7 +88,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void cleansBinariesWithJar(@TempDir final Path temp) throws IOException {
+    void cleansBinariesWithJar(@Mktmp final Path temp) throws IOException {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
@@ -108,7 +111,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void keepsJarBecauseItIsStillInUse(@TempDir final Path temp) throws IOException {
+    void keepsJarBecauseItIsStillInUse(@Mktmp final Path temp) throws IOException {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
@@ -135,7 +138,7 @@ final class UnplaceMojoTest {
 
     @ParameterizedTest
     @MethodSource("testArgsProvider")
-    void unplacesWithKeepOrRemoveBinariesParam(final String[] params, @TempDir final Path temp)
+    void unplacesWithKeepOrRemoveBinariesParam(final String[] params, @Mktmp final Path temp)
         throws Exception {
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         final FakeMaven maven = new FakeMaven(temp)
@@ -176,7 +179,7 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void unplacesWithRemoveBinaries(@TempDir final Path temp) throws Exception {
+    void unplacesWithRemoveBinaries(@Mktmp final Path temp) throws Exception {
         final Path target = Paths.get("target");
         final Path source = target
             .resolve("classes")

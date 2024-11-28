@@ -32,9 +32,9 @@ xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/optimize/constant-folding.xsl
 tests:
-  - /program/errors[count(*)=0]
-  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='01']]
-  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='00']]
+  - /program[not(errors)]
+  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='01-']]
+  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='00-']]
 eo: |
   01-.as-bool
   00-.as-bool

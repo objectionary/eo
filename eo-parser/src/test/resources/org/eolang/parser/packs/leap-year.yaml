@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@base='.and']
 eo: |

@@ -132,11 +132,6 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        this.object.get().attach(data);
-    }
-
-    @Override
     public byte[] delta() {
         return this.object.get().delta();
     }

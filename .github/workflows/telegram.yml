@@ -1,0 +1,86 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+name: telegram
+on:
+  push:
+    tags:
+      - '*'
+concurrency:
+  group: telegram-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  telegram:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: djdefi/cloc-action@7
+        with:
+          options: --json --report-file=cloc.json
+      - run: sudo apt-get update && sudo apt-get install --yes jq bc
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+      - run: gem install hoc
+      - run: |
+          git fetch --tags --force
+          (
+            printf 'Good news, we have just published the %d-th release ' \
+              "$(git tag | wc -l | xargs)"
+            printf 'of [EO-to-Java compiler](https://github.com/objectionary/eo): '
+            printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' \
+              "${{github.ref_name}}" "${{github.ref_name}}"
+            printf 'At the moment, there are %dK lines-of code ' \
+              "$(echo "$(jq '.SUM.code' <cloc.json)" / 1000 | bc)"
+            printf 'and %dK [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
+              "$(echo "$(hoc .)" / 1000 | bc)"
+            printf 'in the [repository](https://github.com/objectionary/eo) on GitHub '
+            printf '(%d commits total); ' \
+              "$(git rev-list --count origin/master)"
+            printf '[%d objects](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/eo/org/eolang) ' \
+              "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)"
+            printf 'and [%d atoms](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/java/EOorg/EOeolang) ' \
+              "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
+            printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module; '
+            printf '[%d issues](https://github.com/objectionary/eo/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22) ' \
+              "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
+            printf 'in the backlog, where your help is needed!\n\n'
+            printf 'You may also be interested in helping us in these repositories:\n\n'
+            for r in jeo-maven-plugin lints eoc eo2js; do
+              printf '  - [objectionary/%s](https://github.com/objectionary/%s) ' "${r}" "${r}"
+              printf '([%d issues]' \
+                "$(curl --silent "https://api.github.com/repos/objectionary/${r}/issues?state=open&per_page=100&labels=help%20wanted" | jq length)"
+              printf '(https://github.com/objectionary/%s/issues?q=is%%3Aopen+is%%3Aissue+label%%3A%%22help+wanted%%22))\n' \
+                "${r}"
+            done
+            printf '\nDo not forget to give us your GitHub stars, this is what we work for!'
+          ) > message.md
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1001381878846
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message_file: message.md
+          disable_web_page_preview: true
+          disable_notification: true
+          format: markdown

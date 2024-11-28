@@ -6,7 +6,7 @@
 
 [![mvn-linux](https://github.com/objectionary/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/mvn.yml)
 [![PDD status](http://www.0pdd.com/svg?name=objectionary/eo)](http://www.0pdd.com/p?name=objectionary/eo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b8b59692f3c8c973ac54/maintainability)](https://codeclimate.com/github/cqfn/eo/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/eaede7d027b1d9411a76/maintainability)](https://codeclimate.com/github/objectionary/eo/maintainability)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 [![codecov](https://codecov.io/gh/objectionary/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo)
 ![Lines-of-Code](https://raw.githubusercontent.com/objectionary/eo/gh-pages/loc-badge.svg)
@@ -35,30 +35,30 @@ All of them have something **we don't tolerate**:
 
 * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
 * static/class methods or attributes
-([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
+  ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
 * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
 * implementation inheritance
-([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
+  ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
 * mutability
-([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html)
-and
-[why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
+  ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html)
+  and
+  [why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
 * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
 * global scope
-([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
+  ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
 * type casting
-([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+  ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
 * reflection
-([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
+  ([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
 * scalar types and data primitives
 * annotations
-([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
+  ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
 * operators
 * traits and mixins
-([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
+  ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
 * flow control statements (`for`, `while`, `if`, etc)
 * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar)
-([why?](https://github.com/objectionary/eo/issues/51))
+  ([why?](https://github.com/objectionary/eo/issues/51))
 
 ## Quick Start
 
@@ -104,7 +104,7 @@ This is how a copy of the object `stdout` is made:
 
 ```eo
 QQ.io.stdout
-  "Hello, world!"
+  "Hello, world!\n"
 ```
 
 The indentation in EO is important, just like in Python.
@@ -126,7 +126,7 @@ argument: a copy of the object `sprintf`:
   QQ.io.stdout > @
     QQ.txt.sprintf
       "Hello, %s!"
-      "Jeffrey"
+      * "Jeffrey"
 ```
 
 Here, the object `sprintf` is also
@@ -139,7 +139,7 @@ This program can be written using horizontal notation:
 +alias org.eolang.txt.sprintf
 
 [] > app
-  (stdout (sprintf "Hello, %s!" "Jeffrey")) > @
+  (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
 ```
 
 The special attribute `@` denotes an object that is being
@@ -155,7 +155,7 @@ inside `app` and use it to build the output string:
 [] > app
   QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    QQ.txt.sprintf "Hello, %s!" name > @
+    QQ.txt.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
@@ -165,25 +165,29 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```eo
+# Multiplication table.
 [args] > app
-  memory 0 > x
-  seq > @
-    *
-      x.write 2
-      while.
-        x.lt 6
-        [i]
-          seq > @
-            * 
-              QQ.io.stdout
-                QQ.txt.sprintf
-                  "%d x %d = %d\n"
-                  x
-                  x
-                  x.times x
-              x.write
-                x.plus 1
-    true
+  malloc.for > @
+    0
+    [x] >>
+      seq > @
+        *
+          x.put 2
+          while
+            x.as-number.lt 6 > [i]
+            [i] >>
+              seq > @
+                *
+                  QQ.io.stdout
+                    QQ.txt.sprintf
+                      "%d x %d = %d\n"
+                      *
+                        ^.x
+                        ^.x
+                        ^.x.as-number.times ^.x
+                  ^.x.put
+                    ^.x.as-number.plus 1
+          true
 ```
 
 This code will print this:
@@ -242,66 +246,53 @@ Read about integration with Maven,
 
 ## Benchmark
 
-This is how many milliseconds were spend on different
+This is how many milliseconds were spent on different
 XSL stylesheets during the execution of `mvn install` of
 the `eo-runtime` module:
 
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          43232
-add-refs.xsl                         9584
-stars-to-tuples.xsl                  8590
-set-locators.xsl                     6287
-tests.xsl                            5512
-same-line-names.xsl                  4793
-rename-tests-inners.xsl              4714
-duplicate-names.xsl                  4430
-resolve-aliases.xsl                  2954
-package.xsl                          2928
-add-probes.xsl                       2763
-add-default-package.xsl              2739
-classes.xsl                          2731
-vars-float-up.xsl                    2671
-broken-refs.xsl                      2543
-explicit-data.xsl                    2465
-duplicate-aliases.xsl                2404
-noname-attributes.xsl                2224
-self-naming.xsl                      2208
-unused-aliases.xsl                   2189
-broken-aliases.xsl                   2147
-cti-adds-errors.xsl                  2074
-mandatory-package-meta.xsl           2040
-unknown-names.xsl                    2026
-not-empty-atoms.xsl                  2025
-duplicate-metas.xsl                  1984
-wrap-method-calls.xsl                1894
-prohibited-package.xsl               1893
-incorrect-home.xsl                   1886
-incorrect-architect.xsl              1883
-sparse-decoration.xsl                1874
-const-to-dataized.xsl                1872
-expand-qqs.xsl                       1839
-unsorted-metas.xsl                   1828
-mandatory-home-meta.xsl              1828
-mandatory-version-meta.xsl           1826
-expand-aliases.xsl                   1809
-global-nonames.xsl                   1785
-incorrect-version.xsl                1780
-correct-package-meta.xsl             1738
-external-weak-typed-atoms.xsl        1674
-unit-test-without-phi.xsl            1667
-align-test-classes.xsl               1376
-data.xsl                             1296
-attrs.xsl                            1052
-remove-high-level-inner-classes.xsl  1016
+to-java.xsl                          41011  34.79%
+add-refs.xsl                         11386  9.66%
+stars-to-tuples.xsl                  8669   7.35%
+set-locators.xsl                     7047   5.98%
+tests.xsl                            5408   4.59%
+rename-tests-inners.xsl              4647   3.94%
+resolve-aliases.xsl                  3456   2.93%
+add-probes.xsl                       3292   2.79%
+vars-float-up.xsl                    3231   2.74%
+package.xsl                          3166   2.69%
+explicit-data.xsl                    3135   2.66%
+add-default-package.xsl              3128   2.65%
+cti-adds-errors.xsl                  2849   2.42%
+classes.xsl                          2790   2.37%
+const-to-dataized.xsl                2688   2.28%
+expand-qqs.xsl                       2402   2.04%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-06 at 09:57,
+on 2024-11-26 at 12:21,
 on Linux with 4 CPUs.
+The total is 117897 milliseconds.
+We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
+
+You can run this benchmark locally with the following commands.
+First, to generate the `measures.csv` file:
+
+```shell
+mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
+```
+
+Then, to generate the report:
+
+```shell
+awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
+ printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
+ eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+```
 
 ## How to Contribute
 
@@ -325,4 +316,5 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11700998093
+
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12030199693

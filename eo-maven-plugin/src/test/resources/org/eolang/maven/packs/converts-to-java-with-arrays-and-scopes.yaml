@@ -25,39 +25,16 @@
 # Pay attention and to-java.xsl transformations.
 ---
 xsls:
-  - /org/eolang/parser/errors/not-empty-atoms.xsl
-  - /org/eolang/parser/critical-errors/duplicate-names.xsl
-  - /org/eolang/parser/errors/many-free-attributes.xsl
-  - /org/eolang/parser/errors/broken-aliases.xsl
-  - /org/eolang/parser/errors/duplicate-aliases.xsl
-  - /org/eolang/parser/errors/global-nonames.xsl
-  - /org/eolang/parser/errors/same-line-names.xsl
-  - /org/eolang/parser/errors/self-naming.xsl
-  - /org/eolang/parser/cti/cti-adds-errors.xsl
+  - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/expand-qqs.xsl
   - /org/eolang/parser/add-probes.xsl
   - /org/eolang/parser/vars-float-up.xsl
   - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/warnings/unsorted-metas.xsl
-  - /org/eolang/parser/warnings/incorrect-architect.xsl
-  - /org/eolang/parser/warnings/incorrect-home.xsl
-  - /org/eolang/parser/warnings/incorrect-version.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
-  - /org/eolang/parser/errors/broken-refs.xsl
-  - /org/eolang/parser/errors/unknown-names.xsl
-  - /org/eolang/parser/errors/noname-attributes.xsl
-  - /org/eolang/parser/critical-errors/duplicate-names.xsl
-  - /org/eolang/parser/warnings/duplicate-metas.xsl
-  - /org/eolang/parser/warnings/mandatory-package-meta.xsl
-  - /org/eolang/parser/warnings/mandatory-home-meta.xsl
-  - /org/eolang/parser/warnings/mandatory-version-meta.xsl
-  - /org/eolang/parser/warnings/correct-package-meta.xsl
-  - /org/eolang/parser/errors/unused-aliases.xsl
-  - /org/eolang/parser/warnings/unit-test-without-phi.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
   - /org/eolang/parser/optimize/remove-refs.xsl
@@ -72,7 +49,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
 eo: |
   +architect volodya.lombrozo@gmail.com
   +home https://github.com/objectionary/eo

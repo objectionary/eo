@@ -51,91 +51,93 @@ public final class PhSafe implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
+        return PhSafe.through(() -> this.origin.equals(obj));
     }
 
     @Override
     public int hashCode() {
-        return this.origin.hashCode();
+        return PhSafe.through(this.origin::hashCode);
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return PhSafe.through(this.origin::toString);
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return PhSafe.through(this.origin::φTerm);
     }
 
     @Override
     public Phi copy() {
-        return new PhSafe(this.origin.copy());
+        return PhSafe.through(() -> new PhSafe(this.origin.copy()));
     }
 
     @Override
     public Phi take(final String name) {
-        try {
-            return this.origin.take(name);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return PhSafe.through(() -> new PhSafe(this.origin.take(name)));
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        try {
-            return this.origin.put(pos, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return PhSafe.through(() -> this.origin.put(pos, object));
     }
 
     @Override
     public boolean put(final String name, final Phi object) {
-        try {
-            return this.origin.put(name, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return PhSafe.through(() -> this.origin.put(name, object));
     }
 
     @Override
     public String locator() {
-        return this.origin.locator();
+        return PhSafe.through(this.origin::locator);
     }
 
     @Override
     public String forma() {
-        return this.origin.forma();
-    }
-
-    @Override
-    public void attach(final byte[] data) {
-        try {
-            this.origin.attach(data);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return PhSafe.through(this.origin::forma);
     }
 
     @Override
     public byte[] delta() {
+        return PhSafe.through(this.origin::delta);
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param <T> Type of result
+     * @return Result
+     */
+    private static <T> T through(final Action<T> action) {
         try {
-            return this.origin.delta();
+            return action.act();
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
+                new Data.ToPhi(PhSafe.message(ex))
             );
         }
     }
+
+    /**
+     * Make a message from an exception.
+     * @param exp The exception.
+     * @return Message.
+     */
+    private static String message(final Throwable exp) {
+        final StringBuilder ret = new StringBuilder(0);
+        if (exp.getMessage() != null) {
+            if (!(exp instanceof ExFailure)) {
+                ret.append(exp.getClass().getSimpleName()).append(": ");
+            }
+            ret.append(exp.getMessage().replace("%", "%%"));
+        }
+        if (exp.getCause() != null) {
+            ret.append("; caused by ")
+                .append(PhSafe.message(exp.getCause()));
+        }
+        return ret.toString();
+    }
+
 }

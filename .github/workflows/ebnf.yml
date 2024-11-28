@@ -40,7 +40,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: teatimeguest/setup-texlive-action@v3.3.3
+      - uses: teatimeguest/setup-texlive-action@v3.3.4
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
@@ -78,7 +78,7 @@ jobs:
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf
           done
-      - uses: JamesIves/github-pages-deploy-action@v4.6.8
+      - uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
           branch: gh-pages
           folder: gh-pages

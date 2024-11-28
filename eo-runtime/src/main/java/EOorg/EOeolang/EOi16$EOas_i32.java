@@ -47,7 +47,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi16$EOas_i32 extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi num = Phi.Φ.take("org.eolang.i32").copy();
         num.put(
             0,

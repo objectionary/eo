@@ -69,7 +69,7 @@ public final class CheckPack {
         final Map<String, Object> map = yaml.load(this.script);
         final String src = map.get("eo").toString();
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
-        Train<Shift> train = new ParsingTrain();
+        Train<Shift> train = new TrParsing();
         if (xsls != null) {
             if (!map.containsKey("defaults")) {
                 train = train.empty();

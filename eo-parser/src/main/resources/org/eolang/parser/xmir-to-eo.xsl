@@ -38,7 +38,7 @@ SOFTWARE.
   <xsl:template match="program">
     <eo>
       <xsl:apply-templates select="license"/>
-      <xsl:apply-templates select="metas[meta]"/>
+      <xsl:apply-templates select="metas"/>
       <xsl:apply-templates select="objects"/>
     </eo>
   </xsl:template>
@@ -110,7 +110,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[not(@data) and @base]" mode="head">
+  <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -122,7 +122,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
-  <xsl:template match="o[not(@data) and not(@base)]" mode="head">
+  <xsl:template match="o[not(@base) and not(eo:has-data(.))]" mode="head">
     <xsl:param name="indent"/>
     <xsl:if test="@name">
       <xsl:value-of select="$comment"/>
@@ -156,37 +156,8 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <!-- DATA -->
-  <xsl:template match="o[@data]" mode="head">
-    <xsl:choose>
-      <xsl:when test="@data='string'">
-        <xsl:text>"</xsl:text>
-        <xsl:value-of select="text()"/>
-        <xsl:text>"</xsl:text>
-      </xsl:when>
-      <xsl:when test="@data='number'">
-        <xsl:value-of select="text()"/>
-      </xsl:when>
-      <xsl:when test="@data='bytes'">
-        <xsl:choose>
-          <xsl:when test="empty(text())">
-            <xsl:text>--</xsl:text>
-          </xsl:when>
-          <xsl:when test="string-length(text())=2">
-            <xsl:value-of select="text()"/>
-            <xsl:text>-</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="replace(text(), ' ', '-')"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          <xsl:text>Invalid data attribute: </xsl:text>
-          <xsl:value-of select="@data"/>
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="o[eo:has-data(.)]" mode="head">
+    <xsl:value-of select="normalize-space(string-join(text(),''))"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

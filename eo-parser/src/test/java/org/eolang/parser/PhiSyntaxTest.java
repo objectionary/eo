@@ -24,10 +24,14 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import java.io.IOException;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Directives;
 
 /**
@@ -36,21 +40,22 @@ import org.xembly.Directives;
  * @since 0.35.0
  */
 final class PhiSyntaxTest {
-    @Test
-    void addsError() throws IOException {
+    @ParameterizedTest
+    @CsvSource({
+        "empty ↦ Φ.org.eolang.bytes, program structure is invalid",
+        "{⟦obj ↦ ⟦⟧(x ↦ ⟦⟧)⟧}, application on formation is not supported",
+        "{⟦obj ↦ ⟦a ↦ ⟦⟧.y(Δ ⤍ 00-)⟧⟧}, delta application is not supported"
+    })
+    void addsError(final String program, final String message) throws IOException {
         MatcherAssert.assertThat(
-            "Result XML must contain errors",
-            new PhiSyntax(
-                "empty ↦ Φ.org.eolang.bytes"
-            ).parsed(),
-            XhtmlMatchers.hasXPath(
-                "//errors[count(error)>0]"
-            )
+            String.format("Result XML must contain errors because %s", message),
+            new PhiSyntax(program).parsed(),
+            XhtmlMatchers.hasXPath("//errors[count(error)>0]")
         );
     }
 
     @Test
-    void catchesDeltaToNothingBinding() throws IOException {
+    void catchesDeltaToNothingBinding() {
         Assertions.assertThrows(
             ParsingException.class,
             new PhiSyntax("{ ⟦ x ↦ ⟦ Δ ⤍ ∅ ⟧ ⟧ }")::parsed,
@@ -70,6 +75,44 @@ final class PhiSyntaxTest {
             XhtmlMatchers.hasXPath(
                 "//objects/o[@base='x']"
             )
+        );
+    }
+
+    @Test
+    void addsMetaForPackage() throws IOException {
+        MatcherAssert.assertThat(
+            "XMIR contains meta with package",
+            new PhiSyntax(
+                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(α0 ↦ ⟦ Δ ⤍ 42- ⟧), λ ⤍ Package⟧⟧}"
+            ).parsed(),
+            XhtmlMatchers.hasXPath(
+                "/program/metas/meta[@line='1' and head='package' and tail='foo']",
+                "/program/objects/o[@base='Q']",
+                "/program/objects/o[@base='.org' and @method]",
+                "/program/objects/o[@base='.eolang' and @method]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-syntax/", glob = "**.phi")
+    void checksValidExpressions(final String phi) throws IOException {
+        final XML xml = new PhiSyntax(phi).parsed();
+        MatcherAssert.assertThat(
+            "syntax is valid, can be parsed without errors",
+            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.hasXPaths("/program[not(errors)]")
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-typos/", glob = "**.phi")
+    void checksBrokenExressions(final String phi) throws IOException {
+        final XML xml = new PhiSyntax(phi).parsed();
+        MatcherAssert.assertThat(
+            "syntax is broken, can't be parsed without errors",
+            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );
     }
 }

@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.tojos;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.tojos.MnJson;
 import com.yegor256.tojos.MnSticky;
 import com.yegor256.tojos.TjCached;
@@ -43,13 +45,14 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link TranspiledTojos}.
  *
  * @since 0.30
  */
+@ExtendWith(MktmpResolver.class)
 final class TranspiledTojosTest {
 
     /**
@@ -73,7 +76,7 @@ final class TranspiledTojosTest {
     private TranspiledTojos tojos;
 
     @BeforeEach
-    void setUp(@TempDir final Path tmp) throws IOException {
+    void setUp(@Mktmp final Path tmp) throws IOException {
         this.temp = tmp;
         this.transpiled = Stream.of("a", "b", "c")
             .map(tmp::resolve)

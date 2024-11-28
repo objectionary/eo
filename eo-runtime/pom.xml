@@ -65,7 +65,7 @@ SOFTWARE.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.11</version>
+      <version>1.5.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -144,6 +144,19 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>maybeslow</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -290,7 +303,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.22</version>
+            <version>3.0.23</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -382,7 +395,7 @@ SOFTWARE.
     <profile>
       <id>hone</id>
       <properties>
-        <hone.version>0.0.22</hone.version>
+        <hone.version>0.0.24</hone.version>
       </properties>
       <build>
         <plugins>

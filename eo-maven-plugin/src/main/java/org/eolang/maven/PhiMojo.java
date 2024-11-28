@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -37,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.sf.saxon.expr.instruct.TerminationException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -48,8 +46,8 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.ParsingTrain;
 import org.eolang.parser.Schema;
+import org.eolang.parser.TrParsing;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
@@ -87,29 +85,6 @@ public final class PhiMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/eo/phi"
     )
     private File phiOutputDir;
-
-    /**
-     * Whether {@link PhiMojo} should fail on critical errors or not.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.phiFailOnCritical", required = true, defaultValue = "true")
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
-    private boolean phiFailOnCritical = true;
-
-    /**
-     * Whether {@link PhiMojo} should fail on errors or not.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.phiFailOnError", required = true, defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean phiFailOnError = true;
-
-    /**
-     * Whether {@link PhiMojo} should skip XMIRs that failed on critical errors.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.phiSkipFailed", required = true, defaultValue = "false")
-    private boolean phiSkipFailed;
 
     /**
      * Pass XMIR to Optimizations train or not.
@@ -178,7 +153,6 @@ public final class PhiMojo extends SafeMojo {
                 String.format(".%s", PhiMojo.EXT)
             )
         );
-        int amount;
         final Path target = this.phiOutputDir.toPath().resolve(relative);
         try {
             new Saved(PhiMojo.translated(xsline, xml), target).value();
@@ -191,25 +165,13 @@ public final class PhiMojo extends SafeMojo {
                 target.toFile().length(),
                 System.currentTimeMillis() - start
             );
-            amount = 1;
         } catch (final ImpossibleToPhiTranslationException ex) {
             Logger.debug(this, "XML is not translatable to phi:\n%s", xml.toString());
             throw new IllegalStateException(
                 String.format("Couldn't translate %s to phi", xmir), ex
             );
-        } catch (final IllegalArgumentException ex) {
-            if (ex.getCause() instanceof TerminationException && this.phiSkipFailed) {
-                Logger.info(
-                    this,
-                    "%[file]s failed on critical error, but skipped because phiSkipFailed=true",
-                    xmir
-                );
-                amount = 0;
-            } else {
-                throw ex;
-            }
         }
-        return amount;
+        return 1;
     }
 
     /**
@@ -219,20 +181,13 @@ public final class PhiMojo extends SafeMojo {
     private Train<Shift> train() {
         final Train<Shift> train;
         if (this.phiOptimize) {
-            train = new ParsingTrain();
+            train = new TrParsing();
         } else {
-            train = new TrDefault<>();
+            train = new com.yegor256.xsline.TrDefault<>();
         }
         final List<String> dependent = new ListOf<>(
-            "/org/eolang/parser/critical-errors/duplicate-names.xsl",
             "/org/eolang/maven/phi/incorrect-inners.xsl"
         );
-        if (this.phiFailOnError) {
-            dependent.add("/org/eolang/parser/fail-on-errors.xsl");
-        }
-        if (this.phiFailOnCritical) {
-            dependent.add("/org/eolang/parser/fail-on-critical.xsl");
-        }
         dependent.add("/org/eolang/maven/phi/to-phi.xsl");
         return this.measured(
             new TrJoined<>(

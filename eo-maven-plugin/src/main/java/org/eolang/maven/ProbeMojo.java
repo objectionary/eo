@@ -136,7 +136,11 @@ public final class ProbeMojo extends SafeMojo {
                 if (this.scopedTojos().size() == 0) {
                     Logger.warn(this, "Nothing to probe, since there are no programs");
                 } else {
-                    Logger.info(this, "Nothing to probe, all programs checked already");
+                    Logger.info(
+                        this,
+                        "Nothing to probe, all %d programs checked already",
+                        this.scopedTojos().size()
+                    );
                 }
             } else if (probed.isEmpty()) {
                 Logger.debug(

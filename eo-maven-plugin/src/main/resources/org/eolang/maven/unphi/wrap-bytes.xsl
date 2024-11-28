@@ -22,20 +22,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-bytes" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="wrap-bytes" version="2.0">
   <!--
   Convert such expression in XMIR:
     x ↦ ⟦ Δ ⤍ 01- ⟧,
   to this:
-    x ↦ Φ.org.eolang.bytes( Δ ⤍ 01- )
+    x ↦ Φ.org.eolang.bytes( α0 ↦ ⟦ Δ ⤍ 01- ⟧ )
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@abstract and @name and count(o)=1 and o[@base='org.eolang.bytes' and @data and text()]]">
+  <xsl:template match="o[@abstract and @name and eo:has-data(.)]">
     <xsl:element name="o">
       <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
       <xsl:attribute name="name" select="@name"/>
-      <xsl:attribute name="data" select="'bytes'"/>
-      <xsl:value-of select="o[1]/text()"/>
+      <xsl:element name="o">
+        <xsl:attribute name="abstract"/>
+        <xsl:attribute name="as" select="0"/>
+        <xsl:value-of select="text()"/>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

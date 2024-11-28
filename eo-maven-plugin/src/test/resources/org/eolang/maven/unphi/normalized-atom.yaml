@@ -31,9 +31,9 @@ phi: |
         eolang ↦ ⟦
           io ↦ ⟦
             x ↦ ⟦
-              text ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A),
+              text ↦ Φ.org.eolang.bytes (α0 ↦ ⟦Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A⟧),
               size ↦ Φ.org.eolang.int(
-                as-bytes ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A)
+                as-bytes ↦ Φ.org.eolang.bytes (α0 ↦ ⟦Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A⟧)
               ),
               λ ⤍ Lorg_eolang_io_stdout
             ⟧,

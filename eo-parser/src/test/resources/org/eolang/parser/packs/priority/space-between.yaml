@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/errors[count(error)=0]
+  - /program[not(errors)]
   - //o[@base='.plus']/o[@base='.a']/o[@base='^']
   - //o[@base='.plus']/o[@base='.b']/o[@base='^']
 eo: |

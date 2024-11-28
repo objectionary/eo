@@ -28,6 +28,8 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -38,12 +40,13 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Files}.
  * @since 0.40
  */
+@ExtendWith(MktmpResolver.class)
 final class FilesTest {
     /**
      * Files instance.
@@ -51,7 +54,7 @@ final class FilesTest {
     private static final Files INSTANCE = Files.INSTANCE;
 
     @Test
-    void throwsOnReadingWithoutOpening(@TempDir final Path dir) {
+    void throwsOnReadingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
             () -> FilesTest.INSTANCE.read(
@@ -62,7 +65,7 @@ final class FilesTest {
     }
 
     @Test
-    void throwsOnWritingWithoutOpening(@TempDir final Path dir) {
+    void throwsOnWritingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
             () -> FilesTest.INSTANCE.write(
@@ -73,7 +76,7 @@ final class FilesTest {
     }
 
     @Test
-    void throwsOnClosingWithoutOpening(@TempDir final Path dir) {
+    void throwsOnClosingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
             () -> FilesTest.INSTANCE.close(
@@ -84,7 +87,7 @@ final class FilesTest {
     }
 
     @Test
-    void readsFromFile(@TempDir final Path dir) throws IOException {
+    void readsFromFile(@Mktmp final Path dir) throws IOException {
         final String file = FilesTest.tempFile(dir);
         try (BufferedWriter writer =
             java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
@@ -100,7 +103,7 @@ final class FilesTest {
     }
 
     @Test
-    void writesToFile(@TempDir final Path dir) throws IOException {
+    void writesToFile(@Mktmp final Path dir) throws IOException {
         final String file = FilesTest.tempFile(dir);
         try (BufferedWriter writer =
             java.nio.file.Files.newBufferedWriter(Paths.get(file))) {

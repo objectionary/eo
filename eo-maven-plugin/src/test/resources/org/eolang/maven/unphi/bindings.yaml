@@ -27,7 +27,7 @@ tests:
   - //o[@base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.w' and @name='@']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes']/o[@base='org.eolang.bytes' and @data and text()!='']
+  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes' and text()!='']
 phi: |-
   {
     ⟦
@@ -39,7 +39,7 @@ phi: |-
         ⟧,
         five ↦ Φ.org.eolang.int(
           α0 ↦ Φ.org.eolang.bytes(
-            Δ ⤍ 00-00-00-00-00-00-00-05
+            α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-05 ⟧
           )
         )
       )

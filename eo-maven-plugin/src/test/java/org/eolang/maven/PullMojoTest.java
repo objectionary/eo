@@ -23,7 +23,10 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,17 +58,19 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link PullMojo}.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(WeAreOnline.class)
+@ExtendWith(MktmpResolver.class)
 final class PullMojoTest {
     /**
      * Stdout.
@@ -81,7 +86,7 @@ final class PullMojoTest {
     );
 
     @Test
-    void pullsSuccessfully(@TempDir final Path temp) throws IOException {
+    void pullsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
@@ -95,7 +100,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsFromProbes(@TempDir final Path temp) throws IOException {
+    void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom\n",
@@ -121,7 +126,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
+    void pullsUsingOfflineHashFile(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
@@ -144,7 +149,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
+    void pullsUsingOfflineHash(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
@@ -163,7 +168,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void skipsPullMojo(@TempDir final Path temp) throws IOException {
+    void skipsPullMojo(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
@@ -179,7 +184,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
+    void pullsVersionedObjectSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(new OnVersioned(PullMojoTest.STDOUT, "9c93528"))
@@ -197,7 +202,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsProbedVersionedObjectFromOneObjectionary(@TempDir final Path temp)
+    void pullsProbedVersionedObjectFromOneObjectionary(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
             .with("withVersions", true)
@@ -222,7 +227,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsProbedVersionedObjectsFromDifferentObjectionaries(@TempDir final Path temp)
+    void pullsProbedVersionedObjectsFromDifferentObjectionaries(@Mktmp final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.4");
@@ -272,7 +277,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void doesNotPullInOfflineMode(@TempDir final Path tmp) throws IOException {
+    void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
             .with("offline", true)
@@ -295,7 +300,7 @@ final class PullMojoTest {
 
     @Test
     @CaptureLogs
-    void showsWhereNotFoundWasDiscoveredAt(@TempDir final Path tmp, final Logs out)
+    void showsWhereNotFoundWasDiscoveredAt(@Mktmp final Path tmp, final Logs out)
         throws IOException {
         final FakeMaven mvn = new FakeMaven(tmp)
             .withProgram(
@@ -319,14 +324,14 @@ final class PullMojoTest {
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(
-                line -> line.contains("Failed to pull object discovered at")
+                line -> line.contains("Failed to pull 'org.eolang.org' earlier discovered at")
             ),
             "Log should contain info where failed to pull object was discovered at, but it does not"
         );
     }
 
     @Test
-    void skipsAlreadyPulled(@TempDir final Path temp) throws IOException {
+    void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Pull());
@@ -343,7 +348,7 @@ final class PullMojoTest {
     }
 
     @Test
-    void savesPulledResultsToCache(@TempDir final Path temp) throws IOException {
+    void savesPulledResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final CommitHash hash = new ChCached(
             new ChNarrow(
@@ -367,12 +372,61 @@ final class PullMojoTest {
     }
 
     @Test
-    void getsAlreadyPulledResultsFromCache(@TempDir final Path temp) throws Exception {
-        final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/sum.eo")
+    @Disabled
+    void ignoresPreviousMistakesAfterCorrection(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# In this program, we refer to the 'bar' object",
+                        "# by mistake. The build should fail because of this,",
+                        "# in particular its 'pull' step must fail.",
+                        "[] > foo",
+                        "  bar 42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.build().plugins().appendItself();
+                f.exec("eo:register", "eo:parse", "eo:optimize", "eo:shake");
+                MatcherAssert.assertThat(
+                    "first run must fail, because the 'bar' object is absent",
+                    f.execQuiet("eo:discover-foreign", "eo:pull"),
+                    Matchers.not(Matchers.equalTo(0))
+                );
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# Now, this program, doesn't refer to the 'bar' object",
+                        "# which makes this program valid and it must compile.",
+                        "[] > foo",
+                        "  42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.exec(
+                    "eo:register", "eo:parse", "eo:optimize", "eo:shake",
+                    "eo:discover-foreign", "eo:pull"
+                );
+            }
         );
+        MatcherAssert.assertThat(
+            "necessary objects were pulled",
+            temp.resolve("target/eo/4-pull/org/eolang/number.eo").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void getsAlreadyPulledResultsFromCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
+        final String cached = "# test.\n[] > just-something\n";
         new Saved(
             cached,
             cache
@@ -393,7 +447,7 @@ final class PullMojoTest {
         );
         new FakeMaven(temp)
             .withProgram(
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# Test.",
                 "[] > app",
                 "  QQ.io.stdout > @"
             )
@@ -413,7 +467,7 @@ final class PullMojoTest {
                     )
                 ).asBytes()
             ).asString(),
-            Matchers.is(cached.asString())
+            Matchers.is(cached)
         );
     }
 

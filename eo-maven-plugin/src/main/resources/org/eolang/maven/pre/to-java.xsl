@@ -127,7 +127,7 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
-      <xsl:variable name="pkg" select="//metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/program/metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
         <xsl:text>.</xsl:text>
@@ -491,11 +491,11 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhData(</xsl:text>
+    <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, </xsl:text>
+    <xsl:text>, 0, new PhDefault(</xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->
@@ -529,11 +529,17 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Boolean obj = new Dataized(new </xsl:text>
+    <xsl:text>Assertions.assertTrue(</xsl:text>
+    <xsl:value-of select="eo:eol(3 + $indent)"/>
+    <xsl:text>new Dataized(</xsl:text>
+    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()).asBool();</xsl:text>
+    <xsl:text>()</xsl:text>
+    <xsl:value-of select="eo:eol(3 + $indent)"/>
+    <xsl:text>).asBool()</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>Assertions.assertTrue(obj);</xsl:text>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">

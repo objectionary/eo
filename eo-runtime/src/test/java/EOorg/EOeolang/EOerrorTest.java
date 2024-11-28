@@ -28,7 +28,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
@@ -71,23 +70,6 @@ final class EOerrorTest {
         );
     }
 
-    @Test
-    void rendersMultiLayeredErrorMessageCorrectly() {
-        Assertions.assertEquals(
-            new EOerror.ErrorMsg(
-                new IOException(
-                    "oops2",
-                    new IOException(
-                        "oops1",
-                        new IOException("yes!")
-                    )
-                )
-            ).get(),
-            "IOException: oops2; caused by IOException: oops1; caused by IOException: yes!",
-            "Must render all layers nicely"
-        );
-    }
-
     @ParameterizedTest
     @MethodSource("getTestSources")
     void getsReadableError(final byte[] cnst, final String text) {
@@ -106,7 +88,7 @@ final class EOerrorTest {
     }
 
     /**
-     * Static method providing sources for parametrized test.
+     * Static method providing sources for parameterized test.
      * @return Stream of sources.
      */
     private static Stream<Arguments> getTestSources() {

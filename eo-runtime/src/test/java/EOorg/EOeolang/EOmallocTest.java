@@ -34,7 +34,7 @@ import org.eolang.AtVoid;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExFailure;
+import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -58,7 +58,7 @@ final class EOmallocTest {
         );
         new Dataized(phi).take();
         Assertions.assertThrows(
-            ExFailure.class,
+            ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
             AtCompositeTest.TO_ADD_MESSAGE
         );
@@ -72,12 +72,12 @@ final class EOmallocTest {
             dummy
         );
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> new Dataized(phi).take(),
             AtCompositeTest.TO_ADD_MESSAGE
         );
         Assertions.assertThrows(
-            ExFailure.class,
+            ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
             AtCompositeTest.TO_ADD_MESSAGE
         );

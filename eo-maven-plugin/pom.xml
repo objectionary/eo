@@ -40,6 +40,11 @@ SOFTWARE.
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>lints</artifactId>
+      <version>0.0.9</version>
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
       <!-- version from parent POM -->
@@ -179,7 +184,11 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
       <!-- We need to have the "version" here explicitly, otherwise tests won't work: -->
-      <version>0.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- We need to have the "version" here explicitly, otherwise tests won't work: -->
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
@@ -218,7 +227,7 @@ SOFTWARE.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.17.0</version>
+      <version>2.18.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -411,6 +420,24 @@ SOFTWARE.
               <goal>resources</goal>
             </goals>
           </execution>
+          <execution>
+            <id>copy-descriptor</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}/META-INF/maven</directory>
+                  <includes>
+                    <include>plugin.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -444,7 +471,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.22</version>
+            <version>3.0.23</version>
           </dependency>
         </dependencies>
       </plugin>

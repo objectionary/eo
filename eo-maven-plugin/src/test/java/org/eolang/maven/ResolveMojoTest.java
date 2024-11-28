@@ -23,7 +23,10 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -36,7 +39,6 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ResolveMojo}.
@@ -44,11 +46,46 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @ExtendWith(WeAreOnline.class)
+@ExtendWith(MktmpResolver.class)
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
 
     @Test
-    void resolvesWithSingleDependency(@TempDir final Path temp) throws IOException {
+    void deletesOtherVersions(@Mktmp final Path temp) throws IOException {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.dependencies()
+                    .append("org.eolang", "eo-runtime", "0.39.0");
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("resolve");
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "the jar file was resolved and unpacked",
+                    f.files().file(
+                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0/org/eolang/Phi.class"
+                    ).exists(),
+                    Matchers.is(true)
+                );
+                f.dependencies()
+                    .append("org.eolang", "eo-runtime", "0.40.0");
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "binary files from the old JAR were removed",
+                    f.files().file(
+                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0"
+                    ).exists(),
+                    Matchers.is(false)
+                );
+            }
+        );
+    }
+
+    @Test
+    void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
                 String.format(
@@ -74,7 +111,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "[a b] > sum",
             "  plus. > @",
@@ -100,7 +137,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithEoRuntimeDependency(@TempDir final Path temp) throws IOException {
+    void resolvesWithEoRuntimeDependency(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
@@ -111,7 +148,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithoutEoRuntimeDependency(@TempDir final Path temp) throws IOException {
+    void resolvesWithoutEoRuntimeDependency(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .with("withRuntimeDependency", false)
@@ -124,7 +161,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesIfRuntimeDependencyComesFromTojos(@TempDir final Path temp) throws IOException {
+    void resolvesIfRuntimeDependencyComesFromTojos(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
@@ -137,7 +174,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@TempDir final Path temp)
+    void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
@@ -152,7 +189,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithRuntimeDependencyFromPom(@TempDir final Path temp) throws IOException {
+    void resolvesWithRuntimeDependencyFromPom(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Dependency runtime = new Dependency();
         runtime.setGroupId("org.eolang");
@@ -171,7 +208,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithoutTransitiveDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithoutTransitiveDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .with("ignoreTransitive", false)
@@ -188,7 +225,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void throwsExceptionWithTransitiveDependency(@TempDir final Path temp) {
+    void throwsExceptionWithTransitiveDependency(@Mktmp final Path temp) {
         final FakeMaven maven = new FakeMaven(temp);
         final Dependency dependency = new Dependency();
         dependency.setScope("compiled");
@@ -221,7 +258,7 @@ final class ResolveMojoTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
-    void resolvesWithConflictingDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format(
                 "%s\n\n%s",
@@ -249,7 +286,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolvesWithConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependenciesNoFail(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 String.format(

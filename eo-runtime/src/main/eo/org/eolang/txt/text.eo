@@ -28,24 +28,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
 # Text.
 [origin] > text
   origin > @
-
   # Check that all signs in string are numbers or letters.
   # Works only for english letters.
-  (regex "/^[A-Za-z0-9]+$/").matches ^.origin > [] > is-alphanumeric
-
+  (regex "/^[A-Za-z0-9]+$/").matches origin > is-alphanumeric
   # Check that all signs in string are letters.
   # Works only for english letters.
-  (regex "/^[a-zA-Z]+$/").matches ^.origin > [] > is-alpha
-
+  (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
-  (regex "/^[\\x00-\\x7F]*$/").matches ^.origin > [] > is-ascii
+  (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
   # Takes a piece of a `text` as another `text`.
   # Here `start` must be an integer index to start slicing from,
@@ -185,9 +180,10 @@
   # Returns index of `substring` in current `text`.
   # If no `substring` was found, it returns -1
   [substring] > index-of
-    ^.origin.as-bytes.size > self-len!
-    substring > substr!
-    substr.size > sub-len!
+    (string ^.origin.as-bytes).length > self-len!
+    string > substr
+      substring > substr-as-bytes!
+    substr.length > sub-len!
     (number self-len).minus (number sub-len) > end!
     if. > @
       or.
@@ -216,9 +212,10 @@
   # Returns last index of `substring` in current `text`.
   # If no element was found, it returns -1.
   [substring] > last-index-of
-    ^.origin.as-bytes.size > self-len!
-    substring > substr!
-    substring.size > sub-len!
+    (string ^.origin.as-bytes).length > self-len!
+    string > substr
+      substring > substr-as-bytes!
+    substr.length > sub-len!
     if. > @
       or.
         (number sub-len).gt self-len
@@ -383,9 +380,10 @@
       if. > @
         ^.len.eq current
         accum.with > with-substr
-          ^.self-as-bytes.slice
-            start
-            current.minus start
+          string
+            ^.self-as-bytes.slice
+              start
+              current.minus start
         if.
           eq.
             ^.delim

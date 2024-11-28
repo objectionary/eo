@@ -27,7 +27,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), 'public final class EOfoo__underscore extends PhDefault')]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.

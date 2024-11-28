@@ -48,7 +48,7 @@ public final class EOos$EOname extends PhDefault implements Atom {
     private static final Phi OS_NAME = new Data.ToPhi(System.getProperty("os.name"));
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return EOos$EOname.OS_NAME;
     }
 }

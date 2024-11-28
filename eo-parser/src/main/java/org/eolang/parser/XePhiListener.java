@@ -119,7 +119,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterProgram(final PhiParser.ProgramContext ctx) {
         this.objs.add(new Objects.ObjXembly());
-        this.dirs.add("program")
+        this.dirs
+            .comment(XePhiListener.INFO)
+            .add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
@@ -128,12 +130,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
             )
-            .comment(XePhiListener.INFO)
-            .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up();
+            .add("listing").set(new SourceText(ctx)).up();
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().start();
         }
@@ -143,8 +140,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitProgram(final PhiParser.ProgramContext ctx) {
         if (!this.packages.isEmpty()) {
             final String pckg = String.join(".", this.packages);
-            this.dirs.xpath("metas[last()]").strict(1)
+            this.dirs.addIf("metas").up()
+                .xpath("metas[last()]").strict(1)
                 .add("meta")
+                .attr("line", 1)
                 .add("head").set("package").up()
                 .add("tail").set(pckg).up()
                 .add("part").set(pckg).up()
@@ -186,15 +185,15 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterScoped(final PhiParser.ScopedContext ctx) {
         if (ctx.HOME() != null) {
-            this.objects().prop("base", "Q").leave();
-        } else if (ctx.XI() != null) {
-            this.objects().prop("base", "$").leave();
+            this.objects().prop("base", "Q");
+        } else {
+            this.objects().prop("base", "$");
         }
     }
 
     @Override
     public void exitScoped(final PhiParser.ScopedContext ctx) {
-        // Nothing here
+        this.objects().leave();
     }
 
     @Override
@@ -215,30 +214,23 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
-            this.objects().start();
-        }
+        // Nothing here
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
-        if (this.objs.size() > this.packages.size()
-            && (ctx.alphaBinding() != null || ctx.emptyBinding() != null)) {
-            this.objects().enter()
-                .prop(this.properties.peek(), this.attributes.pop())
-                .leave();
-        }
-    }
-
-    @Override
-    public void enterAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
-        // Nothing here
+    public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
+        this.enterObjectBinding();
+    }
+
+    @Override
+    public void exitTauBinding(final PhiParser.TauBindingContext ctx) {
+        this.exitObjectBinding();
     }
 
     @Override
@@ -276,12 +268,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
-        // Nothing here
+        this.enterObjectBinding();
     }
 
     @Override
     public void exitEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
         this.objects().leave();
+        this.exitObjectBinding();
     }
 
     @Override
@@ -297,14 +290,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 );
             }
         } else {
-            this.objects()
-                .start()
-                .prop("data", "bytes")
-                .prop("base", "org.eolang.bytes");
-            if (!"--".equals(ctx.BYTES().getText())) {
-                this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
-            }
-            this.objects().leave();
+            this.objects().data(ctx.BYTES().getText().trim());
         }
     }
 
@@ -329,15 +315,22 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterApplication(final PhiParser.ApplicationContext ctx) {
         this.properties.push("as");
         this.objects().enter();
-        if (ctx.bindings().binding().size() == 0) {
-            this.objects().prop("copy");
-        }
     }
 
     @Override
     public void exitApplication(final PhiParser.ApplicationContext ctx) {
         this.objects().leave();
         this.properties.pop();
+    }
+
+    @Override
+    public void enterApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -369,8 +362,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .prop("base", "org.eolang.string")
             .start()
             .prop("base", "org.eolang.bytes")
-            .prop("data", "bytes")
-            .data("55 6E 6B 6E 6F 77 6E 20 65 72 72 6F 72")
+            .data("55-6E-6B-6E-6F-77-6E-20-65-72-72-6F-72")
             .leave()
             .leave()
             .leave();
@@ -412,6 +404,24 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
      */
     private Objects objects() {
         return this.objs.getLast();
+    }
+
+    /**
+     * Enter either tau or empty binding.
+     */
+    private void enterObjectBinding() {
+        this.objects().start();
+    }
+
+    /**
+     * Exit either tau or empty binding.
+     */
+    private void exitObjectBinding() {
+        if (this.objs.size() > this.packages.size()) {
+            this.objects().enter()
+                .prop(this.properties.peek(), this.attributes.pop())
+                .leave();
+        }
     }
 
     /**

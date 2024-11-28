@@ -23,4 +23,4 @@
 tests:
   - //o[@name='five' and @base='.int']/o[@base='.eolang']
   - //o[@name='five' and @base='.int']/o[@base='.bytes' and @as='0']
-phi: "{⟦five ↦ Φ.org.eolang.int(α0 ↦ Φ.org.eolang.bytes(Δ ⤍ 00-00-00-00-00-00-00-05))⟧}"
+phi: "{⟦five ↦ Φ.org.eolang.int(α0 ↦ Φ.org.eolang.bytes(α0 ↦ ⟦Δ ⤍ 00-00-00-00-00-00-00-05⟧))⟧}"

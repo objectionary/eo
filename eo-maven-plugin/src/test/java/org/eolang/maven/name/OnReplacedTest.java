@@ -23,10 +23,12 @@
  */
 package org.eolang.maven.name;
 
+import com.yegor256.WeAreOnline;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -125,18 +127,19 @@ final class OnReplacedTest {
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void convertsToStringFromOtherObjectName() {
         final ObjectName name = new OnReplaced(
             new OnVersioned(
-                OnReplacedTest.STRING,
-                "0.28.5"
+                "org.eolang.number",
+                "0.41.1"
             )
         );
         MatcherAssert.assertThat(
             String.format("Couldn't convert versioned object %s to string", name),
             name.toString(),
             Matchers.equalTo(
-                new DelimitedName(OnReplacedTest.STRING, "9c93528").toString()
+                new DelimitedName("org.eolang.number", "9a3dee3").toString()
             )
         );
     }

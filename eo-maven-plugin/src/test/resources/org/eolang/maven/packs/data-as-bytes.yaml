@@ -28,12 +28,12 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //java[contains(text(), '.take("org").take("eolang").take("true")')]
-  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x00});')]
-  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
-  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
-  - //java[contains(text(), 'ret = new PhData(ret, new byte[] {(byte) 0x01, (byte) 0xAF});')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x00}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > t

@@ -31,6 +31,7 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
 import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,7 +52,7 @@ final class EOnumber$EOtimesTest {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
-                EOerror.ExError.class,
+                ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
                         new PhWith(

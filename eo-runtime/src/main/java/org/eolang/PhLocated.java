@@ -24,6 +24,10 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * An object with coordinates (line and position).
  *
@@ -31,7 +35,7 @@ package org.eolang;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @Versionized
-public final class PhLocated implements Phi {
+public final class PhLocated implements Phi, Atom {
 
     /**
      * The original.
@@ -111,17 +115,17 @@ public final class PhLocated implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return this.origin.take(name);
+        return this.through(() -> this.origin.take(name));
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        return this.origin.put(pos, object);
+        return this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
-        return this.origin.put(name, object);
+    public boolean put(final String nme, final Phi object) {
+        return this.through(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -131,16 +135,84 @@ public final class PhLocated implements Phi {
 
     @Override
     public String forma() {
-        return this.origin.forma();
-    }
-
-    @Override
-    public void attach(final byte[] data) {
-        this.origin.attach(data);
+        return this.through(this.origin::forma);
     }
 
     @Override
     public byte[] delta() {
-        return this.origin.delta();
+        return this.through(this.origin::delta, ".Δ");
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.through(() -> ((Atom) this.origin).lambda(), ".λ");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param <T> Type of result
+     * @return Result
+     */
+    private <T> T through(final Action<T> action) {
+        return this.through(action, "");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param suffix The suffix to add to the label
+     * @param <T> Type of result
+     * @return Result
+     * @checkstyle IllegalCatchCheck (20 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private <T> T through(final Action<T> action, final String suffix) {
+        try {
+            return action.act();
+        } catch (final ExUnset ex) {
+            throw new ExUnset(this.label(suffix), ex);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(suffix), ex);
+        } catch (final EOerror.ExError ex) {
+            throw new EOerror.ExError(ex, this.label(suffix));
+        } catch (final ExAbstract | Error ex) {
+            throw new ExFailure(this.label(suffix), ex);
+        } catch (final RuntimeException ex) {
+            throw this.wrap(ex, suffix);
+        }
+    }
+
+    /**
+     * Wrap the exception into a new one.
+     * @param cause Original
+     * @param suffix Te suffix
+     * @return New exception
+     */
+    private RuntimeException wrap(final RuntimeException cause,
+        final String suffix) {
+        final String label = this.label(suffix);
+        RuntimeException ret;
+        try {
+            final Constructor<? extends RuntimeException> ctor =
+                cause.getClass().getConstructor(String.class, Throwable.class);
+            ret = ctor.newInstance(label, cause);
+        } catch (final NoSuchMethodException | InstantiationException
+            | IllegalAccessException | InvocationTargetException ex) {
+            ret = new ExFailure(label, cause);
+        }
+        return ret;
+    }
+
+    /**
+     * The label of the exception.
+     * @param suffix The suffix to add to the label
+     * @return Label
+     */
+    private String label(final String suffix) {
+        return String.format(
+            "Error in the \"%s%s\" attribute at %s:%s",
+            this.location, suffix, this.line, this.position
+        );
     }
 }

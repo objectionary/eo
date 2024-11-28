@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/errors[count(*)=0]
+  - /program[not(errors)]
   - //o[@name='f' and @line='8']
   - //o[@base='f' and @ref='8']
 eo: |

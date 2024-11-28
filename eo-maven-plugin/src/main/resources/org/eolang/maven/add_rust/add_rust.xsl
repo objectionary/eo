@@ -22,10 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add_rust" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="add_rust" version="2.0">
   <!--
   Creates <rusts> section with <rust> inserts.
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:template match="program">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -35,7 +36,7 @@ SOFTWARE.
           <xsl:if test="(../attribute(base) = 'org.eolang.rust' or (../attribute(base) = '.rust' and ../o[1]/attribute(base) = '.eolang' and ../o[1]/o[1]/attribute(base) = '.org' and ../o[1]/o[1]/o[1]/attribute(base) = 'Q')) and (attribute(base) = 'org.eolang.string' or (attribute(base) = '.string' and o[1]/attribute(base) = '.eolang' and o[1]/o[1]/attribute(base) = '.org' and o[1]/o[1]/o[1]/attribute(base) = 'Q'))">
             <rust>
               <xsl:attribute name="code">
-                <xsl:value-of select="./o[@data = 'bytes']/text()"/>
+                <xsl:value-of select="./o[eo:has-data(.)]/text()"/>
               </xsl:attribute>
               <xsl:attribute name="code_loc">
                 <xsl:value-of select="attribute(loc)"/>
@@ -45,7 +46,7 @@ SOFTWARE.
                   <xsl:if test="(parent::o/attribute(base) = 'org.eolang.tuple' or (parent::o/attribute(base) = '.tuple' and parent::o/o[1]/attribute(base) = '.eolang' and parent::o/o[1]/o[1]/attribute(base) = '.org' and parent::o/o[1]/o[1]/o[1]/attribute(base) = 'Q')) and (attribute(base) = 'org.eolang.string' or (attribute(base) = '.string' and o[1]/attribute(base) = '.eolang' and o[1]/o[1]/attribute(base) = '.org' and o[1]/o[1]/o[1]/attribute(base) = 'Q'))">
                     <dependency>
                       <xsl:attribute name="name">
-                        <xsl:value-of select="./o[@data = 'bytes']/text()"/>
+                        <xsl:value-of select="./o[eo:has-data(.)]/text()"/>
                       </xsl:attribute>
                     </dependency>
                   </xsl:if>

@@ -27,7 +27,7 @@
 +package org.eolang.io
 +version 0.0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-empty-bytes
   dead-input.read 10 > i1
   i1.read 10 > i2

@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOreal$EOasin extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new ToPhi(
             Math.asin(new Dataized(this.take(Attr.RHO)).asNumber())
         );

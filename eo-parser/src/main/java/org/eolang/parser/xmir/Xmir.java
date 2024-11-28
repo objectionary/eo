@@ -23,10 +23,14 @@
  */
 package org.eolang.parser.xmir;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import org.eolang.parser.StUnhex;
@@ -59,10 +63,23 @@ public interface Xmir {
         /**
          * Train of transformations.
          */
-        private static final Train<Shift> TRAIN = new TrDefault<>(
-            new StClasspath("/org/eolang/parser/explicit-data.xsl"),
-            new StUnhex(),
-            new StClasspath("/org/eolang/parser/wrap-method-calls.xsl")
+        private static final Train<Shift> TRAIN = new TrLambda(
+            new TrDefault<>(
+                new StClasspath("/org/eolang/parser/explicit-data.xsl"),
+                new StUnhex(),
+                new StClasspath("/org/eolang/parser/wrap-method-calls.xsl"),
+                new StClasspath("/org/eolang/parser/wrap-data.xsl")
+            ),
+            shift -> new StAfter(
+                shift,
+                new StLambda(
+                    shift::uid,
+                    (pos, xml) -> {
+                        Logger.debug(Xmir.class, "Step #%d\n%s", pos, xml);
+                        return xml;
+                    }
+                )
+            )
         );
 
         /**
@@ -101,7 +118,8 @@ public interface Xmir {
         @Override
         public String toEO() {
             return new Xsline(
-                Xmir.Default.TRAIN.with(
+                Xmir.Default.TRAIN
+                    .with(
                     new StClasspath(this.xsl)
                 )
             )

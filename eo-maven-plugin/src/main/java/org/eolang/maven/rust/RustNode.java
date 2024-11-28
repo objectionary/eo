@@ -242,7 +242,7 @@ public final class RustNode implements Buildable {
     private static String unhex(final String txt) {
         final StringBuilder hex = new StringBuilder(txt.length());
         for (final char chr : txt.toCharArray()) {
-            if (chr == ' ') {
+            if (chr == '-') {
                 continue;
             }
             hex.append(chr);

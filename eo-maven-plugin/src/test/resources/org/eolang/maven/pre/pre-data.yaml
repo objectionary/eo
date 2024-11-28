@@ -25,14 +25,8 @@ sheets:
 document:
   <program>
     <objects>
-      <o base="org.eolang.int" data="bytes">01 02 03 AE 45 FE 98 0A</o>
-      <o base="org.eolang.int" data="int">42</o>
-      <o base="org.eolang.bool" data="bytes">01</o>
-      <o base="org.eolang.bool" data="bool">FALSE</o>
+      <o base="org.eolang.bytes">01-02-03-AE-45-FE-98-0A</o>
     </objects>
   </program>
 asserts:
-  - //o[@base='org.eolang.int' and @primitive='bytes' and not(@data) and value='new byte[] {(byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0xAE, (byte) 0x45, (byte) 0xFE, (byte) 0x98, (byte) 0x0A}']
-  - //o[@base='org.eolang.int' and not(@data) and value='42L']
-  - //o[@base='org.eolang.bool' and not(@data) and value='new byte[] {(byte) 0x01}']
-  - //o[@base='org.eolang.bool' and not(@data) and value='Boolean.FALSE']
+  - //o[@base='org.eolang.bytes' and @primitive and value='new byte[] {(byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0xAE, (byte) 0x45, (byte) 0xFE, (byte) 0x98, (byte) 0x0A}']

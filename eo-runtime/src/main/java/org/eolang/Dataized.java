@@ -24,9 +24,12 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,7 +99,22 @@ public final class Dataized {
     }
 
     /**
-     * Extract the data from the object.
+     * Extracts the data from the EO object as a byte array.
+     *
+     * <p>This method performs the dataization process, which involves converting
+     * the EO object into a byte array. It logs the dataization process if the
+     * logging level is set to FINE and the current dataization level is within
+     * the maximum allowed level. If an error occurs during dataization, it logs
+     * the error details and rethrows the exception.</p>
+     *
+     * <p>Usage example:</p>
+     *
+     * <pre>{@code
+     * Phi phi = ...; // Initialize your EO object
+     * Dataized dataized = new Dataized(phi);
+     * byte[] data = dataized.take();
+     * }</pre>
+     *
      * @return The data
      */
     public byte[] take() {
@@ -119,6 +137,34 @@ public final class Dataized {
                 );
             }
             return data;
+        } catch (final EOerror.ExError ex) {
+            final List<String> raw = new ArrayList<>(ex.locations().size());
+            raw.addAll(ex.locations());
+            Collections.reverse(raw);
+            if ("org.eolang.string".equals(ex.enclosure().forma())) {
+                raw.add(
+                    String.format(
+                        "\"%s\"",
+                        new Dataized(ex.enclosure()).take(String.class)
+                    )
+                );
+            }
+            final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
+            final List<String> clean = new ArrayList<>(raw.size());
+            int idx = 1;
+            for (final String line : raw) {
+                clean.add(String.format(fmt, idx, line));
+                ++idx;
+            }
+            this.logger.log(
+                Level.SEVERE,
+                String.format(
+                    "Dataized to org.eolang.error with %s inside, at:%n  ⇢ %s",
+                    ex.enclosure().forma(),
+                    String.join("\n  ⇢ ", clean)
+                )
+            );
+            throw ex;
         } finally {
             Dataized.LEVEL.set(before);
         }
