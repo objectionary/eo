@@ -117,6 +117,7 @@ public interface Xmir {
 
         @Override
         public String toEO() {
+            System.out.println(this.xml);
             return new Xsline(
                 Xmir.Default.TRAIN
                     .with(

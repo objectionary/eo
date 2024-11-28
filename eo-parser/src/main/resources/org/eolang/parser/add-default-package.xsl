@@ -45,7 +45,7 @@ SOFTWARE.
   <xsl:template match="o[not(contains(@base, '.'))]" mode="no-refs">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='&amp;' and @base!='$' and @base!='&lt;']" mode="no-dots">
+  <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='∅' and @base!='&amp;' and @base!='$' and @base!='&lt;']" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@base=/program/metas/meta[head='alias']/part[1])]" mode="no-specials">

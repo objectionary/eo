@@ -103,7 +103,7 @@ SOFTWARE.
       </xsl:if>
     </xsl:for-each>
   </xsl:function>
-  <xsl:template match="//objects">
+  <xsl:template match="/program/objects">
     <xsl:copy>
       <xsl:apply-templates select=".//o[eo:abstract(.)]" mode="top"/>
       <xsl:apply-templates select="o[not(eo:abstract(.))]|@*"/>
@@ -116,7 +116,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
-      <xsl:apply-templates select="@* except @base except @abstract"/>
+      <xsl:apply-templates select="@* except @base"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>

@@ -23,8 +23,8 @@
 xsls: [ ]
 tests:
   - /program[not(errors)]
-  - //o[@name='x' and @abstract]/following::o[@base='.first' and @method]
-  - //o[not(@name) and not(@base) and @abstract]/following::o[@base='.second' and @method]
+  - //o[@name='x' and not(@base)]/following::o[@base='.first' and @method]
+  - //o[not(@name) and not(@base)]/following::o[@base='.second' and @method]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > x
