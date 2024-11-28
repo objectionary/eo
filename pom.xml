@@ -297,7 +297,7 @@ SOFTWARE.
         <executions>
           <execution>
             <id>project-validate</id>
-            <phase>verify</phase>
+            <phase>validate</phase>
             <goals>
               <goal>execute</goal>
             </goals>
@@ -308,9 +308,19 @@ SOFTWARE.
         </executions>
         <dependencies>
           <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-xml</artifactId>
+            <version>0.30.0</version>
+          </dependency>
+          <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
             <version>3.0.23</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>12.5</version>
           </dependency>
         </dependencies>
       </plugin>
