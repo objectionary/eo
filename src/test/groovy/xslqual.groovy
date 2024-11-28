@@ -37,8 +37,6 @@ Map<String, String> rules = [
     'Don\'t use empty content for instructions like \'xsl:for-each\' \'xsl:if\' \'xsl:when\' etc.',
   '/xsl:stylesheet[@version = "2.0"]//@select[contains(., ":node-set")]':
     'Don\'t use node-set extension function if using XSLT 2.0',
-  '/xsl:stylesheet[not(every $s in in-scope-prefixes(.)[not(. = "xml" or . = "")] satisfies exists(//(*[not(xsl:stylesheet)] | @*[not(parent::xsl:*)] | @select[parent::xsl:*] | @as | @name[parent::xsl:*])[starts-with(name(), concat($s, ":")) or starts-with(., concat($s, ":"))]))]':
-    'There are redundant namespace declarations in the xsl:stylesheet element',
   '//xsl:function[not(some $x in //(@match | @select) satisfies contains($x, @name))]':
     'Stylesheet functions are unused',
   '//xsl:template[@name and not(@match)][not(//xsl:call-template/@name = @name)]':
@@ -49,8 +47,6 @@ Map<String, String> rules = [
     'Function or template parameter is unused in the function/template body',
   '/xsl:stylesheet[count(//xsl:template[@match and not(@name)][count(*) < 3] ) >= 10]':
     'Too many low granular templates in the stylesheet (10 or more)',
-  '/xsl:stylesheet[count(//xsl:template | //xsl:function) = 1]':
-    'Using a single template/function in the stylesheet. You can modularize the code.',
   '/xsl:stylesheet/xsl:output[@method = \'xml\'][starts-with(//xsl:template[.//html or .//HTML]/@match, "/")]':
     'Using the output method \'xml\' when generating HTML code',
   '//@*[contains(., "name(") or contains(., "local-name(")]':
@@ -81,6 +77,10 @@ Map<String, String> rules = [
     'Using a single character name for variable/function/template. Use meaningful names for these features.',
   '//*[name()="xsl:variable" or name()="xsl:template"][(string-length(@name) > 1) and matches(@name, "[0-9].+")] | //xsl:function[(string-length(substring-after(@name, ":")) > 1) and matches(substring-after(@name, \':\'), \'[0-9].+\')]':
     'The variable/function/template name starts with a numeric character',
+//  '/xsl:stylesheet[count(//xsl:template | //xsl:function) = 1]':
+//    'Using a single template/function in the stylesheet. You can modularize the code.',
+//  '/xsl:stylesheet[not(every $s in in-scope-prefixes(.)[not(. = "xml" or . = "")] satisfies exists(//(*[not(xsl:stylesheet)] | @*[not(parent::xsl:*)] | @select[parent::xsl:*] | @as | @name[parent::xsl:*])[starts-with(name(), concat($s, ":")) or starts-with(., concat($s, ":"))]))]':
+//    'There are redundant namespace declarations in the xsl:stylesheet element',
 //  '/xsl:stylesheet[@version = "2.0"][not(some $x in .//@* satisfies contains($x, "xs:"))]':
 //    'The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode',
 ]
@@ -111,7 +111,7 @@ rules.forEach {
     xsl = new com.jcabi.xml.XMLDocument(file)
     ret = check.applyTo(xsl)
     if (!ret.isEmpty()) {
-      println "  ${file} (${ret})"
+      println "  ERROR: ${file} (${ret})"
       ++errors
     }
   }
