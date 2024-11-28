@@ -345,7 +345,7 @@ public final class FakeMaven {
      */
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
-            "+alias org.eolang.io.stdout",
+            "+alias stdout org.eolang.io.stdout",
             "+package f\n",
             "# This is the default 64+ symbols comment in front of named abstract object.",
             "[x] > main",

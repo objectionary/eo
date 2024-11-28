@@ -28,7 +28,7 @@ tests:
   - //meta[head='alias' and tail='stdin org.eolang.io.stdin' and part[1]='stdin' and part[2]='org.eolang.io.stdin']
 eo: |
   +alias org.eolang.txt.scanner
-  +alias org.eolang.io.stdin
+  +alias stdin org.eolang.io.stdin
 
   # This is the default 64+ symbols comment in front of abstract object.
   [args] > main
