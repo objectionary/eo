@@ -25,7 +25,7 @@ SOFTWARE.
 <!--
 Raise an error if warnings are found within program
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="fail-on-warnings" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="_stepped" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/sheets">
     <xsl:copy>
