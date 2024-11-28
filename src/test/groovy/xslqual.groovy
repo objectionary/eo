@@ -104,13 +104,17 @@ rules.forEach {
   println "${warning}:"
   new File('.').traverse(
     type: FileType.FILES,
-    preDir: { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
+    preDir: {
+      if (it.name == 'target') {
+        return FileVisitResult.SKIP_SUBTREE
+      }
+    },
     nameFilter: ~/.*\.xsl/
   ) {
     file ->
     xsl = new com.jcabi.xml.XMLDocument(file)
     ret = check.applyTo(xsl)
-    if (!ret.isEmpty()) {
+    if (!ret.empty) {
       println "  ERROR: ${file} (${ret})"
       ++errors
     }

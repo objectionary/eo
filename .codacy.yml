@@ -25,4 +25,5 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
+  - "src/test/groovy"
   - "eo-runtime/src/main/java/EOorg/EOeolang/EOmalloc$EOof$EOallocated$EOresized.java"
