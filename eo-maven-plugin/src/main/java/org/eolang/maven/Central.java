@@ -31,7 +31,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.eolang.maven.util.Rel;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 /**
@@ -118,9 +117,8 @@ public final class Central implements BiConsumer<Dependency, Path> {
             throw new IllegalStateException(ex);
         }
         Logger.info(
-            this, "%s:%s:%s:%s unpacked to %s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(),
-            new Rel(path)
+            this, "%s:%s:%s:%s unpacked to %[file]s",
+            dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(), path
         );
     }
 

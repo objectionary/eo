@@ -76,6 +76,14 @@ SOFTWARE.
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">
+    <xs:annotation>
+      <xs:appinfo>An object, as it is seen in the EO program</xs:appinfo>
+      <xs:documentation>
+        The element contains all necessary details about a single
+        object, including all its attributes (which are also objects).
+        The object may also contain data, as text.
+      </xs:documentation>
+    </xs:annotation>
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
