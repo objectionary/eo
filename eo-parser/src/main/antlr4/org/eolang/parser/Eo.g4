@@ -587,7 +587,7 @@ COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
-META: PLUS NAME (SPACE ~[\t\r\n ])*
+META: PLUS NAME (SPACE ~[\t\r\n ]+)*
     ;
 
 ROOT: 'Q'

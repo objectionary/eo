@@ -50,8 +50,8 @@ origin: |
 
 straight: |
   +package sandbox
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
+  +alias stdout org.eolang.io.stdout
+  +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
   # This is the default 64+ symbols comment in front of named abstract object.
@@ -82,8 +82,8 @@ straight: |
 
 reversed: |
   +package sandbox
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
+  +alias stdout org.eolang.io.stdout
+  +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
   # This is the default 64+ symbols comment in front of named abstract object.
