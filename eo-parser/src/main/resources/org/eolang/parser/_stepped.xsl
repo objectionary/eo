@@ -22,10 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!--
-Raise an error if warnings are found within program
--->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="_stepped" version="2.0">
+  <xsl:param name="step"/>
+  <xsl:param name="sheet"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/sheets">
     <xsl:copy>
