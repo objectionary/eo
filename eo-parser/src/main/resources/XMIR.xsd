@@ -142,7 +142,7 @@ SOFTWARE.
     </xs:annotation>
     <xs:simpleContent>
       <xs:extension base="non-empty">
-        <xs:attribute name="check">
+        <xs:attribute name="check" type="non-empty">
           <xs:annotation>
             <xs:appinfo>The name of the checker that found the error</xs:appinfo>
             <xs:documentation>
@@ -383,7 +383,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="revision" type="non-empty">
+    <xs:attribute name="revision">
       <xs:annotation>
         <xs:appinfo>The Git SHA of the release of the parser that created the document</xs:appinfo>
         <xs:documentation>
@@ -392,6 +392,11 @@ SOFTWARE.
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>
       </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[0-9a-f]{7}"/>
+        </xs:restriction>
+      </xs:simpleType>
     </xs:attribute>
     <xs:attribute name="dob" type="xs:dateTime">
       <xs:annotation>
