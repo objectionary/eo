@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.43.2
++version 0.44.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > calculates-length-of-spaces-only
@@ -51,10 +51,32 @@
     D0-B4-D1-80-D1-83-D0-B3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > reads-the-length
-  eq. > @
-    "Hello, друг!".length
-    12
+[] > reads-the-length-with-2-byte-characters
+  "Hello, друг!" > str
+  and. > @
+    str.length.eq 12
+    str.as-bytes.size.eq 16
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > reads-the-length-with-3-byte-characters
+  "The अ devanagari" > str
+  and. > @
+    str.length.eq 16
+    str.as-bytes.size.eq 18
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > reads-the-length-with-4-byte-characters
+  "The 😀 smile" > str
+  and. > @
+    str.length.eq 11
+    str.as-bytes.size.eq 14
+
+# This unit test is supposed to check the functionality of the corresponding object.
+# The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
+# incomplete 4 byte character.
+[] > throws-on-taking-length-of-incomplete-4-byte-character
+  string F0-9F-98 > should-be-smile
+  should-be-smile.length > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > compares-two-different-types
@@ -215,15 +237,25 @@
     "Ф"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > slice-foreign-literals
+[] > slice-with-2-byte-characters
   eq. > @
-    "привет".slice
-      0
-      1
-    "п"
+    "привет".slice 1 2
+    "ри"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > slice-foreign-literals-2
+[] > slice-with-3-byte-characters
+  eq. > @
+    "The अ is अ".slice 1 6
+    "he अ i"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > slice-with-4-byte-characters
+  eq. > @
+    "One 😀 and 😀 another".slice 3 8
+    " 😀 and 😀"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > slice-foreign-literals
   eq. > @
     "hello, 大家!".slice
       7

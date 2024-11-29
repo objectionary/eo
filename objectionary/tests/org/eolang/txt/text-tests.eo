@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.43.2
++version 0.44.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > text-slices-the-origin-string
@@ -209,6 +209,22 @@
     (text "Hello").index-of "world"
 
 # This unit test is supposed to check the functionality of the corresponding object.
+[] > index-of-non-existed-substring-with-utf
+  eq. > @
+    -1
+    index-of.
+      text "привет, друг!"
+      "x"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > index-of-existed-substring-with-utf
+  eq. > @
+    3
+    index-of.
+      text "привет, друг!"
+      "в"
+
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-valid-index-of-substring
   eq. > @
     6
@@ -266,6 +282,22 @@
   eq. > @
     -1
     (text "Hello, world").last-index-of "somebody"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > last-index-of-non-existed-substring-with-utf
+  eq. > @
+    -1
+    last-index-of.
+      text "привет, друг!"
+      "x"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > last-index-of-existed-substring-with-utf
+  eq. > @
+    3
+    last-index-of.
+      text "привет, друг!"
+      "в"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > splits-text-by-dash

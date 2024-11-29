@@ -20,20 +20,164 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.43.2
-+rt node eo2js-runtime:0.0.0
-+version 0.43.2
++version 0.44.0
 
 # The `string` object is an abstraction of a text string, which
 # internally is a chain of bytes.
 [as-bytes] > string
   as-bytes > @
 
-  # Get the length of it.
-  [] > length /number
+  # Calculates the length of the string.
+  [] > length
+    ^.as-bytes.size > size
+    80- > pattern-one
+    E0- > pattern-two
+    F0- > pattern-three
+    F8- > pattern-four
+    00- > result-one
+    C0- > result-two
+    pattern-two > result-three
+    pattern-three > result-four
+    if. > @
+      size.eq 0
+      0
+      rec-length 0 0
+
+    # The object checks if `index` + `char-size` is out of string bounds.
+    # If not - the new recursion iteration is started with `index` increased by `char-size` and
+    # `accum` increased by 1.
+    [index char-size len] > increase-length
+      if. > @
+        (index.plus char-size).gt ^.size
+        error
+          sprintf
+            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+            * char-size index ^.^.as-bytes
+        ^.rec-length
+          index.plus char-size
+          len.plus 1
+
+    # The object recursively calculates the length of current string considering how many bytes
+    # the character on each iteration must consist of.
+    [index accum] > rec-length
+      ^.^.as-bytes.slice index 1 > byte
+      if. > @
+        index.eq ^.size
+        accum
+        if.
+          (byte.and pattern-one).eq result-one
+          ^.increase-length index 1 accum
+          if.
+            (byte.and pattern-two).eq result-two
+            ^.increase-length index 2 accum
+            if.
+              (byte.and pattern-three).eq result-three
+              ^.increase-length index 3 accum
+              if.
+                (byte.and pattern-four).eq result-four
+                ^.increase-length index 4 accum
+                error
+                  sprintf
+                    "Unknown byte format (%x), can't recognize character"
+                    * byte
 
   # Takes a piece of a string as another string.
-  [start len] > slice /string
+  [start len] > slice
+    start > start-bytes!
+    len > len-bytes!
+    number start-bytes > num-start
+    number len-bytes > num-len
+    ^.as-bytes.size > size
+    num-start.plus num-len > end
+    80- > pattern-one
+    E0- > pattern-two
+    F0- > pattern-three
+    F8- > pattern-four
+    00- > result-one
+    C0- > result-two
+    pattern-two > result-three
+    pattern-three > result-four
+    rec-index > bts-start!
+      0
+      0
+      num-start
+      sprintf
+        "Start index (%d) is out of string bounds"
+        * num-start
+    minus. > bts-length
+      rec-index
+        number bts-start
+        0
+        num-len
+        sprintf
+          "Start index + length to slice (%d) is out of string bounds"
+          * (num-start.plus num-len)
+      bts-start
+    if. > @
+      num-start.lt 0
+      error
+        sprintf
+          "Start index must be >= 0, but was %d"
+          * num-start
+      if.
+        num-len.lt 0
+        error
+          sprintf
+            "Length to slice must be >= 0, but was %d"
+            * num-len
+        if.
+          num-len.eq 0
+          ""
+          string
+            ^.as-bytes.slice bts-start bts-length
+
+    # The object checks if `index` + provided `char-size` is not out of the string bounds.
+    # If not -  the new recursion circle is started with `index` is increased by `char-size` and
+    # `accum` is increased by 1.
+    [index char-size accum result cause] > increase
+      if. > @
+        (index.plus char-size).gt ^.size
+        error
+          sprintf
+            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+            * char-size index ^.^.as-bytes
+        ^.rec-index
+          index.plus char-size
+          accum.plus 1
+          result
+          cause
+
+    # The object recursively calculates `index` of bytes representation of the string
+    # where `accum` equals to provided `result`.
+    # The `cause` here is the description of the error which is thrown when `index` reaches the end
+    # of the bytes but `accum` does not reach the `result`.
+    # Also it checks how many bytes (B) must contain character on the current step and tries to
+    # increase index by B.
+    [index accum result cause] > rec-index
+      ^.^.as-bytes.slice index 1 > byte
+      if. > @
+        accum.eq result
+        index
+        if.
+          index.eq ^.size
+          error cause
+          if.
+            (byte.and pattern-one).eq result-one
+            ^.increase index 1 accum result cause
+            if.
+              (byte.and pattern-two).eq result-two
+              ^.increase index 2 accum result cause
+              if.
+                (byte.and pattern-three).eq result-three
+                ^.increase index 3 accum result cause
+                if.
+                  (byte.and pattern-four).eq result-four
+                  ^.increase index 4 accum result cause
+                  error
+                    sprintf
+                      "Unknown byte format (%x), can't recognize character"
+                      * byte
