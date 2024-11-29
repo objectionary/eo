@@ -72,7 +72,6 @@ SOFTWARE.
               <xsl:text> at line #</xsl:text>
               <xsl:value-of select="@line"/>
             </xsl:for-each>
-            <xsl:text>; it's internal bug</xsl:text>
           </xsl:message>
         </xsl:if>
         <xsl:if test="not($source/@line)">
