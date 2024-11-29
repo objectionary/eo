@@ -180,7 +180,7 @@ SOFTWARE.
     </xs:annotation>
     <xs:simpleContent>
       <xs:extension base="non-empty">
-        <xs:attribute name="check" type="non-empty">
+        <xs:attribute name="check" type="sheet">
           <xs:annotation>
             <xs:appinfo>The name of the checker that found the error</xs:appinfo>
             <xs:documentation>
