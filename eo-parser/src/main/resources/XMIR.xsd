@@ -99,6 +99,20 @@ SOFTWARE.
       <xs:pattern value=".*"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="locator">
+    <xs:annotation>
+      <xs:appinfo>A locator of an object</xs:appinfo>
+      <xs:documentation>
+        The locator of an object, which specifies the location of the object within the program,
+        in the global graph of objects, starting from Φ. The locator is used to uniquely identify
+        an object within the program and is typically used to reference objects from other objects
+        or from the global scope, ensuring that the correct object is accessed or modified.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z][^ \n\r\t]*))*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="o" mixed="true">
     <xs:annotation>
       <xs:appinfo>An object, as it is seen in the EO program</xs:appinfo>
@@ -150,7 +164,7 @@ SOFTWARE.
     <xs:attribute name="star" type="empty"/>
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="atom" type="fqn"/>
-    <xs:attribute name="loc" type="non-empty"/>
+    <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
