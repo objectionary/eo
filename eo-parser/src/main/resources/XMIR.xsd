@@ -228,7 +228,7 @@ SOFTWARE.
       <xs:extension base="non-empty"/>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="sheet">
+  <xs:simpleType name="sheet">
     <xs:annotation>
       <xs:appinfo>The XSL stylesheet that was applied to the XMIR</xs:appinfo>
       <xs:documentation>
@@ -239,10 +239,10 @@ SOFTWARE.
         developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
       </xs:documentation>
     </xs:annotation>
-    <xs:simpleContent>
-      <xs:extension base="non-empty"/>
-    </xs:simpleContent>
-  </xs:complexType>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][a-z-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="meta">
     <xs:annotation>
       <xs:appinfo>The meta found in the source code</xs:appinfo>
