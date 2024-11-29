@@ -75,17 +75,6 @@ SOFTWARE.
       <xs:length value="0"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="ref">
-    <xs:annotation>
-      <xs:appinfo>A reference to an object</xs:appinfo>
-      <xs:documentation>
-        A reference to an object, which is used to link objects together or to reference objects from other objects or from the global scope.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[0-9]+"/>
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="attribute-name">
     <xs:annotation>
       <xs:appinfo>A name of object attribute</xs:appinfo>
@@ -172,7 +161,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="ref" type="ref">
+    <xs:attribute name="ref" type="whole">
       <xs:annotation>
         <xs:appinfo>The location of the object that is referenced here</xs:appinfo>
         <xs:documentation>
