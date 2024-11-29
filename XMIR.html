@@ -746,13 +746,13 @@ if (gc != null) {
             <a href="#type_program">Complex Type: <strong>program</strong></a>
           </li>
           <li>
-            <a href="#type_sheet">Complex Type: <strong>sheet</strong></a>
-          </li>
-          <li>
             <a href="#type_empty">Simple Type: <strong>empty</strong></a>
           </li>
           <li>
             <a href="#type_non-empty">Simple Type: <strong>non-empty</strong></a>
+          </li>
+          <li>
+            <a href="#type_sheet">Simple Type: <strong>sheet</strong></a>
           </li>
           <li>
             <a href="#type_whole">Simple Type: <strong>whole</strong></a>
@@ -1338,69 +1338,6 @@ setState('type_program_scbox', false);
       <a href="#top">top</a>
     </div>
     <hr />
-    <h3>Complex Type: <a name="type_sheet" class="name" id="type_sheet">sheet</a></h3>
-    <table class="hierarchy">
-      <tr>
-        <th>Super-types:</th>
-        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> (by restriction) &lt; <strong>sheet</strong> (by extension)</td>
-      </tr>
-      <tr>
-        <th>Sub-types:</th>
-        <td>None</td>
-      </tr>
-    </table>
-    <table class="properties">
-      <tr>
-        <th>Name</th>
-        <td>sheet</td>
-      </tr>
-      <tr>
-        <th>
-          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
-        </th>
-        <td>no</td>
-      </tr>
-      <tr>
-        <th>Documentation</th>
-        <td>
-        The element contains information about the XSL stylesheet that was applied to the XMIR during its optimization
-        and/or transformation. This information is crucial for understanding the changes made to the XMIR document
-        during these processes. The XSL stylesheet can include various transformations that optimize the structure,
-        improve performance, or adapt the document for different purposes. By documenting the applied stylesheet,
-        developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
-      </td>
-      </tr>
-      <tr>
-        <th>Application Data</th>
-        <td>The XSL stylesheet that was applied to the XMIR</td>
-      </tr>
-    </table>
-    <div class="sample box">
-      <div><input type="button" id="type_sheet_xibox_button" class="control" onclick="switchState('type_sheet_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
-      <div id="type_sheet_xibox" class="contents">
-        <div style="margin-left: 0em">&lt;...&gt; <br /><span style="margin-left: 1.5em"> <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> </span><br />&lt;/...&gt;</div>
-      </div>
-      <script type="text/javascript">
-<!--
-setState('type_sheet_xibox', true);
-// -->
-</script>
-    </div>
-    <div class="schemaComponent box">
-      <div><input type="button" id="type_sheet_scbox_button" class="control" onclick="switchState('type_sheet_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
-      <div id="type_sheet_scbox" class="contents">
-        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">sheet</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:simpleContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
-      </div>
-      <script type="text/javascript">
-<!--
-setState('type_sheet_scbox', false);
-// -->
-</script>
-    </div>
-    <div style="text-align: right; clear: both;">
-      <a href="#top">top</a>
-    </div>
-    <hr />
     <h3>Simple Type: <a name="type_empty" class="name" id="type_empty">empty</a></h3>
     <table class="hierarchy">
       <tr>
@@ -1468,7 +1405,6 @@ setState('type_empty_scbox', false);
             <li><span class="type"><a title="Jump to &quot;comment&quot; type definition." href="#type_comment">comment</a></span> (by extension)</li>
             <li><span class="type"><a title="Jump to &quot;listing&quot; type definition." href="#type_listing">listing</a></span> (by extension)</li>
             <li><span class="type"><a title="Jump to &quot;license&quot; type definition." href="#type_license">license</a></span> (by extension)</li>
-            <li><span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span> (by extension)</li>
           </ul>
         </td>
       </tr>
@@ -1509,6 +1445,63 @@ setState('type_empty_scbox', false);
       <script type="text/javascript">
 <!--
 setState('type_non-empty_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_sheet" class="name" id="type_sheet">sheet</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>sheet</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>sheet</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = [a-z][a-z-]*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The element contains information about the XSL stylesheet that was applied to the XMIR during its optimization
+        and/or transformation. This information is crucial for understanding the changes made to the XMIR document
+        during these processes. The XSL stylesheet can include various transformations that optimize the structure,
+        improve performance, or adapt the document for different purposes. By documenting the applied stylesheet,
+        developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The XSL stylesheet that was applied to the XMIR</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_sheet_scbox_button" class="control" onclick="switchState('type_sheet_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_sheet_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">sheet</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[a-z][a-z-]*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_sheet_scbox', false);
 // -->
 </script>
     </div>
