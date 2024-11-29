@@ -75,6 +75,30 @@ SOFTWARE.
       <xs:length value="0"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="attribute-name">
+    <xs:annotation>
+      <xs:appinfo>A name of object attribute</xs:appinfo>
+      <xs:documentation>
+        The name of an object attribute, which is used to reference the attribute from other objects or from the global scope.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+|@|[a-z][^ \n\t\r]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="fqn">
+    <xs:annotation>
+      <xs:appinfo>A fully qualified name of an object</xs:appinfo>
+      <xs:documentation>
+        The fully qualified name of an object, which includes the names of all the objects that are its ancestors.
+        This type is used to uniquely identify an object within the program. The FQN is typically used to reference
+        objects from other objects or from the global scope, ensuring that the correct object is accessed or modified.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value=".*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="o" mixed="true">
     <xs:annotation>
       <xs:appinfo>An object, as it is seen in the EO program</xs:appinfo>
@@ -105,7 +129,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="name" type="non-empty">
+    <xs:attribute name="name" type="attribute-name">
       <xs:annotation>
         <xs:appinfo>The name of the EO object inside its scope of visibility (another object or global)</xs:appinfo>
         <xs:documentation>
@@ -114,7 +138,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="base" type="non-empty">
+    <xs:attribute name="base" type="fqn">
       <xs:annotation>
         <xs:appinfo>The name of the object of which this one is a copy</xs:appinfo>
         <xs:documentation>
@@ -124,8 +148,8 @@ SOFTWARE.
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="star" type="empty"/>
-    <xs:attribute name="as" type="non-empty"/>
-    <xs:attribute name="atom" type="non-empty"/>
+    <xs:attribute name="as" type="attribute-name"/>
+    <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="non-empty"/>
     <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>

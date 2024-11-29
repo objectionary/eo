@@ -12,7 +12,7 @@
   hi-大家 ↦ ⟦ ⟧,
   α0 ↦ Φ () () (),
   α65536 ↦ Φ.r,
-  k ↦ ⟦ λ ⤍ FunctionName ⟧,
+  k ↦ ⟦ λ ⤍ FunctionName, α0 ↦ ⟦ λ ⤍ FunctionName, Δ ⤍ 42- ⟧ ⟧,
   terminator-application ↦ ⊥ (t ↦ ξ.t),
   terminator-dispatch ↦ ⊥.t
 ⟧}
