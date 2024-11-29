@@ -28,8 +28,6 @@ SOFTWARE.
   and try to find their references in aliases. If we find them,
   we change their @base attributes. If not, we decide that they
   are in org.eolang package and also change the @base attribute.
-
-  If some alias is badly formatted, a runtime error is issued.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base]">
