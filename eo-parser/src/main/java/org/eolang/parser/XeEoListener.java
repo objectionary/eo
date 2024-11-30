@@ -31,7 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -1182,23 +1182,15 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
-        final String data;
+        final Supplier<String> data;
         final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             base = "bytes";
-            data = text.replaceAll("\\s+", "").trim();
-        } else if (ctx.FLOAT() != null) {
+            data = () -> text.replaceAll("\\s+", "").trim();
+        } else if (ctx.FLOAT() != null || ctx.INT() != null) {
             base = "number";
-            data = XeEoListener.bytesToHex(
-                ByteBuffer
-                    .allocate(Double.BYTES)
-                    .putDouble(Double.parseDouble(text))
-                    .array()
-            );
-        } else if (ctx.INT() != null) {
-            base = "number";
-            data = XeEoListener.bytesToHex(
+            data = new BytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
                     .putDouble(Double.parseDouble(text))
@@ -1206,7 +1198,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             );
         } else if (ctx.HEX() != null) {
             base = "number";
-            data = XeEoListener.bytesToHex(
+            data = new BytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
                     .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
@@ -1214,7 +1206,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             );
         } else if (ctx.STRING() != null) {
             base = "string";
-            data = XeEoListener.bytesToHex(
+            data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(
                     text.substring(1, text.length() - 1)
                 ).getBytes(StandardCharsets.UTF_8)
@@ -1222,7 +1214,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.TEXT() != null) {
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
-            data = XeEoListener.bytesToHex(
+            data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(
                     XeEoListener.trimMargin(text, indent)
                 ).getBytes(StandardCharsets.UTF_8)
@@ -1237,7 +1229,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ctx.getStart().getLine()
             );
         }
-        this.objects.prop("base", base).data(data);
+        this.objects.prop("base", base).data(data.get());
     }
 
     @Override
@@ -1339,28 +1331,5 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
-    }
-
-    /**
-     * Bytes to HEX.
-     *
-     * @param bytes Bytes.
-     * @return Hexadecimal value as string.
-     */
-    private static String bytesToHex(final byte... bytes) {
-        final String hex;
-        if (bytes.length == 0) {
-            hex = "--";
-        } else {
-            final StringJoiner out = new StringJoiner("-");
-            for (final byte bty : bytes) {
-                out.add(String.format("%02X", bty));
-            }
-            if (bytes.length == 1) {
-                out.add("");
-            }
-            hex = out.toString();
-        }
-        return hex;
     }
 }

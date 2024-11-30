@@ -20,48 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-eo: |
-  +package eo.example
-
-  # This is the default 64+ symbols comment in front of named abstract object.
-  [n] > fibonacci
-    if. > @
-      lt.
-        n
-        2
-      n
-      plus.
-        fibonacci
-          n.minus 1
-        fibonacci
-          n.minus 2
-phi: |-
-  {
-    ⟦
-      eo ↦ ⟦
-        example ↦ ⟦
-          fibonacci ↦ ⟦
-            n ↦ ∅,
-            φ ↦ ξ.n.lt(
-              α0 ↦ 2
-            ).if(
-              α0 ↦ ξ.n,
-              α1 ↦ ξ.ρ.fibonacci(
-                α0 ↦ ξ.n.minus(
-                  α0 ↦ 1
-                )
-              ).plus(
-                α0 ↦ ξ.ρ.fibonacci(
-                  α0 ↦ ξ.n.minus(
-                    α0 ↦ 2
-                  )
-                )
-              )
-            )
-          ⟧,
-          λ ⤍ Package
-        ⟧,
-        λ ⤍ Package
-      ⟧
-    ⟧
-  }
+tests:
+  - //o[@name='five' and @base='org.eolang.number']/o[@base='org.eolang.bytes' and text()='40-14-00-00-00-00-00-00']
+  - //o[@name='hello' and @base='org.eolang.string']/o[@base='org.eolang.bytes' and text()='48-65-6C-6C-6F']
+phi: "{⟦five ↦ 5, hello ↦ \"Hello\"⟧}"

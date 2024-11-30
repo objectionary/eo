@@ -691,8 +691,7 @@ fragment EXPONENT
     ;
 
 FLOAT
-    :
-    (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?
+    : (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?
     ;
 
 HEX : '0x' [0-9a-fA-F]+
