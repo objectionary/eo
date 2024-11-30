@@ -99,11 +99,7 @@ phi: |-
           ⟧,
           compares-two-different-types ↦ ⟦
             φ ↦ Φ.org.eolang.true.eq(
-              α0 ↦ Φ.org.eolang.number(
-                α0 ↦ Φ.org.eolang.bytes(
-                  α0 ↦ ⟦ Δ ⤍ 40-45-00-00-00-00-00-00 ⟧
-                )
-              )
+              α0 ↦ 42
             ).not
           ⟧,
           compares-bool-to-bytes ↦ ⟦
@@ -121,18 +117,10 @@ phi: |-
           ⟧,
           compares-bool-to-string ↦ ⟦
             φ ↦ Φ.org.eolang.true.eq(
-              α0 ↦ Φ.org.eolang.string(
-                α0 ↦ Φ.org.eolang.bytes(
-                  α0 ↦ ⟦ Δ ⤍ 01- ⟧
-                )
-              )
+              α0 ↦ "\u0001"
             ).and(
               α0 ↦ Φ.org.eolang.false.eq(
-                α0 ↦ Φ.org.eolang.string(
-                  α0 ↦ Φ.org.eolang.bytes(
-                    α0 ↦ ⟦ Δ ⤍ 00- ⟧
-                  )
-                )
+                α0 ↦ "\u0000"
               )
             )
           ⟧,

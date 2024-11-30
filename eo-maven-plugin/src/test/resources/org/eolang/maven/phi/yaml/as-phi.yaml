@@ -36,11 +36,7 @@ phi: |-
             α0 ↦ ξ
           ).length,
           α1 ↦ ξ.greater-than(
-            α0 ↦ Φ.org.eolang.number(
-              α0 ↦ Φ.org.eolang.bytes(
-                α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-00 ⟧
-              )
-            )
+            α0 ↦ 0
           )
         )
       ⟧

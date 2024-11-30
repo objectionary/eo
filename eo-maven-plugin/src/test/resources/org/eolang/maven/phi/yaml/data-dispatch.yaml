@@ -21,47 +21,16 @@
 # SOFTWARE.
 ---
 eo: |
-  +package eo.example
-
-  # This is the default 64+ symbols comment in front of named abstract object.
-  [n] > fibonacci
-    if. > @
-      lt.
-        n
-        2
-      n
-      plus.
-        fibonacci
-          n.minus 1
-        fibonacci
-          n.minus 2
+  5.plus 5 > ten
+  "Hello".concat "world" > greetings
 phi: |-
   {
     ⟦
-      eo ↦ ⟦
-        example ↦ ⟦
-          fibonacci ↦ ⟦
-            n ↦ ∅,
-            φ ↦ ξ.n.lt(
-              α0 ↦ 2
-            ).if(
-              α0 ↦ ξ.n,
-              α1 ↦ ξ.ρ.fibonacci(
-                α0 ↦ ξ.n.minus(
-                  α0 ↦ 1
-                )
-              ).plus(
-                α0 ↦ ξ.ρ.fibonacci(
-                  α0 ↦ ξ.n.minus(
-                    α0 ↦ 2
-                  )
-                )
-              )
-            )
-          ⟧,
-          λ ⤍ Package
-        ⟧,
-        λ ⤍ Package
-      ⟧
+      ten ↦ 5.plus(
+        α0 ↦ 5
+      ),
+      greetings ↦ "Hello".concat(
+        α0 ↦ "world"
+      )
     ⟧
   }

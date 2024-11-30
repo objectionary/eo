@@ -98,6 +98,34 @@ final class StUnhexTest {
     }
 
     @Test
+    void convertsStringWithDoubleSpacesFromHexToEo() {
+        MatcherAssert.assertThat(
+            EoIndentLexerTest.TO_ADD_MESSAGE,
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<o base=\"org.eolang.string\"><o base=\"org.eolang.bytes\">7A-0A-20-20-79-0A-20-78</o></o>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "//o[text()='\"z\\n  y\\n x\"']"
+            )
+        );
+    }
+
+    @Test
+    void convertsNegativeZeroFromHexToEo() {
+        MatcherAssert.assertThat(
+            EoIndentLexerTest.TO_ADD_MESSAGE,
+            new Xsline(new StUnhex()).pass(
+                new XMLDocument(
+                    "<o base='number'><o base='org.eolang.bytes'>80-00-00-00-00-00-00-00</o></o>"
+                )
+            ),
+            XhtmlMatchers.hasXPaths("//o[text()='-0']")
+        );
+    }
+
+    @Test
     void convertsFloatFromHexToEo() {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
