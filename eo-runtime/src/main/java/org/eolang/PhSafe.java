@@ -133,6 +133,10 @@ public final class PhSafe implements Phi {
             }
             ret.append(exp.getMessage().replace("%", "%%"));
         }
+        if (exp.getCause() != null) {
+            ret.setLength(0);
+            ret.append(PhSafe.message(exp.getCause()));
+        }
         return ret.toString();
     }
 
