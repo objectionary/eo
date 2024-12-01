@@ -116,6 +116,8 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         this.dirs
             .comment(XeEoListener.INFO)
             .add("program")
+            .attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+            .attr("xsi:noNamespaceSchemaLocation", "https://www.eolang.org/XMIR.xsd")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))

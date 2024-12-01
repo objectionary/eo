@@ -101,7 +101,6 @@ public final class PhiSyntax implements Syntax {
                 new Directives(xel).append(spy).append(this.extra)
             ).domQuietly()
         );
-        new Schema(dom).check();
         if (spy.size() == 0) {
             Logger.debug(this, "Input of PHI calculus compiled, no errors");
         } else {

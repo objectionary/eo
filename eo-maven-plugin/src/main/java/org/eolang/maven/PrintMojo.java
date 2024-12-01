@@ -40,7 +40,6 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.Schema;
 import org.eolang.parser.xmir.Xmir;
 import org.eolang.parser.xmir.XmirReversed;
 import org.eolang.parser.xmir.XmirSwap;
@@ -101,7 +100,6 @@ public final class PrintMojo extends SafeMojo {
                                 .replace(".xmir", ".eo")
                         );
                         final XML xml = new XMLDocument(new TextOf(source).asString());
-                        new Schema(xml).check();
                         home.save(
                             new XmirSwap(
                                 this.printReversed,

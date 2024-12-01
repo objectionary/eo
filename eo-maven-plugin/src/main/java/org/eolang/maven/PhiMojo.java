@@ -46,7 +46,6 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.Schema;
 import org.eolang.parser.StUnhex;
 import org.eolang.parser.TrParsing;
 
@@ -156,7 +155,6 @@ public final class PhiMojo extends SafeMojo {
             position, total, xmir, xmir.toFile().length()
         );
         final XML xml = new XMLDocument(new TextOf(xmir).asString());
-        new Schema(xml).check();
         final Path relative = Paths.get(
             this.phiInputDir.toPath().relativize(xmir).toString().replace(
                 String.format(".%s", AssembleMojo.XMIR),
