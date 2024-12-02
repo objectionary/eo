@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import org.eolang.jucs.ClasspathSource;
@@ -97,7 +98,7 @@ final class PhiSyntaxTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-syntax/", glob = "**.phi")
     void checksValidExpressions(final String phi) throws IOException {
-        final XML xml = new PhiSyntax(phi).parsed();
+        final XML xml = new StrictXML(new PhiSyntax(phi).parsed());
         MatcherAssert.assertThat(
             "syntax is valid, can be parsed without errors",
             XhtmlMatchers.xhtml(xml.toString()),
@@ -108,7 +109,7 @@ final class PhiSyntaxTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-typos/", glob = "**.phi")
     void checksBrokenExressions(final String phi) throws IOException {
-        final XML xml = new PhiSyntax(phi).parsed();
+        final XML xml = new StrictXML(new PhiSyntax(phi).parsed());
         MatcherAssert.assertThat(
             "syntax is broken, can't be parsed without errors",
             XhtmlMatchers.xhtml(xml.toString()),

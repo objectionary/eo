@@ -82,7 +82,7 @@ final class DrProgramTest {
     }
 
     @Test
-    void validatesAgainstSchema() throws Exception {
+    void validatesAgainstSchema() {
         MatcherAssert.assertThat(
             "XMIR document validates correctly",
             new XMLDocument(
@@ -90,7 +90,7 @@ final class DrProgramTest {
                     new Directives().append(new DrProgram("foo"))
                         .add("listing").set("hello, world!").up()
                         .add("objects").add("o").attr("name", "bar")
-                ).xml()
+                ).domQuietly()
             ).validate(),
             Matchers.emptyIterable()
         );

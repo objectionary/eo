@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -250,10 +251,12 @@ final class EoSyntaxTest {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         Assumptions.assumeTrue(map.get("skip") == null);
-        final XML xml = new EoSyntax(
-            "typo",
-            new InputOf(String.format("%s\n", map.get("eo")))
-        ).parsed();
+        final XML xml = new StrictXML(
+            new EoSyntax(
+                "typo",
+                new InputOf(String.format("%s\n", map.get("eo")))
+            ).parsed()
+        );
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(xml.toString()),
