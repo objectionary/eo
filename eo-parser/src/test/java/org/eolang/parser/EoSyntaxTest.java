@@ -282,7 +282,7 @@ final class EoSyntaxTest {
             )
         ).parsed();
         final String comments = xml.xpath("/program/comments/comment/text()").get(0);
-        final String expected = "Foo.\nBar.\nXyz.";
+        final String expected = "Foo.\\nBar.\\nXyz.";
         MatcherAssert.assertThat(
             String.format(
                 "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",

@@ -1300,7 +1300,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
                 comment.stream().map(
                     context -> context.COMMENTARY().getText().substring(1).trim()
-                ).collect(Collectors.joining("\n"))
+                ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }
     }
