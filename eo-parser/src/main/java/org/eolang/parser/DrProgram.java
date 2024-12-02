@@ -114,11 +114,11 @@ final class DrProgram implements Iterable<Directive> {
             "../eo-parser/src/main/resources/XMIR.xsd",
         };
         for (final String opt : opts) {
-            final Path path = Paths.get(opt);
+            final Path path = Paths.get(opt).toAbsolutePath();
             if (path.toFile().exists()) {
                 schema = String.format(
                     "file:///%s",
-                    path.toAbsolutePath().toString().replace("\\", "/")
+                    path.toString().replace("\\", "/")
                 );
                 break;
             }

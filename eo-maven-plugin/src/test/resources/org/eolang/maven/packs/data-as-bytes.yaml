@@ -27,6 +27,7 @@ xsls:
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
+  - /org/eolang/parser/remove-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - //java[contains(text(), '.take("org").take("eolang").take("true")')]

@@ -31,6 +31,7 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/optimize/constant-folding.xsl
+  - /org/eolang/parser/remove-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='01-']]
