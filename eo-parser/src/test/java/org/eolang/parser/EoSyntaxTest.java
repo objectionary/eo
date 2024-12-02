@@ -268,7 +268,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    @Disabled
     void printsSyntaxWithComments() throws IOException {
         final XML xml = new EoSyntax(
             new InputOf(
