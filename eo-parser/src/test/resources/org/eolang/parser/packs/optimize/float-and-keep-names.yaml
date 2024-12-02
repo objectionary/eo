@@ -26,6 +26,7 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - //o[@base='first$second' and @line='6']
 eo: |

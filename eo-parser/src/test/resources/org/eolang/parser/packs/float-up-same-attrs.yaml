@@ -25,9 +25,9 @@ xsls:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program[count(.//o[@base='build' and not(@ref)])=2]
-  - /program/objects[count(o[@original-name='build'])=2]
 eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > hello

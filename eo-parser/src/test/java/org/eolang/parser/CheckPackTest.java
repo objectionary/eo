@@ -50,7 +50,6 @@ final class CheckPackTest {
             ).failures(),
             Matchers.emptyIterable()
         );
-
     }
 
 }
