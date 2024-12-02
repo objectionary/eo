@@ -142,11 +142,11 @@ final class TrParsingTest {
     }
 
     @Test
-    void removesSchema() {
+    void setsBlankSchema() {
         MatcherAssert.assertThat(
             "Removes XSD schema from XMIR",
             new Xsline(
-                new TrClasspath<>("/org/eolang/parser/remove-xsd-schema.xsl").back()
+                new TrClasspath<>("/org/eolang/parser/blank-xsd-schema.xsl").back()
             ).pass(new XMLDocument(new Xembler(new DrProgram("foo")).xmlQuietly())),
             XhtmlMatchers.hasXPath(
                 "/program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']"

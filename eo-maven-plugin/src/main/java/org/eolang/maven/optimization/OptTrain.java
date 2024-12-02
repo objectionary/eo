@@ -66,7 +66,7 @@ public final class OptTrain implements Optimization {
                 "/org/eolang/parser/optimize/fix-missed-names.xsl",
                 "/org/eolang/parser/add-refs.xsl",
                 "/org/eolang/parser/set-locators.xsl",
-                "/org/eolang/parser/remove-xsd-schema.xsl"
+                "/org/eolang/parser/blank-xsd-schema.xsl"
             ).back(),
             StEoLogged::new
         ),

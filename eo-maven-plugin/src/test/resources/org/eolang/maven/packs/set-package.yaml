@@ -23,7 +23,7 @@
 xsls:
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/package.xsl
-  - /org/eolang/parser/remove-xsd-schema.xsl
+  - /org/eolang/parser/blank-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - //class[@name='bar' and @package='foo.long-name']

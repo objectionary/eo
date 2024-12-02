@@ -28,7 +28,7 @@ xsls:
   - /org/eolang/maven/pre/align-test-classes.xsl
   - /org/eolang/maven/pre/remove-high-level-inner-classes.xsl
   - /org/eolang/maven/pre/rename-tests-inners.xsl
-  - /org/eolang/parser/remove-xsd-schema.xsl
+  - /org/eolang/parser/blank-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - /program/objects[count(class)=1]
