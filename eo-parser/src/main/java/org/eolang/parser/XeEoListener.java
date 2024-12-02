@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -1298,12 +1299,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
         if (!comment.isEmpty()) {
             this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
-                String.join(
-                    "",
-                    comment.stream().map(
-                        context -> context.COMMENTARY().getText().substring(1).trim()
-                    ).collect(Collectors.joining(""))
-                )
+                comment.stream().map(
+                    context -> context.COMMENTARY().getText().substring(1).trim()
+                ).map(
+                    text -> String.format("%s\\n", text)
+                ).collect(Collectors.joining(""))
             ).attr("line", stop.getLine() + 1).pop();
         }
     }
