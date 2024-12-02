@@ -35,6 +35,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
@@ -263,6 +264,31 @@ final class EoSyntaxTest {
             xml.toString(),
             Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
             Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
+        );
+    }
+
+    @Test
+    void printsSyntaxWithComments() throws IOException {
+        final XML xml = new EoSyntax(
+            new InputOf(
+                String.join(
+                    "\n",
+                    "# Foo.",
+                    "# Bar.",
+                    "# Xyz.",
+                    "[] > foo"
+                )
+            )
+        ).parsed();
+        final String comments = xml.xpath("/program/comments/comment/text()").get(0);
+        final String expected = "Foo.\\nBar.\\nXyz.\\n";
+        MatcherAssert.assertThat(
+            String.format(
+                "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",
+                xml, comments, expected
+            ),
+            comments,
+            new IsEqual<>(expected)
         );
     }
 }
