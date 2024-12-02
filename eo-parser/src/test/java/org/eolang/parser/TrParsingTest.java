@@ -148,7 +148,9 @@ final class TrParsingTest {
             new Xsline(
                 new TrClasspath<>("/org/eolang/parser/remove-xsd-schema.xsl").back()
             ).pass(new XMLDocument(new Xembler(new DrProgram("foo")).xmlQuietly())),
-            XhtmlMatchers.hasXPath("/program[not(@xsi:noNamespaceSchemaLocation)]")
+            XhtmlMatchers.hasXPath(
+                "/program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']"
+            )
         );
     }
 }
