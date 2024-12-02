@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link TrParsing}.
@@ -137,6 +138,19 @@ final class TrParsingTest {
             ),
             new XaxStory(yaml),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void setsBlankSchema() {
+        MatcherAssert.assertThat(
+            "Removes XSD schema from XMIR",
+            new Xsline(
+                new TrClasspath<>("/org/eolang/parser/blank-xsd-schema.xsl").back()
+            ).pass(new XMLDocument(new Xembler(new DrProgram("foo")).xmlQuietly())),
+            XhtmlMatchers.hasXPath(
+                "/program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']"
+            )
         );
     }
 }

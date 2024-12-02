@@ -23,12 +23,8 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.manifests.Manifests;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -40,7 +36,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.list.ListOf;
-import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -61,11 +56,6 @@ import org.xembly.Directives;
     "PMD.GodClass"
 })
 public final class XePhiListener implements PhiListener, Iterable<Directive> {
-    /**
-     * Info about xmir.
-     */
-    private static final XmirInfo INFO = new XmirInfo();
-
     /**
      * Package lambda.
      */
@@ -124,17 +114,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterProgram(final PhiParser.ProgramContext ctx) {
         this.objs.add(new Objects.ObjXembly());
         this.dirs
-            .comment(XePhiListener.INFO)
-            .add("program")
-            .attr("name", this.name)
-            .attr("version", Manifests.read("EO-Version"))
-            .attr("revision", Manifests.read("EO-Revision"))
-            .attr("dob", Manifests.read("EO-Dob"))
-            .attr(
-                "time",
-                ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
-            )
-            .add("listing").set(new SourceText(ctx)).up();
+            .append(new DrProgram(this.name))
+            .append(new DrListing(ctx))
+            .xpath("/program").strict(1);
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().start();
         }

@@ -40,7 +40,7 @@ import org.cactoos.io.InputStreamOf;
  *
  * @since 1.0
  */
-public final class EoIndentLexer extends EoLexer {
+final class EoIndentLexer extends EoLexer {
     /**
      * Generated tokes.
      */
@@ -61,7 +61,7 @@ public final class EoIndentLexer extends EoLexer {
      * @param txt Source code.
      * @throws IOException If fails.
      */
-    public EoIndentLexer(final Text txt) throws IOException {
+    EoIndentLexer(final Text txt) throws IOException {
         this(CharStreams.fromStream(new InputStreamOf(txt)));
     }
 

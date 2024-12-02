@@ -23,9 +23,10 @@
 xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program[not(errors)]
-  - //o[@name='a$m$t2$a0' and @parent='a$m']
+  - //o[@name='a$m$t2$a0']
 eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > a

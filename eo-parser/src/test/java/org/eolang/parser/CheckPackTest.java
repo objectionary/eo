@@ -21,28 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.xmir;
+package org.eolang.parser;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Envelope for {@link Xmir}.
- * @since 0.35.0
+ * Test case for {@link CheckPack}.
+ *
+ * @since 0.1
  */
-class XmirEnvelope implements Xmir {
-    /**
-     * Original XMIR.
-     */
-    private final Xmir origin;
+final class CheckPackTest {
 
-    /**
-     * Ctor.
-     * @param xmir Original XMIR
-     */
-    XmirEnvelope(final Xmir xmir) {
-        this.origin = xmir;
+    @Test
+    void parsesAndChecksSimpleCode() throws Exception {
+        MatcherAssert.assertThat(
+            "doesn't fail on basic example",
+            new CheckPack(
+                String.join(
+                    "\n",
+                    "xsls: []",
+                    "tests: []",
+                    "eo: |",
+                    "  # test.",
+                    "  [] > foo"
+                )
+            ).failures(),
+            Matchers.emptyIterable()
+        );
     }
 
-    @Override
-    public String toEO() {
-        return this.origin.toEO();
-    }
 }

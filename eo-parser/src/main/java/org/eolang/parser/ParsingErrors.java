@@ -42,6 +42,7 @@ import org.xembly.Directives;
  */
 final class ParsingErrors extends BaseErrorListener
     implements ANTLRErrorListener, Iterable<Directive> {
+
     /**
      * Errors accumulated.
      */
@@ -103,6 +104,7 @@ final class ParsingErrors extends BaseErrorListener
                     .addIf("errors")
                     .strict(1)
                     .add("error")
+                    .attr("check", "eo-parser")
                     .attr("line", error.line())
                     .attr("severity", "critical")
                     .set(error.getMessage()),

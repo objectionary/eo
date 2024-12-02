@@ -35,6 +35,9 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link StEoLogged}.
@@ -57,7 +60,7 @@ final class StEoLoggedTest {
     }
 
     @Test
-    void delegatesWithoutException() {
+    void delegatesWithoutException() throws ImpossibleModificationException {
         final FakeLog log = new FakeLog();
         MatcherAssert.assertThat(
             "We expect that shift will successfully generate output xml",
@@ -91,14 +94,7 @@ final class StEoLoggedTest {
                 log.all()
             ),
             log.last(),
-            Matchers.containsString(
-                String.join(
-                    "\n",
-                    "[] > main",
-                    "  true > x",
-                    "  false > y"
-                )
-            )
+            Matchers.containsString("[] > bar")
         );
     }
 
@@ -114,19 +110,15 @@ final class StEoLoggedTest {
      *
      * @return XML
      */
-    private static XML example() {
+    private static XML example() throws ImpossibleModificationException {
         return new XMLDocument(
-            String.join(
-                "\n",
-                "<program>",
-                "  <objects>",
-                "    <o abstract=\"\" line=\"1\" name=\"main\" pos=\"0\">",
-                "      <o base=\"true\" line=\"2\" name=\"x\" pos=\"2\"/>",
-                "      <o base=\"false\" line=\"3\" name=\"y\" pos=\"2\"/>",
-                "    </o>",
-                "  </objects>",
-                "</program>"
-            )
+            new Xembler(
+                new Directives().append(new DrProgram("foo"))
+                    .add("objects")
+                    .add("o")
+                    .attr("abstract", "")
+                    .attr("name", "bar")
+            ).xml()
         );
     }
 

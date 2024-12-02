@@ -25,6 +25,7 @@ xsls:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program/objects[count(o)=9]
   - /program[not(errors)]
@@ -33,7 +34,7 @@ tests:
   - //o[@base='first$t2$native']
   - //o[@name='first' and not(@ancestors)]
   - //o[@name='first']/o[@base='test']
-  - //o[@name='first$t2$second' and @ancestors='1' and @parent='first']
+  - //o[@name='first$t2$second']
   - //o[@name='first$t2$second$third']
   - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
