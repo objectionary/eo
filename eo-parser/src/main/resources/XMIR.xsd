@@ -75,7 +75,53 @@ SOFTWARE.
       <xs:length value="0"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="attribute-name">
+    <xs:annotation>
+      <xs:appinfo>A name of object attribute</xs:appinfo>
+      <xs:documentation>
+        The name of an object attribute, which is used to reference the attribute from other objects or from the global scope.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+|@|[a-z][^ \n\t\r]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="fqn">
+    <xs:annotation>
+      <xs:appinfo>A fully qualified name of an object</xs:appinfo>
+      <xs:documentation>
+        The fully qualified name of an object, which includes the names of all the objects that are its ancestors.
+        This type is used to uniquely identify an object within the program. The FQN is typically used to reference
+        objects from other objects or from the global scope, ensuring that the correct object is accessed or modified.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value=".*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="locator">
+    <xs:annotation>
+      <xs:appinfo>A locator of an object</xs:appinfo>
+      <xs:documentation>
+        The locator of an object, which specifies the location of the object within the program,
+        in the global graph of objects, starting from Φ. The locator is used to uniquely identify
+        an object within the program and is typically used to reference objects from other objects
+        or from the global scope, ensuring that the correct object is accessed or modified.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z][^ \n\r\t]*))*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="o" mixed="true">
+    <xs:annotation>
+      <xs:appinfo>An object, as it is seen in the EO program</xs:appinfo>
+      <xs:documentation>
+        The element contains all necessary details about a single
+        object, including all its attributes (which are also objects).
+        The object may also contain data, as text.
+      </xs:documentation>
+    </xs:annotation>
     <xs:sequence>
       <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -97,7 +143,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="name" type="non-empty">
+    <xs:attribute name="name" type="attribute-name">
       <xs:annotation>
         <xs:appinfo>The name of the EO object inside its scope of visibility (another object or global)</xs:appinfo>
         <xs:documentation>
@@ -106,7 +152,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="base" type="non-empty">
+    <xs:attribute name="base" type="fqn">
       <xs:annotation>
         <xs:appinfo>The name of the object of which this one is a copy</xs:appinfo>
         <xs:documentation>
@@ -115,10 +161,19 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="ref" type="whole">
+      <xs:annotation>
+        <xs:appinfo>The location of the object that is referenced here</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the location of the object that is referenced here.
+          The reference is used to link objects together or to reference objects from other objects or from the global scope.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="star" type="empty"/>
-    <xs:attribute name="as" type="non-empty"/>
-    <xs:attribute name="atom" type="non-empty"/>
-    <xs:attribute name="loc" type="non-empty"/>
+    <xs:attribute name="as" type="attribute-name"/>
+    <xs:attribute name="atom" type="fqn"/>
+    <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
@@ -134,7 +189,7 @@ SOFTWARE.
     </xs:annotation>
     <xs:simpleContent>
       <xs:extension base="non-empty">
-        <xs:attribute name="check">
+        <xs:attribute name="check" type="sheet">
           <xs:annotation>
             <xs:appinfo>The name of the checker that found the error</xs:appinfo>
             <xs:documentation>
@@ -220,7 +275,7 @@ SOFTWARE.
       <xs:extension base="non-empty"/>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="sheet">
+  <xs:simpleType name="sheet">
     <xs:annotation>
       <xs:appinfo>The XSL stylesheet that was applied to the XMIR</xs:appinfo>
       <xs:documentation>
@@ -231,10 +286,10 @@ SOFTWARE.
         developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
       </xs:documentation>
     </xs:annotation>
-    <xs:simpleContent>
-      <xs:extension base="non-empty"/>
-    </xs:simpleContent>
-  </xs:complexType>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z][a-z-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="meta">
     <xs:annotation>
       <xs:appinfo>The meta found in the source code</xs:appinfo>
@@ -375,7 +430,7 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="revision" type="non-empty">
+    <xs:attribute name="revision">
       <xs:annotation>
         <xs:appinfo>The Git SHA of the release of the parser that created the document</xs:appinfo>
         <xs:documentation>
@@ -384,6 +439,11 @@ SOFTWARE.
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>
       </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[0-9a-f]{7}"/>
+        </xs:restriction>
+      </xs:simpleType>
     </xs:attribute>
     <xs:attribute name="dob" type="xs:dateTime">
       <xs:annotation>

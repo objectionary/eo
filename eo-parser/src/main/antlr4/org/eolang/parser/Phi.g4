@@ -34,8 +34,7 @@ program
 
 object
     : formation (dispatch applicationsOrDispatches)?
-    | scoped applicationsOrDispatches
-    | termination
+    | (scoped | termination | data) applicationsOrDispatches
     ;
 
 formation
@@ -67,11 +66,7 @@ attribute
     : PHI
     | RHO
     | LABEL
-    | alphaAttr
-    ;
-
-alphaAttr
-    : ALPHA INDEX
+    | ALPHA
     ;
 
 emptyBinding
@@ -133,9 +128,6 @@ ARROW
 DASHED_ARROW
     : '⤍'
     ;
-ALPHA
-    : 'α'
-    ;
 EMPTY
     : '∅'
     ;
@@ -160,13 +152,41 @@ MINUS
     : '-'
     ;
 
-INDEX
-    : [0-9]
-    | [1-9][0-9]*
+data: STRING
+    | INT
+    | FLOAT
+    ;
+
+INT : (PLUS | MINUS)? ('0' | '0'?[1-9][0-9]*)
+    ;
+
+FLOAT
+    : (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?
+    ;
+
+STRING
+    : '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"'
+    ;
+
+fragment ESCAPE_SEQUENCE
+    : '\\' [btnfr"'\\]
+    | '\\' ([0-3]? [0-7])? [0-7]
+    | '\\' 'u'+ BYTE BYTE
+    ;
+
+fragment EXPONENT
+    : ('e'|'E') (PLUS | MINUS)? ('0'..'9')+
+    ;
+
+PLUS: '+'
     ;
 
 LABEL
     : [a-z] ~[ \r\n\t,.|':;!?\][}{)(⟧⟦]*
+    ;
+
+ALPHA
+    : 'α' ([0-9] | [1-9][0-9]*)
     ;
 
 fragment BYTE

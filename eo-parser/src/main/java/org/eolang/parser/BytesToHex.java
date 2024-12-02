@@ -21,46 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.parser;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package EOorg.EOeolang; // NOPMD
-
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import java.util.Arrays;
+import java.util.StringJoiner;
+import java.util.function.Supplier;
 
 /**
- * Cage.encaged.encage object.
- * @since 0.36.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Bytes to hex converter.
+ *
+ * @since 0.44
  */
-@Versionized
-@XmirObject(oname = "cage.encaged.encage")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
+public final class BytesToHex implements Supplier<String> {
+
+    /**
+     * The bytes.
+     */
+    private final byte[] bytes;
+
     /**
      * Ctor.
+     * @param bts Bytes
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    EOcage$EOencaged$EOencage() {
-        this.add("object", new AtVoid("object"));
+    public BytesToHex(final byte[] bts) {
+        this.bytes = Arrays.copyOf(bts, bts.length);
     }
 
     @Override
-    public Phi lambda() {
-        Cages.INSTANCE.encage(
-            new Dataized(this.take(Attr.RHO).take("locator")).asNumber().intValue(),
-            this.take("object")
-        );
-        return new Data.ToPhi(true);
+    public String get() {
+        final String hex;
+        if (this.bytes.length == 0) {
+            hex = "--";
+        } else {
+            final StringJoiner out = new StringJoiner("-");
+            for (final byte bty : this.bytes) {
+                out.add(String.format("%02X", bty));
+            }
+            if (this.bytes.length == 1) {
+                out.add("");
+            }
+            hex = out.toString();
+        }
+        return hex;
     }
 }

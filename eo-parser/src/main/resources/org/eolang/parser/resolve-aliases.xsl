@@ -28,8 +28,6 @@ SOFTWARE.
   and try to find their references in aliases. If we find them,
   we change their @base attributes. If not, we decide that they
   are in org.eolang package and also change the @base attribute.
-
-  If some alias is badly formatted, a runtime error is issued.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base]">
@@ -46,16 +44,6 @@ SOFTWARE.
         <xsl:choose>
           <xsl:when test="$meta">
             <xsl:variable name="tail" select="$meta/part[2]"/>
-            <xsl:if test="$tail = ''">
-              <xsl:message terminate="yes">
-                <xsl:text>The alias "</xsl:text>
-                <xsl:value-of select="$meta/head"/>
-                <xsl:text>" doesn't have the tail part: "</xsl:text>
-                <xsl:value-of select="$meta/tail"/>
-                <xsl:text>" at line </xsl:text>
-                <xsl:value-of select="$meta/@line"/>
-              </xsl:message>
-            </xsl:if>
             <xsl:value-of select="$tail[1]"/>
           </xsl:when>
           <xsl:otherwise>

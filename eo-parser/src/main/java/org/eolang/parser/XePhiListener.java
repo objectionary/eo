@@ -24,6 +24,8 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,9 +34,11 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.function.Supplier;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
@@ -243,8 +247,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "^";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
-        } else if (ctx.alphaAttr() != null) {
-            attr = ctx.alphaAttr().INDEX().getText();
+        } else if (ctx.ALPHA() != null) {
+            attr = ctx.ALPHA().getText().substring(1);
         } else {
             attr = "";
         }
@@ -253,16 +257,6 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitAttribute(final PhiParser.AttributeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
         // Nothing here
     }
 
@@ -356,21 +350,46 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterTermination(final PhiParser.TerminationContext ctx) {
-        this.objects()
-            .prop("base", "org.eolang.error")
-            .start()
-            .prop("base", "org.eolang.string")
-            .start()
-            .prop("base", "org.eolang.bytes")
-            .data("55-6E-6B-6E-6F-77-6E-20-65-72-72-6F-72")
-            .leave()
-            .leave()
-            .leave();
+        this.objects().prop("base", "org.eolang.error").leave();
     }
 
     @Override
     public void exitTermination(final PhiParser.TerminationContext ctx) {
         // Nothing here
+    }
+
+    @Override
+    public void enterData(final PhiParser.DataContext ctx) {
+        final String base;
+        final Supplier<String> data;
+        final String text = ctx.getText();
+        if (ctx.FLOAT() != null || ctx.INT() != null) {
+            base = "org.eolang.number";
+            data = new BytesToHex(
+                ByteBuffer
+                    .allocate(Double.BYTES)
+                    .putDouble(Double.parseDouble(text))
+                    .array()
+            );
+        } else {
+            base = "org.eolang.string";
+            data = new BytesToHex(
+                StringEscapeUtils.unescapeJava(
+                    text.substring(1, text.length() - 1)
+                ).getBytes(StandardCharsets.UTF_8)
+            );
+        }
+        this.objects()
+            .prop("base", base)
+            .start()
+            .prop("base", "org.eolang.bytes")
+            .data(data.get())
+            .leave();
+    }
+
+    @Override
+    public void exitData(final PhiParser.DataContext ctx) {
+        this.objects().leave();
     }
 
     @Override

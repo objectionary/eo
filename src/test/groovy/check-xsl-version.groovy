@@ -32,9 +32,13 @@ import groovy.io.FileVisitResult
 project = new File('.')
 
 project.traverse(
-  type         : FileType.FILES,
-  preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
-  nameFilter   : ~/.*\.xsl/
+  type: FileType.FILES,
+  preDir: {
+    if (it.name == 'target') {
+      return FileVisitResult.SKIP_SUBTREE
+    }
+  },
+  nameFilter: ~/.*\.xsl/
 ) {
   it ->
     if (it.getName() == 'xs3p.xsl') { return }

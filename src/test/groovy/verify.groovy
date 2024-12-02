@@ -29,7 +29,8 @@
  */
 [
   'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy'
+  'src/test/groovy/check-xsl-version.groovy',
+  'src/test/groovy/xslqual.groovy'
 ].each {
   evaluate(new File(it))
   println String.format('Verified with %s - OK', it)

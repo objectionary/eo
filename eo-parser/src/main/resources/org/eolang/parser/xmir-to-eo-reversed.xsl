@@ -141,7 +141,7 @@ SOFTWARE.
   </xsl:template>
   <!-- DATA -->
   <xsl:template match="o[eo:has-data(.)]" mode="head">
-    <xsl:value-of select="normalize-space(string-join(text(),''))"/>
+    <xsl:value-of select="replace(string-join(text(),''), '^\s+|\s+$', '')"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

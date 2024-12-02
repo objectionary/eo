@@ -207,10 +207,14 @@ public final class Main {
             }
             app.put(0, args);
         }
+        final long start = System.currentTimeMillis();
+        final byte[] ret = new Dataized(app).take();
         Main.LOGGER.info(
             String.format(
-                "%n---%n%s",
-                new VerboseBytesAsString(new Dataized(app).take()).get()
+                "%n---%n%s%nFinished in %.2fms (%d bytes)",
+                new VerboseBytesAsString(ret).get(),
+                System.currentTimeMillis() - start / 1000.0,
+                ret.length
             )
         );
     }

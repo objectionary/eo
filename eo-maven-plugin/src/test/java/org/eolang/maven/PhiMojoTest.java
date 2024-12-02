@@ -61,8 +61,8 @@ final class PhiMojoTest {
         "# This is the default 64+ symbols comment in front of named abstract object.";
 
     @Test
-    void convertsSimpleObjectToPhi(@Mktmp final Path temp,
-        @RandomProgram final String program) throws Exception {
+    void convertsSimpleObjectToPhi(@Mktmp final Path temp, @RandomProgram final String program)
+        throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -83,7 +83,7 @@ final class PhiMojoTest {
                 ),
                 StandardCharsets.UTF_8
             ),
-            Matchers.containsString("α0 ↦ ⟦ Δ ⤍ ")
+            Matchers.containsString("α0 ↦ \"Hello, world!\\n\"")
         );
     }
 

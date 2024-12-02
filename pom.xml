@@ -194,7 +194,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.30.1</version>
+        <version>0.31.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -276,7 +276,7 @@ SOFTWARE.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.0</version>
         <executions>
           <execution>
             <id>check-licenses</id>
@@ -297,7 +297,7 @@ SOFTWARE.
         <executions>
           <execution>
             <id>project-validate</id>
-            <phase>verify</phase>
+            <phase>validate</phase>
             <goals>
               <goal>execute</goal>
             </goals>
@@ -308,9 +308,19 @@ SOFTWARE.
         </executions>
         <dependencies>
           <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-xml</artifactId>
+            <version>0.31.0</version>
+          </dependency>
+          <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
             <version>3.0.23</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>12.5</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -341,8 +351,8 @@ SOFTWARE.
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration combine.self="override">
-            <source>8</source>
-            <target>8</target>
+            <source>11</source>
+            <target>11</target>
             <compilerArgs>
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>

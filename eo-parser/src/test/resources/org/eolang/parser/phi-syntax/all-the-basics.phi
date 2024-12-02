@@ -12,5 +12,17 @@
   hi-大家 ↦ ⟦ ⟧,
   α0 ↦ Φ () () (),
   α65536 ↦ Φ.r,
-  k ↦ ⟦ λ ⤍ FunctionName ⟧
+  k ↦ ⟦ λ ⤍ FunctionName, α0 ↦ ⟦ λ ⤍ FunctionName, Δ ⤍ 42- ⟧ ⟧,
+  terminator-application ↦ ⊥ (t ↦ ξ.t),
+  terminator-dispatch ↦ ⊥.t,
+  string ↦ "Hello",
+  int ↦ 42,
+  float ↦ 12.3,
+  string-dot ↦ "Hello".print,
+  string-application ↦ "Hello"(z ↦ ξ.f),
+  int-dot ↦ 42.plus,
+  int-application ↦ 42(z ↦ ξ.f),
+  float-dot ↦ 52.1.print,
+  float-application ↦ 52.1(z ↦ ξ.f),
+  minus ↦ -0
 ⟧}

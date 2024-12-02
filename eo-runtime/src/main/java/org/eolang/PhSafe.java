@@ -127,15 +127,18 @@ public final class PhSafe implements Phi {
      */
     private static String message(final Throwable exp) {
         final StringBuilder ret = new StringBuilder(0);
+        if (!(exp instanceof ExFailure)) {
+            ret.append(exp.getClass().getSimpleName());
+        }
         if (exp.getMessage() != null) {
-            if (!(exp instanceof ExFailure)) {
-                ret.append(exp.getClass().getSimpleName()).append(": ");
+            if (ret.length() > 0) {
+                ret.append(": ");
             }
             ret.append(exp.getMessage().replace("%", "%%"));
         }
         if (exp.getCause() != null) {
-            ret.append("; caused by ")
-                .append(PhSafe.message(exp.getCause()));
+            ret.setLength(0);
+            ret.append(PhSafe.message(exp.getCause()));
         }
         return ret.toString();
     }

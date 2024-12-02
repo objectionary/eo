@@ -62,7 +62,9 @@ release:
     sudo /bin/bash -c "cd '$(pwd)'; git clean -fd"
     cp /tmp/XMIR.xsd .
     sed -i "s|SNAPSHOT|${tag}|" XMIR.xsd
-    git add XMIR.xsd
+    mkdir -p xsd
+    cp XMIR.xsd "xsd/XMIR-${tag}.xsd"
+    git add XMIR.xsd "xsd/XMIR-${tag}.xsd"
     git commit -am "XMIR XSD ${tag}"
     rm -rf objectionary
     cp -R /tmp/objectionary .

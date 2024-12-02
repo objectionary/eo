@@ -33,7 +33,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -146,10 +145,9 @@ public final class RegisterMojo extends SafeMojo {
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(
-            this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
-            sources.size(), new Rel(this.sourcesDir),
-            new Rel(this.foreign),
-            this.includeSources, this.excludeSources
+            this,
+            "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
+            sources.size(), this.sourcesDir, this.foreign, this.includeSources, this.excludeSources
         );
     }
 }

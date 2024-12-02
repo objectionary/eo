@@ -93,7 +93,11 @@ public final class StUnhex extends StEnvelope {
     private static String number(final Double num) {
         final String str;
         if (num % 1 == 0) {
-            str = Long.toString(num.longValue());
+            if ("-0.0".equals(num.toString())) {
+                str = "-0";
+            } else {
+                str = Long.toString(num.longValue());
+            }
         } else {
             str = Double.toString(num);
         }

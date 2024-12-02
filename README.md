@@ -253,28 +253,28 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          41011  34.79%
-add-refs.xsl                         11386  9.66%
-stars-to-tuples.xsl                  8669   7.35%
-set-locators.xsl                     7047   5.98%
-tests.xsl                            5408   4.59%
-rename-tests-inners.xsl              4647   3.94%
-resolve-aliases.xsl                  3456   2.93%
-add-probes.xsl                       3292   2.79%
-vars-float-up.xsl                    3231   2.74%
-package.xsl                          3166   2.69%
-explicit-data.xsl                    3135   2.66%
-add-default-package.xsl              3128   2.65%
-cti-adds-errors.xsl                  2849   2.42%
-classes.xsl                          2790   2.37%
-const-to-dataized.xsl                2688   2.28%
-expand-qqs.xsl                       2402   2.04%
+to-java.xsl                          42484  35.29%
+add-refs.xsl                         12010  9.98%
+stars-to-tuples.xsl                  9135   7.59%
+set-locators.xsl                     7742   6.43%
+tests.xsl                            5462   4.54%
+rename-tests-inners.xsl              4707   3.91%
+add-probes.xsl                       3321   2.76%
+explicit-data.xsl                    3231   2.68%
+add-default-package.xsl              3225   2.68%
+cti-adds-errors.xsl                  3201   2.66%
+package.xsl                          3161   2.63%
+resolve-aliases.xsl                  3148   2.61%
+vars-float-up.xsl                    3034   2.52%
+classes.xsl                          2619   2.18%
+wrap-method-calls.xsl                2433   2.02%
+const-to-dataized.xsl                2406   2.00%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-26 at 12:21,
+on 2024-12-01 at 06:05,
 on Linux with 4 CPUs.
-The total is 117897 milliseconds.
+The total is 120390 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -306,7 +306,7 @@ before sending us your pull request please run full Maven build:
 mvn clean install -Pqulice
 ```
 
-You will need [Maven 3.3+](https://maven.apache.org) and Java 8+ installed.
+You will need [Maven 3.3+](https://maven.apache.org) and Java 11+ installed.
 
 ## Special thanks
 
@@ -317,4 +317,4 @@ to enhance the performance of EO components:
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12030199693
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12102775080

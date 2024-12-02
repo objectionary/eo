@@ -72,19 +72,13 @@ SOFTWARE.
               <xsl:text> at line #</xsl:text>
               <xsl:value-of select="@line"/>
             </xsl:for-each>
-            <xsl:text>; it's internal bug</xsl:text>
           </xsl:message>
         </xsl:if>
-        <xsl:if test="not($source/@line)">
-          <xsl:message terminate="yes">
-            <xsl:text>Attribute @line is absent at "</xsl:text>
-            <xsl:value-of select="$source/@name"/>
-            <xsl:text>"</xsl:text>
-          </xsl:message>
+        <xsl:if test="$source/@line">
+          <xsl:attribute name="ref">
+            <xsl:value-of select="$source/@line"/>
+          </xsl:attribute>
         </xsl:if>
-        <xsl:attribute name="ref">
-          <xsl:value-of select="$source/@line"/>
-        </xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

@@ -27,7 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -41,12 +42,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.Schema;
+import org.eolang.parser.StUnhex;
 import org.eolang.parser.TrParsing;
 
 /**
@@ -63,6 +64,15 @@ public final class PhiMojo extends SafeMojo {
      * Extension of the file where we put phi-calculus expression (.phi).
      */
     public static final String EXT = "phi";
+
+    /**
+     * Train of mandatory transformations.
+     */
+    private static final Train<Shift> TRANSFORMATIONS = new TrDefault<>(
+        new StUnhex(),
+        new StClasspath("/org/eolang/maven/phi/incorrect-inners.xsl"),
+        new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
+    );
 
     /**
      * The directory where to take xmir files for translation from.
@@ -183,18 +193,9 @@ public final class PhiMojo extends SafeMojo {
         if (this.phiOptimize) {
             train = new TrParsing();
         } else {
-            train = new com.yegor256.xsline.TrDefault<>();
+            train = new TrDefault<>();
         }
-        final List<String> dependent = new ListOf<>(
-            "/org/eolang/maven/phi/incorrect-inners.xsl"
-        );
-        dependent.add("/org/eolang/maven/phi/to-phi.xsl");
-        return this.measured(
-            new TrJoined<>(
-                train,
-                new TrClasspath<>(dependent.toArray(new String[0])).back()
-            )
-        );
+        return this.measured(new TrJoined<>(train, PhiMojo.TRANSFORMATIONS));
     }
 
     /**

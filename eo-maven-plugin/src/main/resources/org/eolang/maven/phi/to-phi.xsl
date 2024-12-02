@@ -210,7 +210,7 @@ SOFTWARE.
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
-  <!-- Free attribute -->
+  <!-- Void attribute -->
   <xsl:template match="o[parent::o[not(@base)] and not(@base) and not(@atom) and not(o)]">
     <xsl:value-of select="./@name"/>
     <xsl:value-of select="$arrow"/>
@@ -259,6 +259,9 @@ SOFTWARE.
             </xsl:apply-templates>
             <xsl:value-of select="eo:specials(@base, true())"/>
           </xsl:when>
+          <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
+            <xsl:value-of select="text()"/>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="eo:specials(@base, false())"/>
           </xsl:otherwise>
@@ -300,7 +303,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <!-- Data -->
-    <xsl:if test="eo:has-data(.)">
+    <xsl:if test="eo:has-data(.) and @base!='org.eolang.number' and @base!='org.eolang.string'">
       <xsl:text>(</xsl:text>
       <xsl:value-of select="eo:eol($tabs+1)"/>
       <xsl:value-of select="$alpha"/>

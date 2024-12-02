@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - //o[@base='org.eolang.error' and @name='x']/o[@base='org.eolang.string']/o[@base='org.eolang.bytes' and text()!='']
+  - //o[@base='org.eolang.error' and @name='x' and not(o)]
 phi: |
   {
   	⟦
