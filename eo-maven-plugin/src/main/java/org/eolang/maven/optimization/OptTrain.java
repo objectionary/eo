@@ -26,7 +26,6 @@ package org.eolang.maven.optimization;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
@@ -55,9 +54,6 @@ public final class OptTrain implements Optimization {
     static final Train<Shift> DEFAULT_TRAIN = new TrFast(
         new TrLambda(
             new TrClasspath<>(
-                new TrDefault<Shift>(
-                    new StSchema()
-                ),
                 "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
                 "/org/eolang/parser/optimize/remove-refs.xsl",
                 "/org/eolang/parser/optimize/abstracts-float-up.xsl",

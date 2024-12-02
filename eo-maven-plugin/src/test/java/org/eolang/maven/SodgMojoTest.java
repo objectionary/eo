@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,6 +70,11 @@ final class SodgMojoTest {
         new Farea(temp).together(
             f -> {
                 f.clean();
+                f.files().file("XMIR.xsd").save(
+                    Paths.get(System.getProperty("user.dir")).resolve(
+                        "../eo-parser/src/main/resources/XMIR.xsd"
+                    )
+                );
                 f.files().file("src/main/eo/foo.eo").write(
                     "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
                 );

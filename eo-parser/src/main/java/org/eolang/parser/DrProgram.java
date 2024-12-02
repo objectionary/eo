@@ -61,7 +61,7 @@ final class DrProgram implements Iterable<Directive> {
         return new Directives()
             .comment(
                 String.join(
-                    "\n",
+                    "\n  ",
                     "",
                     "This is XMIR, a dialect of XML, which is used to represent a parsed",
                     "EO program. For more information about the XMIR format, please visit",
@@ -110,6 +110,7 @@ final class DrProgram implements Iterable<Directive> {
             Manifests.read("EO-Version")
         );
         final String[] opts = {
+            "XMIR.xsd",
             "src/main/resources/XMIR.xsd",
             "../eo-parser/src/main/resources/XMIR.xsd",
         };
