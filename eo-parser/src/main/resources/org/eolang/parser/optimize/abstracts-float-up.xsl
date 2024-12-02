@@ -170,6 +170,9 @@ SOFTWARE.
         <xsl:variable name="index" select="position()"/>
         <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $index + 1], $ancestors[count($ancestors) - $index])">
           <xsl:element name="o">
+            <xsl:if test="@base='∅'">
+              <xsl:attribute name="base" select="@base"/>
+            </xsl:if>
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
             </xsl:attribute>
