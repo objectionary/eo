@@ -73,7 +73,7 @@ create a file `pom.xml` with this content (it's just a sample):
 Then, you just run `mvn clean test` (you will need [Maven 3.3+](https://maven.apache.org/))
 and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
-You will need Java 8+.
+You will need Java 11+.
 
 ## How it Works?
 
