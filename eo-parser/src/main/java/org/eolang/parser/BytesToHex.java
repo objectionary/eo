@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  *
  * @since 0.44
  */
-public final class BytesToHex implements Supplier<String> {
+final class BytesToHex implements Supplier<String> {
 
     /**
      * The bytes.
@@ -43,7 +43,7 @@ public final class BytesToHex implements Supplier<String> {
      * Ctor.
      * @param bts Bytes
      */
-    public BytesToHex(final byte[] bts) {
+    BytesToHex(final byte[] bts) {
         this.bytes = Arrays.copyOf(bts, bts.length);
     }
 

@@ -23,12 +23,8 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.manifests.Manifests;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
@@ -40,7 +36,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
-import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -64,11 +59,6 @@ import org.xembly.Directives;
     "PMD.GodClass"
 })
 public final class XeEoListener implements EoListener, Iterable<Directive> {
-    /**
-     * Info about xmir.
-     */
-    private static final XmirInfo INFO = new XmirInfo();
-
     /**
      * Meta for testing.
      */
@@ -114,21 +104,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .comment(XeEoListener.INFO)
-            .add("program")
-            .attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-            .attr("xsi:noNamespaceSchemaLocation", "https://www.eolang.org/XMIR.xsd")
-            .attr("name", this.name)
-            .attr("version", Manifests.read("EO-Version"))
-            .attr("revision", Manifests.read("EO-Revision"))
-            .attr("dob", Manifests.read("EO-Dob"))
-            .attr(
-                "time",
-                ZonedDateTime.now(ZoneOffset.UTC).format(
-                    DateTimeFormatter.ISO_INSTANT
-                )
-            )
-            .add("listing").set(new SourceText(ctx)).up();
+            .append(new DrProgram(this.name))
+            .append(new DrListing(ctx))
+            .xpath("/program").strict(1);
     }
 
     @Override

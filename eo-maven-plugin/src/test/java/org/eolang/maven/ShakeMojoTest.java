@@ -71,14 +71,14 @@ final class ShakeMojoTest {
             .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
-            "After successful operation of the ShakeMojo, a xml should appear.",
+            "After successful operation of the ShakeMojo, an XML should appear",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main/01-remove-refs.xml", ShakeMojo.STEPS)
             )
         );
         MatcherAssert.assertThat(
-            "After successful operation of the ShakeMojo, a xmir should appear.",
+            "After successful operation of the ShakeMojo, an XMIR should appear",
             res,
             Matchers.hasKey(
                 String.format(this.key, ShakeMojo.DIR, AssembleMojo.XMIR)

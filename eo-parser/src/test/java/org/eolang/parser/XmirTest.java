@@ -21,47 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.xmir;
+package org.eolang.parser;
 
-import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.util.Map;
-import java.util.function.Function;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for {@link Xmir} and {@link XmirReversed}.
+ * Test case for {@link Xmir}.
  *
  * @since 0.5
- * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 final class XmirTest {
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsStraight(final String pack) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);
-        final String key = "straight";
-        final String eolang = this.eolang((String) map.get("origin"), Xmir.Default::new);
         MatcherAssert.assertThat(
-            "Result EO should be parsed without errors",
-            new EoSyntax("test", new InputOf(eolang)).parsed(),
-            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Result EO should be equal to original EO in %s notation",
-                key
-            ),
-            map.get(key),
-            Matchers.equalTo(eolang)
+            "Result EO should be equal to original EO",
+            this.asXmir((String) map.get("origin")).toEO(),
+            Matchers.equalTo(map.get("straight"))
         );
     }
 
@@ -69,43 +56,26 @@ final class XmirTest {
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsReversed(final String pack) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);
-        final String key = "reversed";
-        final String eolang = this.eolang((String) map.get("origin"), XmirReversed::new);
         MatcherAssert.assertThat(
-            "Result EO should be parsed without errors",
-            new EoSyntax("test", new InputOf(eolang)).parsed(),
-            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Result EO should be equal to original EO in %s notation",
-                key
-            ),
-            map.get(key),
-            Matchers.equalTo(eolang)
+            "Result EO should be equal to original EO in reverse notation",
+            this.asXmir((String) map.get("origin")).toReversed(),
+            Matchers.equalTo(map.get("reversed"))
         );
     }
 
     /**
-     * Parse EO from given pack, converts XMIR to EO.
-     * @param original Original EOLANG
-     * @param xmir Xmir constructor
-     * @return Eolang from XMIR
+     * Convert EO to XMIR.
+     * @param program Program in EOLANG
+     * @return XMIR
      */
-    private String eolang(
-        final String original,
-        final Function<XML, Xmir> xmir
-    ) throws IOException {
-        Logger.debug(this, "Original EOLANG:%n%s", original);
-        final XML first = new EoSyntax("test", new InputOf(original)).parsed();
+    private Xmir asXmir(final String program) throws IOException {
+        final XML xml = new EoSyntax("test", new InputOf(program)).parsed();
         MatcherAssert.assertThat(
             "Original EO should be parsed without errors",
-            first,
+            xml,
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
-        Logger.debug(this, "First:%n%s", first);
-        final String eolang = xmir.apply(first).toEO();
-        Logger.debug(this, "EOLANG:%n%s", eolang);
-        return eolang;
+        return new Xmir(xml);
     }
+
 }

@@ -23,14 +23,19 @@
  */
 package org.eolang.parser;
 
+import java.util.Iterator;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Source text of parser context.
+ *
  * @since 0.34.0
  */
-public final class SourceText {
+final class DrListing implements Iterable<Directive> {
+
     /**
      * Context.
      */
@@ -40,17 +45,22 @@ public final class SourceText {
      * Ctor.
      * @param ctx Context
      */
-    public SourceText(final ParserRuleContext ctx) {
+    DrListing(final ParserRuleContext ctx) {
         this.context = ctx;
     }
 
     @Override
-    public String toString() {
-        return this.context.getStart().getInputStream().getText(
+    public Iterator<Directive> iterator() {
+        final String text = this.context.getStart().getInputStream().getText(
             new Interval(
                 this.context.getStart().getStartIndex(),
                 this.context.getStop().getStopIndex()
             )
         );
+        return new Directives()
+            .xpath("/program")
+            .strict(1).add("listing")
+            .set(text)
+            .iterator();
     }
 }
