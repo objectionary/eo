@@ -35,7 +35,6 @@ import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
@@ -288,7 +287,7 @@ final class EoSyntaxTest {
                 xml, comments, expected
             ),
             comments,
-            new IsEqual<>(expected)
+            Matchers.equalTo(expected)
         );
     }
 }
