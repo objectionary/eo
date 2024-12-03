@@ -55,7 +55,6 @@ import org.yaml.snakeyaml.Yaml;
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
  */
-@ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {

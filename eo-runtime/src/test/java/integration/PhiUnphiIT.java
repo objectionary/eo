@@ -43,7 +43,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.1
  */
-@ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
