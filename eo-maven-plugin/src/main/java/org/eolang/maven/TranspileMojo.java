@@ -160,7 +160,7 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
+        final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
         final Optimization optimization = this.transpilation();
         final int saved = new Threaded<>(
             sources,
@@ -197,7 +197,7 @@ public final class TranspileMojo extends SafeMojo {
         throws IOException {
         final Path source;
         try {
-            source = tojo.optimized();
+            source = tojo.shaken();
         }  catch (final AttributeNotFoundException exception) {
             throw new IllegalStateException(
                 "You should check that 'Verify' goal of the plugin was run first",

@@ -208,7 +208,7 @@ final class TranspileMojoTest {
                     .resolve("EOeolang")
                     .resolve("EOexamples")
             ).count(),
-            Matchers.equalTo(2L)
+            Matchers.equalTo(4L)
         );
     }
 
