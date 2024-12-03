@@ -44,4 +44,4 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: mvn clean install --errors --batch-mode -DskipTests -DskipITs
-      - run: sudo unshare --net --ipc -r /bin/bash -c 'mvn clean install --errors --batch-mode'
+      - run: sudo unshare --net --map-root-user /bin/bash -c 'mvn clean install --errors --batch-mode'
