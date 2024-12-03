@@ -77,7 +77,7 @@ public final class Threaded<T> {
                         } catch (final Exception ex) {
                             throw new IllegalStateException(
                                 String.format(
-                                    "Failed to process %s (%s)",
+                                    "Failed to process \"%s\" (%s)",
                                     tojo, tojo.getClass().getCanonicalName()
                                 ),
                                 ex
