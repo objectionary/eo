@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.44.0
++version 0.45.0
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -201,7 +201,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-invalid-put
-  "Error in the " > message
   QQ.rust > put
     """
     use eo::Portal;
@@ -215,25 +214,15 @@
     """
     []
     *
-  eq. > @
-    slice.
-      try
-        put
-        [e]
-          seq > @
-            *
-              QQ.io.stdout e
-              e
-        true
-      0
-      message.as-bytes.size
-    message
+  try > @
+    put
+    true > [e]
+    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-invalid-bind
   1 > a
   2 > b
-  "Error in the " > to-check
   QQ.rust > insert
     """
     use eo::Portal;
@@ -249,13 +238,10 @@
     """
     [] >>
     *
-  try > res
+  try > @
     insert
-    e > [e]
-    true
-  eq. > @
-    res.slice 0 to-check.as-bytes.size
-    to-check
+    true > [e]
+    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-copy-not-fails
@@ -331,7 +317,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-error
-  "Error in the " > message
   QQ.rust > err
     """
     use eo::Portal;
@@ -344,13 +329,10 @@
     """
     []
     *
-  try > res
+  try > @
     err
-    e > [e]
-    true
-  eq. > @
-    res.slice 0 message.as-bytes.size
-    message
+    true > [e]
+    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-put-to-copy

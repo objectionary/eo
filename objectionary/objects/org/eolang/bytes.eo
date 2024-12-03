@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.44.0
++rt jvm org.eolang:eo-runtime:0.45.0
 +rt node eo2js-runtime:0.0.0
-+version 0.44.0
++version 0.45.0
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
