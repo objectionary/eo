@@ -146,7 +146,7 @@ final class PhiUnphiIT {
                     .goals(
                         "register",
                         "assemble",
-                        "verify",
+                        "lint",
                         "transpile",
                         "copy",
                         "unplace",
@@ -187,7 +187,7 @@ final class PhiUnphiIT {
                     .goals(
                         "register",
                         "assemble",
-                        "verify",
+                        "lint",
                         "transpile",
                         "binarize"
                     )

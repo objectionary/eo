@@ -26,10 +26,10 @@ tests:
   - //o[@base='.plus' and @name='a']
   - //o[@base='number' and @name='@' and starts-with(text(), '40-14')]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [x] (x.plus 1 > a) (5 > @) > first
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [a b] ((a.plus 6).plus b > inner) > second
 
   foo

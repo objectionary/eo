@@ -33,12 +33,10 @@ import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.Xmir;
 
@@ -88,37 +86,32 @@ public final class PrintMojo extends SafeMojo {
     @Override
     void exec() throws IOException {
         final Home home = new HmBase(this.printOutputDir);
-        final int total = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    source -> () -> {
-                        final Path relative = Paths.get(
-                            this.printSourcesDir.toPath().relativize(source).toString()
-                                .replace(".xmir", ".eo")
-                        );
-                        final XML xml = new XMLDocument(new TextOf(source).asString());
-                        final String program;
-                        if (this.printReversed) {
-                            program = new Xmir(xml).toReversed();
-                        } else {
-                            program = new Xmir(xml).toEO();
-                        }
-                        home.save(program, relative);
-                        Logger.info(
-                            this,
-                            "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",
-                            source,
-                            source.toFile().length(),
-                            this.printOutputDir.toPath().resolve(relative),
-                            this.printOutputDir.toPath().resolve(relative).toFile().length()
-                        );
-                        return 1;
-                    },
-                    new Walk(this.printSourcesDir.toPath())
-                )
-            )
-        ).intValue();
+        final int total = new Threaded<>(
+            new Walk(this.printSourcesDir.toPath()),
+            source -> {
+                final Path relative = Paths.get(
+                    this.printSourcesDir.toPath().relativize(source).toString()
+                        .replace(".xmir", ".eo")
+                );
+                final XML xml = new XMLDocument(new TextOf(source).asString());
+                final String program;
+                if (this.printReversed) {
+                    program = new Xmir(xml).toReversed();
+                } else {
+                    program = new Xmir(xml).toEO();
+                }
+                home.save(program, relative);
+                Logger.info(
+                    this,
+                    "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",
+                    source,
+                    source.toFile().length(),
+                    this.printOutputDir.toPath().resolve(relative),
+                    this.printOutputDir.toPath().resolve(relative).toFile().length()
+                );
+                return 1;
+            }
+        ).total();
         if (total == 0) {
             Logger.info(this, "No XMIR sources found");
         } else {

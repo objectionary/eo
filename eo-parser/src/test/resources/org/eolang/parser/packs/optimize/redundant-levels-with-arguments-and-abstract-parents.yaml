@@ -69,14 +69,14 @@ tests:
 #   arg.two > @
 # ____
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [arg] > main
     sibling > @
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > sibling
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [] > first
         arg.one > @
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [] > second
         arg.two > @

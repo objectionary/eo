@@ -35,14 +35,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Func;
-import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
 import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -89,18 +87,13 @@ public final class ParseMojo extends SafeMojo {
     @Override
     public void exec() {
         final long start = System.currentTimeMillis();
-        final int total = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> () -> this.parsed(tojo),
-                    new Filtered<>(
-                        ForeignTojo::notParsed,
-                        this.scopedTojos().withSources()
-                    )
-                )
-            )
-        ).intValue();
+        final int total = new Threaded<>(
+            new Filtered<>(
+                ForeignTojo::notParsed,
+                this.scopedTojos().withSources()
+            ),
+            this::parsed
+        ).total();
         if (0 == total) {
             if (this.scopedTojos().withSources().isEmpty()) {
                 Logger.info(

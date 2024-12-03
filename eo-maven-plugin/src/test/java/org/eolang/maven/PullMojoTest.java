@@ -447,7 +447,7 @@ final class PullMojoTest {
         );
         new FakeMaven(temp)
             .withProgram(
-                "# Test.",
+                "# No comments.",
                 "[] > app",
                 "  QQ.io.stdout > @"
             )

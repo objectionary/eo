@@ -25,6 +25,6 @@ tests:
   - //metas[count(.//meta[head/text()='probe'])=1]
   - /program/sheets[sheet='add-probes']
 eo: |
-  # Test.
+  # No comments.
   [] > app
     Q.foo.boom > @

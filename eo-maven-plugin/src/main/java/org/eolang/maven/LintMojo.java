@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -33,35 +34,40 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.number.SumOf;
+import org.eolang.lints.Defect;
+import org.eolang.lints.Program;
+import org.eolang.lints.Severity;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
+import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
- * Mojo that checks errors and warnings after "assemble" phase.
+ * Mojo that runs all lints and checks errors and warnings,
+ * preferably after the {@code assemble} goal.
  *
  * @since 0.31.0
  */
 @Mojo(
-    name = "verify",
+    name = "lint",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class VerifyMojo extends SafeMojo {
+public final class LintMojo extends SafeMojo {
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "6-verify";
+    public static final String DIR = "6-lint";
 
     /**
      * Subdirectory for optimized cache.
      */
-    static final String CACHE = "verified";
+    static final String CACHE = "linted";
 
     /**
      * Whether we should fail on warning.
@@ -79,38 +85,33 @@ public final class VerifyMojo extends SafeMojo {
     @Override
     void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
-        final ConcurrentHashMap<String, Integer> counts = new ConcurrentHashMap<>();
-        counts.putIfAbsent("critical", 0);
-        counts.putIfAbsent("error", 0);
-        counts.putIfAbsent("warning", 0);
+        final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
+        counts.putIfAbsent(Severity.CRITICAL, 0);
+        counts.putIfAbsent(Severity.ERROR, 0);
+        counts.putIfAbsent(Severity.WARNING, 0);
         final Collection<ForeignTojo> must = new ListOf<>(
             new Filtered<>(
-                ForeignTojo::notVerified,
+                ForeignTojo::notLinted,
                 tojos
             )
         );
-        final int passed = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> () -> this.verify(tojo, counts),
-                    must
-                )
-            )
-        ).intValue();
+        final int passed = new Threaded<>(
+            must,
+            tojo -> this.lintOne(tojo, counts)
+        ).total();
         if (must.isEmpty()) {
-            Logger.info(this, "No XMIR programs out of %d verified", tojos.size());
+            Logger.info(this, "No XMIR programs out of %d linted", tojos.size());
         } else if (tojos.isEmpty()) {
-            Logger.info(this, "There are no XMIR programs, nothing to verify");
+            Logger.info(this, "There are no XMIR programs, nothing to lint");
         } else {
-            final String sum = VerifyMojo.summary(counts);
+            final String sum = LintMojo.summary(counts);
             Logger.info(
                 this,
-                "Verified %d out of %d XMIR program(s) that needed verification (out of %d total programs): %s",
+                "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
                 passed, must.size(), tojos.size(), sum
             );
-            if (counts.get("error") > 0 || counts.get("critical") > 0
-                || counts.get("warning") > 0 && this.failOnWarning) {
+            if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
+                || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
                 throw new IllegalStateException(
                     String.format("In %d XMIR files, we found %s", must.size(), sum)
                 );
@@ -123,36 +124,25 @@ public final class VerifyMojo extends SafeMojo {
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
      * @return Amount of passed tojos (1 if passed, 0 if errors)
-     * @throws Exception If failed to verify
+     * @throws Exception If failed to lint
      */
-    private int verify(final ForeignTojo tojo,
-        final ConcurrentHashMap<String, Integer> counts) throws Exception {
+    private int lintOne(final ForeignTojo tojo,
+        final ConcurrentHashMap<Severity, Integer> counts) throws Exception {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
         final String name = xmir.xpath("/program/@name").get(0);
-        final Path base = this.targetDir.toPath().resolve(VerifyMojo.DIR);
+        final Path base = this.targetDir.toPath().resolve(LintMojo.DIR);
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
-        int verified = 1;
-        try {
-            tojo.withVerified(
-                new FpDefault(
-                    src -> {
-                        if (!this.good(xmir, counts)) {
-                            throw new SkipException();
-                        }
-                        return xmir.toString();
-                    },
-                    this.cache.toPath().resolve(VerifyMojo.CACHE),
-                    this.plugin.getVersion(),
-                    new TojoHash(tojo),
-                    base.relativize(target)
-                ).apply(source, target)
-            );
-        } catch (final SkipException ex) {
-            Logger.debug(this, "Failed to verify %[file]s", source);
-            verified = 0;
-        }
-        return verified;
+        tojo.withLinted(
+            new FpDefault(
+                src -> this.counted(LintMojo.lint(xmir), counts).toString(),
+                this.cache.toPath().resolve(LintMojo.CACHE),
+                this.plugin.getVersion(),
+                new TojoHash(tojo),
+                base.relativize(target)
+            ).apply(source, target)
+        );
+        return 1;
     }
 
     /**
@@ -161,8 +151,7 @@ public final class VerifyMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return TRUE if it's good
      */
-    private boolean good(final XML xml, final ConcurrentHashMap<String, Integer> counts) {
-        boolean good = true;
+    private XML counted(final XML xml, final ConcurrentHashMap<Severity, Integer> counts) {
         for (final XML error : xml.nodes("/program/errors/error")) {
             final List<String> line = error.xpath("@line");
             final StringBuilder message = new StringBuilder()
@@ -174,28 +163,26 @@ public final class VerifyMojo extends SafeMojo {
                 .append(error.xpath("text()").get(0))
                 .append(" (")
                 .append(error.xpath("@check").get(0))
+                .append(' ')
+                .append(error.xpath("@severity").get(0))
                 .append(')');
-            final String severity = error.xpath("@severity").get(0);
+            final Severity severity = Severity.parsed(error.xpath("@severity").get(0));
             counts.compute(severity, (sev, before) -> before + 1);
             switch (severity) {
-                case "warning":
+                case WARNING:
                     Logger.warn(this, message.toString());
-                    if (this.failOnWarning) {
-                        good = false;
-                    }
                     break;
-                case "error":
-                case "critical":
+                case ERROR:
+                case CRITICAL:
                     Logger.error(this, message.toString());
-                    good = false;
                     break;
                 default:
                     throw new IllegalArgumentException(
-                        String.format("Incorrect severity: %s", severity)
+                        String.format("Not yet supported severity: %s", severity)
                     );
             }
         }
-        return good;
+        return xml;
     }
 
     /**
@@ -203,16 +190,16 @@ public final class VerifyMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return Summary text
      */
-    private static String summary(final ConcurrentHashMap<String, Integer> counts) {
+    private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
         final StringBuilder sum = new StringBuilder(100);
-        final int criticals = counts.get("critical");
+        final int criticals = counts.get(Severity.CRITICAL);
         if (criticals > 0) {
             sum.append(criticals).append(" critical error");
             if (criticals > 1) {
                 sum.append('s');
             }
         }
-        final int errors = counts.get("error");
+        final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {
             if (sum.length() > 0) {
                 sum.append(", ");
@@ -222,7 +209,7 @@ public final class VerifyMojo extends SafeMojo {
                 sum.append('s');
             }
         }
-        final int warnings = counts.get("warning");
+        final int warnings = counts.get(Severity.WARNING);
         if (warnings > 0) {
             if (sum.length() > 0) {
                 sum.append(", ");
@@ -239,10 +226,48 @@ public final class VerifyMojo extends SafeMojo {
     }
 
     /**
-     * If this file must be skipped.
-     *
-     * @since 0.43.0
+     * Find all possible linting defects.
+     * @param xmir The XML before linting
+     * @return XML after linting
+     * @throws IOException If fails
      */
-    public static class SkipException extends RuntimeException {
+    private static XML lint(final XML xmir) throws IOException {
+        final Directives dirs = new Directives();
+        final Collection<Defect> defects = new Program(xmir).defects();
+        if (!defects.isEmpty()) {
+            dirs.xpath("/program").addIf("errors").strict(1);
+            for (final Defect defect : defects) {
+                if (LintMojo.suppressed(xmir, defect)) {
+                    continue;
+                }
+                dirs.add("error")
+                    .attr("check", defect.rule())
+                    .attr("severity", defect.severity().mnemo())
+                    .set(defect.text());
+                if (defect.line() > 0) {
+                    dirs.attr("line", defect.line());
+                }
+                dirs.up();
+            }
+        }
+        final Node node = xmir.node();
+        new Xembler(dirs).applyQuietly(node);
+        return new XMLDocument(node);
     }
+
+    /**
+     * This defect is suppressed?
+     * @param xmir The XMIR
+     * @param defect The defect
+     * @return TRUE if suppressed
+     */
+    private static boolean suppressed(final XML xmir, final Defect defect) {
+        return !xmir.nodes(
+            String.format(
+                "/program/metas/meta[head='unlint' and tail='%s']",
+                defect.rule()
+            )
+        ).isEmpty();
+    }
+
 }
