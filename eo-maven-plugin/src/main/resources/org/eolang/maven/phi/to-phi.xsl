@@ -140,6 +140,7 @@ SOFTWARE.
   <xsl:function name="eo:eol">
     <xsl:param name="tabs"/>
     <xsl:value-of select="'&#10;'"/>
+    <xsl:message select="$tabs"/>
     <xsl:for-each select="1 to $tabs">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
@@ -211,7 +212,7 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:template>
   <!-- Void attribute -->
-  <xsl:template match="o[parent::o[not(@base)] and not(@base) and not(@atom) and not(o)]">
+  <xsl:template match="o[@base=$empty]">
     <xsl:value-of select="./@name"/>
     <xsl:value-of select="$arrow"/>
     <xsl:value-of select="$empty"/>
@@ -225,7 +226,7 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$parent[@abstract]">
+      <xsl:when test="eo:abstract($parent)">
         <xsl:if test="not($parent/o[@name=$find])">
           <xsl:value-of select="$rho-dot"/>
           <xsl:apply-templates select="$parent" mode="path">
@@ -241,7 +242,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- Just object -->
-  <xsl:template match="o[@base]">
+  <xsl:template match="o[@base and @base!=$empty]">
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
     <xsl:if test="@name">
@@ -321,7 +322,7 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <!-- Formation -->
-  <xsl:template match="o[not(@base) and (@abstract or @atom)]">
+  <xsl:template match="o[eo:abstract(.)]">
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
     <xsl:variable name="name" select="eo:specials(@name, true())"/>
