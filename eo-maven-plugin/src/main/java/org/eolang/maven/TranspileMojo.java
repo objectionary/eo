@@ -38,15 +38,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.experimental.Threads;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.cactoos.text.Joined;
 import org.eolang.maven.footprint.CachePath;
 import org.eolang.maven.footprint.Footprint;
@@ -63,6 +60,7 @@ import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
 
 /**
  * Transpile.
@@ -164,12 +162,10 @@ public final class TranspileMojo extends SafeMojo {
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
         final Optimization optimization = this.transpilation();
-        final long saved = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(tojo -> () -> this.transpiled(tojo, optimization), sources)
-            )
-        ).longValue();
+        final int saved = new Threaded<>(
+            sources,
+            tojo -> this.transpiled(tojo, optimization)
+        ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             sources.size(), saved, this.generatedDir
@@ -197,7 +193,7 @@ public final class TranspileMojo extends SafeMojo {
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private long transpiled(final ForeignTojo tojo, final Optimization transpilation)
+    private int transpiled(final ForeignTojo tojo, final Optimization transpilation)
         throws IOException {
         final Path source;
         try {
@@ -246,10 +242,10 @@ public final class TranspileMojo extends SafeMojo {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
-    private long javaGenerated(final boolean rewrite, final Path target, final String hsh)
+    private int javaGenerated(final boolean rewrite, final Path target, final String hsh)
         throws IOException {
         final Collection<XML> nodes = new XMLDocument(target).nodes("//class[java and not(@atom)]");
-        final AtomicLong saved = new AtomicLong(0L);
+        final AtomicInteger saved = new AtomicInteger(0);
         for (final XML java : nodes) {
             final Path tgt = new Place(java.xpath("@java-name").get(0)).make(
                 this.generatedDir.toPath(), TranspileMojo.JAVA

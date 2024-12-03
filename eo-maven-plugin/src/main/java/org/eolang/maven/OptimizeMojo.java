@@ -33,16 +33,14 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
 import org.eolang.parser.TrParsing;
 
 /**
@@ -91,18 +89,13 @@ public final class OptimizeMojo extends SafeMojo {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final Optimization optimization = this.optimization();
-        final int total = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> () -> this.optimized(tojo, optimization),
-                    new Filtered<>(
-                        ForeignTojo::notOptimized,
-                        tojos
-                    )
-                )
-            )
-        ).intValue();
+        final int total = new Threaded<>(
+            new Filtered<>(
+                ForeignTojo::notOptimized,
+                tojos
+            ),
+            tojo -> this.optimized(tojo, optimization)
+        ).total();
         if (total > 0) {
             Logger.info(
                 this,

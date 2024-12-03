@@ -34,17 +34,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.number.SumOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
 import org.eolang.lints.Severity;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -97,15 +95,10 @@ public final class LintMojo extends SafeMojo {
                 tojos
             )
         );
-        final int passed = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> () -> this.lintOne(tojo, counts),
-                    must
-                )
-            )
-        ).intValue();
+        final int passed = new Threaded<>(
+            must,
+            tojo -> this.lintOne(tojo, counts)
+        ).total();
         if (must.isEmpty()) {
             Logger.info(this, "No XMIR programs out of %d linted", tojos.size());
         } else if (tojos.isEmpty()) {

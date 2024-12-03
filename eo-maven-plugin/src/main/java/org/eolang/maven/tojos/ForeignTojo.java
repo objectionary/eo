@@ -52,6 +52,11 @@ public final class ForeignTojo {
         this.delegate = original;
     }
 
+    @Override
+    public String toString() {
+        return this.delegate.toString();
+    }
+
     /**
      * The id of the tojo.
      * @return The id of the tojo.

@@ -31,16 +31,14 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.maven.util.Threaded;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
@@ -83,18 +81,13 @@ public final class ShakeMojo extends SafeMojo {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final Optimization optimization = this.optimization();
-        final int total = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> () -> this.shaken(tojo, optimization),
-                    new Filtered<>(
-                        ForeignTojo::notShaken,
-                        tojos
-                    )
-                )
-            )
-        ).intValue();
+        final int total = new Threaded<>(
+            new Filtered<>(
+                ForeignTojo::notShaken,
+                tojos
+            ),
+            tojo -> this.shaken(tojo, optimization)
+        ).total();
         if (total > 0) {
             Logger.info(
                 this,
