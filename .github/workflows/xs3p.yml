@@ -37,7 +37,7 @@ jobs:
             "eo-parser/src/main/xs3p/xs3p.xsl" \
             "eo-parser/src/main/resources/XMIR.xsd" \
             > "gh-pages/XMIR.html"
-      - uses: JamesIves/github-pages-deploy-action@v4.7.1
+      - uses: JamesIves/github-pages-deploy-action@v4.7.2
         with:
           branch: gh-pages
           folder: gh-pages
