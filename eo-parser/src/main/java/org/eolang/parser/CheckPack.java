@@ -89,7 +89,7 @@ public final class CheckPack {
                 )
             )
         );
-        Logger.info(this, "Output XML:\n%s", out);
+        Logger.debug(this, "Output XML:\n%s", out);
         final Collection<String> failures = new LinkedList<>();
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             if (out.nodes(xpath).isEmpty()) {

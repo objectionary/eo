@@ -61,9 +61,12 @@ import org.yaml.snakeyaml.Yaml;
  * Test case for {@link SodgMojo}.
  *
  * @since 0.1
- * @todo #3229:30min Enable the Sodg packs. The next Sodg packs were disabled when we got rid of
+ * @todo #3529:30min Enable the Sodg packs. The next Sodg packs were disabled when we got rid of
  *  "abstract" attribute in XMIR: copy-of-abstract, copy-of-argument, dot-on-ref, nested-anonymous,
  *  rho, vars. We need to enable them and make sure they pass.
+ * @todo #3529:30min Enable the test {@link SodgMojoTest#transformsThroughSheets}. The test was
+ *  disabled when we got rid of "abstract" attribute in XMIR. We need to enable the test and make
+ *  sure it works correctly.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(MktmpResolver.class)

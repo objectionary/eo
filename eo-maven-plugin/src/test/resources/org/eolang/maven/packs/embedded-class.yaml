@@ -24,16 +24,16 @@ xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
   - /org/eolang/parser/optimize/remove-refs.xsl
-#  - /org/eolang/parser/optimize/abstracts-float-up.xsl
-#  - /org/eolang/parser/optimize/remove-levels.xsl
-#  - /org/eolang/parser/add-refs.xsl
-#  - /org/eolang/parser/optimize/fix-missed-names.xsl
-#  - /org/eolang/parser/add-refs.xsl
-#  - /org/eolang/maven/pre/classes.xsl
-#  - /org/eolang/maven/pre/attrs.xsl
-#  - /org/eolang/maven/pre/data.xsl
-#  - /org/eolang/maven/pre/to-java.xsl
-#  - /org/eolang/parser/blank-xsd-schema.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/optimize/fix-missed-names.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+  - /org/eolang/parser/blank-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - //java[contains(text(), 'PhMethod(new PhMethod(rho, "ρ"), "ρ")')]

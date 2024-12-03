@@ -409,6 +409,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     /**
      * Enter either tau or empty binding.
+     * @return Objects
      */
     private Objects enterObjectBinding() {
         return this.objects().start();
