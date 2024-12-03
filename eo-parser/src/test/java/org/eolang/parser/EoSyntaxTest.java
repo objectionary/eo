@@ -268,4 +268,29 @@ final class EoSyntaxTest {
             Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
         );
     }
+
+    @Test
+    void printsSyntaxWithComments() throws IOException {
+        final XML xml = new EoSyntax(
+            new InputOf(
+                String.join(
+                    "\n",
+                    "# Foo.",
+                    "# Bar.",
+                    "# Xyz.",
+                    "[] > foo"
+                )
+            )
+        ).parsed();
+        final String comments = xml.xpath("/program/comments/comment/text()").get(0);
+        final String expected = "Foo.\\nBar.\\nXyz.";
+        MatcherAssert.assertThat(
+            String.format(
+                "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",
+                xml, comments, expected
+            ),
+            comments,
+            Matchers.equalTo(expected)
+        );
+    }
 }

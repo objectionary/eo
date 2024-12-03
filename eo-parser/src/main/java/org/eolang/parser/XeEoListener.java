@@ -1278,12 +1278,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
         if (!comment.isEmpty()) {
             this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
-                String.join(
-                    "",
-                    comment.stream().map(
-                        context -> context.COMMENTARY().getText().substring(1).trim()
-                    ).collect(Collectors.joining(""))
-                )
+                comment.stream().map(
+                    context -> context.COMMENTARY().getText().substring(1).trim()
+                ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }
     }
