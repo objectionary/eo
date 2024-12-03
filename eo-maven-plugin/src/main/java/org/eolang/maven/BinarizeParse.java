@@ -139,7 +139,7 @@ public final class BinarizeParse {
         final Collection<Buildable> res = new ArrayList<>(0);
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : tojos) {
-            final Path file = tojo.optimized();
+            final Path file = tojo.shaken();
             for (final FFINode ffi: this.getFFIs(new XMLDocument(file))) {
                 ffi.generateUnchecked();
                 if (ffi instanceof Buildable) {
