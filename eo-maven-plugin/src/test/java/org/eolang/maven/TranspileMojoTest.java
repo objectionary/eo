@@ -81,7 +81,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void recompilesIfModified(@Mktmp final Path temp) throws Exception {
+    void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(this.program)
