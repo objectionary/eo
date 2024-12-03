@@ -30,7 +30,7 @@ tests:
   - //o[@base='.stdout' and @ver='1.28.5']
   - //o[@base='.sprintf' and @ver='0.28.5' and @name='y']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > main
     func0|3.4.5 > x
     func1|1.2.3

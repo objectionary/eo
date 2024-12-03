@@ -38,30 +38,30 @@ tests:
   - //o[@name='mm' and @base='number']
   - //o[@base='mm']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > x
     first > ff
     one
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [] > y
         two
           input > t!
             "Hello, world!"
-            # This is the default 64+ symbols comment in front of abstract object.
+            # No comments.
             [] > oops
               50
     three t
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > last
       three 1
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [ppp] > pp
     one
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [aaa] > kkk
         1 > ooo
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > head
     bb > @
       [zz]

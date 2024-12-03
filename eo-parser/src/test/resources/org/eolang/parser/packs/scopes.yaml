@@ -24,6 +24,6 @@ xsls: [ ]
 tests:
   - //o[@abstract and count(o)=1]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > aliases
     a (b (c d))

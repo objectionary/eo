@@ -29,9 +29,9 @@ xsls:
 tests:
   - /program[count(.//o[@base='build' and not(@ref)])=2]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > hello
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [f s] > calc
       plus. > @
         f.next
@@ -42,13 +42,13 @@ eo: |
           "Result is %d\n"
           calc
             []
-              # This is the default 64+ symbols comment in front of abstract object.
+              # No comments.
               [x] > build
                 x.plus 1 > @
                 build (@.plus 1) > next
               build 1 > @
             []
-              # This is the default 64+ symbols comment in front of abstract object.
+              # No comments.
               [y] > build
                 y.plus 2 > @
                 build (@.plus 2) > next

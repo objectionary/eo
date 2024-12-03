@@ -78,7 +78,7 @@ final class EoSyntaxTest {
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of abstract object.",
+            "# No comments.",
             "[] > x-н, 1\n"
         );
         MatcherAssert.assertThat(
@@ -127,9 +127,9 @@ final class EoSyntaxTest {
         "1 > x\r\n\r\n2 > y",
         "1 > x\n2 > y\n",
         "1 > x\n\n2 > y",
-        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x",
+        "# No comments.\n[] > x",
         "a b c > x\n  x ^ > @",
-        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x\n  x ^ > @"
+        "# No comments.\n[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
         final EoSyntax syntax = new EoSyntax(
@@ -160,10 +160,10 @@ final class EoSyntaxTest {
     void prasesNested() throws IOException {
         final String src = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of abstract object.",
+            "# No comments.",
             "[] > base",
             "  memory 0 > x",
-            "  # This is the default 64+ symbols comment in front of abstract object.",
+            "  # No comments.",
             "  [self] > f",
             "    v > @",
             "      v\n"

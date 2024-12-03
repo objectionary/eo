@@ -66,7 +66,7 @@ final class LintMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
-                "# Test.",
+                "# No comments.",
                 "[] > main",
                 "  QQ.io.stdout",
                 "    \"Hello world\""
@@ -227,7 +227,7 @@ final class LintMojoTest {
                     "+architect yegor256@gmail.com",
                     "+tests",
                     "+package org.eolang.examples\n",
-                    "# Test.",
+                    "# No comments.",
                     "[] > main",
                     "  [] > @",
                     "    hello > test"

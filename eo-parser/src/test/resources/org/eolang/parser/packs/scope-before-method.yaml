@@ -24,11 +24,11 @@ xsls: [ ]
 tests:
   - //o[@base='foo' and count(o)=1]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > aliases
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [x] > foo
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [y] > @
         42 > @
     eq. > @

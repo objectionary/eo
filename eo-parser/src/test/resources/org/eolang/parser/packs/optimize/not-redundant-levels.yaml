@@ -45,8 +45,8 @@ tests:
 #   arg.method > a
 # ____
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [arg] > first
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > second
       arg.method > a

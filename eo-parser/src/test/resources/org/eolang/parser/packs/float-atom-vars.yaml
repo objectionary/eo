@@ -28,6 +28,6 @@ tests:
   - //objects[not(o[@atom and o[@base]])]
   - //o[@atom and o[not(@base)]]
 eo: |
-  # Test.
+  # No comments.
   [] > main
     [x] > foo /number

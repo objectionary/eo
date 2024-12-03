@@ -60,7 +60,7 @@ tests:
 #       2
 # ____
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > main
     * 0 (* 1 2) > arr
     eq > @

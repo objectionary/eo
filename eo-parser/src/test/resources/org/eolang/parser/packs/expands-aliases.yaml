@@ -30,7 +30,7 @@ eo: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [args] > main
     and
       (scanner stdin).next-line > line!
