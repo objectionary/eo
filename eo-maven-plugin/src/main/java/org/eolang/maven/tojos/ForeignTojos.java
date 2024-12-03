@@ -212,14 +212,6 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
-     * Get the tojos that have corresponding verified xmir.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> verified() {
-        return this.select(row -> row.exists(Attribute.VERIFIED.getKey()));
-    }
-
-    /**
      * Get the tojos that have not probed yet.
      * @return The tojos.
      */
@@ -340,7 +332,7 @@ public final class ForeignTojos implements Closeable {
         /**
          * Absolute path of the verified {@code .xmir} file.
          */
-        VERIFIED("verified"),
+        LINTED("linted"),
 
         /**
          * Absolute path of the SODG file.

@@ -230,7 +230,7 @@ public final class BinarizeParseTest {
             for (final Path program : programs) {
                 maven.withProgram(program);
             }
-            maven.execute(new FakeMaven.Verify());
+            maven.execute(new FakeMaven.Lint());
         }
         new BinarizeParse(
             generated,

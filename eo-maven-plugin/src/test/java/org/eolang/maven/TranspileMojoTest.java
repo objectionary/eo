@@ -36,13 +36,10 @@ import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -204,13 +201,14 @@ final class TranspileMojoTest {
         }
         maven.execute(new FakeMaven.Transpile()).result();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            Files.list(maven.generatedPath()
-                .resolve("EOorg")
-                .resolve("EOeolang")
-                .resolve("EOexamples")
+            "All programs must be transpiled",
+            Files.list(
+                maven.generatedPath()
+                    .resolve("EOorg")
+                    .resolve("EOeolang")
+                    .resolve("EOexamples")
             ).count(),
-            Matchers.equalTo(4L)
+            Matchers.equalTo(2L)
         );
     }
 
@@ -244,23 +242,6 @@ final class TranspileMojoTest {
             "Both class paths should not intersect and don't have to have common classes",
             intersection,
             Matchers.empty()
-        );
-    }
-
-    @Test
-    @CaptureLogs
-    void skipsTranpilationIfWasNotVerified(@Mktmp final Path temp, final Logs out)
-        throws IOException {
-        new FakeMaven(temp)
-            .withHelloWorld()
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class)
-            .execute(TranspileMojo.class)
-            .result();
-        Assertions.assertTrue(
-            out.captured().stream().anyMatch(log -> log.contains("created 0 Java files")),
-            "Tranpile mojo must transpile 0 files from not verified XMIRs"
         );
     }
 

@@ -77,14 +77,6 @@ public final class ForeignTojo {
     }
 
     /**
-     * The tojo verified xmir.
-     * @return The verified xmir.
-     */
-    public Path verified() {
-        return Paths.get(this.attribute(ForeignTojos.Attribute.VERIFIED));
-    }
-
-    /**
      * The tojo shaken xmir.
      * @return The shaken xmir.
      */
@@ -184,11 +176,11 @@ public final class ForeignTojo {
      *
      * @return True if optimization is required, false otherwise.
      */
-    public boolean notVerified() {
+    public boolean notLinted() {
         final Path src = this.xmir();
         boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.VERIFIED.getKey())) {
-            final Path tgt = this.verified();
+        if (this.delegate.exists(ForeignTojos.Attribute.LINTED.getKey())) {
+            final Path tgt = this.optimized();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(this, "Already verified %[file]s to %[file]s", src, tgt);
                 res = false;
@@ -289,12 +281,12 @@ public final class ForeignTojo {
     }
 
     /**
-     * Set the verified xmir.
-     * @param xmir The verified xmir.
+     * Set the linted xmir.
+     * @param xmir The linted xmir.
      * @return The tojo itself.
      */
-    public ForeignTojo withVerified(final Path xmir) {
-        this.delegate.set(ForeignTojos.Attribute.VERIFIED.getKey(), xmir.toString());
+    public ForeignTojo withLinted(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.LINTED.getKey(), xmir.toString());
         return this;
     }
 
