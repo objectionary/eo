@@ -26,12 +26,13 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - //o[@base='first$second' and @line='6']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object
+  # No comments
   [a] > first
-    # This is the default 64+ symbols comment in front of abstract object
+    # No comments
     [b] > second
       print
         second 1

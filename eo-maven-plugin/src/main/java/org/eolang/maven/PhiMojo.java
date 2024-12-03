@@ -40,13 +40,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
+import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.Schema;
 import org.eolang.parser.StUnhex;
 import org.eolang.parser.TrParsing;
 
@@ -112,18 +109,13 @@ public final class PhiMojo extends SafeMojo {
         final Walk walk = new Walk(this.phiInputDir.toPath());
         final int total = walk.size();
         final Xsline xsline = new Xsline(this.train());
-        final int count = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    xmir -> () -> {
-                        final int position = passed.addAndGet(1);
-                        return this.translate(xmir, xsline, position, total);
-                    },
-                    walk
-                )
-            )
-        ).intValue();
+        final int count = new Threaded<>(
+            walk,
+            xmir -> {
+                final int position = passed.addAndGet(1);
+                return this.translate(xmir, xsline, position, total);
+            }
+        ).total();
         if (count > 0) {
             Logger.info(
                 this, "Translated %d XMIR file(s) from %[file]s to %[file]s",
@@ -156,7 +148,6 @@ public final class PhiMojo extends SafeMojo {
             position, total, xmir, xmir.toFile().length()
         );
         final XML xml = new XMLDocument(new TextOf(xmir).asString());
-        new Schema(xml).check();
         final Path relative = Paths.get(
             this.phiInputDir.toPath().relativize(xmir).toString().replace(
                 String.format(".%s", AssembleMojo.XMIR),

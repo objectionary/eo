@@ -27,7 +27,7 @@ tests:
   - //o[@base='.as-bytes' and @line and @pos and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]
   - //objects[count(//o[@const])=0]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > foo
     number > x!
     # This is the default 64+ symbols comment in front of named abstract object.

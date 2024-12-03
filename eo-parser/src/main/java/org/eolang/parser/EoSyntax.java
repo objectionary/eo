@@ -111,7 +111,6 @@ public final class EoSyntax implements Syntax {
                 new Directives(xel).append(spy)
             ).domQuietly()
         );
-        new Schema(dom).check();
         if (spy.size() == 0) {
             Logger.debug(
                 this,

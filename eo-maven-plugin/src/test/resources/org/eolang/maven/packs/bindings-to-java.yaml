@@ -26,6 +26,7 @@ xsls:
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
+  - /org/eolang/parser/blank-xsd-schema.xsl
 tests:
   - /program[not(errors)]
   - //java/text()[contains(., 'new PhWith(ret, 0')]

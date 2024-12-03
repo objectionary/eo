@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
@@ -78,11 +79,15 @@ public final class CheckPack {
                 train = train.with(new StClasspath(xsl));
             }
         }
-        final XML out = new Xsline(train).pass(
-            new EoSyntax(
-                "scenario",
-                new InputOf(String.format("%s\n", src))
-            ).parsed()
+        final XML out = new StrictXML(
+            new Xsline(train).pass(
+                new StrictXML(
+                    new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", src))
+                    ).parsed()
+                )
+            )
         );
         Logger.debug(this, "Output XML:\n%s", out);
         final Collection<String> failures = new LinkedList<>();

@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -77,7 +78,7 @@ final class EoSyntaxTest {
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of abstract object.",
+            "# No comments.",
             "[] > x-н, 1\n"
         );
         MatcherAssert.assertThat(
@@ -126,9 +127,9 @@ final class EoSyntaxTest {
         "1 > x\r\n\r\n2 > y",
         "1 > x\n2 > y\n",
         "1 > x\n\n2 > y",
-        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x",
+        "# No comments.\n[] > x",
         "a b c > x\n  x ^ > @",
-        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x\n  x ^ > @"
+        "# No comments.\n[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
         final EoSyntax syntax = new EoSyntax(
@@ -159,10 +160,10 @@ final class EoSyntaxTest {
     void prasesNested() throws IOException {
         final String src = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of abstract object.",
+            "# No comments.",
             "[] > base",
             "  memory 0 > x",
-            "  # This is the default 64+ symbols comment in front of abstract object.",
+            "  # No comments.",
             "  [self] > f",
             "    v > @",
             "      v\n"
@@ -250,10 +251,12 @@ final class EoSyntaxTest {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         Assumptions.assumeTrue(map.get("skip") == null);
-        final XML xml = new EoSyntax(
-            "typo",
-            new InputOf(String.format("%s\n", map.get("eo")))
-        ).parsed();
+        final XML xml = new StrictXML(
+            new EoSyntax(
+                "typo",
+                new InputOf(String.format("%s\n", map.get("eo")))
+            ).parsed()
+        );
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(xml.toString()),
@@ -263,6 +266,31 @@ final class EoSyntaxTest {
             xml.toString(),
             Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
             Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
+        );
+    }
+
+    @Test
+    void printsSyntaxWithComments() throws IOException {
+        final XML xml = new EoSyntax(
+            new InputOf(
+                String.join(
+                    "\n",
+                    "# Foo.",
+                    "# Bar.",
+                    "# Xyz.",
+                    "[] > foo"
+                )
+            )
+        ).parsed();
+        final String comments = xml.xpath("/program/comments/comment/text()").get(0);
+        final String expected = "Foo.\\nBar.\\nXyz.";
+        MatcherAssert.assertThat(
+            String.format(
+                "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",
+                xml, comments, expected
+            ),
+            comments,
+            Matchers.equalTo(expected)
         );
     }
 }

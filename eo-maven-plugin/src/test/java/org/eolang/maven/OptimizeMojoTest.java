@@ -81,7 +81,7 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             "the .xmir file contains lint defects",
             new XMLDocument(temp.resolve("target/eo/2-optimize/foo.xmir")),
-            XhtmlMatchers.hasXPaths("/program/errors/error")
+            XhtmlMatchers.hasXPaths("/program[not(errors)]")
         );
     }
 

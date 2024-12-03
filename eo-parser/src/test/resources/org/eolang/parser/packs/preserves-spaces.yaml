@@ -26,7 +26,7 @@ tests:
   - //o[@name='y' and text()='20-66-6F-6F']
   - //o[@name='z' and text()='66-6F-6F-20']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > foo
     "    " > x
     " foo" > y

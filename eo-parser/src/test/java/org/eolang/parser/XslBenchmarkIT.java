@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.Main;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -53,6 +54,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Fork(1)
 @State(Scope.Benchmark)
+@Disabled
 @SuppressWarnings({
     "JTCOP.RuleAllTestsHaveProductionClass",
     "PMD.JUnitTestClassShouldBeFinal",

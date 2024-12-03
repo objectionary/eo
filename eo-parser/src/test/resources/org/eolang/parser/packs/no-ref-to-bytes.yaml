@@ -28,6 +28,6 @@ tests:
 eo: |
   +package org.eolang
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > bytes
     $.eq 01- > yes

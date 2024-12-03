@@ -109,7 +109,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
-        <version>0.31.1</version>
+        <version>0.32.1</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -137,7 +137,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.21.1</version>
+        <version>0.22.1</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -271,6 +271,14 @@ SOFTWARE.
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>5.0.0-alpha-11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>

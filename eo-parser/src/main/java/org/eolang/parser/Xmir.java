@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.xmir;
+package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
@@ -31,39 +31,33 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrLambda;
+import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import org.eolang.parser.StUnhex;
 
 /**
  * Prints XMIR to EO.
+ *
+ * <p>Default Xmir that prints EO with straight vertical methods.</p>
+ *
+ * <p>This class will help you turn XMIR (XML document) into EOLANG
+ * plain text source code. It's as simple as this:</p>
+ *
+ * <pre> String eo = new Xmir.Default(xml).toEO();</pre>
+ *
+ * <p>Here, the {@code xml} is a {@code String} or an instance
+ * of {@code XML} from the jcabi-xml package.</p>
+ *
+ * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.35.0
  */
-public interface Xmir {
-    /**
-     * Converts XMIR to EO.
-     * @return EO representation as {@code String}
-     */
-    String toEO();
+public final class Xmir {
 
     /**
-     * Default Xmir that prints EO with straight vertical methods.
-     *
-     * This class will help you turn XMIR (XML document) into EOLANG
-     * plain text source code. It's as simple as this:
-     *
-     * <pre> String eo = new Xmir.Default(xml).toEO();</pre>
-     *
-     * Here, the {@code xml} is a {@code String} or an instance
-     * of {@code XML} from the jcabi-xml package.
-     * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
-     * @since 0.35.5
+     * Train of transformations.
      */
-    final class Default implements Xmir {
-        /**
-         * Train of transformations.
-         */
-        private static final Train<Shift> TRAIN = new TrLambda(
+    private static final Train<Shift> TRAIN = new TrLogged(
+        new TrLambda(
             new TrDefault<>(
                 new StClasspath("/org/eolang/parser/explicit-data.xsl"),
                 new StUnhex(),
@@ -80,53 +74,49 @@ public interface Xmir {
                     }
                 )
             )
-        );
+        )
+    );
 
-        /**
-         * Default xmir-to-eo XSL transformation.
-         */
-        private static final String TO_EO = "/org/eolang/parser/xmir-to-eo.xsl";
+    /**
+     * The XML.
+     */
+    private final XML xml;
 
-        /**
-         * The XML.
-         */
-        private final XML xml;
-
-        /**
-         * Result to-EO transformation.
-         */
-        private final String xsl;
-
-        /**
-         * Ctor.
-         * @param src The source
-         */
-        public Default(final XML src) {
-            this(src, Xmir.Default.TO_EO);
-        }
-
-        /**
-         * Ctor.
-         * @param src The source
-         * @param classpath To-EO transformation classpath
-         */
-        public Default(final XML src, final String classpath) {
-            this.xml = src;
-            this.xsl = classpath;
-        }
-
-        @Override
-        public String toEO() {
-            System.out.println(this.xml);
-            return new Xsline(
-                Xmir.Default.TRAIN
-                    .with(
-                    new StClasspath(this.xsl)
-                )
-            )
-                .pass(this.xml)
-                .xpath("eo/text()")
-                .get(0);
-        }
+    /**
+     * Ctor.
+     * @param src The source
+     */
+    public Xmir(final XML src) {
+        this.xml = src;
     }
+
+    /**
+     * Converts XMIR to EO.
+     * @return EO representation as {@code String}
+     */
+    public String toEO() {
+        return this.via("/org/eolang/parser/xmir-to-eo.xsl");
+    }
+
+    /**
+     * Converts XMIR to EO, in reverse notation.
+     * @return EO representation as {@code String}
+     */
+    public String toReversed() {
+        return this.via("/org/eolang/parser/xmir-to-eo-reversed.xsl");
+    }
+
+    /**
+     * Converts XMIR to EO, via provided XSL.
+     * @param xsl The XSL
+     * @return EO representation as {@code String}
+     */
+    private String via(final String xsl) {
+        return new Xsline(
+            Xmir.TRAIN.with(
+                new StClasspath(xsl)
+            )
+        ).pass(this.xml).xpath("eo/text()").get(0);
+    }
+
 }

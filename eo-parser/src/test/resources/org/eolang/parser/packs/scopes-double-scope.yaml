@@ -26,15 +26,15 @@ tests:
   - //o[@base='bar' and count(o)=2]
   - //o[@base='foobar' and count(o)=2]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > aliases
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [x y] > foo
       42 > @
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [z k] > bar
       43 > @
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [i j] > foobar
       44 > @
     eq. > @

@@ -84,7 +84,8 @@ public final class TrParsing extends TrEnvelope {
                                     "/org/eolang/parser/add-default-package.xsl",
                                     "/org/eolang/parser/explicit-data.xsl",
                                     "/org/eolang/parser/const-to-dataized.xsl",
-                                    "/org/eolang/parser/set-locators.xsl"
+                                    "/org/eolang/parser/set-locators.xsl",
+                                    "/org/eolang/parser/clean-up.xsl"
                                 ).back()
                             ),
                             TrParsing.class,

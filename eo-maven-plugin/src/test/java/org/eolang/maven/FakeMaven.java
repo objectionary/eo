@@ -630,14 +630,14 @@ public final class FakeMaven {
      *
      * @since 0.31.0
      */
-    static final class Verify implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Lint implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
-                VerifyMojo.class
+                LintMojo.class
             ).iterator();
         }
     }
@@ -689,7 +689,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
-                VerifyMojo.class,
+                LintMojo.class,
                 TranspileMojo.class
             ).iterator();
         }
@@ -708,7 +708,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
-                VerifyMojo.class,
+                LintMojo.class,
                 BinarizeMojo.class
             ).iterator();
         }

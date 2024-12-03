@@ -24,6 +24,7 @@ xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program[not(errors)]
   # 'main' object
@@ -59,7 +60,7 @@ tests:
 #       2
 # ____
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > main
     * 0 (* 1 2) > arr
     eq > @

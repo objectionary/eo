@@ -25,6 +25,7 @@ xsls:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program/objects[count(o)=9]
   - /program[not(errors)]
@@ -33,38 +34,38 @@ tests:
   - //o[@base='first$t2$native']
   - //o[@name='first' and not(@ancestors)]
   - //o[@name='first']/o[@base='test']
-  - //o[@name='first$t2$second' and @ancestors='1' and @parent='first']
+  - //o[@name='first$t2$second']
   - //o[@name='first$t2$second$third']
   - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [a b] > first
     test > foo
       a > yes
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [] > native
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [x b] > second
         a > no
-        # This is the default 64+ symbols comment in front of abstract object.
+        # No comments.
         [b c] > third
           no > yes
           (stdout a b c x).print > print
         t
-          # This is the default 64+ symbols comment in front of abstract object.
+          # No comments.
           [] > third
             "hello, world!" > msg
         f
-          # This is the default 64+ symbols comment in front of abstract object.
+          # No comments.
           [] > third
             "hello, world!" > msg
-        # This is the default 64+ symbols comment in front of abstract object.
+        # No comments.
         [] > fourth
           "Failure" > failure
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [aa] > ooo
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [bbb] > fff
       aa.test > a

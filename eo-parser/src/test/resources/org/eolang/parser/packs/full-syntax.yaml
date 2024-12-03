@@ -47,14 +47,14 @@ eo: |
 
   500.43.@ > one
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   "Hello, друг!" > hello!
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [tt a] > atom /int
 
   # This is very good object
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [x] > first
     x > @
     second > hello
@@ -101,14 +101,14 @@ eo: |
         b
     oops
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > obj
     "some" > @
     [] > foo
       ^.@ > @
 
   # Comments are allowed only in front of top-level objects
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > named
     one.two.three.four.five
       t.o
@@ -121,7 +121,7 @@ eo: |
     me
       (now (f (f (f (f 1)))).f):i
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > ooo
     [] > o-1 /?
 

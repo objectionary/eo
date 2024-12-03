@@ -54,7 +54,6 @@ public final class OptTrain implements Optimization {
     static final Train<Shift> DEFAULT_TRAIN = new TrFast(
         new TrLambda(
             new TrClasspath<>(
-                new TrDefault<>(),
                 "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
                 "/org/eolang/parser/optimize/remove-refs.xsl",
                 "/org/eolang/parser/optimize/abstracts-float-up.xsl",
@@ -62,7 +61,8 @@ public final class OptTrain implements Optimization {
                 "/org/eolang/parser/add-refs.xsl",
                 "/org/eolang/parser/optimize/fix-missed-names.xsl",
                 "/org/eolang/parser/add-refs.xsl",
-                "/org/eolang/parser/set-locators.xsl"
+                "/org/eolang/parser/set-locators.xsl",
+                "/org/eolang/parser/blank-xsd-schema.xsl"
             ).back(),
             StEoLogged::new
         ),

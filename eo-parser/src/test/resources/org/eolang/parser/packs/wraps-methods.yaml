@@ -34,7 +34,7 @@ tests:
   - //o[@base='a' and @name='xxx']
   - //o[@base='.f2' and not(@name)]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [args] > app
     stdout
       sprintf

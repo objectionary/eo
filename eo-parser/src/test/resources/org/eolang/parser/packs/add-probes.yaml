@@ -35,7 +35,7 @@ eo: |
   +package org.eolang.custom
   +version 0.0.0
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > app
     QQ.txt.sprintf > @
       "Hello, world!\n"
@@ -50,7 +50,7 @@ eo: |
           fibonacci n > f
       true
 
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [i] > other
       stdout > @
         sprintf
@@ -58,6 +58,6 @@ eo: |
     $.other 1 > one
     memory 0 > price
 
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [p] > set-price
       ^.price.write p > @

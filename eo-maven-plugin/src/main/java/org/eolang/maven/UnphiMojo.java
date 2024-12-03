@@ -38,15 +38,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.PhiSyntax;
 import org.eolang.parser.TrStepped;
@@ -112,47 +111,42 @@ public final class UnphiMojo extends SafeMojo {
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
         final long start = System.currentTimeMillis();
-        final int count = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    phi -> () -> {
-                        final Path relative = this.unphiInputDir.toPath().relativize(phi);
-                        final Path xmir = Paths.get(
-                            relative.toString().replace(
-                                String.format(".%s", PhiMojo.EXT),
-                                String.format(".%s", AssembleMojo.XMIR)
-                            )
-                        );
-                        final XML result = xsline.pass(
-                            new PhiSyntax(
-                                phi.getFileName().toString().replace(".phi", ""),
-                                new TextOf(phi),
-                                metas
-                            ).parsed()
-                        );
-                        home.save(result.toString(), xmir);
-                        Logger.debug(
-                            this,
-                            "Parsed to xmir: %[file]s -> %[file]s",
-                            phi, this.unphiOutputDir.toPath().resolve(xmir)
-                        );
-                        final List<String> here = result.xpath("//errors/error/text()");
-                        if (!here.isEmpty()) {
-                            errors.add(
-                                Logger.format(
-                                    "%[file]s:\n\t%s\n",
-                                    xmir,
-                                    String.join("\n\t", here)
-                                )
-                            );
-                        }
-                        return 1;
-                    },
-                    new Walk(this.unphiInputDir.toPath())
-                )
-            )
-        ).intValue();
+        final int count = new Threaded<>(
+            new Walk(this.unphiInputDir.toPath()),
+            phi -> {
+                final Path relative = this.unphiInputDir.toPath().relativize(phi);
+                final Path xmir = Paths.get(
+                    relative.toString().replace(
+                        String.format(".%s", PhiMojo.EXT),
+                        String.format(".%s", AssembleMojo.XMIR)
+                    )
+                );
+                final XML result = xsline.pass(
+                    new PhiSyntax(
+                        phi.getFileName().toString().replace(".phi", ""),
+                        new TextOf(phi),
+                        metas
+                    ).parsed()
+                );
+                home.save(result.toString(), xmir);
+                Logger.debug(
+                    this,
+                    "Parsed to xmir: %[file]s -> %[file]s",
+                    phi, this.unphiOutputDir.toPath().resolve(xmir)
+                );
+                final List<String> here = result.xpath("//errors/error/text()");
+                if (!here.isEmpty()) {
+                    errors.add(
+                        Logger.format(
+                            "%[file]s:\n\t%s\n",
+                            xmir,
+                            String.join("\n\t", here)
+                        )
+                    );
+                }
+                return 1;
+            }
+        ).total();
         Logger.info(
             this,
             "Parsed %d phi files to xmir in %[ms]s",

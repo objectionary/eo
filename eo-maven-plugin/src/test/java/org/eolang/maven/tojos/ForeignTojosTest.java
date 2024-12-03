@@ -142,12 +142,12 @@ final class ForeignTojosTest {
         final ForeignTojo tojo = this.tojos.add("string");
         final AttributeNotFoundException thrown = Assertions.assertThrows(
             AttributeNotFoundException.class,
-            tojo::verified
+            tojo::optimized
         );
         Assertions.assertEquals(
-            "There is no 'VERIFIED' attribute in the tojo",
+            "There is no 'OPTIMIZED' attribute in the tojo",
             thrown.getMessage(),
-            "Should throw an exception if key 'VERIFIED' was not found in Tojo"
+            "Should throw an exception if key 'OPTIMIZED' was not found in Tojo"
         );
     }
 
@@ -175,7 +175,6 @@ final class ForeignTojosTest {
         return Stream.of(
             Arguments.of("XMIR", (Func<ForeignTojo, Object>) ForeignTojo::xmir),
             Arguments.of("OPTIMIZED", (Func<ForeignTojo, Object>) ForeignTojo::optimized),
-            Arguments.of("VERIFIED", (Func<ForeignTojo, Object>) ForeignTojo::verified),
             Arguments.of("SHAKEN", (Func<ForeignTojo, Object>) ForeignTojo::shaken),
             Arguments.of("EO", (Func<ForeignTojo, Object>) ForeignTojo::source),
             Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),

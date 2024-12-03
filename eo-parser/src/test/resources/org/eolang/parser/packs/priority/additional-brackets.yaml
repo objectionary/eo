@@ -28,6 +28,6 @@ eo: |
   +package org.eolang.priority
   +version 0.0.0
 
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > x
     1.times 2 (1.plus other.value) > @

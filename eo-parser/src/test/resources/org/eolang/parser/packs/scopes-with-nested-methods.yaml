@@ -27,21 +27,21 @@ tests:
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
+  # No comments.
   [] > aliases
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > foo
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [y] > with
         42 > @
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > bar
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [x] > with
         foo > @
-    # This is the default 64+ symbols comment in front of abstract object.
+    # No comments.
     [] > foobar
-      # This is the default 64+ symbols comment in front of abstract object.
+      # No comments.
       [z d] > with
         bar > @
     eq. > @

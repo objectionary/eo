@@ -55,7 +55,6 @@ import org.yaml.snakeyaml.Yaml;
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
  */
-@ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
@@ -99,7 +98,7 @@ final class SnippetIT {
                     )
                     .execution("compile")
                     .phase("generate-sources")
-                    .goals("register", "assemble", "verify", "transpile")
+                    .goals("register", "assemble", "lint", "transpile")
                     .configuration()
                     .set("failOnWarning", Boolean.FALSE.toString());
                 f.build()
