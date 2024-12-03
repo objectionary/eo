@@ -31,12 +31,11 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@abstract and @name and eo:has-data(.)]">
+  <xsl:template match="o[eo:abstract(.) and @name and eo:has-data(.)]">
     <xsl:element name="o">
       <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
       <xsl:attribute name="name" select="@name"/>
       <xsl:element name="o">
-        <xsl:attribute name="abstract"/>
         <xsl:attribute name="as" select="0"/>
         <xsl:value-of select="text()"/>
       </xsl:element>

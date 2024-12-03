@@ -21,8 +21,8 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/objects/o[@name='main' and @atom and @abstract]
-  - /program/objects/o[@name='outer' and @abstract]
-  - /program/objects/o[@name='outer' and @abstract]/o[@name='inner' and @atom and @abstract]
+  - /program/objects/o[@name='main' and @atom]
+  - /program/objects/o[@name='outer']
+  - /program/objects/o[@name='outer']/o[@name='inner' and @atom]
 phi:
   "{⟦main ↦ ⟦λ ⤍ Lambda⟧, outer ↦ ⟦inner ↦ ⟦λ ⤍ Lambda⟧⟧⟧}"

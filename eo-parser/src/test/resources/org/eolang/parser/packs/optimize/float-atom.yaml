@@ -29,8 +29,8 @@ xsls:
   - /org/eolang/parser/clean-up.xsl
 tests:
   - //objects[not(//o[@atom and @base])]
-  - //objects[not(//o[@atom and o[@base]])]
-  - //o[@atom and o[not(@base)]]
+  - //objects[not(//o[@atom and o[@base!='∅']])]
+  - //o[@atom and o[@base='∅']]
 eo: |
   # No comments.
   [] > main

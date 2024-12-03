@@ -116,7 +116,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
-      <xsl:apply-templates select="@* except @base"/>
+      <xsl:apply-templates select="@* except @base except @atom"/>
       <xsl:attribute name="base">
         <xsl:value-of select="eo:name-of(.)"/>
       </xsl:attribute>

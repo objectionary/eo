@@ -137,6 +137,7 @@ public final class DiscoverMojo extends SafeMojo {
                                 " and @base != '^'",
                                 " and @base != '$'",
                                 " and @base != '&'",
+                                " and @base != '∅'",
                                 " and not(@ref)",
                                 "]/string-join((@base,@ver),'"
                             ),

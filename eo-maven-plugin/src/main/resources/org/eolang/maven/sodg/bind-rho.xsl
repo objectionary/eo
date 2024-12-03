@@ -28,6 +28,7 @@ SOFTWARE.
   We don't bind "data" and "lambda" objects, through.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/sodg">
     <xsl:copy>
@@ -35,7 +36,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[not(starts-with(@base, '.')) and not(@level) and o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
+  <xsl:template match="o[not(starts-with(@base, '.')) and not(@level) and o or eo:abstract(.) or (not(@base) and @name)]" mode="sodg" priority="1">
     <xsl:variable name="o" select="."/>
     <xsl:if test="not(@loc)">
       <xsl:message terminate="yes">
@@ -49,7 +50,7 @@ SOFTWARE.
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="eo:var(ancestor::*[@abstract or name()='objects'][1]/@loc)"/>
+          <xsl:value-of select="eo:var(ancestor::*[eo:abstract(.) or name()='objects'][1]/@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
           <xsl:text>ρ</xsl:text>

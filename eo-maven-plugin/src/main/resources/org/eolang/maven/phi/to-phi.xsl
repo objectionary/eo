@@ -140,7 +140,6 @@ SOFTWARE.
   <xsl:function name="eo:eol">
     <xsl:param name="tabs"/>
     <xsl:value-of select="'&#10;'"/>
-    <xsl:message select="$tabs"/>
     <xsl:for-each select="1 to $tabs">
       <xsl:text>  </xsl:text>
     </xsl:for-each>

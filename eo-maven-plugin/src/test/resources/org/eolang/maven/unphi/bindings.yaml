@@ -23,8 +23,8 @@
 tests:
   - //o[@base='.x' and @name='xyz']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.y' and @as='attr']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@name='z' and not(@base)]
-  - //o[@base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.w' and @name='@']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[not(@base) and @as='abs']/o[@name='z' and @base='∅']
+  - //o[@base='.x' and @name='xyz']/o[not(@base) and @as='abs']/o[@base='.w' and @name='@']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
   - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes' and text()!='']

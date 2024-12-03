@@ -21,8 +21,8 @@
 # SOFTWARE.
 ---
 tests:
-  - //o[@name='test' and @abstract]/o[@base='.plus' and @name='s']/o[position()=1 and @abstract and not(@name)]
-  - //o[@name='test' and @abstract]/o[@base='.plus' and @name='s']/o[position()>1 and @as='0' and @base='.int']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()=1 and not(@base) and not(@name)]
+  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()>1 and @as='0' and @base='.int']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
 phi: |-
   {
     ⟦
