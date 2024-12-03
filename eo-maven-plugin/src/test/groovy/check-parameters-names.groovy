@@ -27,34 +27,34 @@
  * consistently. For example, "eo.outputDir".
  */
 
-//import groovy.xml.XmlSlurper
-//
-//plugin = basedir.toPath()
-//    .resolve("target")
-//    .resolve("classes")
-//    .resolve("META-INF")
-//    .resolve("maven")
-//    .resolve("plugin.xml")
-//content = new XmlSlurper().parseText(new File(plugin.toString()).text)
-//// For example, "${eo.foreignFormat}":
-//pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
-//failures = []
-//toBeExcluded = ["help"]
-//content.mojos.mojo.findAll {
-//    !(it.goal.text() in toBeExcluded)
-//}.configuration.each {
-//    it.children().each {
-//        final String text = it.text()
-//        if (!("" == text || text.matches(pattern))) {
-//            failures.add(text)
-//        }
-//    }
-//}
-//if (!failures.empty) {
-//    fail(String.format(
-//        'Following parameters don\'t match pattern %s:%n %s',
-//        pattern,
-//        failures.join(' ')
-//    ))
-//}
-//true
+import groovy.xml.XmlSlurper
+
+plugin = basedir.toPath()
+    .resolve("target")
+    .resolve("classes")
+    .resolve("META-INF")
+    .resolve("maven")
+    .resolve("plugin.xml")
+content = new XmlSlurper().parseText(new File(plugin.toString()).text)
+// For example, "${eo.foreignFormat}":
+pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
+failures = []
+toBeExcluded = ["help"]
+content.mojos.mojo.findAll {
+    !(it.goal.text() in toBeExcluded)
+}.configuration.each {
+    it.children().each {
+        final String text = it.text()
+        if (!("" == text || text.matches(pattern))) {
+            failures.add(text)
+        }
+    }
+}
+if (!failures.empty) {
+    fail(String.format(
+        'Following parameters don\'t match pattern %s:%n %s',
+        pattern,
+        failures.join(' ')
+    ))
+}
+true
