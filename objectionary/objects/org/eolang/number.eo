@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.45.0
++rt jvm org.eolang:eo-runtime:0.46.0
 +rt node eo2js-runtime:0.0.0
-+version 0.45.0
++version 0.46.0
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
@@ -35,6 +35,7 @@
   $.times -1 > neg
   $.as-i64.as-i32 > as-i32
   $.as-i32.as-i16 > as-i16
+  as-bytes.eq nan.as-bytes > is-nan
 
   # Convert this `number` to `i64` object.
   [] > as-i64 /i64
@@ -137,5 +138,3 @@
           ^.eq positive-infinity
           ^.eq negative-infinity
 
-  # Returns `true` if current number is NaN.
-  ^.as-bytes.eq nan.as-bytes > [] > is-nan
