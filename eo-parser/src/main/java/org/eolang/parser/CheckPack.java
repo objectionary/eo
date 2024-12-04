@@ -26,11 +26,14 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -76,7 +79,15 @@ public final class CheckPack {
                 train = train.empty();
             }
             for (final String xsl : xsls) {
-                train = train.with(new StClasspath(xsl));
+                if (xsl.startsWith("file://")) {
+                    train = train.with(
+                        new StXSL(
+                            new XSLDocument(Paths.get(xsl.substring(7)))
+                        )
+                    );
+                } else {
+                    train = train.with(new StClasspath(xsl));
+                }
             }
         }
         final XML out = new StrictXML(

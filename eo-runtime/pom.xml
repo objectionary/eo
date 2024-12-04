@@ -278,6 +278,7 @@ SOFTWARE.
               </argLine>
               <systemPropertyVariables combine.children="append">
                 <java.class.path>${project.build.outputDirectory}</java.class.path>
+                <xmir.xsd>${project.basedir}/../eo-parser/src/main/resources/XMIR.xsd</xmir.xsd>
               </systemPropertyVariables>
             </configuration>
           </execution>
