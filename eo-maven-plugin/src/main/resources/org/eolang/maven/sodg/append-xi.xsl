@@ -24,12 +24,12 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="append-xi" version="2.0">
   <!--
-  Here we find all objects that have @base as '&' or '^' and
-  convert them to `$.&` and '$.^` respectively, by adding new
+  Here we find all objects that have @base as '^' and
+  convert them to '$.^' respectively, by adding new
   <o> elements.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[not(@level) and @base='^' or @base='&amp;']">
+  <xsl:template match="o[not(@level) and @base='^']">
     <xsl:copy>
       <xsl:apply-templates select="node()|@* except @base"/>
       <xsl:attribute name="base">
