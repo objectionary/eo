@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: pr-watch
+name: labeler
 on:
   - pull_request_target
 jobs:
-  pr-watch:
+  labeler:
     permissions:
       contents: read
       pull-requests: write
