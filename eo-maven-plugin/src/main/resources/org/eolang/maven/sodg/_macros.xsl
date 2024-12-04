@@ -150,9 +150,6 @@ SOFTWARE.
         <xsl:when test="$a = '^'">
           <xsl:text>ρ</xsl:text>
         </xsl:when>
-        <xsl:when test="$a = '&amp;'">
-          <xsl:text>σ</xsl:text>
-        </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$a"/>
         </xsl:otherwise>

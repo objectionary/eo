@@ -91,12 +91,6 @@ SOFTWARE.
             <xsl:when test="$attr='^'">
               <xsl:text>ρ</xsl:text>
             </xsl:when>
-            <xsl:when test="$attr='&amp;'">
-              <xsl:text>σ</xsl:text>
-            </xsl:when>
-            <xsl:when test="$attr='&lt;'">
-              <xsl:text>ν</xsl:text>
-            </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$attr"/>
             </xsl:otherwise>

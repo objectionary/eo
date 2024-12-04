@@ -37,7 +37,7 @@ List<String> allowed = [
   '3-shake',
   '4-pull',
   '5-resolve',
-  '6-verify',
+  '6-lint',
   '7-pre',
   '8-transpile',
 ]

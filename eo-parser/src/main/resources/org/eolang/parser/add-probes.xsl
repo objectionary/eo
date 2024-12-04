@@ -82,7 +82,7 @@ SOFTWARE.
   <xsl:template match="o" mode="create">
     <xsl:variable name="p" select="eo:qualify(.)"/>
     <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
-    <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
+    <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@'))) and not(starts-with($p, '.')) and $c &gt; 1">
       <xsl:element name="meta">
         <xsl:attribute name="line">
           <xsl:value-of select="if (@line) then @line else '0'"/>
