@@ -24,9 +24,9 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
 tests:
-  - //objects[not(o[@atom and @base])]
-  - //objects[not(o[@atom and o[@base]])]
-  - //o[@atom and o[not(@base)]]
+  - /program/objects[not(o[@atom and @base])]
+  - /program/objects[not(o[@atom and o[@base]])]
+  - //o[@atom and o[@base='∅']]
 eo: |
   # No comments.
   [] > main

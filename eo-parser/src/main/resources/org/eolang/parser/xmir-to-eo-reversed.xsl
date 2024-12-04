@@ -73,7 +73,7 @@ SOFTWARE.
     <xsl:apply-templates select="o"/>
   </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
-  <xsl:template match="o[not(eo:attr(.))]">
+  <xsl:template match="o[not(eo:void(.))]">
     <xsl:param name="indent" select="''"/>
     <!--IF NOT THE FIRST TOP OBJECT -->
     <xsl:if test="position()&gt;1 and parent::objects">
@@ -85,7 +85,7 @@ SOFTWARE.
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[not(eo:attr(.))]">
+    <xsl:apply-templates select="o[not(eo:void(.))]">
       <xsl:with-param name="indent" select="concat('  ', $indent)"/>
     </xsl:apply-templates>
   </xsl:template>
@@ -113,7 +113,7 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
     </xsl:if>
     <xsl:text>[</xsl:text>
-    <xsl:for-each select="o[eo:attr(.)]">
+    <xsl:for-each select="o[eo:void(.)]">
       <xsl:if test="position()&gt;1">
         <xsl:text> </xsl:text>
       </xsl:if>

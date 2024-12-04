@@ -102,14 +102,14 @@ justNamed
 
 // Atom - abstract object with mandatory name and type
 // Can't contain inner objects
-atom: attributes suffix type
+atom: voids suffix type
     ;
 
 // Formation - abstract object with mandatory name
 // Can contain inner objects
 // Ends on the next line
 formation
-    : attributes oname innersOrEol
+    : voids oname innersOrEol
     ;
 
 // Inners object inside formation or EOL
@@ -127,13 +127,13 @@ inners
     : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
     ;
 
-// Attributes of an abstract object, atom or horizontal anonym object
-attributes
-    : LSQ (attribute (SPACE attribute)*)? RSQ
+// Void attributes of an abstract object, atom or horizontal anonym object
+voids
+    : LSQ (void (SPACE void)*)? RSQ
     ;
 
-// Attribute
-attribute
+// Void attribute
+void
     : NAME
     ;
 
@@ -319,7 +319,7 @@ vapplicationArgHapplicationUnbound
     ;
 
 formationNameless
-    : attributes aname? innersOrEol
+    : voids aname? innersOrEol
     ;
 
 // Formation with or without name
@@ -336,7 +336,7 @@ vapplicationArgVanonymBound
     ;
 
 attributesAs
-    : attributes as
+    : voids as
     ;
 
 vapplicationArgHanonymBoundBody
@@ -356,7 +356,7 @@ vapplicationArgHanonymUnbound
 
 // Horizontal formation
 hformation
-    : attributes hanonymInner+
+    : voids hanonymInner+
     ;
 
 // Horizontal anonym object
@@ -378,7 +378,7 @@ onlyphi
 
 // Tail of the unnamed abstract object with only @-bound attribute
 onlyphiTail
-    : spacedArrow attributes
+    : spacedArrow voids
     ;
 
 // Inner object of horizontal anonym object

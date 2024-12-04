@@ -264,7 +264,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
-  <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
+  <xsl:template match="o[@base and @base!='∅' and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:variable name="current" select="."/>

@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-with-bound-attrs" version="2.0">
+<xsl:stylesheet xmlns:eo="https://www.eolang.org" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-with-bound-attrs" version="2.0">
   <!--
   Convert such expression in XMIR:
     x ↦ ⟦
@@ -36,8 +36,9 @@ SOFTWARE.
       size ↦ Φ.org.eolang.bytes (α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-08 ⟧)
     )
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@abstract and @atom and starts-with(@atom, 'L') and @name and count(o[@base])&gt;0]">
+  <xsl:template match="o[eo:abstract(.) and @atom and starts-with(@atom, 'L') and @name and not(o[@base='∅']) and count(o[@base!='∅'])&gt;0]">
     <xsl:element name="o">
       <xsl:attribute name="name" select="@name"/>
       <xsl:attribute name="base">

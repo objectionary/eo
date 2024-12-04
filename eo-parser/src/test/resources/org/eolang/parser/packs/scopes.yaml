@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - //o[@abstract and count(o)=1]
+  - //o[not(@base) and count(o)=1 and @name='aliases']
 eo: |
   # No comments.
   [] > aliases

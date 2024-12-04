@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - //o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name']]]]]
+  - //o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name']]]]]
 phi: |-
   {
     ⟦

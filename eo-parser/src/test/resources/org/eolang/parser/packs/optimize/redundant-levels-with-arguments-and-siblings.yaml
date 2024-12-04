@@ -36,12 +36,12 @@ tests:
   - //o[@name='main$t2$first' and count(o)=3]
   - //o[@name='main$t2$first']/o[@base='arg' and not(@name)]
   - //o[@name='main$t2$first']/o[@base='.one' and @name='@']
-  - //o[@name='main$t2$first']/o[not(@base) and @name='arg']
+  - //o[@name='main$t2$first']/o[@base='∅' and @name='arg']
   # 'main$t2$second' object
   - //o[@name='main$t2$second' and count(o)=3]
   - //o[@name='main$t2$second']/o[@base='arg' and not(@name)]
   - //o[@name='main$t2$second']/o[@base='.two' and @name='@']
-  - //o[@name='main$t2$second']/o[not(@base) and @name='arg']
+  - //o[@name='main$t2$second']/o[@base='∅' and @name='arg']
 # Currently the test converts the code from the snippet to:
 # ____
 # [arg] > main

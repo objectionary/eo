@@ -174,7 +174,6 @@ SOFTWARE.
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="locator"/>
-    <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
   </xs:complexType>

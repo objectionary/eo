@@ -35,7 +35,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(@level) and not(starts-with(@base, '.')) and (o or eo:has-data(.) or @abstract)]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(@level) and not(starts-with(@base, '.')) and (o or eo:has-data(.) or eo:abstract(. ))]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">

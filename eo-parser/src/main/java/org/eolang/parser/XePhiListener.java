@@ -163,7 +163,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitFormation(final PhiParser.FormationContext ctx) {
         this.properties.pop();
         if (!this.properties.empty() && !XePhiListener.hasLambdaPackage(ctx.bindings())) {
-            this.objects().prop("abstract").leave();
+            this.objects().leave();
         }
     }
 
@@ -244,7 +244,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
-        this.enterObjectBinding();
+        this.enterObjectBinding().prop("base", "∅");
     }
 
     @Override
@@ -409,9 +409,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     /**
      * Enter either tau or empty binding.
+     * @return Objects
      */
-    private void enterObjectBinding() {
-        this.objects().start();
+    private Objects enterObjectBinding() {
+        return this.objects().start();
     }
 
     /**

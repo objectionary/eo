@@ -28,6 +28,7 @@ SOFTWARE.
   1. a > b!     => (dataized a).as-bytes > b
   2. x.y z > m! => (dataized (x.y z)).as-bytes > m
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- Generate unique name for an abstract object -->
   <xsl:function name="eo:unique-name">
@@ -59,7 +60,7 @@ SOFTWARE.
               <xsl:value-of select="."/>
             </xsl:attribute>
           </xsl:for-each>
-          <xsl:if test="@abstract">
+          <xsl:if test="eo:abstract(.)">
             <xsl:attribute name="name">
               <xsl:value-of select="eo:unique-name(@name, ./parent::o, 1)"/>
             </xsl:attribute>

@@ -29,12 +29,12 @@ tests:
   # 'main' object
   - //o[@name='main']
   - //o[@name='main']/o[@base='sibling' and @name='@']
-  - //o[@name='main']/o[not(@base) and @name='arg']
+  - //o[@name='main']/o[@base='∅' and @name='arg']
   - //o[@name='main']/o[@base='main$sibling' and @name='sibling']
   - //o[@name='main']/o[@base='main$sibling' and @name='sibling']/o[@base='arg' and not(@name)]
   # 'main$sibling' object
   - //o[@name='main$sibling' and count(o)=3]
-  - //o[@name='main$sibling']/o[not(@base) and @name='arg']
+  - //o[@name='main$sibling']/o[@base='∅' and @name='arg']
   - //o[@name='main$sibling']/o[@base='main$sibling$first' and @name='first']
   - //o[@name='main$sibling']/o[@base='main$sibling$first' and @name='first']/o[@base='arg' and not(@name)]
   - //o[@name='main$sibling']/o[@base='main$sibling$second' and @name='second']
@@ -43,12 +43,12 @@ tests:
   - //o[@name='main$sibling$first' and count(o)=3]
   - //o[@name='main$sibling$first']/o[@base='arg' and not(@name)]
   - //o[@name='main$sibling$first']/o[@base='.one' and @name='@']
-  - //o[@name='main$sibling$first']/o[not(@base) and @name='arg']
+  - //o[@name='main$sibling$first']/o[@base='∅' and @name='arg']
   # 'main$sibling$second' object
   - //o[@name='main$sibling$second' and count(o)=3]
   - //o[@name='main$sibling$second']/o[@base='arg' and not(@name)]
   - //o[@name='main$sibling$second']/o[@base='.two' and @name='@']
-  - //o[@name='main$sibling$second']/o[not(@base) and @name='arg']
+  - //o[@name='main$sibling$second']/o[@base='∅' and @name='arg']
 # Currently the test converts the code from the snippet to:
 # ____
 # [arg] > main

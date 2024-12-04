@@ -46,10 +46,6 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
- * @todo #2841:30min Change severity on comments validation. Current severity on comments validation
- *  is "warning". We need to change it to "error" to prevent users from ignoring this type of error.
- *  But firstly we have to make "eo-runtime" documented well. After it's done - we need to turn
- *  on "failOnWarning" trigger in pom.xml inside "eo-runtime.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -334,22 +330,22 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAttributes(final EoParser.AttributesContext ctx) {
+    public void enterVoids(final EoParser.VoidsContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitAttributes(final EoParser.AttributesContext ctx) {
+    public void exitVoids(final EoParser.VoidsContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterAttribute(final EoParser.AttributeContext ctx) {
-        this.startObject(ctx).prop("name", ctx.NAME().getText());
+    public void enterVoid(final EoParser.VoidContext ctx) {
+        this.startObject(ctx).prop("name", ctx.NAME().getText()).prop("base", "∅");
     }
 
     @Override
-    public void exitAttribute(final EoParser.AttributeContext ctx) {
+    public void exitVoid(final EoParser.VoidContext ctx) {
         this.objects.leave();
     }
 
@@ -1267,7 +1263,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.startObject(ctx).prop("abstract").leave();
+        return this.startObject(ctx).leave();
     }
 
     /**

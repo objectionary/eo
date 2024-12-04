@@ -35,7 +35,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Xembler;
 
 /**
@@ -77,34 +76,6 @@ final class TrParsingTest {
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)>1]",
                 "/program[not(errors)]"
-            )
-        );
-    }
-
-    /**
-     * Test for {@see _func.xsl}.
-     * @param bytes Bytes to convert
-     * @param num Expected number
-     * @since 1.0
-     */
-    @ParameterizedTest
-    @CsvSource({
-        "00     , 0",
-        "0000   , 0",
-        "000000 , 0",
-        "000001 , 1",
-        "000010 , 16",
-        "000100 , 256",
-        "FFFFFF , 16777215"
-    })
-    void runsXslFunction(final String bytes, final String num) {
-        MatcherAssert.assertThat(
-            "Failed to convert byte to int using the apply-func.xsl transformation",
-            new Xsline(
-                new TrClasspath<>("/org/eolang/parser/apply-func.xsl").back()
-            ).pass(new XMLDocument(String.format("<o>%s</o>", bytes))),
-            XhtmlMatchers.hasXPath(
-                String.format("/o[text()='%s']", num)
             )
         );
     }

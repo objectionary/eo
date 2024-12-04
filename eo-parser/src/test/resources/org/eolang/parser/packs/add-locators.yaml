@@ -31,7 +31,7 @@ tests:
   - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.α0.α1']
   - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.α1']
   - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
-  - //o[not(@base) and @name='e' and @loc='Φ.org.abc.tt.α2.e']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
   - //o[@base='.hello' and @loc='Φ.org.abc.tt.α2.φ']
   - //o[@base='e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
   - //o[@name='q' and @base='.p' and @loc='Φ.org.abc.q']

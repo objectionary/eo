@@ -22,5 +22,5 @@
 ---
 tests:
   - /program/metas/meta[head[text()='package'] and tail[text()='foo.bar.baz'] and part[text()='foo.bar.baz']]
-  - //o[@abstract and @name='main']/o[@base='.stdout']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[not(@base) and @name='main']/o[@base='.stdout']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
 phi: "{⟦foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧⟧}"

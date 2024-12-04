@@ -48,7 +48,7 @@ SOFTWARE.
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!='$' and @base!='^']" mode="no-dots">
+  <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
     <xsl:variable name="current" select="."/>
     <xsl:variable name="source" select="eo:closest($current, key('o-by-name', @base))"/>
     <xsl:copy>
