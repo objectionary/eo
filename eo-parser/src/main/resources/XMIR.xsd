@@ -96,7 +96,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|Q|QQ|[A-Z][a-zA-Z]+|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*"/>
+      <xs:pattern value="∅|Q|QQ|[A-Z][^ \n\t\r]*|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
