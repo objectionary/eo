@@ -27,6 +27,9 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
   <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
+  <xsl:variable name="number-pattern">
+    <xsl:value-of select="'^[0-9][1-9]*$'"/>
+  </xsl:variable>
   <xsl:variable name="xi">
     <select>ξ</select>
   </xsl:variable>
@@ -69,6 +72,9 @@ SOFTWARE.
   </xsl:variable>
   <xsl:variable name="space">
     <xsl:text> </xsl:text>
+  </xsl:variable>
+  <xsl:variable name="new-line">
+    <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <!-- Functions -->
   <!-- ADD XI OR NOT -->
@@ -133,16 +139,125 @@ SOFTWARE.
     <xsl:param name="tabs"/>
     <xsl:if test="$pos&gt;1">
       <xsl:text>,</xsl:text>
-      <xsl:value-of select="eo:eol($tabs)"/>
+      <xsl:if test="$tabs != -1">
+        <xsl:value-of select="eo:eol($tabs)"/>
+      </xsl:if>
     </xsl:if>
   </xsl:function>
   <!-- EOL WITH INDENTATION -->
   <xsl:function name="eo:eol">
     <xsl:param name="tabs"/>
-    <xsl:value-of select="'&#10;'"/>
+    <xsl:value-of select="$new-line"/>
     <xsl:for-each select="1 to $tabs">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
+  </xsl:function>
+  <!-- CAN WE PRINT GIVEN STRING IN SINGLE LINE -->
+  <xsl:function name="eo:can-inline">
+    <xsl:param name="str"/>
+    <xsl:param name="extra"/>
+    <xsl:sequence select="not(contains($str, $new-line)) and string-length($str) + $extra &lt; 80"/>
+  </xsl:function>
+  <!-- PRINT ARGUMENTS OF APPLICATION -->
+  <xsl:function name="eo:print-args">
+    <xsl:param name="current"/>
+    <xsl:param name="accum"/>
+    <xsl:param name="tabs"/>
+    <xsl:param name="inlined"/>
+    <xsl:choose>
+      <xsl:when test="exists($current)">
+        <xsl:variable name="applied">
+          <xsl:apply-templates select="$current">
+            <xsl:with-param name="tabs" select="$tabs"/>
+          </xsl:apply-templates>
+        </xsl:variable>
+        <xsl:variable name="joined">
+          <xsl:if test="string-length($accum)&gt;0">
+            <xsl:value-of select="$accum"/>
+            <xsl:text>||</xsl:text>
+          </xsl:if>
+          <xsl:value-of select="$applied"/>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="$inlined=true() and eo:can-inline($joined, 0)">
+            <xsl:value-of select="eo:print-args($current/following-sibling::o[1], $joined, $tabs, true())"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="eo:print-args($current/following-sibling::o[1], $joined, $tabs, false())"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when test="contains($accum, '||')">
+            <xsl:for-each select="tokenize($accum, '\|\|')">
+              <xsl:if test="position()&gt;1">
+                <xsl:text>,</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="$inlined">
+                    <xsl:value-of select="$space"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="eo:eol($tabs)"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:if>
+              <xsl:value-of select="."/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$accum"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+    CHECKS IF APPLICATION ARGUMENTS IS RIGHT ORDER WITH ALPHAS, e.g.
+    α0 -> a, α1 -> b, ..., αN -> z
+  -->
+  <xsl:function name="eo:is-ordered">
+    <xsl:param name="current"/>
+    <xsl:param name="position"/>
+    <xsl:variable name="current-pos">
+      <xsl:choose>
+        <xsl:when test="$current/@as">
+          <xsl:value-of select="$current/@as"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$position - 1"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="next" select="$current/following-sibling::o[1]"/>
+    <xsl:variable name="next-pos">
+      <xsl:choose>
+        <xsl:when test="$next/@as">
+          <xsl:value-of select="$next/@as"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$position"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="matches($current-pos, $number-pattern)">
+        <xsl:choose>
+          <xsl:when test="not($next)">
+            <xsl:sequence select="true()"/>
+          </xsl:when>
+          <xsl:when test="matches($next-pos, $number-pattern) and $current-pos + 1 = $next-pos">
+            <xsl:value-of select="eo:is-ordered($next, $position + 1)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:sequence select="false()"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="false()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- Program -->
   <xsl:template match="program">
@@ -207,6 +322,7 @@ SOFTWARE.
       <xsl:apply-templates select=".">
         <xsl:with-param name="tabs" select="$tabs"/>
         <xsl:with-param name="package" select="$package"/>
+        <xsl:with-param name="before" select="$tabs * 2"/>
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
@@ -244,60 +360,120 @@ SOFTWARE.
   <xsl:template match="o[@base and @base!=$empty]">
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
-    <xsl:if test="@name">
-      <xsl:value-of select="eo:specials(@name, true())"/>
-      <xsl:value-of select="$arrow"/>
-    </xsl:if>
+    <xsl:param name="before" select="$tabs * 2"/>
+    <xsl:variable name="name">
+      <xsl:if test="@name">
+        <xsl:value-of select="eo:specials(@name, true())"/>
+        <xsl:value-of select="$arrow"/>
+      </xsl:if>
+    </xsl:variable>
+    <xsl:value-of select="$name"/>
+    <xsl:variable name="after-name" select="$before + string-length($name)"/>
     <xsl:choose>
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
-        <xsl:choose>
-          <xsl:when test="@ref and not(eo:has-data(.))">
-            <xsl:value-of select="eo:add-xi(true())"/>
-            <xsl:apply-templates select="." mode="path">
-              <xsl:with-param name="find" select="@base"/>
-            </xsl:apply-templates>
-            <xsl:value-of select="eo:specials(@base, true())"/>
-          </xsl:when>
-          <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
-            <xsl:value-of select="text()"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="eo:specials(@base, false())"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:variable name="start">
+          <xsl:choose>
+            <xsl:when test="@ref and not(eo:has-data(.))">
+              <xsl:value-of select="eo:add-xi(true())"/>
+              <xsl:apply-templates select="." mode="path">
+                <xsl:with-param name="find" select="@base"/>
+              </xsl:apply-templates>
+              <xsl:value-of select="eo:specials(@base, true())"/>
+            </xsl:when>
+            <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
+              <xsl:value-of select="text()"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="eo:specials(@base, false())"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:value-of select="$start"/>
+        <xsl:variable name="after-start" select="$after-name + string-length($start)"/>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;0">
           <xsl:text>(</xsl:text>
-          <xsl:value-of select="eo:eol($tabs+1)"/>
-          <xsl:for-each select="o">
-            <xsl:apply-templates select="." mode="application">
-              <xsl:with-param name="position" select="position()"/>
-              <xsl:with-param name="tabs" select="$tabs+1"/>
-            </xsl:apply-templates>
-          </xsl:for-each>
-          <xsl:value-of select="eo:eol($tabs)"/>
+          <xsl:variable name="applied">
+            <xsl:choose>
+              <xsl:when test="eo:is-ordered(o[position()=1][1], 1)">
+                <xsl:value-of select="eo:print-args(o[position()=1][1], '', $tabs + 1, true())"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="o">
+                  <xsl:apply-templates select="." mode="application">
+                    <xsl:with-param name="position" select="position()"/>
+                    <xsl:with-param name="tabs" select="$tabs+1"/>
+                    <xsl:with-param name="before" select="($tabs + 1) * 2"/>
+                  </xsl:apply-templates>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="not(eo:can-inline($applied, $after-start))">
+              <xsl:value-of select="eo:eol($tabs+1)"/>
+              <xsl:value-of select="$applied"/>
+              <xsl:value-of select="eo:eol($tabs)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$applied"/>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:text>)</xsl:text>
         </xsl:if>
       </xsl:when>
       <!-- Method -->
       <xsl:otherwise>
-        <xsl:apply-templates select="o[position()=1]">
-          <xsl:with-param name="tabs" select="$tabs"/>
-          <xsl:with-param name="package" select="$package"/>
-        </xsl:apply-templates>
-        <xsl:value-of select="eo:specials(@base, true())"/>
+        <xsl:variable name="start">
+          <xsl:apply-templates select="o[position()=1]">
+            <xsl:with-param name="tabs" select="$tabs"/>
+            <xsl:with-param name="package" select="$package"/>
+            <xsl:with-param name="before" select="$after-name"/>
+          </xsl:apply-templates>
+        </xsl:variable>
+        <xsl:variable name="method" select="eo:specials(@base, true())"/>
+        <xsl:value-of select="$start"/>
+        <xsl:value-of select="$method"/>
+        <xsl:variable name="after-start">
+          <xsl:choose>
+            <xsl:when test="contains(string-join(($start, $method), ''), $new-line)">
+              <xsl:value-of select="$after-name + string-length($method[last()])"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$after-name + string-length($start) + string-length($method[last()])"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;1">
           <xsl:text>(</xsl:text>
-          <xsl:value-of select="eo:eol($tabs+1)"/>
-          <xsl:for-each select="o[position()!=1]">
-            <xsl:apply-templates select="." mode="application">
-              <xsl:with-param name="position" select="position()"/>
-              <xsl:with-param name="tabs" select="$tabs+1"/>
-            </xsl:apply-templates>
-          </xsl:for-each>
-          <xsl:value-of select="eo:eol($tabs)"/>
+          <xsl:variable name="applied">
+            <xsl:choose>
+              <xsl:when test="eo:is-ordered(o[position()=2][1], 2)">
+                <xsl:value-of select="eo:print-args(o[position()=2][1], '', $tabs + 1, true())"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="o[position()!=1]">
+                  <xsl:apply-templates select="." mode="application">
+                    <xsl:with-param name="position" select="position()"/>
+                    <xsl:with-param name="tabs" select="$tabs+1"/>
+                    <xsl:with-param name="before" select="$tabs * 2"/>
+                  </xsl:apply-templates>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="not(eo:can-inline($applied, $after-start))">
+              <xsl:value-of select="eo:eol($tabs+1)"/>
+              <xsl:value-of select="$applied"/>
+              <xsl:value-of select="eo:eol($tabs)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$applied"/>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:text>)</xsl:text>
         </xsl:if>
       </xsl:otherwise>
@@ -305,10 +481,6 @@ SOFTWARE.
     <!-- Data -->
     <xsl:if test="eo:has-data(.) and @base!='org.eolang.number' and @base!='org.eolang.string'">
       <xsl:text>(</xsl:text>
-      <xsl:value-of select="eo:eol($tabs+1)"/>
-      <xsl:value-of select="$alpha"/>
-      <xsl:text>0</xsl:text>
-      <xsl:value-of select="$arrow"/>
       <xsl:value-of select="$lb"/>
       <xsl:value-of select="$space"/>
       <xsl:value-of select="$delta"/>
@@ -316,7 +488,6 @@ SOFTWARE.
       <xsl:value-of select="text()[last()]"/>
       <xsl:value-of select="$space"/>
       <xsl:value-of select="$rb"/>
-      <xsl:value-of select="eo:eol($tabs)"/>
       <xsl:text>)</xsl:text>
     </xsl:if>
   </xsl:template>
@@ -347,13 +518,6 @@ SOFTWARE.
           <xsl:value-of select="eo:comma(2, $tabs+1)"/>
         </xsl:if>
       </xsl:if>
-      <!-- Empty delta binding in org.eolang.bytes -->
-      <xsl:if test="$package=concat($program, '.', 'org.eolang') and $name='bytes'">
-        <xsl:value-of select="$delta"/>
-        <xsl:value-of select="$dashed-arrow"/>
-        <xsl:value-of select="$empty"/>
-        <xsl:value-of select="eo:comma(2, $tabs+1)"/>
-      </xsl:if>
       <!-- Inner objects -->
       <xsl:for-each select="o">
         <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
@@ -364,6 +528,7 @@ SOFTWARE.
             <xsl:text>.</xsl:text>
             <xsl:value-of select="$name"/>
           </xsl:with-param>
+          <xsl:with-param name="before" select="$tabs * 2"/>
         </xsl:apply-templates>
       </xsl:for-each>
       <xsl:value-of select="eo:eol($tabs)"/>
@@ -374,22 +539,27 @@ SOFTWARE.
   <xsl:template match="o" mode="application">
     <xsl:param name="tabs"/>
     <xsl:param name="position" select="1"/>
-    <xsl:value-of select="eo:comma($position, $tabs)"/>
-    <xsl:choose>
-      <xsl:when test="@as">
-        <xsl:if test="matches(@as,'^[0-9][1-9]*$')">
+    <xsl:param name="before"/>
+    <xsl:variable name="applied">
+      <xsl:value-of select="eo:comma($position, $tabs)"/>
+      <xsl:choose>
+        <xsl:when test="@as">
+          <xsl:if test="matches(@as,'^[0-9][1-9]*$')">
+            <xsl:value-of select="$alpha"/>
+          </xsl:if>
+          <xsl:value-of select="eo:specials(@as, true())"/>
+        </xsl:when>
+        <xsl:otherwise>
           <xsl:value-of select="$alpha"/>
-        </xsl:if>
-        <xsl:value-of select="eo:specials(@as, true())"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$alpha"/>
-        <xsl:value-of select="$position - 1"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:value-of select="$arrow"/>
+          <xsl:value-of select="$position - 1"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$arrow"/>
+    </xsl:variable>
+    <xsl:value-of select="$applied"/>
     <xsl:apply-templates select=".">
       <xsl:with-param name="tabs" select="$tabs"/>
+      <xsl:with-param name="before" select="string-length($applied) + $before"/>
     </xsl:apply-templates>
   </xsl:template>
   <!-- Ignore other elements -->

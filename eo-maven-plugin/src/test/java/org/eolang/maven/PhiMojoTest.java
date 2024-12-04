@@ -40,7 +40,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -77,18 +76,12 @@ final class PhiMojoTest {
         );
         MatcherAssert.assertThat(
             "the .phi file is generated",
-            new String(
-                Files.readAllBytes(
-                    temp.resolve("target/eo/phi/foo.phi")
-                ),
-                StandardCharsets.UTF_8
-            ),
-            Matchers.containsString("α0 ↦ \"Hello, world!\\n\"")
+            Files.readString(temp.resolve("target/eo/phi/foo.phi")),
+            Matchers.containsString("(\"Hello, world!\\n\")")
         );
     }
 
     @Test
-    @Disabled
     void convertsSimpleXmirToPhi(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -97,9 +90,9 @@ final class PhiMojoTest {
                     String.join(
                         " ",
                         "<program name='foo'><objects>",
-                        "<o abstract='' name='foo'>",
+                        "<o name='foo'>",
                         "<o name='bar' base='xxx'>",
-                        "<o base='org.eolang.bytes'>01 02 03</o>",
+                        "<o base='org.eolang.bytes'>01-02-03</o>",
                         "</o></o></objects></program>"
                     ).getBytes()
                 );
@@ -113,13 +106,8 @@ final class PhiMojoTest {
         );
         MatcherAssert.assertThat(
             "the .phi file is generated",
-            new String(
-                Files.readAllBytes(
-                    temp.resolve("target/eo/phi/foo.phi")
-                ),
-                StandardCharsets.UTF_8
-            ),
-            Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01-02-03 ⟧")
+            Files.readString(temp.resolve("target/eo/phi/foo.phi")),
+            Matchers.containsString("(⟦ Δ ⤍ 01-02-03 ⟧)")
         );
     }
 
@@ -164,16 +152,10 @@ final class PhiMojoTest {
         );
         MatcherAssert.assertThat(
             "the .phi file is generated",
-            new String(
-                Files.readAllBytes(
-                    temp.resolve("target/eo/phi/org/eolang/bytes.phi")
-                ),
-                StandardCharsets.UTF_8
-            ),
+            Files.readString(temp.resolve("target/eo/phi/org/eolang/bytes.phi")),
             Matchers.allOf(
-                Matchers.containsString("α0 ↦ Φ.org.eolang.bytes("),
-                Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01-02-03 ⟧"),
-                Matchers.containsString("yes ↦ ξ.eq(")
+                Matchers.containsString("yes ↦ ξ.eq("),
+                Matchers.containsString("Φ.org.eolang.bytes(⟦ Δ ⤍ 01-02-03 ⟧)")
             )
         );
     }
