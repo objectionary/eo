@@ -24,8 +24,17 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:eo="https://www.eolang.org" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-default-package" version="2.0">
   <!--
-    Here we catch an elements which does not have @base attribute or which are not abstract
-    but have inner elements.
+    Here we change elements:
+
+    <o base=".eolang">
+      <o base=".org">
+        <o base="Q"/>
+      </o>
+    </o>
+
+    with:
+
+    <o base="org.eolang"/>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
