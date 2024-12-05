@@ -40,12 +40,15 @@ import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link PrintMojo}.
@@ -113,43 +116,42 @@ final class PrintMojoTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
     void printsInStraightNotation(final String pack, @Mktmp final Path temp) throws Exception {
-        final Map<String, Object> yaml = new Yaml().load(pack);
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
-            PrintMojoTest.printed(yaml, temp, false).asString(),
-            Matchers.equalTo((String) yaml.get("straight"))
+            PrintMojoTest.printed(xtory, temp, false).asString(),
+            Matchers.equalTo((String) xtory.map().get("straight"))
         );
     }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
     void printsInReversedNotation(final String pack, @Mktmp final Path temp) throws Exception {
-        final Map<String, Object> yaml = new Yaml().load(pack);
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in reversed notation, but it didn't",
-            PrintMojoTest.printed(yaml, temp, true).asString(),
-            Matchers.equalTo((String) yaml.get("reversed"))
+            PrintMojoTest.printed(xtory, temp, true).asString(),
+            Matchers.equalTo((String) xtory.map().get("reversed"))
         );
     }
 
     /**
      * Print XMIR to EO from given pack.
-     * @param yaml Yaml pack
+     * @param xtory XaX story
      * @param temp Temp directory
      * @param reversed Should notation be reversed or not
      * @return Result printed EO
      * @throws Exception If fails to execute {@link PrintMojo}
      */
-    private static Text printed(
-        final Map<String, Object> yaml,
-        final Path temp,
-        final boolean reversed
-    ) throws Exception {
+    private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
+        throws Exception {
         final Home home = new HmBase(temp);
         home.save(
             new EoSyntax(
                 "test",
-                new InputOf((String) yaml.get("origin"))
+                new InputOf(xtory.map().get("origin").toString())
             ).parsed().toString(),
             Paths.get("xmir/foo/x/main.xmir")
         );

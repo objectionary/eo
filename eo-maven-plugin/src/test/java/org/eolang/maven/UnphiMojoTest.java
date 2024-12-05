@@ -205,7 +205,7 @@ final class UnphiMojoTest {
             ).asString()
         );
         Logger.debug(this, "Parsed phi:\n%s", doc);
-        for (final String xpath : (Iterable<String>) map.get("tests")) {
+        for (final String xpath : (Iterable<String>) map.get("asserts")) {
             final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
                 failures.add(xpath);

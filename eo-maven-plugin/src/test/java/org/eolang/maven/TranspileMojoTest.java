@@ -36,6 +36,8 @@ import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -75,7 +77,7 @@ final class TranspileMojoTest {
     void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
             "passes with no exceptions",
-            yaml,
+            new XtSticky(new XtYaml(yaml)),
             new XtoryMatcher()
         );
     }

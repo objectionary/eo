@@ -47,6 +47,8 @@ import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrParsing;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -89,18 +91,20 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void checksPacks(final String pack) {
+    void checksPacks(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
-            pack,
-            new XtoryMatcher(
-                eo -> new EoSyntax(
-                    "scenario",
-                    new InputOf(String.format("%s\n", eo))
-                ).parsed(),
-                new TrParsing().empty(),
-                true
-            )
+            new XtSticky(
+                new XtYaml(
+                    yaml,
+                    eo -> new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", eo))
+                    ).parsed(),
+                    new TrParsing().empty()
+                )
+            ),
+            new XtoryMatcher()
         );
     }
 
