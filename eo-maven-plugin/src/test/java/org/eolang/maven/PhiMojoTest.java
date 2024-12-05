@@ -155,7 +155,7 @@ final class PhiMojoTest {
             Files.readString(temp.resolve("target/eo/phi/org/eolang/bytes.phi")),
             Matchers.allOf(
                 Matchers.containsString("yes ↦ ξ.eq("),
-                Matchers.containsString("Φ.org.eolang.bytes(⟦ Δ ⤍ 01-02-03 ⟧)")
+                Matchers.containsString("Φ̇.bytes(⟦ Δ ⤍ 01-02-03 ⟧)")
             )
         );
     }

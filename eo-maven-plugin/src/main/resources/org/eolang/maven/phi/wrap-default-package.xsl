@@ -22,42 +22,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:eo="https://www.eolang.org" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="incorrect-inners" version="2.0">
+<xsl:stylesheet xmlns:eo="https://www.eolang.org" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-default-package" version="2.0">
   <!--
     Here we catch an elements which does not have @base attribute or which are not abstract
     but have inner elements.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/errors">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[count(o)&gt;0 and not(eo:abstract(.)) and not(@base)]">
-        <xsl:element name="error">
-          <xsl:attribute name="check">
-            <xsl:text>incorrect-inners</xsl:text>
-          </xsl:attribute>
-          <xsl:attribute name="line">
-            <xsl:choose>
-              <xsl:when test="@line">
-                <xsl:value-of select="@line"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:text>No line</xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
-          <xsl:attribute name="severity">
-            <xsl:text>critical</xsl:text>
-          </xsl:attribute>
-          <xsl:text>Element can't have child elements if it does not have 'base' attribute or if it isn't abstract</xsl:text>
-          <xsl:if test="@name">
-            <xsl:text>. Name of the object - </xsl:text>
-            <xsl:value-of select="@name"/>
-          </xsl:if>
-        </xsl:element>
+  <xsl:template match="o[@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]">
+    <xsl:element name="o">
+      <xsl:for-each select="@*[name()!='base']">
+        <xsl:attribute name="{name()}" select="."/>
       </xsl:for-each>
-    </xsl:copy>
+      <xsl:attribute name="base" select="'org.eolang'"/>
+      <xsl:for-each select="o[position()!=1]">
+        <xsl:value-of select="."/>
+      </xsl:for-each>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

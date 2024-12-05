@@ -31,9 +31,7 @@ phi: |-
   {
     ⟦
       prints-itself ↦ ⟦
-        φ ↦ Φ.org.eolang.assert-that(
-          Φ.org.eolang.as-phi(ξ).length, ξ.greater-than(0)
-        )
+        φ ↦ Φ̇.assert-that(Φ̇.as-phi(ξ).length, ξ.greater-than(0))
       ⟧
     ⟧
   }

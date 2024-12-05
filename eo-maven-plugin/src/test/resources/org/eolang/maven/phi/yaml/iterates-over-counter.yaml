@@ -39,7 +39,7 @@ phi: |-
   {
     ⟦
       iterates-over-simple-counter ↦ ⟦
-        x ↦ Φ.org.eolang.memory(0),
+        x ↦ Φ̇.memory(0),
         φ ↦ ξ.x.write(5).eq(5).and(
           ξ.x.as-int.lt(10).while(
             ⟦

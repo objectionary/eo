@@ -38,9 +38,7 @@ phi: |-
             j$A ↦ ⟦
               access ↦ 32,
               supername ↦ "java/lang/Object",
-              interfaces ↦ Φ.org.eolang.tuple(
-                Φ.org.eolang.tuple.empty, "org/eolang/benchmark/F"
-              )
+              interfaces ↦ Φ̇.tuple(Φ̇.tuple.empty, "org/eolang/benchmark/F")
             ⟧,
             λ ⤍ Package
           ⟧,

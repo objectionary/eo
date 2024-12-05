@@ -48,6 +48,9 @@ SOFTWARE.
   <xsl:variable name="program">
     <select>Φ</select>
   </xsl:variable>
+  <xsl:variable name="def-package">
+    <select>Φ̇</select>
+  </xsl:variable>
   <xsl:variable name="lambda">
     <select>λ</select>
   </xsl:variable>
@@ -118,9 +121,8 @@ SOFTWARE.
         <xsl:value-of select="$program"/>
       </xsl:when>
       <xsl:when test="starts-with($n, 'org.eolang')">
-        <xsl:value-of select="$program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$n"/>
+        <xsl:value-of select="$def-package"/>
+        <xsl:value-of select="substring-after($n, 'org.eolang')"/>
       </xsl:when>
       <xsl:when test="$aliases[text()=$n]">
         <xsl:value-of select="$program"/>
