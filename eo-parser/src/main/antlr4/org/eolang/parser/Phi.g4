@@ -44,6 +44,7 @@ formation
 scoped
     : XI
     | HOME
+    | DEF_PACKAGE
     ;
 
 bindings
@@ -153,6 +154,9 @@ LAMBDA
     : 'λ'
     ;
 HOME: 'Φ'
+    ;
+DEF_PACKAGE
+    : 'Φ̇'
     ;
 ERROR
     : '⊥'

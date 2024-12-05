@@ -27,5 +27,6 @@
   minus ↦ -0,
   inline-application ↦ Φ.x(
     "Hello", 42, Φ.y("world", 11.plus(12)), 42.5
-  )
+  ),
+  default-package ↦ Φ̇.number(42)
 ⟧}

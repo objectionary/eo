@@ -178,6 +178,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterScoped(final PhiParser.ScopedContext ctx) {
         if (ctx.HOME() != null) {
             this.objects().prop("base", "Q");
+        } else if (ctx.DEF_PACKAGE() != null) {
+            this.objects().prop("base", "Q").leave()
+                .start().prop("base", ".org").prop("method").leave()
+                .start().prop("base", ".eolang").prop("method");
         } else {
             this.objects().prop("base", "$");
         }

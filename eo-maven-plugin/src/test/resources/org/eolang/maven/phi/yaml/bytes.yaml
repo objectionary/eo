@@ -134,7 +134,7 @@ phi: |-
               x ↦ ∅
             ⟧,
             as-bool ↦ ⟦
-              φ ↦ ξ.ρ.eq(Φ.org.eolang.bytes(⟦ Δ ⤍ 01- ⟧))
+              φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
             ⟧,
             as-bytes ↦ ⟦
               φ ↦ ξ.ρ
