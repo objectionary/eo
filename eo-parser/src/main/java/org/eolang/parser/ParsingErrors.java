@@ -38,6 +38,7 @@ import org.xembly.Directives;
 
 /**
  * Accumulates all parsing errors.
+ *
  * @since 0.30.0
  */
 final class ParsingErrors extends BaseErrorListener
