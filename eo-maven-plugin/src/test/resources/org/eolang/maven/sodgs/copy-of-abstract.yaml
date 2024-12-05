@@ -28,10 +28,10 @@ locators:
   - .foo .b !.σ
   - .foo .b .π .φ .π .β .plus .ε .β .a .ε
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > foo
     5 > a
     bar 8 > b
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [c] > bar
     ^.a.plus c > @

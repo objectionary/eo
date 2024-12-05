@@ -192,7 +192,7 @@ final class ProbeMojoTest {
     private static String[] program() {
         return new String[]{
             "+package org.eolang.custom\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[] > main",
             "  QQ.io.stdout > @",
             "    QQ.txt.sprintf",

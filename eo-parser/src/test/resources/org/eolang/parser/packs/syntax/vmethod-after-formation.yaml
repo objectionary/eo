@@ -26,7 +26,7 @@ asserts:
   - //o[@name='x' and not(@base)]/following::o[@base='.first' and @method]
   - //o[not(@name) and not(@base)]/following::o[@base='.second' and @method]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > x
     y > @
       []

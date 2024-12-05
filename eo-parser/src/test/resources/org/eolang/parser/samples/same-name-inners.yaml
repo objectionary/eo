@@ -21,46 +21,46 @@
 # SOFTWARE.
 ---
 origin: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compiles-correctly-with-long-duplicate-names
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > long-object-name
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > long-object-name
-        # This is the default 64+ symbols comment in front of named abstract object.
+        # No comments.
         [] > long-object-name
-          # This is the default 64+ symbols comment in front of named abstract object.
+          # No comments.
           [] > long-object-name
-            # This is the default 64+ symbols comment in front of named abstract object.
+            # No comments.
             [] > long-object-name
     true > @
 
 straight: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compiles-correctly-with-long-duplicate-names
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > long-object-name
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > long-object-name
-        # This is the default 64+ symbols comment in front of named abstract object.
+        # No comments.
         [] > long-object-name
-          # This is the default 64+ symbols comment in front of named abstract object.
+          # No comments.
           [] > long-object-name
-            # This is the default 64+ symbols comment in front of named abstract object.
+            # No comments.
             [] > long-object-name
     true > @
 
 reversed: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compiles-correctly-with-long-duplicate-names
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > long-object-name
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > long-object-name
-        # This is the default 64+ symbols comment in front of named abstract object.
+        # No comments.
         [] > long-object-name
-          # This is the default 64+ symbols comment in front of named abstract object.
+          # No comments.
           [] > long-object-name
-            # This is the default 64+ symbols comment in front of named abstract object.
+            # No comments.
             [] > long-object-name
     true > @

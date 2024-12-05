@@ -26,8 +26,8 @@ locators:
 input: |
   +package foo.bar
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > a
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > b
       ^ > c

@@ -38,11 +38,11 @@ asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'PhMethod(new PhMethod(rho, "ρ"), "ρ")')]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [x] > foo
     $ > this
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > xyz
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > bar
         this.x > @

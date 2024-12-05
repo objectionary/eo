@@ -28,8 +28,8 @@ locators:
 input: |
   +package foo
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > a
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [x] > b
       x.test > @

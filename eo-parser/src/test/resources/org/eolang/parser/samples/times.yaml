@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 origin: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > app
     QQ.io.stdout > @
       QQ.txt.sprintf
@@ -29,7 +29,7 @@ origin: |
         -1.times 228
 
 straight: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > app
     QQ
     .io
@@ -43,7 +43,7 @@ straight: |
           228
 
 reversed: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > app
     stdout. > @
       io.

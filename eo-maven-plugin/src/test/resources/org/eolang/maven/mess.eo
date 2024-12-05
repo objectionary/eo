@@ -30,9 +30,9 @@
 
 3.14 > pi
 
-# This is the default 64+ symbols comment in front of named abstract object.
+# No comments.
 [n] > alpha
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > x
     a > pi
       pi
@@ -47,9 +47,9 @@ alpha > beta
   alpha
     "Z"
 
-# This is the default 64+ symbols comment in front of named abstract object.
+# No comments.
 [n x] > mess
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [a] > test /int
   n.hello > @
     "Hello, world!"

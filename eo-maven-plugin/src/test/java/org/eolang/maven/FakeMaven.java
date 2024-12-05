@@ -347,7 +347,7 @@ public final class FakeMaven {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
             "+package f\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[x] > main",
             "  (stdout \"Hello!\" x).print > @"
         );
@@ -361,7 +361,7 @@ public final class FakeMaven {
     FakeMaven withVersionedHelloWorld() throws IOException {
         return this.withProgram(
             "+package f\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[] > main",
             "  QQ.io.stdout|0.28.5 > @",
             "    \"Hello world\""
@@ -380,7 +380,7 @@ public final class FakeMaven {
             "+home https://objectionary.home",
             "+package f",
             "+version 0.0.0\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[args] > main",
             "  seq|0.28.4 > @",
             "    QQ.io.stdout|0.28.5",

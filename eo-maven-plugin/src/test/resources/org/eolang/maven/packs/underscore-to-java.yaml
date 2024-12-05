@@ -31,6 +31,6 @@ asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'public final class EOfoo__underscore extends PhDefault')]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > foo_underscore
     * 1 2 (* 3 4) > @

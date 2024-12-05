@@ -36,18 +36,18 @@ asserts:
   - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'ret = new PhWith(ret, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > t
     true > @
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > f
     bool 00- > @
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > i
     42 > @
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > f
     number 3.5 > @
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > b
     01-AF > @

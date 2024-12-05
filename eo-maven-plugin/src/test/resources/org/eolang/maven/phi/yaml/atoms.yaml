@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > main /int
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > outer
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > inner /bytes
 phi: |-
   {

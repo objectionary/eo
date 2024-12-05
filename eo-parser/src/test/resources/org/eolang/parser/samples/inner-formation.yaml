@@ -21,21 +21,21 @@
 # SOFTWARE.
 ---
 origin: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > foo
     test
       []
         "hello, world!" > @
 
 straight: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > foo
     test
       []
         "hello, world!" > @
 
 reversed: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > foo
     test
       []

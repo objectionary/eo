@@ -190,7 +190,7 @@ final class EoSyntaxTest {
                 new InputOf(
                     String.join(
                         "\n",
-                        "# This is the default 64+ symbols comment in front of named abstract object.",
+                        "# No comments.",
                         "[v] > p",
                         "  f.write > @\n"
                     )

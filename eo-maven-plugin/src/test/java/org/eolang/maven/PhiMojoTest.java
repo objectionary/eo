@@ -58,7 +58,7 @@ final class PhiMojoTest {
      * Comment.
      */
     private static final String COMMENT =
-        "# This is the default 64+ symbols comment in front of named abstract object.";
+        "# No comments.";
 
     @Test
     void convertsSimpleObjectToPhi(@Mktmp final Path temp, @RandomProgram final String program)

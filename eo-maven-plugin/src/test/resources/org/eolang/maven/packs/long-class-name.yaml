@@ -33,126 +33,126 @@ asserts:
   - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EO89_58 extends PhDefault')]
   - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EOblah2$EOblah3$EOblah4$EOblah5$EOblah6$EOblah7$EOblah8$EOblah9$EOblah10$EOblah11$EOblah12$EOblah13$EOblah14$EOblah15$EOblah16$EOblah17$EOblah18$EOblah19$EOblah20$EOblah21$EOblah22$EOblah23$EOblah24$EOblah25$EOblah26$EOblah27 extends PhDefault')]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > test
     blah0 > @
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > blah0
       blah1 > @
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > blah1
         blah2 > @
-        # This is the default 64+ symbols comment in front of named abstract object.
+        # No comments.
         [] > blah2
           blah3 > @
-          # This is the default 64+ symbols comment in front of named abstract object.
+          # No comments.
           [] > blah3
             blah4 > @
-            # This is the default 64+ symbols comment in front of named abstract object.
+            # No comments.
             [] > blah4
               blah5 > @
-              # This is the default 64+ symbols comment in front of named abstract object.
+              # No comments.
               [] > blah5
                 blah6 > @
-                # This is the default 64+ symbols comment in front of named abstract object.
+                # No comments.
                 [] > blah6
                   blah7 > @
-                  # This is the default 64+ symbols comment in front of named abstract object.
+                  # No comments.
                   [] > blah7
                     blah8 > @
-                    # This is the default 64+ symbols comment in front of named abstract object.
+                    # No comments.
                     [] > blah8
                       blah9 > @
-                      # This is the default 64+ symbols comment in front of named abstract object.
+                      # No comments.
                       [] > blah9
                         blah10 > @
-                        # This is the default 64+ symbols comment in front of named abstract object.
+                        # No comments.
                         [] > blah10
                           blah11 > @
-                          # This is the default 64+ symbols comment in front of named abstract object.
+                          # No comments.
                           [] > blah11
                             blah12 > @
-                            # This is the default 64+ symbols comment in front of named abstract object.
+                            # No comments.
                             [] > blah12
                               blah13 > @
-                              # This is the default 64+ symbols comment in front of named abstract object.
+                              # No comments.
                               [] > blah13
                                 blah14 > @
-                                # This is the default 64+ symbols comment in front of named abstract object.
+                                # No comments.
                                 [] > blah14
                                   blah15 > @
-                                  # This is the default 64+ symbols comment in front of named abstract object.
+                                  # No comments.
                                   [] > blah15
                                     blah16 > @
-                                    # This is the default 64+ symbols comment in front of named abstract object.
+                                    # No comments.
                                     [] > blah16
                                       blah17 > @
-                                      # This is the default 64+ symbols comment in front of named abstract object.
+                                      # No comments.
                                       [] > blah17
                                         blah18 > @
-                                        # This is the default 64+ symbols comment in front of named abstract object.
+                                        # No comments.
                                         [] > blah18
                                           blah19 > @
-                                          # This is the default 64+ symbols comment in front of named abstract object.
+                                          # No comments.
                                           [] > blah19
                                             blah20 > @
-                                            # This is the default 64+ symbols comment in front of named abstract object.
+                                            # No comments.
                                             [] > blah20
                                               blah21 > @
-                                              # This is the default 64+ symbols comment in front of named abstract object.
+                                              # No comments.
                                               [] > blah21
                                                 blah22 > @
-                                                # This is the default 64+ symbols comment in front of named abstract object.
+                                                # No comments.
                                                 [] > blah22
                                                   blah23 > @
-                                                  # This is the default 64+ symbols comment in front of named abstract object.
+                                                  # No comments.
                                                   [] > blah23
                                                     blah24 > @
-                                                    # This is the default 64+ symbols comment in front of named abstract object.
+                                                    # No comments.
                                                     [] > blah24
                                                       blah25 > @
-                                                      # This is the default 64+ symbols comment in front of named abstract object.
+                                                      # No comments.
                                                       [] > blah25
                                                         blah26 > @
-                                                        # This is the default 64+ symbols comment in front of named abstract object.
+                                                        # No comments.
                                                         [] > blah26
                                                           blah27 > @
-                                                          # This is the default 64+ symbols comment in front of named abstract object.
+                                                          # No comments.
                                                           [] > blah27
                                                             blah28 > @
-                                                            # This is the default 64+ symbols comment in front of named abstract object.
+                                                            # No comments.
                                                             [] > blah28
                                                               blah29 > @
-                                                              # This is the default 64+ symbols comment in front of named abstract object.
+                                                              # No comments.
                                                               [] > blah29
                                                                 blah30 > @
-                                                                # This is the default 64+ symbols comment in front of named abstract object.
+                                                                # No comments.
                                                                 [] > blah30
                                                                   blah31 > @
-                                                                  # This is the default 64+ symbols comment in front of named abstract object.
+                                                                  # No comments.
                                                                   [] > blah31
                                                                     blah32 > @
-                                                                    # This is the default 64+ symbols comment in front of named abstract object.
+                                                                    # No comments.
                                                                     [] > blah32
                                                                       blah33 > @
-                                                                      # This is the default 64+ symbols comment in front of named abstract object.
+                                                                      # No comments.
                                                                       [] > blah33
                                                                         blah34 > @
-                                                                        # This is the default 64+ symbols comment in front of named abstract object.
+                                                                        # No comments.
                                                                         [] > blah34
                                                                           blah35 > @
-                                                                          # This is the default 64+ symbols comment in front of named abstract object.
+                                                                          # No comments.
                                                                           [] > blah35
                                                                             blah36 > @
-                                                                            # This is the default 64+ symbols comment in front of named abstract object.
+                                                                            # No comments.
                                                                             [] > blah36
                                                                               blah37 > @
-                                                                              # This is the default 64+ symbols comment in front of named abstract object.
+                                                                              # No comments.
                                                                               [] > blah37
                                                                                 blah38 > @
-                                                                                # This is the default 64+ symbols comment in front of named abstract object.
+                                                                                # No comments.
                                                                                 [] > blah38
                                                                                   blah39 > @
-                                                                                  # This is the default 64+ symbols comment in front of named abstract object.
+                                                                                  # No comments.
                                                                                   [] > blah39
                                                                                     true > @

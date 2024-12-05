@@ -39,11 +39,11 @@ asserts:
 input: |
   +tests
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > a
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > b
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > c
         d > @
           []

@@ -21,14 +21,14 @@
 # SOFTWARE.
 ---
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [a] > main
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > x
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > y
         a > d
-        # This is the default 64+ symbols comment in front of named abstract object.
+        # No comments.
         [] > z
           main 5 > five
           a > b

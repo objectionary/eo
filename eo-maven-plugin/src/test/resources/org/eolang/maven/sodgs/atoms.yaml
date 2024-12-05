@@ -26,10 +26,10 @@ locators:
 input: |
   +package foo
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > hello
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > alpha /bool
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [x] > boom /int

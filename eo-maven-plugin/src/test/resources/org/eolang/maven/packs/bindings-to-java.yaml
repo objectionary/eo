@@ -32,7 +32,7 @@ asserts:
   - //java/text()[contains(., 'new PhWith(ret, 0')]
   - //java/text()[contains(., 'new PhWith(ret, "text"')]
 input: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > main
     stdout x:0 > print1
     stdout x:text > print2

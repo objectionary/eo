@@ -27,18 +27,18 @@ input: |
   +rt jvm org.eolang:eo-runtime:0.0.0
   +version 0.0.0
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [data] > bytes
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [x] > eq /bool
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > size /int
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [start len] > slice /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > as-string /string
 
     # Turn this chain of eight bytes into an integer.
@@ -51,30 +51,30 @@ input: |
     # be an error returned.
     [] > as-float /float
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [b] > and /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [b] > or /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [b] > xor /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > not /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [x] > left
       ^.right x.neg > @
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [x] > right /bytes
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > as-bool
       ^.eq 01- > @
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > as-bytes
       ^ > @
 

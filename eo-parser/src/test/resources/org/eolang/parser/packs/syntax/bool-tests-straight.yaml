@@ -26,7 +26,7 @@ asserts:
 input: |
   +package org.eolang
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-two-bools
     Q
     .org
@@ -48,7 +48,7 @@ input: |
         .bytes:0
           01-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-two-different-types
     Q
     .org
@@ -71,7 +71,7 @@ input: |
           00-00-00-00-00-00-00-2A
     .not > @
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > forks-on-condition
     Q
     .org
@@ -122,7 +122,7 @@ input: |
         .bytes:0
           00-00-00-00-00-00-00-2A
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > iterates-over-simple-counter
     Q
     .org
@@ -204,7 +204,7 @@ input: |
           .bytes:0
             00-00-00-00-00-00-00-0B
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-bool-to-bytes
     Q
     .org
@@ -238,7 +238,7 @@ input: |
         .bytes:0
           00-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-bool-to-string
     Q
     .org
@@ -280,7 +280,7 @@ input: |
           .bytes:0
             00-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-bool-to-bytes-reverse
     Q
     .org
@@ -316,7 +316,7 @@ input: |
           .bytes:0
             00-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > complex-bool-expression-in-while
     Q
     .org
@@ -447,7 +447,7 @@ input: |
     .eolang
     .nop > @
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > last-while-dataization-object
     Q
     .org
@@ -527,7 +527,7 @@ input: |
         .bytes:0
           00-00-00-00-00-00-00-03
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > last-while-dataization-object-with-false-condition
     Q
     .org
@@ -606,7 +606,7 @@ input: |
         .bytes:0
           00-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > iterating-tuple-with-while-using-internal-iterator
     Q
     .org
@@ -819,7 +819,7 @@ input: |
           .arr
           .length:0
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > iterating-tuple-with-while-using-external-iterator
     Q
     .org
@@ -1043,7 +1043,7 @@ input: |
       .bytes:0
         01-
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > iterating-tuple-with-while-without-body-multiple
     Q
     .org
@@ -1245,7 +1245,7 @@ input: |
           .arr
           .length:0
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > iterating-tuple-with-while-without-body-single
     Q
     .org

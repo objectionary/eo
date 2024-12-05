@@ -40,6 +40,6 @@ asserts:
 input: |
   +tests
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > works
     1.eq 1 > @

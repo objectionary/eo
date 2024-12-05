@@ -94,7 +94,7 @@ final class LintMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# No comments.",
                 "[] > main",
                 "    \"Hello world\""
             );
@@ -122,9 +122,9 @@ final class LintMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# No comments.",
                 "[] > main",
-                "  # This is the default 64+ symbols comment in front of named abstract object.",
+                "  # No comments.",
                 "  [] > @",
                 "    \"Hello world\" > @"
             )
@@ -139,7 +139,7 @@ final class LintMojoTest {
             new XMLDocument(
                 maven.result().get("target/6-lint/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(Matchers.equalTo(2))
+            Matchers.hasSize(Matchers.equalTo(4))
         );
     }
 
@@ -149,9 +149,9 @@ final class LintMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "# No comments.",
                     "[] > main",
-                    "  # This is the default 64+ symbols comment in front of named abstract object.",
+                    "  # No comments.",
                     "  [] > x",
                     "    \"Hello world\" > @"
                 )
@@ -169,7 +169,7 @@ final class LintMojoTest {
                 .withProgram(
                     "+package f",
                     "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "# No comments.",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
@@ -185,7 +185,7 @@ final class LintMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "# No comments.",
                     "[args] > main",
                     "  seq > @",
                     "    TRUE > x",

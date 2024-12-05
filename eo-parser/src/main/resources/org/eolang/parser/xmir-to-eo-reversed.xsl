@@ -30,7 +30,7 @@ SOFTWARE.
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:variable name="comment">
-    <xsl:text># This is the default 64+ symbols comment in front of named abstract object.</xsl:text>
+    <xsl:text># No comments.</xsl:text>
     <xsl:value-of select="$eol"/>
   </xsl:variable>
   <xsl:output method="text" encoding="UTF-8"/>

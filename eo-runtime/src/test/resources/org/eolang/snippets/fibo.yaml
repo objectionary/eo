@@ -29,9 +29,9 @@ eo: |
   +alias org.eolang.txt.sprintf
   +package org.eolang.snippets
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [args] > fibo
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [n] > f
       if. > @
         n.lt 2

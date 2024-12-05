@@ -26,23 +26,23 @@ origin: |
   +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > base
     memory 0 > x
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       x.write > @
         v
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > g
       self.f > @
         self
         v
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > derived
     base > @
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       self.g > @
         self
@@ -54,26 +54,26 @@ straight: |
   +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > base
     memory > x
       0
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       x
       .write > @
         v
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > g
       self
       .f > @
         self
         v
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > derived
     base > @
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       self
       .g > @
@@ -86,26 +86,26 @@ reversed: |
   +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > base
     memory > x
       0
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       write. > @
         x
         v
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > g
       f. > @
         self
         self
         v
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > derived
     base > @
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [self v] > f
       g. > @
         self

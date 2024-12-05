@@ -28,11 +28,11 @@ eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [args] > parenting
     "The code snippet that checks parent's args" > description
 
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > take
       ^.args.at 0 > @
     stdout > @

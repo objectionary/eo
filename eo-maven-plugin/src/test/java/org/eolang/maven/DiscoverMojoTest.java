@@ -156,7 +156,7 @@ final class DiscoverMojoTest {
             .with("withVersions", true)
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# No comments.",
                 "[] > main",
                 "  seq > @",
                 "    QQ.io.stdout",
@@ -191,13 +191,13 @@ final class DiscoverMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final String first = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[] > sprintf",
             "  text > @"
         );
         final String second = String.join(
             "\n",
-            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "# No comments.",
             "[] > sprintf",
             "  text|0.28.5 > @"
         );

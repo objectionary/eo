@@ -104,7 +104,7 @@ final class PullMojoTest {
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# No comments.",
                 "[] > main",
                 "  QQ.io.stdout > @",
                 "    \"I am 18 years old\""
@@ -305,7 +305,7 @@ final class PullMojoTest {
         final FakeMaven mvn = new FakeMaven(tmp)
             .withProgram(
                 "+package com.example\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "# No comments.",
                 "[] > main",
                 "  org.eolang.org > @"
             )

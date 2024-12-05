@@ -27,7 +27,7 @@ args: [ "org.eolang.snippets.auto-named" ]
 eo: |
   +package org.eolang.snippets
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [args] > auto-named
     QQ.io.stdout > @
       []

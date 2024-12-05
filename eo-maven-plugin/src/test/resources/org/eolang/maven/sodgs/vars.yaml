@@ -28,13 +28,13 @@ locators:
 input: |
   +package foo
 
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > x
     42 > a
-    # This is the default 64+ symbols comment in front of named abstract object.
+    # No comments.
     [] > y
       33 > b
-      # This is the default 64+ symbols comment in front of named abstract object.
+      # No comments.
       [] > z
         a > c
         b > d

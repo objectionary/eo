@@ -27,7 +27,7 @@ origin: |
       true.eq 01-
       false.eq 00-
 straight: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-bool-to-bytes
     true
     .eq
@@ -37,7 +37,7 @@ straight: |
       .eq
         00-
 reversed: |
-  # This is the default 64+ symbols comment in front of named abstract object.
+  # No comments.
   [] > compares-bool-to-bytes
     and. > @
       eq.
