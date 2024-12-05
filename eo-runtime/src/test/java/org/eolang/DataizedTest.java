@@ -154,7 +154,7 @@ final class DataizedTest {
 
     /**
      * Thread that logs dataization process with specified log level.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class DataizedLoggerThread extends Thread {
         /**
@@ -190,7 +190,7 @@ final class DataizedTest {
 
     /**
      * Fake Phi failing when dataized.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class PhIncorrect extends PhDefault {
 
@@ -212,7 +212,7 @@ final class DataizedTest {
     /**
      * Fake Phi with decoration.
      *
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class PhiDec extends PhDefault {
 
@@ -240,7 +240,7 @@ final class DataizedTest {
     /**
      * Handler implementation for tests.
      *
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Hnd extends Handler {
         /**

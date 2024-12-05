@@ -34,7 +34,7 @@ import org.cactoos.map.MapOf;
 
 /**
  * Class to manipulate Cargo.toml file.
- * @since 1.0
+ * @since 0.1.0
  */
 public final class Cargo extends Savable {
     /**

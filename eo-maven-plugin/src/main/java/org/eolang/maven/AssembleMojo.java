@@ -149,7 +149,7 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Fail resolution process on conflicting dependencies.
      *
-     * @since 1.0
+     * @since 0.1.0
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")

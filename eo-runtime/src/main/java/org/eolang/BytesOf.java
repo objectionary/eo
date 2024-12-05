@@ -30,7 +30,7 @@ import java.util.Arrays;
 /**
  * Bytes.
  *
- * @since 1.0
+ * @since 0.1.0
  */
 @Versionized
 @SuppressWarnings("PMD.TooManyMethods")

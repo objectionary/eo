@@ -102,7 +102,7 @@ public final class OyRemote implements Objectionary {
      * 2nd for program name, for
      * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">example</a>.</p>
      *
-     * @since 1.0
+     * @since 0.1.0
      */
     public static final class UrlOy {
 

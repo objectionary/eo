@@ -90,7 +90,7 @@ public final class AtCompositeTest {
 
     /**
      * Rnd.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Rnd extends PhDefault {
         /**

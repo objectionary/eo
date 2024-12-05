@@ -158,7 +158,7 @@ final class EOtryTest {
 
     /**
      * Main.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Main extends PhDefault {
 
@@ -181,7 +181,7 @@ final class EOtryTest {
 
     /**
      * Broken.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Broken extends PhDefault {
         /**
@@ -203,7 +203,7 @@ final class EOtryTest {
 
     /**
      * Catcher.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Catcher extends PhDefault {
         /**

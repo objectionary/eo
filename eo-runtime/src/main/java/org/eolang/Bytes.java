@@ -30,7 +30,7 @@ package org.eolang;
  * convertible to a numeric value.
  * Original size is preserved by and, or and xor.</p>
  *
- * @since 1.0
+ * @since 0.1.0
  */
 @Versionized
 public interface Bytes {

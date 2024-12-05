@@ -508,7 +508,7 @@ final class PhDefaultTest {
 
     /**
      * Rnd.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class Rnd extends PhDefault {
         /**
@@ -569,7 +569,7 @@ final class PhDefaultTest {
 
     /**
      * Foo.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class Foo extends PhDefault {
         /**
@@ -585,7 +585,7 @@ final class PhDefaultTest {
 
     /**
      * Dummy.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class Dummy extends PhDefault {
         /**
@@ -612,7 +612,7 @@ final class PhDefaultTest {
 
     /**
      * Counter.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class Counter extends PhDefault {
         /**
@@ -640,7 +640,7 @@ final class PhDefaultTest {
 
     /**
      * Kid.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class Kid extends PhDefault {
         /**
@@ -655,7 +655,7 @@ final class PhDefaultTest {
 
     /**
      * Endless Recursion.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class EndlessRecursion extends PhDefault {
         /**
@@ -689,7 +689,7 @@ final class PhDefaultTest {
 
     /**
      * Recursive Phi.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class RecursivePhi extends PhDefault {
         /**
@@ -723,7 +723,7 @@ final class PhDefaultTest {
 
     /**
      * RecursivePhiViaNew.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class RecursivePhiViaNew extends PhDefault {
         /**

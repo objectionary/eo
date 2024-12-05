@@ -29,7 +29,7 @@ import java.util.Arrays;
 /**
  * Bytes to be created from byte array only.
  *
- * @since 1.0
+ * @since 0.1.0
  * @todo #3239:90min Method {@link BytesOf#shift} should be refactored to get rid of
  *  {@code @SuppressWarnings("PMD.CognitiveComplexity")} warning. You can
  *  check description of this rules here

@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test for {@link EoIndentLexer}.
  *
- * @since 1.0
+ * @since 0.1.0
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class EoIndentLexerTest {

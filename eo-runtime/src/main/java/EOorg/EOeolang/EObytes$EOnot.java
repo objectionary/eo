@@ -40,7 +40,7 @@ import org.eolang.XmirObject;
 /**
  * BYTES.NOT.
  *
- * @since 1.0
+ * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized

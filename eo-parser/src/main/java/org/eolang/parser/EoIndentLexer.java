@@ -38,7 +38,7 @@ import org.cactoos.io.InputStreamOf;
 /**
  * Indentation-aware Lexer.
  *
- * @since 1.0
+ * @since 0.1.0
  */
 final class EoIndentLexer extends EoLexer {
     /**

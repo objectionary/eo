@@ -787,7 +787,7 @@ public final class FakeMaven {
 
     /**
      * Single register phase.
-     * @since 1.0
+     * @since 0.1.0
      */
     static final class Register implements Iterable<Class<? extends AbstractMojo>> {
         @Override

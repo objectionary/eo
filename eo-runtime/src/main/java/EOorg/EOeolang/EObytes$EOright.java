@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
 /**
  * BYTES.RIGHT.
  *
- * @since 1.0
+ * @since 0.1.0
  * @checkstyle TypeNameCheck (15 lines)
  */
 @Versionized

@@ -126,7 +126,7 @@ final class PhWithTest {
 
     /**
      * Dummy Phi with free attribute.
-     * @since 1.0
+     * @since 0.1.0
      */
     private static class DummyWithAtFree extends PhDefault {
 
@@ -142,7 +142,7 @@ final class PhWithTest {
 
     /**
      * Dummy Phi.
-     * @since 1.0
+     * @since 0.1.0
      */
     public static class Dummy extends PhDefault {
 

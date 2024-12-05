@@ -70,7 +70,7 @@ import org.yaml.snakeyaml.Yaml;
  * is a boolean flag that indicates if the test should be skipped. The {@code defaults}
  * key is a boolean flag that indicates if the default XSL files should be applied.</p>
  *
- * @since 1.0
+ * @since 0.1.0
  */
 public final class CheckPack {
 
