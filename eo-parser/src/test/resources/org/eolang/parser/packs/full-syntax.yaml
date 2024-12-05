@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - /program[not(errors)]
   - /program/license[text()!='']
   - /program/metas[count(meta)=4]
@@ -35,7 +35,7 @@ tests:
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
-eo: |
+input: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
   # be parsed by the ANTLR

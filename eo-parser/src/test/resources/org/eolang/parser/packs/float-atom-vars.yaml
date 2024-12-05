@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
-tests:
+asserts:
   - /program/objects[not(o[@atom and @base])]
   - /program/objects[not(o[@atom and o[@base]])]
   - //o[@atom and o[@base='∅']]
-eo: |
+input: |
   # No comments.
   [] > main
     [x] > foo /number

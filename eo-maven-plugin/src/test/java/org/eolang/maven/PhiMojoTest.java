@@ -32,10 +32,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -43,7 +45,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link PhiMojo}.
@@ -227,25 +228,18 @@ final class PhiMojoTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/yaml", glob = "**.yaml")
     void checksPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
-        final Map<String, Object> map = new Yaml().load(pack);
-        if (map.get("skip") != null) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
-            String.format(
-                "Result phi expression should be equal to %s, but it doesn't",
-                map.get("phi").toString()
-            ),
+            "must convert to exactly the expression we need",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(map.get("eo").toString())
+                    .withProgram(xtory.map().get("input").toString())
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(map.get("phi").toString())
+            Matchers.equalTo(xtory.map().get("phi").toString())
         );
     }
 }

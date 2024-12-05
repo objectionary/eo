@@ -36,7 +36,9 @@ import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -74,9 +76,9 @@ final class TranspileMojoTest {
     @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
     void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new XaxStory(yaml),
-            Matchers.is(true)
+            "passes with no exceptions",
+            new XtSticky(new XtYaml(yaml)),
+            new XtoryMatcher()
         );
     }
 

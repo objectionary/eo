@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/vars-float-up.xsl
-tests:
+asserts:
   - //o[@base='.a' and @name='one' and count(o)=1]
   - //o[@base='.b' and @name='two' and count(o)=1]
   - //o[@base='.c' and @name='three' and count(o)=1]
   - //o[@base='.d' and @name='four' and count(o)=1]
   - //o[@base='e' and @name='five' and count(o)=0]
-eo: |
+input: |
   a. > one
     b. > two
       c. > three

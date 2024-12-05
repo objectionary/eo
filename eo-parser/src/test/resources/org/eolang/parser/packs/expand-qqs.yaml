@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/expand-qqs.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //objects[count(.//o[starts-with(@base, 'QQ')])=0]
   - //objects[count(.//o[starts-with(@base, 'Q')])=1]
@@ -30,7 +30,7 @@ tests:
   - //objects[count(.//o[contains(@base, '.eolang')])=1]
   - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
   - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
-eo: |
+input: |
   +alias QQ.txt.sprintfQQ
 
   # No comments.

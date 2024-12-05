@@ -23,7 +23,7 @@
 locators:
   - .foo .boom .λ τ=foo.boom
   - .foo .hello$alpha .λ τ=foo.hello$alpha
-eo: |
+input: |
   +package foo
 
   # This is the default 64+ symbols comment in front of named abstract object.

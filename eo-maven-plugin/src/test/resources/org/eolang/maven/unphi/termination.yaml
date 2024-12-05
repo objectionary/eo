@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - //o[@base='org.eolang.error' and @name='x' and not(o)]
 phi: |
   {

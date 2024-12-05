@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
-tests:
+asserts:
   - //o[@base='.foo' and count(o)=2]
   - //o[@base='.bar' and count(o)=2]
-eo: |
+input: |
   # No comments.
   [] > aliases
     eq. > @

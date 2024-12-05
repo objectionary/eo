@@ -46,12 +46,12 @@ Here is an example of what the YAML file might look like:
 Considering the following `yaml` file:
 
 ```yaml
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@base='org.eolang.and' and @line='8']
@@ -59,7 +59,7 @@ tests:
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
-eo: |
+input: |
   +alias foo
   +alias scanner org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin

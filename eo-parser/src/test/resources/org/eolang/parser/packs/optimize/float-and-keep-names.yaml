@@ -20,16 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/remove-refs.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - //o[@base='first$second' and @line='6']
-eo: |
+input: |
   # No comments
   [a] > first
     # No comments

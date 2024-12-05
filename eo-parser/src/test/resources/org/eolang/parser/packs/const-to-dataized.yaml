@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
@@ -36,13 +36,13 @@ xsls:
   - /org/eolang/parser/const-to-dataized.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.number' and not(@name)]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@name='m-3' and count(o)=2]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]
   - //objects[count(//o[@const])=0]
-eo: |
+input: |
   # No comments.
   [] > foo
     number > x!

@@ -39,17 +39,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
-import org.eolang.parser.CheckPack;
+import org.eolang.parser.EoSyntax;
+import org.eolang.parser.TrParsing;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -87,17 +91,20 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void checksPacks(final String pack) throws IOException {
-        final CheckPack check = new CheckPack(pack);
-        if (check.skip()) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
+    void checksPacks(final String yaml) {
         MatcherAssert.assertThat(
-            "All yaml tests in packs/ should pass",
-            check.failures(),
-            Matchers.empty()
+            "passed without exceptions",
+            new XtSticky(
+                new XtYaml(
+                    yaml,
+                    eo -> new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", eo))
+                    ).parsed(),
+                    new TrParsing().empty()
+                )
+            ),
+            new XtoryMatcher()
         );
     }
 

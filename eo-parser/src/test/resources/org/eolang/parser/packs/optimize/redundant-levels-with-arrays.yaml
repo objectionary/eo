@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program[not(errors)]
   # 'main' object
   - //o[@name='main']
@@ -59,7 +59,7 @@ tests:
 #     tuple
 #       2
 # ____
-eo: |
+input: |
   # No comments.
   [] > main
     * 0 (* 1 2) > arr

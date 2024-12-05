@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/remove-refs.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - //objects[not(//o[@atom and @base])]
   - //objects[not(//o[@atom and o[@base!='∅']])]
   - //o[@atom and o[@base='∅']]
-eo: |
+input: |
   # No comments.
   [] > main
     [x] > foo /number

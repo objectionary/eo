@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=3]
   - //o[@base='input' and @name='t' and @line='8' and @const and count(o)=2]
@@ -37,7 +37,7 @@ tests:
   - //o[@name='ooo' and not(@cut)]
   - //o[@name='mm' and @base='number']
   - //o[@base='mm']
-eo: |
+input: |
   # No comments.
   [] > x
     first > ff

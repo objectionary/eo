@@ -28,11 +28,14 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
+import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrict;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.xembly.Xembler;
@@ -70,9 +73,7 @@ final class TrParsingTest {
         );
         MatcherAssert.assertThat(
             "XSL transformation works properly.",
-            new Xsline(
-                new TrParsing()
-            ).pass(xml),
+            new Xsline(new TrParsing()).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)>1]",
                 "/program[not(errors)]"
@@ -82,33 +83,22 @@ final class TrParsingTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
-    void parsesPacks(final String pack) throws Exception {
-        final CheckPack check = new CheckPack(pack);
-        if (check.skip()) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
+    void parsesPacks(final String yaml) {
         MatcherAssert.assertThat(
-            String.format(
-                "The check pack has failed: %n%s",
-                pack
+            "passed without exceptions",
+            new XtSticky(
+                new XtStrict(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax(
+                            "scenario",
+                            new InputOf(String.format("%s\n", eo))
+                        ).parsed(),
+                        new TrParsing().empty()
+                    )
+                )
             ),
-            check.failures(),
-            Matchers.empty()
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
-    void createsXaxStoryWithXslStylesheets(final String yaml) {
-        MatcherAssert.assertThat(
-            String.format(
-                "The %s xax check is failed",
-                yaml
-            ),
-            new XaxStory(yaml),
-            Matchers.is(true)
+            new XtoryMatcher()
         );
     }
 

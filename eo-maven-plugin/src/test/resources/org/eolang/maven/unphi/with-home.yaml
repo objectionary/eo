@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - /program/objects/o[@name='main' and not(@base) and o[@name='x']]
 phi: |-
   Φ ↦ ⟦

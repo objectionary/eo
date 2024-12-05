@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/package.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //class[@name='bar' and @package='foo.long-name']
-eo: |
+input: |
   +package foo.long-name
 
   # This is the default 64+ symbols comment in front of named abstract object.

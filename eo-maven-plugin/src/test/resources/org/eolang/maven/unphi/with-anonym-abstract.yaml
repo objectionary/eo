@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()=1 and not(@base) and not(@name)]
   - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()>1 and @as='0' and @base='.int']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
 phi: |-

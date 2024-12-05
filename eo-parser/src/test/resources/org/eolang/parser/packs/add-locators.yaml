@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
@@ -36,7 +36,7 @@ xsls:
   - /org/eolang/parser/const-to-dataized.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a']
   - //o[@base='x' and @loc='Φ.org.abc.a.φ.α0']
@@ -53,7 +53,7 @@ tests:
   - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ']
   - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ']
   - //o[@base='$' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ.ρ']
-eo: |
+input: |
   +alias org.abc.foo.b
   +alias x
   +package org.abc

@@ -23,7 +23,7 @@
 skip: true
 locators:
   - .foo .bar .a .b .ε .c .ε .β .ρ .ξ .ρ
-eo: |
+input: |
   +package foo.bar
 
   # This is the default 64+ symbols comment in front of named abstract object.

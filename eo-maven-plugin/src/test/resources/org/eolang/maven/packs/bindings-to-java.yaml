@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java/text()[contains(., 'new PhWith(ret, 0')]
   - //java/text()[contains(., 'new PhWith(ret, "text"')]
-eo: |
+input: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     stdout x:0 > print1

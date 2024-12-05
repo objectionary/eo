@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo' and @line='4']
@@ -34,7 +34,7 @@ tests:
   - //o[@base='and' and @line='8']
   - //o[@base='$']
   - //o[@base='^']
-eo: |
+input: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout

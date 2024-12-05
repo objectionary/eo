@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/stars-to-tuples.xsl
   - /org/eolang/parser/stars-to-tuples.xsl
   - /org/eolang/parser/stars-to-tuples.xsl
-tests:
+asserts:
   - //objects[count(//objects/o[@base='tuple'])=5]
   - //o[@base='tuple' and @line=1 and not(@name)]
   - //o[@base='tuple' and @line=1 and not(@name)]/following-sibling::o[@base='.empty' and @name='xs']
@@ -44,7 +44,7 @@ tests:
   - //o[@base='arr']/o[@base='tuple' and @line=9 and @pos=5]
   - //o[@base='arr']/o[@base='.empty' and @line=9 and @pos=6]
   - //o[@name='y' and @base='.reduced']/o[@base='tuple' and not(@star)]/following-sibling::o[@base='.empty' and @method]
-eo: |
+input: |
   * > xs
   * 1 > xl
   * 1 2

@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=2]
   - //objects/o[@name='pi']/o[@name='@' and @base='number' and text()='40-09-21-FB-4D-12-D8-4A']
   - //objects/o[@name='b']
   - //objects[count(o[@base])=0]
-eo: |
+input: |
   3.1415926 > pi
 
   a > b

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
   - /org/eolang/parser/optimize/remove-refs.xsl
@@ -32,10 +32,10 @@ xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/optimize/constant-folding.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='01-']]
   - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='00-']]
-eo: |
+input: |
   01-.as-bool
   00-.as-bool

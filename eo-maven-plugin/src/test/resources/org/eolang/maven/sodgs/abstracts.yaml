@@ -26,7 +26,7 @@ locators:
   - .foo .bar .b .y .α0 .α0 .Δ δ=40-70-00-00-00-00-00-00
   - .foo .bar .a .x .α0 .π >int ν=$Φ.org.eolang.number
   - .foo .bar .a .x .π >bar .ρ ν=ν0
-eo: |
+input: |
   +package foo.bar
 
   # This is the default 64+ symbols comment in front of named abstract object.

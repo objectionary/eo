@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java[contains(text(), '  @Test')]
   - //java[contains(text(), '  public void works() throws java.lang.Exception {')]
@@ -35,7 +35,7 @@ tests:
   - //java[contains(text(), 'new EOcompares_two_bools()')]
   - //java[contains(text(), '    Assertions.assertTrue(')]
   - //java[contains(text(), '  }')]
-eo: |
+input: |
   +tests
   +version 0.0.0
 

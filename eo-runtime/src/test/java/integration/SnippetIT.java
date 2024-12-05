@@ -33,16 +33,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Integration test for simple snippets.
@@ -62,11 +63,11 @@ final class SnippetIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
+    @SuppressWarnings("unchecked")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
-        final Yaml yaml = new Yaml();
-        final Map<String, Object> map = yaml.load(yml);
-        final String file = map.get("file").toString();
-        Assumptions.assumeFalse(map.containsKey("skip"));
+        final Xtory xtory = new XtSticky(new XtYaml(yml));
+        final String file = xtory.map().get("file").toString();
+        Assumptions.assumeFalse(xtory.map().containsKey("skip"));
         new Farea(temp).together(
             f -> {
                 f.properties()
@@ -77,7 +78,12 @@ final class SnippetIT {
                 );
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
-                    .write(String.format("%s\n", map.get("eo")).getBytes(StandardCharsets.UTF_8));
+                    .write(
+                        String.format(
+                            "%s\n",
+                            xtory.map().get("eo")
+                        ).getBytes(StandardCharsets.UTF_8)
+                    );
                 f.dependencies().append(
                     "org.eolang",
                     "eo-runtime",
@@ -109,7 +115,7 @@ final class SnippetIT {
                     .goals("java")
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
-                    .set("arguments", map.get("args"));
+                    .set("arguments", xtory.map().get("args"));
                 f.exec("clean", "test");
                 final String log = f.log().content();
                 Logger.debug(this, log);
@@ -121,7 +127,7 @@ final class SnippetIT {
                             ptn -> Matchers.matchesPattern(
                                 Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
                             ),
-                            (Iterable<String>) map.get("out")
+                            (Iterable<String>) xtory.map().get("out")
                         )
                     )
                 );

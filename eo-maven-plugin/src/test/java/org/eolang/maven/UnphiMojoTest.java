@@ -45,6 +45,9 @@ import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -53,7 +56,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link UnphiMojo}.
@@ -191,9 +193,11 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
+    @SuppressWarnings("unchecked")
     void checksUnphiPacks(final String pack, @Mktmp final Path temp) throws Exception {
-        final Map<String, Object> map = new Yaml().load(pack);
-        final String phi = map.get("phi").toString();
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        final String phi = xtory.map().get("phi").toString();
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
@@ -205,7 +209,7 @@ final class UnphiMojoTest {
             ).asString()
         );
         Logger.debug(this, "Parsed phi:\n%s", doc);
-        for (final String xpath : (Iterable<String>) map.get("tests")) {
+        for (final String xpath : (Iterable<String>) xtory.map().get("asserts")) {
             final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
                 failures.add(xpath);
@@ -224,11 +228,9 @@ final class UnphiMojoTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
-        final Map<String, Object> map = new Yaml().load(pack);
-        if (map.get("skip") != null) {
-            Assumptions.abort(String.format("%s is not ready", pack));
-        }
-        final String phi = map.get("phi").toString();
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        final String phi = xtory.map().get("phi").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);

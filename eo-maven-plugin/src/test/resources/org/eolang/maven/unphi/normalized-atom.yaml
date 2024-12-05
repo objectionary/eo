@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']
   - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='text' and @base='.bytes']
   - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='size' and @base='.int']

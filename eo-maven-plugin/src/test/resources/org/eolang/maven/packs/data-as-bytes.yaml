@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
   - /org/eolang/maven/pre/classes.xsl
@@ -28,14 +28,14 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java[contains(text(), '.take("org").take("eolang").take("true")')]
   - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x00}));')]
   - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'ret = new PhWith(ret, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
-eo: |
+input: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > t
     true > @

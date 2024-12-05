@@ -43,7 +43,10 @@ import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -55,7 +58,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test case for {@link SodgMojo}.
@@ -122,26 +124,23 @@ final class SodgMojoTest {
     @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
     void transformsThroughSheets(final String yaml) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new XaxStory(yaml),
-            Matchers.is(true)
+            "passes with no exceptions",
+            new XtSticky(new XtYaml(yaml)),
+            new XtoryMatcher()
         );
     }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/sodgs/", glob = "**.yaml")
     @SuppressWarnings({
+        "unchecked",
         "PMD.JUnitTestContainsTooManyAsserts",
         "PMD.ProhibitPlainJunitAssertionsRule"
     })
     void generatesSodgForPacks(final String pack) throws Exception {
-        final Map<String, Object> map = new Yaml().load(pack);
-        if (map.get("skip") != null) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
-        Object inclusion = map.get("inclusion");
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        Object inclusion = xtory.map().get("inclusion");
         if (inclusion == null) {
             inclusion = "**";
         } else {
@@ -150,10 +149,10 @@ final class SodgMojoTest {
             );
         }
         final XML graph = SodgMojoTest.toGraph(
-            map.get("eo").toString(), inclusion.toString()
+            xtory.map().get("input").toString(), inclusion.toString()
         );
         final Collection<Executable> assertions = new LinkedList<>();
-        for (final String loc : (Iterable<String>) map.get("locators")) {
+        for (final String loc : (Iterable<String>) xtory.map().get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
                     BinarizeParseTest.TO_ADD_MESSAGE,

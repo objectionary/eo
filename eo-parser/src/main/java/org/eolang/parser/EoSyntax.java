@@ -32,6 +32,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
@@ -70,6 +71,16 @@ public final class EoSyntax implements Syntax {
      */
     public EoSyntax(final Input ipt) {
         this("unknown", ipt);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param nme The name of the EO program being parsed
+     * @param ipt The EO program to parse
+     */
+    public EoSyntax(final String nme, final String ipt) {
+        this(nme, new InputOf(ipt));
     }
 
     /**

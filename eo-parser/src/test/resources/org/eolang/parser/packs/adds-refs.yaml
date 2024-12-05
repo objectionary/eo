@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=3]
   - //objects[not(//o[@ref and @base='@'])]
@@ -33,7 +33,7 @@ tests:
   - //o[@base='something' and @line='13' and @name='a' and not(@ref)]
   - //o[@base='x' and @line='18' and @ref='16']
   - //o[@base='first' and @line='19' and @ref='2']
-eo: |
+input: |
   # No comments.
   [x a] > first
     stdout x

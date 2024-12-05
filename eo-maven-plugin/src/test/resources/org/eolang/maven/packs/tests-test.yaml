@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
   - /org/eolang/parser/optimize/remove-refs.xsl
@@ -34,10 +34,10 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java[contains(text(), '@Test')]
-eo: |
+input: |
   +tests
 
   # This is the default 64+ symbols comment in front of named abstract object.

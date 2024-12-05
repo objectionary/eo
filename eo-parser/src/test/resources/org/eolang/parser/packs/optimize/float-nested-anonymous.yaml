@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
-tests:
+asserts:
   - //o[@base='foo']/o[@base='t0$a0']
   - //o[@name='t0$a0']/o[@base='x' and @name='@']
-eo: |
+input: |
   foo > a
     [x]
       x > @
