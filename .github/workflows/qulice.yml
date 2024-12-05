@@ -25,11 +25,9 @@ on:
   push:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
   qulice:
     name: qulice

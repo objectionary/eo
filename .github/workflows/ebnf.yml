@@ -25,11 +25,9 @@ on:
   push:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
   ebnf:
     runs-on: ubuntu-24.04

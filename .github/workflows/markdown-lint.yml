@@ -28,7 +28,6 @@ name: markdown-lint
   pull_request:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
   markdown-lint:
     runs-on: ubuntu-24.04
