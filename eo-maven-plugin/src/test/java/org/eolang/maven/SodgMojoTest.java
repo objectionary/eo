@@ -150,7 +150,7 @@ final class SodgMojoTest {
             );
         }
         final XML graph = SodgMojoTest.toGraph(
-            map.get("eo").toString(), inclusion.toString()
+            map.get("input").toString(), inclusion.toString()
         );
         final Collection<Executable> assertions = new LinkedList<>();
         for (final String loc : (Iterable<String>) map.get("locators")) {

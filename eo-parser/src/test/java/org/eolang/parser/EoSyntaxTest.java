@@ -24,16 +24,16 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.Story;
+import org.eolang.xax.YamlStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test case for {@link EoSyntax}.
@@ -247,25 +246,24 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
-    void checksTypoPacks(final String yml) throws IOException {
-        final Yaml yaml = new Yaml();
-        final Map<String, Object> map = yaml.load(yml);
-        Assumptions.assumeTrue(map.get("skip") == null);
-        final XML xml = new StrictXML(
-            new EoSyntax(
+    void checksTypoPacks(final String yaml) {
+        final Story story = new YamlStory(
+            yaml,
+            eo -> new EoSyntax(
                 "typo",
-                new InputOf(String.format("%s\n", map.get("eo")))
+                new InputOf(String.format("%s\n", eo))
             ).parsed()
         );
+        Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
-            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.xhtml(story.after().toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );
         MatcherAssert.assertThat(
-            xml.toString(),
-            Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
-            Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
+            XhtmlMatchers.xhtml(story.after()).toString(),
+            Integer.parseInt(story.after().xpath("/program/errors/error[1]/@line").get(0)),
+            Matchers.equalTo(Integer.parseInt(story.map().get("line").toString()))
         );
     }
 

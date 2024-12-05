@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -95,19 +94,12 @@ final class OptimizeMojoTest {
             "passed without exceptions",
             pack,
             new StoryMatcher(
-                eo -> {
-                    try {
-                        return new StrictXML(
-                            new EoSyntax(
-                                "scenario",
-                                new InputOf(String.format("%s\n", eo))
-                            ).parsed()
-                        );
-                    } catch (final Exception ex) {
-                        throw new IllegalArgumentException(ex);
-                    }
-                },
-                new TrParsing().empty()
+                eo -> new EoSyntax(
+                    "scenario",
+                    new InputOf(String.format("%s\n", eo))
+                ).parsed(),
+                new TrParsing().empty(),
+                true
             )
         );
     }

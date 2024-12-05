@@ -32,6 +32,7 @@ import com.yegor256.xsline.Xsline;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.StoryMatcher;
+import org.eolang.xax.YamlStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -86,22 +87,16 @@ final class TrParsingTest {
     void parsesPacks(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
-            yaml,
-            new StoryMatcher(
-                eo -> {
-                    try {
-                        return new StrictXML(
-                            new EoSyntax(
-                                "scenario",
-                                new InputOf(String.format("%s\n", eo))
-                            ).parsed()
-                        );
-                    } catch (final Exception ex) {
-                        throw new IllegalArgumentException(ex);
-                    }
-                },
-                new TrParsing().empty()
-            )
+            new YamlStory(
+                yaml,
+                eo -> new StrictXML(
+                    new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", eo))
+                    ).parsed()
+                )
+            ),
+            new StoryMatcher()
         );
     }
 
@@ -110,7 +105,7 @@ final class TrParsingTest {
     void createsXaxStoryWithXslStylesheets(final String yaml) {
         MatcherAssert.assertThat(
             "passes with no exceptions",
-            yaml,
+            new YamlStory(yaml),
             new StoryMatcher()
         );
     }
