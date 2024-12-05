@@ -127,8 +127,8 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Normalize input to UNIX format.
-     * Ensure EOL at EOF.
+     * Normalize input to UNIX format to ensure that EOL exists at the
+     * end of the text.
      *
      * @return UNIX formatted text.
      */
