@@ -81,8 +81,8 @@ final class SnippetIT {
                     .write(
                         String.format(
                             "%s\n",
-                            xtory.map().get("eo")).getBytes(StandardCharsets.UTF_8
-                        )
+                            xtory.map().get("eo")
+                        ).getBytes(StandardCharsets.UTF_8)
                     );
                 f.dependencies().append(
                     "org.eolang",
