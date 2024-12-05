@@ -98,23 +98,23 @@ public final class CheckPack {
     public Collection<String> failures() throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(this.script);
-        final String src = map.get("eo").toString();
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
-        Train<Shift> train = new TrParsing();
-        if (xsls != null) {
-            train = train.empty();
-            for (final String xsl : xsls) {
-                if (xsl.startsWith("file://")) {
-                    train = train.with(
-                        new StXSL(
-                            new XSLDocument(Paths.get(xsl.substring(7)))
-                        )
-                    );
-                } else {
-                    train = train.with(new StClasspath(xsl));
-                }
+        if (xsls == null) {
+            throw new IllegalArgumentException("XSLs are not defined");
+        }
+        Train<Shift> train = new TrParsing().empty();
+        for (final String xsl : xsls) {
+            if (xsl.startsWith("file://")) {
+                train = train.with(
+                    new StXSL(
+                        new XSLDocument(Paths.get(xsl.substring(7)))
+                    )
+                );
+            } else {
+                train = train.with(new StClasspath(xsl));
             }
         }
+        final String src = map.get("eo").toString();
         final XML out = new StrictXML(
             new Xsline(train).pass(
                 new StrictXML(

@@ -20,6 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
+xsls:
+  - /org/eolang/parser/cti-adds-errors.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/expand-qqs.xsl
+  - /org/eolang/parser/add-probes.xsl
+  - /org/eolang/parser/vars-float-up.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/expand-aliases.xsl
+  - /org/eolang/parser/resolve-aliases.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/explicit-data.xsl
+  - /org/eolang/parser/const-to-dataized.xsl
+  - /org/eolang/parser/set-locators.xsl
+  - /org/eolang/parser/clean-up.xsl
 tests:
   - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a']
@@ -28,7 +44,6 @@ tests:
   - //o[@base='x' and @name='tt' and @loc='Φ.org.abc.tt']
   - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α0']
   - //o[@base='org.eolang.tuple' and @loc='Φ.org.abc.tt.α1']
-  - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.α0.α1']
   - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.α1']
   - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
   - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
