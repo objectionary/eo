@@ -39,28 +39,14 @@ phi: |-
   {
     ⟦
       iterates-over-simple-counter ↦ ⟦
-        x ↦ Φ.org.eolang.memory(
-          α0 ↦ 0
-        ),
-        φ ↦ ξ.x.write(
-          α0 ↦ 5
-        ).eq(
-          α0 ↦ 5
-        ).and(
-          α0 ↦ ξ.x.as-int.lt(
-            α0 ↦ 10
-          ).while(
-            α0 ↦ ⟦
+        x ↦ Φ.org.eolang.memory(0),
+        φ ↦ ξ.x.write(5).eq(5).and(
+          ξ.x.as-int.lt(10).while(
+            ⟦
               i ↦ ∅,
-              φ ↦ ξ.ρ.x.write(
-                α0 ↦ ξ.ρ.x.as-int.plus(
-                  α0 ↦ 1
-                )
-              )
+              φ ↦ ξ.ρ.x.write(ξ.ρ.x.as-int.plus(1))
             ⟧
-          ).eq(
-            α0 ↦ 11
-          )
+          ).eq(11)
         )
       ⟧
     ⟧
