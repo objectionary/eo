@@ -47,7 +47,7 @@ import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrParsing;
-import org.eolang.xax.StoryMatcher;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -93,7 +93,7 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             "passed without exceptions",
             pack,
-            new StoryMatcher(
+            new XtoryMatcher(
                 eo -> new EoSyntax(
                     "scenario",
                     new InputOf(String.format("%s\n", eo))

@@ -24,15 +24,16 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.StoryMatcher;
-import org.eolang.xax.YamlStory;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrict;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -72,9 +73,7 @@ final class TrParsingTest {
         );
         MatcherAssert.assertThat(
             "XSL transformation works properly.",
-            new Xsline(
-                new TrParsing()
-            ).pass(xml),
+            new Xsline(new TrParsing()).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)>1]",
                 "/program[not(errors)]"
@@ -87,26 +86,19 @@ final class TrParsingTest {
     void parsesPacks(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
-            new YamlStory(
-                yaml,
-                eo -> new StrictXML(
-                    new EoSyntax(
-                        "scenario",
-                        new InputOf(String.format("%s\n", eo))
-                    ).parsed()
+            new XtSticky(
+                new XtStrict(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax(
+                            "scenario",
+                            new InputOf(String.format("%s\n", eo))
+                        ).parsed(),
+                        new TrParsing().empty()
+                    )
                 )
             ),
-            new StoryMatcher()
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
-    void createsXaxStoryWithXslStylesheets(final String yaml) {
-        MatcherAssert.assertThat(
-            "passes with no exceptions",
-            new YamlStory(yaml),
-            new StoryMatcher()
+            new XtoryMatcher()
         );
     }
 

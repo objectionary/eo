@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.StoryMatcher;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -76,7 +76,7 @@ final class TranspileMojoTest {
         MatcherAssert.assertThat(
             "passes with no exceptions",
             yaml,
-            new StoryMatcher()
+            new XtoryMatcher()
         );
     }
 

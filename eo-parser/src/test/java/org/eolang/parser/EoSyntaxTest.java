@@ -32,8 +32,9 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.Story;
-import org.eolang.xax.YamlStory;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.Xtory;
+import org.eolang.xax.XtYaml;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -247,12 +248,14 @@ final class EoSyntaxTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
     void checksTypoPacks(final String yaml) {
-        final Story story = new YamlStory(
-            yaml,
-            eo -> new EoSyntax(
-                "typo",
-                new InputOf(String.format("%s\n", eo))
-            ).parsed()
+        final Xtory story = new XtSticky(
+            new XtYaml(
+                yaml,
+                eo -> new EoSyntax(
+                    "typo",
+                    new InputOf(String.format("%s\n", eo))
+                ).parsed()
+            )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(

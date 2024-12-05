@@ -43,7 +43,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.StoryMatcher;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -124,7 +124,7 @@ final class SodgMojoTest {
         MatcherAssert.assertThat(
             "passes with no exceptions",
             yaml,
-            new StoryMatcher()
+            new XtoryMatcher()
         );
     }
 
