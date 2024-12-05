@@ -24,7 +24,7 @@ out:
   - ".*first.*"
 file: org/eolang/snippets/vmb.eo
 args: [ "org.eolang.snippets.vbm" ]
-input: |
+eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 

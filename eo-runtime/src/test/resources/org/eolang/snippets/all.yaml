@@ -24,7 +24,7 @@ out:
   - ".*works!.*"
 file: org/eolang/snippets/all.eo
 args: [ "org.eolang.snippets.all" ]
-input: |
+eo: |
   +package org.eolang.snippets
 
   # This is the default 64+ symbols comment in front of named abstract object.

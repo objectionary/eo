@@ -24,7 +24,7 @@ out:
   - ".*greater.*"
 file: org/eolang/snippets/ifthenelse.eo
 args: [ "org.eolang.snippets.ifthenelse" ]
-input: |
+eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 

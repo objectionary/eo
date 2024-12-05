@@ -82,7 +82,7 @@ public final class StXPath implements Shift {
             dirs.append(this.fun.apply(nodes.get(0)));
         }
         return new XMLDocument(
-            new Xembler(dirs).applyQuietly(xml.node())
+            new Xembler(dirs).applyQuietly(xml.inner())
         );
     }
 

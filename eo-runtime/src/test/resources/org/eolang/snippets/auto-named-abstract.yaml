@@ -24,7 +24,7 @@ out:
   - ".*Hello, world!.*"
 file: org/eolang/snippets/auto-named-abstract.eo
 args: [ "org.eolang.snippets.auto-named" ]
-input: |
+eo: |
   +package org.eolang.snippets
 
   # This is the default 64+ symbols comment in front of named abstract object.

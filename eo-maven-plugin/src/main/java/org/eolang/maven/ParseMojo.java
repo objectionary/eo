@@ -165,7 +165,7 @@ public final class ParseMojo extends SafeMojo {
                     new Directives().xpath("/program").attr(
                         "source", source.toAbsolutePath()
                     )
-                ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().node())
+                ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().inner())
             ).toString();
             Logger.debug(
                 ParseMojo.class,

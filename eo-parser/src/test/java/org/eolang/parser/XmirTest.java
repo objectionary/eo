@@ -26,13 +26,14 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import java.io.IOException;
-import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test case for {@link Xmir}.
@@ -44,22 +45,22 @@ final class XmirTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsStraight(final String pack) throws IOException {
-        final Map<String, Object> map = new Yaml().load(pack);
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
         MatcherAssert.assertThat(
             "Result EO should be equal to original EO",
-            this.asXmir((String) map.get("origin")).toEO(),
-            Matchers.equalTo(map.get("straight"))
+            this.asXmir((String) xtory.map().get("origin")).toEO(),
+            Matchers.equalTo(xtory.map().get("straight"))
         );
     }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsReversed(final String pack) throws IOException {
-        final Map<String, Object> map = new Yaml().load(pack);
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
         MatcherAssert.assertThat(
             "Result EO should be equal to original EO in reverse notation",
-            this.asXmir((String) map.get("origin")).toReversed(),
-            Matchers.equalTo(map.get("reversed"))
+            this.asXmir((String) xtory.map().get("origin")).toReversed(),
+            Matchers.equalTo(xtory.map().get("reversed"))
         );
     }
 

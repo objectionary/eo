@@ -250,7 +250,7 @@ public final class LintMojo extends SafeMojo {
                 dirs.up();
             }
         }
-        final Node node = xmir.node();
+        final Node node = xmir.inner();
         new Xembler(dirs).applyQuietly(node);
         return new XMLDocument(node);
     }
