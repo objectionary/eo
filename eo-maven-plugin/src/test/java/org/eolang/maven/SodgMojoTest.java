@@ -43,7 +43,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.StoryMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -122,9 +122,9 @@ final class SodgMojoTest {
     @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
     void transformsThroughSheets(final String yaml) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new XaxStory(yaml),
-            Matchers.is(true)
+            "passes with no exceptions",
+            yaml,
+            new StoryMatcher()
         );
     }
 

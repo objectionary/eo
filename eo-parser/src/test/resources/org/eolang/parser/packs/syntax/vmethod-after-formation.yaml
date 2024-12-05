@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - /program[not(errors)]
   - //o[@name='x' and not(@base)]/following::o[@base='.first' and @method]
   - //o[not(@name) and not(@base)]/following::o[@base='.second' and @method]
-eo: |
+input: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > x
     y > @

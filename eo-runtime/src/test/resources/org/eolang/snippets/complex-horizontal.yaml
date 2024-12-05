@@ -24,7 +24,7 @@ out:
   - ".*Hello, Jeff.*"
 file: org/eolang/snippets/complex-horizontal.eo
 args: [ "org.eolang.snippets.complex-horizontal" ]
-eo: |
+input: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 

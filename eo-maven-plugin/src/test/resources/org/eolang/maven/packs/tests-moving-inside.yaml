@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/parser/remove-noise.xsl
@@ -29,14 +29,14 @@ xsls:
   - /org/eolang/maven/pre/remove-high-level-inner-classes.xsl
   - /org/eolang/maven/pre/rename-tests-inners.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(class)=1]
   - /program/objects/class[count(class)=4]
   - /program[count(objects/class/class//class)=0]
   - //class[starts-with(@name, 'ω3t0$a0-hash-') and starts-with(@parent, 'ω2c-hash-')]
   - //o[starts-with(@base, 'ω2c-hash-') and @name='c']
-eo: |
+input: |
   +tests
 
   # This is the default 64+ symbols comment in front of named abstract object.

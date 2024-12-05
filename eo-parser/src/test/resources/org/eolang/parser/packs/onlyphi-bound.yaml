@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - //o[@base='p']/o[@name='first' and o[@name='@' and @base='.b'] and o[@base='∅' and @name='i']]
   - //o[@base='p']/o[not(@name) and o[@name='@' and @base='a' and o[@base='b']]]
   - //o[@base='p']/o[@name='second' and o[not(@base) and @name='@' and o[@base='a' and @name='b']] and o[@name='c']]
   - //o[@base='p']/o[not(@name) and o[@base='d' and @name='@']]
   - //o[not(@base) and o[@base='z' and @name='@']]/following-sibling::o[@base='.x' and @method]
   - //o[@base='m']/o[not(@name) and o[@name='q' and @base='∅'] and o[@base='q' and @name='@']]
-eo: |
+input: |
   p > x
     a.b > [i] > first
     a b > []

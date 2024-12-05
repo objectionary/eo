@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program/objects[count(o)=2]
-eo: |
+input: |
   # No comments.
   [x] > foo
     bar > @

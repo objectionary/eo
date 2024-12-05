@@ -24,15 +24,16 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
+import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.StoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.xembly.Xembler;
@@ -82,20 +83,25 @@ final class TrParsingTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
-    void parsesPacks(final String pack) throws Exception {
-        final CheckPack check = new CheckPack(pack);
-        if (check.skip()) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
+    void parsesPacks(final String yaml) {
         MatcherAssert.assertThat(
-            String.format(
-                "The check pack has failed: %n%s",
-                pack
-            ),
-            check.failures(),
-            Matchers.empty()
+            "passed without exceptions",
+            yaml,
+            new StoryMatcher(
+                eo -> {
+                    try {
+                        return new StrictXML(
+                            new EoSyntax(
+                                "scenario",
+                                new InputOf(String.format("%s\n", eo))
+                            ).parsed()
+                        );
+                    } catch (final Exception ex) {
+                        throw new IllegalArgumentException(ex);
+                    }
+                },
+                new TrParsing().empty()
+            )
         );
     }
 
@@ -103,12 +109,9 @@ final class TrParsingTest {
     @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
     void createsXaxStoryWithXslStylesheets(final String yaml) {
         MatcherAssert.assertThat(
-            String.format(
-                "The %s xax check is failed",
-                yaml
-            ),
-            new XaxStory(yaml),
-            Matchers.is(true)
+            "passes with no exceptions",
+            yaml,
+            new StoryMatcher()
         );
     }
 

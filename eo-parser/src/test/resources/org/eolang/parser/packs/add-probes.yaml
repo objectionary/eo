@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
@@ -36,7 +36,7 @@ xsls:
   - /org/eolang/parser/const-to-dataized.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/sheets/sheet[contains(text(),'add-probes')]
   - //metas[count(.//meta[head/text()='probe'])=6]
@@ -46,7 +46,7 @@ tests:
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car' and part/text()='Q.org.eolang.car']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine' and part/text()='Q.org.eolang.car.engine']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
-eo: |
+input: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom
   +version 0.0.0

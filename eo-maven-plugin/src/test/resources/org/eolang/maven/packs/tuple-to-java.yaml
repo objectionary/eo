@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/stars-to-tuples.xsl
   - /org/eolang/parser/stars-to-tuples.xsl
   - /org/eolang/parser/stars-to-tuples.xsl
@@ -31,7 +31,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'Phi ret = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '  Phi ret_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
@@ -42,7 +42,7 @@ tests:
   - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '      Phi ret_2_1_1 = new PhMethod(ret_2_1_1_base, "empty");')]
-eo: |
+input: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo
     * 1 2 (* 3 4) > @

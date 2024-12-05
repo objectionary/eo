@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - /program/objects/o[@name='main' and @atom='Lambda']
   - /program/objects/o[@name='outer']
   - /program/objects/o[@name='outer']/o[@name='inner' and @atom='Lambda']

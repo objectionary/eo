@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/expand-qqs.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //o[@base='org.eolang.number' and @name='first' and o[@base='org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']]
   - //o[@base='org.eolang.number' and @name='bts' and o[@base='org.eolang.bytes' and text()='11-21']]
@@ -34,7 +34,7 @@ tests:
   - //o[@base='.string' and @name='str' and count(o)=2 and o[last() and @base='org.eolang.bytes' and text()='48-65-79']]
   - //o[@base='org.eolang.bytes' and @name='bt' and count(o)=0 and text()='A2-']
   - //o[@base='org.eolang.tuple' and o[@base='org.eolang.tuple' and o[@base='org.eolang.number' and o[@base='org.eolang.bytes' and text()='3F-F0-00-00-00-00-00-00']]]]
-eo: |
+input: |
   42 > first
   number 11-21 > bts
   number 22.2 > second

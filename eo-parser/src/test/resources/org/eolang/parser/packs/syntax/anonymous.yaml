@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - //objects[count(o)=5]
   - //o[@base='.plus' and @name='a']
   - //o[@base='number' and @name='@' and starts-with(text(), '40-14')]
-eo: |
+input: |
   # No comments.
   [x] (x.plus 1 > a) (5 > @) > first
 

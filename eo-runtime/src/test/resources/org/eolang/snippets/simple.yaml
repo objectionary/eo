@@ -24,7 +24,7 @@ out:
   - ".*Hello, Jeff!.*"
 file: org/eolang/snippets/simple.eo
 args: [ "org.eolang.snippets.simple" ]
-eo: |
+input: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 

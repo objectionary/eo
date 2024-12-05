@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - //o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name' and o[not(@base) and @name='long-object-name']]]]]
 phi: |-
   {

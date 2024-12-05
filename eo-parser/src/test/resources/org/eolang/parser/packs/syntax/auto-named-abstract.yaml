@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - /program[not(errors)]
   - //o[not(@base) and @name='auto-named-attr-at-2-4' and o[@name='five']]
   - //o[not(@base) and @name='auto-named-attr-at-4-2' and o[@name='ten']]
   - //o[not(@base) and @name='auto-named-attr-at-8-10' and @as='hello' and o[@name='eleven']]
-eo: |
+input: |
   x > first
     [] >>
       5 > five

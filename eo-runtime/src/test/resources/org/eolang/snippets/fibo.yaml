@@ -24,7 +24,7 @@ out:
   - ".*8 is the 6th number.*"
 file: org/eolang/snippets/fibo.eo
 args: [ "org.eolang.snippets.fibo" ]
-eo: |
+input: |
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.sprintf
   +package org.eolang.snippets

@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -39,17 +40,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
-import org.eolang.parser.CheckPack;
+import org.eolang.parser.EoSyntax;
+import org.eolang.parser.TrParsing;
+import org.eolang.xax.StoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -87,17 +90,25 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void checksPacks(final String pack) throws IOException {
-        final CheckPack check = new CheckPack(pack);
-        if (check.skip()) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
-        }
+    void checksPacks(final String pack) {
         MatcherAssert.assertThat(
-            "All yaml tests in packs/ should pass",
-            check.failures(),
-            Matchers.empty()
+            "passed without exceptions",
+            pack,
+            new StoryMatcher(
+                eo -> {
+                    try {
+                        return new StrictXML(
+                            new EoSyntax(
+                                "scenario",
+                                new InputOf(String.format("%s\n", eo))
+                            ).parsed()
+                        );
+                    } catch (final Exception ex) {
+                        throw new IllegalArgumentException(ex);
+                    }
+                },
+                new TrParsing().empty()
+            )
         );
     }
 

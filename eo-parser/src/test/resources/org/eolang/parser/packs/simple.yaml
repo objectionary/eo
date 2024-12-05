@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - /program[not(errors)]
   - /program[@name != '']
   - /program[@version != '']
@@ -31,7 +31,7 @@ tests:
   - //o[@base='a' and @line='3']
   - //o[@base='b-друг' and @line='4']
   - //o[@base='c4-5' and @line='5']
-eo: |
+input: |
   +package test
 
   a

@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/expand-qqs.xsl
   - /org/eolang/parser/add-probes.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/sheets/sheet[contains(text(),'add-probes')]
   - //metas[count(.//meta[head/text()='probe'])=3]
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage' and part/text()='Q.org.eolang.cage']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage|0.28.10' and part/text()='Q.org.eolang.cage']
-eo: |
+input: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom
   +version 0.0.0

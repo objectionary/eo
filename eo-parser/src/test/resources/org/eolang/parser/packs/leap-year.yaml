@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
@@ -36,11 +36,11 @@ xsls:
   - /org/eolang/parser/const-to-dataized.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@base='.and']
-eo: |
+input: |
   # This program is from the EOLANG original paper
   # and must produce a working command line tool
   #

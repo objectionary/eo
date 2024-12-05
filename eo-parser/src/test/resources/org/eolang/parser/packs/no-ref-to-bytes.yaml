@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-refs.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(.//o[@ref])=0]
-eo: |
+input: |
   +package org.eolang
 
   # No comments.

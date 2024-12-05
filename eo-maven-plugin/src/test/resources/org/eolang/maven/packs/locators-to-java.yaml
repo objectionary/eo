@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/set-locators.xsl
@@ -30,7 +30,7 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'new PhLocated(ret, 3, 2, "Φ.foo.φ")')]
   - //java[contains(text(), 'new PhLocated(ret_base, 6, 4, "Φ.foo.other.φ.ρ")')]
@@ -40,7 +40,7 @@ tests:
   - //java[contains(text(), 'new PhLocated(ret, 10, 4, "Φ.bar.φ")')]
   - //java[contains(text(), 'new PhLocated(ret_1, 10, 10, "Φ.bar.φ.α0")')]
   - //java[contains(text(), 'new PhLocated(ret, 11, 2, "Φ.bar.five")')]
-eo: |
+input: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo
     42 > @

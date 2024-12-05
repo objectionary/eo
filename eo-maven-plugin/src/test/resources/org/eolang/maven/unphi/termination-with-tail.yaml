@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
+asserts:
   - /program/objects/o[@base='.m' and @name='x']/o[@base='org.eolang.error']
   - /program/objects/o[@base='org.eolang.error' and @name='y']/o[@as='0' and @base='.x']/o[@base='$']
 phi: |

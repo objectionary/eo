@@ -24,7 +24,7 @@
 # scoped objects works as expected without creating any warnings or errors.
 # Pay attention and to-java.xsl transformations.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
@@ -49,9 +49,9 @@ xsls:
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
   - /org/eolang/parser/blank-xsd-schema.xsl
-tests:
+asserts:
   - /program[not(errors)]
-eo: |
+input: |
   +architect volodya.lombrozo@gmail.com
   +home https://github.com/objectionary/eo
   +tests

@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls: [ ]
-tests:
+sheets: [ ]
+asserts:
   - //o[@base='foo' and count(o)=2]
   - //o[@base='bar' and count(o)=2]
   - //o[@base='foobar' and count(o)=2]
-eo: |
+input: |
   # No comments.
   [] > aliases
     # No comments.

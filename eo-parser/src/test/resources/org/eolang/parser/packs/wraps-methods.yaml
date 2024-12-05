@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/wrap-method-calls.xsl
-tests:
+asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //objects[not(o[@method])]
@@ -33,7 +33,7 @@ tests:
   - //o[@base='.trim']/o[2][@base='number']
   - //o[@base='a' and @name='xxx']
   - //o[@base='.f2' and not(@name)]
-eo: |
+input: |
   # No comments.
   [args] > app
     stdout

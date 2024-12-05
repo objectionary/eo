@@ -32,7 +32,7 @@ import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.rust.Names;
-import org.eolang.xax.XaxStory;
+import org.eolang.xax.StoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -154,9 +154,9 @@ public final class BinarizeParseTest {
     @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
-            "Yaml tests should pass",
-            new XaxStory(yaml),
-            Matchers.is(true)
+            "passes with no exceptions",
+            yaml,
+            new StoryMatcher()
         );
     }
 

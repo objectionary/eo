@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
+sheets:
   - /org/eolang/parser/optimize/remove-refs.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/clean-up.xsl
-tests:
+asserts:
   - /program/objects[count(o)=9]
   - /program[not(errors)]
   - //objects[not(.//o[@name=''])]
@@ -38,7 +38,7 @@ tests:
   - //o[@name='first$t2$second$third']
   - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
-eo: |
+input: |
   # No comments.
   [a b] > first
     test > foo

@@ -25,7 +25,7 @@ locators:
   - .foo .a .b .ε .x
   - .foo .a .b .ε .φ .ε .ρ
   - .foo .a .b .ε .φ .ε .β .test .ε >x .ρ .ρ >a
-eo: |
+input: |
   +package foo
 
   # This is the default 64+ symbols comment in front of named abstract object.
