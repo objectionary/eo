@@ -62,7 +62,6 @@ import org.yaml.snakeyaml.Yaml;
  *     - /xpath/to/element
  *     - /xpath/to/another/element
  *     skip: false
- *     defaults: false
  * </pre>
  *
  * <p>The {@code eo} key contains the EO code to be parsed. The {@code xsls}
@@ -103,9 +102,7 @@ public final class CheckPack {
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
         Train<Shift> train = new TrParsing();
         if (xsls != null) {
-            if (!map.containsKey("defaults")) {
-                train = train.empty();
-            }
+            train = train.empty();
             for (final String xsl : xsls) {
                 if (xsl.startsWith("file://")) {
                     train = train.with(
