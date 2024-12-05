@@ -43,6 +43,34 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * One test scenario of parsing and post-processing.
  *
+ * <p>This class is responsible for running a single test scenario
+ * and checking if the output is correct. The scenario is defined
+ * in YAML format. The class is able to run the scenario and
+ * return the list of XPath expressions that don't pass after the run.</p>
+ *
+ * <p>The YAML format is as follows:</p>
+ *
+ * <pre>
+ *     eo: |
+ *       [] > foo
+ *         QQ.io.stdout > @
+ *           "Hello, world!"
+ *     xsls:
+ *     - file://path/to/xsl1.xsl
+ *     - file://path/to/xsl2.xsl
+ *     tests:
+ *     - /xpath/to/element
+ *     - /xpath/to/another/element
+ *     skip: false
+ *     defaults: false
+ * </pre>
+ *
+ * <p>The {@code eo} key contains the EO code to be parsed. The {@code xsls}
+ * key contains a list of XSL files to be applied to the parsed XML. The {@code tests}
+ * key contains a list of XPath expressions to be checked. The {@code skip} key
+ * is a boolean flag that indicates if the test should be skipped. The {@code defaults}
+ * key is a boolean flag that indicates if the default XSL files should be applied.</p>
+ *
  * @since 1.0
  */
 public final class CheckPack {
@@ -110,6 +138,7 @@ public final class CheckPack {
         if (!failures.isEmpty()) {
             Logger.info(this, "Broken XML:\n%s", out);
             Logger.info(this, "Broken EO:\n%s", src);
+            Logger.info(this, "Failed XPath expressions:\n%[list]s", failures);
         }
         return failures;
     }
