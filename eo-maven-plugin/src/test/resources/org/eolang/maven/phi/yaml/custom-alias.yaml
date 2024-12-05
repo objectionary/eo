@@ -34,9 +34,7 @@ phi: |-
         bar ↦ ⟦
           main ↦ ⟦
             y ↦ ∅,
-            z ↦ Φ.com.yegor256.x(
-              α0 ↦ ξ.y
-            )
+            z ↦ Φ.com.yegor256.x(ξ.y)
           ⟧,
           λ ⤍ Package
         ⟧,

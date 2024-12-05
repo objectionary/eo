@@ -77,6 +77,11 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     private final Stack<String> properties;
 
     /**
+     * Stack of alphas.
+     */
+    private final Stack<Integer> alphas;
+
+    /**
      * Objects.
      */
     private final Deque<Objects> objs;
@@ -106,6 +111,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.objs = new ArrayDeque<>();
         this.attributes = new Stack<>();
         this.properties = new Stack<>();
+        this.alphas = new Stack<>();
         this.packages = new ListOf<>();
         this.start = System.nanoTime();
     }
@@ -172,6 +178,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterScoped(final PhiParser.ScopedContext ctx) {
         if (ctx.HOME() != null) {
             this.objects().prop("base", "Q");
+        } else if (ctx.DEF_PACKAGE() != null) {
+            this.objects().prop("base", "Q").leave()
+                .start().prop("base", ".org").prop("method").leave()
+                .start().prop("base", ".eolang").prop("method");
         } else {
             this.objects().prop("base", "$");
         }
@@ -300,13 +310,37 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+    public void enterApplicationBindings(final PhiParser.ApplicationBindingsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+    public void exitApplicationBindings(final PhiParser.ApplicationBindingsContext ctx) {
         // Nothing here
+    }
+
+    @Override
+    public void enterApplicationObjects(final PhiParser.ApplicationObjectsContext ctx) {
+        this.alphas.push(0);
+    }
+
+    @Override
+    public void exitApplicationObjects(final PhiParser.ApplicationObjectsContext ctx) {
+        this.alphas.pop();
+    }
+
+    @Override
+    public void enterJustObject(final PhiParser.JustObjectContext ctx) {
+        this.enterObjectBinding();
+        final int index = this.alphas.peek();
+        this.alphas.pop();
+        this.alphas.push(index + 1);
+        this.attributes.push(String.valueOf(index));
+    }
+
+    @Override
+    public void exitJustObject(final PhiParser.JustObjectContext ctx) {
+        this.exitObjectBinding();
     }
 
     @Override

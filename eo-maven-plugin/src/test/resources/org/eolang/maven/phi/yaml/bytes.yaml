@@ -28,7 +28,7 @@ input: |
   +version 0.0.0
 
   # This is the default 64+ symbols comment in front of named abstract object.
-  [] > bytes
+  [data] > bytes
     # This is the default 64+ symbols comment in front of named abstract object.
     [x] > eq /bool
 
@@ -88,7 +88,7 @@ phi: |-
       org ↦ ⟦
         eolang ↦ ⟦
           bytes ↦ ⟦
-            Δ ⤍ ∅,
+            data ↦ ∅,
             eq ↦ ⟦
               λ ⤍ Lorg_eolang_bytes_eq,
               x ↦ ∅
@@ -127,20 +127,14 @@ phi: |-
             ⟧,
             left ↦ ⟦
               x ↦ ∅,
-              φ ↦ ξ.ρ.right(
-                α0 ↦ ξ.x.neg
-              )
+              φ ↦ ξ.ρ.right(ξ.x.neg)
             ⟧,
             right ↦ ⟦
               λ ⤍ Lorg_eolang_bytes_right,
               x ↦ ∅
             ⟧,
             as-bool ↦ ⟦
-              φ ↦ ξ.ρ.eq(
-                α0 ↦ Φ.org.eolang.bytes(
-                  α0 ↦ ⟦ Δ ⤍ 01- ⟧
-                )
-              )
+              φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
             ⟧,
             as-bytes ↦ ⟦
               φ ↦ ξ.ρ

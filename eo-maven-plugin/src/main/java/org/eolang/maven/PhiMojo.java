@@ -66,8 +66,9 @@ public final class PhiMojo extends SafeMojo {
      * Train of mandatory transformations.
      */
     private static final Train<Shift> TRANSFORMATIONS = new TrDefault<>(
-        new StUnhex(),
         new StClasspath("/org/eolang/maven/phi/incorrect-inners.xsl"),
+        new StUnhex(),
+        new StClasspath("/org/eolang/maven/phi/wrap-default-package.xsl"),
         new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
     );
 

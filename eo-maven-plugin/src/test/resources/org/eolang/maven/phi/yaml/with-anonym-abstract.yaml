@@ -31,9 +31,7 @@ phi: |-
       test ↦ ⟦
         s ↦ ⟦
           x ↦ ξ.ρ
-        ⟧.plus(
-          α0 ↦ Φ.org.eolang.int
-        )
+        ⟧.plus(Φ̇.int)
       ⟧
     ⟧
   }

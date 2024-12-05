@@ -42,21 +42,8 @@ phi: |-
         example ↦ ⟦
           fibonacci ↦ ⟦
             n ↦ ∅,
-            φ ↦ ξ.n.lt(
-              α0 ↦ 2
-            ).if(
-              α0 ↦ ξ.n,
-              α1 ↦ ξ.ρ.fibonacci(
-                α0 ↦ ξ.n.minus(
-                  α0 ↦ 1
-                )
-              ).plus(
-                α0 ↦ ξ.ρ.fibonacci(
-                  α0 ↦ ξ.n.minus(
-                    α0 ↦ 2
-                  )
-                )
-              )
+            φ ↦ ξ.n.lt(2).if(
+              ξ.n, ξ.ρ.fibonacci(ξ.n.minus(1)).plus(ξ.ρ.fibonacci(ξ.n.minus(2)))
             )
           ⟧,
           λ ⤍ Package

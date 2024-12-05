@@ -44,6 +44,7 @@ formation
 scoped
     : XI
     | HOME
+    | DEF_PACKAGE
     ;
 
 bindings
@@ -86,12 +87,21 @@ FUNCTION
     ;
 
 application
-    : LB applicationBinding RB
+    : LB (applicationBindings | applicationObjects) RB
     ;
 
-applicationBinding
+applicationBindings
     : tauBinding?
     | tauBinding (COMMA tauBinding)*
+    ;
+
+applicationObjects
+    : justObject?
+    | justObject (COMMA justObject)+
+    ;
+
+justObject
+    : object
     ;
 
 dispatch: DOT attribute
@@ -144,6 +154,9 @@ LAMBDA
     : 'λ'
     ;
 HOME: 'Φ'
+    ;
+DEF_PACKAGE
+    : 'Φ̇'
     ;
 ERROR
     : '⊥'

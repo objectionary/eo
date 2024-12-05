@@ -26,11 +26,7 @@ input: |
 phi: |-
   {
     ⟦
-      ten ↦ 5.plus(
-        α0 ↦ 5
-      ),
-      greetings ↦ "Hello".concat(
-        α0 ↦ "world"
-      )
+      ten ↦ 5.plus(5),
+      greetings ↦ "Hello".concat("world")
     ⟧
   }
