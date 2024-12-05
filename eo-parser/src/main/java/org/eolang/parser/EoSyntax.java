@@ -119,7 +119,7 @@ public final class EoSyntax implements Syntax {
             );
         } else {
             Logger.debug(
-                this, "The %s program of %d EO lines failed to compile (%d errors)",
+                this, "The %s program of %d EO lines compiled with %d error(s)",
                 this.name, lines.size(), spy.size()
             );
         }
