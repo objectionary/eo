@@ -183,18 +183,12 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
-      <!-- We need to have the "version" here explicitly, otherwise tests won't work: -->
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
-      <!-- We need to have the "version" here explicitly, otherwise tests won't work: -->
-    </dependency>
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
