@@ -171,6 +171,10 @@ SOFTWARE.
         <scope>test</scope>
       </dependency>
       <dependency>
+        <!--
+        We don't use this dependency anywhere in the code. It must
+        be removed in future releases. Try to remove it as soon as possible.
+        -->
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>2.3</version>
