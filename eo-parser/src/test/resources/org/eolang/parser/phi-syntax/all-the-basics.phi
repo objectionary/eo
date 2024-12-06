@@ -18,6 +18,7 @@
   string ↦ "Hello",
   int ↦ 42,
   float ↦ 12.3,
+  float-with-exponent ↦ 0.36e-10,
   string-dot ↦ "Hello".print,
   string-application ↦ "Hello"(z ↦ ξ.f),
   int-dot ↦ 42.plus,
