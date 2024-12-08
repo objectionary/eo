@@ -35,7 +35,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[eo:abstract(.) and @as='0' and eo:has-data(.)]">
+  <xsl:template match="o[eo:abstract(.) and @as='α0' and eo:has-data(.)]">
     <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">

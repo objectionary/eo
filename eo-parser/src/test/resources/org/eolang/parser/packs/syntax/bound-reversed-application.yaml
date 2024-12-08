@@ -23,8 +23,8 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - //o[@base='.if' and o[@base='string' and @as='0']]
-  - //o[@base='.if' and o[@base='string' and @as='1']]
+  - //o[@base='.if' and o[@base='string' and @as='α0']]
+  - //o[@base='.if' and o[@base='string' and @as='α1']]
   - //o[@base='.if' and o[@base='number' and @as='a']]
   - //o[@base='.if' and o[@base='number' and @as='b']]
 input: |

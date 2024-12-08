@@ -29,6 +29,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
+  <xsl:variable name="alpha" select="'α'"/>
   <xsl:variable name="comment">
     <xsl:text># No comments.</xsl:text>
     <xsl:value-of select="$eol"/>
@@ -125,7 +126,14 @@ SOFTWARE.
   <xsl:template match="o" mode="tail">
     <xsl:if test="@as">
       <xsl:text>:</xsl:text>
-      <xsl:value-of select="@as"/>
+      <xsl:choose>
+        <xsl:when test="starts-with(@as, $alpha)">
+          <xsl:value-of select="substring-after(@as, $alpha)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@as"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
     <xsl:if test="@name">
       <xsl:text> &gt; </xsl:text>

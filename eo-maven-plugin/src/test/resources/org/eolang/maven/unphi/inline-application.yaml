@@ -22,13 +22,13 @@
 ---
 asserts:
   - //o[@base='.foo' and @name='xyz']/o[1][@base='Q']
-  - //o[@base='.foo' and @name='xyz']/o[@as='0' and @base='org.eolang.string']/o[@base='org.eolang.bytes' and text()='48-65-6C-6C-6F']
-  - //o[@base='.foo' and @name='xyz']/o[@as='1' and @base='org.eolang.string']/o[@base='org.eolang.bytes' and text()='77-6F-72-6C-64']
-  - //o[@base='.foo' and @name='xyz']/o[@as='2' and @base='.plus']/o[1][@base='org.eolang.number' and not(@as)]/o[@base='org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']
-  - //o[@base='.foo' and @name='xyz']/o[@as='2' and @base='.plus']/o[@base='org.eolang.number' and @as='0']/o[@base='org.eolang.bytes' and text()='40-41-80-00-00-00-00-00']
-  - //o[@base='.foo' and @name='xyz']/o[@as='3' and @base='.some']/o[1][@base='org.eolang.number' and not(@as)]/o[@base='org.eolang.bytes' and text()='40-3F-19-99-99-99-99-9A']
-  - //o[@base='.foo' and @name='xyz']/o[@as='3' and @base='.some']/o[@base='.y' and @as='0']/o[1][@base='Q']
-  - //o[@base='.foo' and @name='xyz']/o[@as='3' and @base='.some']/o[@base='.y' and @as='0']/o[@base='org.eolang.number' and @as='0']/o[@base='org.eolang.bytes' and text()='40-26-00-00-00-00-00-00']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α0' and @base='org.eolang.string']/o[@base='org.eolang.bytes' and text()='48-65-6C-6C-6F']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α1' and @base='org.eolang.string']/o[@base='org.eolang.bytes' and text()='77-6F-72-6C-64']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α2' and @base='.plus']/o[1][@base='org.eolang.number' and not(@as)]/o[@base='org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α2' and @base='.plus']/o[@base='org.eolang.number' and @as='α0']/o[@base='org.eolang.bytes' and text()='40-41-80-00-00-00-00-00']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α3' and @base='.some']/o[1][@base='org.eolang.number' and not(@as)]/o[@base='org.eolang.bytes' and text()='40-3F-19-99-99-99-99-9A']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α3' and @base='.some']/o[@base='.y' and @as='α0']/o[1][@base='Q']
+  - //o[@base='.foo' and @name='xyz']/o[@as='α3' and @base='.some']/o[@base='.y' and @as='α0']/o[@base='org.eolang.number' and @as='α0']/o[@base='org.eolang.bytes' and text()='40-26-00-00-00-00-00-00']
 phi: |-
   {
     ⟦
