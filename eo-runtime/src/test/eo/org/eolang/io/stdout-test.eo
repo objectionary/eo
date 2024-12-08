@@ -31,4 +31,4 @@
 # the output, so we just run it and see if it crashes.
 [] > prints-to-console
   stdout > @
-    "Hello, world!\n"
+    "Hello, stdout-test!\n"
