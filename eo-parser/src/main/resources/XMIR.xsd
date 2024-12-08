@@ -83,7 +83,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="[0-9]+|@|[a-z][^ \n\t\r]*"/>
+      <xs:pattern value="[0-9]+|@|[a-z]\S*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="function-name">
@@ -107,7 +107,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|Q|QQ|[A-Z][^ \n\t\r]*|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*"/>
+      <xs:pattern value="∅|Q|QQ|[A-Z]\S*|\.?(^|$|@|[a-z]\S*)|[a-z]\S*(\.[a-z]\S*)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -121,7 +121,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z][^ \n\r\t]*))*"/>
+      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">
