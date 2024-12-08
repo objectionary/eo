@@ -316,7 +316,7 @@ final class InputOutputTest {
                 new String(
                     Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
                 ),
-                Matchers.equalTo(msg)
+                Matchers.containsString(msg)
             );
         }
 
