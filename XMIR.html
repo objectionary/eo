@@ -1373,7 +1373,7 @@ setState('type_program_scbox', false);
             <li>Base XSD Type: string</li>
           </ul>
           <ul>
-            <li><em>pattern</em> = [0-9]+|@|[a-z][^ \n\t\r]*</li>
+            <li><em>pattern</em> = [0-9]+|@|[a-z]\S*</li>
           </ul>
         </td>
       </tr>
@@ -1391,7 +1391,7 @@ setState('type_program_scbox', false);
     <div class="schemaComponent box">
       <div><input type="button" id="type_attribute-name_scbox_button" class="control" onclick="switchState('type_attribute-name_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
       <div id="type_attribute-name_scbox" class="contents">
-        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">attribute-name</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[0-9]+|@|[a-z][^ \n\t\r]*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">attribute-name</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[0-9]+|@|[a-z]\S*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
       </div>
       <script type="text/javascript">
 <!--
@@ -1479,7 +1479,7 @@ setState('type_empty_scbox', false);
             <li>Base XSD Type: string</li>
           </ul>
           <ul>
-            <li><em>pattern</em> = &#8709;|Q|QQ|[A-Z][^ \n\t\r]*|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*</li>
+            <li><em>pattern</em> = &#8709;|Q|QQ|[A-Z]\S*|\.?(^|$|@|[a-z]\S*)|[a-z]\S*(\.[a-z]\S*)*</li>
           </ul>
         </td>
       </tr>
@@ -1499,7 +1499,7 @@ setState('type_empty_scbox', false);
     <div class="schemaComponent box">
       <div><input type="button" id="type_fqn_scbox_button" class="control" onclick="switchState('type_fqn_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
       <div id="type_fqn_scbox" class="contents">
-        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">fqn</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#8709;|Q|QQ|[A-Z][^ \n\t\r]*|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">fqn</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#8709;|Q|QQ|[A-Z]\S*|\.?(^|$|@|[a-z]\S*)|[a-z]\S*(\.[a-z]\S*)*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
       </div>
       <script type="text/javascript">
 <!--
@@ -1587,7 +1587,7 @@ setState('type_function-name_scbox', false);
             <li>Base XSD Type: string</li>
           </ul>
           <ul>
-            <li><em>pattern</em> = &#934;(\.(&#961;|&#966;|&#945;[0-9]+|[a-z][^ \n\r\t]*))*</li>
+            <li><em>pattern</em> = &#934;(\.(&#961;|&#966;|&#945;[0-9]+|[a-z]\S*))*</li>
           </ul>
         </td>
       </tr>
@@ -1608,7 +1608,7 @@ setState('type_function-name_scbox', false);
     <div class="schemaComponent box">
       <div><input type="button" id="type_locator_scbox_button" class="control" onclick="switchState('type_locator_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
       <div id="type_locator_scbox" class="contents">
-        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">locator</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#934;(\.(&#961;|&#966;|&#945;[0-9]+|[a-z][^ \n\r\t]*))*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">locator</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#934;(\.(&#961;|&#966;|&#945;[0-9]+|[a-z]\S*))*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
       </div>
       <script type="text/javascript">
 <!--
