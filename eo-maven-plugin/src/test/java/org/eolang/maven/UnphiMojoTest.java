@@ -29,6 +29,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -65,6 +66,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 final class UnphiMojoTest {
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void convertsPhiToXmir(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -237,16 +239,12 @@ final class UnphiMojoTest {
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
-        Logger.debug(this, "Unphied: \n%s", new TextOf(xmir).asString());
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .execute(OptimizeMojo.class)
-            .with("phiFailOnCritical", false)
-            .with("phiFailOnError", false)
             .execute(PhiMojo.class)
             .result()
             .get(main);
-        Logger.debug(this, "Phied: \n%s", new TextOf(result).asString());
         MatcherAssert.assertThat(
             String.format("%s should have been rewritten after optimization, but it wasn't", main),
             result.toFile().lastModified(),

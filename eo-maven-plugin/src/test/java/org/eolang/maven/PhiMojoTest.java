@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -113,6 +114,7 @@ final class PhiMojoTest {
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void convertsObjectWithSystemType(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
