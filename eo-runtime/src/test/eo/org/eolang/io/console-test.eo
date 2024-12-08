@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
++alias org.eolang.io.console
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -29,6 +29,6 @@
 
 # Prints a simple message to the console. We can't validate
 # the output, so we just run it and see if it crashes.
-[] > prints-to-console
-  stdout > @
+[] > writes-to-console
+  console.write > @
     "Hello, world!\n"
