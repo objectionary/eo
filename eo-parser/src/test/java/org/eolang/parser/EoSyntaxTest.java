@@ -23,13 +23,17 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
@@ -42,6 +46,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.xml.sax.SAXParseException;
 
 /**
  * Test case for {@link EoSyntax}.
@@ -267,6 +272,39 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(story.after()).toString(),
             Integer.parseInt(story.after().xpath("/program/errors/error[1]/@line").get(0)),
             Matchers.equalTo(Integer.parseInt(story.map().get("line").toString()))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/xsd-mistakes/", glob = "**.yaml")
+    void checksXsdMistakes(final String yaml) throws Exception {
+        final Xtory story = new XtSticky(
+            new XtYaml(
+                yaml,
+                eo -> new EoSyntax(
+                    "xsd-mistake",
+                    new InputOf(String.format("%s\n", eo))
+                ).parsed()
+            )
+        );
+        Assumptions.assumeTrue(story.map().get("skip") == null);
+        final XML xml = story.after();
+        final Set<String> errors = new SetOf<>(
+            new Mapped<>(
+                SAXParseException::toString,
+                xml.validate(
+                    new XMLDocument(
+                        new TextOf(new ResourceOf("XMIR.xsd")).asString()
+                    )
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            Logger.format("correct number of errors found: %[list]s%n%s", errors, yaml),
+            errors,
+            Matchers.iterableWithSize(
+                Integer.parseInt(story.map().get("errors").toString())
+            )
         );
     }
 
