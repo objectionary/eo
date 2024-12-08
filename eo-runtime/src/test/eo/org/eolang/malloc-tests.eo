@@ -262,6 +262,6 @@
     m.resized -1 > [m]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > malloc-emtpy-is-empty
+[] > malloc-empty-is-empty
   malloc.empty > @
     m.size.eq 0 > [m]
