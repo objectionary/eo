@@ -29,9 +29,11 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.util.Set;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
@@ -287,13 +289,18 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         final XML xml = story.after();
-        final Collection<SAXParseException> errors = xml.validate(
-            new XMLDocument(
-                new TextOf(new ResourceOf("XMIR.xsd")).asString()
+        final Set<String> errors = new SetOf<>(
+            new Mapped<>(
+                SAXParseException::toString,
+                xml.validate(
+                    new XMLDocument(
+                        new TextOf(new ResourceOf("XMIR.xsd")).asString()
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(
-            Logger.format("correct number of errors found: %[list]s", errors),
+            Logger.format("correct number of errors found: %[list]s%n%s", errors, yaml),
             errors,
             Matchers.iterableWithSize(
                 Integer.parseInt(story.map().get("errors").toString())

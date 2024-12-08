@@ -86,17 +86,6 @@ SOFTWARE.
       <xs:pattern value="[0-9]+|@|[a-z]\S*"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="function-name">
-    <xs:annotation>
-      <xs:appinfo>A name of function in the atom</xs:appinfo>
-      <xs:documentation>
-        The name of a function in the atom, which is used to reference the function from other objects or from the global scope.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[A-Z]\S*"/>
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="fqn">
     <xs:annotation>
       <xs:appinfo>A fully qualified name of an object</xs:appinfo>
@@ -182,7 +171,7 @@ SOFTWARE.
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="as" type="attribute-name"/>
-    <xs:attribute name="atom" type="function-name"/>
+    <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="locator"/>
     <!--
     The following three are definitely temporary and should
