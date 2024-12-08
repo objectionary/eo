@@ -313,9 +313,7 @@ final class InputOutputTest {
             );
             MatcherAssert.assertThat(
                 "The 'console.write' should have written to console, but it didn't",
-                new String(
-                    Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
-                ),
+                Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
                 Matchers.containsString(msg)
             );
         }
@@ -341,9 +339,7 @@ final class InputOutputTest {
             );
             MatcherAssert.assertThat(
                 "The 'console.write' should have return output block ready to write again, but it didn't",
-                new String(
-                    Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
-                ),
+                Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
                 Matchers.containsString("HaHa")
             );
         }
@@ -872,10 +868,7 @@ final class InputOutputTest {
             );
             MatcherAssert.assertThat(
                 "The posix 'write' syscall should have written to standard output, but it didn't",
-                new String(
-                    Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-                    StandardCharsets.UTF_8
-                ),
+                Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
                 Matchers.equalTo(msg)
             );
         }
@@ -946,10 +939,7 @@ final class InputOutputTest {
             );
             MatcherAssert.assertThat(
                 "The win32 'WriteFile' call should have written to standard output, but it didn't",
-                new String(
-                    Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-                    StandardCharsets.UTF_8
-                ),
+                Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
                 Matchers.equalTo(msg)
             );
         }
