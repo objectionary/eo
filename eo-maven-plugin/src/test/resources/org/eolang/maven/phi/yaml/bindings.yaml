@@ -26,6 +26,7 @@ input: |
     [z]:abs
       w > @
     5:five
+    "hello":3
 phi: |-
   {
     ⟦
@@ -35,7 +36,8 @@ phi: |-
           z ↦ ∅,
           φ ↦ Φ̇.w
         ⟧,
-        five ↦ 5
+        five ↦ 5,
+        α3 ↦ "hello"
       )
     ⟧
   }

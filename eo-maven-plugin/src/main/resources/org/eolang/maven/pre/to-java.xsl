@@ -36,6 +36,9 @@ SOFTWARE.
   <xsl:variable name="PHI">
     <xsl:text>φ</xsl:text>
   </xsl:variable>
+  <xsl:variable name="ALPHA">
+    <xsl:text>α</xsl:text>
+  </xsl:variable>
   <!-- FUNCTIONS -->
   <!-- EOL -->
   <xsl:function name="eo:eol">
@@ -453,8 +456,8 @@ SOFTWARE.
       <xsl:choose>
         <xsl:when test="@as">
           <xsl:choose>
-            <xsl:when test="matches(@as,'^[0-9]+$')">
-              <xsl:value-of select="eo:attr-name(@as)"/>
+            <xsl:when test="starts-with(@as, $ALPHA)">
+              <xsl:value-of select="eo:attr-name(substring-after(@as, $ALPHA))"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>"</xsl:text>

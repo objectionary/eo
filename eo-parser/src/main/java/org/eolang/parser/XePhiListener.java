@@ -237,10 +237,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "@";
         } else if (ctx.RHO() != null) {
             attr = "^";
-        } else if (ctx.LABEL() != null) {
-            attr = ctx.LABEL().getText();
-        } else if (ctx.ALPHA() != null) {
-            attr = ctx.ALPHA().getText().substring(1);
+        } else if (ctx.LABEL() != null || ctx.ALPHA() != null) {
+            attr = ctx.getText();
         } else {
             attr = "";
         }
@@ -335,7 +333,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         final int index = this.alphas.peek();
         this.alphas.pop();
         this.alphas.push(index + 1);
-        this.attributes.push(String.valueOf(index));
+        this.attributes.push(String.format("α%d", index));
     }
 
     @Override
