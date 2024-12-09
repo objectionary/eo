@@ -36,7 +36,7 @@ SOFTWARE.
       <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
       <xsl:attribute name="name" select="@name"/>
       <xsl:element name="o">
-        <xsl:attribute name="as" select="0"/>
+        <xsl:attribute name="as" select="'α0'"/>
         <xsl:value-of select="text()"/>
       </xsl:element>
     </xsl:element>

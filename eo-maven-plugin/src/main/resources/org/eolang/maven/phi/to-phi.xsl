@@ -27,9 +27,7 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
   <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
-  <xsl:variable name="number-pattern">
-    <xsl:value-of select="'^[0-9][1-9]*$'"/>
-  </xsl:variable>
+  <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
   <xsl:variable name="xi">
     <select>ξ</select>
   </xsl:variable>
@@ -215,33 +213,37 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <!--
+    Try to get @as attribute from the object and convert to number, if @as is absent - return position
+  -->
+  <xsl:function name="eo:element-binding">
+    <xsl:param name="object"/>
+    <xsl:param name="position"/>
+    <xsl:choose>
+      <xsl:when test="$object/@as">
+        <xsl:choose>
+          <xsl:when test="starts-with($object/@as, $alpha)">
+            <xsl:value-of select="number(substring-after($object/@as, $alpha))"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$object/@as"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$position"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
     CHECKS IF APPLICATION ARGUMENTS IS RIGHT ORDER WITH ALPHAS, e.g.
     α0 -> a, α1 -> b, ..., αN -> z
   -->
   <xsl:function name="eo:is-ordered">
     <xsl:param name="current"/>
     <xsl:param name="position"/>
-    <xsl:variable name="current-pos">
-      <xsl:choose>
-        <xsl:when test="$current/@as">
-          <xsl:value-of select="$current/@as"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$position - 1"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:variable name="current-pos" select="eo:element-binding($current, $position - 1)"/>
     <xsl:variable name="next" select="$current/following-sibling::o[1]"/>
-    <xsl:variable name="next-pos">
-      <xsl:choose>
-        <xsl:when test="$next/@as">
-          <xsl:value-of select="$next/@as"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$position"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:variable name="next-pos" select="eo:element-binding($next, $position)"/>
     <xsl:choose>
       <xsl:when test="matches($current-pos, $number-pattern)">
         <xsl:choose>

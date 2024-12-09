@@ -83,7 +83,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="[0-9]+|@|[a-z]\S*"/>
+      <xs:pattern value="α[0-9]+|@|[a-z]\S*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">
