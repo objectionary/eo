@@ -100,22 +100,31 @@ public final class LintMojo extends SafeMojo {
             tojo -> this.lintOne(tojo, counts)
         ).total();
         if (must.isEmpty()) {
-            Logger.info(this, "No XMIR programs out of %d linted", tojos.size());
+            Logger.info(
+                this,
+                "No XMIR programs out of %d linted individually",
+                tojos.size()
+            );
         } else if (tojos.isEmpty()) {
-            Logger.info(this, "There are no XMIR programs, nothing to lint");
-        } else {
+            Logger.info(this, "There are no XMIR programs, nothing to lint individually");
+        }
+        if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
+            || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
             final String sum = LintMojo.summary(counts);
             Logger.info(
                 this,
                 "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
                 passed, must.size(), tojos.size(), sum
             );
-            if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
-                || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
-                throw new IllegalStateException(
-                    String.format("In %d XMIR files, we found %s", must.size(), sum)
-                );
-            }
+            throw new IllegalStateException(
+                String.format("In %d XMIR files, we found %s", must.size(), sum)
+            );
+        } else {
+            Logger.info(
+                this,
+                "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs), no problems found",
+                passed, must.size(), tojos.size()
+            );
         }
     }
 
