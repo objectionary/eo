@@ -185,24 +185,6 @@ public final class ForeignTojo {
     }
 
     /**
-     * Checks if tojo was not already verified.
-     *
-     * @return True if optimization is required, false otherwise.
-     */
-    public boolean notLinted() {
-        final Path src = this.xmir();
-        boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.LINTED.getKey())) {
-            final Path tgt = this.optimized();
-            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(this, "Already verified %[file]s to %[file]s", src, tgt);
-                res = false;
-            }
-        }
-        return res;
-    }
-
-    /**
      * Check if the given tojo has not been parsed.
      *
      * @return True if the tojo has not been parsed.

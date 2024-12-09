@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
@@ -92,23 +91,11 @@ public final class LintMojo extends SafeMojo {
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
-        final Collection<ForeignTojo> must = new ListOf<>(
-            new Filtered<>(
-                ForeignTojo::notLinted,
-                tojos
-            )
-        );
         final int passed = new Threaded<>(
-            must,
+            tojos,
             tojo -> this.lintOne(tojo, counts)
         ).total();
-        if (must.isEmpty()) {
-            Logger.info(
-                this,
-                "No XMIR programs out of %d linted individually",
-                tojos.size()
-            );
-        } else if (tojos.isEmpty()) {
+        if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
         Logger.info(
@@ -122,16 +109,16 @@ public final class LintMojo extends SafeMojo {
             Logger.info(
                 this,
                 "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
-                passed, must.size(), tojos.size(), sum
+                passed, tojos.size(), tojos.size(), sum
             );
             throw new IllegalStateException(
-                String.format("In %d XMIR files, we found %s", must.size(), sum)
+                String.format("In %d XMIR files, we found %s", tojos.size(), sum)
             );
         } else {
             Logger.info(
                 this,
-                "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs), no problems found",
-                passed, must.size(), tojos.size()
+                "Linted %d out of %d XMIR program(s) that needed this, no problems found",
+                passed, tojos.size()
             );
         }
     }

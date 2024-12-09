@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +50,37 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
+@ExtendWith(RandomProgramResolver.class)
 final class LintMojoTest {
+
+    @Test
+    void lintsAgainAfterModification(@Mktmp final Path temp, @RandomProgram final String program)
+        throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "lint");
+                f.exec("process-classes");
+                final long before = f.files().file(
+                    "target/eo/6-lint/foo.xmir"
+                ).path().toFile().lastModified();
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "the .xmir file is re-generated",
+                    f.files().file(
+                        "target/eo/6-lint/foo.xmir"
+                    ).path().toFile().lastModified(),
+                    Matchers.not(Matchers.equalTo(before))
+                );
+            }
+        );
+    }
 
     @Test
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) {
