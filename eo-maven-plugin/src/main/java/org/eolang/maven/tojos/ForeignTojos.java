@@ -173,6 +173,14 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
+     * Get the tojos that have corresponding linted XMIR.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withLinted() {
+        return this.select(row -> row.exists(Attribute.LINTED.getKey()));
+    }
+
+    /**
      * Get the tojos that doesn't have dependency.
      * @return The tojos.
      */

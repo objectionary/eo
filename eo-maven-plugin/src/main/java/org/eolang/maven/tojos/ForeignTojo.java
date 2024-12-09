@@ -90,6 +90,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo linted xmir.
+     * @return The shaken xmir.
+     */
+    public Path linted() {
+        return Paths.get(this.attribute(ForeignTojos.Attribute.LINTED));
+    }
+
+    /**
      * The tojo eo object.
      * @return The eo object.
      */
@@ -170,24 +178,6 @@ public final class ForeignTojo {
             final Path tgt = this.shaken();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(this, "Already shaken %[file]s to %[file]s", src, tgt);
-                res = false;
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Checks if tojo was not already verified.
-     *
-     * @return True if optimization is required, false otherwise.
-     */
-    public boolean notLinted() {
-        final Path src = this.xmir();
-        boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.LINTED.getKey())) {
-            final Path tgt = this.optimized();
-            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(this, "Already verified %[file]s to %[file]s", src, tgt);
                 res = false;
             }
         }

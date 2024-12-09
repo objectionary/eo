@@ -55,11 +55,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class PhiMojoTest {
-    /**
-     * Comment.
-     */
-    private static final String COMMENT =
-        "# No comments.";
 
     @Test
     void convertsSimpleObjectToPhi(@Mktmp final Path temp, @RandomProgram final String program)
@@ -172,7 +167,7 @@ final class PhiMojoTest {
             ),
             new FakeMaven(temp)
                 .withProgram(
-                    PhiMojoTest.COMMENT,
+                    "No comments.",
                     "[] > cart",
                     "  memory 0 > total",
                     "  [i] > add",
@@ -218,7 +213,7 @@ final class PhiMojoTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram(
-                    PhiMojoTest.COMMENT,
+                    "No comments.",
                     "[] > without-name",
                     "  true"
                 )
