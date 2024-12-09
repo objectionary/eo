@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
   <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
-  <xsl:variable name="number-pattern" select="'^[0-9][1-9]*$'"/>
+  <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
   <xsl:variable name="xi">
     <select>ξ</select>
   </xsl:variable>
