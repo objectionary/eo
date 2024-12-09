@@ -96,7 +96,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|Q|QQ|[A-Z][^ \n\t\r]*|\.?(^|$|@|[a-z][^ \n\t\r]*)|[a-z][^ \n\t\r]*(\.[a-z][^ \n\t\r]*)*"/>
+      <xs:pattern value="∅|Q|QQ|[A-Z]\S*|\.?(^|$|@|[a-z]\S*)|[a-z]\S*(\.[a-z]\S*)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -110,7 +110,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z][^ \n\r\t]*))*"/>
+      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">
@@ -170,10 +170,19 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="star" type="empty"/>
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="locator"/>
+    <!--
+    The following three are definitely temporary and should
+    be removed from XMIR. However, we can't remove them
+    now: they are created by the parser, then used by
+    the optimizer, and then removed. Since we check XML documents for
+    XSD compliance after the parsing phase, we can't remove them
+    now. We will remove them later, when we will have a separate
+    XSD for the parser output (maybe).
+    -->
+    <xs:attribute name="star" type="empty"/>
     <xs:attribute name="method" type="empty"/>
     <xs:attribute name="const" type="empty"/>
   </xs:complexType>

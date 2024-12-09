@@ -81,6 +81,12 @@
 # Here the void attribute in the scope object is memory-block object which provides API to write
 # and read data to the memory.
 [] > malloc
+  # Allocates empty block in memory.
+  [scope] > empty
+    malloc.of > @
+      0
+      scope
+
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data are written into memory.
   [object scope] > for
