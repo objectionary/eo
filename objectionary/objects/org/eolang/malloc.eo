@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.46.0
++rt jvm org.eolang:eo-runtime:0.47.0
 +rt node eo2js-runtime:0.0.0
-+version 0.46.0
++version 0.47.0
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -81,6 +81,12 @@
 # Here the void attribute in the scope object is memory-block object which provides API to write
 # and read data to the memory.
 [] > malloc
+  # Allocates empty block in memory.
+  [scope] > empty
+    malloc.of > @
+      0
+      scope
+
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data are written into memory.
   [object scope] > for

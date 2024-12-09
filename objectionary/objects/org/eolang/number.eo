@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.46.0
++rt jvm org.eolang:eo-runtime:0.47.0
 +rt node eo2js-runtime:0.0.0
-+version 0.46.0
++version 0.47.0
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.

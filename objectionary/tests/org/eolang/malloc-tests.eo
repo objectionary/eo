@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.46.0
++version 0.47.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-into-memory-of
@@ -61,8 +61,7 @@
       [f]
         malloc.of > second
           1
-          [s] >>
-            f.put (f.as-number.plus 1) > @
+          f.put (f.as-number.plus 1) > [s] >>
         seq > @
           *
             second
@@ -168,8 +167,7 @@
     [b]
       malloc.of > @
         10
-        [m] >>
-          b.put (m.size.eq 10) > @
+        b.put (m.size.eq 10) > [m] >>
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-writes-and-reads
@@ -229,8 +227,7 @@
     0
     malloc.of
       0
-      [m]
-        m.size > @
+      m.size > [m]
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-increases-block-size
@@ -263,3 +260,8 @@
   malloc.of > @
     1
     m.resized -1 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > malloc-empty-is-empty
+  malloc.empty > @
+    m.size.eq 0 > [m]
