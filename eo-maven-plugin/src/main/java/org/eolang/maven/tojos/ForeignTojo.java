@@ -90,6 +90,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo linted xmir.
+     * @return The shaken xmir.
+     */
+    public Path linted() {
+        return Paths.get(this.attribute(ForeignTojos.Attribute.LINTED));
+    }
+
+    /**
      * The tojo eo object.
      * @return The eo object.
      */

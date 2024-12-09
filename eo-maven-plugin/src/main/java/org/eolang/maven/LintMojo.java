@@ -29,7 +29,9 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -38,6 +40,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
+import org.eolang.lints.Programs;
 import org.eolang.lints.Severity;
 import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -83,7 +86,7 @@ public final class LintMojo extends SafeMojo {
     private boolean failOnWarning;
 
     @Override
-    void exec() {
+    void exec() throws IOException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
@@ -108,6 +111,11 @@ public final class LintMojo extends SafeMojo {
         } else if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
+        Logger.info(
+            this,
+            "Also, %d XMIR programs linted as a package",
+            this.lintAll(counts)
+        );
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
             || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
             final String sum = LintMojo.summary(counts);
@@ -152,6 +160,32 @@ public final class LintMojo extends SafeMojo {
             ).apply(source, target)
         );
         return 1;
+    }
+
+    /**
+     * Lint all XMIR files together.
+     * @param counts Counts of errors, warnings, and critical
+     * @return Amount of seen XMIR files
+     * @throws IOException If failed to lint
+     */
+    private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
+        final Map<String, Path> paths = new HashMap<>();
+        for (final ForeignTojo tojo : this.scopedTojos().withLinted()) {
+            paths.put(tojo.identifier(), tojo.linted());
+        }
+        final Map<String, XML> pkg = new HashMap<>();
+        for (final Map.Entry<String, Path> ent : paths.entrySet()) {
+            pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
+        }
+        final Collection<Defect> defects = new Programs(pkg).defects();
+        for (final Defect defect : defects) {
+            counts.compute(defect.severity(), (sev, before) -> before + 1);
+            LintMojo.embed(
+                pkg.get(defect.program()),
+                new ListOf<>(defect)
+            );
+        }
+        return pkg.size();
     }
 
     /**
@@ -235,7 +269,7 @@ public final class LintMojo extends SafeMojo {
     }
 
     /**
-     * Find all possible linting defects.
+     * Find all possible linting defects and add them to the XMIR.
      * @param xmir The XML before linting
      * @return XML after linting
      * @throws IOException If fails
@@ -245,23 +279,36 @@ public final class LintMojo extends SafeMojo {
         final Collection<Defect> defects = new Program(xmir).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);
-            for (final Defect defect : defects) {
-                if (LintMojo.suppressed(xmir, defect)) {
-                    continue;
-                }
-                dirs.add("error")
-                    .attr("check", defect.rule())
-                    .attr("severity", defect.severity().mnemo())
-                    .set(defect.text());
-                if (defect.line() > 0) {
-                    dirs.attr("line", defect.line());
-                }
-                dirs.up();
-            }
+            LintMojo.embed(xmir, defects);
         }
         final Node node = xmir.inner();
         new Xembler(dirs).applyQuietly(node);
         return new XMLDocument(node);
+    }
+
+    /**
+     * Inject defect into XMIR.
+     * @param xmir The XML before linting
+     * @param defects The defects to inject
+     */
+    private static void embed(final XML xmir, final Collection<Defect> defects) {
+        final Directives dirs = new Directives();
+        dirs.xpath("/program").addIf("errors").strict(1);
+        for (final Defect defect : defects) {
+            if (LintMojo.suppressed(xmir, defect)) {
+                continue;
+            }
+            dirs.add("error")
+                .attr("check", defect.rule())
+                .attr("severity", defect.severity().mnemo())
+                .set(defect.text());
+            if (defect.line() > 0) {
+                dirs.attr("line", defect.line());
+            }
+            dirs.up();
+        }
+        final Node node = xmir.inner();
+        new Xembler(dirs).applyQuietly(node);
     }
 
     /**
