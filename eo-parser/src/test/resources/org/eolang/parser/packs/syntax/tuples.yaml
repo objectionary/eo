@@ -20,30 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets:
-  - /org/eolang/parser/stars-to-tuples.xsl
-  - /org/eolang/parser/stars-to-tuples.xsl
-  - /org/eolang/parser/stars-to-tuples.xsl
+sheets: [ ]
 asserts:
-  - //objects[count(//objects/o[@base='tuple'])=5]
-  - //o[@base='tuple' and @line=1 and not(@name)]
-  - //o[@base='tuple' and @line=1 and not(@name)]/following-sibling::o[@base='.empty' and @name='xs']
-  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='tuple']
-  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='.empty' and @method]
-  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='number' and @line=2]
-  - //o[@base='tuple' and @line=3]/o[@base='tuple']/o[@base='tuple']
-  - //o[@base='tuple' and @line=3]/o[@base='tuple']/o[@base='.empty' and @method]
-  - //o[@base='tuple' and @line=3]/o[@base='tuple']/o[@base='number' and @line=3]
-  - //o[@base='tuple' and @line=3]/o[@base='number' and @line=3]
+  - //objects[count(o)=7]
+  - //objects[count(//o[@star])=0]
+  - //o[@base='.empty' and @line=1 and @name='xs']/o[@base='tuple' and @line=1 and not(@name)]
+  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='number']
   - //o[@base='tuple' and @line=3]/o[@base='number']
-  - //o[@base='tuple' and @line=4 and not(@star)]/following-sibling::o[@base='.empty' and @name='empty']
-  - //o[@base='tuple' and @line=5 and count(o)=4 and count(o[@method])=2]
-  - //o[@base='tuple' and @line=5]/o[@base='tuple' and count(o)=4 and count(o[@method])=2]
-  - //o[@base='tuple' and @line=5]/o[@base='tuple']/o[@base='tuple']
-  - //o[@base='tuple' and @line=5]/o[@base='tuple']/o[@base='tuple']/o[@base='.empty' and @method]
-  - //o[@base='arr']/o[@base='tuple' and @line=9 and @pos=5]
-  - //o[@base='arr']/o[@base='.empty' and @line=9 and @pos=6]
-  - //o[@name='y' and @base='.reduced']/o[@base='tuple' and not(@star)]/following-sibling::o[@base='.empty' and @method]
+  - //o[@base='tuple' and @line=3]/o[@base='tuple']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='tuple' and @line=3]/o[@base='tuple']/o[@base='number']
+  - //o[@base='.empty' and @line=4]/o[@base='tuple']
+  - //o[@base='.elements']/o[@base='arr']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.reduced']/o[@base='list']
+  - //o[@base='.reduced']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
   * > xs
   * 1 > xl

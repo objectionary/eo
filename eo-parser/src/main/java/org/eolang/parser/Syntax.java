@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 
 /**
@@ -31,6 +32,11 @@ import java.io.IOException;
  * @since 0.34.0
  */
 public interface Syntax {
+    /**
+     * Canonical Xsline.
+     */
+    Xsline CANONICAL = new Xsline(new TrCanonical());
+
     /**
      * Parse it to XML.
      * @return Parsed XML

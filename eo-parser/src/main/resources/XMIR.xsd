@@ -182,9 +182,6 @@ SOFTWARE.
     now. We will remove them later, when we will have a separate
     XSD for the parser output (maybe).
     -->
-    <xs:attribute name="star" type="empty"/>
-    <xs:attribute name="method" type="empty"/>
-    <xs:attribute name="const" type="empty"/>
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>

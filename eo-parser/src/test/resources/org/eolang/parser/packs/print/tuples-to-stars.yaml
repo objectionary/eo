@@ -20,20 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets: [ ]
+sheets:
+  - /org/eolang/parser/tuples-to-stars.xsl
+  - /org/eolang/parser/tuples-to-stars.xsl
+  - /org/eolang/parser/tuples-to-stars.xsl
+  - /org/eolang/parser/tuples-to-stars.xsl
+  - /org/eolang/parser/tuples-to-stars.xsl
 asserts:
-  - //o[@base='p']/o[@name='first' and o[@name='@' and @base='.b'] and o[@base='∅' and @name='i']]
-  - //o[@base='p']/o[not(@name) and o[@name='@' and @base='a' and o[@base='b']]]
-  - //o[@base='p']/o[@name='second' and o[not(@base) and @name='@' and o[@base='a' and @name='b']] and o[@name='c']]
-  - //o[@base='p']/o[not(@name) and o[@base='d' and @name='@']]
-  - //o[@base='.x' and o[not(@base) and not(@name) and o[@base='z' and @name='@']]]
-  - //o[@base='m']/o[not(@name) and o[@name='q' and @base='∅'] and o[@base='q' and @name='@']]
+  - /program/objects/o[@name='foo']/o[@base='tuple' and @star and count(o)=3 and count(o[@star]=0)]
 input: |
-  p > x
-    a.b > [i] > first
-    a b > []
-    [o] (a > b) > [c] > second
-    d > []
-  z > []
-  .x
-  m (q > [q])
+  +package test
+
+  # No comments.
+  [] > foo
+    tuple
+      tuple
+        tuple
+          tuple.empty
+          1
+        2
+      3

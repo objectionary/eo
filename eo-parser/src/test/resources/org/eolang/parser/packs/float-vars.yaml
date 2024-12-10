@@ -26,7 +26,7 @@ sheets:
 asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=3]
-  - //o[@base='input' and @name='t' and @line='8' and @const and count(o)=2]
+  - //o[@base='.as-bytes' and @name='t' and @line='8' and o[@base='org.eolang.dataized']]
   - //objects[count(.//o[@base='string'])=1]
   - //o[@name='y']/o[@name='t']
   - //o[@name='y']/o[@name='oops']

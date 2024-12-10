@@ -23,7 +23,6 @@
 sheets:
   - /org/eolang/parser/cti-adds-errors.xsl
   - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/expand-qqs.xsl
   - /org/eolang/parser/add-probes.xsl
   - /org/eolang/parser/vars-float-up.xsl
@@ -33,7 +32,6 @@ sheets:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
-  - /org/eolang/parser/const-to-dataized.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/clean-up.xsl
 asserts:

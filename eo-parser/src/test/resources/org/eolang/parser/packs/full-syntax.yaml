@@ -28,7 +28,7 @@ asserts:
   - /program/metas/meta[head='foo' and tail='']
   - //o[@base='true']
   - //o[@base='string']
-  - //o[@name='hello' and @const]
+  - //o[@name='hello' and @base='.as-bytes' and o[@base='org.eolang.dataized']]
   - //o[@as='i']
   - //o[@as='α1']
   - //o[@as='α0']

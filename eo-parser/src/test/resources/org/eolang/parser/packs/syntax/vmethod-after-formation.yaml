@@ -23,8 +23,7 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - //o[@name='x' and not(@base)]/following::o[@base='.first' and @method]
-  - //o[not(@name) and not(@base)]/following::o[@base='.second' and @method]
+  - //o[@base='.first']/o[not(@base) and @name='x']/o[@base='y' and @name='@']/o[@base='.second']/o[not(@base) and not(@name)]
 input: |
   # No comments.
   [] > x

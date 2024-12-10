@@ -203,7 +203,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
-                "/program/objects/o[count(o)=3]"
+                "/program/objects/o[count(o)=2]"
             )
         );
     }

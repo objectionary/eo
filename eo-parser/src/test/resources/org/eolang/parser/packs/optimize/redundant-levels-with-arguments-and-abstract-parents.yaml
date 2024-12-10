@@ -40,14 +40,12 @@ asserts:
   - //o[@name='main$sibling']/o[@base='main$sibling$second' and @name='second']
   - //o[@name='main$sibling']/o[@base='main$sibling$second' and @name='second']/o[@base='arg' and not(@name)]
   # 'main$sibling$first' object
-  - //o[@name='main$sibling$first' and count(o)=3]
-  - //o[@name='main$sibling$first']/o[@base='arg' and not(@name)]
-  - //o[@name='main$sibling$first']/o[@base='.one' and @name='@']
+  - //o[@name='main$sibling$first' and count(o)=2]
+  - //o[@name='main$sibling$first']/o[@base='.one' and @name='@']/o[@base='arg' and not(@name)]
   - //o[@name='main$sibling$first']/o[@base='∅' and @name='arg']
   # 'main$sibling$second' object
-  - //o[@name='main$sibling$second' and count(o)=3]
-  - //o[@name='main$sibling$second']/o[@base='arg' and not(@name)]
-  - //o[@name='main$sibling$second']/o[@base='.two' and @name='@']
+  - //o[@name='main$sibling$second' and count(o)=2]
+  - //o[@name='main$sibling$second']/o[@base='.two' and @name='@']/o[@base='arg' and not(@name)]
   - //o[@name='main$sibling$second']/o[@base='∅' and @name='arg']
 # Currently the test converts the code from the snippet to:
 # ____
