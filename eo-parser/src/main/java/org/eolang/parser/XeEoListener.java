@@ -1143,7 +1143,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             has = ctx.NAME().getText();
         } else {
-            has = String.format("α%s", ctx.INT().getText());
+            has = String.format("α%d", Integer.parseInt(ctx.INT_POSITIVE().getText()));
         }
         this.objects.prop("as", has);
     }

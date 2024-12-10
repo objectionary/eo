@@ -571,7 +571,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | INT)
+as  : COLON (NAME | INT_POSITIVE)
     ;
 
 // Data
@@ -683,7 +683,11 @@ fragment ZERO
     : '0'
     ;
 
-INT : (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*)
+INT : (PLUS | MINUS)? INT_POSITIVE
+    ;
+
+INT_POSITIVE
+    : (ZERO | ZERO?[1-9][0-9]*)
     ;
 
 fragment EXPONENT
