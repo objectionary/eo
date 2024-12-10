@@ -35,8 +35,7 @@ asserts:
   - //o[@name='first' and not(@ancestors)]
   - //o[@name='first']/o[@base='test']
   - //o[@name='first$t2$second']
-  - //o[@name='first$t2$second$third']
-  - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
+  - //o[@name='first$t2$second$third']/o[@base='.print']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
 input: |
   # No comments.

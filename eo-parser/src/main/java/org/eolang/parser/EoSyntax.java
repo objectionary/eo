@@ -48,7 +48,6 @@ import org.xembly.Xembler;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class EoSyntax implements Syntax {
-
     /**
      * The name of the EO program being parsed, usually the name of
      * <tt>.eo</tt> file itself. This name will be present in the
@@ -117,10 +116,12 @@ public final class EoSyntax implements Syntax {
         parser.addErrorListener(spy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = new XMLDocument(
-            new Xembler(
-                new Directives(xel).append(spy)
-            ).domQuietly()
+        final XML dom = Syntax.CANONICAL.pass(
+            new XMLDocument(
+                new Xembler(
+                    new Directives(xel).append(spy)
+                ).domQuietly()
+            )
         );
         if (spy.size() == 0) {
             Logger.debug(

@@ -96,10 +96,12 @@ public final class PhiSyntax implements Syntax {
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = new XMLDocument(
-            new Xembler(
-                new Directives(xel).append(spy).append(this.extra)
-            ).domQuietly()
+        final XML dom = Syntax.CANONICAL.pass(
+            new XMLDocument(
+                new Xembler(
+                    new Directives(xel).append(spy).append(this.extra)
+                ).domQuietly()
+            )
         );
         if (spy.size() == 0) {
             Logger.debug(this, "Input of PHI calculus compiled, no errors");

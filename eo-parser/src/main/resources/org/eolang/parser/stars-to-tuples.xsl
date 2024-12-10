@@ -23,6 +23,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="stars-to-tuples" version="2.0">
+  <!--
+    Converts such XMIR with @star attributes:
+
+    <o star="" base="tuple">
+      <o base="1".../>
+      <o base="2".../>
+      <o base="3".../>
+    </o>
+
+    Into the next one without @star:
+
+    <o base="tuple">
+      <o base="tuple">
+        <o base="tuple">
+          <o base="tuple">
+          <o base=".emtpy" method=""/>
+          <o base="1"/>
+        </o>
+        <o base="2"/>
+      </o>
+      <o base="3"/>
+    </o>
+  -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@star]">
     <xsl:choose>

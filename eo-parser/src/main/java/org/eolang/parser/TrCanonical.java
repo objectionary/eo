@@ -23,49 +23,51 @@
  */
 package org.eolang.parser;
 
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import java.util.logging.Level;
 
 /**
- * Train of XSL shifts.
+ * Train of XSL shifts that turn XMIR into canonical one.
  *
- * @since 0.1
+ * @since 0.48
  */
-public final class TrParsing extends TrEnvelope {
+public final class TrCanonical extends TrEnvelope {
     /**
      * Ctor.
      */
-    public TrParsing() {
+    public TrCanonical() {
         super(
             new TrStepped(
                 new TrFast(
                     new TrLambda(
                         new TrLogged(
-                            new TrClasspath<>(
-                                "/org/eolang/parser/cti-adds-errors.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/expand-qqs.xsl",
-                                "/org/eolang/parser/add-probes.xsl",
-                                "/org/eolang/parser/vars-float-up.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/expand-aliases.xsl",
-                                "/org/eolang/parser/resolve-aliases.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/add-default-package.xsl",
-                                "/org/eolang/parser/explicit-data.xsl",
-                                "/org/eolang/parser/set-locators.xsl",
-                                "/org/eolang/parser/clean-up.xsl"
-                            ).back(),
-                            TrParsing.class,
+                            new TrJoined<>(
+                                new TrDefault<>(
+                                    new StEndless(
+                                        new StClasspath(
+                                            "/org/eolang/parser/stars-to-tuples.xsl"
+                                        )
+                                    )
+                                ),
+                                new TrClasspath<>(
+                                    "/org/eolang/parser/wrap-method-calls.xsl",
+                                    "/org/eolang/parser/const-to-dataized.xsl"
+                                ).back()
+                            ),
+                            TrCanonical.class,
                             Level.FINEST
                         ),
                         StEoLogged::new
                     ),
-                    TrFast.class,
+                    TrCanonical.class,
                     500L
                 )
             )

@@ -20,14 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets: [ ]
+sheets:
+  - /org/eolang/parser/expand-qqs.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/vars-float-up.xsl
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/explicit-data.xsl
+  - /org/eolang/parser/dataized-to-const.xsl
 asserts:
-  - //o[@base='one' and @name='test']
-  - //o[@base='one' and count(o)=1]
-  - //o[@base='.two' and @method and o[@base='number']]
-  - //o[@base='.three' and @method and o[@base='number']]
+  - //o[@base='org.eolang.x' and @const and @name='first']
+  - //o[@base='.as-bytes' and @name='second']/o[@base='org.eolang.dataized']
+  - //o[@base='org.eolang.a' and @const and @name='third']/o[@base='org.eolang.b']
+  - //o[@name='fourth-1' and not(@base)]
+  - //o[@base='fourth-1' and @name='fourth' and @const]
+  - //o[@base='org.eolang.number' and @name='fifths' and @const]/o[@base='org.eolang.bytes' and text()!='']
+  - //o[@base='org.eolang.bytes' and @name='sixth' and @const and text()='2A-']
 input: |
-  one > test
-    "hello"
-  .two 2
-  .three 3
+  # No comments.
+  [] > foo
+    x > first!
+    dataized.as-bytes > second
+    a b > third!
+    [] > fourth!
+    5 > fifths!
+    2A- > sixth!

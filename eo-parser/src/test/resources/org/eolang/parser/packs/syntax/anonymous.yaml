@@ -22,7 +22,7 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(o)=5]
+  - //objects[count(o)=3]
   - //o[@base='.plus' and @name='a']
   - //o[@base='number' and @name='@' and starts-with(text(), '40-14')]
 input: |

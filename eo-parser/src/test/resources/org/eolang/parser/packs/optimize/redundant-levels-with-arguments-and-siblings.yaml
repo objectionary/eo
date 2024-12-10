@@ -33,14 +33,12 @@ asserts:
   - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t2$first' and @name='first' and count(o)=1]
   - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t2$second' and @name='second' and count(o)=1]
   # 'main$t2$first' object
-  - //o[@name='main$t2$first' and count(o)=3]
-  - //o[@name='main$t2$first']/o[@base='arg' and not(@name)]
-  - //o[@name='main$t2$first']/o[@base='.one' and @name='@']
+  - //o[@name='main$t2$first' and count(o)=2]
+  - //o[@name='main$t2$first']/o[@base='.one' and @name='@']/o[@base='arg' and not(@name)]
   - //o[@name='main$t2$first']/o[@base='∅' and @name='arg']
   # 'main$t2$second' object
-  - //o[@name='main$t2$second' and count(o)=3]
-  - //o[@name='main$t2$second']/o[@base='arg' and not(@name)]
-  - //o[@name='main$t2$second']/o[@base='.two' and @name='@']
+  - //o[@name='main$t2$second' and count(o)=2]
+  - //o[@name='main$t2$second']/o[@base='.two' and @name='@']/o[@base='arg' and not(@name)]
   - //o[@name='main$t2$second']/o[@base='∅' and @name='arg']
 # Currently the test converts the code from the snippet to:
 # ____

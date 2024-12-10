@@ -21,31 +21,25 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/cti-adds-errors.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/expand-qqs.xsl
-  - /org/eolang/parser/add-probes.xsl
+  - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/expand-aliases.xsl
-  - /org/eolang/parser/resolve-aliases.xsl
-  - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
-  - /org/eolang/parser/const-to-dataized.xsl
-  - /org/eolang/parser/set-locators.xsl
-  - /org/eolang/parser/clean-up.xsl
 asserts:
   - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.number' and not(@name)]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@name='m-3' and count(o)=2]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@base='m-3']]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='org.eolang.dataized']/o[@base='org.eolang.number']/o[@base='org.eolang.bytes' and text()!='']
+  - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='org.eolang.dataized']/o[@base='org.eolang.bytes' and text()='2A-']
+  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
+  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]]
   - //objects[count(//o[@const])=0]
 input: |
   # No comments.
   [] > foo
     number > x!
+    5 > num!
+    2A- > bts!
     # No comments.
     [] > m!
       a

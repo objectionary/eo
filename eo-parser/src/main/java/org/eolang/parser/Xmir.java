@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrLambda;
@@ -59,9 +60,12 @@ public final class Xmir {
     private static final Train<Shift> TRAIN = new TrLogged(
         new TrLambda(
             new TrDefault<>(
+                new StEndless(
+                    new StClasspath("/org/eolang/parser/tuples-to-stars.xsl")
+                ),
                 new StClasspath("/org/eolang/parser/explicit-data.xsl"),
+                new StClasspath("/org/eolang/parser/dataized-to-const.xsl"),
                 new StUnhex(),
-                new StClasspath("/org/eolang/parser/wrap-method-calls.xsl"),
                 new StClasspath("/org/eolang/parser/wrap-data.xsl")
             ),
             shift -> new StAfter(

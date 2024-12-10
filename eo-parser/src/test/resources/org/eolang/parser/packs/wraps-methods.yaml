@@ -20,8 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets:
-  - /org/eolang/parser/wrap-method-calls.xsl
+sheets: [ ]
 asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]

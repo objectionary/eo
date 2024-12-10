@@ -35,7 +35,16 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:param name="scope"/>
     <xsl:param name="counter"/>
-    <xsl:variable name="unique" select="concat($name, '-', $counter)"/>
+    <xsl:variable name="unique">
+      <xsl:choose>
+        <xsl:when test="$counter=0">
+          <xsl:value-of select="$name"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat($name, '-', $counter)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="$scope[o[@name=$unique]]">
         <xsl:value-of select="eo:unique-name($name, $scope, $counter + 1)"/>
@@ -62,12 +71,15 @@ SOFTWARE.
           </xsl:for-each>
           <xsl:if test="eo:abstract(.)">
             <xsl:attribute name="name">
-              <xsl:value-of select="eo:unique-name(@name, ./parent::o, 1)"/>
+              <xsl:value-of select="eo:unique-name(@name, ./parent::o, 0)"/>
             </xsl:attribute>
           </xsl:if>
           <xsl:for-each select="o">
             <xsl:apply-templates select="."/>
           </xsl:for-each>
+          <xsl:if test="eo:has-data(.)">
+            <xsl:value-of select="."/>
+          </xsl:if>
         </xsl:element>
       </xsl:element>
     </xsl:element>
