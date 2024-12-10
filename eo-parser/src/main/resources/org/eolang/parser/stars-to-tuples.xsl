@@ -38,7 +38,7 @@ SOFTWARE.
       <o base="tuple">
         <o base="tuple">
           <o base="tuple">
-          <o base=".emtpy" method=""/>
+          <o base=".empty" method=""/>
           <o base="1"/>
         </o>
         <o base="2"/>
