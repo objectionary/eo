@@ -25,8 +25,10 @@ package org.eolang.parser;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -56,11 +58,6 @@ import org.xembly.Directives;
 })
 public final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
-     * Meta for testing.
-     */
-    private static final String TESTS_META = "tests";
-
-    /**
      * The name of it.
      */
     private final String name;
@@ -81,9 +78,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * If metas has "+tests" meta.
+     * Errors map.
      */
-    private boolean tests;
+    private final Map<ParserRuleContext, String> errors;
 
     /**
      * Ctor.
@@ -93,6 +90,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
+        this.errors = new HashMap<>(0);
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -107,8 +105,20 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
+        this.dirs.xpath("/program").strict(1);
+        if (!this.errors.isEmpty()) {
+            this.dirs.addIf("errors").strict(1);
+            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
+                this.dirs
+                    .add("error")
+                    .attr("check", "eo-parser")
+                    .attr("line", error.getKey().getStart().getLine())
+                    .attr("severity", "critical")
+                    .set(error.getValue());
+            }
+            this.dirs.up().up();
+        }
         this.dirs
-            .xpath("/program")
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
@@ -147,9 +157,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
             final String head = pair[0].substring(1);
-            if (XeEoListener.TESTS_META.equals(head)) {
-                this.tests = true;
-            }
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
                 .add("head").set(head).up()
@@ -1143,7 +1150,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             has = ctx.NAME().getText();
         } else {
-            has = String.format("α%d", Integer.parseInt(ctx.INT_POSITIVE().getText()));
+            final int index = Integer.parseInt(ctx.INT().getText());
+            if (index < 0) {
+                this.errors.put(ctx, "Object binding can't be negative");
+            }
+            has = String.format("α%d", index);
         }
         this.objects.prop("as", has);
     }
@@ -1194,14 +1205,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         } else {
-            throw new ParsingException(
-                String.format(
-                    "Unknown data type at line #%d",
-                    ctx.getStart().getLine()
-                ),
-                new IllegalArgumentException(),
-                ctx.getStart().getLine()
-            );
+            base = "unknown";
+            data = ctx::getText;
+            this.errors.put(ctx, String.format("Unknown data type: %s", ctx.getText()));
         }
         this.objects.prop("base", base).data(data.get());
     }

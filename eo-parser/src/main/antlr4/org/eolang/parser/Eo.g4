@@ -571,7 +571,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | INT_POSITIVE)
+as  : COLON (NAME | INT)
     ;
 
 // Data
