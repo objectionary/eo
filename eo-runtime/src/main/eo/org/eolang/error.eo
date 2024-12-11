@@ -32,4 +32,4 @@
 # The first attempt to dataize it will lead to runtime error and program
 # termination. The only way to catch such an error is by using
 # the `try` object.
-[message] > error /error
+[message] > error /org.eolang.error

@@ -54,7 +54,7 @@
   # (regex "/[a-z]+").matches "hello"
   # ```
   # The two lines of code above works the same.
-  [] > compiled /pattern
+  [] > compiled /org.eolang.txt.regex.pattern
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
@@ -74,7 +74,7 @@
       #
       # Attention! The object is for internal usage only, please
       # don't use the object programmatically outside of `regex` object.
-      [position start] > matched-from-index /matched
+      [position start] > matched-from-index /org.eolang.txt.regex.pattern.match.matched
 
       # Block matched the pattern.
       # Here:

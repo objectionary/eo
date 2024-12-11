@@ -31,4 +31,4 @@
 # `error` object. When being dataized, such objects will crash the problem.
 # Decorate them with `try` and errors will be caught by the `catch`
 # abstract object here and the enclosure of the `error` will be passed to it.
-[main catch finally] > try /bytes
+[main catch finally] > try /org.eolang.bytes

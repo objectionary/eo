@@ -292,13 +292,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAtom(final EoParser.AtomContext ctx) {
-        this.startObject(ctx);
-        if (ctx.type().NAME() != null) {
-            this.objects.prop("atom", ctx.type().NAME().getText());
-        } else if (ctx.type().QUESTION() != null) {
-            this.objects.prop("atom", ctx.type().QUESTION().getText());
-        }
-        this.objects.leave();
+        this.startObject(ctx)
+            .prop("atom", ctx.type().typeFqn().getText())
+            .leave();
     }
 
     @Override
@@ -363,6 +359,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitType(final EoParser.TypeContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTypeFqn(final EoParser.TypeFqnContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTypeFqn(final EoParser.TypeFqnContext ctx) {
         // Nothing here
     }
 

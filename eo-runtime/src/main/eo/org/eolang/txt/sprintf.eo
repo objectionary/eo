@@ -36,4 +36,4 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
-[format args] > sprintf /string
+[format args] > sprintf /org.eolang.string

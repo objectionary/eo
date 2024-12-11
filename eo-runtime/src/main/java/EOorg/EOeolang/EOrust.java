@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.ExNative;
 import org.eolang.PhDefault;
@@ -91,7 +92,7 @@ public final class EOrust extends PhDefault implements Atom {
 
     static {
         try {
-            NAMES = load("target/names");
+            NAMES = EOrust.load("target/names");
         } catch (final IOException exc) {
             throw new ExFailure(
                 "Cannot read the file target/eo-test/names",
@@ -237,15 +238,21 @@ public final class EOrust extends PhDefault implements Atom {
         final byte determinant = message[0];
         final byte[] content = Arrays.copyOfRange(message, 1, message.length);
         final Phi ret;
-        final ByteBuffer buffer;
+        if (determinant < 0 || determinant > 5) {
+            throw new ExNative(
+                "Can't determine EO object by given enum value #%d, insert %s",
+                determinant,
+                insert
+            );
+        }
         switch (determinant) {
             case 0:
-                buffer = ByteBuffer.allocate(Integer.BYTES);
+                final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
                 buffer.put(content);
                 buffer.flip();
                 final int vertex = buffer.getInt();
-                ret = this.phis.get(vertex);
-                if (ret == null) {
+                final Phi indexed = this.phis.get(vertex);
+                if (indexed == null) {
                     throw new ExFailure(
                         String.format(
                             "Returned phi with vertex %d (%s in bytes) was not indexed",
@@ -254,26 +261,7 @@ public final class EOrust extends PhDefault implements Atom {
                         )
                     );
                 }
-                break;
-            case 1:
-                buffer = ByteBuffer.allocate(Double.BYTES);
-                buffer.put(content);
-                buffer.flip();
-                ret = new Data.ToPhi(buffer.getDouble());
-                break;
-            case 2:
-                buffer = ByteBuffer.allocate(Long.BYTES);
-                buffer.put(content);
-                buffer.flip();
-                ret = new Data.ToPhi(buffer.getLong());
-                break;
-            case 4:
-                ret = new Data.ToPhi(content);
-                break;
-            case 3:
-                ret = new Data.ToPhi(
-                    new String(content, StandardCharsets.UTF_8)
-                );
+                ret = new Data.ToPhi(new Dataized(indexed).take());
                 break;
             case 5:
                 final String cause = new String(content, StandardCharsets.UTF_8);
@@ -294,10 +282,7 @@ public final class EOrust extends PhDefault implements Atom {
                     );
                 }
             default:
-                throw new ExNative(
-                    "Returning Strings and raw bytes is not implemented yet, insert %s",
-                    insert
-                );
+                ret = new Data.ToPhi(content);
         }
         return ret;
     }

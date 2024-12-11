@@ -37,7 +37,7 @@
   6 > ipproto-tcp
   -1 > inaddr-none
 
-  [] > @ /return
+  [] > @ /org.eolang.sys.posix.return
 
   [code output] > return
     $ > called
