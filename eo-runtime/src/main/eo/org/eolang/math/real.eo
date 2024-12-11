@@ -64,16 +64,16 @@
       value.neg
 
   # Make `^.num` power `x`.
-  [x] > pow /number
+  [x] > pow /org.eolang.number
 
   # Returns the positive square root of a `num`.
-  [] > sqrt /number
+  [] > sqrt /org.eolang.number
 
   # Returns the natural logarithm `e` of a `num`.
-  [] > ln /number
+  [] > ln /org.eolang.number
 
   # Calculates arc cosine of a `num`.
-  [] > acos /number
+  [] > acos /org.eolang.number
 
   # Calculates arc sine of a `num`.
-  [] > asin /number
+  [] > asin /org.eolang.number

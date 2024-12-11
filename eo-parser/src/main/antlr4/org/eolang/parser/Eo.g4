@@ -138,7 +138,12 @@ void
     ;
 
 // Type of atom
-type: SPACE SLASH (NAME | QUESTION)
+type: SPACE SLASH typeFqn
+    ;
+
+// Type FQN
+typeFqn
+    : NAME (DOT NAME)*
     ;
 
 // Application

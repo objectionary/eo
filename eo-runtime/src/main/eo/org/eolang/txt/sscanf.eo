@@ -36,4 +36,4 @@
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
-[format read] > sscanf /tuple
+[format read] > sscanf /org.eolang.tuple

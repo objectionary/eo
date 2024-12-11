@@ -40,7 +40,7 @@
   # The object is an atom because it's not possible to check what
   # bytes should be added from left so the number is valid.
   # The different bytes should be added if number is positive and negative.
-  [] > as-i64 /i64
+  [] > as-i64 /org.eolang.i64
 
   # Convert this `i32` to `i16`.
   # The `error` is returned if the `i32` number is more than

@@ -35,6 +35,7 @@ asserts:
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
+  - //o[@atom='org.eolang.number']
 input: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
@@ -123,7 +124,7 @@ input: |
 
   # No comments.
   [] > ooo
-    [] > o-1 /?
+    [] > o-1 /org.eolang.number
 
     [] > o2
 

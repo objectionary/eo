@@ -44,11 +44,11 @@
 
   # Sine of current angle.
   # Please note, that `sin` is calculated from the angle in radians.
-  [] > sin /number
+  [] > sin /org.eolang.number
 
   # Cosine of current angle.
   # Please note, that `cos` is calculated from the angle in radians.
-  [] > cos /number
+  [] > cos /org.eolang.number
 
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.
