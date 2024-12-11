@@ -236,8 +236,6 @@ public final class EOrust extends PhDefault implements Atom {
      */
     private Phi translate(final byte[] message, final String insert) {
         final byte determinant = message[0];
-        final byte[] content = Arrays.copyOfRange(message, 1, message.length);
-        final Phi ret;
         if (determinant < 0 || determinant > 5) {
             throw new ExNative(
                 "Can't determine EO object by given enum value #%d, insert %s",
@@ -245,6 +243,8 @@ public final class EOrust extends PhDefault implements Atom {
                 insert
             );
         }
+        final Phi ret;
+        final byte[] content = Arrays.copyOfRange(message, 1, message.length);
         switch (determinant) {
             case 0:
                 final ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
