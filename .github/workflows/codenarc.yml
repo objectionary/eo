@@ -47,4 +47,4 @@ jobs:
             -maxPriority2Violations=50 \
             -maxPriority3Violations=200 \
             -failOnError=true \
-            -rulesetfiles=.codenarc
+            -rulesetfiles=file:.codenarc
