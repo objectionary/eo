@@ -73,4 +73,4 @@ jobs:
           echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
       - run: cargo --version
-      - run: mvn clean install -Pqulice --errors --batch-mode
+      - run: mvn clean install --errors --batch-mode
