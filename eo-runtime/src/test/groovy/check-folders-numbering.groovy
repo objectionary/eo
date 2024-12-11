@@ -1,5 +1,3 @@
-import java.util.stream.Collectors
-
 /**
  * The MIT License (MIT)
  *
@@ -24,6 +22,8 @@ import java.util.stream.Collectors
  * SOFTWARE.
  */
 
+import java.util.stream.Collectors
+
 target = basedir.toPath().resolve("target").resolve("eo")
 List<File> directories = target.toFile().listFiles(new FileFilter() {
   @Override
@@ -40,6 +40,7 @@ List<String> allowed = [
   '6-lint',
   '7-pre',
   '8-transpile',
+  'phi'
 ]
 List<File> allowedDirs = allowed.stream()
   .map { target.resolve(it).toFile() }

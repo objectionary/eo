@@ -1,0 +1,50 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+name: codenarc
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  codenarc:
+    name: codenarc
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - run: |
+          wget --quiet https://repo1.maven.org/maven2/org/codenarc/CodeNarc/3.5.0/CodeNarc-3.5.0-all.jar
+          java -cp CodeNarc-3.5.0-all.jar \
+            org.codenarc.CodeNarc \
+            -report=text:stdout \
+            -maxPriority1Violations=0 \
+            -maxPriority2Violations=50 \
+            -maxPriority3Violations=200 \
+            -failOnError=true \
+            -rulesetfiles=rulesets/basic.xml,rulesets/braces.xml,rulesets/comments.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/enhanced.xml,rulesets/exceptions.xml,rulesets/formatting.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/naming.xml,rulesets/size.xml,rulesets/unnecessary.xml,rulesets/unused.xml
