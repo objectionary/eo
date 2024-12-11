@@ -42,5 +42,6 @@ jobs:
           wget --quiet https://repo1.maven.org/maven2/org/codenarc/CodeNarc/3.5.0/CodeNarc-3.5.0-all.jar
           java -cp CodeNarc-3.5.0-all.jar \
             org.codenarc.CodeNarc \
+            -report=text:stdout \
             -failOnError=true \
             -rulesetfiles=rulesets/basic.xml,rulesets/braces.xml,rulesets/comments.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/enhanced.xml,rulesets/exceptions.xml,rulesets/formatting.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/naming.xml,rulesets/size.xml,rulesets/unnecessary.xml,rulesets/unused.xml
