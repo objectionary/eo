@@ -78,11 +78,6 @@ SOFTWARE.
     <xsl:value-of select="$ret"/>
   </xsl:function>
   <xsl:template match="o">
-    <xsl:if test="@method">
-      <xsl:message terminate="yes">
-        <xsl:text>This transformation must be applied only after you remove @method attributes from objects, using 'wrap-method-calls.xsl'</xsl:text>
-      </xsl:message>
-    </xsl:if>
     <xsl:copy>
       <xsl:attribute name="loc" select="eo:locator(/program, .)"/>
       <xsl:apply-templates select="node()|@* except @loc"/>

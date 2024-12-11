@@ -23,28 +23,27 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
-import com.yegor256.xsline.StLambda;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrLambda;
+import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.util.logging.Level;
 
 /**
- * Prints XMIR to EO.
- *
- * <p>Default Xmir that prints EO with straight vertical methods.</p>
+ * Prints XMIR to EO or PHI.
  *
  * <p>This class will help you turn XMIR (XML document) into EOLANG
- * plain text source code. It's as simple as this:</p>
+ * plain text source code or PHI calculus expression. It's as simple as this:</p>
  *
- * <pre> String eo = new Xmir.Default(xml).toEO();</pre>
+ * <pre> String eo = new Xmir(xml).toEO();</pre>
+ * <pre> String phi = new Xmir(xml).toPhi();</pre>
  *
  * <p>Here, the {@code xml} is a {@code String} or an instance
  * of {@code XML} from the jcabi-xml package.</p>
@@ -53,31 +52,53 @@ import com.yegor256.xsline.Xsline;
  * @since 0.35.0
  */
 public final class Xmir {
+    /**
+     * Train of transformations that prepare XMIR for conversion to EO.
+     */
+    private static final Train<Shift> FOR_EO = new TrStepped(
+        new TrFast(
+            new TrLogged(
+                new TrDefault<>(
+                    new StEndless(
+                        new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
+                    ),
+                    new StClasspath("/org/eolang/parser/explicit-data.xsl"),
+                    new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
+                    new StUnhex(),
+                    new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
+                ),
+                Xmir.class,
+                Level.FINEST
+            ),
+            Xmir.class,
+            500L
+        )
+    );
 
     /**
-     * Train of transformations.
+     * Train of transformations that prepare XMIR for conversion to PHI.
      */
-    private static final Train<Shift> TRAIN = new TrLogged(
-        new TrLambda(
-            new TrDefault<>(
-                new StEndless(
-                    new StClasspath("/org/eolang/parser/tuples-to-stars.xsl")
-                ),
-                new StClasspath("/org/eolang/parser/explicit-data.xsl"),
-                new StClasspath("/org/eolang/parser/dataized-to-const.xsl"),
-                new StUnhex(),
-                new StClasspath("/org/eolang/parser/wrap-data.xsl")
+    private static final Train<Shift> FOR_PHI = new TrStepped(
+        new TrFast(
+            new TrLogged(
+                new TrClasspath<>(
+                    "/org/eolang/parser/add-refs.xsl",
+                    "/org/eolang/parser/expand-qqs.xsl",
+                    "/org/eolang/parser/vars-float-up.xsl",
+                    "/org/eolang/parser/add-refs.xsl",
+                    "/org/eolang/parser/expand-aliases.xsl",
+                    "/org/eolang/parser/resolve-aliases.xsl",
+                    "/org/eolang/parser/add-refs.xsl",
+                    "/org/eolang/parser/add-default-package.xsl",
+                    "/org/eolang/parser/explicit-data.xsl",
+                    "/org/eolang/parser/phi/incorrect-inners.xsl",
+                    "/org/eolang/parser/phi/wrap-default-package.xsl"
+                ).back(),
+                Xmir.class,
+                Level.FINEST
             ),
-            shift -> new StAfter(
-                shift,
-                new StLambda(
-                    shift::uid,
-                    (pos, xml) -> {
-                        Logger.debug(Xmir.class, "Step #%d\n%s", pos, xml);
-                        return xml;
-                    }
-                )
-            )
+            Xmir.class,
+            500L
         )
     );
 
@@ -99,28 +120,70 @@ public final class Xmir {
      * @return EO representation as {@code String}
      */
     public String toEO() {
-        return this.via("/org/eolang/parser/xmir-to-eo.xsl");
+        return this.converted(
+            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo.xsl", "eo/text()"
+        );
     }
 
     /**
      * Converts XMIR to EO, in reverse notation.
      * @return EO representation as {@code String}
      */
-    public String toReversed() {
-        return this.via("/org/eolang/parser/xmir-to-eo-reversed.xsl");
+    public String toReversedEO() {
+        return this.converted(
+            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo-reversed.xsl", "eo/text()"
+        );
     }
 
     /**
-     * Converts XMIR to EO, via provided XSL.
-     * @param xsl The XSL
+     * Converts XMIR to PHI.
      * @return EO representation as {@code String}
      */
-    private String via(final String xsl) {
-        return new Xsline(
-            Xmir.TRAIN.with(
-                new StClasspath(xsl)
-            )
-        ).pass(this.xml).xpath("eo/text()").get(0);
+    public String toPhi() {
+        return this.converted(
+            new TrJoined<>(
+                Xmir.FOR_PHI,
+                new TrDefault<>(
+                    new StUnhex(), new StClasspath("/org/eolang/parser/phi/to-phi.xsl")
+                )
+            ),
+            "program/phi/text()"
+        );
     }
 
+    /**
+     * Converts XMIR to PHI without any syntax sugar.
+     * @return EO representation as {@code String}
+     */
+    public String toPhiNoSugar() {
+        return this.converted(
+            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-phi-no-sugar.xsl", "program/phi/text()"
+        );
+    }
+
+    @Override
+    public String toString() {
+        return this.xml.toString();
+    }
+
+    /**
+     * Converts XMIR.
+     * @param train Train of transformations that prepares XMIR
+     * @param xsl Final XSL transformation
+     * @param xpath Xpath to retrieve the final result
+     * @return XMIR in other representation as {@code String}.
+     */
+    private String converted(final Train<Shift> train, final String xsl, final String xpath) {
+        return this.converted(new TrJoined<>(train.with(new StClasspath(xsl))), xpath);
+    }
+
+    /**
+     * Converts XMIR.
+     * @param train Train of transformations that prepares XMIR
+     * @param xpath Xpath to retrieve the final result
+     * @return XMIR in other representation as {@code String}.
+     */
+    private String converted(final Train<Shift> train, final String xpath) {
+        return new Xsline(train).pass(this.xml).xpath(xpath).get(0);
+    }
 }

@@ -243,7 +243,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("phiOptimize", false);
+            this.params.putIfAbsent("phiNoSugar", false);
             this.params.putIfAbsent("phiSkipFailed", false);
             this.params.putIfAbsent(
                 "eoPortalDir",

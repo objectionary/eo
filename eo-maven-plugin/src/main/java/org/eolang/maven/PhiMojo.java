@@ -26,16 +26,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -44,8 +37,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.StUnhex;
-import org.eolang.parser.TrParsing;
+import org.eolang.parser.Xmir;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
@@ -61,16 +53,6 @@ public final class PhiMojo extends SafeMojo {
      * Extension of the file where we put phi-calculus expression (.phi).
      */
     public static final String EXT = "phi";
-
-    /**
-     * Train of mandatory transformations.
-     */
-    private static final Train<Shift> TRANSFORMATIONS = new TrDefault<>(
-        new StClasspath("/org/eolang/maven/phi/incorrect-inners.xsl"),
-        new StUnhex(),
-        new StClasspath("/org/eolang/maven/phi/wrap-default-package.xsl"),
-        new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
-    );
 
     /**
      * The directory where to take xmir files for translation from.
@@ -95,26 +77,23 @@ public final class PhiMojo extends SafeMojo {
     private File phiOutputDir;
 
     /**
-     * Pass XMIR to Optimizations train or not.
-     * This flag is used for test in order not to optimize XMIR twice:
-     * in {@link OptimizeMojo} and here.
-     * @checkstyle MemberNameCheck (5 lines)
+     * Convert to PHI without syntax sugar.
+     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.phiOptimize", required = true, defaultValue = "true")
+    @Parameter(property = "eo.phiNoSugar", required = true, defaultValue = "false")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean phiOptimize = true;
+    private boolean phiNoSugar;
 
     @Override
     public void exec() {
         final AtomicInteger passed = new AtomicInteger();
         final Walk walk = new Walk(this.phiInputDir.toPath());
         final int total = walk.size();
-        final Xsline xsline = new Xsline(this.train());
         final int count = new Threaded<>(
             walk,
             xmir -> {
                 final int position = passed.addAndGet(1);
-                return this.translate(xmir, xsline, position, total);
+                return this.translate(xmir, position, total);
             }
         ).total();
         if (count > 0) {
@@ -133,14 +112,13 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Translate one XMIR file to .phi file.
      * @param xmir The XMIR file
-     * @param xsline Chain of XSL transformations
      * @param position Its position in the entire pack
      * @param total How many files are there
      * @return How many files translated (either 1 or 0)
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private int translate(final Path xmir, final Xsline xsline, final int position, final int total)
+    private int translate(final Path xmir, final int position, final int total)
         throws Exception {
         final long start = System.currentTimeMillis();
         Logger.debug(
@@ -148,7 +126,6 @@ public final class PhiMojo extends SafeMojo {
             "Processing XMIR (#%d/%d): %[file]s (%[size]s)...",
             position, total, xmir, xmir.toFile().length()
         );
-        final XML xml = new XMLDocument(new TextOf(xmir).asString());
         final Path relative = Paths.get(
             this.phiInputDir.toPath().relativize(xmir).toString().replace(
                 String.format(".%s", AssembleMojo.XMIR),
@@ -156,8 +133,9 @@ public final class PhiMojo extends SafeMojo {
             )
         );
         final Path target = this.phiOutputDir.toPath().resolve(relative);
+        final XML xml = new XMLDocument(new TextOf(xmir).asString());
         try {
-            new Saved(PhiMojo.translated(xsline, xml), target).value();
+            new Saved(this.translated(xml), target).value();
             Logger.info(
                 this,
                 "Translated to phi (#%d/%d): %[file]s (%[size]s) -> %[file]s (%[size]s) in %[ms]s",
@@ -177,37 +155,27 @@ public final class PhiMojo extends SafeMojo {
     }
 
     /**
-     * Build transformations train depends on flags.
-     * @return Transformations train
-     */
-    private Train<Shift> train() {
-        final Train<Shift> train;
-        if (this.phiOptimize) {
-            train = new TrParsing();
-        } else {
-            train = new TrDefault<>();
-        }
-        return this.measured(new TrJoined<>(train, PhiMojo.TRANSFORMATIONS));
-    }
-
-    /**
      * Translate given xmir to phi calculus expression.
-     * @param xsline Chain of XSL optimizations and transformations
-     * @param xmir Text of xmir
+     * @param xml Text of xmir
      * @return Translated xmir
      * @throws ImpossibleToPhiTranslationException If fails to translate given XMIR to phi
      */
-    private static String translated(final Xsline xsline, final XML xmir)
-        throws ImpossibleToPhiTranslationException {
-        final XML translated = xsline.pass(xmir);
-        Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
-        final List<String> phi = translated.xpath("program/phi/text()");
-        if (phi.isEmpty()) {
+    private String translated(final XML xml) throws ImpossibleToPhiTranslationException {
+        final Xmir xmir = new Xmir(xml);
+        final String phi;
+        try {
+            if (this.phiNoSugar) {
+                phi = xmir.toPhiNoSugar();
+            } else {
+                phi = xmir.toPhi();
+            }
+        } catch (final IndexOutOfBoundsException exception) {
             throw new ImpossibleToPhiTranslationException(
-                "Xpath 'phi/text()' is not found in the translated XMIR"
+                String.format("Xpath 'phi/text()' is not found in the translated XMIR: \n%s", xmir),
+                exception
             );
         }
-        return phi.get(0);
+        return phi;
     }
 
     /**
@@ -217,10 +185,11 @@ public final class PhiMojo extends SafeMojo {
     private static class ImpossibleToPhiTranslationException extends Exception {
         /**
          * Ctor.
-         * @param cause Cause of the exception.
+         * @param message Exception message
+         * @param cause Previous exception
          */
-        ImpossibleToPhiTranslationException(final String cause) {
-            super(cause);
+        ImpossibleToPhiTranslationException(final String message, final Exception cause) {
+            super(message, cause);
         }
     }
 }

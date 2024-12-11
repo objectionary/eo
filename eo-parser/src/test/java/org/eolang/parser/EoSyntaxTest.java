@@ -251,7 +251,7 @@ final class EoSyntaxTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
     void checksTypoPacks(final String yaml) {
         final Xtory story = new XtSticky(
             new XtYaml(
