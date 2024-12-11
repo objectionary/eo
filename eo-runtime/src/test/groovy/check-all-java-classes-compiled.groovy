@@ -27,6 +27,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 
 println 'Verify that all java classes were compiled successfully'
+
 Path binaries = basedir.toPath()
   .resolve("target")
   .resolve("classes")
@@ -37,7 +38,7 @@ Path classes = basedir.toPath()
   .resolve("main")
   .resolve("java")
   .resolve("org")
-  .resolve("eolang");
+  .resolve("eolang")
 Set<String> expected = Files.walk(classes)
   .filter(it -> {
     it.toString().endsWith(".java")
