@@ -250,6 +250,8 @@ SOFTWARE.
               <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.basedir}/target/eo-test</targetDir>
+              <phiInputDir>${project.basedir}/target/eo-test/2-optimize</phiInputDir>
+              <phiOutputDir>${project.basedir}/target/eo-test/phi</phiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
               <failOnWarning>false</failOnWarning>
