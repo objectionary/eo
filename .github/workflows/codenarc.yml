@@ -43,5 +43,8 @@ jobs:
           java -cp CodeNarc-3.5.0-all.jar \
             org.codenarc.CodeNarc \
             -report=text:stdout \
+            -maxPriority1Violations=0 \
+            -maxPriority2Violations=0 \
+            -maxPriority3Violations=0 \
             -failOnError=true \
             -rulesetfiles=rulesets/basic.xml,rulesets/braces.xml,rulesets/comments.xml,rulesets/concurrency.xml,rulesets/convention.xml,rulesets/design.xml,rulesets/dry.xml,rulesets/enhanced.xml,rulesets/exceptions.xml,rulesets/formatting.xml,rulesets/generic.xml,rulesets/groovyism.xml,rulesets/imports.xml,rulesets/logging.xml,rulesets/naming.xml,rulesets/size.xml,rulesets/unnecessary.xml,rulesets/unused.xml
