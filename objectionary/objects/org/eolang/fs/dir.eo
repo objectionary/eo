@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.47.0
++rt jvm org.eolang:eo-runtime:0.48.1
 +rt node eo2js-runtime:0.0.0
-+version 0.47.0
++version 0.48.1
 
 # Directory in the file system.
 # Apparently every directory is a file.
@@ -90,7 +90,8 @@
   [] > tmpfile
     if. > @
       ^.exists
-      QQ.fs.file touch.as-bytes.as-string
+      QQ.fs.file
+        string touch.as-bytes
       error
         sprintf
           "Directory %s does not exist, can't create temporary file"

@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.47.0
++version 0.48.1
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
@@ -43,7 +43,7 @@
   # Utility object that joins given `tuple` of paths with current OS separator
   # and normalizes result path.
   [paths] > joined
-    as-string. > joined-path
+    string > joined-path
       as-bytes.
         joined.
           text ^.separator
@@ -132,11 +132,10 @@
               --
       determined. > @
         ^.^.posix
-          as-string.
-            if.
-              normalized.eq "//"
-              "/"
-              normalized
+          if.
+            normalized.eq "//"
+            "/"
+            string normalized
 
     # Resolves `other` path against `^.uri` and returns as new `path` from it.
     # The original `uri` and resolving `other` may be:
@@ -269,7 +268,7 @@
     "\\" > separator
     determined. > @
       validated
-        as-string.
+        string
           as-bytes.
             validated.separated-correctly
               uri
@@ -397,11 +396,10 @@
                 --
         determined. > @
           ^.^.validated
-            as-string.
-              if.
-                normalized.eq "\\\\"
-                ^.separator
-                normalized
+            if.
+              normalized.eq "\\\\"
+              ^.separator
+              string normalized
 
       # Resolves `other` path against `^.uri` and returns as new `path` from it.
       # Original `uri` and `other` path for resolving may be:

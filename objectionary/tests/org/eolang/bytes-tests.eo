@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.47.0
++version 0.48.1
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > takes-part-of-bytes
@@ -55,7 +55,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > turns-bytes-into-a-string
   eq. > @
-    as-string.
+    string
       E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
     "你好, друг!"
 
@@ -351,8 +351,7 @@
     "hello ".as-bytes
     "world".as-bytes
   eq. > @
-    as-string.
-      s-bytes
+    string s-bytes
     "hello world"
 
 # This unit test is supposed to check the functionality of the corresponding object.
