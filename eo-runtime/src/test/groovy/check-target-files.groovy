@@ -36,8 +36,9 @@ List<String> expected = [
   'eo-test/8-transpile/runtime-tests.xmir',
   'eo-test/phi/number-tests.phi',
 ]
+
 for (path in expected) {
-  if (new File(path).exists()) {
-    fail(String.format("The file '%s' is not present", path))
-  }
+    if (new File(path).exists()) {
+        fail("The file '${path}' is not present")
+    }
 }
