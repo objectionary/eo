@@ -28,14 +28,10 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -135,12 +131,7 @@ final class PhiMojoTest {
         MatcherAssert.assertThat(
             "the .xmir file is generated",
             XhtmlMatchers.xhtml(
-                new String(
-                    Files.readAllBytes(
-                        temp.resolve("target/eo/2-optimize/org/eolang/bytes.xmir")
-                    ),
-                    StandardCharsets.UTF_8
-                )
+                Files.readString(temp.resolve("target/eo/2-optimize/org/eolang/bytes.xmir"))
             ),
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@name='bytes']",
@@ -180,34 +171,6 @@ final class PhiMojoTest {
         );
     }
 
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
-    void convertsXmirsToPhiWithoutCriticalErrorsWithoutOptimizations(
-        final String xmir,
-        @Mktmp final Path temp
-    ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(PhiMojo.class),
-            BinarizeParseTest.TO_ADD_MESSAGE
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
-    void convertsXmirsToPhiWithoutCriticalErrorsWithOptimizations(
-        final String xmir,
-        @Mktmp final Path temp
-    ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(PhiMojo.class),
-            BinarizeParseTest.TO_ADD_MESSAGE
-        );
-    }
-
     @Test
     void doesNotFailOnError(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
@@ -223,20 +186,40 @@ final class PhiMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi/yaml", glob = "**.yaml")
-    void checksPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
+    @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
+    void checksPhiPacksWithSugar(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
-            "must convert to exactly the expression we need",
+            "must convert to exactly the expression we need with syntax sugar",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(xtory.map().get("input").toString())
+                    .with("phiNoSugar", false)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(xtory.map().get("phi").toString())
+            Matchers.equalTo(xtory.map().get("with-sugar").toString())
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
+    void checksPhiPacksNoSugar(final String pack, @Mktmp final Path temp) throws Exception {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        MatcherAssert.assertThat(
+            "must convert to exactly the expression we need without syntax sugar",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(xtory.map().get("input").toString())
+                    .with("phiNoSugar", true)
+                    .execute(new FakeMaven.Phi())
+                    .result()
+                    .get("target/phi/foo/x/main.phi")
+            ).asString(),
+            Matchers.equalTo(xtory.map().get("no-sugar").toString())
         );
     }
 }

@@ -61,7 +61,15 @@ public final class PhiSyntax implements Syntax {
      * @param input Input
      */
     PhiSyntax(final String input) {
-        this("test", () -> input, new Directives());
+        this(() -> input);
+    }
+
+    /**
+     * Ctor for the tests.
+     * @param input Input
+     */
+    PhiSyntax(final Text input) {
+        this("test", input, new Directives());
     }
 
     /**

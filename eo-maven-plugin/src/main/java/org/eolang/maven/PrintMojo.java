@@ -96,7 +96,7 @@ public final class PrintMojo extends SafeMojo {
                 final XML xml = new XMLDocument(new TextOf(source).asString());
                 final String program;
                 if (this.printReversed) {
-                    program = new Xmir(xml).toReversed();
+                    program = new Xmir(xml).toReversedEO();
                 } else {
                     program = new Xmir(xml).toEO();
                 }

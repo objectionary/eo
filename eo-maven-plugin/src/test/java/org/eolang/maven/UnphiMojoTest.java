@@ -228,11 +228,11 @@ final class UnphiMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final String phi = xtory.map().get("phi").toString();
+        final String phi = xtory.map().get("with-sugar").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);

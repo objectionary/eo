@@ -86,9 +86,11 @@ final class PrintMojoTest {
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
         final Home home = new HmBase(temp);
-        final Path resources = new File("src/test/resources/org/eolang/maven/print/xmir")
-            .toPath();
+        final Path resources = new File(
+            "../eo-parser/src/test/resources/org/eolang/parser/print-packs/xmir"
+        ).toPath();
         final Collection<Path> walk = new Walk(resources);
+        Assumptions.assumeTrue(!walk.isEmpty());
         for (final Path source : walk) {
             home.save(new TextOf(source), source);
         }
@@ -114,7 +116,7 @@ final class PrintMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
     void printsInStraightNotation(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
@@ -126,7 +128,7 @@ final class PrintMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
     void printsInReversedNotation(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);

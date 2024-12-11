@@ -43,8 +43,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class XmirTest {
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
-    void printsStraight(final String pack) throws IOException {
+    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
+    void printsToEoStraight(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         MatcherAssert.assertThat(
             "Result EO should be equal to original EO",
@@ -54,13 +54,35 @@ final class XmirTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
-    void printsReversed(final String pack) throws IOException {
+    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
+    void printsToEoReversed(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         MatcherAssert.assertThat(
             "Result EO should be equal to original EO in reverse notation",
-            this.asXmir((String) xtory.map().get("origin")).toReversed(),
+            this.asXmir((String) xtory.map().get("origin")).toReversedEO(),
             Matchers.equalTo(xtory.map().get("reversed"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
+    void convertsToPhi(final String pack) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        MatcherAssert.assertThat(
+            "Result PHI should be equal to provided PHI with syntax sugar",
+            this.asXmir((String) xtory.map().get("input")).toPhi(),
+            Matchers.equalTo(xtory.map().get("with-sugar"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
+    void convertsToPhiNoSugar(final String pack) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        MatcherAssert.assertThat(
+            "Result PHI should be equal to provided PHI with syntax sugar",
+            this.asXmir((String) xtory.map().get("input")).toPhiNoSugar(),
+            Matchers.equalTo(xtory.map().get("no-sugar"))
         );
     }
 
@@ -78,5 +100,4 @@ final class XmirTest {
         );
         return new Xmir(xml);
     }
-
 }

@@ -82,7 +82,7 @@ final class TrParsingTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/parser/eo-packs/", glob = "**.yaml")
     void parsesPacks(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
