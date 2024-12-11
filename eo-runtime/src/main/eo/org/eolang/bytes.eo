@@ -64,7 +64,10 @@
   # Total number of bytes.
   [] > size /number
 
-  # Represents a sub-sequence inside the current one.
+  # Represents a sub-sequence inside the current one. It is not allowed
+  # to go outside of the available interval of bytes, either by specifying
+  # the starting point too far away on the right, or the length
+  # of the slice bigger than the length of the byte-array.
   [start len] > slice /bytes
 
   # Turn this chain of eight bytes into a i64 number.
