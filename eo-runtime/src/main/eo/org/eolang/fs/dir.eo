@@ -90,7 +90,8 @@
   [] > tmpfile
     if. > @
       ^.exists
-      QQ.fs.file touch.as-bytes.as-string
+      QQ.fs.file
+        string touch.as-bytes
       error
         sprintf
           "Directory %s does not exist, can't create temporary file"

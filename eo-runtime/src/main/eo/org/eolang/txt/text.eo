@@ -108,17 +108,17 @@
     ^.origin > delimiter!
     items.at 0 > first
     items.length > len!
+    if. > not-empty!
+      1.eq len
+      first
+      concat.
+        first.as-bytes
+        with-delimiter "".as-bytes 1
     text > @
       if.
         0.eq len
         ""
-        if.
-          1.eq len
-          first
-          as-string.
-            concat.
-              first.as-bytes
-              with-delimiter "".as-bytes 1
+        string not-empty
 
     [acc index] > with-delimiter
       if. > @
@@ -146,7 +146,7 @@
         if.
           0.eq amount
           ""
-          as-string.
+          string
             rec-repeated bts 1
 
     [accum index] > rec-repeated
@@ -249,7 +249,7 @@
       number ascii-a
       ascii "A"
     text > @
-      as-string.
+      string
         reduced.
           list
             bytes-as-array
@@ -282,7 +282,7 @@
     ^.up-cased.ascii "Z" > ascii-z
     ^.up-cased.ascii "A" > ascii-a
     text > @
-      as-string.
+      string
         reduced.
           list
             bytes-as-array
@@ -349,7 +349,7 @@
                 block.from.minus start
             ^.replacement
           block.to
-        as-string.
+        string
           accum.concat
             ^.reinit.slice
               start
@@ -404,7 +404,7 @@
       0.eq others.length
       ^
       text
-        as-string.
+        string
           reduced.
             list others
             ^.origin.as-bytes

@@ -78,7 +78,8 @@
 
   # Move current file to `target`, making and returning a new `file` from it.
   [target] > moved
-    QQ.fs.file move.as-bytes.as-string > @
+    QQ.fs.file > @
+      string move.as-bytes
 
     # Tries to move file from `^.path` to `target`
     # and returns path of moved file as `string`.
