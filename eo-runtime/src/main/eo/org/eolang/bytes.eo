@@ -35,7 +35,6 @@
   data > @
   $ > as-bytes
   $.eq 01- > as-bool
-  string $ > as-string
 
   # Turn this chain of eight bytes into a number.
   # If there are less or more than eight bytes, there will

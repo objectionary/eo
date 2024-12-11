@@ -31,7 +31,6 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -50,13 +49,14 @@ final class EObytesEOconcatTest {
     void concatenatesBytes() {
         final Phi current = new Data.ToPhi("привет ").take("as-bytes");
         final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes");
-        final Phi phi = new PhMethod(
+        final Phi phi = new PhWith(
+            Phi.Φ.take("org.eolang.string"),
+            0,
             new PhWith(
                 current.take("concat").copy(),
                 "b",
                 provided
-            ),
-            "as-string"
+            )
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
