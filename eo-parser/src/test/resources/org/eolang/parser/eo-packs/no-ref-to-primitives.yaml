@@ -31,7 +31,7 @@ input: |
   # Bytes.
   [] > bytes
     $.eq 01- > yes
-  
+
   # String.
   [] > string
     string > x
