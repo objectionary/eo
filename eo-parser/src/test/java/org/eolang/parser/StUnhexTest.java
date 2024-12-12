@@ -58,7 +58,9 @@ final class StUnhexTest {
                     "<p><o base='number'><o base='org.eolang.bytes'>FF-FF-FF-FF-FF-FF-FF-FF</o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='NaN']")
+            XhtmlMatchers.hasXPaths(
+                "//o[@base='number' and @skip and o[@base='org.eolang.bytes' and text()!='']]"
+            )
         );
     }
 
