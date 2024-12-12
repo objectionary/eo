@@ -255,6 +255,7 @@ SOFTWARE.
               <targetDir>${project.build.directory}/eo-test</targetDir>
               <phiInputDir>${project.build.directory}/eo-test/2-optimize</phiInputDir>
               <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
+              <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
