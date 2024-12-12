@@ -26,28 +26,28 @@ import java.util.stream.Collectors
 
 target = basedir.toPath().resolve("target").resolve("eo")
 List<File> directories = target.toFile().listFiles(new FileFilter() {
-  @Override
-  boolean accept(final File pathname) {
-    return pathname.isDirectory()
-  }
+    @Override
+    boolean accept(final File pathname) {
+        return pathname.isDirectory()
+    }
 })
-List<String> allowed = [
-  '1-parse',
-  '2-optimize',
-  '3-shake',
-  '4-pull',
-  '5-resolve',
-  '6-lint',
-  '7-pre',
-  '8-transpile',
-  'phi'
+var allowed = [
+    '1-parse',
+    '2-optimize',
+    '3-shake',
+    '4-pull',
+    '5-resolve',
+    '6-lint',
+    '7-pre',
+    '8-transpile',
+    'phi'
 ]
 List<File> allowedDirs = allowed.stream()
-  .map { target.resolve(it).toFile() }
-  .collect(Collectors.toList())
+    .map { target.resolve(it).toFile() }
+    .collect(Collectors.toList())
+
 for (dir in directories) {
-  if (!allowedDirs.contains(dir)) {
-    fail(String.format("The directory '%s' is not expected to be here. Allowed directories %s", dir.name, allowed));
-  }
+    if (!allowedDirs.contains(dir)) {
+        fail("The directory '${dir.name}' is not expected to be here");
+    }
 }
-true

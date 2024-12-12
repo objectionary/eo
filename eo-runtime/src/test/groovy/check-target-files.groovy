@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 /**
  * The MIT License (MIT)
  *
@@ -22,23 +24,28 @@
  * SOFTWARE.
  */
 
-List<String> expected = [
-  'eo/1-parse/bytes.xmir',
-  'eo/1-parse/fs/dir.xmir',
-  'eo/2-optimize/error.xmir',
-  'eo/2-optimize/sys/os.xmir',
-  'eo/6-lint/go.xmir',
-  'eo/8-transpile/malloc.xmir',
-  'eo/phi/number.phi',
-  'eo-test/1-parse/bool-tests.xmir',
-  'eo-test/2-optimize/go-tests.xmir',
-  'eo-test/6-lint/dataized-tests.xmir',
-  'eo-test/8-transpile/runtime-tests.xmir',
-  'eo-test/phi/number-tests.phi',
+var expected = [
+  'eo-foreign.csv',
+  'eo/1-parse/org/eolang/bytes.xmir',
+  'eo/1-parse/org/eolang/fs/dir.xmir',
+  'eo/2-optimize/org/eolang/error.xmir',
+  'eo/2-optimize/org/eolang/sys/os.xmir',
+  'eo/6-lint/org/eolang/go.xmir',
+  'eo/8-transpile/org/eolang/malloc.xmir',
+  'eo/phi/org/eolang/number.phi',
+  'eo-test/1-parse/org/eolang/bool-tests.xmir',
+  'eo-test/2-optimize/org/eolang/go-tests.xmir',
+  'eo-test/6-lint/org/eolang/dataized-tests.xmir',
+  'eo-test/8-transpile/org/eolang/runtime-tests.xmir',
+  'eo-test/phi/org/eolang/number-tests.phi',
+  'generated-sources/EOorg/EOeolang/EOdataized.java',
+  'generated-test-sources/EOorg/EOeolang/EOand_with_zeroTest.java',
+  'classes/EO-SOURCES/org/eolang/false.eo',
 ]
 
 for (path in expected) {
-    if (new File(path).exists()) {
-        fail("The file '${path}' is not present")
+    var f = Paths.get('eo-runtime/target').resolve(path).toFile()
+    if (!f.exists()) {
+        fail("The file '${f}' is not present")
     }
 }

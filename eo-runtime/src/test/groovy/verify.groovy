@@ -29,14 +29,13 @@ import java.nio.file.Path
  * To add new validation create new script in this folder and add it
  * to the list below.
  */
-Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy")
-tests = [
-  'check-folders-numbering.groovy',
-  'check-all-java-classes-compiled.groovy',
-  'check-runtime-deps.groovy'
+Path folder = basedir.toPath().resolve('src/test/groovy')
+var tests = [
+    'check-folders-numbering.groovy',
+    'check-all-java-classes-compiled.groovy',
+    'check-runtime-deps.groovy',
+    'check-target-files.groovy',
 ]
 for (it in tests) {
-  def res = evaluate folder.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
+    evaluate folder.resolve(it).toFile()
 }
-true
