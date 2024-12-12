@@ -21,9 +21,9 @@
 # SOFTWARE.
 ---
 asserts:
-  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']
-  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='text' and @base='.bytes']
-  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='size' and @base='.int']
+  - //o[@base='org.eolang.io.stdout' and @name='x']/o[@as='text' and @base='.bytes']
+  - //o[@base='org.eolang.io.stdout' and @name='x']/o[@as='size' and @base='.int']
+  - //o[@base='org.eolang.malloc.@' and @name='y']/o[@as='arg' and @base='.nan']
 phi: |
   {
     ⟦
@@ -36,6 +36,10 @@ phi: |
                 as-bytes ↦ Φ.org.eolang.bytes (α0 ↦ ⟦Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A⟧)
               ),
               λ ⤍ Lorg_eolang_io_stdout
+            ⟧,
+            y ↦ ⟦
+              arg ↦ Φ.org.eolang.nan,
+              λ ⤍ Lorg_eolang_malloc_φ
             ⟧,
             λ ⤍ Package
           ⟧,
