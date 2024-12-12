@@ -1,5 +1,3 @@
-import java.nio.file.Paths
-
 /**
  * The MIT License (MIT)
  *
@@ -23,6 +21,8 @@ import java.nio.file.Paths
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import java.nio.file.Paths
 
 var expected = [
   'eo-foreign.csv',
