@@ -76,23 +76,23 @@ public final class StrictXmir implements XML {
     }
 
     @Override
-    public List<String> xpath(final String xpath) {
-        return this.xml.xpath(xpath);
+    public List<String> xpath(final String query) {
+        return this.xml.xpath(query);
     }
 
     @Override
-    public List<XML> nodes(final String xpath) {
-        return this.xml.nodes(xpath);
+    public List<XML> nodes(final String query) {
+        return this.xml.nodes(query);
     }
 
     @Override
-    public XML registerNs(final String pfx, final Object uri) {
-        return this.xml.registerNs(pfx, uri);
+    public XML registerNs(final String prefix, final Object uri) {
+        return this.xml.registerNs(prefix, uri);
     }
 
     @Override
-    public XML merge(final NamespaceContext ctx) {
-        return this.xml.merge(ctx);
+    public XML merge(final NamespaceContext context) {
+        return this.xml.merge(context);
     }
 
     @Override
@@ -117,8 +117,8 @@ public final class StrictXmir implements XML {
     }
 
     @Override
-    public Collection<SAXParseException> validate(final XML xsd) {
-        return this.xml.validate(xsd);
+    public Collection<SAXParseException> validate(final XML schema) {
+        return this.xml.validate(schema);
     }
 
     /**
