@@ -172,29 +172,46 @@ public final class StrictXmir implements XML {
      * @param path The file
      * @return Where it was saved
      */
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private static File download(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
         if (!abs.exists()) {
             if (abs.getParentFile().mkdirs()) {
                 Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
             }
-            try {
-                Files.write(
-                    path,
-                    new IoCheckedBytes(
-                        new BytesOf(new InputOf(new URI(uri)))
-                    ).asBytes()
-                );
-            } catch (final IOException ex) {
-                throw new IllegalArgumentException(
-                    String.format("Failed to download %s to %s", uri, path),
-                    ex
-                );
-            } catch (final URISyntaxException ex) {
-                throw new IllegalArgumentException(
-                    String.format("Wrong URI: %s", uri),
-                    ex
-                );
+            int attempt = 0;
+            while (true) {
+                ++attempt;
+                try {
+                    Files.write(
+                        path,
+                        new IoCheckedBytes(
+                            new BytesOf(new InputOf(new URI(uri)))
+                        ).asBytes()
+                    );
+                    break;
+                } catch (final IOException ex) {
+                    if (attempt < 3) {
+                        Logger.warn(
+                            StrictXmir.class,
+                            "Attempt #%d failed to download %s to %s: %[exception]s",
+                            attempt,
+                            uri,
+                            path,
+                            ex
+                        );
+                        continue;
+                    }
+                    throw new IllegalArgumentException(
+                        String.format("Failed to download %s to %s", uri, path),
+                        ex
+                    );
+                } catch (final URISyntaxException ex) {
+                    throw new IllegalArgumentException(
+                        String.format("Wrong URI: %s", uri),
+                        ex
+                    );
+                }
             }
         }
         return abs;
