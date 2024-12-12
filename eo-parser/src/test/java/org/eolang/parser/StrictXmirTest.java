@@ -40,7 +40,7 @@ final class StrictXmirTest {
     @Test
     void validatesXmir() throws Exception {
         MatcherAssert.assertThat(
-            "Result EO should be equal to original EO",
+            "validation should pass as normal",
             new StrictXmir(
                 new Xmir(
                     new XMLDocument(
