@@ -20,14 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets:
-  - /org/eolang/parser/add-refs.xsl
-asserts:
-  - /program[not(errors)]
-  - /program/objects[count(.//o[@ref])=0]
 input: |
-  +package org.eolang
-
-  # No comments.
-  [] > bytes
-    $.eq 01- > yes
+  # Foo.
+  [] > negative-infinity
+    number FF-F0-00-00-00-00-00-00 > @
+with-sugar: |-
+  {
+    ⟦
+      negative-infinity ↦ ⟦
+        φ ↦ Φ̇.number(Φ̇.bytes(⟦ Δ ⤍ FF-F0-00-00-00-00-00-00 ⟧))
+      ⟧
+    ⟧
+  }
+no-sugar: |-
+  {
+    ⟦
+      negative-infinity ↦ ⟦
+        φ ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ FF-F0-00-00-00-00-00-00 ⟧
+          )
+        )
+      ⟧
+    ⟧
+  }

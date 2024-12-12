@@ -51,13 +51,18 @@ public final class StUnhex extends StEnvelope {
                     StUnhex.class.getSimpleName(),
                     new StXPath(
                         StUnhex.xpath("number"),
-                        xml -> StUnhex.append(
-                            StUnhex.number(
-                                StUnhex.buffer(
-                                    StUnhex.undash(xml.xpath("./o/text()").get(0))
-                                ).getDouble()
-                            )
-                        )
+                        xml -> {
+                            final double number = StUnhex.buffer(
+                                StUnhex.undash(xml.xpath("./o/text()").get(0))
+                            ).getDouble();
+                            final Iterable<Directive> dirs;
+                            if (Double.isNaN(number) || Double.isInfinite(number)) {
+                                dirs = new Directives().attr("skip", "");
+                            } else {
+                                dirs = StUnhex.append(StUnhex.number(number));
+                            }
+                            return dirs;
+                        }
                     ),
                     new StXPath(
                         StUnhex.xpath("string"),
@@ -74,10 +79,6 @@ public final class StUnhex extends StEnvelope {
                                 )
                             )
                         )
-                    ),
-                    new StXPath(
-                        "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and empty(text())]/parent::o[(@base='string' or @base='org.eolang.string')])[1]",
-                        xml -> new Directives().set("").attr("data", "string")
                     )
                 )
             )
@@ -147,7 +148,7 @@ public final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[not(o) and string-length(normalize-space(text())) > 0 and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
+            "(//o[(@base='%s' or @base='org.eolang.%1$s') and(not(@skip)) and o[not(o) and string-length(normalize-space(text()))>0 and (@base='bytes' or @base='org.eolang.bytes')]])[1]",
             type
         );
     }

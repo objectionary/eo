@@ -39,10 +39,15 @@ SOFTWARE.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:key name="o-by-name" match="o[@name]" use="@name"/>
-  <xsl:template match="o[not(@base='bytes' and /program/metas/meta[head='package' and tail='org.eolang'] and /program/objects/o[@name='bytes'])]">
-    <xsl:apply-templates select="." mode="not-bytes"/>
+  <xsl:variable name="primitives" as="element()*">
+    <a>bytes</a>
+    <a>string</a>
+    <a>number</a>
+  </xsl:variable>
+  <xsl:template match="o[not($primitives/text()=@base and /program/objects/o/@name=@base and /program/metas/meta[head='package' and tail='org.eolang'])]">
+    <xsl:apply-templates select="." mode="not-primitive"/>
   </xsl:template>
-  <xsl:template match="o[@base]" mode="not-bytes">
+  <xsl:template match="o[@base]" mode="not-primitive">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
