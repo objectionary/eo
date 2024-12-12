@@ -23,19 +23,38 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.NamespaceContext;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.IoCheckedBytes;
+import org.cactoos.io.InputOf;
 import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 import org.xml.sax.SAXParseException;
 
 /**
  * XMIR that validates itself right after construction.
  *
+ * <p>This class is supposed to be used ONLY for testing, because
+ * it modifies the XML encapsulated: it replaces the location of
+ * XSD schema with a file, thus making testing much faster.</p>
+ *
  * @since 0.49.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
 
     /**
@@ -48,7 +67,7 @@ public final class StrictXmir implements XML {
      * @param src The source
      */
     public StrictXmir(final XML src) {
-        this.xml = new StrictXML(src);
+        this.xml = new StrictXML(StrictXmir.reset(src));
     }
 
     @Override
@@ -100,5 +119,63 @@ public final class StrictXmir implements XML {
     @Override
     public Collection<SAXParseException> validate(final XML xsd) {
         return this.xml.validate(xsd);
+    }
+
+    /**
+     * Here, we check the location of the XSD in the XML
+     * and replace with a new one, if necessary.
+     * @param xml Original XML
+     * @return New XML with the same node
+     */
+    private static XML reset(final XML xml) {
+        final Node node = xml.inner();
+        final List<String> location = xml.xpath("/program/@xsi:noNamespaceSchemaLocation");
+        if (!location.isEmpty()) {
+            String uri = location.get(0);
+            if (uri.startsWith("http")) {
+                uri = String.format(
+                    "file:///%s",
+                    StrictXmir.download(
+                        uri,
+                        Paths.get("target/xsd").resolve(
+                            uri.substring(uri.lastIndexOf('/') + 1)
+                        )
+                    ).toString().replace("\\", "/")
+                );
+            }
+            new Xembler(
+                new Directives().xpath("/program").attr(
+                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                    uri
+                )
+            ).applyQuietly(node);
+        }
+        return new XMLDocument(node);
+    }
+
+    /**
+     * Download URI from Internet and save to file.
+     * @param uri The URI
+     * @param path The file
+     * @return Where it was saved
+     */
+    private static File download(final String uri, final Path path) {
+        final File abs = path.toFile().getAbsoluteFile();
+        if (!abs.exists()) {
+            if (abs.getParentFile().mkdirs()) {
+                Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
+            }
+            try {
+                Files.write(
+                    path,
+                    new IoCheckedBytes(
+                        new BytesOf(new InputOf(new URI(uri)))
+                    ).asBytes()
+                );
+            } catch (final IOException | URISyntaxException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+        }
+        return abs;
     }
 }
