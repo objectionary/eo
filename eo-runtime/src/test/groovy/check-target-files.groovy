@@ -1,5 +1,3 @@
-import java.nio.file.Path
-
 /**
  * The MIT License (MIT)
  *
@@ -24,18 +22,33 @@ import java.nio.file.Path
  * SOFTWARE.
  */
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
- */
-Path folder = basedir.toPath().resolve('src/test/groovy')
-var tests = [
-    'check-folders-numbering.groovy',
-    'check-all-java-classes-compiled.groovy',
-    'check-runtime-deps.groovy',
-    'check-target-files.groovy',
+import java.nio.file.Paths
+
+var expected = [
+  'eo-foreign.csv',
+  'eo/1-parse/org/eolang/bytes.xmir',
+  'eo/1-parse/org/eolang/fs/dir.xmir',
+  'eo/2-optimize/org/eolang/error.xmir',
+  'eo/2-optimize/org/eolang/sys/os.xmir',
+  'eo/6-lint/org/eolang/go.xmir',
+  'eo/8-transpile/org/eolang/malloc.xmir',
+  'eo/phi/org/eolang/number.phi',
+  'eo/unphi/org/eolang/number.xmir',
+  'eo-test/1-parse/org/eolang/bool-tests.xmir',
+  'eo-test/2-optimize/org/eolang/go-tests.xmir',
+  'eo-test/6-lint/org/eolang/dataized-tests.xmir',
+  'eo-test/8-transpile/org/eolang/runtime-tests.xmir',
+  'eo-test/phi/org/eolang/number-tests.phi',
+  'eo-test/unphi/org/eolang/number-tests.xmir',
+  'generated-sources/EOorg/EOeolang/EOdataized.java',
+  'generated-sources/EOorg/EOeolang/EOnet/EOsocket.java',
+  'generated-test-sources/EOorg/EOeolang/EOand_with_zeroTest.java',
+  'classes/EO-SOURCES/org/eolang/false.eo',
 ]
-for (it in tests) {
-    evaluate folder.resolve(it).toFile()
+
+for (path in expected) {
+    var f = Paths.get('eo-runtime/target').resolve(path).toFile()
+    if (!f.exists()) {
+        fail("The file '${f}' is not present")
+    }
 }

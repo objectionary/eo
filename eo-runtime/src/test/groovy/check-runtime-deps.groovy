@@ -29,19 +29,11 @@
  */
 import groovy.xml.XmlSlurper
 
-def pom = new File("pom.xml").text
+def pom = new File('pom.xml').text
 def project = new XmlSlurper().parseText(pom)
 
-println 'Verify that there are no any dependencies in eo-runtime except those that are needed for tests'
-
 project.dependencies.dependency.each {
-  if (it.scope.text() != 'test' && it.scope.text() != 'provided')
-    fail(
-      String.format(
-        'Dependency %s.%s must be in "test" or "provided" scope',
-        it.groupId.text(), it.artifactId.text()
-      )
-    )
+    if (it.scope.text() != 'test' && it.scope.text() != 'provided') {
+        fail("Dependency ${it.groupId.text()}.${it.artifactId.text()} must be in either 'test' or 'provided' scope")
+    }
 }
-
-true
