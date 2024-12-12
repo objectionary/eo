@@ -69,6 +69,7 @@ public final class PhLocated implements Phi, Atom {
      * @param prg Name of the program
      * @param lne Line
      * @param pos Position
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhLocated(final Phi phi, final String prg, final int lne, final int pos) {
         this(phi, prg, lne, pos, "?");
@@ -78,6 +79,7 @@ public final class PhLocated implements Phi, Atom {
      * Ctor.
      *
      * @param phi The object
+     * @param prg Name of the program
      * @param lne Line
      * @param pos Position
      * @param loc Location
