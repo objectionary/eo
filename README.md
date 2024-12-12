@@ -253,28 +253,28 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          79075  31.48%
-add-refs.xsl                         26282  10.46%
-stars-to-tuples.xsl                  19415  7.73%
-set-locators.xsl                     15779  6.28%
-tests.xsl                            11636  4.63%
-rename-tests-inners.xsl              10509  4.18%
-add-probes.xsl                       7930   3.16%
-resolve-aliases.xsl                  7149   2.85%
-explicit-data.xsl                    6912   2.75%
-vars-float-up.xsl                    6659   2.65%
-add-default-package.xsl              6443   2.56%
-cti-adds-errors.xsl                  6342   2.52%
-package.xsl                          6334   2.52%
-classes.xsl                          5898   2.35%
-const-to-dataized.xsl                5645   2.25%
-expand-qqs.xsl                       5300   2.11%
+to-java.xsl                          68924  35.76%
+add-refs.xsl                         22950  11.91%
+set-locators.xsl                     11930  6.19%
+tests.xsl                            11453  5.94%
+rename-tests-inners.xsl              10200  5.29%
+classes.xsl                          6186   3.21%
+add-probes.xsl                       6173   3.20%
+package.xsl                          5916   3.07%
+resolve-aliases.xsl                  5859   3.04%
+explicit-data.xsl                    5498   2.85%
+add-default-package.xsl              5407   2.81%
+vars-float-up.xsl                    5357   2.78%
+cti-adds-errors.xsl                  5131   2.66%
+expand-qqs.xsl                       4291   2.23%
+expand-aliases.xsl                   4014   2.08%
+clean-up.xsl                         3893   2.02%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-12-05 at 19:24,
+on 2024-12-12 at 15:03,
 on Linux with 4 CPUs.
-The total is 251221 milliseconds.
+The total is 192760 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -317,4 +317,4 @@ to enhance the performance of EO components:
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12186383571
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12298742094
