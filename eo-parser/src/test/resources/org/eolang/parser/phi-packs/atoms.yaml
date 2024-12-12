@@ -28,18 +28,16 @@ input: |
     # No comments.
     [] > inner /bytes
 with-sugar: |-
-  {
-    ⟦
-      main ↦ ⟦
-        λ ⤍ Lmain
-      ⟧,
-      outer ↦ ⟦
-        inner ↦ ⟦
-          λ ⤍ Louter_inner
-        ⟧
+  {⟦
+    main ↦ ⟦
+      λ ⤍ Lmain
+    ⟧,
+    outer ↦ ⟦
+      inner ↦ ⟦
+        λ ⤍ Louter_inner
       ⟧
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

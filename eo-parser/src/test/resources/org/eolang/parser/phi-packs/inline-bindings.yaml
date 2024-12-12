@@ -26,11 +26,9 @@ input: |
     "s":1
     "t":2
 with-sugar: |-
-  {
-    ⟦
-      xyz ↦ Φ̇.x("f", "s", "t")
-    ⟧
-  }
+  {⟦
+    xyz ↦ Φ̇.x("f", "s", "t")
+  ⟧}
 no-sugar: |-
   {
     ⟦

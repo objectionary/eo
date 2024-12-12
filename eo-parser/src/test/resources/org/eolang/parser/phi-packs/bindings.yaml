@@ -28,19 +28,17 @@ input: |
     5:five
     "hello":3
 with-sugar: |-
-  {
-    ⟦
-      xyz ↦ Φ̇.x(
-        attr ↦ Φ̇.y,
-        abs ↦ ⟦
-          z ↦ ∅,
-          φ ↦ Φ̇.w
-        ⟧,
-        five ↦ 5,
-        α3 ↦ "hello"
-      )
-    ⟧
-  }
+  {⟦
+    xyz ↦ Φ̇.x(
+      attr ↦ Φ̇.y,
+      abs ↦ ⟦
+        z ↦ ∅,
+        φ ↦ Φ̇.w
+      ⟧,
+      five ↦ 5,
+      α3 ↦ "hello"
+    )
+  ⟧}
 no-sugar: |-
   {
     ⟦

@@ -22,11 +22,9 @@
 ---
 input: A2- > bts
 with-sugar: |-
-  {
-    ⟦
-      bts ↦ Φ̇.bytes(⟦ Δ ⤍ A2- ⟧)
-    ⟧
-  }
+  {⟦
+    bts ↦ Φ̇.bytes(⟦ Δ ⤍ A2- ⟧)
+  ⟧}
 no-sugar: |-
   {
     ⟦

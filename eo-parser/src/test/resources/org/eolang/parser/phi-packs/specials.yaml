@@ -27,15 +27,13 @@ input: |
     $.a > b
     @.@ > phi
 with-sugar: |-
-  {
-    ⟦
-      main ↦ ⟦
-        x ↦ ξ.ρ.x,
-        b ↦ ξ.a,
-        phi ↦ ξ.φ.φ
-      ⟧
+  {⟦
+    main ↦ ⟦
+      x ↦ ξ.ρ.x,
+      b ↦ ξ.a,
+      phi ↦ ξ.φ.φ
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

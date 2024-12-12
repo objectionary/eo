@@ -85,38 +85,36 @@ input: |
       00-.as-bytes.eq false
 
 with-sugar: |-
-  {
-    ⟦
-      org ↦ ⟦
-        eolang ↦ ⟦
-          compares-two-bools ↦ ⟦
-            φ ↦ Φ̇.true.eq(Φ̇.true)
-          ⟧,
-          true-as-bool ↦ ⟦
-            φ ↦ Φ̇.true.as-bool
-          ⟧,
-          compares-two-different-types ↦ ⟦
-            φ ↦ Φ̇.true.eq(42).not
-          ⟧,
-          compares-bool-to-bytes ↦ ⟦
-            φ ↦ Φ̇.true.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧)).and(
-              Φ̇.false.eq(Φ̇.bytes(⟦ Δ ⤍ 00- ⟧))
-            )
-          ⟧,
-          compares-bool-to-string ↦ ⟦
-            φ ↦ Φ̇.true.eq("\u0001").and(Φ̇.false.eq("\u0000"))
-          ⟧,
-          compares-bool-to-bytes-reverse ↦ ⟦
-            φ ↦ Φ̇.bytes(⟦ Δ ⤍ 01- ⟧).as-bytes.eq(Φ̇.true).and(
-              Φ̇.bytes(⟦ Δ ⤍ 00- ⟧).as-bytes.eq(Φ̇.false)
-            )
-          ⟧,
-          λ ⤍ Package
+  {⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
+        compares-two-bools ↦ ⟦
+          φ ↦ Φ̇.true.eq(Φ̇.true)
+        ⟧,
+        true-as-bool ↦ ⟦
+          φ ↦ Φ̇.true.as-bool
+        ⟧,
+        compares-two-different-types ↦ ⟦
+          φ ↦ Φ̇.true.eq(42).not
+        ⟧,
+        compares-bool-to-bytes ↦ ⟦
+          φ ↦ Φ̇.true.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧)).and(
+            Φ̇.false.eq(Φ̇.bytes(⟦ Δ ⤍ 00- ⟧))
+          )
+        ⟧,
+        compares-bool-to-string ↦ ⟦
+          φ ↦ Φ̇.true.eq("\u0001").and(Φ̇.false.eq("\u0000"))
+        ⟧,
+        compares-bool-to-bytes-reverse ↦ ⟦
+          φ ↦ Φ̇.bytes(⟦ Δ ⤍ 01- ⟧).as-bytes.eq(Φ̇.true).and(
+            Φ̇.bytes(⟦ Δ ⤍ 00- ⟧).as-bytes.eq(Φ̇.false)
+          )
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦
