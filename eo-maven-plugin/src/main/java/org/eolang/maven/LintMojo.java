@@ -80,7 +80,7 @@ public final class LintMojo extends SafeMojo {
     @Parameter(
         property = "eo.failOnWarning",
         required = true,
-        defaultValue = "false"
+        defaultValue = "true"
     )
     private boolean failOnWarning;
 
