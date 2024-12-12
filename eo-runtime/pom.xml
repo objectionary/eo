@@ -205,10 +205,11 @@ SOFTWARE.
         <artifactId>eo-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
-          <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
+          <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>false</failOnWarning>
           <offline>true</offline>
+          <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
         </configuration>
         <executions>
           <execution>
@@ -220,6 +221,7 @@ SOFTWARE.
               <goal>lint</goal>
               <goal>transpile</goal>
               <goal>xmir-to-phi</goal>
+              <goal>phi-to-xmir</goal>
               <goal>copy</goal>
               <goal>unplace</goal>
               <goal>unspile</goal>
@@ -243,21 +245,21 @@ SOFTWARE.
               <goal>assemble</goal>
               <goal>lint</goal>
               <goal>xmir-to-phi</goal>
+              <goal>phi-to-xmir</goal>
               <goal>transpile</goal>
               <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.basedir}/target/eo-test</targetDir>
-              <phiInputDir>${project.basedir}/target/eo-test/2-optimize</phiInputDir>
-              <phiOutputDir>${project.basedir}/target/eo-test/phi</phiOutputDir>
+              <targetDir>${project.build.directory}/eo-test</targetDir>
+              <phiInputDir>${project.build.directory}/eo-test/2-optimize</phiInputDir>
+              <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
+              <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
               <failOnWarning>false</failOnWarning>
-              <generatedDir>
-                ${project.basedir}/target/generated-test-sources
-              </generatedDir>
+              <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
