@@ -22,11 +22,9 @@
 ---
 input: -- > empty
 with-sugar: |-
-  {
-    ⟦
-      empty ↦ Φ̇.bytes(⟦ Δ ⤍ -- ⟧)
-    ⟧
-  }
+  {⟦
+    empty ↦ Φ̇.bytes(⟦ Δ ⤍ -- ⟧)
+  ⟧}
 no-sugar: |-
   {
     ⟦

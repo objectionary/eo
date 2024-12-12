@@ -35,22 +35,20 @@ input: |
             [] > long-object-name
     true > @
 with-sugar: |-
-  {
-    ⟦
-      compiles-correctly-with-long-duplicate-names ↦ ⟦
+  {⟦
+    compiles-correctly-with-long-duplicate-names ↦ ⟦
+      long-object-name ↦ ⟦
         long-object-name ↦ ⟦
           long-object-name ↦ ⟦
             long-object-name ↦ ⟦
-              long-object-name ↦ ⟦
-                long-object-name ↦ ⟦⟧
-              ⟧
+              long-object-name ↦ ⟦⟧
             ⟧
           ⟧
-        ⟧,
-        φ ↦ Φ̇.true
-      ⟧
+        ⟧
+      ⟧,
+      φ ↦ Φ̇.true
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

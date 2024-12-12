@@ -24,12 +24,10 @@ input: |
   5.plus 5 > ten
   "Hello".concat "world" > greetings
 with-sugar: |-
-  {
-    ⟦
-      ten ↦ 5.plus(5),
-      greetings ↦ "Hello".concat("world")
-    ⟧
-  }
+  {⟦
+    ten ↦ 5.plus(5),
+    greetings ↦ "Hello".concat("world")
+  ⟧}
 no-sugar: |-
   {
     ⟦

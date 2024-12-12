@@ -39,36 +39,34 @@ input: |
               "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
               * char-size index ^.^.as-bytes
 with-sugar: |-
-  {
-    ⟦
-      org ↦ ⟦
-        eolang ↦ ⟦
-          string ↦ ⟦
-            as-bytes ↦ ∅,
-            length ↦ ⟦
-              increase-length ↦ ⟦
-                index ↦ ∅,
-                char-size ↦ ∅,
-                len ↦ ∅,
-                φ ↦ ξ.index.plus(ξ.char-size).gt(ξ.ρ.size).if(
-                  Φ̇.error(
-                    Φ̇.txt.sprintf(
-                      "Expected %d byte character at %d index, but there are not enough bytes for it: %x",
-                      Φ̇.tuple(
-                        Φ̇.tuple(Φ̇.tuple(Φ̇.tuple.empty, ξ.char-size), ξ.index), ξ.ρ.ρ.as-bytes
-                      )
+  {⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
+        string ↦ ⟦
+          as-bytes ↦ ∅,
+          length ↦ ⟦
+            increase-length ↦ ⟦
+              index ↦ ∅,
+              char-size ↦ ∅,
+              len ↦ ∅,
+              φ ↦ ξ.index.plus(ξ.char-size).gt(ξ.ρ.size).if(
+                Φ̇.error(
+                  Φ̇.txt.sprintf(
+                    "Expected %d byte character at %d index, but there are not enough bytes for it: %x",
+                    Φ̇.tuple(
+                      Φ̇.tuple(Φ̇.tuple(Φ̇.tuple.empty, ξ.char-size), ξ.index), ξ.ρ.ρ.as-bytes
                     )
                   )
                 )
-              ⟧
+              )
             ⟧
-          ⟧,
-          λ ⤍ Package
+          ⟧
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

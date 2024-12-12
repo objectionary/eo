@@ -49,7 +49,14 @@ SOFTWARE.
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>.</xsl:text>
-              <xsl:value-of select="."/>
+              <xsl:choose>
+                <xsl:when test=".='φ'">
+                  <xsl:text>@</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="."/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:for-each>
