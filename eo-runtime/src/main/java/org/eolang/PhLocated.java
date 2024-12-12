@@ -43,6 +43,11 @@ public final class PhLocated implements Phi, Atom {
     private final Phi origin;
 
     /**
+     * EO program name (the name of the {@code .eo} file).
+     */
+    private final String program;
+
+    /**
      * The line number.
      */
     private final int line;
@@ -61,11 +66,12 @@ public final class PhLocated implements Phi, Atom {
      * Ctor.
      *
      * @param phi The object
+     * @param prg Name of the program
      * @param lne Line
      * @param pos Position
      */
-    public PhLocated(final Phi phi, final int lne, final int pos) {
-        this(phi, lne, pos, "?");
+    public PhLocated(final Phi phi, final String prg, final int lne, final int pos) {
+        this(phi, prg, lne, pos, "?");
     }
 
     /**
@@ -77,8 +83,10 @@ public final class PhLocated implements Phi, Atom {
      * @param loc Location
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public PhLocated(final Phi phi, final int lne, final int pos, final String loc) {
+    public PhLocated(final Phi phi, final String prg, final int lne,
+        final int pos, final String loc) {
         this.origin = phi;
+        this.program = prg;
         this.line = lne;
         this.position = pos;
         this.location = loc;
@@ -110,7 +118,10 @@ public final class PhLocated implements Phi, Atom {
 
     @Override
     public Phi copy() {
-        return new PhLocated(this.origin.copy(), this.line, this.position, this.location);
+        return new PhLocated(
+            this.origin.copy(), this.program,
+            this.line, this.position, this.location
+        );
     }
 
     @Override
@@ -211,8 +222,8 @@ public final class PhLocated implements Phi, Atom {
      */
     private String label(final String suffix) {
         return String.format(
-            "Error in the \"%s%s\" attribute at %s:%s",
-            this.location, suffix, this.line, this.position
+            "Error in \"%s%s\" at %s:%d:%d",
+            this.location, suffix, this.program, this.line, this.position
         );
     }
 }
