@@ -32,14 +32,14 @@ sheets:
   - /org/eolang/parser/blank-xsd-schema.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), 'new PhLocated(ret, 3, 2, "Φ.foo.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_base, 6, 4, "Φ.foo.other.φ.ρ")')]
-  - //java[contains(text(), 'new PhLocated(ret, 6, 6, "Φ.foo.other.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_1, 6, 12, "Φ.foo.other.φ.α0")')]
-  - //java[contains(text(), 'new PhLocated(ret_base, 10, 2, "Φ.bar.φ.ρ")')]
-  - //java[contains(text(), 'new PhLocated(ret, 10, 4, "Φ.bar.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_1, 10, 10, "Φ.bar.φ.α0")')]
-  - //java[contains(text(), 'new PhLocated(ret, 11, 2, "Φ.bar.five")')]
+  - //java[contains(text(), 'new PhLocated(ret, "scenario", 3, 2, "Φ.foo.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, "scenario", 6, 4, "Φ.foo.other.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, "scenario", 6, 6, "Φ.foo.other.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, "scenario", 6, 12, "Φ.foo.other.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, "scenario", 10, 2, "Φ.bar.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, "scenario", 10, 4, "Φ.bar.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, "scenario", 10, 10, "Φ.bar.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret, "scenario", 11, 2, "Φ.bar.five")')]
 input: |
   # No comments.
   [] > foo

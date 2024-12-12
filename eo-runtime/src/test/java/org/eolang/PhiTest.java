@@ -101,6 +101,7 @@ final class PhiTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhLocated(
                 Phi.Φ,
+                "foobar",
                 123,
                 56,
                 "Φ.org.eolang$obj"

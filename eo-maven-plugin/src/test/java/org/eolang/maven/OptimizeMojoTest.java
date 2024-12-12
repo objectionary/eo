@@ -60,6 +60,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link OptimizeMojo}.
+ *
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})

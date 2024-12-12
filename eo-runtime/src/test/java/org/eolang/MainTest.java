@@ -133,7 +133,7 @@ final class MainTest {
             "Fails with the proper error message",
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString(
-                "Error in the \"Φ.org.eolang.io.stdout.φ.Δ\" attribute"
+                "Error in \"Φ.org.eolang.io.stdout.φ.Δ\" "
             )
         );
     }
