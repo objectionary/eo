@@ -29,6 +29,7 @@ import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.xembly.Directives;
@@ -72,4 +73,29 @@ final class StrictXmirTest {
         );
     }
 
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithBrokenUri(@Mktmp final Path tmp) {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new StrictXmir(
+                new Xmir(
+                    new XMLDocument(
+                        new Xembler(
+                            new Directives()
+                                .append(new DrProgram("foo"))
+                                .xpath("/program")
+                                .attr(
+                                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                                    "https://www.invalid-website-uri/XMIR.xsd"
+                                )
+                                .add("objects")
+                        ).xml()
+                    )
+                ),
+                tmp
+            ).validate(),
+            "validation should fail because of broken URI"
+        );
+    }
 }

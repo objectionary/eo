@@ -182,8 +182,16 @@ public final class StrictXmir implements XML {
                         new BytesOf(new InputOf(new URI(uri)))
                     ).asBytes()
                 );
-            } catch (final IOException | URISyntaxException ex) {
-                throw new IllegalArgumentException(ex);
+            } catch (final IOException ex) {
+                throw new IllegalArgumentException(
+                    String.format("Failed to download %s to %s", uri, path),
+                    ex
+                );
+            } catch (final URISyntaxException ex) {
+                throw new IllegalArgumentException(
+                    String.format("Wrong URI: %s", uri),
+                    ex
+                );
             }
         }
         return abs;
