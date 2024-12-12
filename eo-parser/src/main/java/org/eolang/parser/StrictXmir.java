@@ -67,7 +67,16 @@ public final class StrictXmir implements XML {
      * @param src The source
      */
     public StrictXmir(final XML src) {
-        this.xml = new StrictXML(StrictXmir.reset(src));
+        this(src, Paths.get("target/xsd"));
+    }
+
+    /**
+     * Ctor.
+     * @param src The source
+     * @param tmp The directory with cached XSD files
+     */
+    public StrictXmir(final XML src, final Path tmp) {
+        this.xml = new StrictXML(StrictXmir.reset(src, tmp));
     }
 
     @Override
@@ -125,9 +134,10 @@ public final class StrictXmir implements XML {
      * Here, we check the location of the XSD in the XML
      * and replace with a new one, if necessary.
      * @param xml Original XML
+     * @param tmp Directory with cached XSD files
      * @return New XML with the same node
      */
-    private static XML reset(final XML xml) {
+    private static XML reset(final XML xml, final Path tmp) {
         final Node node = xml.inner();
         final List<String> location = xml.xpath("/program/@xsi:noNamespaceSchemaLocation");
         if (!location.isEmpty()) {
@@ -137,7 +147,7 @@ public final class StrictXmir implements XML {
                     "file:///%s",
                     StrictXmir.download(
                         uri,
-                        Paths.get("target/xsd").resolve(
+                        tmp.resolve(
                             uri.substring(uri.lastIndexOf('/') + 1)
                         )
                     ).toString().replace("\\", "/")

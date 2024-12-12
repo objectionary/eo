@@ -24,9 +24,13 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -38,7 +42,8 @@ import org.xembly.Xembler;
 final class StrictXmirTest {
 
     @Test
-    void validatesXmir() throws Exception {
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmir(@Mktmp final Path tmp) throws Exception {
         MatcherAssert.assertThat(
             "validation should pass as normal",
             new StrictXmir(
@@ -55,9 +60,15 @@ final class StrictXmirTest {
                                 .add("objects")
                         ).xml()
                     )
-                )
+                ),
+                tmp
             ).validate(),
             Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            "temporary XSD file created",
+            tmp.resolve("XMIR.xsd").toFile().exists(),
+            Matchers.is(true)
         );
     }
 

@@ -158,6 +158,11 @@ SOFTWARE.
       <artifactId>xax</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>
