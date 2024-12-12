@@ -24,7 +24,7 @@
 
 import java.util.stream.Collectors
 
-target = basedir.toPath().resolve("target").resolve("eo")
+target = basedir.toPath().resolve('target/eo')
 List<File> directories = target.toFile().listFiles(new FileFilter() {
     @Override
     boolean accept(final File pathname) {
@@ -40,8 +40,7 @@ var allowed = [
     '6-lint',
     '7-pre',
     '8-transpile',
-    'phi',
-    'unphi',
+    'phi'
 ]
 List<File> allowedDirs = allowed.stream()
     .map { target.resolve(it).toFile() }
