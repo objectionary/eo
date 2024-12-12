@@ -83,7 +83,7 @@ final class StrictXmirTest {
                     new XMLDocument(
                         new Xembler(
                             new Directives()
-                                .append(new DrProgram("foo"))
+                                .append(new DrProgram("foobar"))
                                 .xpath("/program")
                                 .attr(
                                     "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",

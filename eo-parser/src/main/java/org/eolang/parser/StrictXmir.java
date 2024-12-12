@@ -50,7 +50,10 @@ import org.xml.sax.SAXParseException;
  *
  * <p>This class is supposed to be used ONLY for testing, because
  * it modifies the XML encapsulated: it replaces the location of
- * XSD schema with a file, thus making testing much faster.</p>
+ * XSD schema with a file, thus making testing much faster. However,
+ * the original location of the XSD schema will be lost/removed
+ * from the XML. Thus, you better save the XML to disc and only
+ * then encapsulate it into this decorator.</p>
  *
  * @since 0.49.0
  */
