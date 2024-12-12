@@ -23,7 +23,6 @@
  */
 package integration;
 
-import com.jcabi.log.Logger;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -54,6 +53,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Central. Thus, when changes are made, it is recommended to disable this test.
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
+ *
  * @since 0.1
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -117,11 +117,9 @@ final class SnippetIT {
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", xtory.map().get("args"));
                 f.exec("clean", "test");
-                final String log = f.log().content();
-                Logger.debug(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
-                    log,
+                    f.log().content(),
                     Matchers.allOf(
                         new Mapped<>(
                             ptn -> Matchers.matchesPattern(

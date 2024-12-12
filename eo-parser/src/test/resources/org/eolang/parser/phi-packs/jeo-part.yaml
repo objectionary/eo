@@ -30,24 +30,22 @@ input: |
     * > interfaces
       "org/eolang/benchmark/F"
 with-sugar: |-
-  {
-    ⟦
-      org ↦ ⟦
-        eolang ↦ ⟦
-          benchmark ↦ ⟦
-            j$A ↦ ⟦
-              access ↦ 32,
-              supername ↦ "java/lang/Object",
-              interfaces ↦ Φ̇.tuple(Φ̇.tuple.empty, "org/eolang/benchmark/F")
-            ⟧,
-            λ ⤍ Package
+  {⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
+        benchmark ↦ ⟦
+          j$A ↦ ⟦
+            access ↦ 32,
+            supername ↦ "java/lang/Object",
+            interfaces ↦ Φ̇.tuple(Φ̇.tuple.empty, "org/eolang/benchmark/F")
           ⟧,
           λ ⤍ Package
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

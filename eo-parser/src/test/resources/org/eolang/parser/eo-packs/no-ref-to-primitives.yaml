@@ -28,6 +28,14 @@ asserts:
 input: |
   +package org.eolang
 
-  # No comments.
+  # Bytes.
   [] > bytes
     $.eq 01- > yes
+
+  # String.
+  [] > string
+    string > x
+
+  # Number.
+  [] > number
+    number > x

@@ -34,7 +34,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -42,12 +41,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test for phi-unphi.
  *
  * @since 0.1
+ * @checkstyle MethodLengthCheck (500 lines)
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
 
-    // @checkstyle MethodLengthCheck (170 lines)
     @Test
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
@@ -101,11 +100,10 @@ final class PhiUnphiIT {
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
                     .set("printReversed", Boolean.TRUE.toString());
                 f.exec("clean", "compile");
-                final String phi = f.log().content();
                 MatcherAssert.assertThat(
                     "Converting to phi and back was not successful",
-                    phi,
-                    Matchers.containsString("BUILD SUCCESS")
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
                 );
                 f.files().file("pom.xml").delete();
                 f.properties()

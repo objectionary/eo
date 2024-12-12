@@ -1,0 +1,115 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+input: |
+  +package org.eolang
+  +alias org.eolang.txt.sprintf
+
+  # String.
+  [as-bytes] > string
+    # Calculates the length of the string.
+    [] > length
+      # The object checks if `index` + `char-size` is out of string bounds.
+      # If not - the new recursion iteration is started with `index` increased by `char-size` and
+      # `accum` increased by 1.
+      [index char-size len] > increase-length
+        if. > @
+          (index.plus char-size).gt ^.size
+          error
+            sprintf
+              "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+              * char-size index ^.^.as-bytes
+with-sugar: |-
+  {⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
+        string ↦ ⟦
+          as-bytes ↦ ∅,
+          length ↦ ⟦
+            increase-length ↦ ⟦
+              index ↦ ∅,
+              char-size ↦ ∅,
+              len ↦ ∅,
+              φ ↦ ξ.index.plus(ξ.char-size).gt(ξ.ρ.size).if(
+                Φ̇.error(
+                  Φ̇.txt.sprintf(
+                    "Expected %d byte character at %d index, but there are not enough bytes for it: %x",
+                    Φ̇.tuple(
+                      Φ̇.tuple(Φ̇.tuple(Φ̇.tuple.empty, ξ.char-size), ξ.index), ξ.ρ.ρ.as-bytes
+                    )
+                  )
+                )
+              )
+            ⟧
+          ⟧
+        ⟧,
+        λ ⤍ Package
+      ⟧,
+      λ ⤍ Package
+    ⟧
+  ⟧}
+no-sugar: |-
+  {
+    ⟦
+      org ↦ ⟦
+        eolang ↦ ⟦
+          string ↦ ⟦
+            as-bytes ↦ ∅,
+            length ↦ ⟦
+              increase-length ↦ ⟦
+                index ↦ ∅,
+                char-size ↦ ∅,
+                len ↦ ∅,
+                φ ↦ ξ.index.plus(
+                  α0 ↦ ξ.char-size
+                ).gt(
+                  α0 ↦ ξ.ρ.size
+                ).if(
+                  α0 ↦ Φ.org.eolang.error(
+                    α0 ↦ Φ.org.eolang.txt.sprintf(
+                      α0 ↦ Φ.org.eolang.string(
+                        α0 ↦ Φ.org.eolang.bytes(
+                          α0 ↦ ⟦ Δ ⤍ 45-78-70-65-63-74-65-64-20-25-64-20-62-79-74-65-20-63-68-61-72-61-63-74-65-72-20-61-74-20-25-64-20-69-6E-64-65-78-2C-20-62-75-74-20-74-68-65-72-65-20-61-72-65-20-6E-6F-74-20-65-6E-6F-75-67-68-20-62-79-74-65-73-20-66-6F-72-20-69-74-3A-20-25-78 ⟧
+                        )
+                      ),
+                      α1 ↦ Φ.org.eolang.tuple(
+                        α0 ↦ Φ.org.eolang.tuple(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple.empty,
+                            α1 ↦ ξ.char-size
+                          ),
+                          α1 ↦ ξ.index
+                        ),
+                        α1 ↦ ξ.ρ.ρ.as-bytes
+                      )
+                    )
+                  )
+                )
+              ⟧
+            ⟧
+          ⟧,
+          λ ⤍ Package
+        ⟧,
+        λ ⤍ Package
+      ⟧
+    ⟧
+  }

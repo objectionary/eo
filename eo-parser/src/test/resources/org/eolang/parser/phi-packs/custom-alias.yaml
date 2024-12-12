@@ -28,20 +28,18 @@ input: |
   [y] > main
     x y > z
 with-sugar: |-
-  {
-    ⟦
-      foo ↦ ⟦
-        bar ↦ ⟦
-          main ↦ ⟦
-            y ↦ ∅,
-            z ↦ Φ.com.yegor256.x(ξ.y)
-          ⟧,
-          λ ⤍ Package
+  {⟦
+    foo ↦ ⟦
+      bar ↦ ⟦
+        main ↦ ⟦
+          y ↦ ∅,
+          z ↦ Φ.com.yegor256.x(ξ.y)
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

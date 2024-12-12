@@ -24,12 +24,10 @@ input: |-
   5 > five
   -0 > minus
 with-sugar: |-
-  {
-    ⟦
-      five ↦ 5,
-      minus ↦ -0
-    ⟧
-  }
+  {⟦
+    five ↦ 5,
+    minus ↦ -0
+  ⟧}
 no-sugar: |-
   {
     ⟦

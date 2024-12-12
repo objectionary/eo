@@ -22,11 +22,9 @@
 ---
 input: x.y.z > xyz
 with-sugar: |-
-  {
-    ⟦
-      xyz ↦ Φ̇.x.y.z
-    ⟧
-  }
+  {⟦
+    xyz ↦ Φ̇.x.y.z
+  ⟧}
 no-sugar: |-
   {
     ⟦
