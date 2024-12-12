@@ -40,7 +40,8 @@ var allowed = [
     '6-lint',
     '7-pre',
     '8-transpile',
-    'phi'
+    'phi',
+    'unphi',
 ]
 List<File> allowedDirs = allowed.stream()
     .map { target.resolve(it).toFile() }
