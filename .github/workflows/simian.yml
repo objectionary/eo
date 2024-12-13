@@ -28,9 +28,6 @@ on:
   pull_request:
     branches:
       - master
-concurrency:
-  group: simian-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   simian:
     runs-on: ubuntu-24.04
