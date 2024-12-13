@@ -41,6 +41,6 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ubuntu-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ubuntu-jdk-21-maven-
+          key: ubuntu-qulice-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-qulice-jdk-21-maven-
       - run: mvn clean install -DskipTests -DskipITs -Pqulice --errors --batch-mode
