@@ -28,20 +28,17 @@ on:
   pull_request:
     branches:
       - master
-concurrency:
-  group: mvn-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   mvn:
     name: mvn
     strategy:
       matrix:
-        os: [ ubuntu-24.04, windows-2022, macos-13 ]
-        java: [ 11, 21 ]
+        os: [ ubuntu-24.04, windows-2022, macos-15 ]
+        java: [ 11, 23 ]
         exclude:
           - os: windows-2022
             java: 11
-          - os: macos-13
+          - os: macos-15
             java: 11
     runs-on: ${{ matrix.os }}
     env:
@@ -73,4 +70,7 @@ jobs:
           echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
       - run: cargo --version
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
       - run: mvn clean install --errors --batch-mode

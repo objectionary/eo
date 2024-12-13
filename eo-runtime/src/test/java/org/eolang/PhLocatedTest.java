@@ -37,7 +37,7 @@ final class PhLocatedTest {
 
     @Test
     void savesLocationAfterCopying() {
-        final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
+        final Phi located = new PhLocated(new Data.ToPhi(0L), "foo", 123, 124, "qwerty");
         MatcherAssert.assertThat(
             "saves location",
             located.copy().locator(),
@@ -58,12 +58,12 @@ final class PhLocatedTest {
                             throw new IllegalArgumentException("oops");
                         }
                     },
-                    10, 20
+                    "foobar", 10, 20
                 ).delta(),
                 "throws correct class"
             ),
             Matchers.hasToString(
-                Matchers.containsString("Error in the \"?.Δ\" attribute at 10:20")
+                Matchers.containsString("Error in \"?.Δ\" at foobar:10:20")
             )
         );
     }

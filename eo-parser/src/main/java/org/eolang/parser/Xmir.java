@@ -34,7 +34,12 @@ import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
+import javax.xml.namespace.NamespaceContext;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXParseException;
 
 /**
  * Prints XMIR to EO or PHI.
@@ -51,7 +56,8 @@ import java.util.logging.Level;
  * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.35.0
  */
-public final class Xmir {
+@SuppressWarnings("PMD.TooManyMethods")
+public final class Xmir implements XML {
     /**
      * Train of transformations that prepare XMIR for conversion to EO.
      */
@@ -115,6 +121,57 @@ public final class Xmir {
         this.xml = src;
     }
 
+    @Override
+    public String toString() {
+        return this.xml.toString();
+    }
+
+    @Override
+    public List<String> xpath(final String xpath) {
+        return this.xml.xpath(xpath);
+    }
+
+    @Override
+    public List<XML> nodes(final String xpath) {
+        return this.xml.nodes(xpath);
+    }
+
+    @Override
+    public XML registerNs(final String pfx, final Object uri) {
+        return this.xml.registerNs(pfx, uri);
+    }
+
+    @Override
+    public XML merge(final NamespaceContext ctx) {
+        return this.xml.merge(ctx);
+    }
+
+    @Override
+    @Deprecated
+    public Node node() {
+        throw new UnsupportedOperationException("deprecated");
+    }
+
+    @Override
+    public Node inner() {
+        return this.xml.inner();
+    }
+
+    @Override
+    public Node deepCopy() {
+        return this.xml.deepCopy();
+    }
+
+    @Override
+    public Collection<SAXParseException> validate() {
+        return this.xml.validate();
+    }
+
+    @Override
+    public Collection<SAXParseException> validate(final XML xsd) {
+        return this.xml.validate(xsd);
+    }
+
     /**
      * Converts XMIR to EO.
      * @return EO representation as {@code String}
@@ -159,11 +216,6 @@ public final class Xmir {
         return this.converted(
             Xmir.FOR_PHI, "/org/eolang/parser/phi/to-phi-no-sugar.xsl", "program/phi/text()"
         );
-    }
-
-    @Override
-    public String toString() {
-        return this.xml.toString();
     }
 
     /**

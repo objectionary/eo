@@ -64,7 +64,9 @@ final class LintMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "lint");
+                    .goals("register", "parse", "optimize", "shake", "lint")
+                    .configuration()
+                    .set("failOnWarning", "false");
                 f.exec("process-classes");
                 final long before = f.files().file(
                     "target/eo/6-lint/foo.xmir"
