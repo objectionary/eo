@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -69,6 +70,42 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve("XMIR.xsd").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchema(@Mktmp final Path tmp) throws Exception {
+        MatcherAssert.assertThat(
+            "validation should pass as normal",
+            new StrictXmir(
+                new Xmir(
+                    new XMLDocument(
+                        new Xembler(
+                            new Directives()
+                                .append(new DrProgram("foo3"))
+                                .xpath("/program")
+                                .attr(
+                                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                                    String.format(
+                                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                                        Manifests.read("EO-Version")
+                                    )
+                                )
+                                .add("objects")
+                        ).xml()
+                    )
+                ),
+                tmp
+            ).validate(),
+            Matchers.emptyIterable()
+        );
+        MatcherAssert.assertThat(
+            "temporary XSD file created",
+            tmp.resolve(
+                String.format("XMIR-%s.xsd", Manifests.read("EO-Version"))
+            ).toFile().exists(),
             Matchers.is(true)
         );
     }

@@ -191,6 +191,7 @@ public final class StrictXmir implements XML {
                         new BytesOf(new ResourceOf("XMIR.xsd"))
                     ).asBytes()
                 );
+                Logger.debug(StrictXmir.class, "XSD copied to %[file]s", path);
             } catch (final IOException ex) {
                 throw new IllegalArgumentException(
                     String.format("Failed to save %s to %s", uri, path),
@@ -226,6 +227,11 @@ public final class StrictXmir implements XML {
                         new IoCheckedBytes(
                             new BytesOf(new InputOf(new URI(uri)))
                         ).asBytes()
+                    );
+                    Logger.debug(
+                        StrictXmir.class,
+                        "XSD downloaded from %s and copied to %[file]s",
+                        uri, path
                     );
                     break;
                 } catch (final IOException ex) {
