@@ -23,6 +23,7 @@
  */
 package integration;
 
+import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -84,14 +85,7 @@ final class SnippetIT {
                             xtory.map().get("eo")
                         ).getBytes(StandardCharsets.UTF_8)
                     );
-                f.dependencies().append(
-                    "org.eolang",
-                    "eo-runtime",
-                    System.getProperty(
-                        "eo.version",
-                        "1.0-SNAPSHOT"
-                    )
-                );
+                f.dependencies().appendItself();
                 f.build()
                     .plugins()
                     .append(
@@ -99,7 +93,7 @@ final class SnippetIT {
                         "eo-maven-plugin",
                         System.getProperty(
                             "eo.version",
-                            "1.0-SNAPSHOT"
+                            Manifests.read("EO-Version")
                         )
                     )
                     .execution("compile")

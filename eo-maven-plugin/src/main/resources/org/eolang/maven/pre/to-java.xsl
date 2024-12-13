@@ -538,9 +538,9 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>new Dataized(</xsl:text>
     <xsl:value-of select="eo:eol(4 + $indent)"/>
-    <xsl:text>new </xsl:text>
+    <xsl:text>new PhSafe(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()</xsl:text>
+    <xsl:text>())</xsl:text>
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>).asBool()</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>

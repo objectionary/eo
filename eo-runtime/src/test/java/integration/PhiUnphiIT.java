@@ -23,6 +23,7 @@
  */
 package integration;
 
+import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -74,7 +75,7 @@ final class PhiUnphiIT {
                         "eo-maven-plugin",
                         System.getProperty(
                             "eo.version",
-                            "1.0-SNAPSHOT"
+                            Manifests.read("EO-Version")
                         )
                     )
                     .execution("phi-unphi")
@@ -136,7 +137,7 @@ final class PhiUnphiIT {
                         "eo-maven-plugin",
                         System.getProperty(
                             "eo.version",
-                            "1.0-SNAPSHOT"
+                            Manifests.read("EO-Version")
                         )
                     )
                     .execution("compile")

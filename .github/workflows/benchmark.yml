@@ -40,8 +40,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ubuntu-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ubuntu-jdk-21-maven-
+          key: ubuntu-benchmark-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-benchmark-jdk-21-maven-
       - run: mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
       - run: |
           set -x
