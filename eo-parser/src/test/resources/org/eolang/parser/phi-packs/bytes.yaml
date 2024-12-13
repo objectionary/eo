@@ -83,73 +83,71 @@ input: |
     # as a new sequence.
     [b] > concat /bytes
 with-sugar: |-
-  {
-    ⟦
-      org ↦ ⟦
-        eolang ↦ ⟦
-          bytes ↦ ⟦
-            data ↦ ∅,
-            eq ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_eq,
-              x ↦ ∅
-            ⟧,
-            size ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_size
-            ⟧,
-            slice ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_slice,
-              start ↦ ∅,
-              len ↦ ∅
-            ⟧,
-            as-string ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_as_string
-            ⟧,
-            as-int ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_as_int
-            ⟧,
-            as-float ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_as_float
-            ⟧,
-            and ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_and,
-              b ↦ ∅
-            ⟧,
-            or ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_or,
-              b ↦ ∅
-            ⟧,
-            xor ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_xor,
-              b ↦ ∅
-            ⟧,
-            not ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_not
-            ⟧,
-            left ↦ ⟦
-              x ↦ ∅,
-              φ ↦ ξ.ρ.right(ξ.x.neg)
-            ⟧,
-            right ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_right,
-              x ↦ ∅
-            ⟧,
-            as-bool ↦ ⟦
-              φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
-            ⟧,
-            as-bytes ↦ ⟦
-              φ ↦ ξ.ρ
-            ⟧,
-            concat ↦ ⟦
-              λ ⤍ Lorg_eolang_bytes_concat,
-              b ↦ ∅
-            ⟧
+  {⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
+        bytes ↦ ⟦
+          data ↦ ∅,
+          eq ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_eq,
+            x ↦ ∅
           ⟧,
-          λ ⤍ Package
+          size ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_size
+          ⟧,
+          slice ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_slice,
+            start ↦ ∅,
+            len ↦ ∅
+          ⟧,
+          as-string ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_as_string
+          ⟧,
+          as-int ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_as_int
+          ⟧,
+          as-float ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_as_float
+          ⟧,
+          and ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_and,
+            b ↦ ∅
+          ⟧,
+          or ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_or,
+            b ↦ ∅
+          ⟧,
+          xor ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_xor,
+            b ↦ ∅
+          ⟧,
+          not ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_not
+          ⟧,
+          left ↦ ⟦
+            x ↦ ∅,
+            φ ↦ ξ.ρ.right(ξ.x.neg)
+          ⟧,
+          right ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_right,
+            x ↦ ∅
+          ⟧,
+          as-bool ↦ ⟦
+            φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
+          ⟧,
+          as-bytes ↦ ⟦
+            φ ↦ ξ.ρ
+          ⟧,
+          concat ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_concat,
+            b ↦ ∅
+          ⟧
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

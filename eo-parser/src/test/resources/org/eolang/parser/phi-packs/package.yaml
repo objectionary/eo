@@ -27,22 +27,20 @@ input: |
   [] > main
     stdout > @
 with-sugar: |-
-  {
-    ⟦
-      foo ↦ ⟦
-        bar ↦ ⟦
-          baz ↦ ⟦
-            main ↦ ⟦
-              φ ↦ Φ̇.stdout
-            ⟧,
-            λ ⤍ Package
+  {⟦
+    foo ↦ ⟦
+      bar ↦ ⟦
+        baz ↦ ⟦
+          main ↦ ⟦
+            φ ↦ Φ̇.stdout
           ⟧,
           λ ⤍ Package
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

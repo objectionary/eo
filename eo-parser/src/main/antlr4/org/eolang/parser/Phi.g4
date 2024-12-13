@@ -83,7 +83,7 @@ lambdaBinding
     ;
 
 FUNCTION
-    : [A-Z] ~[ \r\n\t,.|':;!\-?\][}{)(⟧⟦]*
+    : [A-Z][A-Z0-9a-z_φ]*
     ;
 
 application

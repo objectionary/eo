@@ -26,41 +26,33 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
-println 'Verify that all java classes were compiled successfully'
-
 Path binaries = basedir.toPath()
-  .resolve("target")
-  .resolve("classes")
-  .resolve("org")
-  .resolve("eolang");
+    .resolve("target")
+    .resolve("classes")
+    .resolve("org")
+    .resolve("eolang");
 Path classes = basedir.toPath()
-  .resolve("src")
-  .resolve("main")
-  .resolve("java")
-  .resolve("org")
-  .resolve("eolang")
+    .resolve("src")
+    .resolve("main")
+    .resolve("java")
+    .resolve("org")
+    .resolve("eolang")
 Set<String> expected = Files.walk(classes)
-  .filter(it -> {
-    it.toString().endsWith(".java")
-  })
-  .map(Path::getFileName)
-  .map(Path::toString)
-  .map(it -> {
-    return it.replace(".java", ".class")
-  }).collect(Collectors.toSet())
+    .filter(it -> {
+      it.toString().endsWith(".java")
+    })
+    .map(Path::getFileName)
+    .map(Path::toString)
+    .map(it -> {
+      return it.replace(".java", ".class")
+    }).collect(Collectors.toSet())
 Set<String> actual = Files.walk(binaries)
-  .filter(it -> {
-    it.toString().endsWith(".class")
-  })
-  .map(Path::getFileName)
-  .map(Path::toString)
-  .collect(Collectors.toSet())
+    .filter(it -> {
+      it.toString().endsWith(".class")
+    })
+    .map(Path::getFileName)
+    .map(Path::toString)
+    .collect(Collectors.toSet())
 if (!actual.containsAll(expected)) {
-  throw new IllegalStateException(
-    String.format(
-      "Not all classes are compiled\nExpected %s\nActual %s",
-      expected,
-      actual
-    )
-  )
+    fail("Not all classes are compiled\nExpected ${expected}\nActual ${actual}")
 }

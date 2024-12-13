@@ -27,15 +27,13 @@ input: |
     [] > x
     seq > y
 with-sugar: |-
-  {
-    ⟦
-      main ↦ ⟦
-        z ↦ ∅,
-        x ↦ ⟦⟧,
-        y ↦ Φ̇.seq
-      ⟧
+  {⟦
+    main ↦ ⟦
+      z ↦ ∅,
+      x ↦ ⟦⟧,
+      y ↦ Φ̇.seq
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

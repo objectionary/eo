@@ -21,43 +21,43 @@
 # SOFTWARE.
 ---
 input: |
-  x > xyz
-    y:attr
-    [z]:abs
-      w > @
-    5:five
-    "hello":3
+  +package org.eolang
+  +alias org.eolang.txt.sprintf
+
+  # The `number` object is an abstraction of a 64-bit floating-point
+  [as-bytes] > number
+    $.times -1 > neg
 with-sugar: |-
   {⟦
-    xyz ↦ Φ̇.x(
-      attr ↦ Φ̇.y,
-      abs ↦ ⟦
-        z ↦ ∅,
-        φ ↦ Φ̇.w
+    org ↦ ⟦
+      eolang ↦ ⟦
+        number ↦ ⟦
+          as-bytes ↦ ∅,
+          neg ↦ ξ.times(-1)
+        ⟧,
+        λ ⤍ Package
       ⟧,
-      five ↦ 5,
-      α3 ↦ "hello"
-    )
+      λ ⤍ Package
+    ⟧
   ⟧}
 no-sugar: |-
   {
     ⟦
-      xyz ↦ Φ.org.eolang.x(
-        attr ↦ Φ.org.eolang.y,
-        abs ↦ ⟦
-          z ↦ ∅,
-          φ ↦ Φ.org.eolang.w
+      org ↦ ⟦
+        eolang ↦ ⟦
+          number ↦ ⟦
+            as-bytes ↦ ∅,
+            neg ↦ ξ.times(
+              α0 ↦ Φ.org.eolang.number(
+                α0 ↦ Φ.org.eolang.bytes(
+                  α0 ↦ ⟦ Δ ⤍ BF-F0-00-00-00-00-00-00 ⟧
+                )
+              )
+            )
+          ⟧,
+          λ ⤍ Package
         ⟧,
-        five ↦ Φ.org.eolang.number(
-          α0 ↦ Φ.org.eolang.bytes(
-            α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
-          )
-        ),
-        α3 ↦ Φ.org.eolang.string(
-          α0 ↦ Φ.org.eolang.bytes(
-            α0 ↦ ⟦ Δ ⤍ 68-65-6C-6C-6F ⟧
-          )
-        )
-      )
+        λ ⤍ Package
+      ⟧
     ⟧
   }

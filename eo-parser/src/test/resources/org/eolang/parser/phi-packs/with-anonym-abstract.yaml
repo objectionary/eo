@@ -26,15 +26,13 @@ input: |
     ([] (^ > x)).plus > s
       int
 with-sugar: |-
-  {
-    ⟦
-      test ↦ ⟦
-        s ↦ ⟦
-          x ↦ ξ.ρ
-        ⟧.plus(Φ̇.int)
-      ⟧
+  {⟦
+    test ↦ ⟦
+      s ↦ ⟦
+        x ↦ ξ.ρ
+      ⟧.plus(Φ̇.int)
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

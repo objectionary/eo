@@ -20,28 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: year
-on:
-  schedule:
-    - cron: '0 1 22 * *'  # Runs at 01:00 UTC on the 22nd of every month
-concurrency:
-  group: year-${{ github.ref }}
-  cancel-in-progress: true
-jobs:
-  license:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: FantasticFiasco/action-update-license-year@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: | #add new path with glob pattern https://www.npmjs.com/package/glob
-            **/LICENSE.txt
-            **/*.xml
-            **/*.xsl
-            **/*.java
-            **/*.eo
-            **/*.groovy
-          commitTitle: "update license year"
+input: |
+  # Foo.
+  [] > negative-infinity
+    number FF-F0-00-00-00-00-00-00 > @
+with-sugar: |-
+  {⟦
+    negative-infinity ↦ ⟦
+      φ ↦ Φ̇.number(Φ̇.bytes(⟦ Δ ⤍ FF-F0-00-00-00-00-00-00 ⟧))
+    ⟧
+  ⟧}
+no-sugar: |-
+  {
+    ⟦
+      negative-infinity ↦ ⟦
+        φ ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ FF-F0-00-00-00-00-00-00 ⟧
+          )
+        )
+      ⟧
+    ⟧
+  }

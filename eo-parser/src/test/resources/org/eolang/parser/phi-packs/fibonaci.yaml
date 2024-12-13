@@ -36,22 +36,20 @@ input: |
         fibonacci
           n.minus 2
 with-sugar: |-
-  {
-    ⟦
-      eo ↦ ⟦
-        example ↦ ⟦
-          fibonacci ↦ ⟦
-            n ↦ ∅,
-            φ ↦ ξ.n.lt(2).if(
-              ξ.n, ξ.ρ.fibonacci(ξ.n.minus(1)).plus(ξ.ρ.fibonacci(ξ.n.minus(2)))
-            )
-          ⟧,
-          λ ⤍ Package
+  {⟦
+    eo ↦ ⟦
+      example ↦ ⟦
+        fibonacci ↦ ⟦
+          n ↦ ∅,
+          φ ↦ ξ.n.lt(2).if(
+            ξ.n, ξ.ρ.fibonacci(ξ.n.minus(1)).plus(ξ.ρ.fibonacci(ξ.n.minus(2)))
+          )
         ⟧,
         λ ⤍ Package
-      ⟧
+      ⟧,
+      λ ⤍ Package
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦

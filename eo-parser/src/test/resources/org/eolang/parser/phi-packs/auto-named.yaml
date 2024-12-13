@@ -27,16 +27,14 @@ input: |
       [] >>
         01- > b
 with-sugar: |-
-  {
-    ⟦
-      object ↦ ⟦
-        first ↦ Φ̇.x(ξ.auto-named-attr-at-4-6),
-        auto-named-attr-at-4-6 ↦ ⟦
-          b ↦ Φ̇.bytes(⟦ Δ ⤍ 01- ⟧)
-        ⟧
+  {⟦
+    object ↦ ⟦
+      first ↦ Φ̇.x(ξ.auto-named-attr-at-4-6),
+      auto-named-attr-at-4-6 ↦ ⟦
+        b ↦ Φ̇.bytes(⟦ Δ ⤍ 01- ⟧)
       ⟧
     ⟧
-  }
+  ⟧}
 no-sugar: |-
   {
     ⟦
