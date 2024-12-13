@@ -83,7 +83,7 @@ lambdaBinding
     ;
 
 FUNCTION
-    : [A-Z][A-Za-z_φ]*
+    : [A-Z][A-Z0-9a-z_φ]*
     ;
 
 application
