@@ -35,8 +35,7 @@ input: |
           d > e
 with-sugar: |-
   {⟦
-    main ↦ ⟦
-      a ↦ ∅,
+    main(a) ↦ ⟦
       x ↦ ⟦
         y ↦ ⟦
           d ↦ ξ.ρ.ρ.a,

@@ -42,13 +42,9 @@ with-sugar: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
-        string ↦ ⟦
-          as-bytes ↦ ∅,
+        string(as-bytes) ↦ ⟦
           length ↦ ⟦
-            increase-length ↦ ⟦
-              index ↦ ∅,
-              char-size ↦ ∅,
-              len ↦ ∅,
+            increase-length(index, char-size, len) ↦ ⟦
               φ ↦ ξ.index.plus(ξ.char-size).gt(ξ.ρ.size).if(
                 Φ̇.error(
                   Φ̇.txt.sprintf(

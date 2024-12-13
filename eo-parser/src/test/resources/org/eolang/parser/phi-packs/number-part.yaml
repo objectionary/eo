@@ -31,8 +31,7 @@ with-sugar: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
-        number ↦ ⟦
-          as-bytes ↦ ∅,
+        number(as-bytes) ↦ ⟦
           neg ↦ ξ.times(-1)
         ⟧,
         λ ⤍ Package

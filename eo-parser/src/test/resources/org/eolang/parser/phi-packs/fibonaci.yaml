@@ -39,8 +39,7 @@ with-sugar: |-
   {⟦
     eo ↦ ⟦
       example ↦ ⟦
-        fibonacci ↦ ⟦
-          n ↦ ∅,
+        fibonacci(n) ↦ ⟦
           φ ↦ ξ.n.lt(2).if(
             ξ.n, ξ.ρ.fibonacci(ξ.n.minus(1)).plus(ξ.ρ.fibonacci(ξ.n.minus(2)))
           )
