@@ -73,4 +73,7 @@ jobs:
           echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
       - run: cargo --version
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
       - run: mvn clean install --errors --batch-mode
