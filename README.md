@@ -70,6 +70,7 @@ and [eoc](https://github.com/objectionary/eoc).
 Then, start with a simple EO program in `app.eo` file:
 
 ```eo
+# Just prints hello.
 [args] > app
   QQ.io.stdout > @
     "Hello, world!\n"
@@ -122,6 +123,7 @@ we may want to create a copy of the object `stdout` with a more complex
 argument: a copy of the object `sprintf`:
 
 ```eo
+# Says hello to Jeff.
 [] > app
   QQ.io.stdout > @
     QQ.txt.sprintf
@@ -138,6 +140,7 @@ This program can be written using horizontal notation:
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 
+# Also says hello to Jeff.
 [] > app
   (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
 ```
@@ -152,6 +155,7 @@ attributes. For example, it's possible to define a new abstract object
 inside `app` and use it to build the output string:
 
 ```eo
+# Says hello to Jeff.
 [] > app
   QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
