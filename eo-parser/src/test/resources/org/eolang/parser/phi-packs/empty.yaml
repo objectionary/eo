@@ -28,8 +28,7 @@ input: |
     seq > y
 with-sugar: |-
   {⟦
-    main ↦ ⟦
-      z ↦ ∅,
+    main(z) ↦ ⟦
       x ↦ ⟦⟧,
       y ↦ Φ̇.seq
     ⟧

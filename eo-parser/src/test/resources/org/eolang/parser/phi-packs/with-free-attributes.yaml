@@ -26,9 +26,7 @@ input: |
     d > @
 with-sugar: |-
   {⟦
-    c ↦ ⟦
-      a ↦ ∅,
-      b ↦ ∅,
+    c(a, b) ↦ ⟦
       φ ↦ Φ̇.d
     ⟧
   ⟧}

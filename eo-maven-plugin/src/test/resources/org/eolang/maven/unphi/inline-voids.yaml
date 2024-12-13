@@ -20,43 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-input: |
-  x > xyz
-    y:attr
-    [z]:abs
-      w > @
-    5:five
-    "hello":3
-with-sugar: |-
-  {⟦
-    xyz ↦ Φ̇.x(
-      attr ↦ Φ̇.y,
-      abs(z) ↦ ⟦
-        φ ↦ Φ̇.w
-      ⟧,
-      five ↦ 5,
-      α3 ↦ "hello"
-    )
-  ⟧}
-no-sugar: |-
+asserts:
+  - /program/objects/o[@name='main' and not(@base) and o[@name='x'] and o[@name='a' and @base='∅']]
+phi: |-
   {
     ⟦
-      xyz ↦ Φ.org.eolang.x(
-        attr ↦ Φ.org.eolang.y,
-        abs ↦ ⟦
-          z ↦ ∅,
-          φ ↦ Φ.org.eolang.w
-        ⟧,
-        five ↦ Φ.org.eolang.number(
-          α0 ↦ Φ.org.eolang.bytes(
-            α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
-          )
-        ),
-        α3 ↦ Φ.org.eolang.string(
-          α0 ↦ Φ.org.eolang.bytes(
-            α0 ↦ ⟦ Δ ⤍ 68-65-6C-6C-6F ⟧
-          )
-        )
-      )
+      main(a) ↦ ⟦
+        x ↦ ξ.y
+      ⟧
     ⟧
   }

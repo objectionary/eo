@@ -97,7 +97,7 @@ final class PhiSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-syntax/", glob = "**.phi")
-    void checksValidExpressions(final String phi) throws IOException {
+    void checksValidPhiExpressions(final String phi) throws IOException {
         final XML xml = new StrictXML(new PhiSyntax(phi).parsed());
         MatcherAssert.assertThat(
             "syntax is valid, can be parsed without errors",
@@ -108,7 +108,7 @@ final class PhiSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-typos/", glob = "**.phi")
-    void checksBrokenExpressions(final String phi) throws IOException {
+    void checksBrokenPhiExpressions(final String phi) throws IOException {
         final XML xml = new StrictXML(new PhiSyntax(phi).parsed());
         MatcherAssert.assertThat(
             "syntax is broken, can't be parsed without errors",

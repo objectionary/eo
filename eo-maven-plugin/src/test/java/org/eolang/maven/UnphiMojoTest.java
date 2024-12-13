@@ -239,6 +239,7 @@ final class UnphiMojoTest {
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
+        Logger.debug(this, "Unphied XMIR: %s", new TextOf(xmir).asString());
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .execute(OptimizeMojo.class)

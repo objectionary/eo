@@ -61,6 +61,16 @@ binding
 
 tauBinding
     : attribute ARROW object
+    | attribute voids ARROW formation
+    ;
+
+voids
+    : LB (void? | void (COMMA void)+) RB
+    ;
+
+void: LABEL
+    | ALPHA
+    | PHI
     ;
 
 attribute

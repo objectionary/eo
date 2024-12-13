@@ -31,8 +31,7 @@ with-sugar: |-
   {⟦
     foo ↦ ⟦
       bar ↦ ⟦
-        main ↦ ⟦
-          y ↦ ∅,
+        main(y) ↦ ⟦
           z ↦ Φ.com.yegor256.x(ξ.y)
         ⟧,
         λ ⤍ Package

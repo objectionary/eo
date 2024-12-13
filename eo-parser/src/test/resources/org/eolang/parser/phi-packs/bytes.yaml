@@ -86,19 +86,15 @@ with-sugar: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
-        bytes ↦ ⟦
-          data ↦ ∅,
-          eq ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_eq,
-            x ↦ ∅
+        bytes(data) ↦ ⟦
+          eq(x) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_eq
           ⟧,
           size ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_size
           ⟧,
-          slice ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_slice,
-            start ↦ ∅,
-            len ↦ ∅
+          slice(start, len) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_slice
           ⟧,
           as-string ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_as_string
@@ -109,28 +105,23 @@ with-sugar: |-
           as-float ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_as_float
           ⟧,
-          and ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_and,
-            b ↦ ∅
+          and(b) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_and
           ⟧,
-          or ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_or,
-            b ↦ ∅
+          or(b) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_or
           ⟧,
-          xor ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_xor,
-            b ↦ ∅
+          xor(b) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_xor
           ⟧,
           not ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_not
           ⟧,
-          left ↦ ⟦
-            x ↦ ∅,
+          left(x) ↦ ⟦
             φ ↦ ξ.ρ.right(ξ.x.neg)
           ⟧,
-          right ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_right,
-            x ↦ ∅
+          right(x) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_right
           ⟧,
           as-bool ↦ ⟦
             φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
@@ -138,9 +129,8 @@ with-sugar: |-
           as-bytes ↦ ⟦
             φ ↦ ξ.ρ
           ⟧,
-          concat ↦ ⟦
-            λ ⤍ Lorg_eolang_bytes_concat,
-            b ↦ ∅
+          concat(b) ↦ ⟦
+            λ ⤍ Lorg_eolang_bytes_concat
           ⟧
         ⟧,
         λ ⤍ Package

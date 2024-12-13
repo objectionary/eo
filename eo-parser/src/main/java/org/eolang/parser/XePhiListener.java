@@ -124,7 +124,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .append(new DrListing(ctx))
             .xpath("/program").strict(1);
         if (ctx.object() == null || ctx.object().formation() == null) {
-            this.objects().start();
+            this.startObject(ctx);
         }
     }
 
@@ -179,9 +179,11 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (ctx.HOME() != null) {
             this.objects().prop("base", "Q");
         } else if (ctx.DEF_PACKAGE() != null) {
+            final int line = ctx.getStart().getLine();
+            final int pos = ctx.getStart().getCharPositionInLine();
             this.objects().prop("base", "Q").leave()
-                .start().prop("base", ".org").prop("method").leave()
-                .start().prop("base", ".eolang").prop("method");
+                .start(line, pos + 1).prop("base", ".org").prop("method").leave()
+                .start(line, pos + 5).prop("base", ".eolang").prop("method");
         } else {
             this.objects().prop("base", "$");
         }
@@ -221,12 +223,40 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
-        this.enterObjectBinding();
+        this.startObject(ctx);
     }
 
     @Override
     public void exitTauBinding(final PhiParser.TauBindingContext ctx) {
         this.exitObjectBinding();
+    }
+
+    @Override
+    public void enterVoids(final PhiParser.VoidsContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVoids(final PhiParser.VoidsContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVoid(final PhiParser.VoidContext ctx) {
+        final String nme;
+        if (ctx.PHI() != null) {
+            nme = "@";
+        } else if (ctx.LABEL() != null || ctx.ALPHA() != null) {
+            nme = ctx.getText();
+        } else  {
+            nme = "";
+        }
+        this.addVoidAttribute(ctx).prop("name", nme);
+    }
+
+    @Override
+    public void exitVoid(final PhiParser.VoidContext ctx) {
+        this.objects().leave();
     }
 
     @Override
@@ -252,7 +282,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
-        this.enterObjectBinding().prop("base", "∅");
+        this.addVoidAttribute(ctx);
     }
 
     @Override
@@ -329,7 +359,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterJustObject(final PhiParser.JustObjectContext ctx) {
-        this.enterObjectBinding();
+        this.startObject(ctx);
         final int index = this.alphas.peek();
         this.alphas.pop();
         this.alphas.push(index + 1);
@@ -344,7 +374,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterDispatch(final PhiParser.DispatchContext ctx) {
-        this.objects().start().prop("method");
+        this.startObject(ctx).prop("method");
     }
 
     @Override
@@ -399,7 +429,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         }
         this.objects()
             .prop("base", base)
-            .start()
+            .start(
+                ctx.getStart().getLine(),
+                ctx.getStart().getCharPositionInLine() + base.length() + 1
+            )
             .prop("base", "org.eolang.bytes")
             .data(data.get())
             .leave();
@@ -444,11 +477,23 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     /**
-     * Enter either tau or empty binding.
+     * Adds void attribute to the current object.
+     * @param ctx Context
      * @return Objects
      */
-    private Objects enterObjectBinding() {
-        return this.objects().start();
+    private Objects addVoidAttribute(final ParserRuleContext ctx) {
+        return this.startObject(ctx).prop("base", "∅");
+    }
+
+    /**
+     * Start object.
+     * @param ctx Parser rule context.
+     * @return Objects
+     */
+    private Objects startObject(final ParserRuleContext ctx) {
+        return this.objects().start(
+            ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()
+        );
     }
 
     /**
