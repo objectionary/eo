@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.48.1
++rt jvm org.eolang:eo-runtime:0.48.2
 +rt node eo2js-runtime:0.0.0
-+version 0.48.1
++version 0.48.2
 
 # Directory in the file system.
 # Apparently every directory is a file.
@@ -50,12 +50,12 @@
     #
     # Attention! The object is for internal usage only, please
     # don't use it programmatically outside of `dir` object.
-    [] > mkdir /true
+    [] > mkdir /org.eolang.true
 
   # Goes though all files in the directory, recursively
   # finding them with the `glob` provided.
   # Returns `tuple` of all files in the directory.
-  [glob] > walk /tuple
+  [glob] > walk /org.eolang.tuple
 
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
@@ -102,7 +102,7 @@
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of the `dir` object.
-    [] > touch /string
+    [] > touch /org.eolang.string
 
   # Opens the file for I/O operations.
   # Since current file is a directory - returns an `error`.

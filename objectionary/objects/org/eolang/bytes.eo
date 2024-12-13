@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.48.1
++rt jvm org.eolang:eo-runtime:0.48.2
 +rt node eo2js-runtime:0.0.0
-+version 0.48.1
++version 0.48.2
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -58,13 +58,13 @@
                 *
 
   # Equals to another object.
-  [b] > eq /bool
+  [b] > eq /org.eolang.bool
 
   # Total number of bytes.
-  [] > size /number
+  [] > size /org.eolang.number
 
   # Represents a sub-sequence inside the current one.
-  [start len] > slice /bytes
+  [start len] > slice /org.eolang.bytes
 
   # Turn this chain of eight bytes into a i64 number.
   # If there are less or more than eight bytes, there will
@@ -103,24 +103,24 @@
           * ^
 
   # Calculate bitwise and.
-  [b] > and /bytes
+  [b] > and /org.eolang.bytes
 
   # Calculate bitwise or.
-  [b] > or /bytes
+  [b] > or /org.eolang.bytes
 
   # Calculate bitwise xor.
-  [b] > xor /bytes
+  [b] > xor /org.eolang.bytes
 
   # Calculate bitwise not.
-  [] > not /bytes
+  [] > not /org.eolang.bytes
 
   # Calculate bitwise left shift.
   ^.right x.neg > [x] > left
 
   # Calculate bitwise right shift.
-  [x] > right /bytes
+  [x] > right /org.eolang.bytes
 
   # Concatenation of two byte sequences:
   # the current and the provided one,
   # as a new sequence.
-  [b] > concat /bytes
+  [b] > concat /org.eolang.bytes

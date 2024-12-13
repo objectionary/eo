@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.48.1
++version 0.48.2
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -158,7 +158,7 @@
     *
   not. > @
     lt.
-      r
+      number r
       0
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -200,8 +200,8 @@
     "Привет world"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > rust-invalid-put
-  QQ.rust > put
+[] > throws-on-rust-invalid-put
+  QQ.rust > @
     """
     use eo::Portal;
     use eo::eo_enum::EO;
@@ -214,16 +214,12 @@
     """
     []
     *
-  try > @
-    put
-    true > [e]
-    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > rust-invalid-bind
+[] > throws-on-rust-invalid-bind
   1 > a
   2 > b
-  QQ.rust > insert
+  QQ.rust > @
     """
     use eo::Portal;
     use eo::eo_enum::EO;
@@ -238,10 +234,6 @@
     """
     [] >>
     *
-  try > @
-    insert
-    true > [e]
-    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-copy-not-fails
@@ -283,7 +275,7 @@
     *
   not. > @
     lt.
-      dataized
+      number dataized
       0
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -316,8 +308,8 @@
     15
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > rust-error
-  QQ.rust > err
+[] > throws-on-rust-custom-error
+  QQ.rust > @
     """
     use eo::Portal;
     use eo::eo_enum::EO;
@@ -329,10 +321,6 @@
     """
     []
     *
-  try > @
-    err
-    true > [e]
-    false
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-put-to-copy
@@ -358,7 +346,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > rust-bind-to-copy
   # Book.
-  [content] > book
+  content > [content] > book
   "qwerty" > line
   QQ.rust > applied
     """
@@ -377,7 +365,7 @@
     [] >>
     *
   eq. > @
-    applied.content
+    applied
     "qwerty"
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -539,7 +527,7 @@
             org.
               Q
           62-79-74-65-6F-72-64-65-72-3A-31-2E-34-2E-33
-  eq. > res
+  eq. > @
     plus.
       $
     number.:0
@@ -552,4 +540,3 @@
             Q
         00-00-00-00-00-00-00-0F
   [] > auto-named-attr-at-327-6
-  true > @

@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.48.1
++rt jvm org.eolang:eo-runtime:0.48.2
 +rt node eo2js-runtime:0.0.0
-+version 0.48.1
++version 0.48.2
 
 # The angle.
 [value] > angle
@@ -44,11 +44,11 @@
 
   # Sine of current angle.
   # Please note, that `sin` is calculated from the angle in radians.
-  [] > sin /number
+  [] > sin /org.eolang.number
 
   # Cosine of current angle.
   # Please note, that `cos` is calculated from the angle in radians.
-  [] > cos /number
+  [] > cos /org.eolang.number
 
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.

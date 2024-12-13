@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.48.1
++rt jvm org.eolang:eo-runtime:0.48.2
 +rt node eo2js-runtime:0.0.0
-+version 0.48.1
++version 0.48.2
 
 # The 64 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -52,7 +52,7 @@
           * ^.as-number
 
   # Convert this `i64` to `number` object.
-  [] > as-number /number
+  [] > as-number /org.eolang.number
 
   # Returns `true` if `$` < `x`.
   # Here `x` must be an `i64` object.
@@ -72,7 +72,7 @@
 
   # Returns `true` if `$` > `x`.
   # Here `x` must be an `i64` object.
-  [x] > gt /bool
+  [x] > gt /org.eolang.bool
 
   # Returns `true` if `$` >= `x`.
   # Here `x` must be an `i64` object.
@@ -84,11 +84,11 @@
 
   # Multiplication of `$` and `x`.
   # Here `x` must be an `i64` object.
-  [x] > times /i64
+  [x] > times /org.eolang.i64
 
   # Sum of `$` and `x`.
   # Here `x` must be an `i64` object.
-  [x] > plus /i64
+  [x] > plus /org.eolang.i64
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `i64` object.
@@ -100,4 +100,4 @@
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `i64` object.
   # An `error` is returned if or `x` is equal to 0.
-  [x] > div /i64
+  [x] > div /org.eolang.i64
