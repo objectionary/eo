@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.manifests.Manifests;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -45,24 +46,11 @@ final class StrictXmirTest {
 
     @Test
     @ExtendWith(MktmpResolver.class)
-    void validatesXmir(@Mktmp final Path tmp) throws Exception {
+    void validatesXmir(@Mktmp final Path tmp) {
         MatcherAssert.assertThat(
             "validation should pass as normal",
             new StrictXmir(
-                new Xmir(
-                    new XMLDocument(
-                        new Xembler(
-                            new Directives()
-                                .append(new DrProgram("foo"))
-                                .xpath("/program")
-                                .attr(
-                                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                                    "https://www.eolang.org/XMIR.xsd"
-                                )
-                                .add("objects")
-                        ).xml()
-                    )
-                ),
+                StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"),
                 tmp
             ).validate(),
             Matchers.emptyIterable()
@@ -76,25 +64,16 @@ final class StrictXmirTest {
 
     @Test
     @ExtendWith(MktmpResolver.class)
-    void validatesXmirWithLocalSchema(@Mktmp final Path tmp) throws Exception {
+    void validatesXmirWithLocalSchema(@Mktmp final Path tmp) {
         MatcherAssert.assertThat(
             "validation should pass as normal",
             new StrictXmir(
                 new Xmir(
-                    new XMLDocument(
-                        new Xembler(
-                            new Directives()
-                                .append(new DrProgram("foo3"))
-                                .xpath("/program")
-                                .attr(
-                                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                                    String.format(
-                                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                                        Manifests.read("EO-Version")
-                                    )
-                                )
-                                .add("objects")
-                        ).xml()
+                    StrictXmirTest.xmir(
+                        String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                            Manifests.read("EO-Version")
+                        )
                     )
                 ),
                 tmp
@@ -117,22 +96,30 @@ final class StrictXmirTest {
             IllegalArgumentException.class,
             () -> new StrictXmir(
                 new Xmir(
-                    new XMLDocument(
-                        new Xembler(
-                            new Directives()
-                                .append(new DrProgram("foobar"))
-                                .xpath("/program")
-                                .attr(
-                                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                                    "https://www.invalid-website-uri/XMIR.xsd"
-                                )
-                                .add("objects")
-                        ).xml()
-                    )
+                    StrictXmirTest.xmir("https://www.invalid-website-uri/XMIR.xsd")
                 ),
                 tmp
             ).validate(),
             "validation should fail because of broken URI"
+        );
+    }
+
+    /**
+     * Make a simple XMIR.
+     * @param schema The schema
+     */
+    private static XML xmir(final String schema) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .append(new DrProgram("foo"))
+                    .xpath("/program")
+                    .attr(
+                        "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                        schema
+                    )
+                    .add("objects")
+            ).xmlQuietly()
         );
     }
 }
