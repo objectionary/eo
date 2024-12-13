@@ -48,10 +48,10 @@ import org.xml.sax.SAXParseException;
 /**
  * XMIR that validates itself right after construction.
  *
- * <p>This class is supposed to be used ONLY for testing, because
- * it modifies the XML encapsulated: it replaces the location of
- * XSD schema with a file, thus making testing much faster. However,
- * the original location of the XSD schema will be lost/removed
+ * <p>Be careful with this class, because
+ * it modifies the XML encapsulated by replacing the URI of
+ * XSD schema with a file, thus making schema validation faster.
+ * The original URI of the XSD schema will be lost/removed
  * from the XML. Thus, you better save the XML to disc and only
  * then encapsulate it into this decorator.</p>
  *
