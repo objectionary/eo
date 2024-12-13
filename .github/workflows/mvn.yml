@@ -38,7 +38,7 @@ jobs:
         exclude:
           - os: windows-2022
             java: 11
-          - os: macos-13
+          - os: macos-15
             java: 11
     runs-on: ${{ matrix.os }}
     env:
