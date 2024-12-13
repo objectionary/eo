@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -40,6 +41,7 @@ import javax.xml.namespace.NamespaceContext;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -148,7 +150,7 @@ public final class StrictXmir implements XML {
             if (uri.startsWith("http")) {
                 uri = String.format(
                     "file:///%s",
-                    StrictXmir.download(
+                    StrictXmir.fetch(
                         uri,
                         tmp.resolve(
                             uri.substring(uri.lastIndexOf('/') + 1)
@@ -164,6 +166,42 @@ public final class StrictXmir implements XML {
             ).applyQuietly(node);
         }
         return new XMLDocument(node);
+    }
+
+    /**
+     * Fetch the XSD and place into the path.
+     * @param uri The URI
+     * @param path The file
+     * @return Where it was saved
+     */
+    private static File fetch(final String uri, final Path path) {
+        final File ret;
+        final String mine = String.format(
+            "https://www.eolang.org/xsd/XMIR-%s.xsd",
+            Manifests.read("EO-Version")
+        );
+        if (uri.equals(mine)) {
+            if (path.toFile().getParentFile().mkdirs()) {
+                Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
+            }
+            try {
+                Files.write(
+                    path,
+                    new IoCheckedBytes(
+                        new BytesOf(new ResourceOf("XMIR.xsd"))
+                    ).asBytes()
+                );
+            } catch (final IOException ex) {
+                throw new IllegalArgumentException(
+                    String.format("Failed to save %s to %s", uri, path),
+                    ex
+                );
+            }
+            ret = path.toFile();
+        } else {
+            ret = StrictXmir.download(uri, path);
+        }
+        return ret;
     }
 
     /**
