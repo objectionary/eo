@@ -1,4 +1,5 @@
 import java.nio.file.Files
+import java.nio.file.Path
 import java.util.stream.Collectors
 
 /**
@@ -38,6 +39,7 @@ boolean disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
         .filter(file -> file.toString().endsWith(classExtension))
         .map { path -> testClasses.relativize(path).toString() }
         .noneMatch { classPathName -> binaries.contains(classPathName) }
-println "Compiled classes do not have duplicates: $disjoint"
+
+log.info "Compiled classes do not have duplicates: $disjoint"
 assert disjoint
 return true

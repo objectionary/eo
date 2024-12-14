@@ -34,5 +34,5 @@
         'src/test/groovy/xslqual.groovy',
 ].each { filename ->
     evaluate(new File(filename))
-    println String.format('Verified with %s - OK', filename)
+    log.info "Verified with $filename - OK"
 }
