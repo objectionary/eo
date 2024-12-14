@@ -30,7 +30,7 @@ import java.nio.file.Path
  * to the list below.
  */
 Path folder = basedir.toPath().resolve('src/test/groovy')
-var tests = [
+List<String> tests = [
     'check-folders-numbering.groovy',
     'check-all-java-classes-compiled.groovy',
     'check-runtime-deps.groovy',
@@ -39,3 +39,4 @@ var tests = [
 for (it in tests) {
     evaluate folder.resolve(it).toFile()
 }
+

@@ -28,7 +28,7 @@
   'target/eo/2-optimize',
   'target/eo/3-shake',
   'target/eo/4-pull',
-].each { assert new File(basedir, it).exists() }
+].each { filePath -> assert new File(basedir, filePath).exists() }
 
 /**
  * Check that the pre and resolve goals had no effect.
@@ -39,6 +39,6 @@
   'target/eo/5-resolve',
   'target/eo/7-pre',
   'target/eo/8-transpile',
-].each { assert !new File(basedir, it).exists() }
+].each { filePath -> assert !new File(basedir, filePath).exists() }
 
 true

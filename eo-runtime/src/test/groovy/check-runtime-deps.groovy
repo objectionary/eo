@@ -28,12 +28,14 @@
  * jar (not fat-jar) and we expect that it won't require any outer dependencies
  */
 import groovy.xml.XmlSlurper
+import groovy.xml.slurpersupport.GPathResult
 
-def pom = new File('pom.xml').text
-def project = new XmlSlurper().parseText(pom)
+String pom = new File('pom.xml').text
+GPathResult project = new XmlSlurper().parseText(pom)
 
-project.dependencies.dependency.each {
-    if (it.scope.text() != 'test' && it.scope.text() != 'provided') {
-        fail("Dependency ${it.groupId.text()}.${it.artifactId.text()} must be in either 'test' or 'provided' scope")
+project.dependencies.dependency.each { dependency ->
+    if (dependency.scope.text() != 'test' && dependency.scope.text() != 'provided') {
+        fail("Dependency ${dependency.groupId.text()}.${dependency.artifactId.text()} " +
+                "must be in either 'test' or 'provided' scope")
     }
 }

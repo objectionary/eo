@@ -27,11 +27,12 @@
  * To add new validation create new script in this folder and add it
  * to the list below.
  */
+
 [
-  'src/test/groovy/check-xsl-id.groovy',
-  'src/test/groovy/check-xsl-version.groovy',
-  'src/test/groovy/xslqual.groovy'
-].each {
-  evaluate(new File(it))
-  println String.format('Verified with %s - OK', it)
+        'src/test/groovy/check-xsl-id.groovy',
+        'src/test/groovy/check-xsl-version.groovy',
+        'src/test/groovy/xslqual.groovy',
+].each { filename ->
+    evaluate(new File(filename))
+    println String.format('Verified with %s - OK', filename)
 }

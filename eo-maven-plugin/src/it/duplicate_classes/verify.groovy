@@ -25,19 +25,19 @@ import java.util.stream.Collectors
  * SOFTWARE.
  */
 
-String target = "target"
-String classExtension = ".class"
+String target = 'target'
+String classExtension = '.class'
 
-def classes = basedir.toPath().resolve(target).resolve("classes")
-def testClasses = basedir.toPath().resolve(target).resolve("test-classes")
-def binaries = Files.walk(classes).filter(Files::isRegularFile)
-  .filter(file -> file.toString().endsWith(classExtension)).map {
-  return classes.relativize(it).toString()
-}.collect(Collectors.toSet())
-def disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
-  .filter(file -> file.toString().endsWith(classExtension)).map {
-  return testClasses.relativize(it).toString()
-}.noneMatch { binaries.contains(it) }
-println "Compiled classes do not have duplicates: " + disjoint
+Path classes = basedir.toPath().resolve(target).resolve('classes')
+Path testClasses = basedir.toPath().resolve(target).resolve('test-classes')
+Set<String> binaries = Files.walk(classes).filter(Files::isRegularFile)
+        .filter(file -> file.toString().endsWith(classExtension))
+        .map { path -> classes.relativize(path).toString() }
+        .collect(Collectors.toSet())
+boolean disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
+        .filter(file -> file.toString().endsWith(classExtension))
+        .map { path -> testClasses.relativize(path).toString() }
+        .noneMatch { classPathName -> binaries.contains(classPathName) }
+println "Compiled classes do not have duplicates: $disjoint"
 assert disjoint
 return true
