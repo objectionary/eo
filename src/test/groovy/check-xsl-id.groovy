@@ -42,6 +42,6 @@ project.traverse(
 ) {
   it ->
     String id = new XmlSlurper().parse(it).@id
-    assert id == it.name.minus('.xsl')
+    assert id == it.name - '.xsl'
 }
 true

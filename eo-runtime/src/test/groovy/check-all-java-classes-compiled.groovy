@@ -26,29 +26,34 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
+String org = "org"
+String eolang = "eolang"
+String javaExtension = ".java"
+String classExtension = ".class"
+
 Path binaries = basedir.toPath()
     .resolve("target")
     .resolve("classes")
-    .resolve("org")
-    .resolve("eolang");
+    .resolve(org)
+    .resolve(eolang)
 Path classes = basedir.toPath()
     .resolve("src")
     .resolve("main")
     .resolve("java")
-    .resolve("org")
-    .resolve("eolang")
+    .resolve(org)
+    .resolve(eolang)
 Set<String> expected = Files.walk(classes)
     .filter(it -> {
-      it.toString().endsWith(".java")
+      it.toString().endsWith(javaExtension)
     })
     .map(Path::getFileName)
     .map(Path::toString)
     .map(it -> {
-      return it.replace(".java", ".class")
+      return it.replace(javaExtension, classExtension)
     }).collect(Collectors.toSet())
 Set<String> actual = Files.walk(binaries)
     .filter(it -> {
-      it.toString().endsWith(".class")
+      it.toString().endsWith(classExtension)
     })
     .map(Path::getFileName)
     .map(Path::toString)

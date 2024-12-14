@@ -25,14 +25,17 @@ import java.util.stream.Collectors
  * SOFTWARE.
  */
 
-def classes = basedir.toPath().resolve("target").resolve("classes")
-def testClasses = basedir.toPath().resolve("target").resolve("test-classes")
+String target = "target"
+String classExtension = ".class"
+
+def classes = basedir.toPath().resolve(target).resolve("classes")
+def testClasses = basedir.toPath().resolve(target).resolve("test-classes")
 def binaries = Files.walk(classes).filter(Files::isRegularFile)
-  .filter(file -> file.toString().endsWith(".class")).map {
+  .filter(file -> file.toString().endsWith(classExtension)).map {
   return classes.relativize(it).toString()
 }.collect(Collectors.toSet())
 def disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
-  .filter(file -> file.toString().endsWith(".class")).map {
+  .filter(file -> file.toString().endsWith(classExtension)).map {
   return testClasses.relativize(it).toString()
 }.noneMatch { binaries.contains(it) }
 println "Compiled classes do not have duplicates: " + disjoint
