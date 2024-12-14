@@ -44,7 +44,7 @@ jobs:
             org.codenarc.CodeNarc \
             -report=text:stdout \
             -maxPriority1Violations=0 \
-            -maxPriority2Violations=50 \
-            -maxPriority3Violations=200 \
+            -maxPriority2Violations=0 \
+            -maxPriority3Violations=0 \
             -failOnError=true \
             -rulesetfiles=file:.codenarc
