@@ -138,7 +138,7 @@ rules.forEach {
     matchRule ->
         String xpath = matchRule.xpath
         String warning = matchRule.warning
-        XSLDocument check = new com.jcabi.xml.XSLDocument("""
+        com.jcabi.xml.XSLDocument check = new com.jcabi.xml.XSLDocument("""
     <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
     <xsl:template match="${XmlUtil.escapeXml(xpath)}">
@@ -160,7 +160,7 @@ rules.forEach {
                 nameFilter: ~/.*\.xsl/,
         ) {
             file ->
-                XMLDocument xsl = new com.jcabi.xml.XMLDocument(file)
+                com.jcabi.xml.XMLDocument xsl = new com.jcabi.xml.XMLDocument(file)
                 String ret = check.applyTo(xsl)
                 if (!ret.empty) {
                     println "  ERROR: ${file} (${ret})"
