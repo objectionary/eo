@@ -138,8 +138,8 @@ public final class Dataized {
             }
             return data;
         } catch (final EOerror.ExError ex) {
-            final List<String> raw = new ArrayList<>(ex.locations().size());
-            raw.addAll(ex.locations());
+            final List<String> raw = new ArrayList<>(ex.messages().size());
+            raw.addAll(ex.messages());
             Collections.reverse(raw);
             if ("org.eolang.string".equals(ex.enclosure().forma())) {
                 raw.add(

@@ -25,6 +25,9 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * It catches {@link ExFailure} and
@@ -114,8 +117,13 @@ public final class PhSafe implements Phi {
         try {
             return action.act();
         } catch (final ExFailure ex) {
+            final List<String> before = PhSafe.messages(ex);
+            if (!before.isEmpty()) {
+                before.remove(0);
+            }
             throw new EOerror.ExError(
-                new Data.ToPhi(PhSafe.message(ex))
+                new Data.ToPhi(PhSafe.message(ex)),
+                before
             );
         }
     }
@@ -141,6 +149,21 @@ public final class PhSafe implements Phi {
             ret.append(PhSafe.message(exp.getCause()));
         }
         return ret.toString();
+    }
+
+    /**
+     * Make a chain of messages from an exception and its causes.
+     * @param exp The exception
+     * @return Messages
+     */
+    private static List<String> messages(final Throwable exp) {
+        final List<String> msgs = new LinkedList<>();
+        if (exp != null) {
+            msgs.add(exp.getMessage());
+            msgs.addAll(PhSafe.messages(exp.getCause()));
+            Collections.reverse(msgs);
+        }
+        return msgs;
     }
 
 }

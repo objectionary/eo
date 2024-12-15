@@ -35,12 +35,15 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link Dataized}.
  *
  * @since 0.22
  */
+@Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
     /**
      * System property for maximum dataization log level.
@@ -76,11 +79,10 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Phi wrong = new PhIncorrect();
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Dataized(wrong).take(),
+                () -> new Dataized(new PhIncorrect()).take(),
                 "Expected failure with ExFailure exception on incorrect object dataization"
             )
         );
@@ -93,6 +95,39 @@ final class DataizedTest {
             Matchers.allOf(
                 Matchers.containsString("numberν"),
                 Matchers.not(Matchers.containsString("\n"))
+            )
+        );
+    }
+
+    @Test
+    void logsAllLocationsWithPhSafe() {
+        final Logger log = Logger.getLogger("logsWithPhSafe");
+        final Level before = log.getLevel();
+        log.setLevel(Level.ALL);
+        final List<LogRecord> logs = new LinkedList<>();
+        final Handler hnd = new Hnd(logs);
+        log.addHandler(hnd);
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhSafe(
+                    new PhLocated(new PhIncorrect(), "foo.bar", 0, 0)
+                ),
+                log
+            ).take(),
+            "it is expected to fail with ExFailure exception"
+        );
+        log.setLevel(before);
+        log.removeHandler(hnd);
+        MatcherAssert.assertThat(
+            "all messages should be logged",
+            logs.get(0).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("1) Error in"),
+                Matchers.containsString("2) \"There's"),
+                Matchers.not(Matchers.containsString("3)")),
+                Matchers.containsString("at foo.bar:0:0"),
+                Matchers.containsString("no data in the object, can't take it")
             )
         );
     }
