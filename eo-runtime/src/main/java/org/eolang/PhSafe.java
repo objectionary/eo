@@ -117,13 +117,9 @@ public final class PhSafe implements Phi {
         try {
             return action.act();
         } catch (final ExFailure ex) {
-            final List<String> before = PhSafe.messages(ex);
-            if (!before.isEmpty()) {
-                before.remove(0);
-            }
             throw new EOerror.ExError(
                 new Data.ToPhi(PhSafe.message(ex)),
-                before
+                PhSafe.messages(ex)
             );
         }
     }
