@@ -56,5 +56,5 @@ if (!actual.containsAll(expected)) {
             log.error("Missing: ${must}")
         }
     }
-    fail("Not all .java files were compiled to .class files")
+    fail('Not all .java files were compiled to .class files')
 }
