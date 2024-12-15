@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * @since 0.49
  */
 @Target(ElementType.PACKAGE)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Versionized
 public @interface XmirPackage {
 
@@ -44,6 +44,6 @@ public @interface XmirPackage {
      *
      * @return The name as it is in EO
      */
-    String name() default "";
+    String value() default "";
 
 }

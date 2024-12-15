@@ -184,11 +184,16 @@ final class TranspileMojoTest {
             .result();
         final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "transpiled class must be present",
             res, Matchers.hasKey(java)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "package-info.java files must be present",
+            res,
+            Matchers.hasKey("target/generated/EOorg/EOeolang/package-info.java")
+        );
+        MatcherAssert.assertThat(
+            "transpiled class must contain EOtuple",
             new TextOf(res.get(java)).asString(),
             Matchers.containsString("class EOtuple")
         );
@@ -210,7 +215,7 @@ final class TranspileMojoTest {
                     .resolve("EOeolang")
                     .resolve("EOexamples")
             ).count(),
-            Matchers.equalTo(4L)
+            Matchers.equalTo(5L)
         );
     }
 
@@ -243,7 +248,10 @@ final class TranspileMojoTest {
         MatcherAssert.assertThat(
             "Both class paths should not intersect and don't have to have common classes",
             intersection,
-            Matchers.empty()
+            Matchers.allOf(
+                Matchers.iterableWithSize(1),
+                Matchers.hasItem("package-info.java")
+            )
         );
     }
 
