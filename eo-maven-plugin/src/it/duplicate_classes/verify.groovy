@@ -40,6 +40,6 @@ boolean disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
         .map { path -> testClasses.relativize(path).toString() }
         .noneMatch { classPathName -> binaries.contains(classPathName) }
 
-log.info "Compiled classes do not have duplicates: $disjoint"
+log.info("Compiled classes do not have duplicates: $disjoint")
 assert disjoint
 return true

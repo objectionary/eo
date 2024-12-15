@@ -47,4 +47,5 @@ for (dir in directories) {
     if (!allowedDirs.contains(dir)) {
         fail("The directory '${dir.name}' is not expected to be here")
     }
+    log.info("The directory is found: ${dir}")
 }

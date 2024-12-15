@@ -35,6 +35,6 @@ List<String> tests = [
 ]
 for (test in tests) {
     Object res = evaluate folder.resolve(test).toFile()
-    log.info "Verified with $test - OK. Result: $res"
+    log.info("Verified with ${test} - OK. Result: ${res}")
 }
 true

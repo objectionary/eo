@@ -55,10 +55,6 @@ content.mojos.mojo.findAll { mojo -> !(mojo.goal.text() in toBeExcluded) }
         }
     }
 if (!failures.empty) {
-    fail(String.format(
-        'Following parameters don\'t match pattern %s:%n %s',
-        pattern,
-        failures.join(' ')
-    ))
+    fail("Following parameters don\'t match pattern ${pattern}:\n ${failures.join(' ')}")
 }
 true

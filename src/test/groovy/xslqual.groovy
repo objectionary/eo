@@ -149,7 +149,7 @@ rules.forEach {
     </xsl:template>
     </xsl:stylesheet>
     """)
-        println "${warning}:"
+        log.info("${warning}:")
         new File('.').traverse(
                 type: FileType.FILES,
                 preDir: { file ->
@@ -163,7 +163,7 @@ rules.forEach {
                 com.jcabi.xml.XMLDocument xsl = new com.jcabi.xml.XMLDocument(file)
                 String ret = check.applyTo(xsl)
                 if (!ret.empty) {
-                    println "  ERROR: ${file} (${ret})"
+                    log.info("  ERROR: ${file} (${ret})")
                     ++errors
                 }
         }

@@ -32,16 +32,17 @@ import groovy.io.FileVisitResult
 File project = new File('.')
 
 project.traverse(
-  type: FileType.FILES,
-  preDir: { file ->
-    if (file.name == 'target') {
-      return FileVisitResult.SKIP_SUBTREE
-    }
-  },
-  nameFilter: ~/.*\.xsl|xs3p.xsl/,
+    type: FileType.FILES,
+    preDir: { file ->
+        if (file.name == 'target') {
+            return FileVisitResult.SKIP_SUBTREE
+        }
+    },
+    nameFilter: ~/.*\.xsl|xs3p.xsl/,
 ) {
-  file ->
+    file ->
     String id = new XmlSlurper().parse(file).@id
     assert id == file.name - '.xsl'
+    log.info("The XSL stylesheet has correct @id: ${file}")
 }
 true

@@ -35,7 +35,9 @@ GPathResult project = new XmlSlurper().parseText(pom)
 
 project.dependencies.dependency.each { dependency ->
     if (dependency.scope.text() != 'test' && dependency.scope.text() != 'provided') {
-        fail("Dependency ${dependency.groupId.text()}.${dependency.artifactId.text()} " +
-                "must be in either 'test' or 'provided' scope")
+        fail(
+            "Dependency ${dependency.groupId.text()}.${dependency.artifactId.text()} " +
+            "must be in either 'test' or 'provided' scope"
+        )
     }
 }
