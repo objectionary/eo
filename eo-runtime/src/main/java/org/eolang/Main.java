@@ -211,7 +211,7 @@ public final class Main {
         final byte[] ret = new Dataized(app).take();
         Main.LOGGER.info(
             String.format(
-                "%n---%n%s%nFinished in %.2fms (%d bytes)",
+                "%n---%n%s%nFinished in %.2fs (%d bytes)",
                 new VerboseBytesAsString(ret).get(),
                 (System.currentTimeMillis() - start) / 1000.0,
                 ret.length
