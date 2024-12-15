@@ -269,7 +269,7 @@ public class PhDefault implements Phi, Cloneable {
         } else {
             throw new ExFailure(
                 String.format(
-                    "There's no Δ in the object of %s",
+                    "There's no \"Δ\" in the object of \"%s\"",
                     this.forma()
                 )
             );
