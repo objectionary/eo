@@ -28,7 +28,7 @@
 +package org.eolang.math
 +version 0.0.0
 
-# Pseudo random number.
+# Generates a pseudo-random number.
 [seed] > random
   $ > fixed
   # Get float value for current `seed`.
