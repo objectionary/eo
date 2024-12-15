@@ -28,16 +28,16 @@
  * @return Is the internet connection available
  */
 private static boolean online() {
-  boolean online = true
-  try {
-    final URL url = new URL("http://www.google.com")
-    final URLConnection conn = url.openConnection()
-    conn.connect()
-    conn.inputStream.close()
-  } catch (final IOException ignored) {
-    online = false
-  }
-  return online
+    boolean online = true
+    try {
+        final URL url = new URL('http://www.google.com')
+        final URLConnection conn = url.openConnection()
+        conn.connect()
+        conn.inputStream.close()
+    } catch (final IOException ignored) {
+        online = false
+    }
+    return online
 }
 
 /**
@@ -45,9 +45,9 @@ private static boolean online() {
  * wasn't overwritten.
  */
 if (online()) {
-  File euler =  new File(basedir, 'target/classes/EOorg/EOeolang/EOmath/EOe.class')
-  assert euler.exists()
-  assert euler.text.contains('EOorg/EOeolang/EOint')
+    File euler = new File(basedir, 'target/classes/EOorg/EOeolang/EOmath/EOe.class')
+    assert euler.exists()
+    assert euler.text.contains('EOorg/EOeolang/EOint')
 }
 
 true

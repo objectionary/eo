@@ -28,28 +28,32 @@
  */
 
 import groovy.xml.XmlSlurper
+import groovy.xml.slurpersupport.GPathResult
 
-plugin = basedir.toPath()
-    .resolve("target")
-    .resolve("classes")
-    .resolve("META-INF")
-    .resolve("maven")
-    .resolve("plugin.xml")
-content = new XmlSlurper().parseText(new File(plugin.toString()).text)
+import java.nio.file.Path
+
+Path plugin = basedir.toPath()
+    .resolve('target')
+    .resolve('classes')
+    .resolve('META-INF')
+    .resolve('maven')
+    .resolve('plugin.xml')
+GPathResult content = new XmlSlurper().parseText(new File(plugin.toString()).text)
 // For example, "${eo.foreignFormat}":
-pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
-failures = []
-toBeExcluded = ["help"]
-content.mojos.mojo.findAll {
-    !(it.goal.text() in toBeExcluded)
-}.configuration.each {
-    it.children().each {
-        final String text = it.text()
-        if (!("" == text || text.matches(pattern))) {
-            failures.add(text)
+String pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
+List<String> failures = []
+List<String> toBeExcluded = ['help']
+
+content.mojos.mojo.findAll { mojo -> !(mojo.goal.text() in toBeExcluded) }
+    .configuration
+    .each { mojoConf ->
+        mojoConf.children().each { child ->
+            final String text = child.text()
+            if (!(text == '' || text.matches(pattern))) {
+                failures.add(text)
+            }
         }
     }
-}
 if (!failures.empty) {
     fail(String.format(
         'Following parameters don\'t match pattern %s:%n %s',

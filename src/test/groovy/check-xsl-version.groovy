@@ -29,20 +29,20 @@ import groovy.xml.XmlSlurper
 import groovy.io.FileType
 import groovy.io.FileVisitResult
 
-project = new File('.')
+File project = new File('.')
 
 project.traverse(
   type: FileType.FILES,
-  preDir: {
-    if (it.name == 'target') {
+  preDir: { file ->
+    if (file.name == 'target') {
       return FileVisitResult.SKIP_SUBTREE
     }
   },
-  nameFilter: ~/.*\.xsl/
+  nameFilter: ~/.*\.xsl/,
 ) {
-  it ->
-    if (it.getName() == 'xs3p.xsl') { return }
-    String version = new XmlSlurper().parse(it).@version
+  file ->
+    if (file.name == 'xs3p.xsl') { return }
+    String version = new XmlSlurper().parse(file).@version
     assert version == '2.0'
 }
 

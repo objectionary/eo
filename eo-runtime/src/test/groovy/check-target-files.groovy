@@ -24,7 +24,7 @@
 
 import java.nio.file.Paths
 
-var expected = [
+List<String> expected = [
   'eo-foreign.csv',
   'eo/1-parse/org/eolang/bytes.xmir',
   'eo/1-parse/org/eolang/fs/dir.xmir',
@@ -47,7 +47,7 @@ var expected = [
 ]
 
 for (path in expected) {
-    var f = Paths.get('eo-runtime/target').resolve(path).toFile()
+    File f = Paths.get('eo-runtime/target').resolve(path).toFile()
     if (!f.exists()) {
         fail("The file '${f}' is not present")
     }

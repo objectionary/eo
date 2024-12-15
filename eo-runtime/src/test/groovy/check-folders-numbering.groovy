@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
+import java.nio.file.Path
 import java.util.stream.Collectors
 
-target = basedir.toPath().resolve('target/eo')
-List<File> directories = target.toFile().listFiles(new FileFilter() {
-    @Override
-    boolean accept(final File pathname) {
-        return pathname.isDirectory()
-    }
-})
-var allowed = [
+Path target = basedir.toPath().resolve('target/eo')
+List<File> directories = target.toFile().listFiles((FileFilter) { File file -> file.directory })
+List<String> allowed = [
     '1-parse',
     '2-optimize',
     '3-shake',
@@ -41,14 +37,14 @@ var allowed = [
     '7-pre',
     '8-transpile',
     'phi',
-    'unphi'
+    'unphi',
 ]
 List<File> allowedDirs = allowed.stream()
-    .map { target.resolve(it).toFile() }
+    .map { dirName -> target.resolve(dirName).toFile() }
     .collect(Collectors.toList())
 
 for (dir in directories) {
     if (!allowedDirs.contains(dir)) {
-        fail("The directory '${dir.name}' is not expected to be here");
+        fail("The directory '${dir.name}' is not expected to be here")
     }
 }

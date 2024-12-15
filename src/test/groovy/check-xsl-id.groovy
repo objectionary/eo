@@ -29,19 +29,19 @@ import groovy.xml.XmlSlurper
 import groovy.io.FileType
 import groovy.io.FileVisitResult
 
-project = new File('.')
+File project = new File('.')
 
 project.traverse(
   type: FileType.FILES,
-  preDir: {
-    if (it.name == 'target') {
+  preDir: { file ->
+    if (file.name == 'target') {
       return FileVisitResult.SKIP_SUBTREE
     }
   },
-  nameFilter: ~/.*\.xsl|xs3p.xsl/
+  nameFilter: ~/.*\.xsl|xs3p.xsl/,
 ) {
-  it ->
-    String id = new XmlSlurper().parse(it).@id
-    assert id == it.name.minus('.xsl')
+  file ->
+    String id = new XmlSlurper().parse(file).@id
+    assert id == file.name - '.xsl'
 }
 true
