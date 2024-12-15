@@ -124,10 +124,10 @@ final class DataizedTest {
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("1) Error in"),
-                Matchers.containsString("2) There's"),
+                Matchers.containsString("2) There's no"),
                 Matchers.containsString("3)"),
                 Matchers.containsString("at foo.bar:0:0"),
-                Matchers.containsString("no data in the object, can't take it")
+                Matchers.containsString("no \"Δ\" in the object of")
             )
         );
     }

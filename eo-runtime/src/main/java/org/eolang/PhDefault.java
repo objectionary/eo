@@ -67,7 +67,7 @@ public class PhDefault implements Phi, Cloneable {
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
-     * From Java class name to forma.
+     * From Java package name to forma.
      */
     private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
 
@@ -76,11 +76,6 @@ public class PhDefault implements Phi, Cloneable {
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final Optional<byte[]> data;
-
-    /**
-     * Forma of it.
-     */
-    private final String form;
 
     /**
      * Order of their names.
@@ -106,7 +101,6 @@ public class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final byte[] dta) {
         this.data = Optional.ofNullable(dta);
-        this.form = PhDefault.TO_FORMA.matcher(this.getClass().getName()).replaceAll("$1");
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
@@ -235,7 +229,7 @@ public class PhDefault implements Phi, Cloneable {
                             "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
                             name,
                             this.attrs.size(),
-                            this.form,
+                            this.forma(),
                             String.join(", ", this.attrs.keySet()),
                             Attr.PHI,
                             Attr.LAMBDA
@@ -284,7 +278,17 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public String forma() {
-        return this.form;
+        final StringBuilder ret = new StringBuilder(0);
+        ret.append(
+            PhDefault.TO_FORMA.matcher(
+                this.getClass().getPackageName()
+            ).replaceAll("$1")
+        );
+        if (ret.length() > 0) {
+            ret.append('.');
+        }
+        ret.append(this.oname());
+        return ret.toString();
     }
 
     /**

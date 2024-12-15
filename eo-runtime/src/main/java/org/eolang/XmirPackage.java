@@ -30,34 +30,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for a Java class made from XMIR object.
+ * Annotation for a Java package made from XMIR meta.
  *
- * @since 0.17
+ * @since 0.49
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.RUNTIME)
 @Versionized
-public @interface XmirObject {
+public @interface XmirPackage {
 
     /**
-     * The original name of the object in EO, before optimization.
-     *
-     * @return The name as it was in EO
-     */
-    String oname();
-
-    /**
-     * The name of the object in EO.
+     * The name of the package in EO.
      *
      * @return The name as it is in EO
      */
     String name() default "";
-
-    /**
-     * The name of the source file where this Java code was generated from.
-     *
-     * @return The absolute path
-     */
-    String source() default "";
 
 }
