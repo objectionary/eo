@@ -103,9 +103,9 @@ public final class LintMojo extends SafeMojo {
             "Also, %d XMIR programs linted as a package",
             this.lintAll(counts)
         );
+        final String sum = LintMojo.summary(counts);
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
             || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
-            final String sum = LintMojo.summary(counts);
             Logger.info(
                 this,
                 "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
@@ -117,8 +117,8 @@ public final class LintMojo extends SafeMojo {
         } else {
             Logger.info(
                 this,
-                "Linted %d out of %d XMIR program(s) that needed this, no problems found",
-                passed, tojos.size()
+                "Linted %d out of %d XMIR program(s) that needed this: %s",
+                passed, tojos.size(), sum
             );
         }
     }
