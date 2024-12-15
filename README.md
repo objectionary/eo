@@ -235,7 +235,9 @@ Read [our blog](https://news.eolang.org), especially the section with
 
 Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html),
 a dialect of XML, which we use to
-represent EO program.
+represent EO program:
+XSD is [here](https://www.eolang.org/XMIR.xsd),
+full specification is [here](https://www.eolang.org/XMIR.html).
 
 See the full collection of canonical objects:
 [objectionary](https://github.com/objectionary/home).
