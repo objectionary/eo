@@ -213,7 +213,7 @@ public final class Main {
             String.format(
                 "%n---%n%s%nFinished in %.2fms (%d bytes)",
                 new VerboseBytesAsString(ret).get(),
-                System.currentTimeMillis() - start / 1000.0,
+                (System.currentTimeMillis() - start) / 1000.0,
                 ret.length
             )
         );
