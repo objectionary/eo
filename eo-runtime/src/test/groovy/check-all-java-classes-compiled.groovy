@@ -51,5 +51,10 @@ Set<String> actual = Files.walk(binaries)
     .collect(Collectors.toSet())
 
 if (!actual.containsAll(expected)) {
-    fail("Not all classes are compiled\nExpected ${expected}\nActual ${actual}")
+    for (String must : expected) {
+        if (!actual.contains(must)) {
+            log.error("Missing: ${must}")
+        }
+    }
+    fail("Not all .java files were compiled to .class files")
 }
