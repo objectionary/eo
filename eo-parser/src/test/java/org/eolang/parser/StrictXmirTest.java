@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -46,6 +47,7 @@ final class StrictXmirTest {
 
     @Test
     @ExtendWith(MktmpResolver.class)
+    @ExtendWith(WeAreOnline.class)
     void validatesXmir(@Mktmp final Path tmp) {
         MatcherAssert.assertThat(
             "validation should pass as normal",
