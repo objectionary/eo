@@ -91,7 +91,7 @@ public final class EOerror extends PhDefault implements Atom {
         /**
          * Messages seen on its way out.
          */
-        private final Collection<String> messages;
+        private final Collection<String> trace;
 
         /**
          * Ctor.
@@ -107,7 +107,7 @@ public final class EOerror extends PhDefault implements Atom {
          * @param message New message
          */
         public ExError(final ExError cause, final String message) {
-            this(cause.enclosure(), concat(cause.messages, message));
+            this(cause.enclosure(), concat(cause.trace, message));
         }
 
         /**
@@ -118,7 +118,7 @@ public final class EOerror extends PhDefault implements Atom {
         public ExError(final Phi enclosure, final Collection<String> before) {
             super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
-            this.messages = before;
+            this.trace = before;
         }
 
         /**
@@ -134,7 +134,7 @@ public final class EOerror extends PhDefault implements Atom {
          * @return The messages
          */
         public Collection<String> messages() {
-            return this.messages;
+            return this.trace;
         }
 
         /**
