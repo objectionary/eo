@@ -89,9 +89,9 @@ public final class EOerror extends PhDefault implements Atom {
         private final Phi enc;
 
         /**
-         * Locations seen on its way out.
+         * Messages seen on its way out.
          */
-        private final Collection<String> locs;
+        private final Collection<String> messages;
 
         /**
          * Ctor.
@@ -104,21 +104,21 @@ public final class EOerror extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param cause Previous error
-         * @param loc New location
+         * @param message New message
          */
-        public ExError(final ExError cause, final String loc) {
-            this(cause.enclosure(), concat(cause.locs, loc));
+        public ExError(final ExError cause, final String message) {
+            this(cause.enclosure(), concat(cause.messages, message));
         }
 
         /**
          * Ctor.
          * @param enclosure Enclosure inside the error
-         * @param locations Locations seen
+         * @param before Messages seen before
          */
-        public ExError(final Phi enclosure, final Collection<String> locations) {
+        public ExError(final Phi enclosure, final Collection<String> before) {
             super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
-            this.locs = locations;
+            this.messages = before;
         }
 
         /**
@@ -130,24 +130,24 @@ public final class EOerror extends PhDefault implements Atom {
         }
 
         /**
-         * Take locations.
-         * @return The locations
+         * Take earlier seen messages.
+         * @return The messages
          */
-        public Collection<String> locations() {
-            return this.locs;
+        public Collection<String> messages() {
+            return this.messages;
         }
 
         /**
-         * Concatenate locations.
+         * Concatenate messages.
          * @param before Locations before
-         * @param loc New one
+         * @param message New one
          * @return New list of them
          */
         private static Collection<String> concat(final Collection<String> before,
-            final String loc) {
+            final String message) {
             final Collection<String> list = new ArrayList<>(before.size() + 1);
             list.addAll(before);
-            list.add(loc);
+            list.add(message);
             return list;
         }
 
