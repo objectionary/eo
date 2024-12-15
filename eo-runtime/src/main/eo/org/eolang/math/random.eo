@@ -32,7 +32,7 @@
 [seed] > random
   $ > fixed
   # Get float value for current `seed`.
-  # Divide `seed` to maximum possible value of the `seed` which is 1 << 53
+  # Divide `seed` to maximum possible value of the `seed` which is 1 << 53.
   div. > @
     seed.as-number
     00-20-00-00-00-00-00-00.as-i64.as-number
