@@ -268,7 +268,10 @@ public class PhDefault implements Phi, Cloneable {
             bytes = this.take(Attr.PHI).delta();
         } else {
             throw new ExFailure(
-                "There's no data in the object, can't take it"
+                String.format(
+                    "There's no data in the object of %s",
+                    this.forma()
+                )
             );
         }
         return bytes;
