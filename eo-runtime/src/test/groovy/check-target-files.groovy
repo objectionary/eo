@@ -21,9 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import java.nio.file.Paths
-
 List<String> expected = [
   'eo-foreign.csv',
   'eo/1-parse/org/eolang/bytes.xmir',
@@ -47,8 +44,9 @@ List<String> expected = [
 ]
 
 for (path in expected) {
-    File f = Paths.get('eo-runtime/target').resolve(path).toFile()
+    File f = basedir.toPath().resolve('target').resolve(path).toFile()
     if (!f.exists()) {
         fail("The file '${f}' is not present")
     }
+    log.info("The file is found: ${f}")
 }
