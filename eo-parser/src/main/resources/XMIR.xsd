@@ -404,7 +404,16 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:all>
-    <xs:attribute name="name" type="non-empty" use="required"/>
+    <xs:attribute name="name" type="fqn" use="required">
+      <xs:annotation>
+        <xs:appinfo>The name of the program, usually equal to the name of the object defined in it</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the name of the program, which is usually equal to the name
+          of the object defined in it. The name is used to reference the program from other objects
+          or from the global scope.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="ms" type="whole">
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
