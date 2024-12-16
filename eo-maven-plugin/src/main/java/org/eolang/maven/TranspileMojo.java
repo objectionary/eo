@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -253,7 +254,7 @@ public final class TranspileMojo extends SafeMojo {
             final Path tgt = new Place(jname).make(
                 this.generatedDir.toPath(), TranspileMojo.JAVA
             );
-            this.pinfo(tgt, jname, java.xpath("@package").get(0));
+            this.pinfo(tgt, jname, java.xpath("@package").stream().findFirst().orElse(""));
             final Supplier<Path> che = new CachePath(
                 this.cache.toPath().resolve(TranspileMojo.CACHE),
                 this.plugin.getVersion(),
@@ -335,7 +336,13 @@ public final class TranspileMojo extends SafeMojo {
                     " * don't modify it, all changes will be lost anyway.",
                     " */",
                     String.format("// @org.eolang.XmirPackage(\"%s\")", pname),
-                    String.format("package %s;", oname.substring(0, oname.lastIndexOf('.')))
+                    String.format(
+                        "package %s;",
+                        Arrays.stream(oname.split("\\."))
+                            .reduce((f, s) -> s)
+                            .stream()
+                            .findFirst()
+                    )
                 ).getBytes(StandardCharsets.UTF_8)
             );
             Logger.debug(this, "Saved %[file]s (%[size]s)", pinfo, pinfo.toFile().length());
