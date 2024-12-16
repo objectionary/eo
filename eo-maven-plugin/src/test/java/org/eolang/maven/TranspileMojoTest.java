@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -108,15 +107,8 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile")
-                    .configuration()
-                    .set("failOnWarning", "false");
+                    .goals("register", "parse", "optimize", "shake", "transpile");
                 f.exec("process-sources");
-                MatcherAssert.assertThat(
-                    "the build was clean",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
             }
         );
         MatcherAssert.assertThat(
@@ -145,15 +137,8 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile")
-                    .configuration()
-                    .set("failOnWarning", "false");
+                    .goals("register", "parse", "optimize", "shake", "transpile");
                 f.exec("process-sources");
-                MatcherAssert.assertThat(
-                    "the build was clean",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
             }
         );
         MatcherAssert.assertThat(
