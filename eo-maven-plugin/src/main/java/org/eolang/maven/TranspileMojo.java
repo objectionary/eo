@@ -253,7 +253,7 @@ public final class TranspileMojo extends SafeMojo {
             final Path tgt = new Place(jname).make(
                 this.generatedDir.toPath(), TranspileMojo.JAVA
             );
-            this.pinfo(tgt, jname, java.xpath("@package").get(0));
+            this.pinfo(tgt, jname, java.xpath("@package").stream().findFirst().orElse(""));
             final Supplier<Path> che = new CachePath(
                 this.cache.toPath().resolve(TranspileMojo.CACHE),
                 this.plugin.getVersion(),
@@ -322,9 +322,13 @@ public final class TranspileMojo extends SafeMojo {
     private void pinfo(final Path java, final String oname, final String pname)
         throws IOException {
         final Path pinfo = java.getParent().resolve("package-info.java");
-        if (!pinfo.toFile().exists()) {
+        if (!pinfo.toFile().exists() && !pname.isEmpty()) {
             if (pinfo.getParent().toFile().mkdirs()) {
                 Logger.debug(this, "Directory created for %[file]s", pinfo);
+            }
+            String pkg = oname;
+            if (oname.contains(".")) {
+                pkg = pkg.substring(0, pkg.lastIndexOf('.'));
             }
             Files.write(
                 pinfo,
@@ -335,7 +339,7 @@ public final class TranspileMojo extends SafeMojo {
                     " * don't modify it, all changes will be lost anyway.",
                     " */",
                     String.format("// @org.eolang.XmirPackage(\"%s\")", pname),
-                    String.format("package %s;", oname.substring(0, oname.lastIndexOf('.')))
+                    String.format("package %s;", pkg)
                 ).getBytes(StandardCharsets.UTF_8)
             );
             Logger.debug(this, "Saved %[file]s (%[size]s)", pinfo, pinfo.toFile().length());
