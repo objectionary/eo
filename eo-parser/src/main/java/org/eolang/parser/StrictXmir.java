@@ -155,7 +155,7 @@ public final class StrictXmir implements XML {
                         tmp.resolve(
                             uri.substring(uri.lastIndexOf('/') + 1)
                         )
-                    ).toString().replace("\\", "/")
+                    ).getAbsoluteFile().toString().replace("\\", "/")
                 );
             }
             new Xembler(

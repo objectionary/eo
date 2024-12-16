@@ -30,6 +30,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -60,6 +61,22 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve("XMIR.xsd").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    @ExtendWith(WeAreOnline.class)
+    void refersToAbsoluteFileName(@Mktmp final Path tmp) {
+        MatcherAssert.assertThat(
+            "XSD location must be absolute",
+            Paths.get(
+                new StrictXmir(StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp)
+                    .xpath("/program/@xsi:noNamespaceSchemaLocation")
+                    .get(0)
+                    .substring("file:///".length())
+            ).isAbsolute(),
             Matchers.is(true)
         );
     }
