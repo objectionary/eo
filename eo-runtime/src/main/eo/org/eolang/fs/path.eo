@@ -151,6 +151,7 @@
     # | relative | absolute | other       |
     # | relative | relative | uri + other |
     # |----------|----------|-------------|
+    # URI Resolution Rules.
     [other] > resolved
       other.as-bytes > other-as-bytes
       normalized. > @
