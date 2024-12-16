@@ -38,7 +38,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -323,9 +322,13 @@ public final class TranspileMojo extends SafeMojo {
     private void pinfo(final Path java, final String oname, final String pname)
         throws IOException {
         final Path pinfo = java.getParent().resolve("package-info.java");
-        if (!pinfo.toFile().exists()) {
+        if (!pinfo.toFile().exists() && !pname.isEmpty()) {
             if (pinfo.getParent().toFile().mkdirs()) {
                 Logger.debug(this, "Directory created for %[file]s", pinfo);
+            }
+            String pkg = oname;
+            if (oname.contains(".")) {
+                pkg = pkg.substring(0, pkg.lastIndexOf('.'));
             }
             Files.write(
                 pinfo,
@@ -336,13 +339,7 @@ public final class TranspileMojo extends SafeMojo {
                     " * don't modify it, all changes will be lost anyway.",
                     " */",
                     String.format("// @org.eolang.XmirPackage(\"%s\")", pname),
-                    String.format(
-                        "package %s;",
-                        Arrays.stream(oname.split("\\."))
-                            .reduce((f, s) -> s)
-                            .stream()
-                            .findFirst()
-                    )
+                    String.format("package %s;", pkg)
                 ).getBytes(StandardCharsets.UTF_8)
             );
             Logger.debug(this, "Saved %[file]s (%[size]s)", pinfo, pinfo.toFile().length());

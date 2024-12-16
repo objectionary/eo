@@ -25,7 +25,10 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +57,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
+@ExtendWith(RandomProgramResolver.class)
 final class TranspileMojoTest {
 
     /**
@@ -79,6 +83,88 @@ final class TranspileMojoTest {
             "passes with no exceptions",
             new XtSticky(new XtYaml(yaml)),
             new XtoryMatcher()
+        );
+    }
+
+    @Test
+    void transpilesWithPackage(@Mktmp final Path temp)
+        throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/one/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package one",
+                        "",
+                        "# no comments.",
+                        "[] > foo",
+                        "  QQ.io.stdout > @",
+                        "    \"Hello, world!\\n\"",
+                        ""
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "transpile")
+                    .configuration()
+                    .set("failOnWarning", "false");
+                f.exec("process-sources");
+                MatcherAssert.assertThat(
+                    "the build was clean",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .java file is generated",
+            temp.resolve("target/generated-sources/EOone/EOfoo.java").toFile().exists(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "the package-info.java file contains the right package name",
+            Files.readString(
+                temp.resolve("target/generated-sources/EOone/package-info.java"),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.containsString("package EOone;")
+        );
+    }
+
+    @Test
+    void transpilesSimpleApp(@Mktmp final Path temp, @RandomProgram final String program)
+        throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "transpile")
+                    .configuration()
+                    .set("failOnWarning", "false");
+                f.exec("process-sources");
+                MatcherAssert.assertThat(
+                    "the build was clean",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .java file is re-generated",
+            temp.resolve("target/generated-sources/EOfoo.java").toFile().exists(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "the package-info.java file contains the right package name",
+            temp.resolve("target/generated-sources/package-info.java").toFile().exists(),
+            Matchers.is(false)
         );
     }
 
