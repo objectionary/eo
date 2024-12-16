@@ -127,12 +127,12 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void transpilesSimpleApp(@Mktmp final Path temp, @RandomProgram final String program)
+    void transpilesSimpleApp(@Mktmp final Path temp, @RandomProgram final String prog)
         throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.files().file("src/main/eo/foo.eo").write(prog.getBytes());
                 f.build()
                     .plugins()
                     .appendItself()
