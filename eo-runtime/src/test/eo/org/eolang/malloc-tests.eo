@@ -276,6 +276,15 @@
         m.get.eq 01-02-02-03-05
 
 # This unit test is supposed to check the functionality of the corresponding object.
+[] > copies-data-from-start-to-end
+  malloc.for > @
+    01-02-03-04-05-06
+    [m]
+      and. > @
+        m.copy 0 3 3
+        m.get.eq 01-02-03-01-02-03
+
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-copying-with-wrong-source
   malloc.for > @
     0
