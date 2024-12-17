@@ -104,21 +104,24 @@ public final class LintMojo extends SafeMojo {
             this.lintAll(counts)
         );
         final String sum = LintMojo.summary(counts);
-        if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0
-            || counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
-            Logger.info(
-                this,
-                "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
-                passed, tojos.size(), tojos.size(), sum
-            );
+        Logger.info(
+            this,
+            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
+            passed, tojos.size(), tojos.size(), sum
+        );
+        if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
-                String.format("In %d XMIR files, we found %s", tojos.size(), sum)
+                String.format(
+                    "In %d XMIR files, we found %s (must stop here)",
+                    tojos.size(), sum
+                )
             );
-        } else {
-            Logger.info(
-                this,
-                "Linted %d out of %d XMIR program(s) that needed this: %s",
-                passed, tojos.size(), sum
+        } else if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
+            throw new IllegalStateException(
+                String.format(
+                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore)",
+                    tojos.size(), sum
+                )
             );
         }
     }
