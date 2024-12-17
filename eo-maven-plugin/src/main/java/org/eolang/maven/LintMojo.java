@@ -86,6 +86,7 @@ public final class LintMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
+        final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
@@ -106,8 +107,8 @@ public final class LintMojo extends SafeMojo {
         final String sum = LintMojo.summary(counts);
         Logger.info(
             this,
-            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
-            passed, tojos.size(), tojos.size(), sum
+            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
+            passed, tojos.size(), tojos.size(), System.currentTimeMillis() - start, sum
         );
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
