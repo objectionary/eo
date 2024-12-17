@@ -173,15 +173,6 @@ SOFTWARE.
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="locator"/>
-    <!--
-    The following three are definitely temporary and should
-    be removed from XMIR. However, we can't remove them
-    now: they are created by the parser, then used by
-    the optimizer, and then removed. Since we check XML documents for
-    XSD compliance after the parsing phase, we can't remove them
-    now. We will remove them later, when we will have a separate
-    XSD for the parser output (maybe).
-    -->
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>
