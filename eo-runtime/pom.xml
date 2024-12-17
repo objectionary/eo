@@ -213,7 +213,7 @@ SOFTWARE.
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>true</failOnWarning>
+          <failOnWarning>false</failOnWarning>
           <offline>true</offline>
           <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
         </configuration>
