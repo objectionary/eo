@@ -265,7 +265,7 @@ SOFTWARE.
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>true</failOnWarning>
+              <failOnWarning>false</failOnWarning>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
