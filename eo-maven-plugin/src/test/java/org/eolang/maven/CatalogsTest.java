@@ -46,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.29.0
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class CatalogsTest {
     /**
      * Empty message for JUnit Assertions.
@@ -55,8 +56,8 @@ public final class CatalogsTest {
      *  {@link CatalogsTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
      *  no longer need.
      */
-
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
+
     /**
      * Number of cores on the running system.
      */
