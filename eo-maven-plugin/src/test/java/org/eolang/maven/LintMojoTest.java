@@ -225,7 +225,7 @@ final class LintMojoTest {
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
                 .execute(new FakeMaven.Lint()),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            CatalogsTest.TO_ADD_MESSAGE
         );
     }
 
@@ -338,7 +338,7 @@ final class LintMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new XMLDocument(
                 new HmBase(temp).load(
                     Paths.get(

@@ -23,7 +23,7 @@
  */
 package org.eolang.maven.hash;
 
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,7 +64,7 @@ class ChPatternTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new ChPattern(pattern, tag).value(),
             Matchers.equalTo(expected)
         );

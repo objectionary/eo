@@ -39,7 +39,7 @@ final class PlaceTest {
     @Test
     void makesPath() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new Place("hello.foo.bar")
                 .make(Paths.get("/tmp/test"), AssembleMojo.XMIR)
                 .toString()
@@ -51,7 +51,7 @@ final class PlaceTest {
     @Test
     void makesSimplePath() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")
                 .toString()

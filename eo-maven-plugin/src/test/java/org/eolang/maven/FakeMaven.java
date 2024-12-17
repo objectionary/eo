@@ -58,7 +58,6 @@ import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.rust.Names;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -245,15 +244,6 @@ public final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiNoSugar", false);
             this.params.putIfAbsent("phiSkipFailed", false);
-            this.params.putIfAbsent(
-                "eoPortalDir",
-                new File("../eo-runtime/src/main/rust/eo")
-            );
-            this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
-            this.params.putIfAbsent(
-                "names",
-                new Names(((File) this.params.get("namesDir")).toPath())
-            );
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
             this.params.putIfAbsent(
                 "phiInputDir",
@@ -689,25 +679,6 @@ public final class FakeMaven {
                 ShakeMojo.class,
                 LintMojo.class,
                 TranspileMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Binarize full pipeline.
-     *
-     * @since 0.29.0
-     */
-    static final class Binarize implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                OptimizeMojo.class,
-                ShakeMojo.class,
-                LintMojo.class,
-                BinarizeMojo.class
             ).iterator();
         }
     }
