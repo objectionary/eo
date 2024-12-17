@@ -265,3 +265,30 @@
 [] > malloc-empty-is-empty
   malloc.empty > @
     m.size.eq 0 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > copies-data-inside-itself
+  malloc.for > @
+    01-02-03-04-05
+    [m]
+      and. > @
+        m.copy 1 2 2
+        m.get.eq 01-02-02-03-05
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-source
+  malloc.for > @
+    0
+    m.copy 9 1 1 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-target
+  malloc.for > @
+    0
+    m.copy 3 9 1 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-length
+  malloc.for > @
+    0
+    m.copy 3 1 9 > [m]
