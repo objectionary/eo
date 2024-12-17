@@ -114,7 +114,7 @@ final class SodgMojoTest {
         }
         final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             ".foo .foo",
             new SodgMojoTest.ExistsIn(graph)
         );
@@ -155,7 +155,7 @@ final class SodgMojoTest {
         for (final String loc : (Iterable<String>) xtory.map().get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
-                    BinarizeParseTest.TO_ADD_MESSAGE,
+                    CatalogsTest.TO_ADD_MESSAGE,
                     loc,
                     new SodgMojoTest.ExistsIn(graph)
                 )

@@ -46,7 +46,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.29.0
  */
 @ExtendWith(MktmpResolver.class)
-final class CatalogsTest {
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
+public final class CatalogsTest {
+    /**
+     * Empty message for JUnit Assertions.
+     *
+     * @todo #2297:60m Replace all appearances of {@link CatalogsTest#TO_ADD_MESSAGE} field in
+     *  eo-maven-plugin with meaningful assert messages. Don't forget to remove
+     *  {@link CatalogsTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  no longer need.
+     */
+    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     /**
      * Number of cores on the running system.
@@ -57,7 +67,7 @@ final class CatalogsTest {
     void readsFromTojosConcurrently(@Mktmp final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new SumOf(
                 new Threads<>(
                     CatalogsTest.CORES,

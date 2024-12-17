@@ -86,7 +86,7 @@ final class ParseMojoTest {
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             maven.withHelloWorld()
                 .execute(new FakeMaven.Parse())
                 .result(),
@@ -95,7 +95,7 @@ final class ParseMojoTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -109,7 +109,7 @@ final class ParseMojoTest {
                 .withHelloWorld()
                 .with("timeout", 0)
                 .execute(InfiniteMojo.class),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            CatalogsTest.TO_ADD_MESSAGE
         );
     }
 
@@ -164,7 +164,7 @@ final class ParseMojoTest {
     @Test
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .execute(new FakeMaven.Parse())
@@ -211,7 +211,7 @@ final class ParseMojoTest {
         final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 res,
                 Matchers.hasKey(
                     String.format(

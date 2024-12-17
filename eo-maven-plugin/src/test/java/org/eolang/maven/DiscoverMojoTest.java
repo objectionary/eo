@@ -92,12 +92,12 @@ final class DiscoverMojoTest {
         );
         final Map<String, String> first = json.removeFirst();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             dependencies,
             Matchers.equalTo(json.size())
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             String.valueOf(dependencies),
             Matchers.equalTo(first.get("discovered"))
         );

@@ -135,11 +135,6 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.17.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.twdata.maven</groupId>
       <artifactId>mojo-executor</artifactId>
       <version>2.4.0</version>
@@ -219,11 +214,6 @@ SOFTWARE.
       <version>3.17.0</version>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.18.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
       <version>2.0.16</version>
@@ -262,11 +252,6 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
-      <artifactId>jaxec</artifactId>
-      <!-- version from parent POM -->
-    </dependency>
-    <dependency>
-      <groupId>com.yegor256</groupId>
       <artifactId>jhome</artifactId>
       <!-- version from parent POM -->
     </dependency>
@@ -284,11 +269,6 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>jping</artifactId>
       <!-- version from parent POM -->
-    </dependency>
-    <dependency>
-      <groupId>com.moandjiezana.toml</groupId>
-      <artifactId>toml4j</artifactId>
-      <version>0.7.2</version>
     </dependency>
   </dependencies>
   <build>

@@ -186,8 +186,7 @@ final class PhiUnphiIT {
                         "register",
                         "assemble",
                         "lint",
-                        "transpile",
-                        "binarize"
+                        "transpile"
                     )
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")

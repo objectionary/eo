@@ -78,7 +78,7 @@ final class LogFormatTest {
     @Test
     void matchesCorrectly() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );

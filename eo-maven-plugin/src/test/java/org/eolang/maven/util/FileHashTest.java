@@ -27,7 +27,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ final class FileHashTest {
         final Path path = temp.resolve("1.txt");
         new HmBase(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FileHash(path).toString(),
             Matchers.startsWith("[-26, 1, -29, 113, ")
         );
@@ -56,7 +56,7 @@ final class FileHashTest {
     void readsFromAbsentFile(@Mktmp final Path temp) {
         final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FileHash(path).toString(),
             Matchers.equalTo("")
         );

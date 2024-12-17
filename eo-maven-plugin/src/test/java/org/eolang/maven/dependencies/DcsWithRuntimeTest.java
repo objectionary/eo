@@ -24,7 +24,7 @@
 package org.eolang.maven.dependencies;
 
 import com.yegor256.WeAreOnline;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ final class DcsWithRuntimeTest {
     @ExtendWith(WeAreOnline.class)
     void addsHardcodedVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new DcsWithRuntime(
                 new DcsFake(5),
                 DcsFake.runtimeDep()
@@ -54,7 +54,7 @@ final class DcsWithRuntimeTest {
     @ExtendWith(WeAreOnline.class)
     void addsRemoteVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new DcsWithRuntime(
                 new DcsFake(2)
             ),
