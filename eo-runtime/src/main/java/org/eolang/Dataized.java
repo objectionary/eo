@@ -117,6 +117,7 @@ public final class Dataized {
      *
      * @return The data
      */
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public byte[] take() {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
@@ -164,7 +165,7 @@ public final class Dataized {
                     String.join("\n  ⇢ ", clean)
                 )
             );
-            throw ex;
+            throw new EOerror.ExError(ex.enclosure());
         } finally {
             Dataized.LEVEL.set(before);
         }
