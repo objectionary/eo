@@ -64,7 +64,6 @@ All of them have something **we don't tolerate**:
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
-[Rust with Cargo][cargo]
 and [eoc](https://github.com/objectionary/eoc).
 
 Then, start with a simple EO program in `app.eo` file:
@@ -320,7 +319,5 @@ We are using the [YourKit Java Profiler](https://www.yourkit.com/java/profiler)
 to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
-
-[cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
 
 [benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12310206821
