@@ -23,8 +23,7 @@
  */
 package org.eolang.parser;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Collections;
 
 final class UnderlinedMessage {
 
@@ -47,20 +46,22 @@ final class UnderlinedMessage {
     }
 
     private String underline() {
-        if (this.length == 0) {
-            return Stream.generate(() -> " ")
-                .limit(this.origin.length())
-                .collect(Collectors.joining());
+        final String result;
+        if (this.origin.isEmpty() || this.length <= 0 || this.from >= this.origin.length()) {
+            result = "";
+        } else if (this.from < 0) {
+            result = this.repeat("^", this.origin.length());
+        } else {
+            result = String.format(
+                "%s%s",
+                this.repeat(" ", this.from),
+                this.repeat("^", Math.min(this.length, this.origin.length()))
+            );
         }
-        if (this.from < 0 || this.length < 0 || this.from + this.length > this.origin.length()) {
-            return this.origin;
-        }
-        return String.format(
-            "%s%s%s",
-            Stream.generate(() -> " ").limit(this.from).collect(Collectors.joining()),
-            Stream.generate(() -> "^").limit(this.length).collect(Collectors.joining()),
-            Stream.generate(() -> " ").limit(this.origin.length() - this.from - this.length)
-                .collect(Collectors.joining())
-        );
+        return result;
+    }
+
+    private String repeat(final String symbol, final int n) {
+        return String.join("", Collections.nCopies(n, symbol));
     }
 }

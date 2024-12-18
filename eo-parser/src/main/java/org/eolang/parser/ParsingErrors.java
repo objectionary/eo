@@ -26,6 +26,7 @@ package org.eolang.parser;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
@@ -84,19 +85,17 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
     ) {
         if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
-            final String supplementary = new UnderlinedMessage(
-                new UncheckedText(this.lines.get(line - 1)).asString(),
-                position,
-                Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-            ).formatted();
             this.errors.add(
                 new ParsingException(
                     String.format(
                         "[%d:%d] %s:%n%s",
                         line, position,
                         "error: no viable alternative at input",
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        this.lines.size() < line ? "EOF" : supplementary
+                        new UnderlinedMessage(
+                            this.line(line).orElse("EOF"),
+                            position,
+                            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                        ).formatted()
                     ),
                     error,
                     line
@@ -107,9 +106,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                 new ParsingException(
                     String.format(
                         "[%d:%d] %s: \"%s\"",
-                        line, position, msg,
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
+                        line, position, msg, this.line(line).orElse("EOF")
                     ),
                     error,
                     line
@@ -143,5 +140,22 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
      */
     public int size() {
         return this.errors.size();
+    }
+
+    /**
+     * Get the line by number.
+     * @param number The line number.
+     * @return The line.
+     */
+    private Optional<String> line(final int number) {
+        final Optional<String> result;
+        if (number < 1 || number > this.lines.size()) {
+            result = Optional.empty();
+        } else {
+            result = Optional.ofNullable(this.lines.get(number - 1))
+                .map(UncheckedText::new)
+                .map(UncheckedText::asString);
+        }
+        return result;
     }
 }
