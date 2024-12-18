@@ -21,6 +21,8 @@
 # SOFTWARE.
 ---
 line: 2
+message: >-
+  [2:4] no viable alternative at input 'x\n  INTy:^': "  y:^"
 input: |
   x
     y:^
