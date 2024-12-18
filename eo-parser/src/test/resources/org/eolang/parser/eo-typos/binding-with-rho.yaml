@@ -22,7 +22,9 @@
 ---
 line: 2
 message: >-
-  [2:4] no viable alternative at input 'x\n  INTy:^': "  y:^"
+  [2:4] error: no viable alternative at input:
+    y:^
+      ^
 input: |
   x
     y:^

@@ -94,7 +94,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                     String.format(
                         "[%d:%d] %s:%n%s",
                         line, position,
-                        "error: space is expected",
+                        "error: no viable alternative at input",
                         // @checkstyle AvoidInlineConditionalsCheck (1 line)
                         this.lines.size() < line ? "EOF" : supplementary
                     ),
