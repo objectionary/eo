@@ -22,7 +22,9 @@
 ---
 line: 5
 message: >-
-  [2:4] no viable alternative at input 'x\n  INTy:^': "  y:^"
+  [5:2] error: space is expected:
+     *
+    ^
 input: |
   # This is a code snippet from the following issue:
   # https://github.com/objectionary/eo/issues/3332

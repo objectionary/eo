@@ -27,11 +27,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -79,18 +82,40 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
-        this.errors.add(
-            new ParsingException(
-                String.format(
-                    "[%d:%d] %s: \"%s\"",
-                    line, position, msg,
-                    // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                    this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
-                ),
-                error,
-                line
-            )
-        );
+        if (error instanceof NoViableAltException) {
+            final Token token = (Token) symbol;
+            final String supplementary = new UnderlinedMessage(
+                new UncheckedText(this.lines.get(line - 1)).asString(),
+                position,
+                Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+            ).formatted();
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s:%n%s",
+                        line, position,
+                        "error: space is expected",
+                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
+                        this.lines.size() < line ? "EOF" : supplementary
+                    ),
+                    error,
+                    line
+                )
+            );
+        } else {
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s: \"%s\"",
+                        line, position, msg,
+                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
+                        this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
+                    ),
+                    error,
+                    line
+                )
+            );
+        }
     }
 
     @Override
