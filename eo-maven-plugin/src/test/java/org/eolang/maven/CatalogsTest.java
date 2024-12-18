@@ -60,7 +60,7 @@ public final class CatalogsTest {
         MatcherAssert.assertThat(
             "adds different elements to catalog",
             new Together<>(
-                (thread) -> {
+                thread -> {
                     final Tojo tojo = tojos.add(UUID.randomUUID().toString());
                     final String key = "foo";
                     tojo.set(key, UUID.randomUUID().toString());

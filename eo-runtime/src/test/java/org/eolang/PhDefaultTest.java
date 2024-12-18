@@ -23,13 +23,9 @@
  */
 package org.eolang;
 
+import com.yegor256.Together;
 import java.security.SecureRandom;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -303,17 +299,15 @@ final class PhDefaultTest {
     @Test
     void createsDifferentPhiInParallel() {
         final int threads = 100;
-        final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
-        new Threads<>(
-            threads,
-            Stream.generate(
-                () -> (Scalar<PhDefault>) Int::new
-            ).limit(threads).collect(Collectors.toList())
-        ).forEach(objects::add);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            objects,
-            Matchers.hasSize(threads)
+            "all objects are unique",
+            new SetOf<>(
+                new Together<>(
+                    threads,
+                    (thread) -> new Int()
+                )
+            ),
+            Matchers.iterableWithSize(threads)
         );
     }
 
