@@ -63,8 +63,13 @@ All of them have something **we don't tolerate**:
 ## Quick Start
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
-and [eoc](https://github.com/objectionary/eoc).
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+
+Then, you install [eoc](https://github.com/objectionary/eoc). You could install it as NPM package:
+
+```bash
+npm install -g eolang@0.28.0
+```
 
 Then, start with a simple EO program in `app.eo` file:
 
@@ -78,13 +83,13 @@ Then, start with a simple EO program in `app.eo` file:
 Compile it like this (may take a minute or so):
 
 ```bash
-eoc link
+eoc --easy link
 ```
 
 Then, run it:
 
 ```bash
-eoc --alone dataize app
+eoc --easy --alone dataize app
 ```
 
 You should see "Hello, world!" printed.
