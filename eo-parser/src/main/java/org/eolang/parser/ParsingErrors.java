@@ -26,7 +26,6 @@ package org.eolang.parser;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -41,8 +40,7 @@ import org.xembly.Directives;
  *
  * @since 0.30.0
  */
-final class ParsingErrors extends BaseErrorListener
-    implements ANTLRErrorListener, Iterable<Directive> {
+final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
