@@ -523,6 +523,51 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterCompactArray(final EoParser.CompactArrayContext ctx) {
+        if (ctx.INT() != null) {
+            final String num = ctx.INT().getText();
+            if (num.charAt(0) == '+'
+                || num.charAt(0) == '-'
+                || (num.length() > 1 && num.charAt(0) == '0')
+                || Integer.parseInt(num) < 0
+            ) {
+                this.errors.put(
+                    ctx,
+                    "Index after '*' must be a positive integer without leading zero or arithmetic signs"
+                );
+            }
+        }
+        this.startObject(ctx)
+            .prop("base", ctx.NAME().getText())
+            .start(
+                ctx.getStart().getLine(),
+                ctx.getStart().getCharPositionInLine() + ctx.NAME().getText().length() + 1
+            )
+            .prop("base", "tuple")
+            .prop("star");
+
+//        if (ctx.STAR() != null) {
+//            base = "tuple";
+//            this.objects.prop("star");
+//        } else if (ctx.NAME() != null) {
+//            base = ctx.NAME().getText();
+//        } else if (ctx.PHI() != null) {
+//            base = "@";
+//        } else {
+//            base = "";
+//        }
+//        if (!base.isEmpty()) {
+//            this.objects.prop("base", base);
+//        }
+        this.objects.leave();
+    }
+
+    @Override
+    public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
         // Nothing here
     }

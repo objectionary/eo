@@ -239,6 +239,11 @@ vapplicationHead
     | versioned
     ;
 
+// Compact arrays
+compactArray
+    : NAME SPACE STAR INT?
+    ;
+
 // Vertical application head with optional name
 vapplicationHeadNamed
     : vapplicationHead oname?
