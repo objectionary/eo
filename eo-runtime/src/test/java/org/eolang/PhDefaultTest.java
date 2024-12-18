@@ -304,7 +304,7 @@ final class PhDefaultTest {
             new SetOf<>(
                 new Together<>(
                     threads,
-                    (thread) -> new Int()
+                    t -> new Int()
                 )
             ),
             Matchers.iterableWithSize(threads)
