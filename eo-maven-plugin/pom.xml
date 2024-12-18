@@ -182,6 +182,12 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
+      <artifactId>together</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
       <!-- version from parent POM -->
     </dependency>
