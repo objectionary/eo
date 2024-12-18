@@ -53,15 +53,7 @@ final class UnderlinedMessage {
                 .collect(Collectors.joining());
         }
         if (this.from < 0 || this.length < 0 || this.from + this.length > this.origin.length()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "The underline is out of bounds: from=%d, length=%d for '%s'(%d)",
-                    this.from,
-                    this.length,
-                    this.origin,
-                    this.origin.length()
-                )
-            );
+            return this.origin;
         }
         return String.format(
             "%s%s%s",
