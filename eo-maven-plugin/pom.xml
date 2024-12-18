@@ -42,7 +42,12 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.0.24</version>
+      <version>0.0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+      <version>1.1.6</version>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
