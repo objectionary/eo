@@ -25,18 +25,54 @@ package org.eolang.parser;
 
 import java.util.Collections;
 
+/**
+ * Underlined message.
+ * For example, if you have a message "Problem is here" and you want to underline
+ * the word "is", you can create an instance of this class with the following
+ * parameters: origin="Problem is here", from=8, length=2.
+ * The result will be:
+ * {@code
+ * Problem is here
+ *         ^^
+ * }
+ * @since 0.50
+ * @todo #3332:30min Add more decorators for the error message.
+ *  For example, {@link ParsingErrors} currently contains logic related to the message formatting.
+ *  It's better to create a separate class for this purpose.
+ */
 final class UnderlinedMessage {
 
+    /**
+     * The message.
+     */
     private final String origin;
+
+    /**
+     * The position from which to start underlining.
+     */
     private final int from;
+
+    /**
+     * The length of the underline.
+     */
     private final int length;
 
+    /**
+     * Ctor.
+     * @param origin The message.
+     * @param from The position from which to start underlining.
+     * @param length The length of the underline.
+     */
     UnderlinedMessage(final String origin, final int from, final int length) {
         this.origin = origin;
         this.from = from;
         this.length = length;
     }
 
+    /**
+     * Formatted message.
+     * @return The formatted message.
+     */
     String formatted() {
         return String.format(
             "%s\n%s",
@@ -45,23 +81,33 @@ final class UnderlinedMessage {
         );
     }
 
+    /**
+     * Underline.
+     * @return The underlined string.
+     */
     private String underline() {
         final String result;
         if (this.origin.isEmpty() || this.length <= 0 || this.from >= this.origin.length()) {
             result = "";
         } else if (this.from < 0) {
-            result = this.repeat("^", this.origin.length());
+            result = UnderlinedMessage.repeat("^", this.origin.length());
         } else {
             result = String.format(
                 "%s%s",
-                this.repeat(" ", this.from),
-                this.repeat("^", Math.min(this.length, this.origin.length()))
+                UnderlinedMessage.repeat(" ", this.from),
+                UnderlinedMessage.repeat("^", Math.min(this.length, this.origin.length()))
             );
         }
         return result;
     }
 
-    private String repeat(final String symbol, final int n) {
-        return String.join("", Collections.nCopies(n, symbol));
+    /**
+     * Repeat a symbol n times.
+     * @param symbol The symbol.
+     * @param times The number of times to repeat the symbol.
+     * @return The repeated symbol.
+     */
+    private static String repeat(final String symbol, final int times) {
+        return String.join("", Collections.nCopies(times, symbol));
     }
 }

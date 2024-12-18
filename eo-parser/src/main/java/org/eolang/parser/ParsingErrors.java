@@ -83,6 +83,10 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
+        // @checkstyle MethodBodyCommentsCheck (20 lines)
+        // @todo #3332:30min Add more specific error messages.
+        //  Currently we write just "error: no viable alternative at input" for all errors.
+        //  It's better to use {@link #recognizer} to get more specific error messages.
         if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
             this.errors.add(
