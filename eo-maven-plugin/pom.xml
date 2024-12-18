@@ -187,13 +187,19 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
+      <artifactId>together</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.18.3</version>
+      <version>0.18.4</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
