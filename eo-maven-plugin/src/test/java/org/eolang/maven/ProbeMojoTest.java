@@ -29,19 +29,10 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnVersioned;
-import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
@@ -57,11 +48,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class ProbeMojoTest {
-    /**
-     * Stdout.
-     */
-    private static final ObjectName STDOUT = new OnVersioned("org.eolang.io.stdout", "9c93528");
-
     @Test
     void findsProbes(@Mktmp final Path temp) throws Exception {
         final String expected = "5";
@@ -95,12 +81,7 @@ final class ProbeMojoTest {
                 expected
             ),
             new FakeMaven(temp)
-                .with(
-                    "hash",
-                    new ChCached(
-                        new ChText(temp.resolve("tags.txt"), tag)
-                    )
-                )
+                .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), tag)))
                 .withProgram(ProbeMojoTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()
@@ -119,72 +100,11 @@ final class ProbeMojoTest {
             ),
             new FakeMaven(temp)
                 .with("tag", tag)
-                .with(
-                    "objectionaries",
-                    new Objectionaries.Fake(new OyRemote(new ChRemote(tag)))
-                )
+                .with("objectionary", new OyRemote(new ChRemote(tag)))
                 .withProgram(ProbeMojoTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
-            Matchers.equalTo("2")
-        );
-    }
-
-    @Test
-    void findsProbesWithVersionsInOneObjectionary(@Mktmp final Path temp) throws IOException {
-        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("hash", hash)
-            .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
-            .with("withVersions", true)
-            .withVersionedHelloWorld()
-            .execute(new FakeMaven.Probe());
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should contain versioned object %s after probing, but they didn't",
-                ProbeMojoTest.STDOUT
-            ),
-            maven.foreignTojos().contains(ProbeMojoTest.STDOUT),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Program tojo entry in tojos after probing should contain one probed object",
-            maven.programTojo().probed(),
-            Matchers.equalTo("1")
-        );
-    }
-
-    @Test
-    void findsProbesWithVersionsInDifferentObjectionaries(@Mktmp final Path temp)
-        throws IOException {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final CommitHash first = hashes.get("0.28.5");
-        final CommitHash second = hashes.get("0.28.6");
-        final FakeMaven maven = new FakeMaven(temp)
-            .with(
-                "objectionaries",
-                new ObjsDefault(
-                    new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(second, new OyRemote(second))
-                )
-            )
-            .with("withVersions", true)
-            .with("hash", first)
-            .withVersionedProgram()
-            .execute(new FakeMaven.Probe());
-        final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should contain versioned objects '%s' after probing, but they didn't",
-                Arrays.asList(text, ProbeMojoTest.STDOUT)
-            ),
-            maven.foreignTojos().contains(text, ProbeMojoTest.STDOUT),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Program tojo after probing should contain exactly two probed objects",
-            maven.programTojo().probed(),
             Matchers.equalTo("2")
         );
     }

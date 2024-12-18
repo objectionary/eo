@@ -28,20 +28,13 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnDefault;
-import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -56,23 +49,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @ExtendWith(MktmpResolver.class)
 final class DiscoverMojoTest {
-    /**
-     * Text.
-     */
-    private static final ObjectName TEXT = new OnVersioned("org.eolang.txt.text", "5f82cc1");
-
-    /**
-     * Default assertion message.
-     */
-    private static final String SHOULD_CONTAIN =
-        "Tojos should contain %s object after discovering, but they didn't";
-
-    /**
-     * Default assertion message.
-     */
-    private static final String SHOULD_NOT =
-        "Tojos should not contain %s object after discovering, but they did";
-
     @ParameterizedTest
     @CsvSource({
         "org/eolang/maven/mess.eo, 7",
@@ -118,132 +94,6 @@ final class DiscoverMojoTest {
             String.format("All tojos have the same scope '%s', but was '%s'", scope, scopes),
             scopes.stream().allMatch(s -> s.equals(scope)),
             Matchers.is(true)
-        );
-    }
-
-    @Test
-    void discoversWithVersions(@Mktmp final Path tmp) throws IOException {
-        final FakeMaven maven = new FakeMaven(tmp)
-            .with("withVersions", true)
-            .withVersionedProgram()
-            .execute(new FakeMaven.Discover());
-        final ObjectName stdout = new OnVersioned("org.eolang.stdout", "9c93528");
-        final String nop = "org.eolang.nop";
-        final ForeignTojos tojos = maven.foreignTojos();
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
-            tojos.contains(DiscoverMojoTest.TEXT),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
-            tojos.contains(stdout),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, nop),
-            tojos.contains(nop),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void discoversWithSeveralObjectsWithDifferentVersions(
-        @Mktmp final Path tmp
-    ) throws IOException {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final FakeMaven maven = new FakeMaven(tmp)
-            .with("withVersions", true)
-            .withProgram(
-                "+alias org.eolang.txt.sprintf\n",
-                "# No comments.",
-                "[] > main",
-                "  seq > @",
-                "    QQ.io.stdout",
-                "      sprintf|0.28.1",
-                "        \"Hello from %s\"",
-                "        \"0.28.1\"",
-                "    QQ.io.stdout",
-                "      sprintf|0.28.2",
-                "        \"Hello from %s\"",
-                "        \"0.28.2\"",
-                "    nop"
-            )
-            .execute(new FakeMaven.Discover());
-        final ObjectName first = new OnVersioned("org.eolang.txt.sprintf", hashes.get("0.28.1"));
-        final ObjectName second = new OnVersioned("org.eolang.txt.sprintf", hashes.get("0.28.2"));
-        final ForeignTojos tojos = maven.foreignTojos();
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
-            tojos.contains(first),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
-            tojos.contains(second),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@Mktmp final Path tmp)
-        throws IOException {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final String first = String.join(
-            "\n",
-            "# No comments.",
-            "[] > sprintf",
-            "  text > @"
-        );
-        final String second = String.join(
-            "\n",
-            "# No comments.",
-            "[] > sprintf",
-            "  text|0.28.5 > @"
-        );
-        final String one = hashes.get("0.28.1").value();
-        final String two = hashes.get("0.28.2").value();
-        final String three = hashes.get("0.28.5").value();
-        final String string = "org.eolang.text";
-        final String object = "foo.x.sprintf";
-        final ForeignTojos tojos = new FakeMaven(tmp)
-            .with("withVersions", true)
-            .withProgram(first, new OnVersioned(object, one))
-            .withProgram(second, new OnVersioned(object, two))
-            .withProgram(first, new OnDefault(object))
-            .execute(new FakeMaven.Discover())
-            .foreignTojos();
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
-                string,
-                Arrays.toString(new String[]{one, three})
-            ),
-            tojos.contains(
-                new OnVersioned(string, one),
-                new OnVersioned(string, three),
-                new OnDefault(string)
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void doesNotDiscoverWithVersions(@Mktmp final Path tmp) throws IOException {
-        final FakeMaven maven = new FakeMaven(tmp)
-            .with("withVersions", false)
-            .withVersionedProgram()
-            .execute(new FakeMaven.Discover());
-        final ObjectName seq = new OnVersioned("org.eolang.seq", "6c6269d");
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, seq),
-            maven.foreignTojos().contains(seq),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
-            maven.foreignTojos().contains(DiscoverMojoTest.TEXT),
-            Matchers.is(false)
         );
     }
 }

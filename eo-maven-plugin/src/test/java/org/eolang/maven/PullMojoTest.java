@@ -36,7 +36,6 @@ import java.nio.file.attribute.FileTime;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.map.MapEntry;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.hash.ChCached;
@@ -45,13 +44,8 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnVersioned;
-import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
@@ -77,14 +71,6 @@ final class PullMojoTest {
      */
     private static final String STDOUT = "org.eolang.io.stdout";
 
-    /**
-     * Versioned source.
-     */
-    private static final ObjectName VERSIONED = new OnVersioned(
-        "org.eolang.io.stdout",
-        "9c93528"
-    );
-
     @Test
     void pullsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -109,14 +95,7 @@ final class PullMojoTest {
                 "  QQ.io.stdout > @",
                 "    \"I am 18 years old\""
             )
-            .with(
-                "objectionaries",
-                new Objectionaries.Fake(
-                    new OyRemote(
-                        new ChRemote("master")
-                    )
-                )
-            )
+            .with("objectionary", new OyRemote(new ChRemote("master")))
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             CatalogsTest.TO_ADD_MESSAGE,
@@ -184,99 +163,6 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsVersionedObjectSuccessfully(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        maven.foreignTojos()
-            .add(new OnVersioned(PullMojoTest.STDOUT, "9c93528"))
-            .withVersion("*.*.*");
-        maven.with("withVersions", true)
-            .execute(PullMojo.class);
-        MatcherAssert.assertThat(
-            String.format(
-                "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
-            ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void pullsProbedVersionedObjectFromOneObjectionary(@Mktmp final Path temp)
-        throws IOException {
-        new FakeMaven(temp)
-            .with("withVersions", true)
-            .with(
-                "objectionaries",
-                new Objectionaries.Fake(
-                    new OyRemote(
-                        new ChCached(new CommitHashesMap.Fake().get("0.28.5"))
-                    )
-                )
-            )
-            .withVersionedHelloWorld()
-            .execute(new FakeMaven.Pull());
-        MatcherAssert.assertThat(
-            String.format(
-                "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
-            ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void pullsProbedVersionedObjectsFromDifferentObjectionaries(@Mktmp final Path temp)
-        throws IOException {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final CommitHash first = hashes.get("0.28.4");
-        final CommitHash second = hashes.get("0.28.5");
-        final CommitHash third = hashes.get("0.28.6");
-        final CommitHash fourth = hashes.get("0.28.7");
-        new FakeMaven(temp)
-            .with(
-                "objectionaries",
-                new ObjsDefault(
-                    new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(second, new OyRemote(second)),
-                    new MapEntry<>(third, new OyRemote(third)),
-                    new MapEntry<>(fourth, new OyRemote(fourth))
-                )
-            )
-            .with("withVersions", true)
-            .with("hash", fourth)
-            .withVersionedProgram()
-            .execute(new FakeMaven.Pull());
-        final ObjectName sprintf = new OnVersioned("org.eolang.txt.sprintf", "17f8929");
-        final ObjectName string = new OnVersioned("org.eolang.string", "5f82cc1");
-        MatcherAssert.assertThat(
-            String.format(
-                "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
-            ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(sprintf)
-            ),
-            PullMojoTest.exists(temp, sprintf),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(string)
-            ),
-            PullMojoTest.exists(temp, string),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
@@ -309,14 +195,7 @@ final class PullMojoTest {
                 "[] > main",
                 "  org.eolang.org > @"
             )
-            .with(
-                "objectionaries",
-                new Objectionaries.Fake(
-                    new OyRemote(
-                        new ChRemote("master")
-                    )
-                )
-            );
+            .with("objectionary", new OyRemote(new ChRemote("master")));
         Assertions.assertThrows(
             Exception.class,
             () -> mvn.execute(new FakeMaven.Pull()),
@@ -473,16 +352,6 @@ final class PullMojoTest {
 
     /**
      * Check if the given source file exists in the target directory.
-     * @param temp Test temporary directory.
-     * @param source Source file as object name.
-     * @return If given source file exists.
-     */
-    private static boolean exists(final Path temp, final ObjectName source) {
-        return PullMojoTest.exists(temp, source.toString());
-    }
-
-    /**
-     * Check if the given source file exists in the target directory.
      *
      * @param temp Test temporary directory.
      * @param source Source file.
@@ -490,15 +359,6 @@ final class PullMojoTest {
      */
     private static boolean exists(final Path temp, final String source) {
         return new HmBase(temp.resolve("target")).exists(PullMojoTest.path(source));
-    }
-
-    /**
-     * Format given a source path.
-     * @param name Source path as object name.
-     * @return Formatted source path.
-     */
-    private static Path path(final ObjectName name) {
-        return PullMojoTest.path(name.toString());
     }
 
     /**

@@ -32,14 +32,7 @@ import java.util.HashSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.name.DelimitedName;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnDefault;
-import org.eolang.maven.name.OnReplaced;
-import org.eolang.maven.name.OnSwap;
-import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 
 /**
@@ -54,13 +47,28 @@ import org.eolang.maven.tojos.ForeignTojo;
     threadSafe = true
 )
 public final class DiscoverMojo extends SafeMojo {
+    /**
+     * Xpath for discovering.
+     */
+    private static final String XPATH = String.join(
+        "",
+        "//o[",
+        "not(starts-with(@base, '.'))",
+        " and @base != 'Q'",
+        " and @base != '^'",
+        " and @base != '$'",
+        " and @base != '∅'",
+        " and not(@ref)",
+        "]/@base"
+    );
+
     @Override
     public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.shaken();
-            final Collection<String> names = this.discover(src, tojo.identifier());
+            final Collection<String> names = this.discover(src);
             discovered.addAll(names);
             for (final String name : names) {
                 this.scopedTojos().add(name).withDiscoveredAt(src);
@@ -94,12 +102,11 @@ public final class DiscoverMojo extends SafeMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .xmir file
-     * @param tojo Current tojo.
      * @return List of foreign objects found
      */
-    private Collection<String> discover(final Path file, final String tojo) {
+    private Collection<String> discover(final Path file) {
         final XML xml = new SaxonDocument(file);
-        final Collection<String> names = this.names(xml, tojo);
+        final Collection<String> names = DiscoverMojo.names(xml);
         if (names.isEmpty()) {
             Logger.debug(
                 this, "Didn't find any foreign objects in %[file]s",
@@ -118,58 +125,13 @@ public final class DiscoverMojo extends SafeMojo {
      * Get a unique list of object names from given XML.
      *
      * @param xml XML.
-     * @param tojo Current tojo.
      * @return Object names.
      */
-    private Collection<String> names(final XML xml, final String tojo) {
+    private static Collection<String> names(final XML xml) {
         return new SetOf<>(
-            new Mapped<>(
-                (String name) -> this.versioned(name, tojo).toString(),
-                new Filtered<>(
-                    name -> !name.isEmpty(),
-                    xml.xpath(
-                        new DelimitedName(
-                            String.join(
-                                "",
-                                "//o[",
-                                "not(starts-with(@base,'.'))",
-                                " and @base != 'Q'",
-                                " and @base != '^'",
-                                " and @base != '$'",
-                                " and @base != '∅'",
-                                " and not(@ref)",
-                                "]/string-join((@base,@ver),'"
-                            ),
-                            "')"
-                        ).toString()
-                    )
-                )
-            )
-        );
-    }
-
-    /**
-     * Handle versioning of given object name.
-     * If {@code this.withVersions} is set to FALSE - don't append a version to
-     * the object name.
-     * Otherwise, try to append a version from tojo if there's no one yet
-     *
-     * @param name Object name with tag on not.
-     * @param tojo Current tojo.
-     * @return Versioned object name.
-     */
-    private ObjectName versioned(final String name, final String tojo) {
-        final ObjectName replaced = new OnReplaced(name, this.hashes);
-        final DelimitedName delimited = new DelimitedName(tojo);
-        return new OnSwap(
-            this.withVersions,
-            new OnSwap(
-                delimited.label().isPresent(),
-                new OnVersioned(
-                    replaced,
-                    new OnDefault(delimited)::hash
-                ),
-                replaced
+            new Filtered<>(
+                name -> !name.isEmpty(),
+                xml.xpath(DiscoverMojo.XPATH)
             )
         );
     }

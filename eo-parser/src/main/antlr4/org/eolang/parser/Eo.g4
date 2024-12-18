@@ -91,8 +91,8 @@ masterBody
     ;
 
 // Just an object reference without name
-just: beginnerOrFinisher
-    | versioned
+just: beginner
+    | finisher
     ;
 
 // Just object reference with optional name
@@ -133,8 +133,7 @@ voids
     ;
 
 // Void attribute
-void
-    : NAME
+void: NAME
     ;
 
 // Type of atom
@@ -158,9 +157,6 @@ application
 // Horizontal application
 // The whole application is written in one line
 // The head does not contain elements in vertical notation
-// The division of elements into regular and extended ones is
-// due to the presence of horizontal anonymous objects where inner objects
-// must be horizontal only
 happlication
     : happlicationHead happlicationTail
     | happlicationReversed
@@ -189,8 +185,7 @@ happlicationHead
 // Can contain elements in vertical notation
 happlicationHeadExtended
     : vmethod
-    | hmethodExtended
-    | applicable
+    | happlicationHead
     ;
 
 // Simple statements that can be used as head of application
@@ -219,7 +214,7 @@ happlicationTailReversedFirst
 // Argument of horizontal application
 // Does not contain elements in vertical notation
 happlicationArg
-    : beginnerOrFinisher
+    : just
     | hmethod
     | scope
     ;
@@ -234,9 +229,8 @@ vapplication
 // Vertical application head
 vapplicationHead
     : applicable
-    | hmethodOptional
-    | vmethodOptional
-    | versioned
+    | hmethod
+    | vmethod
     ;
 
 // Vertical application head with optional name
@@ -389,13 +383,13 @@ onlyphiTail
 // Inner object of horizontal anonym object
 // Does not contain elements in vertical notation
 hanonymInner
-    : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
+    : SPACE LB (hmethod | happlication | hanonym | just) oname RB
     ;
 
 // Method
 method
-    : hmethodOptional
-    | vmethodOptional
+    : hmethod
+    | vmethod
     ;
 
 // Method with optional name
@@ -410,60 +404,15 @@ hmethod
     : hmethodHead methodTail+
     ;
 
-// Optional horizontal method
-hmethodOptional
-    : hmethodExtended
-    | hmethodExtendedVersioned
-    ;
-
-// Extended horizontal method
-// The head can contain elements in vertical notation
-hmethodExtended
-    : hmethodHeadExtended methodTail+
-    ;
-
-// Versioned horizontal method
-// The whole method is written in one line
-// The head does not contain elements in vertical notation
-// The division of elements into regular and versioned ones is due to
-// the presence of horizontal application where head or arguments can't
-// contain version
-hmethodVersioned
-    : hmethodHead methodTail* methodTailVersioned
-    ;
-
-// Versioned extended horizontal method
-// The head can contain elements in vertical notation
-hmethodExtendedVersioned
-    : hmethodHeadExtended methodTail* methodTailVersioned
-    ;
-
 // Head of horizontal method
 hmethodHead
-    : beginnerOrFinisher
-    | scope
-    ;
-
-// Extended head of horizontal method
-hmethodHeadExtended
-    : beginnerOrFinisher
+    : just
     | scope
     ;
 
 // Vertical method
 vmethod
     : vmethodHead methodTail
-    ;
-
-// Vertical method with version
-vmethodVersioned
-    : vmethodHead methodTailVersioned
-    ;
-
-// Optional vertical method
-vmethodOptional
-    : vmethod
-    | vmethodVersioned
     ;
 
 // Head of vertical method
@@ -485,7 +434,6 @@ vmethodHead
 
 methodTailOptional
     : methodTail
-    | methodTailVersioned
     ;
 
 vmethodHeadApplicationTail
@@ -496,18 +444,13 @@ vmethodHeadApplicationTail
 // Vertical application as head of vertical method
 // Ends on the next line
 vmethodHeadVapplication
-    : (applicable | hmethodOptional | versioned) oname? vapplicationArgs
+    : (applicable | hmethod) oname? vapplicationArgs
     | reversed oname? vapplicationArgsReversed
     ;
 
 // Tail of method
 methodTail
     : DOT finisher
-    ;
-
-// Versioned tail of method
-methodTailVersioned
-    : DOT NAME version?
     ;
 
 // Can be at the beginning of the statement
@@ -525,17 +468,6 @@ finisher
     : NAME
     | PHI
     | RHO
-    ;
-
-// Beginner or finisher
-beginnerOrFinisher
-    : beginner
-    | finisher
-    ;
-
-// Name with optional version
-versioned
-    : NAME version?
     ;
 
 // Reversed notation
@@ -568,11 +500,6 @@ spacedArrow
 // Is used in happlicationArg, hmethodHead
 scope
     : LB (happlication | hanonym) RB
-    ;
-
-// Version
-version
-    : BAR VER
     ;
 
 // Binding
@@ -703,9 +630,6 @@ HEX : '0x' [0-9a-fA-F]+
     ;
 
 NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(]*
-    ;
-
-VER : [0-9]+ DOT [0-9]+ DOT [0-9]+
     ;
 
 fragment TEXT_MARK
