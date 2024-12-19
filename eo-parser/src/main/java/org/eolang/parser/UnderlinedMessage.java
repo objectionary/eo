@@ -27,14 +27,18 @@ import java.util.Collections;
 
 /**
  * Underlined message.
+ * <p>
  * For example, if you have a message "Problem is here" and you want to underline
  * the word "is", you can create an instance of this class with the following
  * parameters: origin="Problem is here", from=8, length=2.
+ * </p>
+ * <p>
  * The result will be:
  * {@code
  * Problem is here
  *         ^^
  * }
+ * </p>
  * @since 0.50
  * @todo #3332:30min Add more decorators for the error message.
  *  For example, {@link ParsingErrors} currently contains logic related to the message formatting.
