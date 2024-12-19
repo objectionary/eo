@@ -25,9 +25,6 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
-import org.eolang.maven.name.DelimitedName;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.util.JoinedUnderscore;
 
 /**
  * Make the place for the object.
@@ -35,26 +32,17 @@ import org.eolang.maven.util.JoinedUnderscore;
  * @since 0.1
  */
 public final class Place {
-
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * Name of the object.
      */
-    private final DelimitedName name;
-
-    /**
-     * Ctor.
-     * @param obj The name of the object
-     */
-    public Place(final ObjectName obj) {
-        this(obj.toString());
-    }
+    private final String name;
 
     /**
      * Ctor.
      * @param obj The name of the object
      */
     public Place(final String obj) {
-        this.name = new DelimitedName(obj);
+        this.name = obj;
     }
 
     /**
@@ -65,10 +53,7 @@ public final class Place {
      */
     public Path make(final Path dir, final String ext) {
         final StringBuilder out = new StringBuilder();
-        out.append(this.name.title().replace(".", File.separator));
-        this.name.label().ifPresent(
-            version -> out.append(new JoinedUnderscore("", version).asString())
-        );
+        out.append(this.name.replace(".", File.separator));
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }

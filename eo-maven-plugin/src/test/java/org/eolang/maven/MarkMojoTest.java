@@ -28,8 +28,6 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
@@ -82,24 +80,6 @@ final class MarkMojoTest {
             CatalogsTest.TO_ADD_MESSAGE,
             foreign.size(),
             Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    void extendsTojosWithVersionedOne(@Mktmp final Path temp) throws IOException {
-        MarkMojoTest.source(temp);
-        final ForeignTojos tojos = new FakeMaven(temp)
-            .with("withVersions", true)
-            .execute(MarkMojo.class)
-            .foreignTojos();
-        final ObjectName object = new OnVersioned("foo.bar", "6a70071");
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after extending, but they didn't",
-                object
-            ),
-            tojos.contains(object),
-            Matchers.is(true)
         );
     }
 

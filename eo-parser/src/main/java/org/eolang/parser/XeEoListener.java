@@ -825,50 +825,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHmethodOptional(final EoParser.HmethodOptionalContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodOptional(final EoParser.HmethodOptionalContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHmethodExtended(final EoParser.HmethodExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodExtended(final EoParser.HmethodExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHmethodVersioned(final EoParser.HmethodVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodVersioned(final EoParser.HmethodVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHmethodExtendedVersioned(
-        final EoParser.HmethodExtendedVersionedContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodExtendedVersioned(
-        final EoParser.HmethodExtendedVersionedContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
     public void enterHmethodHead(final EoParser.HmethodHeadContext ctx) {
         // Nothing here
     }
@@ -879,42 +835,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHmethodHeadExtended(final EoParser.HmethodHeadExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodHeadExtended(final EoParser.HmethodHeadExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterVmethod(final EoParser.VmethodContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitVmethod(final EoParser.VmethodContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodVersioned(final EoParser.VmethodVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodVersioned(final EoParser.VmethodVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodOptional(final EoParser.VmethodOptionalContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodOptional(final EoParser.VmethodOptionalContext ctx) {
         // Nothing here
     }
 
@@ -974,18 +900,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMethodTailVersioned(final EoParser.MethodTailVersionedContext ctx) {
-        this.startObject(ctx)
-            .prop("base", String.format(".%s", ctx.NAME().getText()))
-            .prop("method");
-    }
-
-    @Override
-    public void exitMethodTailVersioned(final EoParser.MethodTailVersionedContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBeginner(final EoParser.BeginnerContext ctx) {
         this.startObject(ctx);
@@ -1035,26 +949,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitFinisher(final EoParser.FinisherContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVersioned(final EoParser.VersionedContext ctx) {
-        this.startObject(ctx).prop("base", ctx.NAME().getText());
-    }
-
-    @Override
-    public void exitVersioned(final EoParser.VersionedContext ctx) {
         this.objects.leave();
     }
 
@@ -1133,18 +1027,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitScope(final EoParser.ScopeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVersion(final EoParser.VersionContext ctx) {
-        if (ctx.VER() != null) {
-            this.objects.prop("ver", ctx.VER().getText());
-        }
-    }
-
-    @Override
-    public void exitVersion(final EoParser.VersionContext ctx) {
         // Nothing here
     }
 

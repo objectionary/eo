@@ -32,7 +32,7 @@
       2
     n
     plus.
-      fibonacci
+      ^.fibonacci
         n.minus 1
-      fibonacci
+      ^.fibonacci
         n.minus 2

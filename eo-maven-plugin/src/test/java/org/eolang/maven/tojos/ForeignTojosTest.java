@@ -180,8 +180,7 @@ final class ForeignTojosTest {
             Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),
             Arguments.of("ID", (Func<ForeignTojo, Object>) ForeignTojo::description),
             Arguments.of("HASH", (Func<ForeignTojo, Object>) ForeignTojo::hash),
-            Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed),
-            Arguments.of("VER", (Func<ForeignTojo, Object>) ForeignTojo::ver)
+            Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed)
         );
     }
 

@@ -147,7 +147,7 @@ Here `fibonacci` is the name of the desired integration test, `-DskipTests` is u
 
 ## How to disable Integration Tests
 
-It is sometime necessary to temporary disable the integration tests (for example for introducing
+It is sometime necessary to temporarily disable the integration tests (for example for introducing
 braking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`
 execution within `eo-maven-plugin/pom.xml`:
 

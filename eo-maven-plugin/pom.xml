@@ -298,22 +298,11 @@ SOFTWARE.
       </plugin>
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
-          <pomExcludes>
-            <!--
-            @todo #2660:30min Enable the following integration tests when it's possible.
-             Now they don't work because many .eo files are absent in the
-             objectionary/home repository or can't be successfully parsed because of the
-             syntax changes. Once they are released, the tests
-             should work as is, without any modifications.
-            -->
-            <exclude>custom_goals/pom.xml</exclude>
-            <exclude>fibonacci/pom.xml</exclude>
-            <exclude>rewritten_sources/pom.xml</exclude>
-            <exclude>duplicate_classes/pom.xml</exclude>
-            <exclude>simple/pom.xml</exclude>
-            <exclude>hash_package_layer/pom.xml</exclude>
-          </pomExcludes>
+        <configuration combine.self="override">
+          <!--
+            All integration tests are enabled.
+          -->
+          <pomExcludes/>
         </configuration>
       </plugin>
       <plugin>
