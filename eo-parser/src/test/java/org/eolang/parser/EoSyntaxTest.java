@@ -277,7 +277,10 @@ final class EoSyntaxTest {
         if (story.map().containsKey(msg)) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(story.after()).toString(),
-                story.after().xpath("/program/errors/error[1]/text()").get(0),
+                story.after()
+                    .xpath("/program/errors/error[1]/text()")
+                    .get(0)
+                    .replaceAll("\r", ""),
                 Matchers.equalTo(story.map().get(msg).toString())
             );
         }
