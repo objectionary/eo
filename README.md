@@ -65,7 +65,7 @@ All of them have something **we don't tolerate**:
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
-Then, you install [eoc](https://github.com/objectionary/eoc). You could install it as NPM package:
+Then, you install [eoc](https://github.com/objectionary/eoc):
 
 ```bash
 npm install -g eolang@0.28.0
