@@ -20,11 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-line: 2
+line: 5
 message: >-
-  [2:4] error: no viable alternative at input:
-    y:^
-      ^
+  [5:2] error: no viable alternative at input:
+     *
+    ^
 input: |
-  x
-    y:^
+  # This is a code snippet from the following issue:
+  # https://github.com/objectionary/eo/issues/3332
+  [args] > app
+    seq > @
+     *
+       "a" > a
+       QQ.io.stdout
+         a
