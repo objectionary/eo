@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link UnderlinedMessage}.
- * @since 0.1
+ * @since 0.50
  * @checkstyle ParameterNumberCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -55,7 +55,7 @@ final class UnderlinedMessageTest {
      * tests pass.
      * @return Test cases.
      */
-    static Stream<Arguments> examples() {
+    private static Stream<Arguments> examples() {
         final String issue = "Problem is here";
         return Stream.of(
             Arguments.of(issue, 0, 7, "Problem is here\n^^^^^^^"),
