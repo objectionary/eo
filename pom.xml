@@ -98,6 +98,8 @@ SOFTWARE.
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <antlr.version>4.13.2</antlr.version>
+    <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
+    <skipUTs/>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -401,6 +403,7 @@ SOFTWARE.
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <skipTests>${skipUTs}</skipTests>
             <systemPropertyVariables>
               <basedir>${project.basedir}</basedir>
             </systemPropertyVariables>
