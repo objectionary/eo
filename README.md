@@ -70,7 +70,7 @@ Then, you install [eoc](https://github.com/objectionary/eoc):
 npm install -g eolang@0.28.0
 ```
 
-Then, start with a simple EO program in `app.eo` file:
+Then, start with a simple EO program in the `app.eo` file:
 
 ```eo
 # Just prints hello.
@@ -79,7 +79,7 @@ Then, start with a simple EO program in `app.eo` file:
     "Hello, world!\n"
 ```
 
-Compile it like this (may take a minute or so):
+Compile it like this (may take up to a minute or so):
 
 ```bash
 eoc --easy link
