@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 name: zerocracy
-run-name: "judges-${{ env.JUDGES }} and pages-${{ env.PAGES }}"
+run-name: "zerocracy judges"
 env:
   JUDGES: 0.0.59
   PAGES: 0.0.40
