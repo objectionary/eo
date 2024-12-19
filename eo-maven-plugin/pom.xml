@@ -297,6 +297,15 @@ SOFTWARE.
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration combine.self="override">
+          <!--
+            All integration tests are enabled.
+          -->
+          <pomExcludes/>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>

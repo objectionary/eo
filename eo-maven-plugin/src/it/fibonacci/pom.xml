@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2016-2024 Objectionary.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.jcabi</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.68.0</version>
+  </parent>
+  <groupId>org.eolang</groupId>
+  <artifactId>examples</artifactId>
+  <version>@project.version@</version>
+  <packaging>jar</packaging>
+  <name>Fibonacci Numbers Calculator</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration combine.self="override"/>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eolang</groupId>
+        <artifactId>eo-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
+              <goal>sodg</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <unrollExitError>true</unrollExitError>
+          <sodgIncludes>
+            <o>org.eolang.error</o>
+          </sodgIncludes>
+          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
+          <foreignFormat>csv</foreignFormat>
+          <placed>${project.build.directory}/eo/placed.json</placed>
+          <placedFormat>json</placedFormat>
+          <trackOptimizationSteps>true</trackOptimizationSteps>
+          <generateSodgXmlFiles>true</generateSodgXmlFiles>
+          <generateGraphFiles>true</generateGraphFiles>
+          <generateXemblyFiles>true</generateXemblyFiles>
+          <generateDotFiles>true</generateDotFiles>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.eolang.Main</mainClass>
+          <arguments>
+            <argument>org.eolang.examples.app</argument>
+            <argument>6</argument>
+            <argument>8</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
