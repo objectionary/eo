@@ -24,8 +24,6 @@
 package org.eolang.parser;
 
 import java.io.IOException;
-import java.util.List;
-import org.antlr.v4.runtime.Token;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
