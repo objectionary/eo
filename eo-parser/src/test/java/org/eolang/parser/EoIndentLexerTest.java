@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import java.io.IOException;
+import java.util.List;
 import org.antlr.v4.runtime.Token;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -46,6 +47,24 @@ public final class EoIndentLexerTest {
      *  no longer need.
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
+
+    @Test
+    void emitsTabWithCorrectName() throws IOException {
+        MatcherAssert.assertThat(
+            "We expect the token to be a tab indentation with name 'TAB'",
+            new EoIndentLexer(new TextOf("\n  ")).getAllTokens().get(1).getText(),
+            Matchers.equalTo("TAB")
+        );
+    }
+
+    @Test
+    void emitsUntabWithCorrectName() throws IOException {
+        MatcherAssert.assertThat(
+            "We expect the token to be an untab indentation with name 'UNTAB'",
+            new EoIndentLexer(new TextOf("\n  \n  \n")).getAllTokens().get(3).getText(),
+            Matchers.is("UNTAB")
+        );
+    }
 
     @Test
     void emitsTab() throws IOException {
