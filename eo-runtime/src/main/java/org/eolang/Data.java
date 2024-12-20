@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
  *
  * @since 0.1
  */
-@Versionized
 @SuppressWarnings("PMD.TooManyMethods")
 public interface Data {
     /**
@@ -46,7 +45,14 @@ public interface Data {
      * <p>This is more convenient than making EOstring, then making EObytes fill it up with data and
      * then injecting bytes to string.
      * This class is used in Java tests mostly for the sake of brevity.
-     * In auto-generated Java code we use EOstring and then wrap it with {@link PhData}.
+     * In auto-generated Java code we do:
+     * {@code
+     * Phi bytes = Phi.Φ.take("org.eolang.bytes").copy();
+     * Phi attached = new PhWith(bytes, 0, new byte[] {...});
+     * Phi str = Phi.Φ.take("org.eolang.string").copy();
+     * Phi applied = new PhWith(str, 0, attached);
+     * return applied;
+     * }
      *
      * @since 0.1
      */
@@ -102,16 +108,6 @@ public interface Data {
         @Override
         public String forma() {
             return this.object.forma();
-        }
-
-        @Override
-        public String φTerm() {
-            return this.object.φTerm();
-        }
-
-        @Override
-        public String toString() {
-            return this.object.toString();
         }
 
         @Override

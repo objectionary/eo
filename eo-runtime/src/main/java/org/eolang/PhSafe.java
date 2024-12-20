@@ -35,7 +35,6 @@ import java.util.List;
  *
  * @since 0.26
  */
-@Versionized
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhSafe implements Phi {
 
@@ -60,16 +59,6 @@ public final class PhSafe implements Phi {
     @Override
     public int hashCode() {
         return PhSafe.through(this.origin::hashCode);
-    }
-
-    @Override
-    public String toString() {
-        return PhSafe.through(this.origin::toString);
-    }
-
-    @Override
-    public String φTerm() {
-        return PhSafe.through(this.origin::φTerm);
     }
 
     @Override

@@ -48,7 +48,6 @@ import java.util.logging.Logger;
  *
  * @since 0.1
  */
-@Versionized
 @SuppressWarnings("PMD.MoreThanOneLogger")
 public final class Main {
 

@@ -130,29 +130,11 @@ final class PhPackageTest {
     }
 
     @Test
-    void convertsToPhiTerm() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).φTerm(),
-            Matchers.equalTo("Φ.org.eolang")
-        );
-    }
-
-    @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
             Matchers.equalTo("?:?")
-        );
-    }
-
-    @Test
-    void convertsToString() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).toString(),
-            Matchers.equalTo("Φ.org.eolang")
         );
     }
 

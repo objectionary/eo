@@ -32,7 +32,6 @@ import java.util.Arrays;
  *
  * @since 0.1.0
  */
-@Versionized
 @SuppressWarnings("PMD.TooManyMethods")
 public final class BytesOf implements Bytes {
 

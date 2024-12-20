@@ -37,7 +37,6 @@ import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -46,7 +45,6 @@ import org.eolang.XmirObject;
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
 @XmirObject(oname = "bytes.slice")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOslice extends PhDefault implements Atom {

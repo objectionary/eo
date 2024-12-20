@@ -32,7 +32,6 @@ package org.eolang;
  *
  * @since 0.1.0
  */
-@Versionized
 public interface Bytes {
     /**
      * NOT operation.

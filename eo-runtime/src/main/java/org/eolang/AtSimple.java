@@ -26,12 +26,12 @@ package org.eolang;
 
 /**
  * Default attribute that just keeps single object.
+ * Used for tests mostly.
  *
  * <p>The class is NOT thread-safe.</p>
  *
  * @since 0.1
  */
-@Versionized
 public final class AtSimple extends AtEnvelope {
     /**
      * Ctor.
@@ -45,6 +45,6 @@ public final class AtSimple extends AtEnvelope {
      * @param object Object that attribute keeps
      */
     public AtSimple(final Phi object) {
-        super(new AtFormed(() -> object));
+        super(new AtComposite(object, arg -> object));
     }
 }

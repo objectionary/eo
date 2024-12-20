@@ -36,15 +36,6 @@ import org.junit.jupiter.api.Test;
 final class PhLoggedTest {
 
     @Test
-    void convertsToOriginTerm() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhLogged(Phi.Φ).φTerm(),
-            Matchers.is(Phi.Φ.φTerm())
-        );
-    }
-
-    @Test
     void copiesOrigin() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -78,16 +69,6 @@ final class PhLoggedTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(phi).locator(),
             Matchers.equalTo(phi.locator())
-        );
-    }
-
-    @Test
-    void convertsToString() {
-        final Phi phi = Phi.Φ;
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhLogged(phi).toString(),
-            Matchers.equalTo(phi.toString())
         );
     }
 }

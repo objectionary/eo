@@ -34,7 +34,6 @@ import java.util.function.Supplier;
  *
  * @since 0.29
  */
-@Versionized
 public final class PhFake extends PhDefault {
     /**
      * Ctor.

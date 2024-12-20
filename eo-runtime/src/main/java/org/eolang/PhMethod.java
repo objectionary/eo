@@ -29,7 +29,6 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionized
 public final class PhMethod extends PhOnce {
 
     /**
@@ -39,10 +38,6 @@ public final class PhMethod extends PhOnce {
      * @param mtd The name of method
      */
     public PhMethod(final Phi phi, final String mtd) {
-        super(
-            () -> phi.take(mtd),
-            () -> String.format("%s.%s", phi, mtd),
-            () -> String.format("%s.%s", phi.φTerm(), mtd)
-        );
+        super(() -> phi.take(mtd));
     }
 }

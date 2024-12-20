@@ -75,19 +75,6 @@ final class PhWithTest {
         );
     }
 
-    @Test
-    void printsToString() {
-        final Phi dummy = new PhWithTest.Dummy();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhWith(
-                new PhCopy(new PhMethod(dummy, "plus")),
-                0, new Data.ToPhi(1L)
-            ).toString(),
-            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOnumber.*")
-        );
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
     void runsInThreads(final String data) {
