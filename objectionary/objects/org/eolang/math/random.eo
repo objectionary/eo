@@ -26,13 +26,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.49.1
++version 0.49.2
 
-# Pseudo random number.
+# Generates a pseudo-random number.
 [seed] > random
   $ > fixed
   # Get float value for current `seed`.
-  # Divide `seed` to maximum possible value of the `seed` which is 1 << 53
+  # Divide `seed` to maximum possible value of the `seed` which is 1 << 53.
   div. > @
     seed.as-number
     00-20-00-00-00-00-00-00.as-i64.as-number

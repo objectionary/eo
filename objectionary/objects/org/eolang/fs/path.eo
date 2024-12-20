@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.49.1
++version 0.49.2
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
@@ -151,6 +151,7 @@
     # | relative | absolute | other       |
     # | relative | relative | uri + other |
     # |----------|----------|-------------|
+    # URI Resolution Rules.
     [other] > resolved
       other.as-bytes > other-as-bytes
       normalized. > @
@@ -327,7 +328,7 @@
       # Normalization includes:
       # - converting multiple slashes into a single slash.
       # - resolving "." (current directory) and ".."  (parent directory) segments.
-      # - handling of drive letters in Windows
+      # - handling of drive letters in Windows.
       [] > normalized
         ^.uri > uri-as-bytes!
         (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative

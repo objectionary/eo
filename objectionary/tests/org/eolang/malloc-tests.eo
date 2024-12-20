@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.49.1
++version 0.49.2
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > writes-into-memory-of
@@ -265,3 +265,39 @@
 [] > malloc-empty-is-empty
   malloc.empty > @
     m.size.eq 0 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > copies-data-inside-itself
+  malloc.for > @
+    01-02-03-04-05
+    [m]
+      and. > @
+        m.copy 1 2 2
+        m.get.eq 01-02-02-03-05
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > copies-data-from-start-to-end
+  malloc.for > @
+    01-02-03-04-05-06
+    [m]
+      and. > @
+        m.copy 0 3 3
+        m.get.eq 01-02-03-01-02-03
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-source
+  malloc.for > @
+    0
+    m.copy 9 1 1 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-target
+  malloc.for > @
+    0
+    m.copy 3 9 1 > [m]
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > throws-on-copying-with-wrong-length
+  malloc.for > @
+    0
+    m.copy 3 1 9 > [m]

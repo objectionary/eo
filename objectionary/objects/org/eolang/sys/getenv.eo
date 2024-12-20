@@ -26,12 +26,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+version 0.49.1
++version 0.49.2
 
 # Get environment variable as `string`.
 # If return `string` is empty - the variable does not exist.
 #
-# See https://man7.org/linux/man-pages/man3/getenv.3.html
+# See https://man7.org/linux/man-pages/man3/getenv.3.html.
 [name] > getenv
   output. > @
     if.

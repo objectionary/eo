@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.49.1
++rt jvm org.eolang:eo-runtime:0.49.2
 +rt node eo2js-runtime:0.0.0
-+version 0.49.1
++version 0.49.2
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -117,6 +117,14 @@
       # Here `new-size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
       [new-size] > resized /org.eolang.malloc.of.allocated
+
+      # Reads the data from block in memory with with offset `source` and `length` and writes
+      # to the block with offset `target`.
+      # Returns `true` on success, or `error` on failure.
+      [source target length] > copy
+        ^.write > @
+          target
+          ^.read source length
 
       # Read `length` bytes with `offset` from the allocated block in memory.
       [offset length] > read /org.eolang.bytes
