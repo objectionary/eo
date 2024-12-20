@@ -61,23 +61,17 @@ final class AtRho implements Attr {
 
     @Override
     public Phi get() {
-        if (this.rho.get() == null) {
+        final Phi phi = this.rho.get();
+        if (phi == null) {
             throw new ExUnset(
                 String.format("The \"%s\" attribute is not set", Attr.RHO)
             );
         }
-        return this.rho.get();
+        return phi;
     }
 
     @Override
     public boolean put(final Phi phi) {
-        final boolean ret;
-        if (this.rho.get() == null) {
-            this.rho.set(phi);
-            ret = true;
-        } else {
-            ret = false;
-        }
-        return ret;
+        return this.rho.compareAndSet(null, phi);
     }
 }
