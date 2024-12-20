@@ -72,6 +72,6 @@ final class AtRho implements Attr {
 
     @Override
     public boolean put(final Phi phi) {
-        return this.rho.compareAndSet(null, phi);
+        return this.rho.get() == null && this.rho.compareAndSet(null, phi);
     }
 }
