@@ -27,7 +27,6 @@ import java.io.IOException;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,17 +46,7 @@ public final class EoIndentLexerTest {
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
-    /**
-     * Tests if the lexer emits a tab token with the correct name.
-     * @throws IOException In case if the input is invalid.
-     * @todo #3706:30min Fix the the name of the TAB token.
-     *  Currently {@link EoIndentLexer} emits TAB token with the name 'ZERO' instead of 'TAB'.
-     *  Fix the lexer to emit TAB token with the correct name.
-     *  This problem affects lexer error messages.
-     *  When this issue is fixed, remove the @Disabled annotation from the test.
-     */
     @Test
-    @Disabled
     void emitsTabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(
             "We expect the token to be a tab indentation with name 'TAB'",
@@ -66,17 +55,7 @@ public final class EoIndentLexerTest {
         );
     }
 
-    /**
-     * Tests if the lexer emits an untab token with the correct name.
-     * @throws IOException In case if the input is invalid.
-     * @todo #3706:30min Fix the the name of the UNTAB token.
-     *  Currently {@link EoIndentLexer} emits UNTAB token with the name 'INT' instead of 'UNTAB'.
-     *  Fix the lexer to emit UNTAB token with the correct name.
-     *  This problem affects lexer error messages.
-     *  When this issue is fixed, remove the @Disabled annotation from the test.
-     */
     @Test
-    @Disabled
     void emitsUntabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(
             "We expect the token to be an untab indentation with name 'UNTAB'",
