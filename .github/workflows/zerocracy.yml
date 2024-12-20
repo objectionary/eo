@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.61
+      - uses: zerocracy/judges-action@0.0.62
         with:
           verbose: false
           token: ${{ secrets.ZEROCRACY_TOKEN }}
