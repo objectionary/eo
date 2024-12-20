@@ -34,7 +34,6 @@ import org.eolang.BytesOf;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -42,7 +41,6 @@ import org.eolang.XmirObject;
  * @since 0.40
  * @checkstyle TypeNameCheck (6 lines)
  */
-@Versionized
 @XmirObject(oname = "i16.as-i32")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi16$EOas_i32 extends PhDefault implements Atom {

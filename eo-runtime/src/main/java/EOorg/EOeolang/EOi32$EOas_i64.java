@@ -35,7 +35,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -43,7 +42,6 @@ import org.eolang.XmirObject;
  * @since 0.40
  * @checkstyle TypeNameCheck (6 lines)
  */
-@Versionized
 @XmirObject(oname = "i32.as-i64")
 
 @SuppressWarnings("PMD.AvoidDollarSigns")

@@ -31,7 +31,6 @@ package org.eolang;
  * <p>This class is thread-safe.</p>
  * @since 0.24
  */
-@Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.SystemPrintln"})
 public final class PhLogged implements Phi {
 
@@ -46,11 +45,6 @@ public final class PhLogged implements Phi {
      */
     public PhLogged(final Phi phi) {
         this.origin = phi;
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
     }
 
     @Override
@@ -103,11 +97,6 @@ public final class PhLogged implements Phi {
     @Override
     public int hashCode() {
         return this.origin.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
     }
 
     @Override

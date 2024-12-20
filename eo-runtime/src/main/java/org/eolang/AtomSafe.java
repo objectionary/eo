@@ -23,29 +23,45 @@
  */
 package org.eolang;
 
-import java.util.function.Supplier;
-
 /**
  * Atom that catches exceptions.
  *
  * @since 0.36.0
  */
+@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.AvoidRethrowingException"})
 public final class AtomSafe implements Atom {
     /**
-     * Function that returns object.
+     * Original atom.
      */
-    private final Supplier<Phi> func;
+    private final Atom origin;
 
     /**
      * Ctor.
      * @param atom Original atom.
      */
     public AtomSafe(final Atom atom) {
-        this.func = new SafeFunc<>(atom::lambda);
+        this.origin = atom;
     }
 
     @Override
     public Phi lambda() {
-        return this.func.get();
+        try {
+            return this.origin.lambda();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted(ex);
+            // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Exception ex) {
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error \"%s\" of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
+        }
     }
 }

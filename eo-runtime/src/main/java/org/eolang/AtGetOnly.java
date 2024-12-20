@@ -64,11 +64,4 @@ final class AtGetOnly implements Attr {
             "Should never happen"
         );
     }
-
-    @Override
-    public String φTerm() {
-        throw new UnsupportedOperationException(
-            "Should never happen"
-        );
-    }
 }

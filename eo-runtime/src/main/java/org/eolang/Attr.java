@@ -29,8 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionized
-public interface Attr extends Term {
+public interface Attr {
     /**
      * Lambda attribute.
      */
@@ -40,11 +39,6 @@ public interface Attr extends Term {
      * Phi attribute.
      */
     String PHI = "φ";
-
-    /**
-     * Delta attribute.
-     */
-    String DELTA = "Δ";
 
     /**
      * Rho attribute.

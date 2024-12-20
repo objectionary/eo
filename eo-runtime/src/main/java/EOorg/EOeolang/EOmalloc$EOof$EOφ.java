@@ -34,7 +34,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -42,7 +41,6 @@ import org.eolang.XmirObject;
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
 @XmirObject(oname = "malloc.of.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {

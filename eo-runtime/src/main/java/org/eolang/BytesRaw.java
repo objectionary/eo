@@ -35,7 +35,6 @@ import java.util.Arrays;
  *  check description of this rules here
  *  <a href="https://pmd.github.io/pmd/pmd_rules_java_design">pmd.github.io</a>
  */
-@Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class BytesRaw implements Bytes {
 
@@ -109,7 +108,7 @@ final class BytesRaw implements Bytes {
                 } else {
                     byte dst = (byte) (bytes[source] << mod);
                     if (source + 1 < bytes.length) {
-                        dst |= bytes[source + 1] >>> (Byte.SIZE - mod) & (carry & 0xFF);
+                        dst |= (byte) (bytes[source + 1] >>> (Byte.SIZE - mod) & (carry & 0xFF));
                     }
                     bytes[index] = dst;
                 }
@@ -123,7 +122,7 @@ final class BytesRaw implements Bytes {
                 } else {
                     byte dst = (byte) ((0xff & bytes[source]) >>> mod);
                     if (source - 1 >= 0) {
-                        dst |= bytes[source - 1] << (Byte.SIZE - mod) & (carry & 0xFF);
+                        dst |= (byte) (bytes[source - 1] << (Byte.SIZE - mod) & (carry & 0xFF));
                     }
                     bytes[index] = dst;
                 }

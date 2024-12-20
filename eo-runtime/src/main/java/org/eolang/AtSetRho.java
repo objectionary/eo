@@ -34,16 +34,6 @@ package org.eolang;
 final class AtSetRho extends AtEnvelope {
     /**
      * Ctor.
-     * @param obj Object
-     * @param rho Rho that will be set
-     * @param name Name of the attribute
-     */
-    AtSetRho(final Phi obj, final Phi rho, final String name) {
-        this(new AtSimple(obj), rho, name);
-    }
-
-    /**
-     * Ctor.
      * @param attr Origin attribute
      * @param rho Rho that will be set
      * @param name Name of the attribute

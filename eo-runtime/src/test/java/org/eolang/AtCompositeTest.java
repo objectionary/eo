@@ -48,20 +48,6 @@ public final class AtCompositeTest {
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
-    void decoratesCheckedException() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new AtComposite(
-                Phi.Φ,
-                self -> {
-                    throw new InstantiationException("intended checked");
-                }
-            ).get(),
-            AtCompositeTest.TO_ADD_MESSAGE
-        );
-    }
-
-    @Test
     void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,

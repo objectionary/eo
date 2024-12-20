@@ -67,5 +67,4 @@ final class PhLocatedTest {
             )
         );
     }
-
 }

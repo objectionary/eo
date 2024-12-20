@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.1
  */
-@Versionized
 public final class AtVoid implements Attr {
     /**
      * Name of the attribute.
@@ -62,28 +61,6 @@ public final class AtVoid implements Attr {
     private AtVoid(final String name, final Phi phi) {
         this.name = name;
         this.object = new AtomicReference<>(phi);
-    }
-
-    @Override
-    public String toString() {
-        final String term;
-        if (this.object.get() == null) {
-            term = Term.EMPTY;
-        } else {
-            term = String.format("%sV", this.object.get().toString());
-        }
-        return term;
-    }
-
-    @Override
-    public String φTerm() {
-        final String term;
-        if (this.object.get() == null) {
-            term = Term.EMPTY;
-        } else {
-            term = this.object.get().φTerm();
-        }
-        return term;
     }
 
     @Override
