@@ -36,5 +36,4 @@ public interface Action<T> {
      * @return The value
      */
     T act();
-
 }

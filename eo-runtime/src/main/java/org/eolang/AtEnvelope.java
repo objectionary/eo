@@ -58,14 +58,4 @@ public abstract class AtEnvelope implements Attr {
     public boolean put(final Phi phi) {
         return this.origin.put(phi);
     }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
 }

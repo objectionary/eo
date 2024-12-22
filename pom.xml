@@ -98,6 +98,8 @@ SOFTWARE.
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <antlr.version>4.13.2</antlr.version>
+    <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
+    <skipUTs/>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -142,26 +144,26 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.11.3</version>
+        <version>5.11.4</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.11.3</version>
+        <version>5.11.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.11.3</version>
+        <version>5.11.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.11.3</version>
+        <version>5.11.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -265,6 +267,12 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>mktmp</artifactId>
+        <version>0.0.5</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.yegor256</groupId>
+        <artifactId>together</artifactId>
         <version>0.0.5</version>
         <scope>test</scope>
       </dependency>
@@ -395,6 +403,7 @@ SOFTWARE.
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <skipTests>${skipUTs}</skipTests>
             <systemPropertyVariables>
               <basedir>${project.basedir}</basedir>
             </systemPropertyVariables>

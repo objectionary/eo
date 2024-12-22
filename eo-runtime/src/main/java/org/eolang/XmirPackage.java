@@ -36,7 +36,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.CLASS)
-@Versionized
 public @interface XmirPackage {
 
     /**

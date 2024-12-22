@@ -23,13 +23,9 @@
  */
 package org.eolang;
 
+import com.yegor256.Together;
 import java.security.SecureRandom;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -303,17 +299,15 @@ final class PhDefaultTest {
     @Test
     void createsDifferentPhiInParallel() {
         final int threads = 100;
-        final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
-        new Threads<>(
-            threads,
-            Stream.generate(
-                () -> (Scalar<PhDefault>) Int::new
-            ).limit(threads).collect(Collectors.toList())
-        ).forEach(objects::add);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            objects,
-            Matchers.hasSize(threads)
+            "all objects are unique",
+            new SetOf<>(
+                new Together<>(
+                    threads,
+                    t -> new Int()
+                )
+            ),
+            Matchers.iterableWithSize(threads)
         );
     }
 
@@ -381,20 +375,6 @@ final class PhDefaultTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
-        );
-    }
-
-    @Test
-    void refersToOriginalObjectAndDoesNotResetCache() {
-        final Phi phi = new PhDefaultTest.Dummy();
-        phi.take(PhDefaultTest.PLUS_ATT);
-        final Phi copy = phi.copy();
-        copy.take(PhDefaultTest.PLUS_ATT);
-        phi.take(PhDefaultTest.PLUS_ATT);
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            PhDefaultTest.Dummy.count,
-            Matchers.equalTo(1)
         );
     }
 
@@ -488,24 +468,6 @@ final class PhDefaultTest {
         );
     }
 
-    @Test
-    void injectsDeltaIntoTerm() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
-            Matchers.containsString("Δ ↦ 01-02-03")
-        );
-    }
-
-    @Test
-    void printsData() {
-        MatcherAssert.assertThat(
-            "PhDefault with injected data must print them to string",
-            new PhDefault(new byte[] {0x01, 0x02, 0x03}).toString(),
-            Matchers.containsString("01-02-03")
-        );
-    }
-
     /**
      * Rnd.
      * @since 0.1.0
@@ -520,9 +482,7 @@ final class PhDefaultTest {
                 "φ",
                 new AtComposite(
                     this,
-                    self -> {
-                        return new Data.ToPhi(new SecureRandom().nextDouble());
-                    }
+                    self -> new ToPhi(new SecureRandom().nextDouble())
                 )
             );
         }
@@ -600,11 +560,14 @@ final class PhDefaultTest {
         Dummy() {
             this.add(
                 Attr.PHI,
-                new AtFormed(
-                    () -> {
-                        ++PhDefaultTest.Dummy.count;
-                        return new Data.ToPhi(1L);
-                    }
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> {
+                            ++PhDefaultTest.Dummy.count;
+                            return new Data.ToPhi(1L);
+                        }
+                    )
                 )
             );
         }
@@ -627,14 +590,17 @@ final class PhDefaultTest {
         Counter() {
             this.add(
                 Attr.PHI,
-                new AtFormed(
-                    () -> {
-                        ++this.count;
-                        return new Data.ToPhi(new byte[]{(byte) 0x01});
-                    }
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> {
+                            ++this.count;
+                            return new Data.ToPhi(new byte[]{(byte) 0x01});
+                        }
+                    )
                 )
             );
-            this.add("count", new AtFormed(() -> new Data.ToPhi(this.count)));
+            this.add("count", new AtComposite(this, rho -> new Data.ToPhi(this.count)));
         }
     }
 
@@ -738,8 +704,9 @@ final class PhDefaultTest {
         RecursivePhiViaNew() {
             this.add(
                 "φ",
-                new AtFormed(
-                    () -> {
+                new AtComposite(
+                    this,
+                    rho -> {
                         --PhDefaultTest.RecursivePhiViaNew.count;
                         final Phi result;
                         if (PhDefaultTest.RecursivePhi.count <= 0) {

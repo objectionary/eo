@@ -47,12 +47,9 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnCached;
-import org.eolang.maven.name.OnSwap;
-import org.eolang.maven.name.OnVersioned;
-import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.ObjsDefault;
+import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyIndexed;
+import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 
 /**
@@ -89,13 +86,19 @@ public final class PullMojo extends SafeMojo {
      * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private CommitHash hash;
+    private CommitHash hash = new ChCached(
+        new ChRemote(this.tag)
+    );
 
     /**
-     * Objectionaries.
+     * Objectionary.
+     * @since 0.50
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault();
+    @SuppressWarnings("PMD.ImmutableField")
+    private Objectionary objectionary = new OyIndexed(
+        new OyRemote(this.hash)
+    );
 
     /**
      * Pull again even if the .eo file is already present?
@@ -124,24 +127,12 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.PrematureDeclaration")
     private void pull() throws IOException {
         final long start = System.currentTimeMillis();
-        if (this.hash == null) {
-            this.hash = new ChCached(
-                new ChNarrow(
-                    new ChRemote(this.tag)
-                )
-            );
-        }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
-        final Collection<ObjectName> names = new ArrayList<>(0);
+        final Collection<String> names = new ArrayList<>(0);
         final Path base = this.targetDir.toPath().resolve(PullMojo.DIR);
         final String hsh = this.hash.value();
         for (final ForeignTojo tojo : tojos) {
-            final ObjectName object = new OnCached(
-                new OnSwap(
-                    this.withVersions,
-                    new OnVersioned(tojo.identifier(), hsh)
-                )
-            );
+            final String object = tojo.identifier();
             try {
                 tojo.withSource(this.pulled(object, base, hsh))
                     .withHash(new ChNarrow(this.hash));
@@ -176,14 +167,13 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Pull one object.
-     * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout|5f82cc1"
+     * @param object Name of the object
      * @param base Base cache path
      * @param hsh Git hash
      * @return The path of .eo file
      * @throws IOException If fails
      */
-    private Path pulled(final ObjectName object, final Path base, final String hsh)
-        throws IOException {
+    private Path pulled(final String object, final Path base, final String hsh) throws IOException {
         final String semver = this.plugin.getVersion();
         final Path target = new Place(object).make(base, AssembleMojo.EO);
         final Supplier<Path> che = new CachePath(
@@ -199,9 +189,7 @@ public final class PullMojo extends SafeMojo {
                     "Pulling %s object from remote objectionary with hash %s",
                     object, hsh
                 );
-                return new TextOf(
-                    this.objectionaries.object(object)
-                ).asString();
+                return new TextOf(this.objectionary.get(object)).asString();
             }
         );
         return new FpIfTargetExists(

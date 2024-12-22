@@ -29,20 +29,11 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import org.cactoos.map.MapEntry;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
-import org.eolang.maven.objectionary.ObjsDefault;
-import org.eolang.maven.objectionary.OyRemote;
-import org.eolang.maven.util.JoinedUnderscore;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -58,11 +49,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  check here is related to particular mojos (and we should check their
  *  behaviour in appropriate tests). In other words there are integration tests
  *  here. And, probably, it is not the best place for them.
- * @todo #2612:30min Enable the test {@link AssembleMojoTest#assemblesTogetherWithVersions(Path)}.
- *  The test was disabled because varargs were removed in EO 0.34.0. So objects that are downloaded
- *  from older repositories are not parsed successfully because of the presence of varargs there.
- *  So we need to make 2-3 releases and then refactor the test with more fresh versions. Don't
- *  forget to remove the puzzle.
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
@@ -119,95 +105,6 @@ final class AssembleMojoTest {
             "AssembleMojo should have placed runtime library under classes directory, but didn't",
             result.get("target/classes").toAbsolutePath(),
             new ContainsFiles("**/eo-runtime-*.jar")
-        );
-    }
-
-    @Test
-    @Disabled
-    @ExtendWith(WeAreOnline.class)
-    void assemblesTogetherWithVersions(@Mktmp final Path temp) throws Exception {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final CommitHash master = new ChCached(new ChRemote("master"));
-        final CommitHash five = hashes.get("0.28.5");
-        final CommitHash six = hashes.get("0.28.6");
-        final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(
-                "+package org.eolang\n",
-                "[x] > main",
-                "  seq > @",
-                "    QQ.io.stdout|0.28.5",
-                "      \"Hello five\"",
-                "    QQ.io.stdout|0.28.6",
-                "      \"Hello six\""
-            )
-            .with("withVersions", true)
-            .with(
-                "objectionaries",
-                new ObjsDefault(
-                    new MapEntry<>(master, new OyRemote(master)),
-                    new MapEntry<>(five, new OyRemote(five)),
-                    new MapEntry<>(six, new OyRemote(six))
-                )
-            )
-            .with("hash", master)
-            .execute(AssembleMojo.class)
-            .result();
-        final String stdout = "**/io/stdout";
-        final String fifth = new JoinedUnderscore(stdout, "17f8929.xmir").asString();
-        final String sixth = new JoinedUnderscore(stdout, "9c93528.xmir").asString();
-        final String path = "target/%s/org/eolang";
-        final String parse = String.format(path, ParseMojo.DIR);
-        final String optimize = String.format(path, OptimizeMojo.DIR);
-        final String pull = String.format(path, PullMojo.DIR);
-        final String resolve = String.format("target/%s", ResolveMojo.DIR);
-        final String seq = "**/seq.xmir";
-        final String string = "**/string.xmir";
-        final String hash = String.join(".", master.value(), "eo");
-        final String[] jars = {
-            "**/eo-runtime-0.28.5.jar",
-            "**/eo-runtime-0.28.6.jar",
-        };
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should placed parsed files under %s directory, but didn't",
-                parse
-            ),
-            result.get(parse).toAbsolutePath(),
-            new ContainsFiles(fifth, sixth, seq, string)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should placed optimized files under %s directory, but didn't",
-                optimize
-            ),
-            result.get(optimize).toAbsolutePath(),
-            new ContainsFiles(fifth, sixth, seq, string)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should placed pulled files under %s directory, but didn't",
-                pull
-            ),
-            result.get(pull).toAbsolutePath(),
-            new ContainsFiles(
-                new JoinedUnderscore(stdout, "17f8929.eo").asString(),
-                new JoinedUnderscore(stdout, "9c93528.eo").asString(),
-                new JoinedUnderscore("**/seq", hash).asString(),
-                new JoinedUnderscore("**/string", hash).asString()
-            )
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should placed pulled files under %s directory, but didn't",
-                resolve
-            ),
-            result.get(resolve).toAbsolutePath(),
-            new ContainsFiles(jars)
-        );
-        MatcherAssert.assertThat(
-            "AssembleMojo should have placed runtime libraries under classes directory, but didn't",
-            result.get("target/classes").toAbsolutePath(),
-            new ContainsFiles(jars)
         );
     }
 

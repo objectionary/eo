@@ -32,7 +32,6 @@ import java.util.logging.Logger;
  *
  * @since 0.24
  */
-@Versionized
 final class AtLogged implements Attr {
 
     /**
@@ -69,16 +68,6 @@ final class AtLogged implements Attr {
         this.origin = attr;
         this.owner = label;
         this.log = logger;
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
     }
 
     @Override

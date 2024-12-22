@@ -49,7 +49,7 @@ final class LatexMojoTest {
     @Test
     void generatesTexFile(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
                 .withHelloWorld()
                 .execute(new FakeMaven.Latex())
@@ -67,7 +67,7 @@ final class LatexMojoTest {
     @Test
     void checksLastName() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
         );

@@ -140,8 +140,7 @@ public final class RegisterMojo extends SafeMojo {
             this.scopedTojos()
                 .add(name)
                 .withSource(file.toAbsolutePath())
-                .withVersion(ParseMojo.ZERO)
-                .withVer(ParseMojo.ZERO);
+                .withVersion(ParseMojo.ZERO);
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(

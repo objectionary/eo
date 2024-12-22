@@ -65,7 +65,7 @@ SOFTWARE.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.12</version>
+      <version>1.5.14</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -160,6 +160,12 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
+      <artifactId>together</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
       <artifactId>maybeslow</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>
@@ -181,6 +187,7 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <skipTests>${skipUTs}</skipTests>
           <runOrder>random</runOrder>
           <argLine>
             @{argLine} -Xmx${heap-size} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
@@ -253,7 +260,6 @@ SOFTWARE.
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
               <goal>transpile</goal>
-              <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>
@@ -276,6 +282,9 @@ SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skipTests>${skipITs}</skipTests>
+        </configuration>
         <version>3.5.2</version>
         <executions>
           <execution>

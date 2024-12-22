@@ -26,13 +26,16 @@ package org.eolang.parser;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.antlr.v4.runtime.ANTLRErrorListener;
+import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -41,8 +44,7 @@ import org.xembly.Directives;
  *
  * @since 0.30.0
  */
-final class ParsingErrors extends BaseErrorListener
-    implements ANTLRErrorListener, Iterable<Directive> {
+final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -81,18 +83,41 @@ final class ParsingErrors extends BaseErrorListener
         final String msg,
         final RecognitionException error
     ) {
-        this.errors.add(
-            new ParsingException(
-                String.format(
-                    "[%d:%d] %s: \"%s\"",
-                    line, position, msg,
-                    // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                    this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
-                ),
-                error,
-                line
-            )
-        );
+        // @checkstyle MethodBodyCommentsCheck (20 lines)
+        // @todo #3332:30min Add more specific error messages.
+        //  Currently we write just "error: no viable alternative at input" for all errors.
+        //  It's better to use 'Recognizer<?, ?> recognizer' parameter of the current method
+        //  to retrieve more specific error messages.
+        if (error instanceof NoViableAltException) {
+            final Token token = (Token) symbol;
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s:%n%s",
+                        line, position,
+                        "error: no viable alternative at input",
+                        new UnderlinedMessage(
+                            this.line(line).orElse("EOF"),
+                            position,
+                            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                        ).formatted()
+                    ),
+                    error,
+                    line
+                )
+            );
+        } else {
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s: \"%s\"",
+                        line, position, msg, this.line(line).orElse("EOF")
+                    ),
+                    error,
+                    line
+                )
+            );
+        }
     }
 
     @Override
@@ -120,5 +145,22 @@ final class ParsingErrors extends BaseErrorListener
      */
     public int size() {
         return this.errors.size();
+    }
+
+    /**
+     * Get the line by number.
+     * @param number The line number.
+     * @return The line.
+     */
+    private Optional<String> line(final int number) {
+        final Optional<String> result;
+        if (number < 1 || number > this.lines.size()) {
+            result = Optional.empty();
+        } else {
+            result = Optional.ofNullable(this.lines.get(number - 1))
+                .map(UncheckedText::new)
+                .map(UncheckedText::asString);
+        }
+        return result;
     }
 }

@@ -54,14 +54,13 @@ release:
     mkdir /tmp/objectionary
     cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
     cp -R eo-runtime/src/test/eo /tmp/objectionary/tests
-    cp eo-parser/src/main/resources/XMIR.xsd /tmp
+    cp eo-parser/target/classes/XMIR.xsd /tmp
     branch=$(git rev-parse --abbrev-ref HEAD)
     git checkout gh-pages
     git reset --hard
     sudo git config --global --add safe.directory "$(pwd)"
     sudo /bin/bash -c "cd '$(pwd)'; git clean -fd"
     cp /tmp/XMIR.xsd .
-    sed -i "s|SNAPSHOT|${tag}|" XMIR.xsd
     mkdir -p xsd
     cp XMIR.xsd "xsd/XMIR-${tag}.xsd"
     git add XMIR.xsd "xsd/XMIR-${tag}.xsd"

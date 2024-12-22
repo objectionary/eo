@@ -36,7 +36,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term, Data {
+public interface Phi extends Data {
 
     /**
      * The global scope object, which owns all other objects.
@@ -59,16 +59,6 @@ public interface Phi extends Term, Data {
         @Override
         public int hashCode() {
             return 0;
-        }
-
-        @Override
-        public String φTerm() {
-            return "Φ";
-        }
-
-        @Override
-        public String toString() {
-            return "Φ";
         }
 
         @Override

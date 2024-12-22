@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.cactoos.experimental.Threads;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -47,7 +47,7 @@ final class ChRemoteTest {
     void getsCommitHashTag() {
         final String hash = new ChRemote("0.41.1").value();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             hash,
             Matchers.equalTo("9a3dee39597b2e9ac305ca57c296b0fa7e10eb55")
         );
@@ -57,7 +57,7 @@ final class ChRemoteTest {
     void getsCommitHashOldTag() {
         final String hash = new ChRemote("0.40.5").value();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             hash,
             Matchers.equalTo("ee14a1e30a9e0f8f64404e7a52f40c2a07f88359")
         );

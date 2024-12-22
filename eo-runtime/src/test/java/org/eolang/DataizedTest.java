@@ -30,7 +30,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -45,60 +44,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  */
 @Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
-    /**
-     * System property for maximum dataization log level.
-     */
-    private static final String MAX_DATAIZATION = "max.dataization.log";
-
-    @Test
-    void logsCorrectly() {
-        final Logger log = Logger.getLogger("logsCorrectly");
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        new Dataized(new Data.ToPhi(1L), log).take();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            "Expected correct logs for object dataization",
-            logs.get(0).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("numberν"),
-                Matchers.not(Matchers.containsString("\n"))
-            )
-        );
-    }
-
-    @Test
-    void logsWhenException() {
-        final Logger log = Logger.getLogger("logsWhenException");
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        IntStream.range(0, 5).forEach(
-            i -> Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Dataized(new PhIncorrect()).take(),
-                "Expected failure with ExFailure exception on incorrect object dataization"
-            )
-        );
-        new Dataized(new Data.ToPhi(1L), log).take();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            "Expected correct logs for object dataization",
-            logs.get(0).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("numberν"),
-                Matchers.not(Matchers.containsString("\n"))
-            )
-        );
-    }
-
     @Test
     void logsAllLocationsWithPhSafe() {
         final Logger log = Logger.getLogger("logsWithPhSafe");
@@ -145,82 +90,6 @@ final class DataizedTest {
             ).take(),
             "re-throws when dataization fails with 'error' object"
         );
-    }
-
-    @Test
-    void printsShortLogs() throws InterruptedException {
-        final Logger log = Logger.getLogger("printsShortLogs");
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        final Thread thread = new DataizedLoggerThread(log, 1);
-        thread.start();
-        thread.join();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            "Number of log records should be equal to 1 in the case of short logs",
-            logs.size(),
-            Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    void printsLongLogs() throws InterruptedException {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        final Thread thread = new DataizedLoggerThread(log, 2);
-        thread.start();
-        thread.join();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            "Number of log records should be greater than 1 the in case of long logs",
-            logs.size(),
-            Matchers.greaterThan(1)
-        );
-    }
-
-    /**
-     * Thread that logs dataization process with specified log level.
-     * @since 0.1.0
-     */
-    private static class DataizedLoggerThread extends Thread {
-        /**
-         * Ctor.
-         *
-         * @param logger Logger.
-         * @param level Log level.
-         */
-        DataizedLoggerThread(final Logger logger, final int level) {
-            super(
-                () -> {
-                    final String property = System.getProperty(
-                        DataizedTest.MAX_DATAIZATION
-                    );
-                    System.getProperties().setProperty(
-                        DataizedTest.MAX_DATAIZATION,
-                        String.valueOf(level)
-                    );
-                    final Phi phi = new PhiDec();
-                    new Dataized(phi, logger).take();
-                    if (property != null) {
-                        System.getProperties().setProperty(
-                            DataizedTest.MAX_DATAIZATION,
-                            property
-                        );
-                    } else {
-                        System.clearProperty(DataizedTest.MAX_DATAIZATION);
-                    }
-                }
-            );
-        }
     }
 
     /**
@@ -306,7 +175,5 @@ final class DataizedTest {
         public void close() {
             throw new UnsupportedOperationException("#close()");
         }
-
     }
-
 }

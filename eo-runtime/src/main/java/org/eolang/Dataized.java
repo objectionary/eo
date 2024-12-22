@@ -45,31 +45,8 @@ import java.util.logging.Logger;
  * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  * @since 0.1
  */
-@Versionized
 @SuppressWarnings("java:S5164")
 public final class Dataized {
-
-    /**
-     * Dataization level.
-     *
-     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
-     *  {@link Dataized#LEVEL} variables to prevent memory leaks. We should either find a place
-     *  where this variable can be removed, or, if this is not possible
-     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
-     */
-    private static final ThreadLocal<Integer> LEVEL = ThreadLocal.withInitial(() -> 0);
-
-    /**
-     * Max dataization level.
-     *
-     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
-     *  {@link Dataized#MAX_LEVEL} variables to prevent memory leaks. We should either find a place
-     *  where this variable can be removed, or, if this is not possible
-     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
-     */
-    private static final ThreadLocal<Integer> MAX_LEVEL =
-        ThreadLocal.withInitial(() -> Integer.getInteger("max.dataization.log", 3));
-
     /**
      * The object to datarize.
      */
@@ -117,26 +94,10 @@ public final class Dataized {
      *
      * @return The data
      */
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public byte[] take() {
-        final int before = Dataized.LEVEL.get();
-        Dataized.LEVEL.set(before + 1);
         try {
-            final byte[] data = this.phi.delta();
-            if (this.logger.isLoggable(Level.FINE)
-                && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
-            ) {
-                this.logger.log(
-                    Level.FINE,
-                    String.format(
-                        "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
-                        String.join("", Collections.nCopies(before, "·")),
-                        this.phi.locator(),
-                        this.phi.toString().replaceAll("[\n\t]", ""),
-                        new BytesOf(data).asString().replaceAll("[\n\t]", "")
-                    )
-                );
-            }
-            return data;
+            return this.phi.delta();
         } catch (final EOerror.ExError ex) {
             final List<String> raw = new ArrayList<>(ex.messages().size());
             raw.addAll(ex.messages());
@@ -164,9 +125,7 @@ public final class Dataized {
                     String.join("\n  ⇢ ", clean)
                 )
             );
-            throw ex;
-        } finally {
-            Dataized.LEVEL.set(before);
+            throw new EOerror.ExError(ex.enclosure());
         }
     }
 

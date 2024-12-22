@@ -28,11 +28,14 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.xembly.Directives;
@@ -60,6 +63,50 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve("XMIR.xsd").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MktmpResolver.class)
+    void doesNotFailWithDifferentXmlInMultipleThreads(@Mktmp final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> {
+                    final XML xml = StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd");
+                    return new StrictXmir(xml, tmp);
+                }
+            )::asList,
+            "StrictXmir should not fail in different threads with different xmls"
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MktmpResolver.class)
+    void doesNotFailWithSameXmlInMultipleThreads(@Mktmp final Path tmp) {
+        final XML xml = StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd");
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> new StrictXmir(xml, tmp)
+            )::asList,
+            "StrictXmir should not fail in different threads with the same xml"
+        );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    @ExtendWith(WeAreOnline.class)
+    void refersToAbsoluteFileName(@Mktmp final Path tmp) {
+        MatcherAssert.assertThat(
+            "XSD location must be absolute",
+            Paths.get(
+                new StrictXmir(StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp)
+                    .xpath("/program/@xsi:noNamespaceSchemaLocation")
+                    .get(0)
+                    .substring("file:///".length())
+            ).isAbsolute(),
             Matchers.is(true)
         );
     }

@@ -49,10 +49,10 @@ final class SafeMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")
                 .execute(new FakeMaven.Parse()),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            CatalogsTest.TO_ADD_MESSAGE
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             String.join("\n", out.captured()),
             Matchers.containsString("Failed to parse")
         );

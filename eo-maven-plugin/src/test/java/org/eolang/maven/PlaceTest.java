@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -39,7 +38,7 @@ final class PlaceTest {
     @Test
     void makesPath() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new Place("hello.foo.bar")
                 .make(Paths.get("/tmp/test"), AssembleMojo.XMIR)
                 .toString()
@@ -51,30 +50,12 @@ final class PlaceTest {
     @Test
     void makesSimplePath() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")
                 .toString()
                 .replace("\\", "/"),
             Matchers.equalTo("/tmp/hey.xml")
-        );
-    }
-
-    @Test
-    void makesPathForVersionedObject() {
-        final String object = "org.eolang.io.stdout|15c85d7";
-        final Path actual = new Place(object)
-            .make(Paths.get("/tmp/test"), AssembleMojo.XMIR);
-        final Path expected = Paths.get("/tmp/test/org/eolang/io/stdout_15c85d7.xmir");
-        MatcherAssert.assertThat(
-            String.format(
-                "Expected path for object '%s' is '%s' but got '%s'",
-                object,
-                expected,
-                actual
-            ),
-            actual,
-            Matchers.equalTo(expected)
         );
     }
 }

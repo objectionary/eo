@@ -32,7 +32,6 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  */
-@Versionized
 @SuppressWarnings("PMD.TooManyMethods")
 class PhOnce implements Phi {
 
@@ -40,16 +39,6 @@ class PhOnce implements Phi {
      * The object fetched.
      */
     private final Supplier<Phi> object;
-
-    /**
-     * As string representation.
-     */
-    private final Supplier<String> string;
-
-    /**
-     * As φ term representation.
-     */
-    private final Supplier<String> term;
 
     /**
      * Reference.
@@ -60,10 +49,8 @@ class PhOnce implements Phi {
      * Ctor.
      *
      * @param obj The object
-     * @param str The "as string" value
-     * @param trm The "as φ term" value
      */
-    PhOnce(final Supplier<Phi> obj, final Supplier<String> str, final Supplier<String> trm) {
+    PhOnce(final Supplier<Phi> obj) {
         this.ref = new AtomicReference<>(null);
         this.object = () -> {
             synchronized (this.ref) {
@@ -73,8 +60,6 @@ class PhOnce implements Phi {
                 return this.ref.get();
             }
         };
-        this.string = str;
-        this.term = trm;
     }
 
     @Override
@@ -88,21 +73,9 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public final String toString() {
-        return this.string.get();
-    }
-
-    @Override
-    public final String φTerm() {
-        return this.term.get();
-    }
-
-    @Override
     public Phi copy() {
         return new PhOnce(
-            () -> this.object.get().copy(),
-            () -> String.format("%s'", this.string),
-            this.term
+            () -> this.object.get().copy()
         );
     }
 

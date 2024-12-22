@@ -85,24 +85,6 @@ final class AtLoggedTest {
     }
 
     @Test
-    void convertsToStringAsOrigin() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            this.logged.toString(),
-            Matchers.equalTo(this.origin.toString())
-        );
-    }
-
-    @Test
-    void convertsToPhiTermAsOrigin() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            this.logged.φTerm(),
-            Matchers.equalTo(this.origin.φTerm())
-        );
-    }
-
-    @Test
     void copiesWithLogging() {
         this.logged.copy(Phi.Φ);
         MatcherAssert.assertThat(

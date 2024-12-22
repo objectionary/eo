@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.cactoos.Func;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -70,7 +70,7 @@ final class ForeignTojosTest {
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             this.tojos.contains(name),
             Matchers.is(true)
         );
@@ -85,7 +85,7 @@ final class ForeignTojosTest {
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             this.tojos.contains(considered),
             Matchers.is(false)
         );
@@ -180,8 +180,7 @@ final class ForeignTojosTest {
             Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),
             Arguments.of("ID", (Func<ForeignTojo, Object>) ForeignTojo::description),
             Arguments.of("HASH", (Func<ForeignTojo, Object>) ForeignTojo::hash),
-            Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed),
-            Arguments.of("VER", (Func<ForeignTojo, Object>) ForeignTojo::ver)
+            Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed)
         );
     }
 

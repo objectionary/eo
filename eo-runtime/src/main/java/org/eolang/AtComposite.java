@@ -24,7 +24,7 @@
 
 package org.eolang;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * Attribute that constructs object lazily.
@@ -33,38 +33,25 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  */
-@Versionized
 public final class AtComposite implements Attr {
     /**
-     * Function that returns object.
+     * The argument of the expression.
      */
-    private final Supplier<Phi> func;
+    private final Phi argument;
 
     /**
      * The expression itself.
      */
-    private final Expr expr;
+    private final Function<Phi, Phi> expr;
 
     /**
      * Ctor.
      * @param obj The \rho
      * @param exp The expression
      */
-    public AtComposite(final Phi obj, final Expr exp) {
+    public AtComposite(final Phi obj, final Function<Phi, Phi> exp) {
+        this.argument = obj;
         this.expr = exp;
-        this.func = new SafeFunc<>(
-            () -> this.expr.get(obj)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return this.φTerm();
-    }
-
-    @Override
-    public String φTerm() {
-        return Attr.LAMBDA;
     }
 
     @Override
@@ -74,7 +61,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public Phi get() {
-        return this.func.get();
+        return this.expr.apply(this.argument);
     }
 
     @Override

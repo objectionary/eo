@@ -34,7 +34,6 @@ import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,8 +48,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
@@ -218,19 +215,6 @@ abstract class SafeMojo extends AbstractMojo {
     protected File cache = Paths.get(System.getProperty("user.home")).resolve(".eo").toFile();
 
     /**
-     * Used for object versioning implementation.
-     * If set to TRUE - objects are parsed, stored in tojos and processed as versioned.
-     * @todo #1602:30min Remove the flag when objection versioned is
-     *  implemented. The variable is used for implementation of object
-     *  versioning. When object versioning is implemented there
-     *  will be no need for that variable
-     * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.withVersions", defaultValue = "false")
-    protected boolean withVersions;
-
-    /**
      * Rewrite binaries in output directory or not.
      * @since 0.32.0
      * @checkstyle MemberNameCheck (10 lines)
@@ -259,12 +243,6 @@ abstract class SafeMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
     protected PluginDescriptor plugin;
-
-    /**
-     * Commit hashes.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    protected final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
 
     /**
      * Placed tojos.

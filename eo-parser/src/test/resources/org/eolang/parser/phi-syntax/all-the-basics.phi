@@ -24,7 +24,7 @@
   int-dot ↦ 42.plus,
   int-application ↦ 42(z ↦ ξ.f),
   float-dot ↦ 52.1.print,
-  float-application ↦ 52.1(z ↦ ξ.f),
+  float-application ↦ 52.1(z ↦ ξ.f, k ↦ ξ.i),
   minus ↦ -0,
   inline-application ↦ Φ.x(
     "Hello", 42, Φ.y("world", 11.plus(12)), 42.5

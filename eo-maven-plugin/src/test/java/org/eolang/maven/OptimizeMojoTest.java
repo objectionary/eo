@@ -120,7 +120,7 @@ final class OptimizeMojoTest {
         final long mtime = path.toFile().lastModified();
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             path.toFile().lastModified(),
             Matchers.is(mtime)
         );
@@ -229,7 +229,7 @@ final class OptimizeMojoTest {
             .execute(new FakeMaven.Optimize())
             .result();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
@@ -255,7 +255,7 @@ final class OptimizeMojoTest {
             .result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 res,
                 Matchers.hasKey(
                     String.format(
@@ -272,7 +272,7 @@ final class OptimizeMojoTest {
     @Test
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
@@ -292,7 +292,7 @@ final class OptimizeMojoTest {
     @Test
     void choosesTransformerFactoryOnce() {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             TransformerFactory.newInstance().getClass(),
             Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
         );
@@ -304,7 +304,7 @@ final class OptimizeMojoTest {
             .mapToObj(i -> TransformerFactory.newInstance().getClass())
             .collect(Collectors.toList())) {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 clazz,
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );

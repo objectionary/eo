@@ -19,14 +19,29 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+alias equality
-+home https://github.com/objectionary/eo
-+tests
-+package org.eolang
-+version 0.0.0
-
-[] > ensures-equality
-  eq. > @
-    equality
-    true
+---
+name: integration
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  integration:
+    name: integration
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-surefire-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-surefire-jdk-21-maven-
+      - run: |
+          mvn clean install -DskipUTs --errors --batch-mode

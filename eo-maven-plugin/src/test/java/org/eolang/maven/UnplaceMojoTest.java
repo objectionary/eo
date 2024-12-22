@@ -75,7 +75,7 @@ final class UnplaceMojoTest {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
                 .with("placed", placed.toFile())
                 .execute(UnplaceMojo.class)
@@ -99,12 +99,12 @@ final class UnplaceMojoTest {
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             tojos.size(),
             Matchers.equalTo(5)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             tojos.stream().allMatch(PlacedTojo::unplaced),
             Matchers.is(true)
         );
@@ -123,12 +123,12 @@ final class UnplaceMojoTest {
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             tojos.size(),
             Matchers.equalTo(5)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             tojos.stream()
                 .filter(tojo -> tojo.identifier().equals(other))
                 .allMatch(PlacedTojo::placed),
@@ -149,12 +149,12 @@ final class UnplaceMojoTest {
         final Map<String, Path> res = maven.execute(UnplaceMojo.class).result();
         if (params.length == 1 && "keepBinaries".equals(params[0])) {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 res.values().stream().anyMatch(UnplaceMojoTest::isClass),
                 Matchers.is(true)
             );
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 new TextOf(res.get(placed.getFileName().toString())).asString(),
                 Matchers.allOf(
                     Matchers.containsString("false"),
@@ -163,12 +163,12 @@ final class UnplaceMojoTest {
             );
         } else {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 res.values().stream().noneMatch(UnplaceMojoTest::isClass),
                 Matchers.is(true)
             );
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 new TextOf(res.get(placed.getFileName().toString())).asString(),
                 Matchers.allOf(
                     Matchers.not(Matchers.containsString("false")),

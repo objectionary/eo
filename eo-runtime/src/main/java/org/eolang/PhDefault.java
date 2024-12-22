@@ -23,16 +23,13 @@
  */
 package org.eolang;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * A simple object.
@@ -42,7 +39,6 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public class PhDefault implements Phi, Cloneable {
     /**
@@ -117,58 +113,6 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public String φTerm() {
-        final List<String> list = new ArrayList<>(this.attrs.size());
-        final String format = "%s ↦ %s";
-        this.data.ifPresent(
-            bytes -> list.add(
-                String.format(
-                    format, Attr.DELTA, new BytesOf(bytes).asString()
-                )
-            )
-        );
-        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> !e.getKey().equals(Attr.RHO)
-        ).collect(Collectors.toList())) {
-            final String attr = String.format(
-                format,
-                ent.getKey(),
-                ent.getValue().φTerm()
-            );
-            list.add(attr);
-        }
-        if (this instanceof Atom) {
-            list.add(String.format(format, Attr.LAMBDA, "Lambda"));
-        }
-        Collections.sort(list);
-        String txt = this.oname();
-        if (!list.isEmpty()) {
-            txt = String.format(
-                "ν%d·%s⟦\n\t%s\n⟧", this.hashCode(), txt,
-                new Indented(String.join(",\n", list))
-            );
-        }
-        return txt;
-    }
-
-    @Override
-    public String toString() {
-        String result = String.format(
-            "%sν%d",
-            this.getClass().getCanonicalName(),
-            this.hashCode()
-        );
-        if (this.data.isPresent()) {
-            result = String.format(
-                "%s=%s",
-                result,
-                new BytesOf(this.data.get()).asString()
-            );
-        }
-        return result;
-    }
-
-    @Override
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
@@ -213,7 +157,7 @@ public class PhDefault implements Phi, Cloneable {
             ).get();
         } else if (name.equals(Attr.LAMBDA)) {
             object = new AtSetRho(
-                new AtFormed(new AtomSafe((Atom) this)::lambda),
+                new AtSimple(new AtomSafe((Atom) this).lambda()),
                 this,
                 name
             ).get();

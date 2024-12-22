@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -61,6 +60,13 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
+    /**
+     * XSD for current EO version.
+     */
+    private static final String MINE = String.format(
+        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+        Manifests.read("EO-Version")
+    );
 
     /**
      * The XML.
@@ -77,11 +83,19 @@ public final class StrictXmir implements XML {
 
     /**
      * Ctor.
-     * @param src The source
+     * Synchronization by XML is necessary in case we're trying to validate the same
+     * {@link XML} in multiple threads. In such case the path to XSD scheme inside XML should
+     * be updated only once.
+     * @param before The XML source
      * @param tmp The directory with cached XSD files
      */
-    public StrictXmir(final XML src, final Path tmp) {
-        this.xml = new StrictXML(StrictXmir.reset(src, tmp));
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+    public StrictXmir(final XML before, final Path tmp) {
+        synchronized (before) {
+            this.xml = new StrictXML(
+                StrictXmir.reset(before, tmp)
+            );
+        }
     }
 
     @Override
@@ -143,44 +157,46 @@ public final class StrictXmir implements XML {
      * @return New XML with the same node
      */
     private static XML reset(final XML xml, final Path tmp) {
-        final Node node = xml.inner();
         final List<String> location = xml.xpath("/program/@xsi:noNamespaceSchemaLocation");
         if (!location.isEmpty()) {
-            String uri = location.get(0);
-            if (uri.startsWith("http")) {
-                uri = String.format(
+            final String before = location.get(0);
+            final String after;
+            if (before.startsWith("http")) {
+                after = String.format(
                     "file:///%s",
                     StrictXmir.fetch(
-                        uri,
+                        before,
                         tmp.resolve(
-                            uri.substring(uri.lastIndexOf('/') + 1)
-                        )
-                    ).toString().replace("\\", "/")
+                            before.substring(before.lastIndexOf('/') + 1)
+                        ),
+                        tmp
+                    ).getAbsoluteFile().toString().replace("\\", "/")
                 );
+            } else {
+                after = before;
             }
-            new Xembler(
-                new Directives().xpath("/program").attr(
-                    "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                    uri
-                )
-            ).applyQuietly(node);
+            if (!after.equals(before)) {
+                new Xembler(
+                    new Directives().xpath("/program").attr(
+                        "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                        after
+                    )
+                ).applyQuietly(xml.inner());
+            }
         }
-        return new XMLDocument(node);
+        return xml;
     }
 
     /**
      * Fetch the XSD and place into the path.
      * @param uri The URI
      * @param path The file
+     * @param tmp Original directory
      * @return Where it was saved
      */
-    private static File fetch(final String uri, final Path path) {
+    private static File fetch(final String uri, final Path path, final Path tmp) {
         final File ret;
-        final String mine = String.format(
-            "https://www.eolang.org/xsd/XMIR-%s.xsd",
-            Manifests.read("EO-Version")
-        );
-        if (uri.equals(mine)) {
+        if (StrictXmir.MINE.equals(uri)) {
             if (path.toFile().getParentFile().mkdirs()) {
                 Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
             }
@@ -200,7 +216,7 @@ public final class StrictXmir implements XML {
             }
             ret = path.toFile();
         } else {
-            ret = StrictXmir.download(uri, path);
+            ret = StrictXmir.download(uri, path, tmp);
         }
         return ret;
     }
@@ -209,52 +225,55 @@ public final class StrictXmir implements XML {
      * Download URI from Internet and save to file.
      * @param uri The URI
      * @param path The file
+     * @param tmp Directory to synchronize by
      * @return Where it was saved
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private static File download(final String uri, final Path path) {
+    private static File download(final String uri, final Path path, final Path tmp) {
         final File abs = path.toFile().getAbsoluteFile();
-        if (!abs.exists()) {
-            if (abs.getParentFile().mkdirs()) {
-                Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
-            }
-            int attempt = 0;
-            while (true) {
-                ++attempt;
-                try {
-                    Files.write(
-                        path,
-                        new IoCheckedBytes(
-                            new BytesOf(new InputOf(new URI(uri)))
-                        ).asBytes()
-                    );
-                    Logger.debug(
-                        StrictXmir.class,
-                        "XSD downloaded from %s and copied to %[file]s",
-                        uri, path
-                    );
-                    break;
-                } catch (final IOException ex) {
-                    if (attempt < 3) {
-                        Logger.warn(
-                            StrictXmir.class,
-                            "Attempt #%d failed to download %s to %s: %[exception]s",
-                            attempt,
-                            uri,
+        synchronized (tmp) {
+            if (!abs.exists()) {
+                if (abs.getParentFile().mkdirs()) {
+                    Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
+                }
+                int attempt = 0;
+                while (true) {
+                    ++attempt;
+                    try {
+                        Files.write(
                             path,
+                            new IoCheckedBytes(
+                                new BytesOf(new InputOf(new URI(uri)))
+                            ).asBytes()
+                        );
+                        Logger.debug(
+                            StrictXmir.class,
+                            "XSD downloaded from %s and copied to %[file]s",
+                            uri, path
+                        );
+                        break;
+                    } catch (final IOException ex) {
+                        if (attempt < 3) {
+                            Logger.warn(
+                                StrictXmir.class,
+                                "Attempt #%d failed to download %s to %s: %[exception]s",
+                                attempt,
+                                uri,
+                                path,
+                                ex
+                            );
+                            continue;
+                        }
+                        throw new IllegalArgumentException(
+                            String.format("Failed to download %s to %s", uri, path),
                             ex
                         );
-                        continue;
+                    } catch (final URISyntaxException ex) {
+                        throw new IllegalArgumentException(
+                            String.format("Wrong URI: %s", uri),
+                            ex
+                        );
                     }
-                    throw new IllegalArgumentException(
-                        String.format("Failed to download %s to %s", uri, path),
-                        ex
-                    );
-                } catch (final URISyntaxException ex) {
-                    throw new IllegalArgumentException(
-                        String.format("Wrong URI: %s", uri),
-                        ex
-                    );
                 }
             }
         }

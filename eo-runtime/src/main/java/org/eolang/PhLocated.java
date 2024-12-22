@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
  * @since 0.21
  */
 @SuppressWarnings("PMD.TooManyMethods")
-@Versionized
 public final class PhLocated implements Phi, Atom {
 
     /**
@@ -105,20 +104,6 @@ public final class PhLocated implements Phi, Atom {
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "<%s>%s",
-            this.locator(),
-            this.origin.toString()
-        );
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
-    }
-
-    @Override
     public Phi copy() {
         return new PhLocated(
             this.origin.copy(), this.program,
@@ -158,7 +143,7 @@ public final class PhLocated implements Phi, Atom {
 
     @Override
     public Phi lambda() {
-        return this.through(() -> ((Atom) this.origin).lambda(), ".λ");
+        return this.through(() -> new AtomSafe((Atom) this.origin).lambda(), ".λ");
     }
 
     /**

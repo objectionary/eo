@@ -36,7 +36,6 @@ package org.eolang;
  *
  * @since 0.29
  */
-@Versionized
 final class JavaPath {
 
     /**

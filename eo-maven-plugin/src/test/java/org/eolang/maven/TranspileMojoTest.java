@@ -25,7 +25,9 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +56,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
+@ExtendWith(RandomProgramResolver.class)
 final class TranspileMojoTest {
 
     /**
@@ -83,6 +86,74 @@ final class TranspileMojoTest {
     }
 
     @Test
+    void transpilesWithPackage(@Mktmp final Path temp)
+        throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/one/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package one",
+                        "",
+                        "# no comments.",
+                        "[] > foo",
+                        "  QQ.io.stdout > @",
+                        "    \"Hello, world!\\n\"",
+                        ""
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "transpile");
+                f.exec("process-sources");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .java file is generated",
+            temp.resolve("target/generated-sources/EOone/EOfoo.java").toFile().exists(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "the package-info.java file contains the right package name",
+            Files.readString(
+                temp.resolve("target/generated-sources/EOone/package-info.java"),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.containsString("package EOone;")
+        );
+    }
+
+    @Test
+    void transpilesSimpleApp(@Mktmp final Path temp, @RandomProgram final String prog)
+        throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(prog.getBytes());
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "transpile");
+                f.exec("process-sources");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .java file is re-generated",
+            temp.resolve("target/generated-sources/EOfoo.java").toFile().exists(),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "the package-info.java file contains the right package name",
+            temp.resolve("target/generated-sources/package-info.java").toFile().exists(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
@@ -92,13 +163,13 @@ final class TranspileMojoTest {
         final Path java = res.get(this.compiled);
         final long before = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             Matchers.is(true)
         );
         maven.execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile().lastModified(),
             Matchers.greaterThan(before)
         );
@@ -116,22 +187,22 @@ final class TranspileMojoTest {
             String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             xmir.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             xmir.toFile().setLastModified(0L),
             Matchers.is(true)
         );
@@ -139,12 +210,12 @@ final class TranspileMojoTest {
         maven.execute(TranspileMojo.class);
         final long after = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             after,
             Matchers.greaterThan(0L)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             before,
             Matchers.not(Matchers.equalTo(after))
         );
@@ -158,18 +229,18 @@ final class TranspileMojoTest {
             .execute(new FakeMaven.Transpile())
             .result().get(this.compiled);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         maven.execute(TranspileMojo.class);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             java.toFile().lastModified(),
             Matchers.is(0L)
         );
@@ -239,7 +310,7 @@ final class TranspileMojoTest {
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             maven.foreign().size(),
             Matchers.equalTo(2)
         );

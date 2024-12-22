@@ -29,7 +29,6 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionized
 public final class PhWith extends PhOnce {
 
     /**
@@ -44,32 +43,6 @@ public final class PhWith extends PhOnce {
             () -> {
                 phi.put(name, attr);
                 return phi;
-            },
-            () -> String.format(
-                "%s[%s=%s]",
-                phi,
-                name,
-                new Indented(attr)
-            ),
-            () -> {
-                final String term = attr.φTerm();
-                final String txt;
-                if (term.contains("\n")) {
-                    txt = String.format(
-                        "%s(\n\t%s ↦ %s\n)",
-                        phi.φTerm(),
-                        name,
-                        new Indented(term)
-                    );
-                } else {
-                    txt = String.format(
-                        "%s(%s ↦ %s)",
-                        phi.φTerm(),
-                        name,
-                        term
-                    );
-                }
-                return txt;
             }
         );
     }
@@ -86,32 +59,6 @@ public final class PhWith extends PhOnce {
             () -> {
                 phi.put(pos, attr);
                 return phi;
-            },
-            () -> String.format(
-                "%s[#%d=%s]",
-                phi,
-                pos,
-                new Indented(attr)
-            ),
-            () -> {
-                final String term = attr.φTerm();
-                final String txt;
-                if (term.contains("\n")) {
-                    txt = String.format(
-                        "%s(\n\t#%d ↦ %s\n)",
-                        phi.φTerm(),
-                        pos,
-                        new Indented(term)
-                    );
-                } else {
-                    txt = String.format(
-                        "%s(#%d ↦ %s)",
-                        phi.φTerm(),
-                        pos,
-                        term
-                    );
-                }
-                return txt;
             }
         );
     }

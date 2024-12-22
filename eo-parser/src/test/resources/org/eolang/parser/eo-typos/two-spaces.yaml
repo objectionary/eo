@@ -19,16 +19,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+tests
-+package org.eolang
-+version 0.0.0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > prints-itself
-  gt. > @
-    length.
-      as-phi $
-    0
+---
+line: 5
+message: >-
+  [5:2] error: no viable alternative at input:
+     *
+    ^
+input: |
+  # This is a code snippet from the following issue:
+  # https://github.com/objectionary/eo/issues/3332
+  [args] > app
+    seq > @
+     *
+       "a" > a
+       QQ.io.stdout
+         a

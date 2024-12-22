@@ -25,15 +25,11 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
-import org.cactoos.number.SumOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,45 +42,36 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.29.0
  */
 @ExtendWith(MktmpResolver.class)
-final class CatalogsTest {
-
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
+public final class CatalogsTest {
     /**
-     * Number of cores on the running system.
+     * Empty message for JUnit Assertions.
+     *
+     * @todo #2297:60m Replace all appearances of {@link CatalogsTest#TO_ADD_MESSAGE} field in
+     *  eo-maven-plugin with meaningful assert messages. Don't forget to remove
+     *  {@link CatalogsTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  no longer need.
      */
-    private static final int CORES = Runtime.getRuntime().availableProcessors();
+    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void readsFromTojosConcurrently(@Mktmp final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new SumOf(
-                new Threads<>(
-                    CatalogsTest.CORES,
-                    IntStream.range(0, CatalogsTest.CORES)
-                        .mapToObj(i -> tojos.add(UUID.randomUUID().toString()))
-                        .map(CatalogsTest::task)
-                        .collect(Collectors.toList())
-                )
+            "adds different elements to catalog",
+            new Together<>(
+                thread -> {
+                    final Tojo tojo = tojos.add(UUID.randomUUID().toString());
+                    final String key = "foo";
+                    tojo.set(key, UUID.randomUUID().toString());
+                    tojo.get(key);
+                    tojo.get(key);
+                    tojo.get(key);
+                    tojo.get(key);
+                    return true;
+                }
             ),
-            Matchers.equalTo(CatalogsTest.CORES)
+            Matchers.not(Matchers.hasItem(false))
         );
-    }
-
-    /**
-     * Task to be executed in parallel.
-     * @param tojo Tojo
-     * @return Scalar
-     */
-    private static Scalar<Integer> task(final Tojo tojo) {
-        return () -> {
-            final String uuid = "uuid";
-            tojo.set(uuid, UUID.randomUUID().toString());
-            tojo.get(uuid);
-            tojo.get(uuid);
-            tojo.get(uuid);
-            tojo.get(uuid);
-            return 1;
-        };
     }
 }

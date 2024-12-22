@@ -44,15 +44,6 @@ final class PhMethodTest {
     }
 
     @Test
-    void convertsSafeToString() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhMethod(Phi.Φ, "hello").toString(),
-            Matchers.endsWith(".hello")
-        );
-    }
-
-    @Test
     void calculatesPhiJustOnce() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "φ");
