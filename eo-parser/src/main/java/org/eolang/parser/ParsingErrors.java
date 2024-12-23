@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -90,12 +91,23 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         //  to retrieve more specific error messages.
         if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
+            final EoParser parser = (EoParser) recognizer;
+            final List<String> stack = parser.getRuleInvocationStack();
+            final String curr = stack.get(0);
+            final String[] names = parser.getRuleNames();
+            final String detailed;
+            if (names[EoParser.RULE_objects].equals(curr)) {
+                detailed = "Invalid object declaration";
+            } else {
+                detailed = "no viable alternative at input";
+            }
             this.errors.add(
                 new ParsingException(
                     String.format(
-                        "[%d:%d] %s:%n%s",
+                        "[%d:%d] %s: %s:%n%s",
                         line, position,
-                        "error: no viable alternative at input",
+                        "error",
+                        detailed,
                         new UnderlinedMessage(
                             this.line(line).orElse("EOF"),
                             position,
