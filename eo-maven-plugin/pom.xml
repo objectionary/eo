@@ -301,7 +301,9 @@ SOFTWARE.
         <configuration combine.self="override">
           <skipInstallation>${skipTests}</skipInstallation>
           <skipInvocation>${skipTests}</skipInvocation>
-          <pomExcludes/>
+          <pomExcludes>
+            <exclude>fibonacci/pom.xml</exclude>
+          </pomExcludes>
         </configuration>
       </plugin>
       <plugin>

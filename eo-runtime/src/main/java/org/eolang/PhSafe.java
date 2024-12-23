@@ -27,7 +27,15 @@ package org.eolang;
 import EOorg.EOeolang.EOerror;
 
 /**
- * An object with coordinates (line and position).
+ * An object with coordinates (line and position) and a safe
+ * processing of any runtime errors.
+ *
+ * <p>It is used to wrap any object and provide a safe processing
+ * of any runtime errors. It is used in the EO runtime to provide
+ * a safe processing of any runtime errors in the EO code. If, in any
+ * method invocation, a runtime error occurs, it is caught and wrapped
+ * into {@link EOerror.ExError} with the location of the error in the
+ * EO code.</p>
  *
  * @since 0.21
  */
