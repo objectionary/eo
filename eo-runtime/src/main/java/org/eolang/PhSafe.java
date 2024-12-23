@@ -121,6 +121,14 @@ public final class PhSafe implements Phi {
     private static String message(final Throwable exp) {
         final StringBuilder ret = new StringBuilder(0);
         if (!(exp instanceof ExFailure)) {
+            final StackTraceElement[] stack = exp.getStackTrace();
+            if (stack.length > 0) {
+                final StackTraceElement last = stack[0];
+                ret.append(last.getFileName());
+                ret.append(':');
+                ret.append(last.getLineNumber());
+                ret.append(' ');
+            }
             ret.append(exp.getClass().getSimpleName());
         }
         if (exp.getMessage() != null) {
