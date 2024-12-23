@@ -114,34 +114,6 @@ final class DataizedTest {
     }
 
     /**
-     * Fake Phi with decoration.
-     *
-     * @since 0.1.0
-     */
-    public static class PhiDec extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        PhiDec() {
-            this.add(
-                "φ",
-                new AtOnce(
-                    new AtComposite(
-                        this,
-                        rho -> new PhWith(
-                            new PhCopy(new PhMethod(new Data.ToPhi(2L), "plus")),
-                            0,
-                            new Data.ToPhi(2L)
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
      * Handler implementation for tests.
      *
      * @since 0.1.0
