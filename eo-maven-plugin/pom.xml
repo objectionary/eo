@@ -299,9 +299,8 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration combine.self="override">
-          <!--
-            All integration tests are enabled.
-          -->
+          <skipInstallation>${skipTests}</skipInstallation>
+          <skipInvocation>${skipTests}</skipInvocation>
           <pomExcludes/>
         </configuration>
       </plugin>
