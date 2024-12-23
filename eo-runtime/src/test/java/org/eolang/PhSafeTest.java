@@ -107,7 +107,11 @@ final class PhSafeTest {
                     "throws correct class"
                 ).enclosure()
             ).take(String.class),
-            Matchers.equalTo("intentional error")
+            Matchers.allOf(
+                Matchers.startsWith("PhSafeTest.java:"),
+                Matchers.containsString("IllegalArgumentException"),
+                Matchers.containsString("intentional error")
+            )
         );
     }
 

@@ -174,6 +174,11 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Helper, for other methods.
+     *
+     * <p>No matter what happens inside the {@code action}, only
+     * an instance of {@link EOerror.ExError} may be thrown out
+     * of this method.</p>
+     *
      * @param action The action
      * @param suffix The suffix to add to the label
      * @param <T> Type of result
@@ -186,9 +191,25 @@ public final class PhSafe implements Phi, Atom {
             return action.act();
         } catch (final EOerror.ExError ex) {
             throw new EOerror.ExError(ex, this.label(suffix));
-        } catch (final RuntimeException | Error ex) {
+        } catch (final ExAbstract ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(ex.getMessage()),
+                this.label(suffix)
+            );
+        } catch (final RuntimeException | Error ex) {
+            final StringBuilder msg = new StringBuilder(0);
+            final StackTraceElement[] stack = ex.getStackTrace();
+            if (stack != null && stack.length > 0) {
+                final StackTraceElement last = stack[0];
+                msg.append(last.getFileName()).append(':')
+                    .append(last.getLineNumber()).append(':')
+                    .append(' ');
+            }
+            msg.append(ex.getClass().getSimpleName())
+                .append(": ")
+                .append(ex.getMessage());
+            throw new EOerror.ExError(
+                new Data.ToPhi(msg.toString()),
                 this.label(suffix)
             );
         }
