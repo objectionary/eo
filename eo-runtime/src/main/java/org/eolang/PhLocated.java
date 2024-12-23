@@ -25,8 +25,6 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * An object with coordinates (line and position).
@@ -60,6 +58,16 @@ public final class PhLocated implements Phi, Atom {
      * The location.
      */
     private final String location;
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public PhLocated(final Phi phi) {
+        this(phi, "unknown", 0, 0);
+    }
 
     /**
      * Ctor.
@@ -174,32 +182,12 @@ public final class PhLocated implements Phi, Atom {
             throw new ExReadOnly(this.label(suffix), ex);
         } catch (final EOerror.ExError ex) {
             throw new EOerror.ExError(ex, this.label(suffix));
-        } catch (final ExAbstract | Error ex) {
-            throw new ExFailure(this.label(suffix), ex);
-        } catch (final RuntimeException ex) {
-            throw this.wrap(ex, suffix);
+        } catch (final RuntimeException | Error ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(ex.getMessage()),
+                this.label(suffix)
+            );
         }
-    }
-
-    /**
-     * Wrap the exception into a new one.
-     * @param cause Original
-     * @param suffix Te suffix
-     * @return New exception
-     */
-    private RuntimeException wrap(final RuntimeException cause,
-        final String suffix) {
-        final String label = this.label(suffix);
-        RuntimeException ret;
-        try {
-            final Constructor<? extends RuntimeException> ctor =
-                cause.getClass().getConstructor(String.class, Throwable.class);
-            ret = ctor.newInstance(label, cause);
-        } catch (final NoSuchMethodException | InstantiationException
-            | IllegalAccessException | InvocationTargetException ex) {
-            ret = new ExFailure(label, cause);
-        }
-        return ret;
     }
 
     /**

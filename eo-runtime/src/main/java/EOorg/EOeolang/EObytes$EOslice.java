@@ -77,9 +77,11 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
             .it();
-        final byte[] array = new Dataized(this.take(Attr.RHO)).take();
         return new Data.ToPhi(
-            Arrays.copyOfRange(array, start, start + length)
+            Arrays.copyOfRange(
+                new Dataized(this.take(Attr.RHO)).take(),
+                start, start + length
+            )
         );
     }
 }

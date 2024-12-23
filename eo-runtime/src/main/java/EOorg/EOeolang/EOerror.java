@@ -104,6 +104,15 @@ public final class EOerror extends PhDefault implements Atom {
          * @param cause Previous error
          * @param message New message
          */
+        public ExError(final Phi cause, final String message) {
+            this(cause, Collections.singletonList(message));
+        }
+
+        /**
+         * Ctor.
+         * @param cause Previous error
+         * @param message New message
+         */
         public ExError(final ExError cause, final String message) {
             this(cause.enclosure(), concat(cause.trace, message));
         }
@@ -117,6 +126,15 @@ public final class EOerror extends PhDefault implements Atom {
             super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
             this.trace = before;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                "%s +%s",
+                super.toString(),
+                this.trace.size()
+            );
         }
 
         /**

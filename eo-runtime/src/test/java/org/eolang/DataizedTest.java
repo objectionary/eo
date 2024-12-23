@@ -55,19 +55,17 @@ final class DataizedTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
-                new PhSafe(
-                    new PhLocated(
-                        new PhMethod(
-                            new PhDefault() {
-                                @Override
-                                public Phi take(final String name) {
-                                    throw new ExFailure("intentional error");
-                                }
-                            },
-                            "xyz"
-                        ),
-                        "foo.bar", 0, 0
-                    )
+                new PhLocated(
+                    new PhMethod(
+                        new PhDefault() {
+                            @Override
+                            public Phi take(final String name) {
+                                throw new IllegalStateException("intentional error");
+                            }
+                        },
+                        "xyz"
+                    ),
+                    "foo.bar", 0, 0
                 ),
                 log
             ).take(),

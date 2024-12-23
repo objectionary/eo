@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -50,21 +51,64 @@ final class PhLocatedTest {
         MatcherAssert.assertThat(
             "rethrows correctly",
             Assertions.assertThrows(
-                IllegalArgumentException.class,
+                EOerror.ExError.class,
                 () -> new PhLocated(
                     new PhDefault() {
                         @Override
                         public byte[] delta() {
                             throw new IllegalArgumentException("oops");
                         }
-                    },
-                    "foobar", 10, 20
+                    }
                 ).delta(),
                 "throws correct class"
-            ),
-            Matchers.hasToString(
-                Matchers.containsString("Error in \"?.Δ\" at foobar:10:20")
+            ).messages(),
+            Matchers.hasItem(
+                Matchers.containsString("Error in \"?.Δ\" at unknown:0:0")
             )
         );
     }
+
+    @Test
+    void rendersMultiLayeredErrorMessageCorrectly() {
+        MatcherAssert.assertThat(
+            "rethrows correctly",
+            Assertions.assertThrows(
+                EOerror.ExError.class,
+                () -> new PhLocated(
+                    new PhWith(
+                        new EOerror(),
+                        "message",
+                        new Data.ToPhi("oops")
+                    )
+                ).take("foo"),
+                "throws correct class"
+            ),
+            Matchers.hasToString(
+                Matchers.containsString("Δ = [0x6F6F7073-] = \"oops\"")
+            )
+        );
+    }
+
+    @Test
+    void showsFileNameAndLineNumber() {
+        MatcherAssert.assertThat(
+            "shows file name and line number",
+            new Dataized(
+                Assertions.assertThrows(
+                    EOerror.ExError.class,
+                    () -> new PhLocated(
+                        new PhDefault() {
+                            @Override
+                            public Phi take(final String name) {
+                                throw new IllegalArgumentException("intentional error");
+                            }
+                        }
+                    ).take("foo"),
+                    "throws correct class"
+                ).enclosure()
+            ).take(String.class),
+            Matchers.equalTo("intentional error")
+        );
+    }
+
 }
