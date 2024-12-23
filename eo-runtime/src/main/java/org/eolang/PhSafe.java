@@ -25,18 +25,22 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
- * It catches {@link ExFailure} and
- * throws {@link EOerror.ExError}.
+ * An object with coordinates (line and position) and a safe
+ * processing of any runtime errors.
  *
- * @since 0.26
+ * <p>It is used to wrap any object and provide a safe processing
+ * of any runtime errors. It is used in the EO runtime to provide
+ * a safe processing of any runtime errors in the EO code. If, in any
+ * method invocation, a runtime error occurs, it is caught and wrapped
+ * into {@link EOerror.ExError} with the location of the error in the
+ * EO code.</p>
+ *
+ * @since 0.21
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class PhSafe implements Phi {
+public final class PhSafe implements Phi, Atom {
 
     /**
      * The original.
@@ -44,56 +48,118 @@ public final class PhSafe implements Phi {
     private final Phi origin;
 
     /**
+     * EO program name (the name of the {@code .eo} file).
+     */
+    private final String program;
+
+    /**
+     * The line number.
+     */
+    private final int line;
+
+    /**
+     * The position in the line.
+     */
+    private final int position;
+
+    /**
+     * The location.
+     */
+    private final String location;
+
+    /**
      * Ctor.
+     *
      * @param phi The object
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhSafe(final Phi phi) {
+        this(phi, "unknown", 0, 0);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param prg Name of the program
+     * @param lne Line
+     * @param pos Position
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public PhSafe(final Phi phi, final String prg, final int lne, final int pos) {
+        this(phi, prg, lne, pos, "?");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param phi The object
+     * @param prg Name of the program
+     * @param lne Line
+     * @param pos Position
+     * @param loc Location
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public PhSafe(final Phi phi, final String prg, final int lne,
+        final int pos, final String loc) {
         this.origin = phi;
+        this.program = prg;
+        this.line = lne;
+        this.position = pos;
+        this.location = loc;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return PhSafe.through(() -> this.origin.equals(obj));
+        return this.origin.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return PhSafe.through(this.origin::hashCode);
+        return this.origin.hashCode();
     }
 
     @Override
     public Phi copy() {
-        return PhSafe.through(() -> new PhSafe(this.origin.copy()));
+        return new PhSafe(
+            this.origin.copy(), this.program,
+            this.line, this.position, this.location
+        );
     }
 
     @Override
     public Phi take(final String name) {
-        return PhSafe.through(() -> new PhSafe(this.origin.take(name)));
+        return this.through(() -> this.origin.take(name));
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        return PhSafe.through(() -> this.origin.put(pos, object));
+        return this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
-        return PhSafe.through(() -> this.origin.put(name, object));
+    public boolean put(final String nme, final Phi object) {
+        return this.through(() -> this.origin.put(nme, object));
     }
 
     @Override
     public String locator() {
-        return PhSafe.through(this.origin::locator);
+        return String.format("%s:%d:%d", this.location, this.line, this.position);
     }
 
     @Override
     public String forma() {
-        return PhSafe.through(this.origin::forma);
+        return this.through(this.origin::forma);
     }
 
     @Override
     public byte[] delta() {
-        return PhSafe.through(this.origin::delta);
+        return this.through(this.origin::delta, ".Δ");
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.through(() -> new AtomSafe((Atom) this.origin).lambda(), ".λ");
     }
 
     /**
@@ -102,53 +168,63 @@ public final class PhSafe implements Phi {
      * @param <T> Type of result
      * @return Result
      */
-    private static <T> T through(final Action<T> action) {
+    private <T> T through(final Action<T> action) {
+        return this.through(action, "");
+    }
+
+    /**
+     * Helper, for other methods.
+     *
+     * <p>No matter what happens inside the {@code action}, only
+     * an instance of {@link EOerror.ExError} may be thrown out
+     * of this method.</p>
+     *
+     * @param action The action
+     * @param suffix The suffix to add to the label
+     * @param <T> Type of result
+     * @return Result
+     * @checkstyle IllegalCatchCheck (20 lines)
+     */
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "PMD.PreserveStackTrace"})
+    private <T> T through(final Action<T> action, final String suffix) {
         try {
             return action.act();
-        } catch (final ExFailure ex) {
+        } catch (final EOerror.ExError ex) {
+            throw new EOerror.ExError(ex, this.label(suffix));
+        } catch (final ExAbstract ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(PhSafe.message(ex)),
-                PhSafe.messages(ex)
+                new Data.ToPhi(ex.getMessage()),
+                this.label(suffix)
+            );
+        } catch (final Throwable ex) {
+            final StringBuilder msg = new StringBuilder(0);
+            final StackTraceElement[] stack = ex.getStackTrace();
+            if (stack != null && stack.length > 0) {
+                final StackTraceElement last = stack[0];
+                msg.append(last.getFileName())
+                    .append(':')
+                    .append(last.getLineNumber())
+                    .append(": ");
+            }
+            msg.append(ex.getClass().getSimpleName())
+                .append(": ")
+                .append(ex.getMessage());
+            throw new EOerror.ExError(
+                new Data.ToPhi(msg.toString()),
+                this.label(suffix)
             );
         }
     }
 
     /**
-     * Make a message from an exception.
-     * @param exp The exception.
-     * @return Message.
+     * The label of the exception.
+     * @param suffix The suffix to add to the label
+     * @return Label
      */
-    private static String message(final Throwable exp) {
-        final StringBuilder ret = new StringBuilder(0);
-        if (!(exp instanceof ExFailure)) {
-            ret.append(exp.getClass().getSimpleName());
-        }
-        if (exp.getMessage() != null) {
-            if (ret.length() > 0) {
-                ret.append(": ");
-            }
-            ret.append(exp.getMessage().replace("%", "%%"));
-        }
-        if (exp.getCause() != null) {
-            ret.setLength(0);
-            ret.append(PhSafe.message(exp.getCause()));
-        }
-        return ret.toString();
+    private String label(final String suffix) {
+        return String.format(
+            "Error in \"%s%s\" at %s:%d:%d",
+            this.location, suffix, this.program, this.line, this.position
+        );
     }
-
-    /**
-     * Make a chain of messages from an exception and its causes.
-     * @param exp The exception
-     * @return Messages
-     */
-    private static List<String> messages(final Throwable exp) {
-        final List<String> msgs = new LinkedList<>();
-        if (exp != null) {
-            msgs.add(exp.getMessage());
-            msgs.addAll(PhSafe.messages(exp.getCause()));
-            Collections.reverse(msgs);
-        }
-        return msgs;
-    }
-
 }

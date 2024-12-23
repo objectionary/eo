@@ -32,7 +32,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExFailure;
 import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -71,8 +70,8 @@ final class EObytesEOsliceTest {
 
     @Test
     void takesWrongSlice() {
-        final ExFailure exp = Assertions.assertThrows(
-            ExFailure.class,
+        final EOerror.ExError exp = Assertions.assertThrows(
+            EOerror.ExError.class,
             () -> new Dataized(
                 new PhWith(
                     new PhWith(
@@ -96,10 +95,7 @@ final class EObytesEOsliceTest {
         MatcherAssert.assertThat(
             "error message is correct",
             baos.toString(),
-            Matchers.allOf(
-                Matchers.containsString("the 'len' attribute must be a positive integer"),
-                Matchers.containsString("the 'len' attribute (-5)")
-            )
+            Matchers.containsString("the 'len' attribute (-5) must be a positive integer")
         );
     }
 

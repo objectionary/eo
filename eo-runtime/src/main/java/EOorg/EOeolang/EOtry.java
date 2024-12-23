@@ -33,7 +33,6 @@ import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhSafe;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -59,11 +58,11 @@ public final class EOtry extends PhDefault implements Atom {
     public Phi lambda() {
         byte[] result;
         try {
-            result = new Dataized(new PhSafe(this.take("main"))).take();
+            result = new Dataized(this.take("main")).take();
         } catch (final EOerror.ExError ex) {
-            final Phi caught = this.take("catch").copy();
-            caught.put(0, ex.enclosure());
-            result = new Dataized(caught).take();
+            final Phi catcher = this.take("catch").copy();
+            catcher.put(0, ex.enclosure());
+            result = new Dataized(catcher).take();
         } finally {
             new Dataized(this.take("finally")).take();
         }
