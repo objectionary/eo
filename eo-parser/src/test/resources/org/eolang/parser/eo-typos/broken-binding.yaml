@@ -21,6 +21,9 @@
 # SOFTWARE.
 ---
 line: 4
+# todo! line numbers? Strange error.
+message: |-
+  Object binding can't be negative
 input: |
   # No comments
   [] > foo
