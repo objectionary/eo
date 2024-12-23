@@ -100,6 +100,10 @@ SOFTWARE.
     <antlr.version>4.13.2</antlr.version>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
     <skipUTs/>
+    <!-- This is the flag that allows to skip integration tests run by maven-failsafe-plugin -->
+    <skipITs/>
+    <!-- This is the flag that allows to skip all tests -->
+    <skipTests/>
   </properties>
   <dependencyManagement>
     <dependencies>
