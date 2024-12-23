@@ -26,9 +26,12 @@ package org.eolang.parser;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -43,6 +46,10 @@ import org.xembly.Directives;
  * Accumulates all parsing errors.
  *
  * @since 0.30.0
+ * @todo #3706:30min Split {@link ParsingErrors} into two classes.
+ *  Currently we use the same {@link ParsingErrors} class to accumulate all the parsing errors
+ *  despite their origin. This class should be split into two classes: one for parsing errors
+ *  {@link ParserErrors} and another for lexer errors {@link LexerErrors}.
  */
 final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
@@ -83,19 +90,28 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
-        // @checkstyle MethodBodyCommentsCheck (20 lines)
-        // @todo #3332:30min Add more specific error messages.
-        //  Currently we write just "error: no viable alternative at input" for all errors.
-        //  It's better to use 'Recognizer<?, ?> recognizer' parameter of the current method
-        //  to retrieve more specific error messages.
-        if (error instanceof NoViableAltException) {
+        if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
+            final Parser parser = (Parser) recognizer;
+            final String rule = parser.getRuleInvocationStack().get(0);
+            final String[] names = parser.getRuleNames();
+            final String detailed;
+            if (names[EoParser.RULE_objects].equals(rule)) {
+                detailed = "Invalid object declaration";
+            } else if (names[EoParser.RULE_metas].equals(rule)) {
+                detailed = "Invalid meta declaration";
+            } else if (names[EoParser.RULE_program].equals(rule)) {
+                detailed = "Invalid program declaration";
+            } else {
+                detailed = "no viable alternative at input";
+            }
             this.errors.add(
                 new ParsingException(
                     String.format(
-                        "[%d:%d] %s:%n%s",
+                        "[%d:%d] %s: %s:%n%s",
                         line, position,
-                        "error: no viable alternative at input",
+                        "error",
+                        detailed,
                         new UnderlinedMessage(
                             this.line(line).orElse("EOF"),
                             position,
@@ -103,6 +119,15 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                         ).formatted()
                     ),
                     error,
+                    line
+                )
+            );
+        } else if (Objects.isNull(error)) {
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s: %s", line, position, "error", msg
+                    ),
                     line
                 )
             );

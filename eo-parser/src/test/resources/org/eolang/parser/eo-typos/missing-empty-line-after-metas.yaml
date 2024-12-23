@@ -21,6 +21,10 @@
 # SOFTWARE.
 ---
 line: 3
+message: |-
+  [3:0] error: Invalid meta declaration:
+  [] > main
+  ^
 input: |
   +meta smth
   +meta other

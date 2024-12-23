@@ -21,6 +21,10 @@
 # SOFTWARE.
 ---
 line: 2
+message: |-
+  [2:0] error: Invalid program declaration:
+  .z
+  ^
 input: |
   x.y
   .z
