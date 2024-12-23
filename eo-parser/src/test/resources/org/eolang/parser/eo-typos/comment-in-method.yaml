@@ -21,7 +21,9 @@
 # SOFTWARE.
 ---
 line: 5
-# todo wtf? Strange error message that tells nothing about the problem.
+# @todo #3706:30min The error message doesn't highlight the exact position of the
+#  comment. The error message should be updated to point to the exact position
+#  of the comment.
 message: |
   [5:12] error: Invalid object declaration:
       sprintwf
