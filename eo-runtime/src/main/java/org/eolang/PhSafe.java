@@ -208,12 +208,12 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Take stacktrace from exception.
-     * @param ex The exception
+     * @param exp The exception
      * @param head The head to add
      * @return The stacktrace
      */
-    private static List<String> trace(Throwable ex, final String head) {
-        final StackTraceElement[] stack = ex.getStackTrace();
+    private static List<String> trace(final Throwable exp, final String head) {
+        final StackTraceElement[] stack = exp.getStackTrace();
         final List<String> trace = new LinkedList<>();
         if (stack != null) {
             for (final StackTraceElement elm : stack) {
