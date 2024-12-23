@@ -185,7 +185,7 @@ public final class PhSafe implements Phi, Atom {
      * @return Result
      * @checkstyle IllegalCatchCheck (20 lines)
      */
-    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.PreserveStackTrace"})
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "PMD.PreserveStackTrace"})
     private <T> T through(final Action<T> action, final String suffix) {
         try {
             return action.act();
@@ -196,7 +196,7 @@ public final class PhSafe implements Phi, Atom {
                 new Data.ToPhi(ex.getMessage()),
                 this.label(suffix)
             );
-        } catch (final RuntimeException | Error ex) {
+        } catch (final Throwable ex) {
             final StringBuilder msg = new StringBuilder(0);
             final StackTraceElement[] stack = ex.getStackTrace();
             if (stack != null && stack.length > 0) {
