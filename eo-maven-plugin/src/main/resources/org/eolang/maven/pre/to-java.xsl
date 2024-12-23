@@ -404,7 +404,7 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text> = new PhLocated(</xsl:text>
+      <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
       <xsl:value-of select="/program/@name"/>

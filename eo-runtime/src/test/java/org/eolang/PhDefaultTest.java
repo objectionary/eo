@@ -76,7 +76,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        final Phi phi = new PhLocated(new PhDefaultTest.Int());
+        final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
             ExAbstract.class,
             () -> phi.take(Attr.RHO),
@@ -95,7 +95,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        final Phi phi = new PhLocated(new PhDefaultTest.Int().copy());
+        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
             () -> phi.take(Attr.RHO),
@@ -215,7 +215,7 @@ final class PhDefaultTest {
 
     @Test
     void copiesUnsetVoidAttribute() {
-        final Phi phi = new PhLocated(new PhDefaultTest.Int());
+        final Phi phi = new PhSafe(new PhDefaultTest.Int());
         final Phi copy = phi.copy();
         Assertions.assertThrows(
             ExAbstract.class,
@@ -261,7 +261,7 @@ final class PhDefaultTest {
 
     @Test
     void hasAccessToDependentOnContextAttribute() {
-        final Phi phi = new PhLocated(new PhDefaultTest.Int().copy());
+        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
             () -> phi.take(Attr.PHI),
@@ -315,7 +315,7 @@ final class PhDefaultTest {
     void failsGracefullyOnMissingAttribute() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhLocated(new Data.ToPhi("Hey")).take("missing-attr"),
+            () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }

@@ -32,7 +32,7 @@ import EOorg.EOeolang.EOerror;
  * @since 0.21
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class PhLocated implements Phi, Atom {
+public final class PhSafe implements Phi, Atom {
 
     /**
      * The original.
@@ -65,7 +65,7 @@ public final class PhLocated implements Phi, Atom {
      * @param phi The object
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public PhLocated(final Phi phi) {
+    public PhSafe(final Phi phi) {
         this(phi, "unknown", 0, 0);
     }
 
@@ -78,7 +78,7 @@ public final class PhLocated implements Phi, Atom {
      * @param pos Position
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public PhLocated(final Phi phi, final String prg, final int lne, final int pos) {
+    public PhSafe(final Phi phi, final String prg, final int lne, final int pos) {
         this(phi, prg, lne, pos, "?");
     }
 
@@ -92,7 +92,7 @@ public final class PhLocated implements Phi, Atom {
      * @param loc Location
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public PhLocated(final Phi phi, final String prg, final int lne,
+    public PhSafe(final Phi phi, final String prg, final int lne,
         final int pos, final String loc) {
         this.origin = phi;
         this.program = prg;
@@ -113,7 +113,7 @@ public final class PhLocated implements Phi, Atom {
 
     @Override
     public Phi copy() {
-        return new PhLocated(
+        return new PhSafe(
             this.origin.copy(), this.program,
             this.line, this.position, this.location
         );

@@ -30,15 +30,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhLocatedTest}.
+ * Test case for {@link PhSafeTest}.
  *
  * @since 0.36.0
  */
-final class PhLocatedTest {
+final class PhSafeTest {
 
     @Test
     void savesLocationAfterCopying() {
-        final Phi located = new PhLocated(new Data.ToPhi(0L), "foo", 123, 124, "qwerty");
+        final Phi located = new PhSafe(new Data.ToPhi(0L), "foo", 123, 124, "qwerty");
         MatcherAssert.assertThat(
             "saves location",
             located.copy().locator(),
@@ -52,7 +52,7 @@ final class PhLocatedTest {
             "rethrows correctly",
             Assertions.assertThrows(
                 EOerror.ExError.class,
-                () -> new PhLocated(
+                () -> new PhSafe(
                     new PhDefault() {
                         @Override
                         public byte[] delta() {
@@ -74,7 +74,7 @@ final class PhLocatedTest {
             "rethrows correctly",
             Assertions.assertThrows(
                 EOerror.ExError.class,
-                () -> new PhLocated(
+                () -> new PhSafe(
                     new PhWith(
                         new EOerror(),
                         "message",
@@ -96,7 +96,7 @@ final class PhLocatedTest {
             new Dataized(
                 Assertions.assertThrows(
                     EOerror.ExError.class,
-                    () -> new PhLocated(
+                    () -> new PhSafe(
                         new PhDefault() {
                             @Override
                             public Phi take(final String name) {

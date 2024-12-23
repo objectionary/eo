@@ -36,7 +36,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import org.eolang.PhLocated;
+import org.eolang.PhSafe;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -59,7 +59,7 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhLocated(new Broken())
+                            0, new PhSafe(new Broken())
                         ),
                         1, new Catcher()
                     ),
@@ -80,7 +80,7 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhLocated(new Broken())
+                            0, new PhSafe(new Broken())
                         ),
                         1, new Catcher()
                     ),

@@ -55,7 +55,7 @@ final class DataizedTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
-                new PhLocated(
+                new PhSafe(
                     new PhMethod(
                         new PhDefault() {
                             @Override

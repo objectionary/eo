@@ -99,7 +99,7 @@ final class PhiTest {
     void getsLocation() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new PhLocated(
+            new PhSafe(
                 Phi.Φ,
                 "foobar",
                 123,
