@@ -57,4 +57,26 @@ final class PhSafeTest {
         );
     }
 
+    @Test
+    void showsFileNameAndLineNumber() {
+        MatcherAssert.assertThat(
+            "shows file name and line number",
+            new Dataized(
+                Assertions.assertThrows(
+                    EOerror.ExError.class,
+                    () -> new PhSafe(
+                        new PhDefault() {
+                            @Override
+                            public Phi take(final String name) {
+                                throw new ExFailure("intentional error");
+                            }
+                        }
+                    ).take("foo"),
+                    "throws correct class"
+                ).enclosure()
+            ).take(String.class),
+            Matchers.equalTo("intentional error")
+        );
+    }
+
 }
