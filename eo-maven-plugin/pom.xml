@@ -299,8 +299,8 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration combine.self="override">
-          <skipInstallation>${skipTests}</skipInstallation>
-          <skipInvocation>${skipTests}</skipInvocation>
+          <skipInstallation>${skipITs}</skipInstallation>
+          <skipInvocation>${skipITs}</skipInvocation>
           <pomExcludes>
             <exclude>fibonacci/pom.xml</exclude>
           </pomExcludes>
