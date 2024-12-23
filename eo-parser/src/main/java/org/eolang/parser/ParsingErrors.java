@@ -30,7 +30,6 @@ import java.util.Objects;
 import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.InputMismatchException;
-import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -46,6 +45,10 @@ import org.xembly.Directives;
  * Accumulates all parsing errors.
  *
  * @since 0.30.0
+ * @todo #3706:30min Split {@link ParsingErrors} into two classes.
+ *  Currently we use the same {@link ParsingErrors} class to accumulate all the parsing errors
+ *  despite their origin. This class should be split into two classes: one for parsing errors
+ *  {@link ParserErrors} and another for lexer errors {@link LexerErrors}.
  */
 final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
@@ -86,7 +89,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
-        if (error instanceof NoViableAltException) {
+        if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
             final EoParser parser = (EoParser) recognizer;
             final String rule = parser.getRuleInvocationStack().get(0);
@@ -96,6 +99,8 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                 detailed = "Invalid object declaration";
             } else if (names[EoParser.RULE_metas].equals(rule)) {
                 detailed = "Invalid meta declaration";
+            } else if (names[EoParser.RULE_program].equals(rule)) {
+                detailed = "Invalid program declaration";
             } else {
                 detailed = "no viable alternative at input";
             }
@@ -116,12 +121,6 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                     line
                 )
             );
-        } else if (error instanceof InputMismatchException) {
-            System.out.println(error);
-            //todo
-        } else if (error instanceof LexerNoViableAltException) {
-            System.out.println(error);
-            //todo
         } else if (Objects.isNull(error)) {
             this.errors.add(
                 new ParsingException(
