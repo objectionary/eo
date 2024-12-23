@@ -176,10 +176,6 @@ public final class PhLocated implements Phi, Atom {
     private <T> T through(final Action<T> action, final String suffix) {
         try {
             return action.act();
-        } catch (final ExUnset ex) {
-            throw new ExUnset(this.label(suffix), ex);
-        } catch (final ExReadOnly ex) {
-            throw new ExReadOnly(this.label(suffix), ex);
         } catch (final EOerror.ExError ex) {
             throw new EOerror.ExError(ex, this.label(suffix));
         } catch (final RuntimeException | Error ex) {
