@@ -264,7 +264,7 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "We expect the error with correct line number was found",
             XhtmlMatchers.xhtml(story.after().toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );

@@ -26,10 +26,12 @@ package org.eolang.parser;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.InputMismatchException;
+import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -84,21 +86,15 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
-        // @checkstyle MethodBodyCommentsCheck (20 lines)
-        // @todo #3332:30min Add more specific error messages.
-        //  Currently we write just "error: no viable alternative at input" for all errors.
-        //  It's better to use 'Recognizer<?, ?> recognizer' parameter of the current method
-        //  to retrieve more specific error messages.
         if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
             final EoParser parser = (EoParser) recognizer;
-            final List<String> stack = parser.getRuleInvocationStack();
-            final String curr = stack.get(0);
+            final String rule = parser.getRuleInvocationStack().get(0);
             final String[] names = parser.getRuleNames();
             final String detailed;
-            if (names[EoParser.RULE_objects].equals(curr)) {
+            if (names[EoParser.RULE_objects].equals(rule)) {
                 detailed = "Invalid object declaration";
-            } else if (names[EoParser.RULE_metas].equals(curr)) {
+            } else if (names[EoParser.RULE_metas].equals(rule)) {
                 detailed = "Invalid meta declaration";
             } else {
                 detailed = "no viable alternative at input";
@@ -117,6 +113,21 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                         ).formatted()
                     ),
                     error,
+                    line
+                )
+            );
+        } else if (error instanceof InputMismatchException) {
+            System.out.println(error);
+            //todo
+        } else if (error instanceof LexerNoViableAltException) {
+            System.out.println(error);
+            //todo
+        } else if (Objects.isNull(error)) {
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s: %s", line, position, "error", msg
+                    ),
                     line
                 )
             );
