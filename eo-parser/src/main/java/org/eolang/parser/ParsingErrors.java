@@ -31,6 +31,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -91,7 +92,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
     ) {
         if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
-            final EoParser parser = (EoParser) recognizer;
+            final Parser parser = (Parser) recognizer;
             final String rule = parser.getRuleInvocationStack().get(0);
             final String[] names = parser.getRuleNames();
             final String detailed;

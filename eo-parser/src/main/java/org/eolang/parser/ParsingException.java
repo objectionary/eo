@@ -46,8 +46,7 @@ public final class ParsingException extends RuntimeException {
      * @param line The place
      */
     public ParsingException(final String msg, final int line) {
-        super(msg);
-        this.place = line;
+        this(msg, null, line);
     }
 
     /**
