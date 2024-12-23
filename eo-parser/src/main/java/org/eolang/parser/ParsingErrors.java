@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -97,6 +98,8 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
             final String detailed;
             if (names[EoParser.RULE_objects].equals(curr)) {
                 detailed = "Invalid object declaration";
+            } else if (names[EoParser.RULE_metas].equals(curr)) {
+                detailed = "Invalid meta declaration";
             } else {
                 detailed = "no viable alternative at input";
             }

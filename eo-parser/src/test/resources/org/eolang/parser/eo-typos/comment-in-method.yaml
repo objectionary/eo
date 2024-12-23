@@ -22,10 +22,9 @@
 ---
 line: 5
 # todo wtf? Strange error message that tells nothing about the problem.
-message: |-
+message: |
   [5:12] error: Invalid object declaration:
       sprintwf
-
 input: |
   # No comments
   [args] > app
