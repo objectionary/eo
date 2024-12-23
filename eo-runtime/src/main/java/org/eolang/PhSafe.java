@@ -25,6 +25,8 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An object with coordinates (line and position) and a safe
@@ -197,23 +199,36 @@ public final class PhSafe implements Phi, Atom {
                 this.label(suffix)
             );
         } catch (final Throwable ex) {
-            final StringBuilder msg = new StringBuilder(0);
-            final StackTraceElement[] stack = ex.getStackTrace();
-            if (stack != null && stack.length > 0) {
-                final StackTraceElement last = stack[0];
-                msg.append(last.getFileName())
-                    .append(':')
-                    .append(last.getLineNumber())
-                    .append(": ");
-            }
-            msg.append(ex.getClass().getSimpleName())
-                .append(": ")
-                .append(ex.getMessage());
             throw new EOerror.ExError(
-                new Data.ToPhi(msg.toString()),
-                this.label(suffix)
+                new Data.ToPhi(ex.getMessage()),
+                trace(ex, this.label(suffix))
             );
         }
+    }
+
+    /**
+     * Take stacktrace from exception.
+     * @param ex The exception
+     * @param head The head to add
+     * @return The stacktrace
+     */
+    private static List<String> trace(Throwable ex, final String head) {
+        final StackTraceElement[] stack = ex.getStackTrace();
+        final List<String> trace = new LinkedList<>();
+        if (stack != null) {
+            for (final StackTraceElement elm : stack) {
+                trace.add(
+                    String.format(
+                        "%s#%s():%d",
+                        elm.getClassName().replaceAll("([a-zA-Z])[^.]*\\.", "$1."),
+                        elm.getMethodName(),
+                        elm.getLineNumber()
+                    )
+                );
+            }
+        }
+        trace.add(head);
+        return trace;
     }
 
     /**
