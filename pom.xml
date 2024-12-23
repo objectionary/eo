@@ -391,6 +391,40 @@ SOFTWARE.
   </build>
   <profiles>
     <profile>
+      <id>skipTests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+        <skipUTs>true</skipUTs>
+      </properties>
+    </profile>
+    <profile>
+      <id>skipITs</id>
+      <activation>
+        <property>
+          <name>skipITs</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+      </properties>
+    </profile>
+    <profile>
+      <id>skipUTs</id>
+      <activation>
+        <property>
+          <name>skipUTs</name>
+        </property>
+      </activation>
+      <properties>
+        <skipUTs>true</skipUTs>
+      </properties>
+    </profile>
+    <profile>
       <id>qulice</id>
       <build>
         <plugins>

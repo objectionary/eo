@@ -57,4 +57,4 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn clean install -DskipITs --errors --batch-mode
+      - run: mvn clean install -PskipITs --errors --batch-mode

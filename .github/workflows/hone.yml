@@ -43,5 +43,5 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install -DskipTests -Dinvoker.skip -Phone
+      - run: mvn install -PskipTests -Phone
       - run: mvn test -Phone -pl :eo-runtime
