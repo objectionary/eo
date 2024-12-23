@@ -32,9 +32,7 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhCopy;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -62,13 +60,9 @@ public final class EOtry extends PhDefault implements Atom {
         try {
             result = new Dataized(this.take("main")).take();
         } catch (final EOerror.ExError ex) {
-            result = new Dataized(
-                new PhWith(
-                    new PhCopy(this.take("catch")),
-                    0,
-                    ex.enclosure()
-                )
-            ).take();
+            final Phi catcher = this.take("catch").copy();
+            catcher.put(0, ex.enclosure());
+            result = new Dataized(catcher).take();
         } finally {
             new Dataized(this.take("finally")).take();
         }
