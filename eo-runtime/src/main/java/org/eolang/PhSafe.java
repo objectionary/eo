@@ -201,7 +201,7 @@ public final class PhSafe implements Phi, Atom {
         } catch (final Throwable ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(ex.getMessage()),
-                trace(ex, this.label(suffix))
+                PhSafe.trace(ex, this.label(suffix))
             );
         }
     }
