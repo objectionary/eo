@@ -41,7 +41,7 @@ import java.util.Collections;
  * </p>
  * @since 0.50
  * @todo #3332:30min Add more decorators for the error message.
- *  For example, {@link DrParsingErrors} currently contains logic related to the message formatting.
+ *  For example, {@link GeneralErrors} currently contains logic related to the message formatting.
  *  It's better to create a separate class for this purpose.
  */
 final class UnderlinedMessage {

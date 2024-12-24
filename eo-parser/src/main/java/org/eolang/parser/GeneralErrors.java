@@ -24,7 +24,6 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
@@ -38,7 +37,7 @@ import org.xembly.Directive;
  *
  * @since 0.30.0
  */
-final class DrParsingErrors extends BaseErrorListener implements Iterable<Directive> {
+final class GeneralErrors extends BaseErrorListener {
 
     /**
      * Errors accumulated.
@@ -54,7 +53,7 @@ final class DrParsingErrors extends BaseErrorListener implements Iterable<Direct
      * Ctor.
      * @param lines The source in lines
      */
-    DrParsingErrors(final Text... lines) {
+    GeneralErrors(final Text... lines) {
         this(new ListOf<>(lines));
     }
 
@@ -62,7 +61,7 @@ final class DrParsingErrors extends BaseErrorListener implements Iterable<Direct
      * Ctor.
      * @param src The source in lines
      */
-    DrParsingErrors(final List<Text> src) {
+    GeneralErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 
@@ -71,7 +70,7 @@ final class DrParsingErrors extends BaseErrorListener implements Iterable<Direct
      * @param errors Errors accumulated
      * @param lines The source in lines
      */
-    private DrParsingErrors(final List<ParsingException> errors, final Lines lines) {
+    private GeneralErrors(final List<ParsingException> errors, final Lines lines) {
         this.errors = errors;
         this.lines = lines;
     }
@@ -98,16 +97,19 @@ final class DrParsingErrors extends BaseErrorListener implements Iterable<Direct
         );
     }
 
-    @Override
-    public Iterator<Directive> iterator() {
-        return new DrErrors(this.errors).iterator();
-    }
-
     /**
      * How many errors?
      * @return Count of errors accumulated
      */
     public int size() {
         return this.errors.size();
+    }
+
+    /**
+     * All errors accumulated as directives.
+     * @return The errors
+     */
+    public Iterable<Directive> directives() {
+        return new DrErrors(this.errors);
     }
 }

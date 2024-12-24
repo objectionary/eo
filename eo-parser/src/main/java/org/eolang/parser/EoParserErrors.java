@@ -24,7 +24,6 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -41,7 +40,7 @@ import org.xembly.Directive;
  * Accumulates all parsing errors related to EO parser.
  * @since 0.50
  */
-final class DrEoParserErrors extends BaseErrorListener implements Iterable<Directive> {
+final class EoParserErrors extends BaseErrorListener {
 
     /**
      * Errors accumulated.
@@ -57,7 +56,7 @@ final class DrEoParserErrors extends BaseErrorListener implements Iterable<Direc
      * Ctor.
      * @param src The source in lines
      */
-    DrEoParserErrors(final List<Text> src) {
+    EoParserErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 
@@ -66,7 +65,7 @@ final class DrEoParserErrors extends BaseErrorListener implements Iterable<Direc
      * @param errors Errors accumulated
      * @param lines The source in lines
      */
-    private DrEoParserErrors(final List<ParsingException> errors, final Lines lines) {
+    private EoParserErrors(final List<ParsingException> errors, final Lines lines) {
         this.errors = errors;
         this.lines = lines;
     }
@@ -79,9 +78,12 @@ final class DrEoParserErrors extends BaseErrorListener implements Iterable<Direc
         return this.errors.size();
     }
 
-    @Override
-    public Iterator<Directive> iterator() {
-        return new DrErrors(this.errors).iterator();
+    /**
+     * All errors accumulated as directives.
+     * @return The errors.
+     */
+    public Iterable<Directive> directives() {
+        return new DrErrors(this.errors);
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)

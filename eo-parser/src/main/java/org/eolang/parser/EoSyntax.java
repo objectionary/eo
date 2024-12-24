@@ -105,7 +105,7 @@ public final class EoSyntax implements Syntax {
      */
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
-        final DrParsingErrors spy = new DrParsingErrors(lines);
+        final GeneralErrors spy = new GeneralErrors(lines);
         final EoLexer lexer = new EoIndentLexer(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
@@ -113,14 +113,14 @@ public final class EoSyntax implements Syntax {
             new CommonTokenStream(lexer)
         );
         parser.removeErrorListeners();
-        final DrEoParserErrors eospy = new DrEoParserErrors(lines);
+        final EoParserErrors eospy = new EoParserErrors(lines);
         parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = Syntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
-                    new Directives(xel).append(spy).append(eospy)
+                    new Directives(xel).append(spy.directives()).append(eospy.directives())
                 ).domQuietly()
             )
         );

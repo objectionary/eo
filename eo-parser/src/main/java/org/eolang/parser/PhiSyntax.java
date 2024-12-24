@@ -91,7 +91,7 @@ public final class PhiSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final XePhiListener xel = new XePhiListener(this.name);
-        final DrParsingErrors spy = new DrParsingErrors(this.input);
+        final GeneralErrors spy = new GeneralErrors(this.input);
         final PhiLexer lexer = new PhiLexer(
             CharStreams.fromStream(
                 new InputStreamOf(this.input)

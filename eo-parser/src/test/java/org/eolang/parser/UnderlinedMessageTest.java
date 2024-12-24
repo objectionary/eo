@@ -24,7 +24,6 @@
 package org.eolang.parser;
 
 import java.util.stream.Stream;
-import org.eolang.parser.errors.UnderlinedMessage;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
