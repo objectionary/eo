@@ -62,7 +62,9 @@ final class PhSafeTest {
                 ).delta(),
                 "throws correct class"
             ).messages(),
-            Matchers.hasItem(
+            Matchers.hasItems(
+                Matchers.containsString("o.e.PhSafe#delta()"),
+                Matchers.containsString("(j.l.IllegalArgumentException)"),
                 Matchers.containsString("Error in \"?.Δ\" at unknown:0:0")
             )
         );
