@@ -23,20 +23,14 @@
  */
 package org.eolang.parser.errors;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.InputMismatchException;
-import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
 import org.cactoos.list.ListOf;
-import org.eolang.parser.EoParser;
 import org.eolang.parser.ParsingException;
 import org.xembly.Directive;
 
@@ -70,8 +64,17 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
      * @param src The source in lines
      */
     public ParsingErrors(final List<Text> src) {
-        this.errors = new LinkedList<>();
-        this.lines = new Lines(src);
+        this(new ArrayList<>(0), new Lines(src));
+    }
+
+    /**
+     * Ctor.
+     * @param errors Errors accumulated
+     * @param lines The source in lines
+     */
+    private ParsingErrors(final List<ParsingException> errors, final Lines lines) {
+        this.errors = errors;
+        this.lines = lines;
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)
@@ -84,59 +87,16 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
         final String msg,
         final RecognitionException error
     ) {
-        if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
-            final Token token = (Token) symbol;
-            final Parser parser = (Parser) recognizer;
-            final String rule = parser.getRuleInvocationStack().get(0);
-            final String[] names = parser.getRuleNames();
-            final String detailed;
-            if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed = "Invalid object declaration";
-            } else if (names[EoParser.RULE_metas].equals(rule)) {
-                detailed = "Invalid meta declaration";
-            } else if (names[EoParser.RULE_program].equals(rule)) {
-                detailed = "Invalid program declaration";
-            } else {
-                detailed = "no viable alternative at input";
-            }
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s:%n%s",
-                        line, position,
-                        "error",
-                        detailed,
-                        new UnderlinedMessage(
-                            this.lines.line(line).orElse("EOF"),
-                            position,
-                            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-                        ).formatted()
-                    ),
-                    error,
-                    line
-                )
-            );
-        } else if (Objects.isNull(error)) {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s", line, position, "error", msg
-                    ),
-                    line
-                )
-            );
-        } else {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg, this.lines.line(line).orElse("EOF")
-                    ),
-                    error,
-                    line
-                )
-            );
-        }
+        this.errors.add(
+            new ParsingException(
+                String.format(
+                    "[%d:%d] %s: \"%s\"",
+                    line, position, msg, this.lines.line(line)
+                ),
+                error,
+                line
+            )
+        );
     }
 
     @Override
