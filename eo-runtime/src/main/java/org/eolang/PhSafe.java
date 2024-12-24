@@ -220,15 +220,29 @@ public final class PhSafe implements Phi, Atom {
                 trace.add(
                     String.format(
                         "%s#%s():%d",
-                        elm.getClassName().replaceAll("([a-zA-Z])[^.]*\\.", "$1."),
+                        PhSafe.shorter(elm.getClassName()),
                         elm.getMethodName(),
                         elm.getLineNumber()
                     )
                 );
             }
         }
-        trace.add(String.format("%s (%s)", head, exp.getClass().getName()));
+        trace.add(
+            String.format(
+                "%s (%s)",
+                head, PhSafe.shorter(exp.getClass().getName())
+            )
+        );
         return trace;
+    }
+
+    /**
+     * Make class name shorter.
+     * @param full The full name of class
+     * @return Shorter name
+     */
+    private static String shorter(final String full) {
+        return full.replaceAll("(.)[^.]*\\.", "$1.");
     }
 
     /**
