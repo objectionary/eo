@@ -107,7 +107,7 @@ public final class PhiSyntax implements Syntax {
         final XML dom = Syntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
-                    new Directives(xel).append(spy).append(this.extra)
+                    new Directives(xel).append(spy.directives()).append(this.extra)
                 ).domQuietly()
             )
         );
