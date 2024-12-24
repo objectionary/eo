@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.parser.errors;
 
 import java.util.Collections;
 
@@ -41,7 +41,7 @@ import java.util.Collections;
  * </p>
  * @since 0.50
  * @todo #3332:30min Add more decorators for the error message.
- *  For example, {@link ParsingErrors} currently contains logic related to the message formatting.
+ *  For example, {@link org.eolang.parser.ParsingErrors} currently contains logic related to the message formatting.
  *  It's better to create a separate class for this purpose.
  */
 final class UnderlinedMessage {
