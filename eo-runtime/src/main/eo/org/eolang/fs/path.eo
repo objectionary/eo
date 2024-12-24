@@ -422,6 +422,7 @@
       # | root relative      | drive relative | other             |
       # | root relative      | root relative  | other             |
       # |--------------------|----------------|-------------------|
+      # URI Resolution Rules.
       [other] > resolved
         ^.uri > uri-as-bytes!
         ^.separated-correctly other > valid-other!
@@ -523,6 +524,7 @@
       # | "Hello, Jeff"                | "Hello, Jeff"      |
       # | ""                           | ""                 |
       # |------------------------------|--------------------|
+      # Extracting Directory Names from File Paths.
       [] > dirname
         ^.uri > pth!
         text > txt
