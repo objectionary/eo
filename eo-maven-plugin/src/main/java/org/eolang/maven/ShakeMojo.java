@@ -28,14 +28,12 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.optimization.OptSpy;
-import org.eolang.maven.optimization.OptTrain;
-import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
@@ -80,13 +78,12 @@ public final class ShakeMojo extends SafeMojo {
     void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
-        final Optimization optimization = this.optimization();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
                 tojos
             ),
-            tojo -> this.shaken(tojo, optimization)
+            tojo -> this.shaken(tojo, this.optimization())
         ).total();
         if (total > 0) {
             Logger.info(
@@ -107,7 +104,10 @@ public final class ShakeMojo extends SafeMojo {
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Optimization optimization) throws Exception {
+    private int shaken(
+        final ForeignTojo tojo,
+        final Function<XML, XML> optimization
+    ) throws Exception {
         final Path source = tojo.optimized();
         final XML xmir = new XMLDocument(source);
         final String name = xmir.xpath("/program/@name").get(0);
@@ -130,12 +130,14 @@ public final class ShakeMojo extends SafeMojo {
      *
      * @return Shake optimizations
      */
-    private Optimization optimization() {
-        final Optimization opt;
+    private Function<XML, XML> optimization() {
+        final Function<XML, XML> opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(this.targetDir.toPath().resolve(ShakeMojo.STEPS));
+            opt = new OptimizeMojo.OptSpy(
+                this.targetDir.toPath().resolve(ShakeMojo.STEPS)
+            );
         } else {
-            opt = new OptTrain();
+            opt = new OptimizeMojo.OptTrain();
         }
         return opt;
     }
