@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -57,8 +58,6 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.optimization.OptSpy;
-import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
@@ -163,10 +162,9 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
-        final Optimization optimization = this.transpilation();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, optimization)
+            tojo -> this.transpiled(tojo, this.transpilation())
         ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
@@ -195,12 +193,12 @@ public final class TranspileMojo extends SafeMojo {
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private int transpiled(final ForeignTojo tojo, final Optimization transpilation)
+    private int transpiled(final ForeignTojo tojo, final Function<XML, XML> transpilation)
         throws IOException {
         final Path source;
         try {
             source = tojo.shaken();
-        }  catch (final AttributeNotFoundException exception) {
+        } catch (final AttributeNotFoundException exception) {
             throw new IllegalStateException(
                 "You should check that 'Verify' goal of the plugin was run first",
                 exception
@@ -229,8 +227,8 @@ public final class TranspileMojo extends SafeMojo {
      * Transpile optimization.
      * @return Optimization that transpiles
      */
-    private Optimization transpilation() {
-        return new OptSpy(
+    private Function<XML, XML> transpilation() {
+        return new OptimizeMojo.OptSpy(
             this.measured(TranspileMojo.TRAIN),
             this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
