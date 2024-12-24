@@ -62,7 +62,9 @@ final class PhSafeTest {
                 ).delta(),
                 "throws correct class"
             ).messages(),
-            Matchers.hasItem(
+            Matchers.hasItems(
+                Matchers.containsString("o.e.PhSafe#delta()"),
+                Matchers.containsString("(j.l.IllegalArgumentException)"),
                 Matchers.containsString("Error in \"?.Δ\" at unknown:0:0")
             )
         );
@@ -107,11 +109,7 @@ final class PhSafeTest {
                     "throws correct class"
                 ).enclosure()
             ).take(String.class),
-            Matchers.allOf(
-                Matchers.startsWith("PhSafeTest.java:"),
-                Matchers.containsString("IllegalArgumentException"),
-                Matchers.containsString("intentional error")
-            )
+            Matchers.equalTo("intentional error")
         );
     }
 
