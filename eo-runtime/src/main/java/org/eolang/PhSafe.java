@@ -227,7 +227,7 @@ public final class PhSafe implements Phi, Atom {
                 );
             }
         }
-        trace.add(head);
+        trace.add(String.format("%s (%s)", head, exp.getClass().getName()));
         return trace;
     }
 
