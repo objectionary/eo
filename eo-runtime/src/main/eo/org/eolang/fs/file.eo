@@ -28,7 +28,7 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# A file on the filesystem.
+# The file object in the filesystem.
 [path] > file
   $.path > @
 
@@ -73,7 +73,7 @@
     # don't use the object programmatically outside of `file` object.
     [] > delete /org.eolang.true
 
-  # Get file size in bytes.
+  # Gets the file size and returns it in bytes.
   [] > size /org.eolang.number
 
   # Move current file to `target`, making and returning a new `file` from it.
@@ -89,7 +89,7 @@
     # don't use the object programmatically outside of `file` object.
     [] > move /org.eolang.string
 
-  # Convert the `file` to `path`.
+  # Convert the `file` to the `path`.
   (QQ.fs.path ^.path).determined > [] > as-path
 
   # Opens the file.
