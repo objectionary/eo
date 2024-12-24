@@ -73,6 +73,19 @@ public final class EoParserErrors extends BaseErrorListener implements Iterable<
         this.lines = lines;
     }
 
+    /**
+     * The number of errors.
+     * @return The number of errors.
+     */
+    public int size() {
+        return this.errors.size();
+    }
+
+    @Override
+    public Iterator<Directive> iterator() {
+        return new ErrorDirectives(this.errors).iterator();
+    }
+
     // @checkstyle ParameterNumberCheck (10 lines)
     @Override
     public void syntaxError(
@@ -143,18 +156,5 @@ public final class EoParserErrors extends BaseErrorListener implements Iterable<
                 )
             );
         }
-    }
-
-    @Override
-    public Iterator<Directive> iterator() {
-        return new ErrorDirectives(this.errors).iterator();
-    }
-
-    /**
-     * The number of errors.
-     * @return The number of errors.
-     */
-    public int size() {
-        return this.errors.size();
     }
 }
