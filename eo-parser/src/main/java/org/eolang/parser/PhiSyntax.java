@@ -32,7 +32,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
-import org.eolang.parser.errors.DrParsingErrors;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;

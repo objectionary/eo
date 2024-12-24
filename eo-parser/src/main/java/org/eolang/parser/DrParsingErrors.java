@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.errors;
+package org.eolang.parser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +31,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.cactoos.Text;
 import org.cactoos.list.ListOf;
-import org.eolang.parser.ParsingException;
 import org.xembly.Directive;
 
 /**
@@ -39,7 +38,7 @@ import org.xembly.Directive;
  *
  * @since 0.30.0
  */
-public final class DrParsingErrors extends BaseErrorListener implements Iterable<Directive> {
+final class DrParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -55,7 +54,7 @@ public final class DrParsingErrors extends BaseErrorListener implements Iterable
      * Ctor.
      * @param lines The source in lines
      */
-    public DrParsingErrors(final Text... lines) {
+    DrParsingErrors(final Text... lines) {
         this(new ListOf<>(lines));
     }
 
@@ -63,7 +62,7 @@ public final class DrParsingErrors extends BaseErrorListener implements Iterable
      * Ctor.
      * @param src The source in lines
      */
-    public DrParsingErrors(final List<Text> src) {
+    DrParsingErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 

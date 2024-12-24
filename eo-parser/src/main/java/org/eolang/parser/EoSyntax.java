@@ -38,8 +38,6 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
-import org.eolang.parser.errors.DrEoParserErrors;
-import org.eolang.parser.errors.DrParsingErrors;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 

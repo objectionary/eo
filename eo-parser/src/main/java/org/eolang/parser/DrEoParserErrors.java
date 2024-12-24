@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.errors;
+package org.eolang.parser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,15 +35,13 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
-import org.eolang.parser.EoParser;
-import org.eolang.parser.ParsingException;
 import org.xembly.Directive;
 
 /**
  * Accumulates all parsing errors related to EO parser.
  * @since 0.50
  */
-public final class DrEoParserErrors extends BaseErrorListener implements Iterable<Directive> {
+final class DrEoParserErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -59,7 +57,7 @@ public final class DrEoParserErrors extends BaseErrorListener implements Iterabl
      * Ctor.
      * @param src The source in lines
      */
-    public DrEoParserErrors(final List<Text> src) {
+    DrEoParserErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 
