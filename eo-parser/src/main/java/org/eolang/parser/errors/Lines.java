@@ -37,14 +37,14 @@ final class Lines {
     /**
      * The source.
      */
-    private final List<Text> lines;
+    private final List<Text> source;
 
     /**
      * Ctor.
      * @param lines The source in lines
      */
     Lines(final List<Text> lines) {
-        this.lines = lines;
+        this.source = lines;
     }
 
     /**
@@ -54,10 +54,10 @@ final class Lines {
      */
     String line(final int number) {
         final Optional<String> result;
-        if (number < 1 || number > this.lines.size()) {
+        if (number < 1 || number > this.source.size()) {
             result = Optional.empty();
         } else {
-            result = Optional.ofNullable(this.lines.get(number - 1))
+            result = Optional.ofNullable(this.source.get(number - 1))
                 .map(UncheckedText::new)
                 .map(UncheckedText::asString);
         }

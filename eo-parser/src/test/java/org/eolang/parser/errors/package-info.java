@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 /**
- * This package contains all the classes related to errors that can be found in the parsing process.
+ * Contains tests for the error handling in the parser.
  * @since 0.50
  */
 package org.eolang.parser.errors;
