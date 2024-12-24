@@ -43,7 +43,7 @@ import org.xembly.Directive;
  * Accumulates all parsing errors related to EO parser.
  * @since 0.50
  */
-public final class EoParserErrors extends BaseErrorListener implements Iterable<Directive> {
+public final class DrEoParserErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -59,7 +59,7 @@ public final class EoParserErrors extends BaseErrorListener implements Iterable<
      * Ctor.
      * @param src The source in lines
      */
-    public EoParserErrors(final List<Text> src) {
+    public DrEoParserErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 
@@ -68,7 +68,7 @@ public final class EoParserErrors extends BaseErrorListener implements Iterable<
      * @param errors Errors accumulated
      * @param lines The source in lines
      */
-    private EoParserErrors(final List<ParsingException> errors, final Lines lines) {
+    private DrEoParserErrors(final List<ParsingException> errors, final Lines lines) {
         this.errors = errors;
         this.lines = lines;
     }

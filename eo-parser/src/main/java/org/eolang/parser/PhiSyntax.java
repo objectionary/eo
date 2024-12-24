@@ -32,7 +32,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
-import org.eolang.parser.errors.ParsingErrors;
+import org.eolang.parser.errors.DrParsingErrors;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -92,7 +92,7 @@ public final class PhiSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final XePhiListener xel = new XePhiListener(this.name);
-        final ParsingErrors spy = new ParsingErrors(this.input);
+        final DrParsingErrors spy = new DrParsingErrors(this.input);
         final PhiLexer lexer = new PhiLexer(
             CharStreams.fromStream(
                 new InputStreamOf(this.input)

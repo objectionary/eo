@@ -39,7 +39,7 @@ import org.xembly.Directive;
  *
  * @since 0.30.0
  */
-public final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
+public final class DrParsingErrors extends BaseErrorListener implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -55,7 +55,7 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
      * Ctor.
      * @param lines The source in lines
      */
-    public ParsingErrors(final Text... lines) {
+    public DrParsingErrors(final Text... lines) {
         this(new ListOf<>(lines));
     }
 
@@ -63,7 +63,7 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
      * Ctor.
      * @param src The source in lines
      */
-    public ParsingErrors(final List<Text> src) {
+    public DrParsingErrors(final List<Text> src) {
         this(new ArrayList<>(0), new Lines(src));
     }
 
@@ -72,7 +72,7 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
      * @param errors Errors accumulated
      * @param lines The source in lines
      */
-    private ParsingErrors(final List<ParsingException> errors, final Lines lines) {
+    private DrParsingErrors(final List<ParsingException> errors, final Lines lines) {
         this.errors = errors;
         this.lines = lines;
     }

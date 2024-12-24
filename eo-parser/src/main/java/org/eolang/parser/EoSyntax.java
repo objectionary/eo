@@ -38,8 +38,8 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
-import org.eolang.parser.errors.EoParserErrors;
-import org.eolang.parser.errors.ParsingErrors;
+import org.eolang.parser.errors.DrEoParserErrors;
+import org.eolang.parser.errors.DrParsingErrors;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -107,7 +107,7 @@ public final class EoSyntax implements Syntax {
      */
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
-        final ParsingErrors spy = new ParsingErrors(lines);
+        final DrParsingErrors spy = new DrParsingErrors(lines);
         final EoLexer lexer = new EoIndentLexer(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
@@ -115,7 +115,7 @@ public final class EoSyntax implements Syntax {
             new CommonTokenStream(lexer)
         );
         parser.removeErrorListeners();
-        final EoParserErrors eospy = new EoParserErrors(lines);
+        final DrEoParserErrors eospy = new DrEoParserErrors(lines);
         parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
