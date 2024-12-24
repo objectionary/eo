@@ -101,7 +101,7 @@ public final class ParsingErrors extends BaseErrorListener implements Iterable<D
 
     @Override
     public Iterator<Directive> iterator() {
-        return new ErrorDirectives(this.errors).iterator();
+        return new DrErrors(this.errors).iterator();
     }
 
     /**

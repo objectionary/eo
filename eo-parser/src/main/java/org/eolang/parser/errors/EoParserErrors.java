@@ -83,7 +83,7 @@ public final class EoParserErrors extends BaseErrorListener implements Iterable<
 
     @Override
     public Iterator<Directive> iterator() {
-        return new ErrorDirectives(this.errors).iterator();
+        return new DrErrors(this.errors).iterator();
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)

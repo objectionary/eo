@@ -34,7 +34,7 @@ import org.xembly.Directives;
  * Error directives.
  * @since 0.50
  */
-final class ErrorDirectives implements Iterable<Directive> {
+final class DrErrors implements Iterable<Directive> {
 
     /**
      * Errors accumulated.
@@ -45,7 +45,7 @@ final class ErrorDirectives implements Iterable<Directive> {
      * Ctor.
      * @param errors The errors.
      */
-    ErrorDirectives(final List<ParsingException> errors) {
+    DrErrors(final List<ParsingException> errors) {
         this.errors = errors;
     }
 
