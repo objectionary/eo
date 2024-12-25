@@ -240,6 +240,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiNoSugar", false);
             this.params.putIfAbsent("phiSkipFailed", false);
+            this.params.putIfAbsent("conservative", false);
             this.params.putIfAbsent(
                 "phiInputDir",
                 this.workspace.absolute(

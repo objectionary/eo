@@ -235,7 +235,7 @@ final class UnphiMojoTest {
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final String phi = xtory.map().get("with-sugar").toString();
+        final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
@@ -244,6 +244,7 @@ final class UnphiMojoTest {
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
+            .with("conservative", xtory.map().get("conservative") != null)
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
             .result()
