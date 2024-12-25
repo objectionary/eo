@@ -41,7 +41,11 @@ import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
+import org.cactoos.scalar.Unchecked;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 import org.xml.sax.SAXParseException;
@@ -71,7 +75,7 @@ public final class StrictXmir implements XML {
     /**
      * The XML.
      */
-    private final XML xml;
+    private final Unchecked<XML> xml;
 
     /**
      * Ctor.
@@ -91,36 +95,40 @@ public final class StrictXmir implements XML {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public StrictXmir(final XML before, final Path tmp) {
-        synchronized (before) {
-            this.xml = new StrictXML(
-                StrictXmir.reset(before, tmp)
-            );
-        }
+        this.xml = new Unchecked<>(
+            new Synced<>(
+                new Sticky<>(
+                    () -> new StrictXML(
+                        StrictXmir.reset(before, tmp)
+                    )
+                )
+            )
+        );
     }
 
     @Override
     public String toString() {
-        return this.xml.toString();
+        return this.xml.value().toString();
     }
 
     @Override
     public List<String> xpath(final String query) {
-        return this.xml.xpath(query);
+        return this.xml.value().xpath(query);
     }
 
     @Override
     public List<XML> nodes(final String query) {
-        return this.xml.nodes(query);
+        return this.xml.value().nodes(query);
     }
 
     @Override
     public XML registerNs(final String prefix, final Object uri) {
-        return this.xml.registerNs(prefix, uri);
+        return this.xml.value().registerNs(prefix, uri);
     }
 
     @Override
     public XML merge(final NamespaceContext context) {
-        return this.xml.merge(context);
+        return this.xml.value().merge(context);
     }
 
     @Override
@@ -131,22 +139,22 @@ public final class StrictXmir implements XML {
 
     @Override
     public Node inner() {
-        return this.xml.inner();
+        return this.xml.value().inner();
     }
 
     @Override
     public Node deepCopy() {
-        return this.xml.deepCopy();
+        return this.xml.value().deepCopy();
     }
 
     @Override
-    public Collection<SAXParseException> validate() {
-        return this.xml.validate();
+    public Collection<SAXParseException> validate(final LSResourceResolver resolver) {
+        return this.xml.value().validate(resolver);
     }
 
     @Override
     public Collection<SAXParseException> validate(final XML schema) {
-        return this.xml.validate(schema);
+        return this.xml.value().validate(schema);
     }
 
     /**

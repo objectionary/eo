@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.namespace.NamespaceContext;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -163,8 +164,8 @@ public final class Xmir implements XML {
     }
 
     @Override
-    public Collection<SAXParseException> validate() {
-        return this.xml.validate();
+    public Collection<SAXParseException> validate(final LSResourceResolver resolver) {
+        return this.xml.validate(resolver);
     }
 
     @Override

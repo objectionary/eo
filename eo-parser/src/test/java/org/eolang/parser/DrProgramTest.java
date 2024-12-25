@@ -24,11 +24,13 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -83,17 +85,17 @@ final class DrProgramTest {
 
     @Test
     void validatesAgainstSchema() {
-        MatcherAssert.assertThat(
-            "XMIR document validates correctly",
-            new XMLDocument(
-                new Xembler(
-                    new Directives().append(new DrProgram("foo"))
-                        .add("listing").set("hello, world!").up()
-                        .add("objects").add("o").attr("name", "bar")
-                ).domQuietly()
-            ).validate(),
-            Matchers.emptyIterable()
+        Assertions.assertDoesNotThrow(
+            new StrictXML(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().append(new DrProgram("foo"))
+                            .add("listing").set("hello, world!").up()
+                            .add("objects").add("o").attr("name", "bar")
+                    ).domQuietly()
+                )
+            )::inner,
+            "XMIR document validates correctly"
         );
     }
-
 }
