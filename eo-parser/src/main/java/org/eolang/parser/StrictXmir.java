@@ -205,33 +205,44 @@ public final class StrictXmir implements XML {
     private static File fetch(final String uri, final Path path, final Path tmp) {
         final File ret;
         if (StrictXmir.MINE.equals(uri)) {
-            synchronized (tmp) {
-                if (!path.toFile().exists()) {
-                    if (path.toFile().getParentFile().mkdirs()) {
-                        Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
-                    }
-                    try {
-                        System.out.println("HERE");
-                        Files.write(
-                            path,
-                            new IoCheckedBytes(
-                                new BytesOf(new ResourceOf("XMIR.xsd"))
-                            ).asBytes()
-                        );
-                        Logger.debug(StrictXmir.class, "XSD copied to %[file]s", path);
-                    } catch (final IOException ex) {
-                        throw new IllegalArgumentException(
-                            String.format("Failed to save %s to %s", uri, path),
-                            ex
-                        );
-                    }
-                }
-                ret = path.toFile();
-            }
+            ret = StrictXmir.copied(uri, path, tmp);
         } else {
-            ret = StrictXmir.download(uri, path, tmp);
+            ret = StrictXmir.downloaded(uri, path, tmp);
         }
         return ret;
+    }
+
+    /**
+     * Copy URI from local resource and save to file.
+     * @param uri The URI
+     * @param path The file
+     * @param tmp Directory to synchronize by
+     * @return Where it was saved
+     */
+    private static File copied(final String uri, final Path path, final Path tmp) {
+        final File file = path.toFile();
+        synchronized (tmp) {
+            if (!file.exists()) {
+                if (file.getParentFile().mkdirs()) {
+                    Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
+                }
+                try {
+                    Files.write(
+                        path,
+                        new IoCheckedBytes(
+                            new BytesOf(new ResourceOf("XMIR.xsd"))
+                        ).asBytes()
+                    );
+                    Logger.debug(StrictXmir.class, "XSD copied to %[file]s", path);
+                } catch (final IOException ex) {
+                    throw new IllegalArgumentException(
+                        String.format("Failed to save %s to %s", uri, path),
+                        ex
+                    );
+                }
+            }
+        }
+        return file;
     }
 
     /**
@@ -242,7 +253,7 @@ public final class StrictXmir implements XML {
      * @return Where it was saved
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private static File download(final String uri, final Path path, final Path tmp) {
+    private static File downloaded(final String uri, final Path path, final Path tmp) {
         final File abs = path.toFile().getAbsoluteFile();
         synchronized (tmp) {
             if (!abs.exists()) {
