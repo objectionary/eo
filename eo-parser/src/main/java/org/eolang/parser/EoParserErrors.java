@@ -26,7 +26,6 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
@@ -111,13 +110,11 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                     Math.max(token.getStopIndex() - token.getStartIndex(), 1)
                 ).formatted()
             );
-        } else if (Objects.isNull(error)) {
-            msgs.add(new LocationMessage(line, position, msg).formatted());
         } else {
             msgs.add(new LocationMessage(line, position, msg).formatted());
             msgs.add(this.lines.line(line));
         }
-        this.errors.add(new ParsingException(msg, error, line));
+        this.errors.add(new ParsingException(error, line, msgs));
     }
 
     @Override

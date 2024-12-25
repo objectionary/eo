@@ -44,32 +44,34 @@ public final class ParsingException extends RuntimeException {
 
     /**
      * Ctor.
-     * @param msgs Messages
-     * @param cause The cause
-     * @param line The place
-     * @since 0.1
-     */
-    ParsingException(final List<String> msgs, final Exception cause, final int line) {
-        this(String.join("\n", msgs), cause, line);
-    }
-
-
-    /**
-     * Ctor.
-     * @param msg Message
-     * @param line The place
-     */
-    ParsingException(final String msg, final int line) {
-        this(msg, null, line);
-    }
-
-    /**
-     * Ctor.
-     * @param msg Message
      * @param cause Cause of failure
      * @param line The place
+     * @param msgs Messages
      */
-    ParsingException(final String msg, final Exception cause, final int line) {
+    ParsingException(final Exception cause, final int line, final String... msgs) {
+        this(cause, line, List.of(msgs));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param cause The cause
+     * @param line The place
+     * @param msgs Messages
+     * @since 0.1
+     */
+    ParsingException(final Exception cause, final int line, final List<String> msgs) {
+        this(cause, line, String.join("\n", msgs));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param cause Cause of failure
+     * @param line The place
+     * @param msg Message
+     */
+    ParsingException(final Exception cause, final int line, final String msg) {
         super(msg, cause);
         this.place = line;
     }
@@ -81,5 +83,4 @@ public final class ParsingException extends RuntimeException {
     public int line() {
         return this.place;
     }
-
 }

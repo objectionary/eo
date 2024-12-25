@@ -87,12 +87,10 @@ final class GeneralErrors extends BaseErrorListener implements Iterable<ParsingE
     ) {
         this.errors.add(
             new ParsingException(
-                String.format(
-                    "[%d:%d] %s: \"%s\"",
-                    line, position, msg, this.lines.line(line)
-                ),
                 error,
-                line
+                line,
+                new LocationMessage(line, position, msg).formatted(),
+                this.lines.line(line)
             )
         );
     }
