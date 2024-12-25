@@ -24,20 +24,20 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.cactoos.Text;
 import org.cactoos.list.ListOf;
-import org.xembly.Directive;
 
 /**
  * Accumulates all parsing errors.
  *
  * @since 0.30.0
  */
-final class GeneralErrors extends BaseErrorListener {
+final class GeneralErrors extends BaseErrorListener implements Errors {
 
     /**
      * Errors accumulated.
@@ -97,19 +97,13 @@ final class GeneralErrors extends BaseErrorListener {
         );
     }
 
-    /**
-     * How many errors?
-     * @return Count of errors accumulated
-     */
-    public int size() {
-        return this.errors.size();
+    @Override
+    public List<ParsingException> all() {
+        return Collections.unmodifiableList(this.errors);
     }
 
-    /**
-     * All errors accumulated as directives.
-     * @return The errors
-     */
-    public Iterable<Directive> directives() {
-        return new DrErrors(this.errors);
+    @Override
+    public int size() {
+        return this.errors.size();
     }
 }

@@ -120,7 +120,7 @@ public final class EoSyntax implements Syntax {
         final XML dom = Syntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
-                    new Directives(xel).append(spy.directives()).append(eospy.directives())
+                    new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
                 ).domQuietly()
             )
         );

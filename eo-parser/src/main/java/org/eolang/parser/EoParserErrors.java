@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -34,13 +35,12 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
-import org.xembly.Directive;
 
 /**
  * Accumulates all parsing errors related to EO parser.
  * @since 0.50
  */
-final class EoParserErrors extends BaseErrorListener {
+final class EoParserErrors extends BaseErrorListener implements Errors {
 
     /**
      * Errors accumulated.
@@ -70,20 +70,14 @@ final class EoParserErrors extends BaseErrorListener {
         this.lines = lines;
     }
 
-    /**
-     * The number of errors.
-     * @return The number of errors.
-     */
-    public int size() {
-        return this.errors.size();
+    @Override
+    public List<ParsingException> all() {
+        return Collections.unmodifiableList(this.errors);
     }
 
-    /**
-     * All errors accumulated as directives.
-     * @return The errors.
-     */
-    public Iterable<Directive> directives() {
-        return new DrErrors(this.errors);
+    @Override
+    public int size() {
+        return this.errors.size();
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)

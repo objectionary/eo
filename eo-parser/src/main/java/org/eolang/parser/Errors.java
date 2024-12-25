@@ -23,46 +23,24 @@
  */
 package org.eolang.parser;
 
-import java.util.Iterator;
-import org.cactoos.iterable.Mapped;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import java.util.List;
 
 /**
- * Error directives.
+ * All parsing errors.
  * @since 0.50
  */
-final class DrErrors implements Iterable<Directive> {
+interface Errors {
 
     /**
-     * Errors accumulated.
+     * All errors as a list of exceptions.
+     * @return The list of exceptions.
      */
-    private final Errors errors;
+    List<ParsingException> all();
 
     /**
-     * Ctor.
-     * @param errors The errors.
+     * The number of errors.
+     * @return The number of errors
      */
-    DrErrors(final Errors errors) {
-        this.errors = errors;
-    }
+    int size();
 
-    @Override
-    public Iterator<Directive> iterator() {
-        return new org.cactoos.iterable.Joined<>(
-            new Mapped<Iterable<Directive>>(
-                error -> new Directives()
-                    .xpath("/program")
-                    .strict(1)
-                    .addIf("errors")
-                    .strict(1)
-                    .add("error")
-                    .attr("check", "eo-parser")
-                    .attr("line", error.line())
-                    .attr("severity", "critical")
-                    .set(error.getMessage()),
-                this.errors.all()
-            )
-        ).iterator();
-    }
 }
