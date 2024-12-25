@@ -23,14 +23,14 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.49.2
++version 0.49.3
 
 # List implements based operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
 [origin] > list
   origin > @
 
-  # Is it empty?
+  # Is it empty?.
   0.eq ^.origin.length > [] > is-empty
 
   # Create a new list with this element added to the end of it.

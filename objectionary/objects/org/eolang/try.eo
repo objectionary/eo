@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.49.2
++rt jvm org.eolang:eo-runtime:0.49.3
 +rt node eo2js-runtime:0.0.0
-+version 0.49.2
++version 0.49.3
 
 # Try, catch and finally. This object helps catch errors created by the
 # `error` object. When being dataized, such objects will crash the problem.

@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.49.2
++version 0.49.3
 
 # Not a number.
 [] > nan
@@ -50,13 +50,13 @@
   # Tests that $ >= x.
   false > [x] > gte
 
-  # Multiplication of $ and x.
+  # Returns the multiplication of $ and x.
   ^ > [x] > times
 
   # Sum of $ and x.
   ^ > [x] > plus
 
-  # Difference between $ and x.
+  # Returns the difference between $ and x.
   ^ > [x] > minus
 
   # Quotient of the division of $ by x.

@@ -24,11 +24,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.49.2
++rt jvm org.eolang:eo-runtime:0.49.3
 +rt node eo2js-runtime:0.0.0
-+version 0.49.2
++version 0.49.3
 
-# Real number.
+# Returns a floating point number.
 [num] > real
   num > @
   # Returns Euler's number raised to the power of a `num`.

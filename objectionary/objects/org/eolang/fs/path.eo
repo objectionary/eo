@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.49.2
++version 0.49.3
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
@@ -422,6 +422,7 @@
       # | root relative      | drive relative | other             |
       # | root relative      | root relative  | other             |
       # |--------------------|----------------|-------------------|
+      # URI Resolution Rules.
       [other] > resolved
         ^.uri > uri-as-bytes!
         ^.separated-correctly other > valid-other!
@@ -523,6 +524,7 @@
       # | "Hello, Jeff"                | "Hello, Jeff"      |
       # | ""                           | ""                 |
       # |------------------------------|--------------------|
+      # Extracting Directory Names from File Paths.
       [] > dirname
         ^.uri > pth!
         text > txt
