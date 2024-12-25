@@ -93,12 +93,13 @@ public final class OptimizeMojo extends SafeMojo {
     public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
+        final Function<XML, XML> optimization = this.optimization();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notOptimized,
                 tojos
             ),
-            tojo -> this.optimized(tojo, this.optimization())
+            tojo -> this.optimized(tojo, optimization)
         ).total();
         if (total > 0) {
             Logger.info(
@@ -160,7 +161,7 @@ public final class OptimizeMojo extends SafeMojo {
      * Optimization that spies.
      * @since 0.68.0
      */
-    public static final class OptSpy implements Function<XML, XML> {
+    static final class OptSpy implements Function<XML, XML> {
         /**
          * Optimizations train.
          */
@@ -175,7 +176,7 @@ public final class OptimizeMojo extends SafeMojo {
          * Ctor.
          * @param target Where to track optimization steps.
          */
-        public OptSpy(final Path target) {
+        OptSpy(final Path target) {
             this(OptTrain.DEFAULT_TRAIN, target);
         }
 
@@ -184,7 +185,7 @@ public final class OptimizeMojo extends SafeMojo {
          * @param trn Optimizations train.
          * @param target Where to track optimization steps.
          */
-        public OptSpy(final Train<Shift> trn, final Path target) {
+        OptSpy(final Train<Shift> trn, final Path target) {
             this.train = trn;
             this.target = target;
         }
@@ -205,7 +206,7 @@ public final class OptimizeMojo extends SafeMojo {
      * ready and works only with `bool` object which was removed. We
      * need to make this optimization great again and add to the train.
      */
-    public static final class OptTrain implements Function<XML, XML> {
+    static final class OptTrain implements Function<XML, XML> {
 
         /**
          * Parsing train with XSLs.
@@ -239,14 +240,14 @@ public final class OptimizeMojo extends SafeMojo {
         private final Function<XML, XML> delegate;
 
         /**
-         * Shifts that we are going to apply.
+         * Xsline with applied shifts.
          */
-        private final Train<Shift> shifts;
+        private final Xsline xsline;
 
         /**
          * The default constructor with the default preset of xsl optimizations.
          */
-        public OptTrain() {
+        OptTrain() {
             this(OptTrain.DEFAULT_TRAIN);
         }
 
@@ -254,7 +255,7 @@ public final class OptimizeMojo extends SafeMojo {
          * Constructor that accepts train of shifts.
          * @param shifts XLS shifts.
          */
-        public OptTrain(final Train<Shift> shifts) {
+        OptTrain(final Train<Shift> shifts) {
             this(xml -> xml, shifts);
         }
 
@@ -263,7 +264,7 @@ public final class OptimizeMojo extends SafeMojo {
          * @param delegate Optimizations that have to be done before.
          * @param xls File from classpath.
          */
-        public OptTrain(final Function<XML, XML> delegate, final String xls) {
+        OptTrain(final Function<XML, XML> delegate, final String xls) {
             this(
                 delegate,
                 new TrDefault<Shift>().with(new StClasspath(xls))
@@ -271,21 +272,38 @@ public final class OptimizeMojo extends SafeMojo {
         }
 
         /**
-         * The default constructor.
+         * Ctor that accepts train of shifts to apply with {@link com.yegor256.xsline.Xsline}.
          * @param delegate Optimizations that have to be done before.
          * @param shifts To apply
          */
-        public OptTrain(
+        OptTrain(
             final Function<XML, XML> delegate,
             final Train<Shift> shifts
         ) {
+            this(
+                delegate,
+                new Xsline(shifts)
+            );
+        }
+
+        /**
+         * Main ctor.
+         * @param delegate Optimizations that have to be done before.
+         * @param xsline Xsline with applied shifts.
+         */
+        OptTrain(
+            final Function<XML, XML> delegate,
+            final Xsline xsline
+        ) {
             this.delegate = delegate;
-            this.shifts = shifts;
+            this.xsline = xsline;
         }
 
         @Override
         public XML apply(final XML xml) {
-            return new Xsline(this.shifts).pass(this.delegate.apply(xml));
+            return this.xsline.pass(
+                this.delegate.apply(xml)
+            );
         }
     }
 }

@@ -162,9 +162,10 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
+        final Function<XML, XML> optimization = this.transpilation();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, this.transpilation())
+            tojo -> this.transpiled(tojo, optimization)
         ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",

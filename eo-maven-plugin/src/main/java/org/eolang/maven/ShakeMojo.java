@@ -78,12 +78,13 @@ public final class ShakeMojo extends SafeMojo {
     void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
+        final Function<XML, XML> optimization = this.optimization();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
                 tojos
             ),
-            tojo -> this.shaken(tojo, this.optimization())
+            tojo -> this.shaken(tojo, optimization)
         ).total();
         if (total > 0) {
             Logger.info(
