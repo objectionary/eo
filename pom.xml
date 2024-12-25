@@ -205,11 +205,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-<<<<<<< Updated upstream
-        <version>0.33.1</version>
-=======
         <version>0.33.3</version>
->>>>>>> Stashed changes
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -325,43 +321,6 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-<<<<<<< Updated upstream
-=======
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <execution>
-            <id>project-validate</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-xml</artifactId>
-            <version>0.33.3</version>
-          </dependency>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-xml</artifactId>
-            <version>3.0.23</version>
-          </dependency>
-          <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>12.5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
->>>>>>> Stashed changes
     </plugins>
     <pluginManagement>
       <plugins>
@@ -523,7 +482,7 @@ SOFTWARE.
               <dependency>
                 <groupId>com.jcabi</groupId>
                 <artifactId>jcabi-xml</artifactId>
-                <version>0.33.1</version>
+                <version>0.33.3</version>
               </dependency>
               <dependency>
                 <groupId>org.codehaus.groovy</groupId>
