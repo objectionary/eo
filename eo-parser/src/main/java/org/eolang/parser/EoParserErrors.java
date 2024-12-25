@@ -106,7 +106,8 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 new ParsingException(
                     String.format(
                         "[%d:%d] %s: %s:%n%s",
-                        line, position,
+                        line,
+                        position,
                         "error",
                         detailed,
                         new UnderlinedMessage(
@@ -123,7 +124,11 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             this.errors.add(
                 new ParsingException(
                     String.format(
-                        "[%d:%d] %s: %s", line, position, "error", msg
+                        "[%d:%d] %s: %s",
+                        line,
+                        position,
+                        "error",
+                        msg
                     ),
                     line
                 )

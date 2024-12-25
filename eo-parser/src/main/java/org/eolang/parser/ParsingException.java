@@ -45,7 +45,7 @@ public final class ParsingException extends RuntimeException {
      * @param msg Message
      * @param line The place
      */
-    public ParsingException(final String msg, final int line) {
+    ParsingException(final String msg, final int line) {
         this(msg, null, line);
     }
 
@@ -55,7 +55,7 @@ public final class ParsingException extends RuntimeException {
      * @param cause Cause of failure
      * @param line The place
      */
-    public ParsingException(final String msg, final Exception cause, final int line) {
+    ParsingException(final String msg, final Exception cause, final int line) {
         super(msg, cause);
         this.place = line;
     }
