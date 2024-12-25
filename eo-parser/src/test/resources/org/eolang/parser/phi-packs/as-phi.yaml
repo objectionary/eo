@@ -27,13 +27,13 @@ input: |
       length.
         as-phi $
       $.greater-than 0
-with-sugar: |-
+sweet: |-
   {⟦
     prints-itself ↦ ⟦
       φ ↦ Φ̇.assert-that(Φ̇.as-phi(ξ).length, ξ.greater-than(0))
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       prints-itself ↦ ⟦

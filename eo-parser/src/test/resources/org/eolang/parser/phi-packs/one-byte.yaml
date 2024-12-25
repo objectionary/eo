@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 input: A2- > bts
-with-sugar: |-
+sweet: |-
   {⟦
     bts ↦ Φ̇.bytes(⟦ Δ ⤍ A2- ⟧)
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       bts ↦ Φ.org.eolang.bytes(

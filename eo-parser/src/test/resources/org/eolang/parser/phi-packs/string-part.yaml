@@ -38,7 +38,7 @@ input: |
             sprintf
               "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
               * char-size index ^.^.as-bytes
-with-sugar: |-
+sweet: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
@@ -63,7 +63,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       org ↦ ⟦

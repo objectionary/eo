@@ -66,23 +66,24 @@ final class XmirTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToPhi(final String pack) throws IOException {
+    void convertsToSweetPhi(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
+        final boolean conservative = xtory.map().containsKey("conservative");
         MatcherAssert.assertThat(
             "Result PHI should be equal to provided PHI with syntax sugar",
-            this.asXmir((String) xtory.map().get("input")).toPhi(),
-            Matchers.equalTo(xtory.map().get("with-sugar"))
+            this.asXmir((String) xtory.map().get("input")).toPhi(conservative),
+            Matchers.equalTo(xtory.map().get("sweet"))
         );
     }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToPhiNoSugar(final String pack) throws IOException {
+    void convertsToSaltyPhi(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         MatcherAssert.assertThat(
             "Result PHI should be equal to provided PHI with syntax sugar",
-            this.asXmir((String) xtory.map().get("input")).toPhiNoSugar(),
-            Matchers.equalTo(xtory.map().get("no-sugar"))
+            this.asXmir((String) xtory.map().get("input")).toSaltyPhi(),
+            Matchers.equalTo(xtory.map().get("salty"))
         );
     }
 

@@ -82,7 +82,7 @@ input: |
     # the current and the provided one,
     # as a new sequence.
     [b] > concat /bytes
-with-sugar: |-
+sweet: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
@@ -138,7 +138,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       org ↦ ⟦

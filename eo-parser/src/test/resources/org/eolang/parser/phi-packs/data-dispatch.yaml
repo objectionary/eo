@@ -23,12 +23,12 @@
 input: |
   5.plus 5 > ten
   "Hello".concat "world" > greetings
-with-sugar: |-
+sweet: |-
   {⟦
     ten ↦ 5.plus(5),
     greetings ↦ "Hello".concat("world")
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       ten ↦ Φ.org.eolang.number(

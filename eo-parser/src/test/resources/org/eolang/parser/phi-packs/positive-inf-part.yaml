@@ -24,13 +24,13 @@ input: |
   # Foo.
   [] > positive-infinity
     number 7F-F0-00-00-00-00-00-00 > @
-with-sugar: |-
+sweet: |-
   {⟦
     positive-infinity ↦ ⟦
       φ ↦ Φ̇.number(Φ̇.bytes(⟦ Δ ⤍ 7F-F0-00-00-00-00-00-00 ⟧))
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       positive-infinity ↦ ⟦

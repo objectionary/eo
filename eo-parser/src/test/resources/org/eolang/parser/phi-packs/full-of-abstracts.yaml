@@ -20,21 +20,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
+conservative: true
 input: |
-  +package foo.bar.baz
+  +package org.eolang
 
   # No comments.
-  [] > main
-    stdout > @
+  [x] > foo
+    [] > empty
+      m > n
+    [y] > inner /number
+    bar > baz
+      [q]
+        a > b
 sweet: |-
   {⟦
-    foo ↦ ⟦
-      bar ↦ ⟦
-        baz ↦ ⟦
-          main ↦ ⟦
-            φ ↦ Φ̇.stdout
+    org() ↦ ⟦
+      eolang() ↦ ⟦
+        foo(x) ↦ ⟦
+          empty() ↦ ⟦
+            n ↦ Φ̇.m
           ⟧,
-          λ ⤍ Package
+          inner(y) ↦ ⟦
+            λ ⤍ Lorg_eolang_foo_inner
+          ⟧,
+          baz ↦ Φ̇.bar(
+            ⟦
+              q ↦ ∅,
+              b ↦ Φ̇.a
+            ⟧
+          )
         ⟧,
         λ ⤍ Package
       ⟧,
@@ -44,13 +58,23 @@ sweet: |-
 salty: |-
   {
     ⟦
-      foo ↦ ⟦
-        bar ↦ ⟦
-          baz ↦ ⟦
-            main ↦ ⟦
-              φ ↦ Φ.org.eolang.stdout
+      org ↦ ⟦
+        eolang ↦ ⟦
+          foo ↦ ⟦
+            x ↦ ∅,
+            empty ↦ ⟦
+              n ↦ Φ.org.eolang.m
             ⟧,
-            λ ⤍ Package
+            inner ↦ ⟦
+              λ ⤍ Lorg_eolang_foo_inner,
+              y ↦ ∅
+            ⟧,
+            baz ↦ Φ.org.eolang.bar(
+              α0 ↦ ⟦
+                q ↦ ∅,
+                b ↦ Φ.org.eolang.a
+              ⟧
+            )
           ⟧,
           λ ⤍ Package
         ⟧,

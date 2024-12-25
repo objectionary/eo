@@ -25,11 +25,11 @@ input: |
     "f":0
     "s":1
     "t":2
-with-sugar: |-
+sweet: |-
   {⟦
     xyz ↦ Φ̇.x("f", "s", "t")
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       xyz ↦ Φ.org.eolang.x(

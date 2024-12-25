@@ -34,7 +34,7 @@ input: |
             # Long object 5.
             [] > long-object-name
     true > @
-with-sugar: |-
+sweet: |-
   {⟦
     compiles-correctly-with-long-duplicate-names ↦ ⟦
       long-object-name ↦ ⟦
@@ -49,7 +49,7 @@ with-sugar: |-
       φ ↦ Φ̇.true
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       compiles-correctly-with-long-duplicate-names ↦ ⟦

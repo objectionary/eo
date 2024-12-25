@@ -165,9 +165,9 @@ public final class PhiMojo extends SafeMojo {
         final String phi;
         try {
             if (this.phiNoSugar) {
-                phi = xmir.toPhiNoSugar();
+                phi = xmir.toSaltyPhi();
             } else {
-                phi = xmir.toPhi();
+                phi = xmir.toPhi(true);
             }
         } catch (final IndexOutOfBoundsException exception) {
             throw new ImpossibleToPhiTranslationException(
