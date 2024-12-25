@@ -138,6 +138,49 @@ final class StrictXmirTest {
         );
     }
 
+    @RepeatedTest(20)
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchemaInMultipleThreads(@Mktmp final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> new StrictXmir(
+                    new Xmir(
+                        StrictXmirTest.xmir(
+                            String.format(
+                                "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                                Manifests.read("EO-Version")
+                            )
+                        )
+                    ),
+                    tmp
+                ).inner()
+            )::asList,
+            "validation should pass as normal"
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchemaInMultipleThreadsWithTheSameXml(@Mktmp final Path tmp) {
+        final XML xml = new StrictXmir(
+            new Xmir(
+                StrictXmirTest.xmir(
+                    String.format(
+                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                        Manifests.read("EO-Version")
+                    )
+                )
+            ),
+            tmp
+        );
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> xml.inner()
+            )::asList,
+            "validation should pass as normal"
+        );
+    }
+
     @Test
     @ExtendWith(MktmpResolver.class)
     void validatesXmirWithBrokenUri(@Mktmp final Path tmp) {
