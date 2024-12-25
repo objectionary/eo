@@ -87,6 +87,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 )
             );
         }
+        final List<String> msgs = new ArrayList<>(0);
         if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
             final Parser parser = (Parser) recognizer;
@@ -102,49 +103,21 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             } else {
                 detailed = "no viable alternative at input";
             }
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s:%n%s",
-                        line,
-                        position,
-                        "error",
-                        detailed,
-                        new UnderlinedMessage(
-                            this.lines.line(line),
-                            position,
-                            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-                        ).formatted()
-                    ),
-                    error,
-                    line
-                )
+            msgs.add(new LocationMessage(line, position, detailed).formatted());
+            msgs.add(
+                new UnderlinedMessage(
+                    this.lines.line(line),
+                    position,
+                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                ).formatted()
             );
         } else if (Objects.isNull(error)) {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s",
-                        line,
-                        position,
-                        "error",
-                        msg
-                    ),
-                    line
-                )
-            );
+            msgs.add(new LocationMessage(line, position, msg).formatted());
         } else {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg, this.lines.line(line)
-                    ),
-                    error,
-                    line
-                )
-            );
+            msgs.add(new LocationMessage(line, position, msg).formatted());
+            msgs.add(this.lines.line(line));
         }
+        this.errors.add(new ParsingException(msg, error, line));
     }
 
     @Override

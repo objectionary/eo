@@ -23,63 +23,40 @@
  */
 package org.eolang.parser;
 
-import java.util.List;
-
-/**
- * When parsing fails.
- *
- * @since 0.1
- */
-public final class ParsingException extends RuntimeException {
+final class LocationMessage {
 
     /**
-     * Serialization marker.
+     * The line where the error occurred.
      */
-    private static final long serialVersionUID = -3043426132301042201L;
+    private final int line;
 
     /**
-     * The place.
+     * The position in the line where the error occurred.
      */
-    private final int place;
+    private final int position;
+
+    /**
+     * The error message.
+     */
+    private final String message;
 
     /**
      * Ctor.
-     * @param msgs Messages
-     * @param cause The cause
-     * @param line The place
-     * @since 0.1
+     * @param line The line where the error occurred.
+     * @param position The position in the line where the error occurred.
+     * @param message The error message.
      */
-    ParsingException(final List<String> msgs, final Exception cause, final int line) {
-        this(String.join("\n", msgs), cause, line);
-    }
-
-
-    /**
-     * Ctor.
-     * @param msg Message
-     * @param line The place
-     */
-    ParsingException(final String msg, final int line) {
-        this(msg, null, line);
+    LocationMessage(final int line, final int position, final String message) {
+        this.line = line;
+        this.position = position;
+        this.message = message;
     }
 
     /**
-     * Ctor.
-     * @param msg Message
-     * @param cause Cause of failure
-     * @param line The place
+     * Formats the error message.
+     * @return The formatted error message.
      */
-    ParsingException(final String msg, final Exception cause, final int line) {
-        super(msg, cause);
-        this.place = line;
+    String formatted() {
+        return String.format("[%d:%d] error: \"%s\"", this.line, this.position, this.message);
     }
-
-    /**
-     * Get the place.
-     * @return Line
-     */
-    public int line() {
-        return this.place;
-    }
-
 }
