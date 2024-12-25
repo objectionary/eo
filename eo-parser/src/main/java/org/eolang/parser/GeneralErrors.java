@@ -24,7 +24,7 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
@@ -37,7 +37,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.30.0
  */
-final class GeneralErrors extends BaseErrorListener implements Errors {
+final class GeneralErrors extends BaseErrorListener implements Iterable<ParsingException> {
 
     /**
      * Errors accumulated.
@@ -98,12 +98,7 @@ final class GeneralErrors extends BaseErrorListener implements Errors {
     }
 
     @Override
-    public List<ParsingException> all() {
-        return Collections.unmodifiableList(this.errors);
-    }
-
-    @Override
-    public int size() {
-        return this.errors.size();
+    public Iterator<ParsingException> iterator() {
+        return this.errors.iterator();
     }
 }

@@ -32,6 +32,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -111,12 +113,13 @@ public final class PhiSyntax implements Syntax {
                 ).domQuietly()
             )
         );
-        if (spy.size() == 0) {
+        final long errors = new Unchecked<>(new LengthOf(spy)).value();
+        if (errors == 0) {
             Logger.debug(this, "Input of PHI calculus compiled, no errors");
         } else {
             Logger.debug(
                 this, "Input of PHI calculus failed to compile (%d errors)",
-                spy.size()
+                errors
             );
         }
         return dom;

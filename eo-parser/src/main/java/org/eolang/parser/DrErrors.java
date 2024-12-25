@@ -37,13 +37,13 @@ final class DrErrors implements Iterable<Directive> {
     /**
      * Errors accumulated.
      */
-    private final Errors errors;
+    private final Iterable<ParsingException> errors;
 
     /**
      * Ctor.
      * @param errors The errors.
      */
-    DrErrors(final Errors errors) {
+    DrErrors(final Iterable<ParsingException> errors) {
         this.errors = errors;
     }
 
@@ -61,7 +61,7 @@ final class DrErrors implements Iterable<Directive> {
                     .attr("line", error.line())
                     .attr("severity", "critical")
                     .set(error.getMessage()),
-                this.errors.all()
+                this.errors
             )
         ).iterator();
     }

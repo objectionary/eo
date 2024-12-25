@@ -24,7 +24,7 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -40,7 +40,7 @@ import org.cactoos.Text;
  * Accumulates all parsing errors related to EO parser.
  * @since 0.50
  */
-final class EoParserErrors extends BaseErrorListener implements Errors {
+final class EoParserErrors extends BaseErrorListener implements Iterable<ParsingException> {
 
     /**
      * Errors accumulated.
@@ -68,16 +68,6 @@ final class EoParserErrors extends BaseErrorListener implements Errors {
     private EoParserErrors(final List<ParsingException> errors, final Lines lines) {
         this.errors = errors;
         this.lines = lines;
-    }
-
-    @Override
-    public List<ParsingException> all() {
-        return Collections.unmodifiableList(this.errors);
-    }
-
-    @Override
-    public int size() {
-        return this.errors.size();
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)
@@ -150,5 +140,10 @@ final class EoParserErrors extends BaseErrorListener implements Errors {
                 )
             );
         }
+    }
+
+    @Override
+    public Iterator<ParsingException> iterator() {
+        return this.errors.iterator();
     }
 }

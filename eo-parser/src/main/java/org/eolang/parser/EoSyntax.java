@@ -34,6 +34,8 @@ import org.cactoos.Input;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
@@ -124,7 +126,9 @@ public final class EoSyntax implements Syntax {
                 ).domQuietly()
             )
         );
-        if (spy.size() + eospy.size() == 0) {
+        final long errors = new Unchecked<>(new LengthOf(spy)).value()
+            + new Unchecked<>(new LengthOf(eospy)).value();
+        if (errors == 0) {
             Logger.debug(
                 this,
                 "The %s program of %d EO lines compiled, no errors",
@@ -133,7 +137,7 @@ public final class EoSyntax implements Syntax {
         } else {
             Logger.debug(
                 this, "The %s program of %d EO lines compiled with %d error(s)",
-                this.name, lines.size(), spy.size() + eospy.size()
+                this.name, lines.size(), errors
             );
         }
         return dom;
