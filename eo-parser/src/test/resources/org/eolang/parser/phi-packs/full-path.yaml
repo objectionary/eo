@@ -23,12 +23,12 @@
 input: |
   QQ.io.stdout > std
   Q.org.eolang.x > y
-with-sugar: |-
+sweet: |-
   {⟦
     std ↦ Φ̇.io.stdout,
     y ↦ Φ̇.x
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       std ↦ Φ.org.eolang.io.stdout,

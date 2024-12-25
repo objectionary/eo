@@ -27,7 +27,7 @@ input: |
       w > @
     5:five
     "hello":3
-with-sugar: |-
+sweet: |-
   {⟦
     xyz ↦ Φ̇.x(
       attr ↦ Φ̇.y,
@@ -38,7 +38,7 @@ with-sugar: |-
       α3 ↦ "hello"
     )
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       xyz ↦ Φ.org.eolang.x(

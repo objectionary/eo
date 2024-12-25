@@ -77,6 +77,12 @@ public final class PhiMojo extends SafeMojo {
     private File phiOutputDir;
 
     /**
+     * Print all the braces in sweet notation.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean conservative = true;
+
+    /**
      * Convert to PHI without syntax sugar.
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -165,9 +171,9 @@ public final class PhiMojo extends SafeMojo {
         final String phi;
         try {
             if (this.phiNoSugar) {
-                phi = xmir.toPhiNoSugar();
+                phi = xmir.toSaltyPhi();
             } else {
-                phi = xmir.toPhi();
+                phi = xmir.toPhi(this.conservative);
             }
         } catch (final IndexOutOfBoundsException exception) {
             throw new ImpossibleToPhiTranslationException(

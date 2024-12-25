@@ -33,7 +33,7 @@ input: |
           main 5 > five
           a > b
           d > e
-with-sugar: |-
+sweet: |-
   {⟦
     main(a) ↦ ⟦
       x ↦ ⟦
@@ -48,7 +48,7 @@ with-sugar: |-
       ⟧
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       main ↦ ⟦

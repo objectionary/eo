@@ -84,7 +84,7 @@ input: |
       01-.as-bytes.eq true
       00-.as-bytes.eq false
 
-with-sugar: |-
+sweet: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
@@ -115,7 +115,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       org ↦ ⟦

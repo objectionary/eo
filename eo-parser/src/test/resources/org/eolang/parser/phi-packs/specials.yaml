@@ -26,7 +26,7 @@ input: |
     ^.x > x
     $.a > b
     @.@ > phi
-with-sugar: |-
+sweet: |-
   {⟦
     main ↦ ⟦
       x ↦ ξ.ρ.x,
@@ -34,7 +34,7 @@ with-sugar: |-
       phi ↦ ξ.φ.φ
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       main ↦ ⟦
