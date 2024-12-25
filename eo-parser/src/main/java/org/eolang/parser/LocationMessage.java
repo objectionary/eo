@@ -23,6 +23,10 @@
  */
 package org.eolang.parser;
 
+/**
+ * Error message that includes the location of the error.
+ * @since 0.50
+ */
 final class LocationMessage {
 
     /**
@@ -57,6 +61,6 @@ final class LocationMessage {
      * @return The formatted error message.
      */
     String formatted() {
-        return String.format("[%d:%d] error: \"%s\"", this.line, this.position, this.message);
+        return String.format("[%d:%d] error: '%s'", this.line, this.position, this.message);
     }
 }

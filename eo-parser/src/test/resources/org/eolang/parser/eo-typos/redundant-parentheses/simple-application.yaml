@@ -27,7 +27,7 @@ line: 3
 #  place in the input where the error occurred. Moreover it should be clear
 #  what to do to fix the error. 'simple-application-named.yaml' has the same issue.
 message: |-
-  [3:-1] error: Invalid program declaration:
+  [3:-1] error: 'Invalid program declaration'
   EOF
   ^^^
 input: |
