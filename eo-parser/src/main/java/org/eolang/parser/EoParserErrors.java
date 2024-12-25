@@ -23,11 +23,10 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
@@ -36,22 +35,12 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.cactoos.Text;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
-import org.cactoos.text.UncheckedText;
-import org.xembly.Directive;
-import org.xembly.Directives;
 
 /**
- * Accumulates all parsing errors.
- *
- * @since 0.30.0
- * @todo #3706:30min Split {@link ParsingErrors} into two classes.
- *  Currently we use the same {@link ParsingErrors} class to accumulate all the parsing errors
- *  despite their origin. This class should be split into two classes: one for parsing errors
- *  {@link ParserErrors} and another for lexer errors {@link LexerErrors}.
+ * Accumulates all parsing errors related to EO parser.
+ * @since 0.50
  */
-final class ParsingErrors extends BaseErrorListener implements Iterable<Directive> {
+final class EoParserErrors extends BaseErrorListener implements Iterable<ParsingException> {
 
     /**
      * Errors accumulated.
@@ -61,23 +50,24 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
     /**
      * The source.
      */
-    private final List<Text> lines;
-
-    /**
-     * Ctor.
-     * @param lines The source in lines
-     */
-    ParsingErrors(final Text... lines) {
-        this(new ListOf<>(lines));
-    }
+    private final Lines lines;
 
     /**
      * Ctor.
      * @param src The source in lines
      */
-    ParsingErrors(final List<Text> src) {
-        this.errors = new LinkedList<>();
-        this.lines = src;
+    EoParserErrors(final List<Text> src) {
+        this(new ArrayList<>(0), new Lines(src));
+    }
+
+    /**
+     * Ctor.
+     * @param errors Errors accumulated
+     * @param lines The source in lines
+     */
+    private EoParserErrors(final List<ParsingException> errors, final Lines lines) {
+        this.errors = errors;
+        this.lines = lines;
     }
 
     // @checkstyle ParameterNumberCheck (10 lines)
@@ -90,6 +80,13 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
         final String msg,
         final RecognitionException error
     ) {
+        if (!Parser.class.isInstance(recognizer)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Illegal usage of %s, please use it to recognize only EO parser errors", this
+                )
+            );
+        }
         if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
             final Parser parser = (Parser) recognizer;
@@ -113,7 +110,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                         "error",
                         detailed,
                         new UnderlinedMessage(
-                            this.line(line).orElse("EOF"),
+                            this.lines.line(line),
                             position,
                             Math.max(token.getStopIndex() - token.getStartIndex(), 1)
                         ).formatted()
@@ -136,7 +133,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
                 new ParsingException(
                     String.format(
                         "[%d:%d] %s: \"%s\"",
-                        line, position, msg, this.line(line).orElse("EOF")
+                        line, position, msg, this.lines.line(line)
                     ),
                     error,
                     line
@@ -146,46 +143,7 @@ final class ParsingErrors extends BaseErrorListener implements Iterable<Directiv
     }
 
     @Override
-    public Iterator<Directive> iterator() {
-        return new org.cactoos.iterable.Joined<>(
-            new Mapped<Iterable<Directive>>(
-                error -> new Directives()
-                    .xpath("/program")
-                    .strict(1)
-                    .addIf("errors")
-                    .strict(1)
-                    .add("error")
-                    .attr("check", "eo-parser")
-                    .attr("line", error.line())
-                    .attr("severity", "critical")
-                    .set(error.getMessage()),
-                this.errors
-            )
-        ).iterator();
-    }
-
-    /**
-     * How many errors?
-     * @return Count of errors accumulated
-     */
-    public int size() {
-        return this.errors.size();
-    }
-
-    /**
-     * Get the line by number.
-     * @param number The line number.
-     * @return The line.
-     */
-    private Optional<String> line(final int number) {
-        final Optional<String> result;
-        if (number < 1 || number > this.lines.size()) {
-            result = Optional.empty();
-        } else {
-            result = Optional.ofNullable(this.lines.get(number - 1))
-                .map(UncheckedText::new)
-                .map(UncheckedText::asString);
-        }
-        return result;
+    public Iterator<ParsingException> iterator() {
+        return this.errors.iterator();
     }
 }
