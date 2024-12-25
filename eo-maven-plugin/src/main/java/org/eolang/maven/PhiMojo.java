@@ -79,6 +79,7 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Print all the braces in sweet notation.
      */
+    @SuppressWarnings("PMD.ImmutableField")
     private boolean conservative = true;
 
     /**
