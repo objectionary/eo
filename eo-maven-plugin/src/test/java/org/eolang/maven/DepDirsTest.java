@@ -50,12 +50,12 @@ final class DepDirsTest {
         new HmBase(temp).save("", Paths.get("test/f.txt"));
         new HmBase(temp).save("", Paths.get("a/g"));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new DepDirs(temp),
             Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new DepDirs(temp),
             Matchers.iterableWithSize(1)
         );

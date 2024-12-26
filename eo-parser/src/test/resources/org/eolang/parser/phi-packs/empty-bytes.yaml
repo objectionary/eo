@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 input: -- > empty
-with-sugar: |-
+sweet: |-
   {⟦
     empty ↦ Φ̇.bytes(⟦ Δ ⤍ -- ⟧)
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       empty ↦ Φ.org.eolang.bytes(

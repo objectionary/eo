@@ -29,7 +29,7 @@ input: |
     "java/lang/Object" > supername
     * > interfaces
       "org/eolang/benchmark/F"
-with-sugar: |-
+sweet: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
@@ -46,7 +46,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       org ↦ ⟦

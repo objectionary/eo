@@ -28,12 +28,14 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.xembly.Directives;
@@ -50,18 +52,47 @@ final class StrictXmirTest {
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
     void validatesXmir(@Mktmp final Path tmp) {
-        MatcherAssert.assertThat(
-            "validation should pass as normal",
+        Assertions.assertDoesNotThrow(
             new StrictXmir(
                 StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"),
                 tmp
-            ).validate(),
-            Matchers.emptyIterable()
+            )::inner,
+            "validation should pass as normal"
         );
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve("XMIR.xsd").toFile().exists(),
             Matchers.is(true)
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MktmpResolver.class)
+    void doesNotFailWithDifferentXmlInMultipleThreads(@Mktmp final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> {
+                    final XML xml = StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd");
+                    return new StrictXmir(xml, tmp).inner();
+                }
+            )::asList,
+            "StrictXmir should not fail in different threads with different xmls"
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MktmpResolver.class)
+    void doesNotFailOnTheSameOperation(@Mktmp final Path tmp) {
+        final XML xmir = new StrictXmir(
+            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+        );
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> xmir.inner()
+            )::asList,
+            "StrictXmir should not fail in different threads with the same xml"
         );
     }
 
@@ -84,8 +115,7 @@ final class StrictXmirTest {
     @Test
     @ExtendWith(MktmpResolver.class)
     void validatesXmirWithLocalSchema(@Mktmp final Path tmp) {
-        MatcherAssert.assertThat(
-            "validation should pass as normal",
+        Assertions.assertDoesNotThrow(
             new StrictXmir(
                 new Xmir(
                     StrictXmirTest.xmir(
@@ -96,8 +126,8 @@ final class StrictXmirTest {
                     )
                 ),
                 tmp
-            ).validate(),
-            Matchers.emptyIterable()
+            )::inner,
+            "validation should pass as normal"
         );
         MatcherAssert.assertThat(
             "temporary XSD file created",
@@ -108,17 +138,60 @@ final class StrictXmirTest {
         );
     }
 
+    @RepeatedTest(20)
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchemaInMultipleThreads(@Mktmp final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> new StrictXmir(
+                    new Xmir(
+                        StrictXmirTest.xmir(
+                            String.format(
+                                "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                                Manifests.read("EO-Version")
+                            )
+                        )
+                    ),
+                    tmp
+                ).inner()
+            )::asList,
+            "validation should pass as normal"
+        );
+    }
+
+    @RepeatedTest(20)
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchemaInMultipleThreadsWithTheSameXml(@Mktmp final Path tmp) {
+        final XML xml = new StrictXmir(
+            new Xmir(
+                StrictXmirTest.xmir(
+                    String.format(
+                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                        Manifests.read("EO-Version")
+                    )
+                )
+            ),
+            tmp
+        );
+        Assertions.assertDoesNotThrow(
+            new Together<>(
+                thread -> xml.inner()
+            )::asList,
+            "validation should pass as normal"
+        );
+    }
+
     @Test
     @ExtendWith(MktmpResolver.class)
     void validatesXmirWithBrokenUri(@Mktmp final Path tmp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new StrictXmir(
+            new StrictXmir(
                 new Xmir(
                     StrictXmirTest.xmir("https://www.invalid-website-uri/XMIR.xsd")
                 ),
                 tmp
-            ).validate(),
+            )::inner,
             "validation should fail because of broken URI"
         );
     }

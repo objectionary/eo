@@ -30,7 +30,7 @@
 [origin] > list
   origin > @
 
-  # Is it empty?
+  # Is it empty?.
   0.eq ^.origin.length > [] > is-empty
 
   # Create a new list with this element added to the end of it.

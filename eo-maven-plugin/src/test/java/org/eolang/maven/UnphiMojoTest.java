@@ -46,6 +46,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.StrictXmir;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -203,12 +204,14 @@ final class UnphiMojoTest {
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
-        final XML doc = new XMLDocument(
-            new TextOf(
-                temp.resolve(
-                    Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
-                )
-            ).asString()
+        final XML doc = new StrictXmir(
+            new XMLDocument(
+                new TextOf(
+                    temp.resolve(
+                        Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
+                    )
+                ).asString()
+            )
         );
         Logger.debug(this, "Parsed phi:\n%s", doc);
         for (final String xpath : (Iterable<String>) xtory.map().get("asserts")) {
@@ -232,16 +235,16 @@ final class UnphiMojoTest {
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final String phi = xtory.map().get("with-sugar").toString();
+        final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
-        Logger.debug(this, "Unphied XMIR: %s", new TextOf(xmir).asString());
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
+            .with("conservative", xtory.map().get("conservative") != null)
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
             .result()

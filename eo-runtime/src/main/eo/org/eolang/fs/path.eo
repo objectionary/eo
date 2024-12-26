@@ -151,6 +151,7 @@
     # | relative | absolute | other       |
     # | relative | relative | uri + other |
     # |----------|----------|-------------|
+    # URI Resolution Rules.
     [other] > resolved
       other.as-bytes > other-as-bytes
       normalized. > @
@@ -327,7 +328,7 @@
       # Normalization includes:
       # - converting multiple slashes into a single slash.
       # - resolving "." (current directory) and ".."  (parent directory) segments.
-      # - handling of drive letters in Windows
+      # - handling of drive letters in Windows.
       [] > normalized
         ^.uri > uri-as-bytes!
         (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative
@@ -421,6 +422,7 @@
       # | root relative      | drive relative | other             |
       # | root relative      | root relative  | other             |
       # |--------------------|----------------|-------------------|
+      # URI Resolution Rules.
       [other] > resolved
         ^.uri > uri-as-bytes!
         ^.separated-correctly other > valid-other!
@@ -522,6 +524,7 @@
       # | "Hello, Jeff"                | "Hello, Jeff"      |
       # | ""                           | ""                 |
       # |------------------------------|--------------------|
+      # Extracting Directory Names from File Paths.
       [] > dirname
         ^.uri > pth!
         text > txt

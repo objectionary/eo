@@ -32,10 +32,6 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnReplaced;
-import org.eolang.maven.name.OnSwap;
-import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Walk;
 
@@ -84,9 +80,9 @@ public final class MarkMojo extends SafeMojo {
         final ForeignTojos tojos = this.scopedTojos();
         final long done = sources.stream()
             .filter(src -> src.toString().endsWith(".eo"))
-            .map(file -> this.objectName(file, unplace, version))
+            .map(unplace::make)
             .map(tojos::add)
-            .map(tojo -> tojo.withVersion(version))
+            .peek(tojo -> tojo.withVersion(version))
             .count();
         Logger.info(
             this,
@@ -94,25 +90,5 @@ public final class MarkMojo extends SafeMojo {
             sources.size(), dir, done, version
         );
         return done;
-    }
-
-    /**
-     * Convert given file to object name.
-     * @param file File name
-     * @param unplace Unplace for given file
-     * @param version Version
-     * @return Object name from given file
-     */
-    private ObjectName objectName(final Path file, final Unplace unplace, final String version) {
-        return new OnSwap(
-            this.withVersions,
-            new OnReplaced(
-                new OnVersioned(
-                    unplace.make(file),
-                    version
-                ),
-                this.hashes
-            )
-        );
     }
 }

@@ -29,7 +29,6 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionized
 public final class PhCopy extends PhOnce {
 
     /**
@@ -38,10 +37,6 @@ public final class PhCopy extends PhOnce {
      * @param phi The object
      */
     public PhCopy(final Phi phi) {
-        super(
-            phi::copy,
-            () -> String.format("%s'", phi),
-            () -> String.format("%s", phi.φTerm())
-        );
+        super(phi::copy);
     }
 }

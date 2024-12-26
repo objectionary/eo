@@ -31,7 +31,7 @@
 # Get environment variable as `string`.
 # If return `string` is empty - the variable does not exist.
 #
-# See https://man7.org/linux/man-pages/man3/getenv.3.html
+# See https://man7.org/linux/man-pages/man3/getenv.3.html.
 [name] > getenv
   output. > @
     if.

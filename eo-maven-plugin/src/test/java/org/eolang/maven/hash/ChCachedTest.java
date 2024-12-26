@@ -24,7 +24,7 @@
 package org.eolang.maven.hash;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -47,13 +47,13 @@ final class ChCachedTest {
         );
         for (int idx = 0; idx < 10; ++idx) {
             MatcherAssert.assertThat(
-                BinarizeParseTest.TO_ADD_MESSAGE,
+                CatalogsTest.TO_ADD_MESSAGE,
                 cached.value(),
                 Matchers.equalTo("dummy")
             );
         }
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             invocations.get(),
             Matchers.equalTo(1)
         );

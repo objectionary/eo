@@ -36,7 +36,6 @@ import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +44,6 @@ import org.eolang.XmirObject;
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
 @XmirObject(oname = "number.times")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOnumber$EOtimes extends PhDefault implements Atom {

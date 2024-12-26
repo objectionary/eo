@@ -21,6 +21,15 @@
 # SOFTWARE.
 ---
 line: 3
+# @todo #3706:30min Unreadable error message if program declaration is invalid.
+#  Improve error message for the case when a program declaration is invalid.
+#  The error message should be more informative and should point to the exact
+#  place in the input where the error occurred. Moreover it should be clear
+#  what to do to fix the error. 'simple-application-named.yaml' has the same issue.
+message: |-
+  [3:-1] error: 'Invalid program declaration'
+  EOF
+  ^^^
 input: |
   1.add 1 > x
     (1.add 1)

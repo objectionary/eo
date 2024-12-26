@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 input: x.y.z > xyz
-with-sugar: |-
+sweet: |-
   {⟦
     xyz ↦ Φ̇.x.y.z
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       xyz ↦ Φ.org.eolang.x.y.z

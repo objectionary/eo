@@ -21,6 +21,10 @@
 # SOFTWARE.
 ---
 line: 2
+message: >-
+  [2:4] error: 'Invalid object declaration'
+    y:^
+      ^
 input: |
   x
     y:^

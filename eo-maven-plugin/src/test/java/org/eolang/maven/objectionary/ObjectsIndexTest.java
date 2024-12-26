@@ -27,7 +27,7 @@ import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,22 +53,22 @@ final class ObjectsIndexTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             index.contains("unknown"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             calls.get(),
             Matchers.is(1)
         );
@@ -78,7 +78,7 @@ final class ObjectsIndexTest {
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new ObjectsIndex().contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

@@ -31,7 +31,6 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.name.ObjectName;
 
 /**
  * Foreign tojos.
@@ -114,15 +112,6 @@ public final class ForeignTojos implements Closeable {
             tojo.set(Attribute.SCOPE.getKey(), this.scope.get());
         }
         return new ForeignTojo(tojo);
-    }
-
-    /**
-     * Add a foreign tojo.
-     * @param name The name of the tojo as {@link ObjectName}.
-     * @return The tojo.
-     */
-    public ForeignTojo add(final ObjectName name) {
-        return this.add(name.toString());
     }
 
     /**
@@ -245,15 +234,6 @@ public final class ForeignTojos implements Closeable {
      */
     public boolean contains(final String name) {
         return !this.select(tojo -> tojo.get(Attribute.ID.getKey()).equals(name)).isEmpty();
-    }
-
-    /**
-     * Check if the tojos contains a foreign tojos with object name.
-     * @param name The name of the tojo.
-     * @return True if tojo exists.
-     */
-    public boolean contains(final ObjectName... name) {
-        return Arrays.stream(name).map(Object::toString).allMatch(this::contains);
     }
 
     /**
@@ -394,12 +374,7 @@ public final class ForeignTojos implements Closeable {
         /**
          * Git SHA of the object in the {@code objectionary/home}.
          */
-        HASH("hash"),
-
-        /**
-         * Ver.
-         */
-        VER("ver");
+        HASH("hash");
 
         /**
          * Attribute name.

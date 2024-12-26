@@ -36,7 +36,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +44,6 @@ import org.eolang.XmirObject;
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
 @XmirObject(oname = "i64.plus")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi64$EOplus extends PhDefault implements Atom {

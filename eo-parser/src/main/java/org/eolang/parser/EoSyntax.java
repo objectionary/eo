@@ -34,6 +34,8 @@ import org.cactoos.Input;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
@@ -105,7 +107,7 @@ public final class EoSyntax implements Syntax {
      */
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
-        final ParsingErrors spy = new ParsingErrors(lines);
+        final GeneralErrors spy = new GeneralErrors(lines);
         final EoLexer lexer = new EoIndentLexer(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
@@ -113,17 +115,20 @@ public final class EoSyntax implements Syntax {
             new CommonTokenStream(lexer)
         );
         parser.removeErrorListeners();
-        parser.addErrorListener(spy);
+        final EoParserErrors eospy = new EoParserErrors(lines);
+        parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = Syntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
-                    new Directives(xel).append(spy)
+                    new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
                 ).domQuietly()
             )
         );
-        if (spy.size() == 0) {
+        final long errors = new Unchecked<>(new LengthOf(spy)).value()
+            + new Unchecked<>(new LengthOf(eospy)).value();
+        if (errors == 0) {
             Logger.debug(
                 this,
                 "The %s program of %d EO lines compiled, no errors",
@@ -132,7 +137,7 @@ public final class EoSyntax implements Syntax {
         } else {
             Logger.debug(
                 this, "The %s program of %d EO lines compiled with %d error(s)",
-                this.name, lines.size(), spy.size()
+                this.name, lines.size(), errors
             );
         }
         return dom;

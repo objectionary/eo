@@ -32,6 +32,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -91,7 +93,7 @@ public final class PhiSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final XePhiListener xel = new XePhiListener(this.name);
-        final ParsingErrors spy = new ParsingErrors(this.input);
+        final GeneralErrors spy = new GeneralErrors(this.input);
         final PhiLexer lexer = new PhiLexer(
             CharStreams.fromStream(
                 new InputStreamOf(this.input)
@@ -107,16 +109,17 @@ public final class PhiSyntax implements Syntax {
         final XML dom = Syntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
-                    new Directives(xel).append(spy).append(this.extra)
+                    new Directives(xel).append(new DrErrors(spy)).append(this.extra)
                 ).domQuietly()
             )
         );
-        if (spy.size() == 0) {
+        final long errors = new Unchecked<>(new LengthOf(spy)).value();
+        if (errors == 0) {
             Logger.debug(this, "Input of PHI calculus compiled, no errors");
         } else {
             Logger.debug(
                 this, "Input of PHI calculus failed to compile (%d errors)",
-                spy.size()
+                errors
             );
         }
         return dom;

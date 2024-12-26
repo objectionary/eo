@@ -21,24 +21,27 @@
 # SOFTWARE.
 ---
 name: zerocracy
+run-name: "zerocracy judges"
 'on':
   schedule:
-    - cron: '0 2,6,10,14,18,22 * * *'
+    - cron: '0 0,2,4,6,8,10,12,14,16,18,20,22 * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
 jobs:
   zerocracy:
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.55
+      - uses: zerocracy/judges-action@0.0.65
         with:
+          verbose: false
           token: ${{ secrets.ZEROCRACY_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repositories: objectionary/*
           options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
-            repositories=objectionary/*
           factbase: objectionary.fb
       - uses: zerocracy/pages-action@0.0.40
         with:

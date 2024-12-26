@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.BinarizeParseTest;
+import org.eolang.maven.CatalogsTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +58,7 @@ final class HmBaseTest {
         final String content = new UncheckedText(new Randomized(size)).asString();
         new HmBase(temp).save(content, resolve);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
         );
@@ -69,7 +69,7 @@ final class HmBaseTest {
         final Path path = Paths.get("file.txt");
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new HmBase(temp).exists(path),
             Matchers.is(true)
         );
@@ -81,7 +81,7 @@ final class HmBaseTest {
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new HmBase(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
@@ -95,7 +95,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -109,7 +109,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -122,7 +122,7 @@ final class HmBaseTest {
         final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            CatalogsTest.TO_ADD_MESSAGE,
             new TextOf(home.load(subfolder)),
             Matchers.equalTo(new TextOf(content))
         );
@@ -133,7 +133,7 @@ final class HmBaseTest {
         Assertions.assertThrows(
             NoSuchFileException.class,
             () -> new HmBase(temp).load(Paths.get("nonexistent")),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            CatalogsTest.TO_ADD_MESSAGE
         );
     }
 
@@ -142,7 +142,7 @@ final class HmBaseTest {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new HmBase(temp).exists(temp.toAbsolutePath()),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            CatalogsTest.TO_ADD_MESSAGE
         );
     }
 }

@@ -264,7 +264,7 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "We expect the error with correct line number was found",
             XhtmlMatchers.xhtml(story.after().toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );
@@ -273,6 +273,17 @@ final class EoSyntaxTest {
             Integer.parseInt(story.after().xpath("/program/errors/error[1]/@line").get(0)),
             Matchers.equalTo(Integer.parseInt(story.map().get("line").toString()))
         );
+        final String msg = "message";
+        if (story.map().containsKey(msg)) {
+            MatcherAssert.assertThat(
+                XhtmlMatchers.xhtml(story.after()).toString(),
+                story.after()
+                    .xpath("/program/errors/error[1]/text()")
+                    .get(0)
+                    .replaceAll("\r", ""),
+                Matchers.equalTo(story.map().get(msg).toString())
+            );
+        }
     }
 
     @ParameterizedTest

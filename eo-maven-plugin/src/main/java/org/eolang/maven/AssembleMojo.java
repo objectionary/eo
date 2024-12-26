@@ -218,7 +218,7 @@ public final class AssembleMojo extends SafeMojo {
     private boolean placeBinariesThatHaveSources;
 
     /**
-     * Pull objects from objectionaries or not.
+     * Pull objects from objectionary or not.
      * @since 0.32.0
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")

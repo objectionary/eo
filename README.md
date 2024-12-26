@@ -63,11 +63,14 @@ All of them have something **we don't tolerate**:
 ## Quick Start
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
-[Rust with Cargo][cargo]
-and [eoc](https://github.com/objectionary/eoc).
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+Then, you install [eoc](https://github.com/objectionary/eoc):
 
-Then, start with a simple EO program in `app.eo` file:
+```bash
+npm install -g eolang@0.28.0
+```
+
+Then, start with a simple EO program in the `app.eo` file:
 
 ```eo
 # Just prints hello.
@@ -76,16 +79,16 @@ Then, start with a simple EO program in `app.eo` file:
     "Hello, world!\n"
 ```
 
-Compile it like this (may take a minute or so):
+Compile it like this (may take up to a minute or so):
 
 ```bash
-eoc link
+eoc --easy link
 ```
 
 Then, run it:
 
 ```bash
-eoc --alone dataize app
+eoc --easy --alone dataize app
 ```
 
 You should see "Hello, world!" printed.
@@ -259,28 +262,28 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          65282  33.25%
-add-refs.xsl                         22510  11.47%
-set-locators.xsl                     11742  5.98%
-tests.xsl                            10472  5.33%
-rename-tests-inners.xsl              9189   4.68%
-resolve-aliases.xsl                  5867   2.99%
-add-probes.xsl                       5862   2.99%
-classes.xsl                          5526   2.81%
-explicit-data.xsl                    5464   2.78%
-package.xsl                          5319   2.71%
-vars-float-up.xsl                    5301   2.70%
-add-default-package.xsl              5166   2.63%
-cti-adds-errors.xsl                  4775   2.43%
-expand-qqs.xsl                       4197   2.14%
-expand-aliases.xsl                   4080   2.08%
-clean-up.xsl                         3813   1.94%
+to-java.xsl                          68264  32.87%
+add-refs.xsl                         24448  11.77%
+set-locators.xsl                     12970  6.25%
+tests.xsl                            10989  5.29%
+rename-tests-inners.xsl              9114   4.39%
+add-probes.xsl                       6215   2.99%
+resolve-aliases.xsl                  5968   2.87%
+vars-float-up.xsl                    5879   2.83%
+classes.xsl                          5856   2.82%
+add-default-package.xsl              5548   2.67%
+explicit-data.xsl                    5511   2.65%
+package.xsl                          5313   2.56%
+cti-adds-errors.xsl                  5106   2.46%
+expand-qqs.xsl                       4279   2.06%
+clean-up.xsl                         4133   1.99%
+atoms-with-bound-attrs.xsl           4106   1.98%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-12-13 at 05:54,
+on 2024-12-23 at 05:07,
 on Linux with 4 CPUs.
-The total is 196332 milliseconds.
+The total is 207665 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -321,6 +324,4 @@ to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
-[cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12310206821
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12461404086

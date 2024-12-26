@@ -37,5 +37,5 @@ public interface Atom {
      * Executes λ function and calculates object.
      * @return Object calculated from λ function.
      */
-    Phi lambda();
+    Phi lambda() throws Exception;
 }

@@ -38,13 +38,11 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.ExFailure;
-import org.eolang.Versionized;
 
 /**
  * File streams.
  * @since 0.40
  */
-@Versionized
 final class Files {
     /**
      * Files instance.

@@ -353,24 +353,6 @@ public final class ForeignTojo {
         return this.attribute(ForeignTojos.Attribute.SCOPE);
     }
 
-    /**
-     * Temporary version.
-     * @param ver The version.
-     * @return The tojo itself.
-     */
-    public ForeignTojo withVer(final String ver) {
-        this.delegate.set(ForeignTojos.Attribute.VER.getKey(), ver);
-        return this;
-    }
-
-    /**
-     * Return the temporary version of the tojo.
-     * @return The version.
-     */
-    public String ver() {
-        return this.attribute(ForeignTojos.Attribute.VER);
-    }
-
     @Override
     public boolean equals(final Object other) {
         final boolean result;

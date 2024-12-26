@@ -32,14 +32,12 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 
 /**
  * Dynamic memory.
  *
  * @since 0.19
  */
-@Versionized
 final class Heaps {
 
     /**

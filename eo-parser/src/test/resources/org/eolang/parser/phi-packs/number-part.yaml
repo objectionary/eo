@@ -27,7 +27,7 @@ input: |
   # The `number` object is an abstraction of a 64-bit floating-point
   [as-bytes] > number
     $.times -1 > neg
-with-sugar: |-
+sweet: |-
   {⟦
     org ↦ ⟦
       eolang ↦ ⟦
@@ -39,7 +39,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       org ↦ ⟦

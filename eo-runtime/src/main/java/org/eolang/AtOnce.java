@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.1
  */
-@Versionized
 public final class AtOnce implements Attr {
 
     /**
@@ -53,30 +52,6 @@ public final class AtOnce implements Attr {
     public AtOnce(final Attr attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>();
-    }
-
-    @Override
-    public String toString() {
-        final String txt;
-        final Phi phi = this.cached.get();
-        if (phi == null) {
-            txt = String.format("%sO", this.origin.toString());
-        } else {
-            txt = phi.toString();
-        }
-        return txt;
-    }
-
-    @Override
-    public String φTerm() {
-        final String txt;
-        final Phi phi = this.cached.get();
-        if (phi == null) {
-            txt = "Lazy";
-        } else {
-            txt = phi.φTerm();
-        }
-        return txt;
     }
 
     @Override

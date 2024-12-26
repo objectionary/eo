@@ -35,7 +35,7 @@ input: |
             x.write > @
               x.as-int.plus 1
         11
-with-sugar: |-
+sweet: |-
   {⟦
     iterates-over-simple-counter ↦ ⟦
       x ↦ Φ̇.memory(0),
@@ -49,7 +49,7 @@ with-sugar: |-
       )
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       iterates-over-simple-counter ↦ ⟦

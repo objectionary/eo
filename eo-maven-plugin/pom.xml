@@ -42,7 +42,12 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.0.24</version>
+      <version>0.0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+      <version>1.1.6</version>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
@@ -135,11 +140,6 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.17.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.twdata.maven</groupId>
       <artifactId>mojo-executor</artifactId>
       <version>2.4.0</version>
@@ -187,13 +187,19 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
+      <artifactId>together</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.18.3</version>
+      <version>0.18.4</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -217,11 +223,6 @@ SOFTWARE.
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.17.0</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.18.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -262,11 +263,6 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
-      <artifactId>jaxec</artifactId>
-      <!-- version from parent POM -->
-    </dependency>
-    <dependency>
-      <groupId>com.yegor256</groupId>
       <artifactId>jhome</artifactId>
       <!-- version from parent POM -->
     </dependency>
@@ -285,11 +281,6 @@ SOFTWARE.
       <artifactId>jping</artifactId>
       <!-- version from parent POM -->
     </dependency>
-    <dependency>
-      <groupId>com.moandjiezana.toml</groupId>
-      <artifactId>toml4j</artifactId>
-      <version>0.7.2</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -307,21 +298,11 @@ SOFTWARE.
       </plugin>
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
+        <configuration combine.self="override">
+          <skipInstallation>${skipITs}</skipInstallation>
+          <skipInvocation>${skipITs}</skipInvocation>
           <pomExcludes>
-            <!--
-            @todo #2660:30min Enable the following integration tests when it's possible.
-             Now they don't work because many .eo files are absent in the
-             objectionary/home repository or can't be successfully parsed because of the
-             syntax changes. Once they are released, the tests
-             should work as is, without any modifications.
-            -->
-            <exclude>custom_goals/pom.xml</exclude>
             <exclude>fibonacci/pom.xml</exclude>
-            <exclude>rewritten_sources/pom.xml</exclude>
-            <exclude>duplicate_classes/pom.xml</exclude>
-            <exclude>simple/pom.xml</exclude>
-            <exclude>hash_package_layer/pom.xml</exclude>
           </pomExcludes>
         </configuration>
       </plugin>

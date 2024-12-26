@@ -97,7 +97,6 @@ final class MainTest {
             MainTest.exec("--verbose", "org.eolang.false"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
-                Matchers.containsString("\uD835\uDD3B( "),
                 Matchers.containsString("false")
             )
         );

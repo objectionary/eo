@@ -23,12 +23,12 @@
 input: |-
   5 > five
   -0 > minus
-with-sugar: |-
+sweet: |-
   {⟦
     five ↦ 5,
     minus ↦ -0
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       five ↦ Φ.org.eolang.number(

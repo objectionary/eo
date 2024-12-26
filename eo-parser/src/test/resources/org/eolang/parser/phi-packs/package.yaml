@@ -26,7 +26,7 @@ input: |
   # No comments.
   [] > main
     stdout > @
-with-sugar: |-
+sweet: |-
   {⟦
     foo ↦ ⟦
       bar ↦ ⟦
@@ -41,7 +41,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       foo ↦ ⟦

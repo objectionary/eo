@@ -34,7 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.22
  */
-@Versionized
 @SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
 
@@ -69,16 +68,6 @@ final class PhPackage implements Phi {
         throw new ExFailure(
             String.format("Can't #form() from package object \"%s\"", this.pkg)
         );
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Φ.%s", this.pkg);
-    }
-
-    @Override
-    public String φTerm() {
-        return String.format("Φ.%s", this.pkg);
     }
 
     @Override

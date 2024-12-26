@@ -298,9 +298,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 && !"bytes".equals(this.attributes.peek())
             ) {
                 throw new ParsingException(
-                    "It's impossible to represent Δ ⤍ ∅ binding in EO",
-                    new IllegalStateException(),
-                    ctx.getStart().getLine()
+                    new IllegalStateException(), ctx.getStart().getLine(),
+                    "It's impossible to represent Δ ⤍ ∅ binding in EO"
                 );
             }
         } else {

@@ -23,13 +23,12 @@
  */
 package org.eolang;
 
-import org.cactoos.Func;
+import com.yegor256.Together;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.llorllale.cactoos.matchers.RunsInThreads;
 
 /**
  * Test case for {@link PhWith}.
@@ -76,39 +75,24 @@ final class PhWithTest {
         );
     }
 
-    @Test
-    void printsToString() {
-        final Phi dummy = new PhWithTest.Dummy();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new PhWith(
-                new PhCopy(new PhMethod(dummy, "plus")),
-                0, new Data.ToPhi(1L)
-            ).toString(),
-            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOnumber.*")
-        );
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
     void runsInThreads(final String data) {
         final String attr = "foo";
         final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
-        final Func<Phi, Boolean> actual = phi -> {
-            MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
-                new Dataized(phi.take(attr)).asString(),
-                Matchers.is(data)
-            );
-            return true;
-        };
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            new RunsInThreads<>(
-                ref,
-                Runtime.getRuntime().availableProcessors() * 10
-            )
+            "works in multiple threads",
+            new Together<>(
+                thread -> {
+                    MatcherAssert.assertThat(
+                        AtCompositeTest.TO_ADD_MESSAGE,
+                        new Dataized(ref.take(attr)).asString(),
+                        Matchers.is(data)
+                    );
+                    return true;
+                }
+            ),
+            Matchers.not(Matchers.hasItem(false))
         );
     }
 

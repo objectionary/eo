@@ -195,12 +195,13 @@ final class PhiMojoTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(xtory.map().get("input").toString())
+                    .with("conservative", xtory.map().get("conservative") != null)
                     .with("phiNoSugar", false)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(xtory.map().get("with-sugar").toString())
+            Matchers.equalTo(xtory.map().get("sweet").toString())
         );
     }
 
@@ -219,7 +220,7 @@ final class PhiMojoTest {
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(xtory.map().get("no-sugar").toString())
+            Matchers.equalTo(xtory.map().get("salty").toString())
         );
     }
 }

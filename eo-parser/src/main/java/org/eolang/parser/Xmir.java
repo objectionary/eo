@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.namespace.NamespaceContext;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -58,6 +59,11 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Xmir implements XML {
+    /**
+     * Unhex transformation.
+     */
+    private static final Shift UNHEX = new StUnhex();
+
     /**
      * Train of transformations that prepare XMIR for conversion to EO.
      */
@@ -163,8 +169,8 @@ public final class Xmir implements XML {
     }
 
     @Override
-    public Collection<SAXParseException> validate() {
-        return this.xml.validate();
+    public Collection<SAXParseException> validate(final LSResourceResolver resolver) {
+        return this.xml.validate(resolver);
     }
 
     @Override
@@ -174,7 +180,7 @@ public final class Xmir implements XML {
 
     /**
      * Converts XMIR to EO.
-     * @return EO representation as {@code String}
+     * @return EO representation as {@link String}
      */
     public String toEO() {
         return this.converted(
@@ -184,7 +190,7 @@ public final class Xmir implements XML {
 
     /**
      * Converts XMIR to EO, in reverse notation.
-     * @return EO representation as {@code String}
+     * @return EO representation as {@link String}
      */
     public String toReversedEO() {
         return this.converted(
@@ -194,14 +200,27 @@ public final class Xmir implements XML {
 
     /**
      * Converts XMIR to PHI.
-     * @return EO representation as {@code String}
+     * @return PHI representation as {@link String}
      */
     public String toPhi() {
+        return this.toPhi(false);
+    }
+
+    /**
+     * Converts XMIR to PHI.
+     * @param conservative Add empty braces to formations or not
+     * @return PHI representation as {@link  String}.
+     */
+    public String toPhi(final boolean conservative) {
         return this.converted(
             new TrJoined<>(
                 Xmir.FOR_PHI,
                 new TrDefault<>(
-                    new StUnhex(), new StClasspath("/org/eolang/parser/phi/to-phi.xsl")
+                    Xmir.UNHEX,
+                    new StClasspath(
+                        "/org/eolang/parser/phi/to-phi.xsl",
+                        String.format("conservative %b", conservative)
+                    )
                 )
             ),
             "program/phi/text()"
@@ -210,9 +229,9 @@ public final class Xmir implements XML {
 
     /**
      * Converts XMIR to PHI without any syntax sugar.
-     * @return EO representation as {@code String}
+     * @return PHI representation as {@link String}
      */
-    public String toPhiNoSugar() {
+    public String toSaltyPhi() {
         return this.converted(
             Xmir.FOR_PHI, "/org/eolang/parser/phi/to-phi-no-sugar.xsl", "program/phi/text()"
         );
@@ -223,7 +242,7 @@ public final class Xmir implements XML {
      * @param train Train of transformations that prepares XMIR
      * @param xsl Final XSL transformation
      * @param xpath Xpath to retrieve the final result
-     * @return XMIR in other representation as {@code String}.
+     * @return XMIR in other representation as {@link String}.
      */
     private String converted(final Train<Shift> train, final String xsl, final String xpath) {
         return this.converted(new TrJoined<>(train.with(new StClasspath(xsl))), xpath);
@@ -233,7 +252,7 @@ public final class Xmir implements XML {
      * Converts XMIR.
      * @param train Train of transformations that prepares XMIR
      * @param xpath Xpath to retrieve the final result
-     * @return XMIR in other representation as {@code String}.
+     * @return XMIR in other representation as {@link String}.
      */
     private String converted(final Train<Shift> train, final String xpath) {
         return new Xsline(train).pass(this.xml).xpath(xpath).get(0);

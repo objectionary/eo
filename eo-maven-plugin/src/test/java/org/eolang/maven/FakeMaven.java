@@ -54,11 +54,7 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnDefault;
-import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.rust.Names;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -214,7 +210,6 @@ public final class FakeMaven {
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("withVersions", false);
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
@@ -240,21 +235,12 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
+            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiNoSugar", false);
             this.params.putIfAbsent("phiSkipFailed", false);
-            this.params.putIfAbsent(
-                "eoPortalDir",
-                new File("../eo-runtime/src/main/rust/eo")
-            );
-            this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
-            this.params.putIfAbsent(
-                "names",
-                new Names(((File) this.params.get("namesDir")).toPath())
-            );
-            this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
+            this.params.putIfAbsent("conservative", false);
             this.params.putIfAbsent(
                 "phiInputDir",
                 this.workspace.absolute(
@@ -352,46 +338,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Add the correct versioned 'Hello world' program to workspace.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    FakeMaven withVersionedHelloWorld() throws IOException {
-        return this.withProgram(
-            "+package f\n",
-            "# No comments.",
-            "[] > main",
-            "  QQ.io.stdout|0.28.5 > @",
-            "    \"Hello world\""
-        );
-    }
-
-    /**
-     * Add correct versioned program to workspace.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    FakeMaven withVersionedProgram() throws IOException {
-        return this.withProgram(
-            "+alias org.eolang.math.number",
-            "+alias org.eolang.txt.text",
-            "+home https://objectionary.home",
-            "+package f",
-            "+version 0.0.0\n",
-            "# No comments.",
-            "[args] > main",
-            "  seq|0.28.4 > @",
-            "    QQ.io.stdout|0.28.5",
-            "      QQ.txt.sprintf|0.28.6",
-            "        \"Number %d, text %s\"",
-            "        number 2",
-            "        text|0.28.7",
-            "          \"text\"",
-            "    nop"
-        );
-    }
-
-    /**
      * Adds eo program to a workspace.
      * @param program Program as a raw string.
      * @return The same maven instance.
@@ -400,7 +346,7 @@ public final class FakeMaven {
     FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
             String.join("\n", program),
-            new OnDefault(FakeMaven.tojoId(this.current.get()))
+            FakeMaven.tojoId(this.current.get())
         );
     }
 
@@ -422,7 +368,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final String content, final ObjectName object)
+    FakeMaven withProgram(final String content, final String object)
         throws IOException {
         final Path path = Paths.get(
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
@@ -689,25 +635,6 @@ public final class FakeMaven {
                 ShakeMojo.class,
                 LintMojo.class,
                 TranspileMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Binarize full pipeline.
-     *
-     * @since 0.29.0
-     */
-    static final class Binarize implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                OptimizeMojo.class,
-                ShakeMojo.class,
-                LintMojo.class,
-                BinarizeMojo.class
             ).iterator();
         }
     }

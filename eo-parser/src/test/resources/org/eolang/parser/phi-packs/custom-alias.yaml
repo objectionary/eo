@@ -27,7 +27,7 @@ input: |
   # No comments.
   [y] > main
     x y > z
-with-sugar: |-
+sweet: |-
   {⟦
     foo ↦ ⟦
       bar ↦ ⟦
@@ -39,7 +39,7 @@ with-sugar: |-
       λ ⤍ Package
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       foo ↦ ⟦

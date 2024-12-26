@@ -25,7 +25,7 @@ input: |
   [] > test
     ([] (^ > x)).plus > s
       int
-with-sugar: |-
+sweet: |-
   {⟦
     test ↦ ⟦
       s ↦ ⟦
@@ -33,7 +33,7 @@ with-sugar: |-
       ⟧.plus(Φ̇.int)
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       test ↦ ⟦

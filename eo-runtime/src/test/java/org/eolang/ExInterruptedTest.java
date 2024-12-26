@@ -48,22 +48,10 @@ final class ExInterruptedTest {
      *
      * @since 0.28.3
      */
-    private static class EOthrow extends PhDefault {
-        /**
-         * CTor.
-         */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        EOthrow() {
-            this.add(
-                "φ",
-                new AtComposite(
-                    this,
-                    rho -> {
-                        throw new InterruptedException();
-                    }
-                )
-            );
+    private static final class EOthrow extends PhDefault implements Atom {
+        @Override
+        public Phi lambda() throws Exception {
+            throw new InterruptedException();
         }
-
     }
 }

@@ -26,14 +26,14 @@ input: |
     # No comments.
     [] > x
     seq > y
-with-sugar: |-
+sweet: |-
   {⟦
     main(z) ↦ ⟦
       x ↦ ⟦⟧,
       y ↦ Φ̇.seq
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       main ↦ ⟦
