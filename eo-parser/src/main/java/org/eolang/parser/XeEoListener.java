@@ -1112,22 +1112,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     text.substring(1, text.length() - 1)
                 ).getBytes(StandardCharsets.UTF_8)
             );
-        } else if (ctx.TEXT() != null) {
+        } else {
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(
                     XeEoListener.trimMargin(text, indent)
                 ).getBytes(StandardCharsets.UTF_8)
-            );
-        } else {
-            base = "unknown";
-            data = ctx::getText;
-            this.errors.add(
-                new ParsingException(
-                    ctx.getStart().getLine(),
-                    String.format("Unknown data type: %s", ctx.getText())
-                )
             );
         }
         this.objects.prop("base", base).data(data.get());
