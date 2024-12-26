@@ -1232,7 +1232,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         final int number = token.getLine();
         final String[] lines = token.getInputStream().toString().split("\n");
         if (number > 0 && number <= lines.length) {
-            return lines[number - 1]; // Lines are 1-based
+            return lines[number - 1];
         } else {
             throw new IllegalArgumentException(
                 String.format(
