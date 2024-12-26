@@ -25,6 +25,7 @@ package org.eolang.parser;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -82,6 +83,8 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private final Map<ParserRuleContext, String> errors;
 
+    private final List<ParsingException> newerrors;
+
     /**
      * Ctor.
      *
@@ -91,6 +94,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         this.name = name;
         this.dirs = new Directives();
         this.errors = new HashMap<>(0);
+        this.newerrors = new ArrayList<>(0);
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -106,18 +110,33 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs.xpath("/program").strict(1);
-        if (!this.errors.isEmpty()) {
-            this.dirs.addIf("errors").strict(1);
-            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
-                this.dirs
-                    .add("error")
-                    .attr("check", "eo-parser")
-                    .attr("line", error.getKey().getStart().getLine())
-                    .attr("severity", "critical")
-                    .set(error.getValue());
-            }
-            this.dirs.up().up();
+//        if (!this.errors.isEmpty()) {
+//            this.dirs.addIf("errors").strict(1);
+//            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
+//                this.dirs
+//                    .add("error")
+//                    .attr("check", "eo-parser")
+//                    .attr("line", error.getKey().getStart().getLine())
+//                    .attr("severity", "critical")
+//                    .set(error.getValue());
+//            }
+//            this.dirs.up().up();
+//        }
+
+        if (!this.newerrors.isEmpty()) {
+            this.dirs.append(new DrErrors(this.newerrors));
+//            this.dirs.addIf("errors").strict(1);
+//            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
+//                this.dirs
+//                    .add("error")
+//                    .attr("check", "eo-parser")
+//                    .attr("line", error.getKey().getStart().getLine())
+//                    .attr("severity", "critical")
+//                    .set(error.getValue());
+//            }
+//            this.dirs.up().up();
         }
+
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
@@ -483,12 +502,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
+    public void enterHapplicationTailReversedFirst(
+        final EoParser.HapplicationTailReversedFirstContext ctx
+    ) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
+    public void exitHapplicationTailReversedFirst(
+        final EoParser.HapplicationTailReversedFirstContext ctx
+    ) {
         this.objects.leave();
     }
 
@@ -573,12 +596,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+    public void enterVapplicationArgBoundCurrent(
+        final EoParser.VapplicationArgBoundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+    public void exitVapplicationArgBoundCurrent(
+        final EoParser.VapplicationArgBoundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
@@ -603,22 +630,30 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+    public void enterVapplicationArgUnboundCurrent(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+    public void exitVapplicationArgUnboundCurrent(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+    public void enterVapplicationArgUnboundNext(
+        final EoParser.VapplicationArgUnboundNextContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+    public void exitVapplicationArgUnboundNext(
+        final EoParser.VapplicationArgUnboundNextContext ctx
+    ) {
         // Nothing here
     }
 
@@ -707,12 +742,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+    public void enterVapplicationArgHanonymBoundBody(
+        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+    public void exitVapplicationArgHanonymBoundBody(
+        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
+    ) {
         // Nothing here
     }
 
@@ -865,12 +904,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+    public void enterVmethodHeadApplicationTail(
+        final EoParser.VmethodHeadApplicationTailContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+    public void exitVmethodHeadApplicationTail(
+        final EoParser.VmethodHeadApplicationTailContext ctx
+    ) {
         // Nothing here
     }
 
@@ -1040,7 +1083,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             final int index = Integer.parseInt(ctx.INT().getText());
             if (index < 0) {
-                this.errors.put(ctx, "Object binding can't be negative");
+                this.newerrors.add(
+                    new ParsingException(
+                        ctx.getStart().getLine(),
+                        "Object binding can't be negative"
+                    )
+                );
+//                this.errors.put(ctx, "Object binding can't be negative");
             }
             has = String.format("α%d", index);
         }
@@ -1095,7 +1144,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             base = "unknown";
             data = ctx::getText;
-            this.errors.put(ctx, String.format("Unknown data type: %s", ctx.getText()));
+            this.newerrors.add(
+                new ParsingException(
+                    ctx.getStart().getLine(),
+                    String.format("Unknown data type: %s", ctx.getText())
+                )
+            );
+//            this.errors.put(ctx, String.format("Unknown data type: %s", ctx.getText()));
         }
         this.objects.prop("base", base).data(data.get());
     }
