@@ -26,16 +26,12 @@ package org.eolang.parser;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
@@ -81,11 +77,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * Errors map.
+     * Errors.
      */
-    private final Map<ParserRuleContext, String> errors;
-
-    private final List<ParsingException> newerrors;
+    private final List<ParsingException> errors;
 
     /**
      * Ctor.
@@ -95,8 +89,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
-        this.errors = new HashMap<>(0);
-        this.newerrors = new ArrayList<>(0);
+        this.errors = new ArrayList<>(0);
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -112,33 +105,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs.xpath("/program").strict(1);
-//        if (!this.errors.isEmpty()) {
-//            this.dirs.addIf("errors").strict(1);
-//            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
-//                this.dirs
-//                    .add("error")
-//                    .attr("check", "eo-parser")
-//                    .attr("line", error.getKey().getStart().getLine())
-//                    .attr("severity", "critical")
-//                    .set(error.getValue());
-//            }
-//            this.dirs.up().up();
-//        }
-
-        if (!this.newerrors.isEmpty()) {
-            this.dirs.append(new DrErrors(this.newerrors));
-//            this.dirs.addIf("errors").strict(1);
-//            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
-//                this.dirs
-//                    .add("error")
-//                    .attr("check", "eo-parser")
-//                    .attr("line", error.getKey().getStart().getLine())
-//                    .attr("severity", "critical")
-//                    .set(error.getValue());
-//            }
-//            this.dirs.up().up();
+        if (!this.errors.isEmpty()) {
+            this.dirs.append(new DrErrors(this.errors));
         }
-
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
@@ -1085,7 +1054,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             final int index = Integer.parseInt(ctx.INT().getText());
             if (index < 0) {
-                this.newerrors.add(
+                this.errors.add(
                     new ParsingException(
                         ctx.getStart().getLine(),
                         new MsgLocated(
@@ -1094,7 +1063,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                             "Object binding can't be negative"
                         ).formatted(),
                         new MsgUnderlined(
-                            this.line(ctx),
+                            XeEoListener.line(ctx),
                             ctx.getStart().getCharPositionInLine(),
                             ctx.getText().length()
                         ).formatted()
@@ -1104,18 +1073,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             has = String.format("α%d", index);
         }
         this.objects.prop("as", has);
-    }
-
-    private String line(ParserRuleContext ctx) {
-        final Token start1 = ctx.start;
-        final int lineNumber = start1.getLine();
-        final CharStream stream = start1.getInputStream();
-        String[] lines = stream.toString().split("\n");
-        if (lineNumber > 0 && lineNumber <= lines.length) {
-            return lines[lineNumber - 1]; // Lines are 1-based
-        } else {
-            throw new IllegalArgumentException("Line number out of bounds");
-        }
     }
 
     @Override
@@ -1166,13 +1123,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             base = "unknown";
             data = ctx::getText;
-            this.newerrors.add(
+            this.errors.add(
                 new ParsingException(
                     ctx.getStart().getLine(),
                     String.format("Unknown data type: %s", ctx.getText())
                 )
             );
-//            this.errors.put(ctx, String.format("Unknown data type: %s", ctx.getText()));
         }
         this.objects.prop("base", base).data(data.get());
     }
@@ -1273,5 +1229,27 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
+    }
+
+    /**
+     * Get line from context.
+     * @param ctx Context
+     * @return Line
+     */
+    private static String line(final ParserRuleContext ctx) {
+        final Token token = ctx.start;
+        final int number = token.getLine();
+        final String[] lines = token.getInputStream().toString().split("\n");
+        if (number > 0 && number <= lines.length) {
+            return lines[number - 1]; // Lines are 1-based
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Line number '%s' out of bounds, total lines: %d",
+                    number,
+                    lines.length
+                )
+            );
+        }
     }
 }
