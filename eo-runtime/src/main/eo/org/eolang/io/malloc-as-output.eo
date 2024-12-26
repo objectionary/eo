@@ -65,8 +65,7 @@
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
         self. > @
-          seq
-            *
-              ^.^.^.allocated.write offset buffer
-              ^.^.output-block
-                offset.plus buffer.size
+          seq *
+            ^.^.^.allocated.write offset buffer
+            ^.^.output-block
+              offset.plus buffer.size

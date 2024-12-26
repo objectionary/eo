@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
-import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtStrict;
@@ -92,7 +91,7 @@ final class TrParsingTest {
                         yaml,
                         eo -> new EoSyntax(
                             "scenario",
-                            new InputOf(String.format("%s\n", eo))
+                            String.format("%s\n", eo)
                         ).parsed(),
                         new TrParsing().empty()
                     )

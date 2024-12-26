@@ -231,6 +231,12 @@ vapplicationHead
     : applicable
     | hmethod
     | vmethod
+    | compactArray
+    ;
+
+// Compact arrays
+compactArray
+    : NAME SPACE STAR INT?
     ;
 
 // Vertical application head with optional name

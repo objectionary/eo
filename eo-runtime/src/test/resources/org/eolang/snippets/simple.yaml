@@ -27,14 +27,11 @@ args: [ "org.eolang.snippets.simple" ]
 eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
+  +alias org.eolang.txt.sprintf
 
   # No comments.
   [args] > simple
-    seq > @
-      *
-        stdout
-          "Hello, "
-        stdout
-          "Jeff"
-        stdout
-          "!"
+    stdout > @
+      sprintf *1
+        "Hello, %s!"
+        "Jeff"
