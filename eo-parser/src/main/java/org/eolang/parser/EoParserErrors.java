@@ -102,16 +102,16 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             } else {
                 detailed = "no viable alternative at input";
             }
-            msgs.add(new LocationMessage(line, position, detailed).formatted());
+            msgs.add(new MsgLocated(line, position, detailed).formatted());
             msgs.add(
-                new UnderlinedMessage(
+                new MsgUnderlined(
                     this.lines.line(line),
                     position,
                     Math.max(token.getStopIndex() - token.getStartIndex(), 1)
                 ).formatted()
             );
         } else {
-            msgs.add(new LocationMessage(line, position, msg).formatted());
+            msgs.add(new MsgLocated(line, position, msg).formatted());
             msgs.add(this.lines.line(line));
         }
         this.errors.add(new ParsingException(error, line, msgs));

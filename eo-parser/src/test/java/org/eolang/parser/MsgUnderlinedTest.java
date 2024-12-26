@@ -31,25 +31,25 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test case for {@link UnderlinedMessage}.
+ * Test case for {@link MsgUnderlined}.
  * @since 0.50
  * @checkstyle ParameterNumberCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class UnderlinedMessageTest {
+final class MsgUnderlinedTest {
 
     @ParameterizedTest
     @MethodSource("examples")
     void addsUndeline(final String input, final int from, final int length, final String expected) {
         MatcherAssert.assertThat(
             "We expect the message to be highlighted with underline characters",
-            new UnderlinedMessage(input, from, length).formatted(),
+            new MsgUnderlined(input, from, length).formatted(),
             Matchers.equalTo(expected)
         );
     }
 
     /**
-     * Test cases for {@link UnderlinedMessageTest#addsUndeline}.
+     * Test cases for {@link MsgUnderlinedTest#addsUndeline}.
      * ANTLR {@link  org.antlr.v4.runtime.BaseErrorListener} returns strange line numbers
      * and positions like -1. Here I hide this problem intentionally to make all the rest
      * tests pass.

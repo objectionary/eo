@@ -89,7 +89,7 @@ final class GeneralErrors extends BaseErrorListener implements Iterable<ParsingE
             new ParsingException(
                 error,
                 line,
-                new LocationMessage(line, position, msg).formatted(),
+                new MsgLocated(line, position, msg).formatted(),
                 this.lines.line(line)
             )
         );

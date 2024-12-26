@@ -27,7 +27,7 @@ package org.eolang.parser;
  * Error message that includes the location of the error.
  * @since 0.50
  */
-final class LocationMessage {
+final class MsgLocated {
 
     /**
      * The line where the error occurred.
@@ -50,7 +50,7 @@ final class LocationMessage {
      * @param position The position in the line where the error occurred.
      * @param message The error message.
      */
-    LocationMessage(final int line, final int position, final String message) {
+    MsgLocated(final int line, final int position, final String message) {
         this.line = line;
         this.position = position;
         this.message = message;
