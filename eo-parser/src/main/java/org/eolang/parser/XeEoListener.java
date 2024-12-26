@@ -25,10 +25,9 @@ package org.eolang.parser;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -78,9 +77,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * Errors map.
+     * Errors.
      */
-    private final Map<ParserRuleContext, String> errors;
+    private final List<ParsingException> errors;
 
     /**
      * Ctor.
@@ -90,7 +89,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
-        this.errors = new HashMap<>(0);
+        this.errors = new ArrayList<>(0);
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -107,16 +106,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs.xpath("/program").strict(1);
         if (!this.errors.isEmpty()) {
-            this.dirs.addIf("errors").strict(1);
-            for (final Map.Entry<ParserRuleContext, String> error : this.errors.entrySet()) {
-                this.dirs
-                    .add("error")
-                    .attr("check", "eo-parser")
-                    .attr("line", error.getKey().getStart().getLine())
-                    .attr("severity", "critical")
-                    .set(error.getValue());
-            }
-            this.dirs.up().up();
+            this.dirs.append(new DrErrors(this.errors));
         }
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
@@ -483,12 +473,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
+    public void enterHapplicationTailReversedFirst(
+        final EoParser.HapplicationTailReversedFirstContext ctx
+    ) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
+    public void exitHapplicationTailReversedFirst(
+        final EoParser.HapplicationTailReversedFirstContext ctx
+    ) {
         this.objects.leave();
     }
 
@@ -603,12 +597,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+    public void enterVapplicationArgBoundCurrent(
+        final EoParser.VapplicationArgBoundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+    public void exitVapplicationArgBoundCurrent(
+        final EoParser.VapplicationArgBoundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
@@ -633,22 +631,30 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+    public void enterVapplicationArgUnboundCurrent(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+    public void exitVapplicationArgUnboundCurrent(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+    public void enterVapplicationArgUnboundNext(
+        final EoParser.VapplicationArgUnboundNextContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+    public void exitVapplicationArgUnboundNext(
+        final EoParser.VapplicationArgUnboundNextContext ctx
+    ) {
         // Nothing here
     }
 
@@ -737,12 +743,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+    public void enterVapplicationArgHanonymBoundBody(
+        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+    public void exitVapplicationArgHanonymBoundBody(
+        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
+    ) {
         // Nothing here
     }
 
@@ -895,12 +905,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+    public void enterVmethodHeadApplicationTail(
+        final EoParser.VmethodHeadApplicationTailContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+    public void exitVmethodHeadApplicationTail(
+        final EoParser.VmethodHeadApplicationTailContext ctx
+    ) {
         // Nothing here
     }
 
@@ -1070,7 +1084,21 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             final int index = Integer.parseInt(ctx.INT().getText());
             if (index < 0) {
-                this.errors.put(ctx, "Object binding can't be negative");
+                this.errors.add(
+                    new ParsingException(
+                        ctx.getStart().getLine(),
+                        new MsgLocated(
+                            ctx.getStart().getLine(),
+                            ctx.getStart().getCharPositionInLine(),
+                            "Object binding can't be negative"
+                        ).formatted(),
+                        new MsgUnderlined(
+                            XeEoListener.line(ctx),
+                            ctx.getStart().getCharPositionInLine(),
+                            ctx.getText().length()
+                        ).formatted()
+                    )
+                );
             }
             has = String.format("α%d", index);
         }
@@ -1114,7 +1142,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     text.substring(1, text.length() - 1)
                 ).getBytes(StandardCharsets.UTF_8)
             );
-        } else if (ctx.TEXT() != null) {
+        } else {
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = new BytesToHex(
@@ -1122,10 +1150,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     XeEoListener.trimMargin(text, indent)
                 ).getBytes(StandardCharsets.UTF_8)
             );
-        } else {
-            base = "unknown";
-            data = ctx::getText;
-            this.errors.put(ctx, String.format("Unknown data type: %s", ctx.getText()));
         }
         this.objects.prop("base", base).data(data.get());
     }
@@ -1226,5 +1250,27 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
+    }
+
+    /**
+     * Get line from context.
+     * @param ctx Context
+     * @return Line
+     */
+    private static String line(final ParserRuleContext ctx) {
+        final Token token = ctx.start;
+        final int number = token.getLine();
+        final String[] lines = token.getInputStream().toString().split("\n");
+        if (number > 0 && number <= lines.length) {
+            return lines[number - 1];
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Line number '%s' out of bounds, total lines: %d",
+                    number,
+                    lines.length
+                )
+            );
+        }
     }
 }
