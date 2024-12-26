@@ -40,11 +40,8 @@ import java.util.Collections;
  * }
  * </p>
  * @since 0.50
- * @todo #3332:30min Add more decorators for the error message.
- *  For example, {@link GeneralErrors} currently contains logic related to the message formatting.
- *  It's better to create a separate class for this purpose.
  */
-final class UnderlinedMessage {
+final class MsgUnderlined {
 
     /**
      * The message.
@@ -67,7 +64,7 @@ final class UnderlinedMessage {
      * @param from The position from which to start underlining.
      * @param length The length of the underline.
      */
-    UnderlinedMessage(final String origin, final int from, final int length) {
+    MsgUnderlined(final String origin, final int from, final int length) {
         this.origin = origin;
         this.from = from;
         this.length = length;
@@ -94,12 +91,12 @@ final class UnderlinedMessage {
         if (this.origin.isEmpty() || this.length <= 0 || this.from >= this.origin.length()) {
             result = "";
         } else if (this.from < 0) {
-            result = UnderlinedMessage.repeat("^", this.origin.length());
+            result = MsgUnderlined.repeat("^", this.origin.length());
         } else {
             result = String.format(
                 "%s%s",
-                UnderlinedMessage.repeat(" ", this.from),
-                UnderlinedMessage.repeat("^", Math.min(this.length, this.origin.length()))
+                MsgUnderlined.repeat(" ", this.from),
+                MsgUnderlined.repeat("^", Math.min(this.length, this.origin.length()))
             );
         }
         return result;

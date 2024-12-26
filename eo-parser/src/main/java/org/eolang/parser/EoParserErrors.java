@@ -26,7 +26,6 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
@@ -87,6 +86,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 )
             );
         }
+        final List<String> msgs = new ArrayList<>(0);
         if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
             final Token token = (Token) symbol;
             final Parser parser = (Parser) recognizer;
@@ -102,44 +102,19 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             } else {
                 detailed = "no viable alternative at input";
             }
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s:%n%s",
-                        line, position,
-                        "error",
-                        detailed,
-                        new UnderlinedMessage(
-                            this.lines.line(line),
-                            position,
-                            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-                        ).formatted()
-                    ),
-                    error,
-                    line
-                )
-            );
-        } else if (Objects.isNull(error)) {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: %s", line, position, "error", msg
-                    ),
-                    line
-                )
+            msgs.add(new MsgLocated(line, position, detailed).formatted());
+            msgs.add(
+                new MsgUnderlined(
+                    this.lines.line(line),
+                    position,
+                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                ).formatted()
             );
         } else {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg, this.lines.line(line)
-                    ),
-                    error,
-                    line
-                )
-            );
+            msgs.add(new MsgLocated(line, position, msg).formatted());
+            msgs.add(this.lines.line(line));
         }
+        this.errors.add(new ParsingException(error, line, msgs));
     }
 
     @Override

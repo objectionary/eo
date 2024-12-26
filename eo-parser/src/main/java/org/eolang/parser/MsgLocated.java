@@ -23,64 +23,44 @@
  */
 package org.eolang.parser;
 
-import java.util.List;
-
 /**
- * When parsing fails.
- *
- * @since 0.1
+ * Error message that includes the location of the error.
+ * @since 0.50
  */
-public final class ParsingException extends RuntimeException {
+final class MsgLocated {
 
     /**
-     * Serialization marker.
+     * The line where the error occurred.
      */
-    private static final long serialVersionUID = -3043426132301042201L;
+    private final int line;
 
     /**
-     * The place.
+     * The position in the line where the error occurred.
      */
-    private final int place;
+    private final int position;
 
     /**
-     * Ctor.
-     * @param cause Cause of failure
-     * @param line The place
-     * @param msgs Messages
+     * The error message.
      */
-    ParsingException(final Exception cause, final int line, final String... msgs) {
-        this(cause, line, List.of(msgs));
-    }
+    private final String message;
 
     /**
      * Ctor.
-     *
-     * @param cause The cause
-     * @param line The place
-     * @param msgs Messages
-     * @since 0.1
+     * @param line The line where the error occurred.
+     * @param position The position in the line where the error occurred.
+     * @param message The error message.
      */
-    ParsingException(final Exception cause, final int line, final List<String> msgs) {
-        this(cause, line, String.join("\n", msgs));
+    MsgLocated(final int line, final int position, final String message) {
+        this.line = line;
+        this.position = position;
+        this.message = message;
     }
 
     /**
-     * Ctor.
-     *
-     * @param cause Cause of failure
-     * @param line The place
-     * @param msg Message
+     * Formats the error message.
+     * @return The formatted error message.
      */
-    ParsingException(final Exception cause, final int line, final String msg) {
-        super(msg, cause);
-        this.place = line;
-    }
-
-    /**
-     * Get the place.
-     * @return Line
-     */
-    public int line() {
-        return this.place;
+    String formatted() {
+        return String.format("[%d:%d] error: '%s'", this.line, this.position, this.message);
     }
 }
