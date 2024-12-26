@@ -526,9 +526,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 || num.length() > 1 && num.charAt(0) == '0'
                 || Integer.parseInt(num) < 0
             ) {
-                this.errors.put(
-                    ctx,
-                    "Index after '*' must be a positive integer without leading zero or arithmetic signs"
+                this.errors.add(
+                    XeEoListener.error(
+                        ctx,
+                        "Index after '*' must be a positive integer without leading zero or arithmetic signs"
+                    )
                 );
             }
             final int number = Integer.parseInt(num);
@@ -1084,21 +1086,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             final int index = Integer.parseInt(ctx.INT().getText());
             if (index < 0) {
-                this.errors.add(
-                    new ParsingException(
-                        ctx.getStart().getLine(),
-                        new MsgLocated(
-                            ctx.getStart().getLine(),
-                            ctx.getStart().getCharPositionInLine(),
-                            "Object binding can't be negative"
-                        ).formatted(),
-                        new MsgUnderlined(
-                            XeEoListener.line(ctx),
-                            ctx.getStart().getCharPositionInLine(),
-                            ctx.getText().length()
-                        ).formatted()
-                    )
-                );
+                this.errors.add(XeEoListener.error(ctx, "Object binding can't be negative"));
             }
             has = String.format("α%d", index);
         }
@@ -1250,6 +1238,28 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
+    }
+
+    /**
+     * Create parsing exception from given context.
+     * @param ctx Context
+     * @param msg Error message
+     * @return Parsing exception from current context
+     */
+    private static ParsingException error(final ParserRuleContext ctx, final String msg) {
+        return new ParsingException(
+            ctx.getStart().getLine(),
+            new MsgLocated(
+                ctx.getStart().getLine(),
+                ctx.getStart().getCharPositionInLine(),
+                msg
+            ).formatted(),
+            new MsgUnderlined(
+                XeEoListener.line(ctx),
+                ctx.getStart().getCharPositionInLine(),
+                ctx.getText().length()
+            ).formatted()
+        );
     }
 
     /**
