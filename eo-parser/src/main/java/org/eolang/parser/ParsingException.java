@@ -44,6 +44,15 @@ public final class ParsingException extends RuntimeException {
 
     /**
      * Ctor.
+     * @param line The place
+     * @param msgs Messages
+     */
+    ParsingException(final int line, final String... msgs) {
+        this(new IllegalStateException("Parsing error"), line, List.of(msgs));
+    }
+
+    /**
+     * Ctor.
      * @param cause Cause of failure
      * @param line The place
      * @param msgs Messages
