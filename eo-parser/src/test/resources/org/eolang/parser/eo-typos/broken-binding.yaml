@@ -22,9 +22,9 @@
 ---
 line: 4
 message: |-
-  [4:4] error: 'Object binding can't be negative'
+  [4:6] error: 'Object binding can't be negative'
       42:-1
-         ^
+        ^^^
 input: |
   # No comments
   [] > foo

@@ -32,8 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
@@ -1086,14 +1088,34 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 this.newerrors.add(
                     new ParsingException(
                         ctx.getStart().getLine(),
-                        "Object binding can't be negative"
+                        new MsgLocated(
+                            ctx.getStart().getLine(),
+                            ctx.getStart().getCharPositionInLine(),
+                            "Object binding can't be negative"
+                        ).formatted(),
+                        new MsgUnderlined(
+                            this.line(ctx),
+                            ctx.getStart().getCharPositionInLine(),
+                            ctx.getText().length()
+                        ).formatted()
                     )
                 );
-//                this.errors.put(ctx, "Object binding can't be negative");
             }
             has = String.format("α%d", index);
         }
         this.objects.prop("as", has);
+    }
+
+    private String line(ParserRuleContext ctx) {
+        final Token start1 = ctx.start;
+        final int lineNumber = start1.getLine();
+        final CharStream stream = start1.getInputStream();
+        String[] lines = stream.toString().split("\n");
+        if (lineNumber > 0 && lineNumber <= lines.length) {
+            return lines[lineNumber - 1]; // Lines are 1-based
+        } else {
+            throw new IllegalArgumentException("Line number out of bounds");
+        }
     }
 
     @Override
