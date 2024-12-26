@@ -111,10 +111,9 @@
     ^.reducedi > @
       true
       [acc item index] >>
-        seq > @
-          *
-            acc
-            ^.func item index
+        seq * > @
+          acc
+          ^.func item index
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with

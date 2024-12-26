@@ -57,6 +57,9 @@ input: |
   # This is very good object
   # No comments.
   [x] > first
+    sprintf *1 > xyz
+      "Hello, %s"
+      "Jeff"
     x > @
     second > hello
       $.plus.@ 5 > i

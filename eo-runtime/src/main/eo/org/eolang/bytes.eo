@@ -55,7 +55,7 @@
             error
               sprintf
                 "Can't convert non 8 length bytes to a number, bytes are %x"
-                *
+                * ^
 
   # Equals to another object.
   [b] > eq /org.eolang.bool

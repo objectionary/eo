@@ -66,10 +66,9 @@
         (^.input.read size).read.^ > read-bytes
         (^.output.write read-bytes).write.^ > written-bytes
         self. > @
-          seq
-            *
+          seq *
+            written-bytes
+            ^.^.input-block
+              read-bytes
               written-bytes
-              ^.^.input-block
-                read-bytes
-                written-bytes
-                read-bytes.as-bytes
+              read-bytes.as-bytes

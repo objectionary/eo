@@ -231,6 +231,7 @@ vapplicationHead
     : applicable
     | hmethod
     | vmethod
+    | compactArray
     ;
 
 // Compact arrays

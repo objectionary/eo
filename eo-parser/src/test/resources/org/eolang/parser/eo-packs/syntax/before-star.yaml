@@ -19,51 +19,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package org.eolang
-+version 0.0.0
-
-# The `while` object is very similar to a loop with a pre-condition.
-# Here's how you can use it:
-# ```
-# while > last
-#   i.lt 5 > [i]
-#   [i]
-#     QQ.txt.sprintf > @
-#       "Iteration %d\n"
-#       * i
-# ```
-#
-# Here the behaviour of `while` would identical to:
-# ```
-# seq > last
-#   *
-#     dataized "Iteration 1\n"
-#     dataized "Iteration 2\n"
-#     dataized "Iteration 3\n"
-#     dataized "Iteration 4\n"
-# ```
-#
-# Here only first three strings are dataized meanwhile the last one
-# is returned and attached to `last` object.
-# The example with `while` object would behave the same way.
-[condition body] > while
-  if. > @
-    (condition 0).as-bool
-    loop 0
-    false
-
-  # Recursive loop.
-  #
-  # Attention! The object is for internal usage only. Please don't use
-  # the object programmatically outside of `while` object.
-  [index] > loop
-    body index > current
-    if. > @
-      (condition (index.plus 1)).as-bool
-      seq *
-        current
-        ^.loop (index.plus 1)
-      current
+---
+sheets: [ ]
+asserts:
+  - /program/errors/error[@line='3' and @severity='error']
+  - /program/objects//o[@name='first' and count(o)=1]/o[@base='tuple' and count(o)=2]
+  - /program/objects//o[@name='second' and count(o)=2]/o[position()=2 and @base='tuple' and count(o)=2]
+  - /program/objects//o[@name='third' and count(o)=3]/o[position()=3 and @base='tuple' and count(o)=2]
+  - /program/objects//o[@name='fourth' and count(o)=2]/o[@base='sprintf' and count(o)=1]/o[@base='tuple' and count(o)=2]
+  - /program/objects[count(//o[@before-star])=0]
+input: |
+  # No comments.
+  [] > foo
+    sprintf *2 > with-error
+      x
+    sprintf * > first
+      x
+      y
+    sprintf *1 > second
+      x
+      y
+      z
+    sprintf *2 > third
+      x
+      y
+      z
+    sprintf *1 > fourth
+      sprintf *
+        x
+        y
+      z
