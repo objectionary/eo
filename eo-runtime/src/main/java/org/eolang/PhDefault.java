@@ -49,7 +49,9 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Attribute name matcher.
      */
-    private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
+    private static final Pattern SORTABLE = Pattern.compile(
+        String.format("^([a-z].*)|%s$", Attr.PHI)
+    );
 
     /**
      * Attributes nesting level.

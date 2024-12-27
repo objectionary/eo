@@ -334,7 +334,19 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVoid(final EoParser.VoidContext ctx) {
-        this.startObject(ctx).prop("name", ctx.NAME().getText()).prop("base", "∅");
+        this.startObject(ctx);
+        final String name;
+        if (ctx.NAME() != null) {
+            name = ctx.NAME().getText();
+        } else if (ctx.PHI() != null) {
+            name = ctx.PHI().getText();
+        } else {
+            name = "";
+        }
+        if (!name.isEmpty()) {
+            this.objects.prop("name", name);
+        }
+        this.objects.prop("base", "∅");
     }
 
     @Override

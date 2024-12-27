@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-out:
-  - ".*Hello, Jeff!.*"
-file: org/eolang/snippets/simple.eo
-args: [ "org.eolang.snippets.simple" ]
-eo: |
-  +package org.eolang.snippets
-  +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
-
-  # No comments.
-  [args] > simple
-    stdout > @
-      sprintf *1
-        "Hello, %s!"
-        "Jeff"
+input: |-
+  # Foo.
+  [@] > foo
+sweet: |-
+  {⟦
+    foo(φ) ↦ ⟦⟧
+  ⟧}
+salty: |-
+  {
+    ⟦
+      foo ↦ ⟦
+        φ ↦ ∅
+      ⟧
+    ⟧
+  }

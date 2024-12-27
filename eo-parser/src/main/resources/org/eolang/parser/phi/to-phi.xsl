@@ -342,7 +342,7 @@ SOFTWARE.
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="o[eo:void(.)]">
-    <xsl:value-of select="@name"/>
+    <xsl:value-of select="eo:specials(@name, true())"/>
     <xsl:value-of select="$arrow"/>
     <xsl:value-of select="$empty"/>
   </xsl:template>
@@ -354,7 +354,7 @@ SOFTWARE.
         <xsl:value-of select="eo:comma(position(), -1)"/>
         <xsl:value-of select="$space"/>
       </xsl:if>
-      <xsl:value-of select="@name"/>
+      <xsl:value-of select="eo:specials(@name, true())"/>
     </xsl:for-each>
     <xsl:value-of select="$crb"/>
   </xsl:template>
