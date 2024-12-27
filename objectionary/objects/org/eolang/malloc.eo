@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.49.4
++rt jvm org.eolang:eo-runtime:0.50.0
 +rt node eo2js-runtime:0.0.0
-+version 0.49.4
++version 0.50.0
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -94,10 +94,9 @@
     malloc.of > @
       bts.size
       [m] >>
-        seq > @
-          *
-            m.write 0 ^.bts
-            ^.scope m
+        seq * > @
+          m.write 0 ^.bts
+          ^.scope m
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
@@ -134,7 +133,6 @@
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
-        seq > @
-          *
-            ^.write 0 object
-            ^.get
+        seq * > @
+          ^.write 0 object
+          ^.get

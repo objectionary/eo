@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
-+version 0.49.4
++version 0.50.0
 
 # Socket.
 #
@@ -120,10 +120,9 @@
         [size] > read
           (^.^.^.recv size).as-bytes > read-bytes
           self. > @
-            seq
-              *
-                read-bytes
-                ^.^.input-block read-bytes
+            seq *
+              read-bytes
+              ^.^.input-block read-bytes
 
   # Makes an `output` from posix socket.
   # The object allows to use `socket` as output stream and `write` to it sequentially.
@@ -151,10 +150,9 @@
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           self. > @
-            seq
-              *
-                ^.^.^.send buffer
-                ^.^.output-block
+            seq *
+              ^.^.^.send buffer
+              ^.^.output-block
 
   # Posix platform specified socket.
   #

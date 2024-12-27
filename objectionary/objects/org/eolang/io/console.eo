@@ -26,7 +26,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.49.4
++version 0.50.0
 
 # The `console` object is basic I/O object that allows to
 # interact with operation system console.
@@ -116,10 +116,9 @@
               "read"
               * posix.stdin-fileno size
           self. > @
-            seq
-              *
-                read-bytes
-                ^.^.input-block read-bytes
+            seq *
+              read-bytes
+              ^.^.input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -140,13 +139,12 @@
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           self. > @
-            seq
-              *
-                code.
-                  posix
-                    "write"
-                    * posix.stdout-fileno buffer buffer.size
-                ^.^.output-block
+            seq *
+              code.
+                posix
+                  "write"
+                  * posix.stdout-fileno buffer buffer.size
+              ^.^.output-block
 
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
@@ -174,10 +172,9 @@
               "ReadFile"
               * win32.std-input-handle size
           self. > @
-            seq
-              *
-                read-bytes
-                ^.^.input-block read-bytes
+            seq *
+              read-bytes
+              ^.^.input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -198,10 +195,9 @@
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           self. > @
-            seq
-              *
-                code.
-                  win32
-                    "WriteFile"
-                    * win32.std-output-handle buffer buffer.size
-                ^.^.output-block
+            seq *
+              code.
+                win32
+                  "WriteFile"
+                  * win32.std-output-handle buffer buffer.size
+              ^.^.output-block

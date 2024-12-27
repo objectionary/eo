@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.49.4
++version 0.50.0
 
 # List implements based operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
@@ -111,10 +111,9 @@
     ^.reducedi > @
       true
       [acc item index] >>
-        seq > @
-          *
-            acc
-            ^.func item index
+        seq * > @
+          acc
+          ^.func item index
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with

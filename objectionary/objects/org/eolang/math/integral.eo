@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.49.4
++version 0.50.0
 
 # Counts integral from `a` to `b`.
 # Here `func` is integration function, `a` is an upper limit,
@@ -53,22 +53,20 @@
           [left] >>
             ^.^.b > right
             ((right.minus left).div ^.^.n).as-number > step
-            seq > @
-              *
-                while
-                  [i] >>
-                    if. > @
-                      (^.left.as-number.plus ^.step).lt ^.right
-                      seq
-                        *
-                          ^.^.sum.put
-                            ^.^.sum.as-number.plus
-                              ^.^.^.subsection
-                                ^.left.as-number
-                                ^.left.as-number.plus ^.step
-                          ^.left.put
+            seq * > @
+              while
+                [i] >>
+                  if. > @
+                    (^.left.as-number.plus ^.step).lt ^.right
+                    seq *
+                      ^.^.sum.put
+                        ^.^.sum.as-number.plus
+                          ^.^.^.subsection
+                            ^.left.as-number
                             ^.left.as-number.plus ^.step
-                          true
-                      false
-                  true > [i]
-                sum
+                      ^.left.put
+                        ^.left.as-number.plus ^.step
+                      true
+                    false
+                true > [i]
+              sum

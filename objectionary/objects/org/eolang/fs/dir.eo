@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.49.4
++rt jvm org.eolang:eo-runtime:0.50.0
 +rt node eo2js-runtime:0.0.0
-+version 0.49.4
++version 0.50.0
 
 # Directory in the file system.
 # Apparently every directory is a file.
@@ -40,10 +40,9 @@
     if. > @
       ^.exists
       ^
-      seq
-        *
-          mkdir
-          ^
+      seq *
+        mkdir
+        ^
 
     # Makes a directory together with all required
     # parent directories.
@@ -64,10 +63,9 @@
     walked.length > len!
     if. > @
       ^.exists
-      seq
-        *
-          rec-delete walked 0
-          ^
+      seq *
+        rec-delete walked 0
+        ^
       ^
 
     # Deletes files and directories in current directory recursively.
@@ -79,12 +77,11 @@
       if. > @
         ^.len.eq index
         true
-        seq
-          *
-            tup.tail.deleted.exists
-            ^.rec-delete
-              tup.head
-              index.plus 1
+        seq *
+          tup.tail.deleted.exists
+          ^.rec-delete
+            tup.head
+            index.plus 1
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile
