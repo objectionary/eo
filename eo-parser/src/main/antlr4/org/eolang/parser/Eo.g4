@@ -134,6 +134,7 @@ voids
 
 // Void attribute
 void: NAME
+    | PHI
     ;
 
 // Type of atom

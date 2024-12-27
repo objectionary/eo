@@ -54,6 +54,15 @@ input: |
   # No comments.
   [tt a] > atom /int
 
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > with-void-phi
+    [@] > x
+      "Hello" > hello
+    x 5 > five
+    and. > @
+      (five.plus 5).eq 10
+      five.hello.eq "Hello"
+
   # This is very good object
   # No comments.
   [x] > first

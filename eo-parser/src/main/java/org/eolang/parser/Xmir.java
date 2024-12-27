@@ -233,7 +233,7 @@ public final class Xmir implements XML {
      */
     public String toSaltyPhi() {
         return this.converted(
-            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-phi-no-sugar.xsl", "program/phi/text()"
+            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-salty-phi.xsl", "program/phi/text()"
         );
     }
 

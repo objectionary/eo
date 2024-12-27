@@ -335,6 +335,28 @@
         build 2 > @
     9
 
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > with-void-phi
+  [@] > x
+    "Hello" > hello
+  x 5 > five
+  and. > @
+    (five.plus 5).eq 10
+    five.hello.eq "Hello"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > vertical-bound-method
+  eq. > @
+    if.
+      true
+      "second":1
+      "first"
+      .as-bytes:0
+    "first"
+
 # Nesting blah test.
 [] > nesting-blah-test
   blah0 > @

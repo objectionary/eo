@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-phi-no-sugar" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-salty-phi" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
@@ -211,8 +211,8 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:template>
   <!-- Void attribute -->
-  <xsl:template match="o[@base=$empty]">
-    <xsl:value-of select="./@name"/>
+  <xsl:template match="o[eo:void(.)]">
+    <xsl:value-of select="eo:specials(@name, true())"/>
     <xsl:value-of select="$arrow"/>
     <xsl:value-of select="$empty"/>
   </xsl:template>
@@ -241,7 +241,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- Just object -->
-  <xsl:template match="o[@base and @base!=$empty]">
+  <xsl:template match="o[@base and not(eo:void(.))]">
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
     <xsl:if test="@name">

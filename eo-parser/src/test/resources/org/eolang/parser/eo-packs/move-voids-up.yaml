@@ -20,19 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-out:
-  - ".*first.*"
-file: org/eolang/snippets/vmb.eo
-args: [ "org.eolang.snippets.vbm" ]
-eo: |
-  +package org.eolang.snippets
-  +alias org.eolang.io.stdout
-
+sheets: [ ]
+asserts:
+  - /program[not(errors)]
+  - /program/objects/o[@name='foo' and o[@name='x']/following-sibling::o[@name='@']]
+  - /program/objects/o[@name='bar' and o[@name='x']/following-sibling::o[@name='@']/o[@name='y']/following-sibling::o[@name='@']]
+input: |
   # No comments.
-  [args] > vbm
-    stdout > @
-      if.
-        true
-        "second":1
-        "first"
-        .as-bytes:0
+  [x] > app
+    5 > y
+
+  # Foo.
+  "Hello" > [x] > foo
+
+  # Bar.
+  z > [y] > [x] > bar

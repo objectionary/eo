@@ -33,5 +33,7 @@
   inline-voids(text, α0, φ) ↦ ⟦ ⟧,
   empty-inline-voids() ↦ ⟦
     num ↦ 42
-  ⟧
+  ⟧,
+  with-void-phi-sweet(φ) ↦ ⟦⟧,
+  with-void-phi-salty ↦ ⟦ φ ↦ ∅ ⟧
 ⟧}

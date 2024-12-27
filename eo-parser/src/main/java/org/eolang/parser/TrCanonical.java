@@ -51,6 +51,7 @@ public final class TrCanonical extends TrEnvelope {
                         new TrLogged(
                             new TrJoined<>(
                                 new TrClasspath<>(
+                                    "/org/eolang/parser/move-voids-up.xsl",
                                     "/org/eolang/parser/validate-before-stars.xsl",
                                     "/org/eolang/parser/resolve-before-star.xsl"
                                 ).back(),
