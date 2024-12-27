@@ -27,7 +27,11 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,6 +95,32 @@ final class PhiSyntaxTest {
                 "/program/objects/o[@base='.org' and @method]",
                 "/program/objects/o[@base='.eolang' and @method]"
             )
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
+    void printsSaltyToSweet(final String pack) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        MatcherAssert.assertThat(
+            "Salty XMIR should be equivalent to sweet one",
+            new Xmir(
+                new PhiSyntax((String) xtory.map().get("salty")).parsed()
+            ).toPhi(xtory.map().get("conservative") != null),
+            Matchers.equalTo(xtory.map().get("sweet"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
+    void printsSweetToSalty(final String pack) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        MatcherAssert.assertThat(
+            "Sweet XMIR should be equivalent to salty one",
+            new Xmir(
+                new PhiSyntax((String) xtory.map().get("sweet")).parsed()
+            ).toSaltyPhi(),
+            Matchers.equalTo(xtory.map().get("salty"))
         );
     }
 
