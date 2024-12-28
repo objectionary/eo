@@ -24,7 +24,7 @@ name: zerocracy
 run-name: "zerocracy judges"
 'on':
   schedule:
-    - cron: '0 0,2,4,6,8,10,12,14,16,18,20,22 * * *'
+    - cron: '0 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
@@ -37,6 +37,7 @@ jobs:
       - uses: zerocracy/judges-action@0.0.65
         with:
           verbose: false
+          cycles: 1
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repositories: objectionary/*
