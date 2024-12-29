@@ -25,7 +25,9 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.maven.util.HmBase;
@@ -53,17 +55,14 @@ final class UnphiMojoCacheTest {
             Paths.get("target/eo/phi/std.phi")
         );
         workspace.save(
-            "some valid XMIR",
+            "some valid XMIR after unphi",
             Paths.get("target/eo/1-parse/std.xmir")
         );
-        final File xmir = temp.resolve("target/1-parse/std.xmir").toFile();
+        final File xmir = temp.resolve("target/eo/1-parse/std.xmir").toFile();
         final long modified = xmir.lastModified();
-        new FakeMaven(temp).execute(UnphiMojo.class);
+        this.executePhiToXmir(new Farea(temp));
         MatcherAssert.assertThat(
-            String.format(
-                "There should be file with .%s extension after parsing phi to XMIR, but there isn't",
-                AssembleMojo.XMIR
-            ),
+            "XMIR file recreated twice",
             modified,
             Matchers.equalTo(xmir.lastModified())
         );
@@ -73,28 +72,33 @@ final class UnphiMojoCacheTest {
     void touchesInvalidCache(@Mktmp final Path temp) throws Exception {
         final Home workspace = new HmBase(temp);
         workspace.save(
-            "some valid XMIR",
+            "some valid XMIR that appeared before phi",
             Paths.get("target/eo/1-parse/std.xmir")
         );
         workspace.save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/eo/phi/std.phi")
         );
-        final File xmir = temp.resolve("target/1-parse/std.xmir").toFile();
+        final File xmir = temp.resolve("target/eo/1-parse/std.xmir").toFile();
         final long modified = xmir.lastModified();
-        final FakeMaven mvn = new FakeMaven(temp).execute(UnphiMojo.class);
-        workspace.save(
-            "some valid XMIR",
-            Paths.get("target/1-parse/std.xmir")
-        );
-        mvn.execute(UnphiMojo.class);
+        this.executePhiToXmir(new Farea(temp));
         MatcherAssert.assertThat(
-            String.format(
-                "There should be file with .%s extension after parsing phi to XMIR, but there isn't",
-                AssembleMojo.XMIR
-            ),
+            "phi-to-xmir cache not invalidated",
             modified,
             Matchers.lessThan(xmir.lastModified())
+        );
+    }
+
+    private void executePhiToXmir(final Farea farea) throws IOException {
+        farea.together(
+            f -> {
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("phi-to-xmir");
+                f.exec("compile");
+            }
         );
     }
 }
