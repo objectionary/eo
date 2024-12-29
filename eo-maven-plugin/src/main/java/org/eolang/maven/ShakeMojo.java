@@ -31,7 +31,6 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -83,7 +82,7 @@ public final class ShakeMojo extends SafeMojo {
     public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-        final Function<XML, XML> transformations = this.transformations();
+        final Xsline transformations = this.transformations();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
@@ -110,7 +109,7 @@ public final class ShakeMojo extends SafeMojo {
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Function<XML, XML> transformations)
+    private int shaken(final ForeignTojo tojo, final Xsline transformations)
         throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -119,7 +118,7 @@ public final class ShakeMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
-                src -> transformations.apply(xmir).toString(),
+                src -> transformations.pass(xmir).toString(),
                 this.cache.toPath().resolve(ShakeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -133,7 +132,7 @@ public final class ShakeMojo extends SafeMojo {
      * Shake XSL transformations.
      * @return Shake XSL transformations for all tojos.
      */
-    private Function<XML, XML> transformations() {
+    private Xsline transformations() {
         final Train<Shift> measured = this.measured(new TrShaking());
         final Train<Shift> train;
         if (this.trackTransformationSteps) {
@@ -146,6 +145,6 @@ public final class ShakeMojo extends SafeMojo {
         } else {
             train = measured;
         }
-        return new Xsline(train)::pass;
+        return new Xsline(train);
     }
 }

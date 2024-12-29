@@ -42,7 +42,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -166,7 +165,7 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
-        final Function<XML, XML> transpilation = this.transpilation();
+        final Xsline transpilation = this.transpilation();
         final int saved = new Threaded<>(
             sources,
             tojo -> this.transpiled(tojo, transpilation)
@@ -198,7 +197,7 @@ public final class TranspileMojo extends SafeMojo {
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private int transpiled(final ForeignTojo tojo, final Function<XML, XML> transpilation)
+    private int transpiled(final ForeignTojo tojo, final Xsline transpilation)
         throws IOException {
         final Path source = tojo.shaken();;
         final XML xmir = new XMLDocument(source);
@@ -211,7 +210,7 @@ public final class TranspileMojo extends SafeMojo {
         new FpDefault(
             src -> {
                 rewrite.set(true);
-                return transpilation.apply(xmir).toString();
+                return transpilation.pass(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
             this.plugin.getVersion(),
@@ -225,7 +224,7 @@ public final class TranspileMojo extends SafeMojo {
      * Transpile optimization.
      * @return Optimization that transpiles
      */
-    private Function<XML, XML> transpilation() {
+    private Xsline transpilation() {
         return new Xsline(
             new TrSpy(
                 this.measured(TranspileMojo.TRAIN),
@@ -233,7 +232,7 @@ public final class TranspileMojo extends SafeMojo {
                     new ProgramPlace(this.targetDir.toPath().resolve(TranspileMojo.PRE))
                 )
             )
-        )::pass;
+        );
     }
 
     /**
