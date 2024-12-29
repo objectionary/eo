@@ -374,7 +374,12 @@ public final class ForeignTojos implements Closeable {
         /**
          * Git SHA of the object in the {@code objectionary/home}.
          */
-        HASH("hash");
+        HASH("hash"),
+
+        /**
+         * Absolute path of the parsed from XMIR to phi-expression file.
+         */
+        PHI("phi");
 
         /**
          * Attribute name.
