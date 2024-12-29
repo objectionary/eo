@@ -30,7 +30,7 @@
 
 [
     'src/test/groovy/check-xsl-id.groovy',
-    'src/test/groovy/check-xsl-version.groovy'
+    'src/test/groovy/check-xsl-version.groovy',
 ].each { filename ->
     evaluate(new File(filename))
     log.info "Verified with $filename - OK"
