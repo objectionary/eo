@@ -85,9 +85,9 @@ one after another:
     It's done by the `org.eolang.parser.EoSyntax` class in the `eo-parser` module. It takes
     the source code in a plain text format and parses into XML document,
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
-    The output of the parser you can find in the `target/eo/parse` directory.
+    The output of the parser you can find in the `target/eo/1-parse` directory.
     Parsed objects which are versioned (normally pulled from
-    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/parsed` folder.
+    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/1-parsed` folder.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
@@ -97,7 +97,7 @@ one after another:
     The class `org.eolang.parser.Program` is responsible for making XSLT
     transformations and the entire list of them is stored in the
     `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
-    The output of each transformation you can find in the `target/eo/optimize` directory.
+    The output of each transformation you can find in the `target/eo/2-optimize` directory.
 
 * **Compilation**.
     The class `org.eolang.maven.TranspileMojo` in the `eo-maven-plugin` module is responsible
