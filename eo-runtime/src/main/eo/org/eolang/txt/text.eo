@@ -178,7 +178,7 @@
       ^.index-of substring
 
   # Returns index of `substring` in current `text`.
-  # If no `substring` was found, it returns -1
+  # If no `substring` was found, it returns -1.
   [substring] > index-of
     (string ^.origin.as-bytes).length > self-len!
     string > substr
