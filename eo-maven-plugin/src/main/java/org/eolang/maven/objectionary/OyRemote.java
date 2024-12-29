@@ -55,7 +55,7 @@ public final class OyRemote implements Objectionary {
     public OyRemote(final CommitHash hash) {
         this.template = new UrlOy(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-            hash.value()
+            hash
         );
     }
 
@@ -119,14 +119,23 @@ public final class OyRemote implements Objectionary {
         /**
          * Objects version hash.
          */
-        private final String hash;
+        private final CommitHash hash;
+
+        /**
+         * Ctor for testing.
+         * @param template URL template
+         * @param hash Commit hash
+         */
+        UrlOy(final String template, final String hash) {
+            this(template, () -> hash);
+        }
 
         /**
          * Ctor.
          * @param template URL template.
          * @param hash Objects version hash.
          */
-        public UrlOy(final String template, final String hash) {
+        public UrlOy(final String template, final CommitHash hash) {
             this.template = template;
             this.hash = hash;
         }
@@ -141,7 +150,7 @@ public final class OyRemote implements Objectionary {
             return new URL(
                 String.format(
                     this.template,
-                    this.hash,
+                    this.hash.value(),
                     name.replace(".", "/")
                 )
             );

@@ -27,7 +27,7 @@ import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.Sticky;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
@@ -47,39 +47,30 @@ final class CommitHashesText extends TextEnvelope {
     private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
-     * Cache.
-     */
-    private static final String CACHE = CommitHashesText.asText(CommitHashesText.HOME);
-
-    /**
      * Constructor.
      */
     CommitHashesText() {
-        super(() -> CommitHashesText.CACHE);
+        super(new Sticky(CommitHashesText::asText));
     }
 
     /**
      * Download from the URL and return the content.
-     * @param url The URL with tags
+     *
      * @return The body of the web page
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static String asText(final String url) {
-        return new Unchecked<>(
-            () -> {
-                String hashes;
-                try {
-                    hashes = new TextOf(new URL(url)).asString();
-                } catch (final java.net.UnknownHostException ex) {
-                    Logger.warn(
-                        CommitHashesText.class,
-                        "Can't load hashes: %[exception]s",
-                        ex
-                    );
-                    hashes = CommitHashesMap.FAKES;
-                }
-                return hashes;
-            }
-        ).value();
+    private static String asText() throws Exception {
+        String hashes;
+        try {
+            hashes = new TextOf(new URL(CommitHashesText.HOME)).asString();
+        } catch (final java.net.UnknownHostException ex) {
+            Logger.warn(
+                CommitHashesText.class,
+                "Can't load hashes: %[exception]s",
+                ex
+            );
+            hashes = CommitHashesMap.FAKES;
+        }
+        return hashes;
     }
 }
