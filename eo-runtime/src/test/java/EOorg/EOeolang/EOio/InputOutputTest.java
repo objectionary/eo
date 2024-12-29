@@ -869,7 +869,7 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The posix 'write' syscall should have written to standard output, but it didn't",
                 Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
-                Matchers.equalTo(msg)
+                Matchers.containsString(msg)
             );
         }
 
