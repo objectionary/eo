@@ -45,7 +45,7 @@ import org.cactoos.set.SetOf;
  * @param <T> Type of mojo
  * @since 0.1
  */
-public final class Moja<T extends AbstractMojo> {
+final class Moja<T extends AbstractMojo> {
 
     /**
      * The type of mojo.

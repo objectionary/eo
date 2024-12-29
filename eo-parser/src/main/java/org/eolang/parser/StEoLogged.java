@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  *
  * @since 0.30
  */
-public final class StEoLogged implements Shift {
+final class StEoLogged implements Shift {
 
     /**
      * Origin shift.

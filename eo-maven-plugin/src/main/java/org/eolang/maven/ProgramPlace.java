@@ -21,26 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.maven;
 
 import com.jcabi.xml.XML;
-import com.yegor256.xsline.Xsline;
-import java.io.IOException;
+import java.nio.file.Path;
+import org.cactoos.func.FuncEnvelope;
 
 /**
- * Syntax parser, to XMIR, using ANTLR4.
- * @since 0.34.0
+ * The place for EO program constructed from its name taken from XMIR.
+ * @since 0.51
  */
-interface Syntax {
+final class ProgramPlace extends FuncEnvelope<XML, Path> {
     /**
-     * Canonical Xsline.
+     * Ctor.
+     * @param dir Home directory
      */
-    Xsline CANONICAL = new Xsline(new TrCanonical());
-
-    /**
-     * Parse it to XML.
-     * @return Parsed XML
-     * @throws IOException If fails
-     */
-    XML parsed() throws IOException;
+    public ProgramPlace(final Path dir) {
+        super(xml -> new Place(xml.xpath("/program/@name").get(0)).make(dir, ""));
+    }
 }

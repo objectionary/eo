@@ -38,7 +38,7 @@ import org.xembly.Directives;
  *
  * @since 0.44.0
  */
-final class DrProgram implements Iterable<Directive> {
+public final class DrProgram implements Iterable<Directive> {
 
     /**
      * Name of the program.
@@ -49,7 +49,7 @@ final class DrProgram implements Iterable<Directive> {
      * Ctor.
      * @param nme Name of the program
      */
-    DrProgram(final String nme) {
+    public DrProgram(final String nme) {
         this.name = nme;
     }
 

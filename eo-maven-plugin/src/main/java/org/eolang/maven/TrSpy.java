@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
@@ -31,6 +32,7 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
+import org.cactoos.Func;
 import org.eolang.maven.footprint.Saved;
 
 /**
@@ -38,7 +40,7 @@ import org.eolang.maven.footprint.Saved;
  *
  * @since 0.23
  */
-public final class SpyTrain extends TrEnvelope {
+final class TrSpy extends TrEnvelope {
 
     /**
      * Ctor.
@@ -46,7 +48,7 @@ public final class SpyTrain extends TrEnvelope {
      * @param train Original one
      * @param dir The dir to save
      */
-    public SpyTrain(final Train<Shift> train, final Path dir) {
+    public TrSpy(final Train<Shift> train, final Func<XML, Path> dir) {
         super(
             new TrLambda(
                 train,
@@ -58,11 +60,11 @@ public final class SpyTrain extends TrEnvelope {
                             final String log = shift.uid().replaceAll("[^A-Za-z0-9]", "-");
                             new Saved(
                                 xml.toString(),
-                                dir.resolve(String.format("%02d-%s.xml", pos, log))
+                                dir.apply(xml).resolve(String.format("%02d-%s.xml", pos, log))
                             ).value();
-                            if (Logger.isDebugEnabled(SpyTrain.class)) {
+                            if (Logger.isDebugEnabled(TrSpy.class)) {
                                 Logger.debug(
-                                    SpyTrain.class, "Step #%d by %s:\n%s",
+                                    TrSpy.class, "Step #%d by %s:\n%s",
                                     pos, log, xml
                                 );
                             }
@@ -73,5 +75,4 @@ public final class SpyTrain extends TrEnvelope {
             )
         );
     }
-
 }

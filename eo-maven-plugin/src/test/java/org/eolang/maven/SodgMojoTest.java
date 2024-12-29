@@ -182,7 +182,7 @@ final class SodgMojoTest {
             SodgMojoTest.class,
             "XML: %s",
             new TextOf(
-                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)))
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", ShakeMojo.DIR)))
             ).asString()
         );
         return new XMLDocument(

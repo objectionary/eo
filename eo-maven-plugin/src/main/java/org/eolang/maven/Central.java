@@ -38,7 +38,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.1
  */
-public final class Central implements BiConsumer<Dependency, Path> {
+final class Central implements BiConsumer<Dependency, Path> {
 
     /**
      * Do nothing.

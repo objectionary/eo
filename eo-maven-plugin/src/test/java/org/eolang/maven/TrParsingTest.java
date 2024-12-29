@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
@@ -29,6 +29,8 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.DrProgram;
+import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtStrict;
 import org.eolang.xax.XtYaml;
@@ -40,7 +42,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.xembly.Xembler;
 
 /**
- * Test case for {@link TrParsing}.
+ * Test case for {@link TrShaking}.
  *
  * @since 0.23
  */
@@ -50,7 +52,7 @@ final class TrParsingTest {
     void buildsList() {
         MatcherAssert.assertThat(
             "ParsingTrain is not iterable with more than 1 item, but it must be",
-            new TrParsing(),
+            new TrShaking(),
             Matchers.iterableWithSize(Matchers.greaterThan(1))
         );
     }
@@ -72,7 +74,7 @@ final class TrParsingTest {
         );
         MatcherAssert.assertThat(
             "XSL transformation works properly.",
-            new Xsline(new TrParsing()).pass(xml),
+            new Xsline(new TrShaking()).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)>1]",
                 "/program[not(errors)]"
@@ -93,7 +95,7 @@ final class TrParsingTest {
                             "scenario",
                             String.format("%s\n", eo)
                         ).parsed(),
-                        new TrParsing().empty()
+                        new TrShaking().empty()
                     )
                 )
             ),
@@ -106,7 +108,7 @@ final class TrParsingTest {
         MatcherAssert.assertThat(
             "Removes XSD schema from XMIR",
             new Xsline(
-                new TrClasspath<>("/org/eolang/parser/blank-xsd-schema.xsl").back()
+                new TrClasspath<>("/org/eolang/parser/shake/blank-xsd-schema.xsl").back()
             ).pass(new XMLDocument(new Xembler(new DrProgram("foo")).xmlQuietly())),
             XhtmlMatchers.hasXPath(
                 "/program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']"

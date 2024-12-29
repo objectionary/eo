@@ -223,7 +223,7 @@ final class LintMojoTest {
                     "  seq > @",
                     "    TRUE > x",
                     "    FALSE > x"
-                ).with("trackOptimizationSteps", true)
+                ).with("trackTransformationSteps", true)
                 .execute(new FakeMaven.Lint()),
             CatalogsTest.TO_ADD_MESSAGE
         );

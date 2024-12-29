@@ -32,6 +32,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,6 +48,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.func.StickyFunc;
 import org.cactoos.text.Joined;
 import org.eolang.maven.footprint.CachePath;
 import org.eolang.maven.footprint.Footprint;
@@ -58,10 +60,10 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
+import org.eolang.parser.TrFull;
 
 /**
  * Transpile.
@@ -101,21 +103,23 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Parsing train with XSLs.
      */
-    static final Train<Shift> TRAIN = new TrJoined<>(
-        new TrClasspath<>(
-            "/org/eolang/maven/pre/classes.xsl",
-            "/org/eolang/maven/pre/package.xsl",
-            "/org/eolang/maven/pre/tests.xsl",
-            "/org/eolang/maven/pre/rename-tests-inners.xsl",
-            "/org/eolang/maven/pre/align-test-classes.xsl",
-            "/org/eolang/maven/pre/remove-high-level-inner-classes.xsl",
-            "/org/eolang/maven/pre/attrs.xsl",
-            "/org/eolang/maven/pre/data.xsl"
-        ).back(),
-        new TrDefault<>(
-            new StClasspath(
-                "/org/eolang/maven/pre/to-java.xsl",
-                String.format("disclaimer %s", new Disclaimer())
+    private static final Train<Shift> TRAIN = new TrFull(
+        new TrJoined<>(
+            new TrClasspath<>(
+                "/org/eolang/maven/transpile/classes.xsl",
+                "/org/eolang/maven/transpile/package.xsl",
+                "/org/eolang/maven/transpile/tests.xsl",
+                "/org/eolang/maven/transpile/rename-tests-inners.xsl",
+                "/org/eolang/maven/transpile/align-test-classes.xsl",
+                "/org/eolang/maven/transpile/remove-high-level-inner-classes.xsl",
+                "/org/eolang/maven/transpile/attrs.xsl",
+                "/org/eolang/maven/transpile/data.xsl"
+            ).back(),
+            new TrDefault<>(
+                new StClasspath(
+                    "/org/eolang/maven/transpile/to-java.xsl",
+                    String.format("disclaimer %s", new Disclaimer())
+                )
             )
         )
     );
@@ -162,10 +166,10 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
-        final Function<XML, XML> optimization = this.transpilation();
+        final Function<XML, XML> transpilation = this.transpilation();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, optimization)
+            tojo -> this.transpiled(tojo, transpilation)
         ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
@@ -196,19 +200,12 @@ public final class TranspileMojo extends SafeMojo {
      */
     private int transpiled(final ForeignTojo tojo, final Function<XML, XML> transpilation)
         throws IOException {
-        final Path source;
-        try {
-            source = tojo.shaken();
-        } catch (final AttributeNotFoundException exception) {
-            throw new IllegalStateException(
-                "You should check that 'Verify' goal of the plugin was run first",
-                exception
-            );
-        }
+        final Path source = tojo.shaken();;
         final XML xmir = new XMLDocument(source);
-        final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(
+            xmir.xpath("/program/@name").get(0)
+        ).make(base, AssembleMojo.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpDefault(
@@ -229,10 +226,14 @@ public final class TranspileMojo extends SafeMojo {
      * @return Optimization that transpiles
      */
     private Function<XML, XML> transpilation() {
-        return new OptimizeMojo.OptSpy(
-            this.measured(TranspileMojo.TRAIN),
-            this.targetDir.toPath().resolve(TranspileMojo.PRE)
-        );
+        return new Xsline(
+            new TrSpy(
+                this.measured(TranspileMojo.TRAIN),
+                new StickyFunc<>(
+                    new ProgramPlace(this.targetDir.toPath().resolve(TranspileMojo.PRE))
+                )
+            )
+        )::pass;
     }
 
     /**

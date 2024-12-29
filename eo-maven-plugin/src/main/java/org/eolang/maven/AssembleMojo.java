@@ -41,7 +41,7 @@ import org.cactoos.set.SetOf;
  * @since 0.1
  * @todo #2406:90min Make up with idea how to get rid of duplicate parameters between mojos.
  *  There's a situation where AssembleMojo owns, creates and executes other mojos,
- *  like {@link ParseMojo} or {@link OptimizeMojo}. When we configure our compiler via pom.xml maven
+ *  like {@link ParseMojo} or {@link ShakeMojo}. When we configure our compiler via pom.xml maven
  *  tries to set parameters directly to the calling mojo. That's why we must to have all parameters
  *  from child mojos in AssembleMojo or {@link SafeMojo} (in order they won't be skipped and lost).
  *  That causes duplication of parameters between "parent" mojo and "child" mojos.
@@ -119,8 +119,8 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
-    @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
-    private boolean trackOptimizationSteps;
+    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
+    private boolean trackTransformationSteps;
 
     /**
      * The Git tag to pull objects from, in objectionary.
@@ -234,7 +234,6 @@ public final class AssembleMojo extends SafeMojo {
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
-            new Moja<>(OptimizeMojo.class),
             new Moja<>(ShakeMojo.class),
             new Moja<>(DiscoverMojo.class),
             new Moja<>(ProbeMojo.class),

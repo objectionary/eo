@@ -38,7 +38,7 @@ import com.yegor256.xsline.Train;
  *
  * @since 0.1
  */
-public final class TrStepped extends TrEnvelope {
+final class TrStepped extends TrEnvelope {
 
     /**
      * Apply changes to each XML after processing.

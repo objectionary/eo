@@ -40,9 +40,9 @@ import org.xembly.Xembler;
 /**
  * Test case for {@link DrProgram}.
  *
- * @since 0.1
+ * @since 0.49
  */
-final class DrProgramTest {
+class DrProgramTest {
 
     @Test
     void buildsProgramElement() throws Exception {

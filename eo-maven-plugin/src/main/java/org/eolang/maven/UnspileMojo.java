@@ -147,5 +147,4 @@ public final class UnspileMojo extends SafeMojo {
         }
         return deleted;
     }
-
 }

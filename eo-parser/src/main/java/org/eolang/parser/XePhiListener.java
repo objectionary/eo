@@ -55,7 +55,7 @@ import org.xembly.Directives;
     "PMD.ExcessiveClassLength",
     "PMD.GodClass"
 })
-public final class XePhiListener implements PhiListener, Iterable<Directive> {
+final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
      * Package lambda.
      */

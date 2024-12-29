@@ -31,7 +31,7 @@ import java.nio.file.Path;
  *
  * @since 0.1
  */
-public final class Place {
+final class Place {
     /**
      * Name of the object.
      */

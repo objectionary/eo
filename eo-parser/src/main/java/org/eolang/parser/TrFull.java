@@ -23,49 +23,36 @@
  */
 package org.eolang.parser;
 
-import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
+import com.yegor256.xsline.Train;
 import java.util.logging.Level;
 
 /**
- * Train of XSL shifts.
- *
- * @since 0.1
+ * Train full of logging and checking.
+ * @since 0.51
  */
-public final class TrParsing extends TrEnvelope {
+public final class TrFull extends TrEnvelope {
     /**
      * Ctor.
+     * @param train Original
      */
-    public TrParsing() {
+    public TrFull(final Train<Shift> train) {
         super(
             new TrStepped(
                 new TrFast(
                     new TrLambda(
                         new TrLogged(
-                            new TrClasspath<>(
-                                "/org/eolang/parser/cti-adds-errors.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/expand-qqs.xsl",
-                                "/org/eolang/parser/add-probes.xsl",
-                                "/org/eolang/parser/vars-float-up.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/expand-aliases.xsl",
-                                "/org/eolang/parser/resolve-aliases.xsl",
-                                "/org/eolang/parser/add-refs.xsl",
-                                "/org/eolang/parser/add-default-package.xsl",
-                                "/org/eolang/parser/explicit-data.xsl",
-                                "/org/eolang/parser/set-locators.xsl",
-                                "/org/eolang/parser/clean-up.xsl"
-                            ).back(),
-                            TrParsing.class,
+                            train,
+                            TrFull.class,
                             Level.FINEST
                         ),
                         StEoLogged::new
                     ),
-                    TrFast.class,
+                    TrFull.class,
                     500L
                 )
             )

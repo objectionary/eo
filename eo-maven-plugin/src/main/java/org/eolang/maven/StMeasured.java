@@ -35,7 +35,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 0.30
  */
-public final class StMeasured implements Shift {
+final class StMeasured implements Shift {
 
     /**
      * Origin shift.
