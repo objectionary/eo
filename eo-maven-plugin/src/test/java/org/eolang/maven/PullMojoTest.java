@@ -46,7 +46,6 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
-import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

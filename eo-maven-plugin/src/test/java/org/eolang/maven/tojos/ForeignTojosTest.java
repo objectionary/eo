@@ -142,7 +142,7 @@ final class ForeignTojosTest {
         final ForeignTojo tojo = this.tojos.add("string");
         final AttributeNotFoundException thrown = Assertions.assertThrows(
             AttributeNotFoundException.class,
-            tojo::optimized
+            tojo::shaken
         );
         Assertions.assertEquals(
             "There is no 'OPTIMIZED' attribute in the tojo",
@@ -174,7 +174,6 @@ final class ForeignTojosTest {
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<ForeignTojo, Object>) ForeignTojo::xmir),
-            Arguments.of("OPTIMIZED", (Func<ForeignTojo, Object>) ForeignTojo::optimized),
             Arguments.of("SHAKEN", (Func<ForeignTojo, Object>) ForeignTojo::shaken),
             Arguments.of("EO", (Func<ForeignTojo, Object>) ForeignTojo::source),
             Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),

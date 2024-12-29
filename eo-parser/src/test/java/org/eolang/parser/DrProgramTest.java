@@ -42,7 +42,7 @@ import org.xembly.Xembler;
  *
  * @since 0.49
  */
-class DrProgramTest {
+final class DrProgramTest {
 
     @Test
     void buildsProgramElement() throws Exception {

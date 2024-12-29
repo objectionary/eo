@@ -44,7 +44,7 @@ final class StUnhex extends StEnvelope {
     /**
      * Ctor.
      */
-    public StUnhex() {
+    StUnhex() {
         super(
             new StEndless(
                 new StSequence(

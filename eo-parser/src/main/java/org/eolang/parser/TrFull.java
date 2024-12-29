@@ -24,6 +24,7 @@
 package org.eolang.parser;
 
 import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrLambda;
@@ -36,6 +37,13 @@ import java.util.logging.Level;
  * @since 0.51
  */
 public final class TrFull extends TrEnvelope {
+    /**
+     * Ctor.
+     */
+    public TrFull() {
+        this(new TrDefault<>());
+    }
+
     /**
      * Ctor.
      * @param train Original

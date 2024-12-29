@@ -112,7 +112,7 @@ final class AssembleMojoTest {
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .execute(new FakeMaven.Optimize())
+            .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",

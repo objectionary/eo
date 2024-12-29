@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/expand-qqs.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/vars-float-up.xsl
-  - /org/eolang/parser/add-default-package.xsl
-  - /org/eolang/parser/explicit-data.xsl
+  - /org/eolang/parser/shake/expand-qqs.xsl
+  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/add-default-package.xsl
+  - /org/eolang/parser/shake/explicit-data.xsl
   - /org/eolang/parser/print/dataized-to-const.xsl
 asserts:
   - //o[@base='org.eolang.x' and @const and @name='first']

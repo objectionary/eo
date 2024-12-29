@@ -28,7 +28,7 @@ import com.yegor256.xsline.TrEnvelope;
 import org.eolang.parser.TrFull;
 
 /**
- * Train of XSL shifts.
+ * Train of XSL shake shifts.
  *
  * @since 0.1
  */

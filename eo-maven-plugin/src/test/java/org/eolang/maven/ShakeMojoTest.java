@@ -89,25 +89,6 @@ final class ShakeMojoTest {
         );
     }
 
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void checksPacks(final String yaml) {
-        MatcherAssert.assertThat(
-            "passed without exceptions",
-            new XtSticky(
-                new XtYaml(
-                    yaml,
-                    eo -> new EoSyntax(
-                        "scenario",
-                        new InputOf(String.format("%s\n", eo))
-                    ).parsed(),
-                    new TrShaking().empty()
-                )
-            ),
-            new XtoryMatcher()
-        );
-    }
-
     @Test
     void skipsAlreadyShaken(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)

@@ -105,7 +105,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
      * Ctor.
      * @param nme The name of it
      */
-    public XePhiListener(final String nme) {
+    XePhiListener(final String nme) {
         this.name = nme;
         this.dirs = new Directives();
         this.objs = new ArrayDeque<>();

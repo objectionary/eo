@@ -81,13 +81,13 @@ public final class Xmir implements XML {
      */
     private static final Train<Shift> FOR_PHI = new TrFull(
         new TrClasspath<>(
-            "/org/eolang/maven/shake/add-refs.xsl",
-            "/org/eolang/maven/shake/expand-qqs.xsl",
-            "/org/eolang/maven/shake/vars-float-up.xsl",
-            "/org/eolang/maven/shake/expand-aliases.xsl",
-            "/org/eolang/maven/shake/resolve-aliases.xsl",
-            "/org/eolang/maven/shake/add-default-package.xsl",
-            "/org/eolang/maven/shake/explicit-data.xsl",
+            "/org/eolang/parser/shake/add-refs.xsl",
+            "/org/eolang/parser/shake/expand-qqs.xsl",
+            "/org/eolang/parser/shake/vars-float-up.xsl",
+            "/org/eolang/parser/shake/expand-aliases.xsl",
+            "/org/eolang/parser/shake/resolve-aliases.xsl",
+            "/org/eolang/parser/shake/add-default-package.xsl",
+            "/org/eolang/parser/shake/explicit-data.xsl",
             "/org/eolang/parser/phi/incorrect-inners.xsl",
             "/org/eolang/parser/phi/wrap-default-package.xsl"
         ).back()

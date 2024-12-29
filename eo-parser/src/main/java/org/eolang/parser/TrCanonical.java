@@ -39,7 +39,7 @@ final class TrCanonical extends TrEnvelope {
     /**
      * Ctor.
      */
-    public TrCanonical() {
+    TrCanonical() {
         super(
             new TrFull(
                 new TrJoined<>(
@@ -57,8 +57,7 @@ final class TrCanonical extends TrEnvelope {
                     ),
                     new TrClasspath<>(
                         "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                        "/org/eolang/parser/parse/const-to-dataized.xsl",
-                        "/org/eolang/parser/shake/explicit-data.xsl"
+                        "/org/eolang/parser/parse/const-to-dataized.xsl"
                     ).back()
                 )
             )

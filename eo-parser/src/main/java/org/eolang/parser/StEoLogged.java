@@ -49,7 +49,7 @@ final class StEoLogged implements Shift {
      * Ctor.
      * @param shift Origin shift
      */
-    public StEoLogged(final Shift shift) {
+    StEoLogged(final Shift shift) {
         this(shift, message -> Logger.error(StEoLogged.class, message));
     }
 
