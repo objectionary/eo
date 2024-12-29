@@ -31,7 +31,7 @@
 # The angle.
 [value] > angle
   value > @
-  # Converts this from radians to degrees
+  # Converts this from radians to degrees.
   angle > in-degrees
     div.
       ^.times 180.0
