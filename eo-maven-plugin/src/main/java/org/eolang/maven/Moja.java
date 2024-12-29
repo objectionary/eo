@@ -62,7 +62,7 @@ final class Moja<T extends AbstractMojo> {
      *
      * @param tpe The type
      */
-    public Moja(final Class<T> tpe) {
+    Moja(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }

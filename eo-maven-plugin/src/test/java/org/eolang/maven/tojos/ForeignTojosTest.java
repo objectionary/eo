@@ -145,9 +145,9 @@ final class ForeignTojosTest {
             tojo::shaken
         );
         Assertions.assertEquals(
-            "There is no 'OPTIMIZED' attribute in the tojo",
+            "There is no 'SHAKEN' attribute in the tojo",
             thrown.getMessage(),
-            "Should throw an exception if key 'OPTIMIZED' was not found in Tojo"
+            "Should throw an exception if key 'SHAKEN' was not found in Tojo"
         );
     }
 

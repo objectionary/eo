@@ -82,13 +82,13 @@ public final class ShakeMojo extends SafeMojo {
     public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-        final Xsline transformations = this.transformations();
+        final Xsline xsline = this.transformations();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
                 tojos
             ),
-            tojo -> this.shaken(tojo, transformations)
+            tojo -> this.shaken(tojo, xsline)
         ).total();
         if (total > 0) {
             Logger.info(
@@ -105,11 +105,11 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * XMIR shaken to another XMIR.
      * @param tojo Foreign tojo
-     * @param transformations Transformations to apply to XMIR
+     * @param xsline Transformations to apply to XMIR
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Xsline transformations)
+    private int shaken(final ForeignTojo tojo, final Xsline xsline)
         throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -118,7 +118,7 @@ public final class ShakeMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
-                src -> transformations.pass(xmir).toString(),
+                src -> xsline.pass(xmir).toString(),
                 this.cache.toPath().resolve(ShakeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),

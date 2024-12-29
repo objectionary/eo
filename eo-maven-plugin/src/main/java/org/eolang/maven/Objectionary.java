@@ -75,7 +75,7 @@ interface Objectionary {
         /**
          * Ctor.
          */
-        public Fake() {
+        Fake() {
             this(
                 s -> new InputOf(
                     String.join(

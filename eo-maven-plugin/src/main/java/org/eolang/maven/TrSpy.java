@@ -48,7 +48,7 @@ final class TrSpy extends TrEnvelope {
      * @param train Original one
      * @param dir The dir to save
      */
-    public TrSpy(final Train<Shift> train, final Func<XML, Path> dir) {
+    TrSpy(final Train<Shift> train, final Func<XML, Path> dir) {
         super(
             new TrLambda(
                 train,

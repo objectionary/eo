@@ -41,7 +41,7 @@ final class Place {
      * Ctor.
      * @param obj The name of the object
      */
-    public Place(final String obj) {
+    Place(final String obj) {
         this.name = obj;
     }
 

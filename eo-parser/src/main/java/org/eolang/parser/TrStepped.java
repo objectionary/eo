@@ -49,7 +49,7 @@ final class TrStepped extends TrEnvelope {
     private static final Scalar<XSL> STEPPED = new Sticky<>(
         () -> new XSLDocument(
             new TextOf(
-                new ResourceOf("/org/eolang/parser/_stepped.xsl")
+                new ResourceOf("org/eolang/parser/_stepped.xsl")
             ).asString()
         )
     );

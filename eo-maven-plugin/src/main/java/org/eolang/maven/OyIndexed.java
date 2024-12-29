@@ -48,7 +48,7 @@ final class OyIndexed implements Objectionary {
      * Ctor.
      * @param objectionary Objectionary
      */
-    public OyIndexed(final Objectionary objectionary) {
+    OyIndexed(final Objectionary objectionary) {
         this(objectionary, new ObjectsIndex());
     }
 

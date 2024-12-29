@@ -265,7 +265,7 @@ SOFTWARE.
               <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/2-optimize</phiInputDir>
+              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
               <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
               <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>

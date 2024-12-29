@@ -39,23 +39,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
-import org.eolang.parser.EoSyntax;
-import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtYaml;
-import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link ShakeMojo}.
@@ -84,7 +77,7 @@ final class ShakeMojoTest {
         );
         MatcherAssert.assertThat(
             "the .xmir file contains lint defects",
-            new XMLDocument(temp.resolve("target/eo/2-optimize/foo.xmir")),
+            new XMLDocument(temp.resolve("target/eo/2-shake/foo.xmir")),
             XhtmlMatchers.hasXPaths("/program[not(errors)]")
         );
     }
@@ -137,7 +130,7 @@ final class ShakeMojoTest {
     @Test
     void getsAlreadyShakenResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/optimize/main.xml")
+            new ResourceOf("org/eolang/maven/main.xml")
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";

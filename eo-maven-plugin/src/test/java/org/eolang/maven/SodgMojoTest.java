@@ -91,7 +91,7 @@ final class SodgMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "sodg");
+                    .goals("register", "parse", "shake", "sodg");
                 f.exec("compile");
                 MatcherAssert.assertThat(
                     "the .sodg file is generated",

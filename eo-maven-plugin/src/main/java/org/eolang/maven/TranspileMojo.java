@@ -165,10 +165,10 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
-        final Xsline transpilation = this.transpilation();
+        final Xsline xsline = this.xsline();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, transpilation)
+            tojo -> this.transpiled(tojo, xsline)
         ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
@@ -193,13 +193,12 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      * @param tojo Tojo that should be transpiled.
-     * @param transpilation Optimization that transpiles
+     * @param xsline Optimization that transpiles
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private int transpiled(final ForeignTojo tojo, final Xsline transpilation)
-        throws IOException {
-        final Path source = tojo.shaken();;
+    private int transpiled(final ForeignTojo tojo, final Xsline xsline) throws IOException {
+        final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(TranspileMojo.DIR);
         final Path target = new Place(
@@ -210,7 +209,7 @@ public final class TranspileMojo extends SafeMojo {
         new FpDefault(
             src -> {
                 rewrite.set(true);
-                return transpilation.pass(xmir).toString();
+                return xsline.pass(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
             this.plugin.getVersion(),
@@ -224,7 +223,7 @@ public final class TranspileMojo extends SafeMojo {
      * Transpile optimization.
      * @return Optimization that transpiles
      */
-    private Xsline transpilation() {
+    private Xsline xsline() {
         return new Xsline(
             new TrSpy(
                 this.measured(TranspileMojo.TRAIN),

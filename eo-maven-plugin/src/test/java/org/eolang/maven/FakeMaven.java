@@ -242,7 +242,7 @@ public final class FakeMaven {
             this.params.putIfAbsent(
                 "phiInputDir",
                 this.workspace.absolute(
-                    Paths.get(String.format("target/%s", ShakeMojo.DIR))
+                    Paths.get(String.format("target/%s", ParseMojo.DIR))
                 ).toFile()
             );
             this.params.putIfAbsent(

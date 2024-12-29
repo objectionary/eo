@@ -52,7 +52,7 @@ final class StMeasured implements Shift {
      * @param shift Origin shift
      * @param log Log file
      */
-    public StMeasured(final Shift shift, final Path log) {
+    StMeasured(final Shift shift, final Path log) {
         this.origin = shift;
         this.path = log;
     }

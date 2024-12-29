@@ -36,7 +36,7 @@ final class TrShaking extends TrEnvelope {
     /**
      * Ctor.
      */
-    public TrShaking() {
+    TrShaking() {
         super(
             new TrFull(
                 new TrClasspath<>(

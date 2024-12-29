@@ -119,7 +119,7 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile");
+                    .goals("register", "parse", "shake", "transpile");
                 f.exec("process-sources");
             }
         );
@@ -149,7 +149,7 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile");
+                    .goals("register", "parse", "shake", "transpile");
                 f.exec("process-sources");
             }
         );
