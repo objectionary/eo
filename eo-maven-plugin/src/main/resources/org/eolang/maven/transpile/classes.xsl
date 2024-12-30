@@ -63,9 +63,7 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]">
-    <xsl:element name="class">
-      
-    </xsl:element>
+    <xsl:apply-templates select="." mode="class"/>
   </xsl:template>
   <xsl:template match="objects/o[@base and @name]">
     <xsl:apply-templates select="." mode="class">

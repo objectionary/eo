@@ -27,6 +27,9 @@
 +unlint abstract-decoratee
 +version 0.0.0
 
+# This unit test is supposed to check the globals bound objects work as tests.
+true > global-test
+
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > understands-this-correctly
   [x] > a

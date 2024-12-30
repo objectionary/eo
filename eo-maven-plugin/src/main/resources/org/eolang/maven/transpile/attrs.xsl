@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="attrs" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="class/o[@name and not(@level)]">
+  <xsl:template match="class[not(@base)]/o[@name and not(@level)]">
     <xsl:element name="attr">
       <xsl:apply-templates select="@name"/>
       <xsl:variable name="t">

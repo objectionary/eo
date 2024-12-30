@@ -21,7 +21,6 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/globals-to-abstracts.xsl
   - /org/eolang/parser/shake/remove-refs.xsl
   - /org/eolang/parser/shake/abstracts-float-up.xsl
   - /org/eolang/parser/shake/remove-levels.xsl
@@ -36,9 +35,13 @@ sheets:
 asserts:
   - /program[not(errors)]
   - //java[contains(text(), '@Test')]
+  - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
 input: |
   +tests
 
   # No comments.
   [] > works
     1.eq 1 > @
+
+  # No comments.
+  false > [] > throws-on

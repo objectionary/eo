@@ -43,13 +43,17 @@ sheets:
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/package.xsl
   - /org/eolang/maven/transpile/tests.xsl
-#  - /org/eolang/maven/transpile/rename-tests-inners.xsl
-#  - /org/eolang/maven/transpile/attrs.xsl
-#  - /org/eolang/maven/transpile/data.xsl
-#  - /org/eolang/maven/transpile/to-java.xsl
+  - /org/eolang/maven/transpile/rename-tests-inners.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[errors]
-  - /progra[errors]
+  - /program[not(errors)]
+  - //java[contains(text(), 'public final class EOmain extends PhOnce {')]
+  - //java[contains(text(), '  public EOmain() {')]
+  - //java[contains(text(), '    super(')]
+  - //java[contains(text(), '      () -> {')]
+  - //java[contains(text(), '        return ret;')]
 input: |
   stdout > main
     "Hello"

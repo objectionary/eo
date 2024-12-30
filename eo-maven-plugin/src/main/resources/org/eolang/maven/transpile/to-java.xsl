@@ -192,11 +192,14 @@ SOFTWARE.
   </xsl:template>
   <!-- Xmir comment  -->
   <xsl:template match="xmir">
+    <xsl:text>/**</xsl:text>
     <xsl:for-each select="tokenize(text(), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
-      <xsl:text>// </xsl:text>
+      <xsl:text> * </xsl:text>
       <xsl:value-of select="."/>
     </xsl:for-each>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text> */</xsl:text>
   </xsl:template>
   <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
@@ -214,11 +217,13 @@ SOFTWARE.
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>super(</xsl:text>
         <xsl:value-of select="eo:eol(3)"/>
-        <xsl:text>() -> {</xsl:text>
+        <xsl:text>() -&gt; {</xsl:text>
         <xsl:apply-templates select="o">
           <xsl:with-param name="name" select="'ret'"/>
           <xsl:with-param name="indent" select="4"/>
         </xsl:apply-templates>
+        <xsl:value-of select="eo:eol(4)"/>
+        <xsl:text>return ret;</xsl:text>
         <xsl:value-of select="eo:eol(3)"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
@@ -226,9 +231,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="attr">
-          <xsl:with-param name="indent">
-            <xsl:value-of select="2"/>
-          </xsl:with-param>
+          <xsl:with-param name="indent" select="2"/>
         </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
@@ -238,12 +241,14 @@ SOFTWARE.
   </xsl:template>
   <!-- Attribute -->
   <xsl:template match="attr">
+    <xsl:param name="indent"/>
     <xsl:variable name="name" select="eo:attr-name(@name)"/>
-    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="*">
+    <xsl:apply-templates select="void|bound">
+      <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="name" select="$name"/>
     </xsl:apply-templates>
     <xsl:text>);</xsl:text>
@@ -257,20 +262,16 @@ SOFTWARE.
   </xsl:template>
   <!-- Bound attribute -->
   <xsl:template match="bound">
-    <xsl:text>new AtOnce(</xsl:text>
-    <xsl:text>new AtComposite(this, rho -&gt; {</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="*">
+    <xsl:param name="indent"/>
+    <xsl:text>new AtOnce(new AtComposite(this, rho -&gt; {</xsl:text>
+    <xsl:apply-templates select="o">
       <xsl:with-param name="name" select="'ret'"/>
-      <xsl:with-param name="indent">
-        <xsl:value-of select="eo:tabs(3)"/>
-      </xsl:with-param>
+      <xsl:with-param name="indent" select="$indent + 1"/>
     </xsl:apply-templates>
-    <xsl:value-of select="eo:tabs(3)"/>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>return ret;</xsl:text>
-    <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>})</xsl:text>
-    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>}))</xsl:text>
   </xsl:template>
   <!-- Anonymous abstract object without attributes -->
   <xsl:template match="o[not(@base) and not(@name)]">
@@ -378,16 +379,14 @@ SOFTWARE.
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:apply-templates select="*[1]">
+    <xsl:apply-templates select="o[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
         <xsl:text>_base</xsl:text>
       </xsl:with-param>
-      <xsl:with-param name="indent">
-        <xsl:value-of select="$indent"/>
-      </xsl:with-param>
+      <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
-    <xsl:value-of select="$indent"/>
+    <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhMethod(</xsl:text>
@@ -403,15 +402,14 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>");</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="." mode="located">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
   <!-- Location of object -->
@@ -450,6 +448,7 @@ SOFTWARE.
         <xsl:text>new PhCopy(</xsl:text>
         <xsl:value-of select="$name"/>
         <xsl:text>);</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
       </xsl:if>
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
@@ -458,10 +457,9 @@ SOFTWARE.
       </xsl:variable>
       <xsl:apply-templates select=".">
         <xsl:with-param name="name" select="$next"/>
-        <xsl:with-param name="indent">
-          <xsl:value-of select="$indent + 1"/>
-        </xsl:with-param>
+        <xsl:with-param name="indent" select="$indent + 1"/>
       </xsl:apply-templates>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
     <xsl:for-each select="$inners">
       <xsl:value-of select="eo:eol($indent)"/>
@@ -495,7 +493,7 @@ SOFTWARE.
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent">
-        <xsl:value-of select="$indent + 1"/>
+        <xsl:value-of select="$indent"/>
       </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
@@ -510,7 +508,6 @@ SOFTWARE.
     <xsl:text>, 0, new PhDefault(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->
   <xsl:template match="class" mode="tests">
@@ -522,38 +519,37 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="starts-with(@name, 'throws')">
         <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:apply-templates select="." mode="assert">
-          <xsl:with-param name="indent" select="1"/>
+        <xsl:apply-templates select="." mode="dataized">
+          <xsl:with-param name="indent" select="3"/>
         </xsl:apply-templates>
+        <xsl:text>;</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:text>});</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="." mode="assert">
-          <xsl:with-param name="indent" select="0"/>
+        <xsl:text>Assertions.assertTrue(</xsl:text>
+        <xsl:apply-templates select="." mode="dataized">
+          <xsl:with-param name="indent" select="3"/>
         </xsl:apply-templates>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Assertion in tests  -->
-  <xsl:template match="class" mode="assert">
+  <!-- Dataize test -->
+  <xsl:template match="class" mode="dataized">
     <xsl:param name="indent"/>
-    <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Assertions.assertTrue(</xsl:text>
-    <xsl:value-of select="eo:eol(3 + $indent)"/>
+    <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(</xsl:text>
-    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>()</xsl:text>
-    <xsl:value-of select="eo:eol(3 + $indent)"/>
+    <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>).asBool()</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">
