@@ -201,6 +201,7 @@ abstract class SafeMojo extends AbstractMojo {
      *
      * @since 0.24.0
      * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
     @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
