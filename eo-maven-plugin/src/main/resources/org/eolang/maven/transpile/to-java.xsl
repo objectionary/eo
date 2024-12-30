@@ -505,9 +505,7 @@ SOFTWARE.
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>, 0, new PhDefault(</xsl:text>
-    <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:value-of select="text()"/>
-    <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>));</xsl:text>
   </xsl:template>
   <!-- Class for tests -->
