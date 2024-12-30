@@ -39,12 +39,12 @@ import org.xembly.Directives;
  *
  * @since 0.29.0
  */
-public final class StUnhex extends StEnvelope {
+final class StUnhex extends StEnvelope {
 
     /**
      * Ctor.
      */
-    public StUnhex() {
+    StUnhex() {
         super(
             new StEndless(
                 new StSequence(

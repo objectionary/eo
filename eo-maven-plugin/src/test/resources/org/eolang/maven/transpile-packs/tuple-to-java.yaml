@@ -1,0 +1,54 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/add-default-package.xsl
+  - /org/eolang/parser/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /program[not(errors)]
+  - //java[contains(text(), 'Phi ret = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '  Phi ret_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_1_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_1_1_1 = new PhMethod(ret_1_1_1_base, "empty");')]
+  - //java[contains(text(), '  Phi ret_2 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_2_1_1 = new PhMethod(ret_2_1_1_base, "empty");')]
+input: |
+  # No comments.
+  [] > foo
+    * 1 2 (* 3 4) > @
+
+  # No comments.
+  [] > bar
+    zz 42 * > tt
+
+  # No comments.
+  [] > baz
+    """
+    абвгд
+    """ > @

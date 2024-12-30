@@ -31,7 +31,7 @@ import java.nio.file.Path;
  *
  * @since 0.1
  */
-public final class Place {
+final class Place {
     /**
      * Name of the object.
      */
@@ -41,7 +41,7 @@ public final class Place {
      * Ctor.
      * @param obj The name of the object
      */
-    public Place(final String obj) {
+    Place(final String obj) {
         this.name = obj;
     }
 

@@ -74,14 +74,6 @@ public final class ForeignTojo {
     }
 
     /**
-     * The tojo optimized xmir.
-     * @return The optimized xmir.
-     */
-    public Path optimized() {
-        return Paths.get(this.attribute(ForeignTojos.Attribute.OPTIMIZED));
-    }
-
-    /**
      * The tojo shaken xmir.
      * @return The shaken xmir.
      */
@@ -150,29 +142,11 @@ public final class ForeignTojo {
     }
 
     /**
-     * Checks if tojo was not already optimized.
-     *
-     * @return True if optimization is required, false otherwise.
-     */
-    public boolean notOptimized() {
-        final Path src = this.xmir();
-        boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.OPTIMIZED.getKey())) {
-            final Path tgt = this.optimized();
-            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(this, "Already optimized %[file]s to %[file]s", src, tgt);
-                res = false;
-            }
-        }
-        return res;
-    }
-
-    /**
      * Checks if tojo was not already shaken.
      * @return True if shake is required, false otherwise.
      */
     public boolean notShaken() {
-        final Path src = this.optimized();
+        final Path src = this.xmir();
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.SHAKEN.getKey())) {
             final Path tgt = this.shaken();
@@ -252,16 +226,6 @@ public final class ForeignTojo {
      */
     public ForeignTojo withSodg(final Path sodg) {
         this.delegate.set(ForeignTojos.Attribute.SODG.getKey(), sodg.toString());
-        return this;
-    }
-
-    /**
-     * Set the optimized xmir.
-     * @param xmir The optimized xmir.
-     * @return The tojo itself.
-     */
-    public ForeignTojo withOptimized(final Path xmir) {
-        this.delegate.set(ForeignTojos.Attribute.OPTIMIZED.getKey(), xmir.toString());
         return this;
     }
 

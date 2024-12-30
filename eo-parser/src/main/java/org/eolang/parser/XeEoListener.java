@@ -55,7 +55,7 @@ import org.xembly.Directives;
     "PMD.ExcessiveClassLength",
     "PMD.GodClass"
 })
-public final class XeEoListener implements EoListener, Iterable<Directive> {
+final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
      * The name of it.
      */
@@ -86,7 +86,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      *
      * @param name The name of it
      */
-    public XeEoListener(final String name) {
+    XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
         this.errors = new ArrayList<>(0);
