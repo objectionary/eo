@@ -93,12 +93,12 @@ public final class ShakeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Optimized %d out of %d XMIR program(s) in %[ms]s",
+                "Shaked %d out of %d XMIR program(s) in %[ms]s",
                 total, tojos.size(),
                 System.currentTimeMillis() - start
             );
         } else {
-            Logger.debug(this, "No XMIR programs out of %d optimized", tojos.size());
+            Logger.debug(this, "No XMIR programs out of %d shaked", tojos.size());
         }
     }
 
