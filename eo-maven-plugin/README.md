@@ -87,7 +87,7 @@ one after another:
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
     The output of the parser you can find in the `target/eo/1-parse` directory.
     Parsed objects which are versioned (normally pulled from
-    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/1-parse` folder.
+    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/parsed` folder.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
