@@ -47,9 +47,6 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 
 /**

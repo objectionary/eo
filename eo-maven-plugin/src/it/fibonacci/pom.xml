@@ -70,7 +70,7 @@ SOFTWARE.
           <foreignFormat>csv</foreignFormat>
           <placed>${project.build.directory}/eo/placed.json</placed>
           <placedFormat>json</placedFormat>
-          <trackOptimizationSteps>true</trackOptimizationSteps>
+          <trackTransformationSteps>true</trackTransformationSteps>
           <generateSodgXmlFiles>true</generateSodgXmlFiles>
           <generateGraphFiles>true</generateGraphFiles>
           <generateXemblyFiles>true</generateXemblyFiles>

@@ -91,7 +91,7 @@ final class SodgMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "sodg");
+                    .goals("register", "parse", "shake", "sodg");
                 f.exec("compile");
                 MatcherAssert.assertThat(
                     "the .sodg file is generated",
@@ -182,7 +182,7 @@ final class SodgMojoTest {
             SodgMojoTest.class,
             "XML: %s",
             new TextOf(
-                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)))
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", ShakeMojo.DIR)))
             ).asString()
         );
         return new XMLDocument(

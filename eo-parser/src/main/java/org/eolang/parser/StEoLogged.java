@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  *
  * @since 0.30
  */
-public final class StEoLogged implements Shift {
+final class StEoLogged implements Shift {
 
     /**
      * Origin shift.
@@ -49,7 +49,7 @@ public final class StEoLogged implements Shift {
      * Ctor.
      * @param shift Origin shift
      */
-    public StEoLogged(final Shift shift) {
+    StEoLogged(final Shift shift) {
         this(shift, message -> Logger.error(StEoLogged.class, message));
     }
 

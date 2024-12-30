@@ -31,7 +31,7 @@ import java.io.IOException;
  * Syntax parser, to XMIR, using ANTLR4.
  * @since 0.34.0
  */
-public interface Syntax {
+interface Syntax {
     /**
      * Canonical Xsline.
      */

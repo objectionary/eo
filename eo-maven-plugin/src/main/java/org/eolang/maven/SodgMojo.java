@@ -349,7 +349,7 @@ public final class SodgMojo extends SafeMojo {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;

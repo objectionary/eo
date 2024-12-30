@@ -29,8 +29,7 @@ Path target = basedir.toPath().resolve('target/eo')
 List<File> directories = target.toFile().listFiles((FileFilter) { File file -> file.directory })
 List<String> allowed = [
     '1-parse',
-    '2-optimize',
-    '3-shake',
+    '2-shake',
     '4-pull',
     '5-resolve',
     '6-lint',

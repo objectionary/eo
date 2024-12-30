@@ -61,7 +61,7 @@ public final class PhiMojo extends SafeMojo {
     @Parameter(
         property = "eo.phiInputDir",
         required = true,
-        defaultValue = "${project.build.directory}/eo/2-optimize"
+        defaultValue = "${project.build.directory}/eo/1-parse"
     )
     private File phiInputDir;
 

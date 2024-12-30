@@ -1,0 +1,73 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/cti-adds-errors.xsl
+  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/expand-qqs.xsl
+  - /org/eolang/parser/shake/add-probes.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/expand-aliases.xsl
+  - /org/eolang/parser/shake/resolve-aliases.xsl
+  - /org/eolang/parser/shake/add-default-package.xsl
+  - /org/eolang/parser/shake/explicit-data.xsl
+  - /org/eolang/parser/shake/set-locators.xsl
+  - /org/eolang/parser/shake/clean-up.xsl
+asserts:
+  - /program[not(errors)]
+  - //o[@name='a' and @loc='Φ.org.abc.a']
+  - //o[@base='x' and @loc='Φ.org.abc.a.φ.α0']
+  - //o[@base='org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
+  - //o[@base='x' and @name='tt' and @loc='Φ.org.abc.tt']
+  - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α0']
+  - //o[@base='org.eolang.tuple' and @loc='Φ.org.abc.tt.α1']
+  - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.α1']
+  - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
+  - //o[@base='.hello' and @loc='Φ.org.abc.tt.α2.φ']
+  - //o[@base='e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
+  - //o[@name='q' and @base='.p' and @loc='Φ.org.abc.q']
+  - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ']
+  - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ']
+  - //o[@base='$' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ.ρ']
+input: |
+  +alias org.abc.foo.b
+  +alias x
+  +package org.abc
+  +home www.abc.com
+  +version 0.0.0
+
+  # No comments.
+  [] > a
+    b > @
+      x
+        "Hello"
+
+  x > tt
+    10
+    *
+      5.1
+      6.2
+    [e]
+      e.hello > @
+
+  $.^.^.p > q

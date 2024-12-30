@@ -81,7 +81,7 @@ public final class LatexMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
+        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
             final Path file = tojo.shaken();
             final Place place = new Place(
                 LatexMojo.last(new XMLDocument(file).xpath("/program/@name").get(0))

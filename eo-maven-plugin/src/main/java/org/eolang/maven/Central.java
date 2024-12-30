@@ -38,12 +38,12 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @since 0.1
  */
-public final class Central implements BiConsumer<Dependency, Path> {
+final class Central implements BiConsumer<Dependency, Path> {
 
     /**
      * Do nothing.
      */
-    public static final BiConsumer<Dependency, Path> EMPTY = new BiConsumer<Dependency, Path>() {
+    static final BiConsumer<Dependency, Path> EMPTY = new BiConsumer<Dependency, Path>() {
         @Override
         public void accept(final Dependency dependency, final Path path) {
             assert dependency != null;
@@ -77,7 +77,7 @@ public final class Central implements BiConsumer<Dependency, Path> {
      * @param sess Session
      * @param mgr Manager
      */
-    public Central(final MavenProject prj, final MavenSession sess,
+    Central(final MavenProject prj, final MavenSession sess,
         final BuildPluginManager mgr) {
         this.project = prj;
         this.session = sess;

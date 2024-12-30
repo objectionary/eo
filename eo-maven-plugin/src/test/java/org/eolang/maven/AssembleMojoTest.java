@@ -75,7 +75,7 @@ final class AssembleMojoTest {
             .result();
         final String stdout = "target/%s/org/eolang/io/stdout.%s";
         final String parsed = String.format(stdout, ParseMojo.DIR, AssembleMojo.XMIR);
-        final String optimized = String.format(stdout, OptimizeMojo.DIR, AssembleMojo.XMIR);
+        final String optimized = String.format(stdout, ShakeMojo.DIR, AssembleMojo.XMIR);
         final String pulled = String.format(stdout, PullMojo.DIR, "eo");
         MatcherAssert.assertThat(
             String.format(
@@ -112,7 +112,7 @@ final class AssembleMojoTest {
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .execute(new FakeMaven.Optimize())
+            .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
@@ -121,7 +121,7 @@ final class AssembleMojoTest {
         );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to optimize it, but we didn't",
-            result.get(String.format("target/%s", OptimizeMojo.DIR)),
+            result.get(String.format("target/%s", ShakeMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
     }
@@ -149,14 +149,14 @@ final class AssembleMojoTest {
     void configuresChildParameters(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> res = new FakeMaven(temp)
             .withHelloWorld()
-            .with("trackOptimizationSteps", true)
+            .with("trackTransformationSteps", true)
             .execute(AssembleMojo.class)
             .result();
         MatcherAssert.assertThat(
             "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
             res,
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
+                String.format("target/%s/foo/x/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }

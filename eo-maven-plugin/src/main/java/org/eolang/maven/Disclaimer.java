@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter;
  * that we generate as output, for example .java and .sodg files.
  * @since 0.27
  */
-public final class Disclaimer {
+final class Disclaimer {
 
     @Override
     public String toString() {
