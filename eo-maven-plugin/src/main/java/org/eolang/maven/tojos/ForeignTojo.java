@@ -194,9 +194,9 @@ public final class ForeignTojo {
     public boolean notPhied() {
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())
-            && this.delegate.exists(ForeignTojos.Attribute.OPTIMIZED.getKey())) {
+            && this.delegate.exists(ForeignTojos.Attribute.XMIR.getKey())) {
             final Path phi = this.phi();
-            if (phi.toFile().lastModified() >= this.optimized().toFile().lastModified()) {
+            if (phi.toFile().lastModified() >= this.xmir().toFile().lastModified()) {
                 Logger.debug(
                     this, "Already executed xmir-to-phi: %s to %[file]s (it's newer than the XMIR)",
                     this.identifier(), phi
