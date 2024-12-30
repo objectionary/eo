@@ -219,7 +219,8 @@ public final class ForeignTojo {
      */
     public boolean notPhied() {
         boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())) {
+        if (this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())
+            && this.delegate.exists(ForeignTojos.Attribute.OPTIMIZED.getKey())) {
             final Path phi = this.phi();
             if (phi.toFile().lastModified() >= this.optimized().toFile().lastModified()) {
                 Logger.debug(
@@ -239,7 +240,8 @@ public final class ForeignTojo {
      */
     public boolean notUnphied() {
         boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.XMIR.getKey())) {
+        if (this.delegate.exists(ForeignTojos.Attribute.XMIR.getKey())
+            && this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())) {
             final Path xmir = this.xmir();
             if (xmir.toFile().lastModified() >= this.phi().toFile().lastModified()) {
                 Logger.debug(
