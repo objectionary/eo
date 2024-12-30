@@ -24,13 +24,13 @@ SOFTWARE.
 -->
 <program name="main">
   <objects>
-    <o abstract="" line="3" name="main" original-name="main" pos="0">
-      <o line="3" name="args" pos="1"/>
+    <o line="3" name="main" original-name="main" pos="0">
+      <o line="3" base="number" name="args" pos="1"/>
       <o base=".print" line="4" name="@" pos="19">
         <o base="org.eolang.stdout" line="4" pos="3">
           <o base="org.eolang.string" data="string" line="4" pos="10">
-                        Dummy
-                    </o>
+            Dummy
+          </o>
         </o>
       </o>
     </o>

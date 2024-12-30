@@ -31,9 +31,9 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.iterable.Filtered;
 import org.eolang.maven.footprint.FpDefault;
@@ -56,7 +56,7 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * The directory where to shake to.
      */
-    public static final String DIR = "2-shake";
+    static final String DIR = "2-shake";
 
     /**
      * Subdirectory for shaken cache.
@@ -66,29 +66,19 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * The directory where to place intermediary files.
      */
-    static final String STEPS = "2-shake-steps";
-
-    /**
-     * Track optimization steps into intermediate XMIR files?
-     *
-     * @since 0.24.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
-    private boolean trackTransformationSteps;
+    private static final String STEPS = "2-shake-steps";
 
     @Override
     public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-        final Xsline xsline = this.transformations();
+        final Function<XML, XML> transform = this.transformations();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
                 tojos
             ),
-            tojo -> this.shaken(tojo, xsline)
+            tojo -> this.shaken(tojo, transform)
         ).total();
         if (total > 0) {
             Logger.info(
@@ -105,11 +95,11 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * XMIR shaken to another XMIR.
      * @param tojo Foreign tojo
-     * @param xsline Transformations to apply to XMIR
+     * @param transform Transformations to apply to XMIR
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Xsline xsline)
+    private int shaken(final ForeignTojo tojo, final Function<XML, XML> transform)
         throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -118,7 +108,7 @@ public final class ShakeMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
-                src -> xsline.pass(xmir).toString(),
+                src -> transform.apply(xmir).toString(),
                 this.cache.toPath().resolve(ShakeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -130,21 +120,25 @@ public final class ShakeMojo extends SafeMojo {
 
     /**
      * Shake XSL transformations.
+     * If {@link SafeMojo#trackTransformationSteps} is {@code true} - we create new {@link Xsline}
+     * for every XMIR in purpose of thread safety.
      * @return Shake XSL transformations for all tojos.
      */
-    private Xsline transformations() {
+    private Function<XML, XML> transformations() {
         final Train<Shift> measured = this.measured(new TrShaking());
-        final Train<Shift> train;
+        final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
-            train = new TrSpy(
-                measured,
-                new StickyFunc<>(
-                    new ProgramPlace(this.targetDir.toPath().resolve(ShakeMojo.STEPS))
+            func = xml -> new Xsline(
+                new TrSpy(
+                    measured,
+                    new StickyFunc<>(
+                        new ProgramPlace(this.targetDir.toPath().resolve(ShakeMojo.STEPS))
+                    )
                 )
-            );
+            ).pass(xml);
         } else {
-            train = measured;
+            func = new Xsline(measured)::pass;
         }
-        return new Xsline(train);
+        return func;
     }
 }

@@ -197,6 +197,16 @@ abstract class SafeMojo extends AbstractMojo {
     protected String transpiledFormat = "csv";
 
     /**
+     * Track optimization steps into intermediate XMIR files?
+     *
+     * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
+    protected boolean trackTransformationSteps;
+
+    /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
      * @since 0.29.0
