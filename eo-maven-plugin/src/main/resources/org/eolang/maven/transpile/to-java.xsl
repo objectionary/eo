@@ -492,8 +492,7 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent">
-        <xsl:value-of select="$indent"/>
+      <xsl:with-param name="indent" select="$indent">
       </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
