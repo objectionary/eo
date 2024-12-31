@@ -63,8 +63,25 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]">
+    <xsl:apply-templates select="." mode="class"/>
+  </xsl:template>
+  <xsl:template match="objects/o[@base and @name]">
+    <xsl:apply-templates select="." mode="class">
+      <xsl:with-param name="bound" select="true()"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="o" mode="class">
+    <xsl:param name="bound"/>
     <xsl:element name="class">
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*"/>
+      <xsl:choose>
+        <xsl:when test="$bound">
+          <xsl:copy-of select="."/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="node()"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:element name="xmir">
         <xsl:call-template name="serialize">
           <xsl:with-param name="node" select="."/>

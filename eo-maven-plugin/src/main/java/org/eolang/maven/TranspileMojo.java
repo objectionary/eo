@@ -42,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -78,26 +79,25 @@ import org.eolang.parser.TrFull;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class TranspileMojo extends SafeMojo {
-
-    /**
-     * The directory where to put pre-transpile files.
-     */
-    public static final String PRE = "7-pre";
-
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "8-transpile";
+    static final String DIR = "8-transpile";
 
     /**
      * Cache directory for transpiled sources.
      */
-    public static final String CACHE = "transpiled";
+    private static final String CACHE = "transpiled";
 
     /**
      * Java extension.
      */
-    public static final String JAVA = "java";
+    private static final String JAVA = "java";
+
+    /**
+     * The directory where to put pre-transpile files.
+     */
+    private static final String PRE = "7-pre";
 
     /**
      * Parsing train with XSLs.
@@ -165,10 +165,10 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
-        final Xsline xsline = this.xsline();
+        final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, xsline)
+            tojo -> this.transpiled(tojo, transform)
         ).total();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
@@ -193,11 +193,14 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      * @param tojo Tojo that should be transpiled.
-     * @param xsline Optimization that transpiles
+     * @param transform Optimization that transpiles
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private int transpiled(final ForeignTojo tojo, final Xsline xsline) throws IOException {
+    private int transpiled(
+        final ForeignTojo tojo,
+        final Function<XML, XML> transform
+    ) throws IOException {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(TranspileMojo.DIR);
@@ -209,7 +212,7 @@ public final class TranspileMojo extends SafeMojo {
         new FpDefault(
             src -> {
                 rewrite.set(true);
-                return xsline.pass(xmir).toString();
+                return transform.apply(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
             this.plugin.getVersion(),
@@ -220,18 +223,27 @@ public final class TranspileMojo extends SafeMojo {
     }
 
     /**
-     * Transpile optimization.
-     * @return Optimization that transpiles
+     * Transpile XSL transformations.
+     * If {@link SafeMojo#trackTransformationSteps} is {@code true} - we create new {@link Xsline}
+     * for every XMIR in purpose of thread safety.
+     * @return XSL transformations that transpiles XMIR to Java.
      */
-    private Xsline xsline() {
-        return new Xsline(
-            new TrSpy(
-                this.measured(TranspileMojo.TRAIN),
-                new StickyFunc<>(
-                    new ProgramPlace(this.targetDir.toPath().resolve(TranspileMojo.PRE))
+    private Function<XML, XML> transpilation() {
+        final Train<Shift> measured = this.measured(TranspileMojo.TRAIN);
+        final Function<XML, XML> func;
+        if (this.trackTransformationSteps) {
+            func = xml -> new Xsline(
+                new TrSpy(
+                    measured,
+                    new StickyFunc<>(
+                        new ProgramPlace(this.targetDir.toPath().resolve(TranspileMojo.PRE))
+                    )
                 )
-            )
-        );
+            ).pass(xml);
+        } else {
+            func = new Xsline(measured)::pass;
+        }
+        return func;
     }
 
     /**
