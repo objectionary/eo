@@ -41,29 +41,31 @@ final class AtRhoTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 4, 32})
     void worksAsExpected(final int threads) throws InterruptedException {
-        final Attr atRho = new AtRho();
-        final CountDownLatch startLatch = new CountDownLatch(1);
-        final CountDownLatch endLatch = new CountDownLatch(threads);
+        final Attr rho = new AtRho();
+        final CountDownLatch start = new CountDownLatch(1);
+        final CountDownLatch end = new CountDownLatch(threads);
         final AtomicInteger count = new AtomicInteger(0);
-        for (int i = 0; i < threads; i++) {
-            new Thread(() -> {
-                try {
-                    startLatch.await();
-                    atRho.put(new Phi.ToPhi(count.incrementAndGet()));
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } finally {
-                    endLatch.countDown();
-                }
-            }).start();
+        for (int idx = 0; idx < threads; ++idx) {
+            final Thread thread = new Thread(
+                    () -> {
+                        try {
+                            start.await();
+                            final Phi phi = new Phi.ToPhi(count.incrementAndGet());
+                            rho.put(phi);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        } finally {
+                            end.countDown();
+                        }
+                    }
+            );
+            thread.start();
         }
-        startLatch.countDown();
-        endLatch.await();
+        start.countDown();
+        end.await();
         MatcherAssert.assertThat(
                 "The object must be equal to 1",
-                new BytesOf(
-                        atRho.get().delta()
-                ).asNumber(),
+                new BytesOf(rho.get().delta()).asNumber(),
                 Matchers.equalTo(1.0)
         );
     }
