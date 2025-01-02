@@ -47,26 +47,26 @@ final class AtRhoTest {
         final AtomicInteger count = new AtomicInteger(0);
         for (int idx = 0; idx < threads; ++idx) {
             final Thread thread = new Thread(
-                    () -> {
-                        try {
-                            start.await();
-                            final Phi phi = new Phi.ToPhi(count.incrementAndGet());
-                            rho.put(phi);
-                        } catch (final InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        } finally {
-                            end.countDown();
-                        }
+                () -> {
+                    try {
+                        start.await();
+                        final Phi phi = new Phi.ToPhi(count.incrementAndGet());
+                        rho.put(phi);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    } finally {
+                        end.countDown();
                     }
+                }
             );
             thread.start();
         }
         start.countDown();
         end.await();
         MatcherAssert.assertThat(
-                "The object must be equal to 1",
-                new BytesOf(rho.get().delta()).asNumber(),
-                Matchers.equalTo(1.0)
+            "The object must be equal to 1",
+            new BytesOf(rho.get().delta()).asNumber(),
+            Matchers.equalTo(1.0)
         );
     }
 }
