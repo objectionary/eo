@@ -52,7 +52,7 @@ final class AtRhoTest {
                             start.await();
                             final Phi phi = new Phi.ToPhi(count.incrementAndGet());
                             rho.put(phi);
-                        } catch (InterruptedException e) {
+                        } catch (final InterruptedException ex) {
                             Thread.currentThread().interrupt();
                         } finally {
                             end.countDown();
