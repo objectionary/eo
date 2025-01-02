@@ -40,7 +40,7 @@ final class AtRhoTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 4, 32})
-    void threadSafeAtRho(final int threads) throws InterruptedException {
+    void worksAsExpected(final int threads) throws InterruptedException {
         final Attr atRho = new AtRho();
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threads);
