@@ -62,6 +62,12 @@ import org.xembly.Directives;
     threadSafe = true
 )
 public final class UnphiMojo extends SafeMojo {
+
+    /**
+     * Subdirectory for parsed cache.
+     */
+    static final String CACHE = "unphied";
+
     /**
      * Unphi transformations.
      */

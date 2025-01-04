@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang.maven;
 
 import com.yegor256.Mktmp;
@@ -28,8 +29,12 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -48,44 +53,63 @@ final class UnphiMojoCacheTest {
 
     @Test
     @ExpectedToFail
-    void touchesCacheNot(@Mktmp final Path temp) throws Exception {
+    void usesCache(@Mktmp final Path temp) throws Exception {
         final Home workspace = new HmBase(temp);
+        final Path phi = Paths.get("target/eo/phi/std.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/std.xmir");
         workspace.save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
-            Paths.get("target/eo/phi/std.phi")
+            phi
         );
-        workspace.save(
-            "some valid XMIR after unphi",
-            Paths.get("target/eo/1-parse/std.xmir")
-        );
-        final File xmir = temp.resolve("target/eo/1-parse/std.xmir").toFile();
-        final long modified = xmir.lastModified();
+        final String cache = "some valid phi cache";
+        new FpDefault(
+            src -> cache,
+            temp.resolve("cache").resolve(UnphiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("std.xmir")
+        ).apply(temp.resolve(phi), temp.resolve(xmir));
         this.executePhiToXmir(new Farea(temp));
         MatcherAssert.assertThat(
             "XMIR file recreated twice",
-            modified,
-            Matchers.equalTo(xmir.lastModified())
+            new TextOf(workspace.load(xmir)),
+            Matchers.equalTo(cache)
         );
     }
 
     @Test
-    void touchesInvalidCache(@Mktmp final Path temp) throws Exception {
+    @ExpectedToFail
+    void invalidatesCache(@Mktmp final Path temp) throws Exception {
         final Home workspace = new HmBase(temp);
-        workspace.save(
-            "some valid XMIR that appeared before phi",
-            Paths.get("target/eo/1-parse/std.xmir")
-        );
+        final Path phi = Paths.get("target/eo/phi/std.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/std.xmir");
+        final Path cache = Path.of("cache")
+            .resolve(UnphiMojo.CACHE)
+            .resolve("version-1.0")
+            .resolve("123ZaRiFcHiK321")
+            .resolve("std.xmir");
         workspace.save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
-            Paths.get("target/eo/phi/std.phi")
+            phi
         );
-        final File xmir = temp.resolve("target/eo/1-parse/std.xmir").toFile();
-        final long modified = xmir.lastModified();
+        new FpDefault(
+            src -> "some valid phi cache",
+            temp.resolve("cache").resolve(UnphiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("std.xmir")
+        ).apply(temp.resolve(phi), temp.resolve(xmir));
+        Files.setLastModifiedTime(
+            temp.resolve(phi),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
+        final File cached = temp.resolve(cache).toFile();
+        final long old = cached.lastModified();
         this.executePhiToXmir(new Farea(temp));
         MatcherAssert.assertThat(
             "phi-to-xmir cache not invalidated",
-            modified,
-            Matchers.lessThan(xmir.lastModified())
+            old,
+            Matchers.lessThan(cached.lastModified())
         );
     }
 
