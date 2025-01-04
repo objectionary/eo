@@ -1,0 +1,61 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/add-refs.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/objects[count(o)=3]
+  - //objects[not(//o[@ref and @base='@'])]
+  - //o[@base='x' and @ref='2']
+  - //o[@base='x' and @line='8' and @ref='5']
+  - //o[@base='x' and @line='12' and @ref='5']
+  - //o[@base='a' and @line='10' and @ref='13']
+  - //o[@base='something' and @line='13' and @name='a' and not(@ref)]
+  - //o[@base='x' and @line='18' and @ref='16']
+  - //o[@base='first' and @line='19' and @ref='2']
+input: |
+  # No comments.
+  [x a] > first
+    stdout x
+    second > hello
+      third > x
+        stdout "Hi"
+      one
+        x
+        two
+          a > @
+          three
+            x
+      something > a
+
+  # No comments.
+  [a] > x
+    tt
+      x 4
+      first
+
+  # No comments.
+  [] > y
+    one
+      [f]
+        1 > ooo

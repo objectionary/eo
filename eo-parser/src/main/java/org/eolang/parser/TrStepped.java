@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.Shift;
@@ -32,27 +31,34 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
+import org.cactoos.Scalar;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.text.TextOf;
 
 /**
  * Trains that adds sheet names that were processed.
  *
  * @since 0.1
  */
-public final class TrStepped extends TrEnvelope {
+final class TrStepped extends TrEnvelope {
 
     /**
      * Apply changes to each XML after processing.
      */
-    private static final XSL EACH = new XSLDocument(
-        TrStepped.class.getResourceAsStream("_stepped.xsl"),
-        "each.xsl"
-    ).with(new ClasspathSources(TrStepped.class));
+    private static final Scalar<XSL> STEPPED = new Sticky<>(
+        () -> new XSLDocument(
+            new TextOf(
+                new ResourceOf("org/eolang/parser/_stepped.xsl")
+            ).asString()
+        )
+    );
 
     /**
      * Ctor.
      * @param train Original train
      */
-    public TrStepped(final Train<Shift> train) {
+    TrStepped(final Train<Shift> train) {
         super(
             new TrLambda(
                 train,
@@ -60,7 +66,7 @@ public final class TrStepped extends TrEnvelope {
                     shift,
                     new StLambda(
                         shift::uid,
-                        (pos, xml) -> TrStepped.EACH
+                        (pos, xml) -> TrStepped.STEPPED.value()
                             .with("step", pos)
                             .with("sheet", shift.uid())
                             .transform(xml)

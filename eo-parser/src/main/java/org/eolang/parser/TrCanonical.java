@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,52 +28,37 @@ import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
-import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.TrLambda;
-import com.yegor256.xsline.TrLogged;
-import java.util.logging.Level;
 
 /**
  * Train of XSL shifts that turn XMIR into canonical one.
  *
  * @since 0.48
  */
-public final class TrCanonical extends TrEnvelope {
+final class TrCanonical extends TrEnvelope {
     /**
      * Ctor.
      */
-    public TrCanonical() {
+    TrCanonical() {
         super(
-            new TrStepped(
-                new TrFast(
-                    new TrLambda(
-                        new TrLogged(
-                            new TrJoined<>(
-                                new TrClasspath<>(
-                                    "/org/eolang/parser/move-voids-up.xsl",
-                                    "/org/eolang/parser/validate-before-stars.xsl",
-                                    "/org/eolang/parser/resolve-before-star.xsl"
-                                ).back(),
-                                new TrDefault<>(
-                                    new StEndless(
-                                        new StClasspath(
-                                            "/org/eolang/parser/stars-to-tuples.xsl"
-                                        )
-                                    )
-                                ),
-                                new TrClasspath<>(
-                                    "/org/eolang/parser/wrap-method-calls.xsl",
-                                    "/org/eolang/parser/const-to-dataized.xsl"
-                                ).back()
-                            ),
-                            TrCanonical.class,
-                            Level.FINEST
-                        ),
-                        StEoLogged::new
+            new TrFull(
+                new TrJoined<>(
+                    new TrClasspath<>(
+                        "/org/eolang/parser/parse/move-voids-up.xsl",
+                        "/org/eolang/parser/parse/validate-before-stars.xsl",
+                        "/org/eolang/parser/parse/resolve-before-star.xsl"
+                    ).back(),
+                    new TrDefault<>(
+                        new StEndless(
+                            new StClasspath(
+                                "/org/eolang/parser/parse/stars-to-tuples.xsl"
+                            )
+                        )
                     ),
-                    TrCanonical.class,
-                    500L
+                    new TrClasspath<>(
+                        "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                        "/org/eolang/parser/parse/const-to-dataized.xsl"
+                    ).back()
                 )
             )
         );

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,8 @@
  */
 
 [
-        'src/test/groovy/check-xsl-id.groovy',
-        'src/test/groovy/check-xsl-version.groovy',
-        'src/test/groovy/xslqual.groovy',
+    'src/test/groovy/check-xsl-id.groovy',
+    'src/test/groovy/check-xsl-version.groovy',
 ].each { filename ->
     evaluate(new File(filename))
     log.info "Verified with $filename - OK"

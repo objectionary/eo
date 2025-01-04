@@ -1,0 +1,69 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/objects[count(o)=3]
+  - //o[@base='.as-bytes' and @name='t' and @line='8' and o[@base='org.eolang.dataized']]
+  - //objects[count(.//o[@base='string'])=1]
+  - //o[@name='y']/o[@name='t']
+  - //o[@name='y']/o[@name='oops']
+  - //o[@name='last' and not(@cut)]
+  - //objects[count(//o[@name='oops'])=1]
+  - //objects[count(//o[@cut='0'])=1]
+  - //o[@name='aaa' and not(@cut)]
+  - //o[@name='ooo' and not(@cut)]
+  - //o[@name='mm' and @base='number']
+  - //o[@base='mm']
+input: |
+  # No comments.
+  [] > x
+    first > ff
+    one
+      # No comments.
+      [] > y
+        two
+          input > t!
+            "Hello, world!"
+            # No comments.
+            [] > oops
+              50
+    three t
+    # No comments.
+    [] > last
+      three 1
+
+  # No comments.
+  [ppp] > pp
+    one
+      # No comments.
+      [aaa] > kkk
+        1 > ooo
+  # No comments.
+  [] > head
+    bb > @
+      [zz]
+        tt > @
+          42 > mm

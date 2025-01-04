@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ final class PhiMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "xmir-to-phi");
+                    .goals("register", "parse", "xmir-to-phi");
                 f.exec("compile");
             }
         );
@@ -79,7 +79,7 @@ final class PhiMojoTest {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("target/eo/2-optimize/foo.xmir").write(
+                f.files().file("target/eo/1-parse/foo.xmir").write(
                     String.join(
                         " ",
                         "<program name='foo'><objects>",
@@ -124,19 +124,19 @@ final class PhiMojoTest {
                     ).getBytes()
                 );
                 f.build().plugins().appendItself();
-                f.exec("eo:register", "eo:parse", "eo:optimize");
+                f.exec("eo:register", "eo:parse");
                 f.exec("eo:xmir-to-phi");
             }
         );
         MatcherAssert.assertThat(
             "the .xmir file is generated",
             XhtmlMatchers.xhtml(
-                Files.readString(temp.resolve("target/eo/2-optimize/org/eolang/bytes.xmir"))
+                Files.readString(temp.resolve("target/eo/1-parse/org/eolang/bytes.xmir"))
             ),
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@name='bytes']",
                 "/program/objects/o/o[@base='.eq']",
-                "/program/objects/o/o/o[@base='org.eolang.bytes' and text()='01-02-03']"
+                "/program/objects/o/o/o[@base='bytes' and text()='01-02-03']"
             )
         );
         MatcherAssert.assertThat(
@@ -187,7 +187,7 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
-    void checksPhiPacksWithSugar(final String pack, @Mktmp final Path temp) throws Exception {
+    void checksSweetPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
@@ -207,7 +207,7 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
-    void checksPhiPacksNoSugar(final String pack, @Mktmp final Path temp) throws Exception {
+    void checksSaltyPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(

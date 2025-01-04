@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,7 +195,7 @@ final class UnphiMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/unphi-packs", glob = "**.yaml")
     @SuppressWarnings("unchecked")
     void checksUnphiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
@@ -245,7 +245,7 @@ final class UnphiMojoTest {
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .with("conservative", xtory.map().get("conservative") != null)
-            .execute(OptimizeMojo.class)
+            .execute(ShakeMojo.class)
             .execute(PhiMojo.class)
             .result()
             .get(main);
@@ -276,7 +276,7 @@ final class UnphiMojoTest {
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
             .with("printReversed", reversed)
             .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
+            .execute(ShakeMojo.class)
             .execute(PhiMojo.class)
             .execute(UnphiMojo.class)
             .execute(PrintMojo.class)

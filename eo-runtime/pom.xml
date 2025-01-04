@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2024 Objectionary.com
+Copyright (c) 2016-2025 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -265,7 +265,7 @@ SOFTWARE.
               <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/2-optimize</phiInputDir>
+              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
               <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
               <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
@@ -430,7 +430,7 @@ SOFTWARE.
               <execution>
                 <goals>
                   <goal>pull</goal>
-                  <goal>optimize</goal>
+                  <goal>shake</goal>
                   <goal>rmi</goal>
                 </goals>
                 <configuration>

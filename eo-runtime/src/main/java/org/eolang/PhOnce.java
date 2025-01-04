@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,9 +31,10 @@ import java.util.function.Supplier;
  * An object wrapping another one.
  *
  * @since 0.1
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
-class PhOnce implements Phi {
+public class PhOnce implements Phi {
 
     /**
      * The object fetched.
@@ -50,7 +51,7 @@ class PhOnce implements Phi {
      *
      * @param obj The object
      */
-    PhOnce(final Supplier<Phi> obj) {
+    public PhOnce(final Supplier<Phi> obj) {
         this.ref = new AtomicReference<>(null);
         this.object = () -> {
             synchronized (this.ref) {

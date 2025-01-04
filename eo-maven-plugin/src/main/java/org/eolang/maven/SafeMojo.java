@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,6 +195,17 @@ abstract class SafeMojo extends AbstractMojo {
      */
     @Parameter(property = "eo.transpiledFormat", required = true, defaultValue = "csv")
     protected String transpiledFormat = "csv";
+
+    /**
+     * Track optimization steps into intermediate XMIR files?
+     *
+     * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
+    protected boolean trackTransformationSteps;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
