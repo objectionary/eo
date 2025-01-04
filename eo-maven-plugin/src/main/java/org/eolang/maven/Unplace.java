@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 /**
  * Make program name from a path.
@@ -39,6 +40,11 @@ final class Unplace {
     private final Path parent;
 
     /**
+     * The file extension.
+     */
+    private final String extension;
+
+    /**
      * Ctor.
      * @param dir The name of the parent dir
      */
@@ -51,7 +57,26 @@ final class Unplace {
      * @param dir The name of the parent dir
      */
     Unplace(final Path dir) {
+        this(dir, ".eo");
+    }
+
+    /**
+     * Ctor.
+     * @param dir The name of the parent dir
+     * @param extension The file extension
+     */
+    Unplace(final File dir, final String extension) {
+        this(dir.toPath(), extension);
+    }
+
+    /**
+     * Main Ctor.
+     * @param dir The name of the parent dir
+     * @param extension The file extension
+     */
+    Unplace(final Path dir, final String extension) {
         this.parent = dir;
+        this.extension = extension;
     }
 
     /**
@@ -62,6 +87,9 @@ final class Unplace {
     public String make(final Path file) {
         return file.toString().substring(
             this.parent.toString().length() + 1
-        ).replaceAll(".eo$", "").replace(File.separator, ".");
+        ).replaceAll(
+            Pattern.quote(this.extension).concat("$"),
+            ""
+        ).replace(File.separator, ".");
     }
 }

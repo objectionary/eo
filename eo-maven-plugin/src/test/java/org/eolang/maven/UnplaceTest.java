@@ -26,6 +26,8 @@ package org.eolang.maven;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -55,4 +57,31 @@ final class UnplaceTest {
         );
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "/tmp/foo/bar, /tmp/foo/bar/a/b/c.phi, a.b.c",
+        "/tmp/foo/bar, /tmp/foo/bar/a/b/.cd.ef.phi, a.b..cd.ef"
+    })
+    void makesNameWithCustomExtension(
+        final String base,
+        final String source,
+        final String name
+    ) {
+        MatcherAssert.assertThat(
+            CatalogsTest.TO_ADD_MESSAGE,
+            new Unplace(Paths.get(base), ".phi").make(
+                Paths.get(source)
+            ),
+            Matchers.equalTo(name)
+        );
+    }
+
+    @Test
+    void interpretsExtensionAsLiteralString() {
+        Assertions.assertDoesNotThrow(
+            () -> new Unplace(Paths.get("/tmp/foo/bar"), "(")
+                .make(Paths.get("/tmp/foo/bar/a/b/c(")),
+            "Extension interpreted not as literal string"
+        );
+    }
 }
