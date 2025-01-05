@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -94,10 +94,9 @@
     malloc.of > @
       bts.size
       [m] >>
-        seq > @
-          *
-            m.write 0 ^.bts
-            ^.scope m
+        seq * > @
+          m.write 0 ^.bts
+          ^.scope m
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
@@ -134,7 +133,6 @@
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
-        seq > @
-          *
-            ^.write 0 object
-            ^.get
+        seq * > @
+          ^.write 0 object
+          ^.get

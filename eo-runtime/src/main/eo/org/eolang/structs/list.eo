@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
 [origin] > list
   origin > @
 
-  # Is it empty?
+  # Is it empty?.
   0.eq ^.origin.length > [] > is-empty
 
   # Create a new list with this element added to the end of it.
@@ -111,10 +111,9 @@
     ^.reducedi > @
       true
       [acc item index] >>
-        seq > @
-          *
-            acc
-            ^.func item index
+        seq * > @
+          acc
+          ^.func item index
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with

@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2024 Objectionary.com
+Copyright (c) 2016-2025 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ SOFTWARE.
           <foreignFormat>csv</foreignFormat>
           <placed>${project.build.directory}/eo/placed.json</placed>
           <placedFormat>json</placedFormat>
-          <trackOptimizationSteps>true</trackOptimizationSteps>
+          <trackTransformationSteps>true</trackTransformationSteps>
           <generateSodgXmlFiles>true</generateSodgXmlFiles>
           <generateGraphFiles>true</generateGraphFiles>
           <generateXemblyFiles>true</generateXemblyFiles>

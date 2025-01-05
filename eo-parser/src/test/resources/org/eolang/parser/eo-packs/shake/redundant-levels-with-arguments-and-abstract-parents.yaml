@@ -1,0 +1,80 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/abstracts-float-up.xsl
+  - /org/eolang/parser/shake/remove-levels.xsl
+  - /org/eolang/parser/shake/clean-up.xsl
+asserts:
+  - /program[not(errors)]
+  # 'main' object
+  - //o[@name='main']
+  - //o[@name='main']/o[@base='sibling' and @name='@']
+  - //o[@name='main']/o[@base='∅' and @name='arg']
+  - //o[@name='main']/o[@base='main$sibling' and @name='sibling']
+  - //o[@name='main']/o[@base='main$sibling' and @name='sibling']/o[@base='arg' and not(@name)]
+  # 'main$sibling' object
+  - //o[@name='main$sibling' and count(o)=3]
+  - //o[@name='main$sibling']/o[@base='∅' and @name='arg']
+  - //o[@name='main$sibling']/o[@base='main$sibling$first' and @name='first']
+  - //o[@name='main$sibling']/o[@base='main$sibling$first' and @name='first']/o[@base='arg' and not(@name)]
+  - //o[@name='main$sibling']/o[@base='main$sibling$second' and @name='second']
+  - //o[@name='main$sibling']/o[@base='main$sibling$second' and @name='second']/o[@base='arg' and not(@name)]
+  # 'main$sibling$first' object
+  - //o[@name='main$sibling$first' and count(o)=2]
+  - //o[@name='main$sibling$first']/o[@base='.one' and @name='@']/o[@base='arg' and not(@name)]
+  - //o[@name='main$sibling$first']/o[@base='∅' and @name='arg']
+  # 'main$sibling$second' object
+  - //o[@name='main$sibling$second' and count(o)=2]
+  - //o[@name='main$sibling$second']/o[@base='.two' and @name='@']/o[@base='arg' and not(@name)]
+  - //o[@name='main$sibling$second']/o[@base='∅' and @name='arg']
+# Currently the test converts the code from the snippet to:
+# ____
+# [arg] > main
+#   sibling > @
+#   main$sibling > sibling
+#     arg
+#
+# [arg] > main$sibling
+#   main$sibling$first > first
+#     arg
+#   main$sibling$second > second
+#     arg
+#
+# [arg] > main$sibling$first
+#   arg.one > @
+#
+# [] > main$sibling$second
+#   arg.two > @
+# ____
+input: |
+  # No comments.
+  [arg] > main
+    sibling > @
+    # No comments.
+    [] > sibling
+      # No comments.
+      [] > first
+        arg.one > @
+      # No comments.
+      [] > second
+        arg.two > @

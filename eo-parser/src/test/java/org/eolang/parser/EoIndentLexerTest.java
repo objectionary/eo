@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
-public final class EoIndentLexerTest {
+final class EoIndentLexerTest {
     /**
      * Empty message for JUnit Assertions.
      *

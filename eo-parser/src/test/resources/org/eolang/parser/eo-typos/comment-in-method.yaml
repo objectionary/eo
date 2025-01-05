@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,12 @@
 # SOFTWARE.
 ---
 line: 5
+# @todo #3706:30min The error message doesn't highlight the exact position of the
+#  comment. The error message should be updated to point to the exact position
+#  of the comment.
+message: |
+  [5:12] error: 'Invalid object declaration'
+      sprintwf
 input: |
   # No comments
   [args] > app

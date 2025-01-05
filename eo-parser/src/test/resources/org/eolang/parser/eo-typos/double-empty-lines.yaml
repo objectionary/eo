@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,13 @@
 # SOFTWARE.
 ---
 line: 4
+# @todo #3706:30min Cryptic error message is returned
+#  Cryptic error message is returned when there are two empty lines between metas.
+#  The error message should be more informative and should highlight the exact location
+#  of the error.
+message: |
+  [4:0] error: 'extraneous input '\n' expecting {COMMENTARY, 'Q', 'QQ', '*', '$', '[', '(', '@', '^', BYTES, STRING, INT, FLOAT, HEX, NAME, TEXT}'
+
 input: |
   # No comments.
   [args] > one

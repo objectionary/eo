@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ public final class PhiMojo extends SafeMojo {
     @Parameter(
         property = "eo.phiInputDir",
         required = true,
-        defaultValue = "${project.build.directory}/eo/2-optimize"
+        defaultValue = "${project.build.directory}/eo/1-parse"
     )
     private File phiInputDir;
 
@@ -75,6 +75,12 @@ public final class PhiMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/eo/phi"
     )
     private File phiOutputDir;
+
+    /**
+     * Print all the braces in sweet notation.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean conservative = true;
 
     /**
      * Convert to PHI without syntax sugar.
@@ -165,9 +171,9 @@ public final class PhiMojo extends SafeMojo {
         final String phi;
         try {
             if (this.phiNoSugar) {
-                phi = xmir.toPhiNoSugar();
+                phi = xmir.toSaltyPhi();
             } else {
-                phi = xmir.toPhi();
+                phi = xmir.toPhi(this.conservative);
             }
         } catch (final IndexOutOfBoundsException exception) {
             throw new ImpossibleToPhiTranslationException(

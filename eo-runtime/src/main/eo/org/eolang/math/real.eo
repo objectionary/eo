@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Real number.
+# Returns a floating point number.
 [num] > real
   num > @
   # Returns Euler's number raised to the power of a `num`.

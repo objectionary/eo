@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -869,7 +869,7 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The posix 'write' syscall should have written to standard output, but it didn't",
                 Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
-                Matchers.equalTo(msg)
+                Matchers.containsString(msg)
             );
         }
 

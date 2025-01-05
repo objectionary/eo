@@ -1,0 +1,145 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets: [ ]
+asserts:
+  - /program[not(errors)]
+  - /program/license[text()!='']
+  - /program/metas[count(meta)=4]
+  - /program/metas/meta[head='foo' and tail='']
+  - //o[@base='true']
+  - //o[@base='string']
+  - //o[@name='hello' and @base='.as-bytes' and o[@base='org.eolang.dataized']]
+  - //o[@as='i']
+  - //o[@as='α1']
+  - //o[@as='α0']
+  - //o[@base='.five']
+  - //objects[not(.//o[@name=''])]
+  - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
+  - //o[@atom='org.eolang.number']
+input: |
+  # The purpose of this test case is to make
+  # sure all possible syntax scenarios can
+  # be parsed by the ANTLR
+
+  +alias org.example.foo
+  +alias Test Test
+  +bar Some text
+  +foo
+
+  500.43.@ > one
+
+  # No comments.
+  "Hello, друг!" > hello!
+
+  # No comments.
+  [tt a] > atom /int
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > with-void-phi
+    [@] > x
+      "Hello" > hello
+    x 5 > five
+    and. > @
+      (five.plus 5).eq 10
+      five.hello.eq "Hello"
+
+  # This is very good object
+  # No comments.
+  [x] > first
+    sprintf *1 > xyz
+      "Hello, %s"
+      "Jeff"
+    x > @
+    second > hello
+      $.plus.@ 5 > i
+      third > x!
+        $
+        z.
+          z
+        f
+          12:foo
+          ((t r 8.54 "yes" "\t").print 88 0x1f):hey
+          true:vtx
+          false:fle > a!
+            []
+              Q.x.f.d Q Q
+              QQ.y QQ
+            [] >>
+              ^.@.hey > you
+              Q
+              QQ
+            kid.^.^
+            "家"
+          q
+          .w
+          .e:qwerty > qwe
+      f
+        z
+          (z 5):0
+          z:1
+      a.
+        b.
+          c.
+            42
+          d
+        e.
+          f
+      ^.
+        ^.
+          c
+      a.
+        b.
+          $
+      @.
+        b
+    oops
+
+  # No comments.
+  [] > obj
+    "some" > @
+    [] > foo
+      ^.@ > @
+
+  # Comments are allowed only in front of top-level objects
+  # No comments.
+  [] > named
+    one.two.three.four.five
+      t.o
+    .two "hello!"
+    .three > a1
+    .four (a b c) > a2
+    .five > a3
+
+  test
+    me
+      (now (f (f (f (f 1)))).f):i
+
+  # No comments.
+  [] > ooo
+    [] > o-1 /org.eolang.number
+
+    [] > o2
+
+  -2.4E3 > x
+
+  7.33e-10 > y

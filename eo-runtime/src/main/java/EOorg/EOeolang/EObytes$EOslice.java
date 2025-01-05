@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,9 +77,11 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
             .it();
-        final byte[] array = new Dataized(this.take(Attr.RHO)).take();
         return new Data.ToPhi(
-            Arrays.copyOfRange(array, start, start + length)
+            Arrays.copyOfRange(
+                new Dataized(this.take(Attr.RHO)).take(),
+                start, start + length
+            )
         );
     }
 }

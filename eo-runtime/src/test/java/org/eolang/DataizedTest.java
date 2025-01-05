@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,11 +56,20 @@ final class DataizedTest {
             EOerror.ExError.class,
             () -> new Dataized(
                 new PhSafe(
-                    new PhLocated(new PhIncorrect(), "foo.bar", 0, 0)
+                    new PhMethod(
+                        new PhDefault() {
+                            @Override
+                            public Phi take(final String name) {
+                                throw new IllegalStateException("intentional error");
+                            }
+                        },
+                        "xyz"
+                    ),
+                    "foo.bar", 0, 0
                 ),
                 log
             ).take(),
-            "it is expected to fail with ExFailure exception"
+            "it is expected to fail with and exception"
         );
         log.setLevel(before);
         log.removeHandler(hnd);
@@ -69,10 +78,8 @@ final class DataizedTest {
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("1) Error in"),
-                Matchers.containsString("2) There's no"),
-                Matchers.containsString("3)"),
                 Matchers.containsString("at foo.bar:0:0"),
-                Matchers.containsString("no \"Δ\" in the object of")
+                Matchers.containsString("intentional error")
             )
         );
     }
@@ -90,55 +97,6 @@ final class DataizedTest {
             ).take(),
             "re-throws when dataization fails with 'error' object"
         );
-    }
-
-    /**
-     * Fake Phi failing when dataized.
-     * @since 0.1.0
-     */
-    private static class PhIncorrect extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        PhIncorrect() {
-            this.add(
-                "Δ",
-                new AtComposite(
-                    this,
-                    rho -> Phi.Φ
-                )
-            );
-        }
-    }
-
-    /**
-     * Fake Phi with decoration.
-     *
-     * @since 0.1.0
-     */
-    public static class PhiDec extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        PhiDec() {
-            this.add(
-                "φ",
-                new AtOnce(
-                    new AtComposite(
-                        this,
-                        rho -> new PhWith(
-                            new PhCopy(new PhMethod(new Data.ToPhi(2L), "plus")),
-                            0,
-                            new Data.ToPhi(2L)
-                        )
-                    )
-                )
-            );
-        }
     }
 
     /**

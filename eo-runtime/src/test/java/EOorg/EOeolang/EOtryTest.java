@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ final class EOtryTest {
     @Test
     void catchesException() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "catches exception",
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -73,20 +73,21 @@ final class EOtryTest {
 
     @Test
     void usesCatcherOutput() {
-        final Phi body = new PhWith(
-            new PhWith(
-                new PhWith(
-                    new EOtry(),
-                    0, new PhSafe(new Broken())
-                ),
-                1, new Catcher()
-            ),
-            2,
-            new Data.ToPhi(true)
-        );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(body).asString(),
+            "uses catcher's output",
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new PhWith(
+                            new EOtry(),
+                            0, new PhSafe(new Broken())
+                        ),
+                        1, new Catcher()
+                    ),
+                    2,
+                    new Data.ToPhi(true)
+                )
+            ).asString(),
             Matchers.containsString("it is broken")
         );
     }

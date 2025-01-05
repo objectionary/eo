@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,11 @@ import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
+import org.cactoos.scalar.Unchecked;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 import org.xml.sax.SAXParseException;
@@ -71,7 +75,7 @@ public final class StrictXmir implements XML {
     /**
      * The XML.
      */
-    private final XML xml;
+    private final Unchecked<XML> xml;
 
     /**
      * Ctor.
@@ -91,36 +95,40 @@ public final class StrictXmir implements XML {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public StrictXmir(final XML before, final Path tmp) {
-        synchronized (before) {
-            this.xml = new StrictXML(
-                StrictXmir.reset(before, tmp)
-            );
-        }
+        this.xml = new Unchecked<>(
+            new Synced<>(
+                new Sticky<>(
+                    () -> new StrictXML(
+                        StrictXmir.reset(before, tmp)
+                    )
+                )
+            )
+        );
     }
 
     @Override
     public String toString() {
-        return this.xml.toString();
+        return this.xml.value().toString();
     }
 
     @Override
     public List<String> xpath(final String query) {
-        return this.xml.xpath(query);
+        return this.xml.value().xpath(query);
     }
 
     @Override
     public List<XML> nodes(final String query) {
-        return this.xml.nodes(query);
+        return this.xml.value().nodes(query);
     }
 
     @Override
     public XML registerNs(final String prefix, final Object uri) {
-        return this.xml.registerNs(prefix, uri);
+        return this.xml.value().registerNs(prefix, uri);
     }
 
     @Override
     public XML merge(final NamespaceContext context) {
-        return this.xml.merge(context);
+        return this.xml.value().merge(context);
     }
 
     @Override
@@ -131,22 +139,22 @@ public final class StrictXmir implements XML {
 
     @Override
     public Node inner() {
-        return this.xml.inner();
+        return this.xml.value().inner();
     }
 
     @Override
     public Node deepCopy() {
-        return this.xml.deepCopy();
+        return this.xml.value().deepCopy();
     }
 
     @Override
-    public Collection<SAXParseException> validate() {
-        return this.xml.validate();
+    public Collection<SAXParseException> validate(final LSResourceResolver resolver) {
+        return this.xml.value().validate(resolver);
     }
 
     @Override
     public Collection<SAXParseException> validate(final XML schema) {
-        return this.xml.validate(schema);
+        return this.xml.value().validate(schema);
     }
 
     /**
@@ -197,28 +205,44 @@ public final class StrictXmir implements XML {
     private static File fetch(final String uri, final Path path, final Path tmp) {
         final File ret;
         if (StrictXmir.MINE.equals(uri)) {
-            if (path.toFile().getParentFile().mkdirs()) {
-                Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
-            }
-            try {
-                Files.write(
-                    path,
-                    new IoCheckedBytes(
-                        new BytesOf(new ResourceOf("XMIR.xsd"))
-                    ).asBytes()
-                );
-                Logger.debug(StrictXmir.class, "XSD copied to %[file]s", path);
-            } catch (final IOException ex) {
-                throw new IllegalArgumentException(
-                    String.format("Failed to save %s to %s", uri, path),
-                    ex
-                );
-            }
-            ret = path.toFile();
+            ret = StrictXmir.copied(uri, path, tmp);
         } else {
-            ret = StrictXmir.download(uri, path, tmp);
+            ret = StrictXmir.downloaded(uri, path, tmp);
         }
         return ret;
+    }
+
+    /**
+     * Copy URI from local resource and save to file.
+     * @param uri The URI
+     * @param path The file
+     * @param tmp Directory to synchronize by
+     * @return Where it was saved
+     */
+    private static File copied(final String uri, final Path path, final Path tmp) {
+        final File file = path.toFile();
+        synchronized (tmp) {
+            if (!file.exists()) {
+                if (file.getParentFile().mkdirs()) {
+                    Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
+                }
+                try {
+                    Files.write(
+                        path,
+                        new IoCheckedBytes(
+                            new BytesOf(new ResourceOf("XMIR.xsd"))
+                        ).asBytes()
+                    );
+                    Logger.debug(StrictXmir.class, "XSD copied to %[file]s", path);
+                } catch (final IOException ex) {
+                    throw new IllegalArgumentException(
+                        String.format("Failed to save %s to %s", uri, path),
+                        ex
+                    );
+                }
+            }
+        }
+        return file;
     }
 
     /**
@@ -229,7 +253,7 @@ public final class StrictXmir implements XML {
      * @return Where it was saved
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private static File download(final String uri, final Path path, final Path tmp) {
+    private static File downloaded(final String uri, final Path path, final Path tmp) {
         final File abs = path.toFile().getAbsoluteFile();
         synchronized (tmp) {
             if (!abs.exists()) {

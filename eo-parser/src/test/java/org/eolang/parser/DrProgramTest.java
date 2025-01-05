@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,13 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -38,7 +40,7 @@ import org.xembly.Xembler;
 /**
  * Test case for {@link DrProgram}.
  *
- * @since 0.1
+ * @since 0.49
  */
 final class DrProgramTest {
 
@@ -83,17 +85,17 @@ final class DrProgramTest {
 
     @Test
     void validatesAgainstSchema() {
-        MatcherAssert.assertThat(
-            "XMIR document validates correctly",
-            new XMLDocument(
-                new Xembler(
-                    new Directives().append(new DrProgram("foo"))
-                        .add("listing").set("hello, world!").up()
-                        .add("objects").add("o").attr("name", "bar")
-                ).domQuietly()
-            ).validate(),
-            Matchers.emptyIterable()
+        Assertions.assertDoesNotThrow(
+            new StrictXML(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().append(new DrProgram("foo"))
+                            .add("listing").set("hello, world!").up()
+                            .add("objects").add("o").attr("name", "bar")
+                    ).domQuietly()
+                )
+            )::inner,
+            "XMIR document validates correctly"
         );
     }
-
 }

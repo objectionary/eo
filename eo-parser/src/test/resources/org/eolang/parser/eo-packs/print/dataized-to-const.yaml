@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,11 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/expand-qqs.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/vars-float-up.xsl
-  - /org/eolang/parser/add-default-package.xsl
-  - /org/eolang/parser/explicit-data.xsl
+  - /org/eolang/parser/shake/expand-qqs.xsl
+  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/add-default-package.xsl
+  - /org/eolang/parser/shake/explicit-data.xsl
   - /org/eolang/parser/print/dataized-to-const.xsl
 asserts:
   - //o[@base='org.eolang.x' and @const and @name='first']

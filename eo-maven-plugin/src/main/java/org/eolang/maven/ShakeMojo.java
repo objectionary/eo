@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,25 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.func.StickyFunc;
 import org.cactoos.iterable.Filtered;
 import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.optimization.OptSpy;
-import org.eolang.maven.optimization.OptTrain;
-import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 
 /**
- * Shake (prepare) XML files after optimizations for translation to java.
+ * Shake (prepare) XMIR for translation to java.
  *
- * @since 0.33.0
+ * @since 0.36
  */
 @Mojo(
     name = "shake",
@@ -51,10 +52,11 @@ import org.eolang.maven.util.Threaded;
     threadSafe = true
 )
 public final class ShakeMojo extends SafeMojo {
+
     /**
      * The directory where to shake to.
      */
-    public static final String DIR = "3-shake";
+    static final String DIR = "2-shake";
 
     /**
      * Subdirectory for shaken cache.
@@ -64,58 +66,49 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * The directory where to place intermediary files.
      */
-    static final String STEPS = "3-shake-steps";
-
-    /**
-     * Track optimization steps into intermediate XML files?
-     *
-     * @since 0.24.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
-    private boolean trackOptimizationSteps;
+    private static final String STEPS = "2-shake-steps";
 
     @Override
-    void exec() {
+    public void exec() {
         final long start = System.currentTimeMillis();
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
-        final Optimization optimization = this.optimization();
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
+        final Function<XML, XML> transform = this.transformations();
         final int total = new Threaded<>(
             new Filtered<>(
                 ForeignTojo::notShaken,
                 tojos
             ),
-            tojo -> this.shaken(tojo, optimization)
+            tojo -> this.shaken(tojo, transform)
         ).total();
         if (total > 0) {
             Logger.info(
                 this,
-                "Shaken %d out of %d XMIR program(s) in %[ms]s",
+                "Shaked %d out of %d XMIR program(s) in %[ms]s",
                 total, tojos.size(),
                 System.currentTimeMillis() - start
             );
         } else {
-            Logger.debug(this, "No XMIR programs out of %d shaken", tojos.size());
+            Logger.debug(this, "No XMIR programs out of %d shaked", tojos.size());
         }
     }
 
     /**
      * XMIR shaken to another XMIR.
      * @param tojo Foreign tojo
-     * @param optimization Optimization to apply to XMIR
+     * @param transform Transformations to apply to XMIR
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Optimization optimization) throws Exception {
-        final Path source = tojo.optimized();
+    private int shaken(final ForeignTojo tojo, final Function<XML, XML> transform)
+        throws Exception {
+        final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(ShakeMojo.DIR);
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
-                src -> optimization.apply(xmir).toString(),
+                src -> transform.apply(xmir).toString(),
                 this.cache.toPath().resolve(ShakeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -126,17 +119,26 @@ public final class ShakeMojo extends SafeMojo {
     }
 
     /**
-     * Shake optimizations for tojos.
-     *
-     * @return Shake optimizations
+     * Shake XSL transformations.
+     * If {@link SafeMojo#trackTransformationSteps} is {@code true} - we create new {@link Xsline}
+     * for every XMIR in purpose of thread safety.
+     * @return Shake XSL transformations for all tojos.
      */
-    private Optimization optimization() {
-        final Optimization opt;
-        if (this.trackOptimizationSteps) {
-            opt = new OptSpy(this.targetDir.toPath().resolve(ShakeMojo.STEPS));
+    private Function<XML, XML> transformations() {
+        final Train<Shift> measured = this.measured(new TrShaking());
+        final Function<XML, XML> func;
+        if (this.trackTransformationSteps) {
+            func = xml -> new Xsline(
+                new TrSpy(
+                    measured,
+                    new StickyFunc<>(
+                        new ProgramPlace(this.targetDir.toPath().resolve(ShakeMojo.STEPS))
+                    )
+                )
+            ).pass(xml);
         } else {
-            opt = new OptTrain();
+            func = new Xsline(measured)::pass;
         }
-        return opt;
+        return func;
     }
 }

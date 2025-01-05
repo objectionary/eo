@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# A file on the filesystem.
+# The file object in the filesystem.
 [path] > file
   $.path > @
 
@@ -45,10 +45,9 @@
     if. > @
       ^.exists
       ^
-      seq
-        *
-          touch
-          ^
+      seq *
+        touch
+        ^
 
     # Creates new empty file.
     #
@@ -61,19 +60,18 @@
   [] > deleted
     if. > @
       ^.exists
-      seq
-        *
-          delete
-          ^
+      seq *
+        delete
+        ^
       ^
 
-    # Deletes the file and and returns `true`.
+    # Deletes the file and returns `true`.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
     [] > delete /org.eolang.true
 
-  # Get file size in bytes.
+  # Gets the file size and returns it in bytes.
   [] > size /org.eolang.number
 
   # Move current file to `target`, making and returning a new `file` from it.
@@ -89,7 +87,7 @@
     # don't use the object programmatically outside of `file` object.
     [] > move /org.eolang.string
 
-  # Convert the `file` to `path`.
+  # Convert the `file` to the `path`.
   (QQ.fs.path ^.path).determined > [] > as-path
 
   # Opens the file.
@@ -156,23 +154,20 @@
             sprintf
               "File must exist for given access mod: '%s'"
               * access
-          seq
-            *
-              ^.touched.touch
-              process-file
-              ^
+          seq *
+            ^.touched.touch
+            process-file
+            ^
         if.
           truncate
-          seq
-            *
-              ^.deleted.delete
-              ^.touched.touch
-              process-file
-              ^
-          seq
-            *
-              process-file
-              ^
+          seq *
+            ^.deleted.delete
+            ^.touched.touch
+            process-file
+            ^
+          seq *
+            process-file
+            ^
 
     # Process current file in the provided scope.
     #
@@ -219,10 +214,9 @@
                     sprintf
                       "Can't read from file with provided access mode '%s'"
                       * ^.^.^.^.^.access
-                seq
-                  *
-                    read-bytes
-                    ^.^.input-block read-bytes
+                seq *
+                  read-bytes
+                  ^.^.input-block read-bytes
 
         # Bytes read from file input stream
         #
@@ -261,10 +255,9 @@
                     sprintf
                       "Can't write to file with provided access mode '%s'"
                       * ^.^.^.^.^.access
-                seq
-                  *
-                    ^.^.written-bytes buffer
-                    ^.^.output-block
+                seq *
+                  ^.^.written-bytes buffer
+                  ^.^.output-block
 
         # Bytes written to file output stream.
         #

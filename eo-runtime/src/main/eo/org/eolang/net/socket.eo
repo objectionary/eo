@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -120,10 +120,9 @@
         [size] > read
           (^.^.^.recv size).as-bytes > read-bytes
           self. > @
-            seq
-              *
-                read-bytes
-                ^.^.input-block read-bytes
+            seq *
+              read-bytes
+              ^.^.input-block read-bytes
 
   # Makes an `output` from posix socket.
   # The object allows to use `socket` as output stream and `write` to it sequentially.
@@ -151,10 +150,9 @@
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           self. > @
-            seq
-              *
-                ^.^.^.send buffer
-                ^.^.output-block
+            seq *
+              ^.^.^.send buffer
+              ^.^.output-block
 
   # Posix platform specified socket.
   #

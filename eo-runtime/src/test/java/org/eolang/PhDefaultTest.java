@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -448,6 +448,17 @@ final class PhDefaultTest {
     }
 
     @Test
+    void injectsPhi() {
+        final Phi phi = new WithVoidPhi();
+        phi.put(0, new Data.ToPhi(5));
+        MatcherAssert.assertThat(
+            "Object must be injected to phi attribute and dataized",
+            new Dataized(phi).asNumber().intValue(),
+            Matchers.equalTo(5)
+        );
+    }
+
+    @Test
     void doesNotCalculateRandomTwice() {
         final Phi rnd = new PhWith(
             new PhMethod(
@@ -547,29 +558,13 @@ final class PhDefaultTest {
      * Dummy.
      * @since 0.1.0
      */
-    public static class Dummy extends PhDefault {
-        /**
-         * Count.
-         */
-        private static int count;
-
+    public static class WithVoidPhi extends PhDefault {
         /**
          * Ctor.
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Dummy() {
-            this.add(
-                Attr.PHI,
-                new AtOnce(
-                    new AtComposite(
-                        this,
-                        rho -> {
-                            ++PhDefaultTest.Dummy.count;
-                            return new Data.ToPhi(1L);
-                        }
-                    )
-                )
-            );
+        WithVoidPhi() {
+            this.add(Attr.PHI, new AtVoid(Attr.PHI));
         }
     }
 

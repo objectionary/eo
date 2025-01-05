@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ import org.xembly.Directives;
     "PMD.ExcessiveClassLength",
     "PMD.GodClass"
 })
-public final class XePhiListener implements PhiListener, Iterable<Directive> {
+final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
      * Package lambda.
      */
@@ -105,7 +105,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
      * Ctor.
      * @param nme The name of it
      */
-    public XePhiListener(final String nme) {
+    XePhiListener(final String nme) {
         this.name = nme;
         this.dirs = new Directives();
         this.objs = new ArrayDeque<>();
@@ -298,9 +298,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 && !"bytes".equals(this.attributes.peek())
             ) {
                 throw new ParsingException(
-                    "It's impossible to represent Δ ⤍ ∅ binding in EO",
-                    new IllegalStateException(),
-                    ctx.getStart().getLine()
+                    new IllegalStateException(), ctx.getStart().getLine(),
+                    "It's impossible to represent Δ ⤍ ∅ binding in EO"
                 );
             }
         } else {

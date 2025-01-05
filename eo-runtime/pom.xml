@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2024 Objectionary.com
+Copyright (c) 2016-2025 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ SOFTWARE.
       -->
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.15.0</version>
+      <version>5.16.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -65,7 +65,7 @@ SOFTWARE.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.14</version>
+      <version>1.5.15</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -265,7 +265,7 @@ SOFTWARE.
               <scope>test</scope>
               <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
               <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/2-optimize</phiInputDir>
+              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
               <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
               <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
@@ -305,30 +305,6 @@ SOFTWARE.
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <execution>
-            <id>project-validate</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-xml</artifactId>
-            <version>3.0.23</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -412,6 +388,30 @@ SOFTWARE.
               </excludes>
             </configuration>
           </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>project-validate</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/src/test/groovy/verify.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-xml</artifactId>
+                <version>3.0.23</version>
+              </dependency>
+            </dependencies>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -430,7 +430,7 @@ SOFTWARE.
               <execution>
                 <goals>
                   <goal>pull</goal>
-                  <goal>optimize</goal>
+                  <goal>shake</goal>
                   <goal>rmi</goal>
                 </goals>
                 <configuration>

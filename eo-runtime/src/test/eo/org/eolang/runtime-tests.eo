@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,9 @@
 +package org.eolang
 +unlint abstract-decoratee
 +version 0.0.0
+
+# This unit test is supposed to check the globals bound objects work as tests.
+true > global-test
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > understands-this-correctly
@@ -334,6 +337,28 @@
               2
         build 2 > @
     9
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > with-void-phi
+  [@] > x
+    "Hello" > hello
+  x 5 > five
+  and. > @
+    (five.plus 5).eq 10
+    five.hello.eq "Hello"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > vertical-bound-method
+  eq. > @
+    if.
+      true
+      "second":1
+      "first"
+      .as-bytes:0
+    "first"
 
 # Nesting blah test.
 [] > nesting-blah-test

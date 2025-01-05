@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,10 @@ import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrict;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -162,7 +164,7 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void prasesNested() throws IOException {
+    void parsesNested() throws IOException {
         final String src = String.join(
             "\n",
             "# No comments.",
@@ -264,7 +266,7 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "We expect the error with correct line number was found",
             XhtmlMatchers.xhtml(story.after().toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );
@@ -284,6 +286,27 @@ final class EoSyntaxTest {
                 Matchers.equalTo(story.map().get(msg).toString())
             );
         }
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/eo-packs/", glob = "**.yaml")
+    void checksEoPacks(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtStrict(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax(
+                            "scenario",
+                            String.format("%s\n", eo)
+                        ).parsed(),
+                        new TrFull()
+                    )
+                )
+            ),
+            new XtoryMatcher()
+        );
     }
 
     @ParameterizedTest

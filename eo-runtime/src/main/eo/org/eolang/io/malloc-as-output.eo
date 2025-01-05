@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -65,8 +65,7 @@
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
         self. > @
-          seq
-            *
-              ^.^.^.allocated.write offset buffer
-              ^.^.output-block
-                offset.plus buffer.size
+          seq *
+            ^.^.^.allocated.write offset buffer
+            ^.^.output-block
+              offset.plus buffer.size

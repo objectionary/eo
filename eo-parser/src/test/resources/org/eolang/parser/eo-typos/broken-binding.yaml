@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,10 @@
 # SOFTWARE.
 ---
 line: 4
+message: |-
+  [4:6] error: 'Object binding can't be negative'
+      42:-1
+        ^^^
 input: |
   # No comments
   [] > foo

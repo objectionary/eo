@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,6 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -158,7 +157,6 @@ public final class FakeMaven {
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
      *  - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
-     *  - {@link org.eolang.maven.FakeMaven.Optimize} to parse and optimize eo code
      *  - see other inner classes below.
      * @param mojo Several mojos to execute.
      * @return Workspace after executing Mojo.
@@ -240,10 +238,11 @@ public final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiNoSugar", false);
             this.params.putIfAbsent("phiSkipFailed", false);
+            this.params.putIfAbsent("conservative", false);
             this.params.putIfAbsent(
                 "phiInputDir",
                 this.workspace.absolute(
-                    Paths.get(String.format("target/%s", OptimizeMojo.DIR))
+                    Paths.get(String.format("target/%s", ParseMojo.DIR))
                 ).toFile()
             );
             this.params.putIfAbsent(
@@ -554,21 +553,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Optimization full pipeline.
-     *
-     * @since 0.28.12
-     */
-    static final class Optimize implements Iterable<Class<? extends AbstractMojo>> {
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                OptimizeMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
      * Check errors and warnings.
      *
      * @since 0.31.0
@@ -578,7 +562,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 LintMojo.class
             ).iterator();
@@ -595,7 +578,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class
             ).iterator();
         }
@@ -612,7 +594,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 LatexMojo.class
             ).iterator();
@@ -630,7 +611,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 LintMojo.class,
                 TranspileMojo.class
@@ -649,7 +629,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 ResolveMojo.class
             ).iterator();
@@ -666,7 +645,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 PhiMojo.class
             ).iterator();
         }
@@ -683,7 +661,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 ResolveMojo.class,
                 PlaceMojo.class
@@ -702,7 +679,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 SodgMojo.class
             ).iterator();
@@ -733,7 +709,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class
@@ -752,7 +727,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class,
@@ -772,7 +746,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 ShakeMojo.class,
                 DiscoverMojo.class
             ).iterator();

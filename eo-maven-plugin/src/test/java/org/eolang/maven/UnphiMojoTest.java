@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,7 +195,7 @@ final class UnphiMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/unphi-packs", glob = "**.yaml")
     @SuppressWarnings("unchecked")
     void checksUnphiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
@@ -235,7 +235,7 @@ final class UnphiMojoTest {
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final String phi = xtory.map().get("with-sugar").toString();
+        final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
@@ -244,7 +244,8 @@ final class UnphiMojoTest {
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
-            .execute(OptimizeMojo.class)
+            .with("conservative", xtory.map().get("conservative") != null)
+            .execute(ShakeMojo.class)
             .execute(PhiMojo.class)
             .result()
             .get(main);
@@ -275,7 +276,7 @@ final class UnphiMojoTest {
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
             .with("printReversed", reversed)
             .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
+            .execute(ShakeMojo.class)
             .execute(PhiMojo.class)
             .execute(UnphiMojo.class)
             .execute(PrintMojo.class)

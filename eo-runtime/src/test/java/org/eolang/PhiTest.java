@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ final class PhiTest {
     void getsLocation() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new PhLocated(
+            new PhSafe(
                 Phi.Φ,
                 "foobar",
                 123,

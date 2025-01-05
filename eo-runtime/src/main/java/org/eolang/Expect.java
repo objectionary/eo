@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ public class Expect<T> {
                     return this.sup.get();
                 } catch (final ExFailure ex) {
                     throw new ExFailure(
-                        String.format("%s %s", this.subject, message),
+                        String.format("%s %s %s", this.subject, ex.getMessage(), message),
                         ex
                     );
                 }
@@ -118,7 +118,7 @@ public class Expect<T> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
                     throw new ExFailure(
-                        String.format("%s (%s)", this.subject, ret)
+                        String.format("(%s)", ret)
                     );
                 }
                 return ret;

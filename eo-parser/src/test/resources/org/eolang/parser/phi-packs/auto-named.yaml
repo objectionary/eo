@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ input: |
     x > first
       [] >>
         01- > b
-with-sugar: |-
+sweet: |-
   {⟦
     object ↦ ⟦
       first ↦ Φ̇.x(ξ.auto-named-attr-at-4-6),
@@ -35,7 +35,7 @@ with-sugar: |-
       ⟧
     ⟧
   ⟧}
-no-sugar: |-
+salty: |-
   {
     ⟦
       object ↦ ⟦

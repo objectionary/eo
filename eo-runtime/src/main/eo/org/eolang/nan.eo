@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -50,13 +50,13 @@
   # Tests that $ >= x.
   false > [x] > gte
 
-  # Multiplication of $ and x.
+  # Returns the multiplication of $ and x.
   ^ > [x] > times
 
   # Sum of $ and x.
   ^ > [x] > plus
 
-  # Difference between $ and x.
+  # Returns the difference between $ and x.
   ^ > [x] > minus
 
   # Quotient of the division of $ by x.

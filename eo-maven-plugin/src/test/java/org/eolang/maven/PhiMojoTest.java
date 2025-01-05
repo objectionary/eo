@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,18 @@ final class PhiMojoTest {
     @Test
     void convertsSimpleObjectToPhi(@Mktmp final Path temp, @RandomProgram final String program)
         throws Exception {
-        this.executeXmirToPhi(new Farea(temp), program);
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "xmir-to-phi");
+                f.exec("compile");
+            }
+        );
         MatcherAssert.assertThat(
             "the .phi file is generated",
             Files.readString(temp.resolve("target/eo/phi/foo.phi")),
@@ -72,7 +83,7 @@ final class PhiMojoTest {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("target/eo/2-optimize/foo.xmir").write(
+                f.files().file("target/eo/1-parse/foo.xmir").write(
                     String.join(
                         " ",
                         "<program name='foo'><objects>",
@@ -117,19 +128,19 @@ final class PhiMojoTest {
                     ).getBytes()
                 );
                 f.build().plugins().appendItself();
-                f.exec("eo:register", "eo:parse", "eo:optimize");
+                f.exec("eo:register", "eo:parse");
                 f.exec("eo:xmir-to-phi");
             }
         );
         MatcherAssert.assertThat(
             "the .xmir file is generated",
             XhtmlMatchers.xhtml(
-                Files.readString(temp.resolve("target/eo/2-optimize/org/eolang/bytes.xmir"))
+                Files.readString(temp.resolve("target/eo/1-parse/org/eolang/bytes.xmir"))
             ),
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@name='bytes']",
                 "/program/objects/o/o[@base='.eq']",
-                "/program/objects/o/o/o[@base='org.eolang.bytes' and text()='01-02-03']"
+                "/program/objects/o/o/o[@base='bytes' and text()='01-02-03']"
             )
         );
         MatcherAssert.assertThat(
@@ -180,7 +191,7 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
-    void checksPhiPacksWithSugar(final String pack, @Mktmp final Path temp) throws Exception {
+    void checksSweetPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
@@ -188,18 +199,19 @@ final class PhiMojoTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(xtory.map().get("input").toString())
+                    .with("conservative", xtory.map().get("conservative") != null)
                     .with("phiNoSugar", false)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(xtory.map().get("with-sugar").toString())
+            Matchers.equalTo(xtory.map().get("sweet").toString())
         );
     }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi-packs", glob = "**.yaml")
-    void checksPhiPacksNoSugar(final String pack, @Mktmp final Path temp) throws Exception {
+    void checksSaltyPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
@@ -212,7 +224,7 @@ final class PhiMojoTest {
                     .result()
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
-            Matchers.equalTo(xtory.map().get("no-sugar").toString())
+            Matchers.equalTo(xtory.map().get("salty").toString())
         );
     }
 

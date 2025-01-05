@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,10 +40,9 @@
     if. > @
       ^.exists
       ^
-      seq
-        *
-          mkdir
-          ^
+      seq *
+        mkdir
+        ^
 
     # Makes a directory together with all required
     # parent directories.
@@ -64,10 +63,9 @@
     walked.length > len!
     if. > @
       ^.exists
-      seq
-        *
-          rec-delete walked 0
-          ^
+      seq *
+        rec-delete walked 0
+        ^
       ^
 
     # Deletes files and directories in current directory recursively.
@@ -79,12 +77,11 @@
       if. > @
         ^.len.eq index
         true
-        seq
-          *
-            tup.tail.deleted.exists
-            ^.rec-delete
-              tup.head
-              index.plus 1
+        seq *
+          tup.tail.deleted.exists
+          ^.rec-delete
+            tup.head
+            index.plus 1
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile

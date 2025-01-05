@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.49.2</version>
+        <version>0.50.0</version>
         <executions>
           <execution>
             <goals>
@@ -149,19 +149,14 @@ Here `fibonacci` is the name of the desired integration test, `-DskipTests` is u
 
 It is sometime necessary to temporarily disable the integration tests (for example for introducing
 braking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`
-execution within `eo-maven-plugin/pom.xml`:
+using profile:
 
-```xml
-<plugins>
-  ...
-  <plugin>
-    <artifactId>maven-invoker-plugin</artifactId>
-    <version>0.49.2</version>
-    <configuration>
-        <skipInstallation>true</skipInstallation>
-        <skipInvocation>true</skipInvocation>
-    </configuration>
-  </plugin>
-  ...
-</plugins>  
+```shell
+mvn clean install -PskipITs
+```
+
+or by setting skipITs property:
+
+```shell
+mvn clean install -DskipITs
 ```

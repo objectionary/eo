@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,12 +39,12 @@ import org.xembly.Directives;
  *
  * @since 0.29.0
  */
-public final class StUnhex extends StEnvelope {
+final class StUnhex extends StEnvelope {
 
     /**
      * Ctor.
      */
-    public StUnhex() {
+    StUnhex() {
         super(
             new StEndless(
                 new StSequence(

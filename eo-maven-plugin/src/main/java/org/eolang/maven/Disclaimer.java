@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter;
  * that we generate as output, for example .java and .sodg files.
  * @since 0.27
  */
-public final class Disclaimer {
+final class Disclaimer {
 
     @Override
     public String toString() {

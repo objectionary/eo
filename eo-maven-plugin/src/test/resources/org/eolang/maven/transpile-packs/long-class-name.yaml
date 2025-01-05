@@ -1,0 +1,158 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/add-default-package.xsl
+  - /org/eolang/parser/shake/abstracts-float-up.xsl
+  - /org/eolang/parser/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /program[not(errors)]
+  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EO89_58 extends PhDefault')]
+  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EOblah2$EOblah3$EOblah4$EOblah5$EOblah6$EOblah7$EOblah8$EOblah9$EOblah10$EOblah11$EOblah12$EOblah13$EOblah14$EOblah15$EOblah16$EOblah17$EOblah18$EOblah19$EOblah20$EOblah21$EOblah22$EOblah23$EOblah24$EOblah25$EOblah26$EOblah27 extends PhDefault')]
+input: |
+  # No comments.
+  [] > test
+    blah0 > @
+    # No comments.
+    [] > blah0
+      blah1 > @
+      # No comments.
+      [] > blah1
+        blah2 > @
+        # No comments.
+        [] > blah2
+          blah3 > @
+          # No comments.
+          [] > blah3
+            blah4 > @
+            # No comments.
+            [] > blah4
+              blah5 > @
+              # No comments.
+              [] > blah5
+                blah6 > @
+                # No comments.
+                [] > blah6
+                  blah7 > @
+                  # No comments.
+                  [] > blah7
+                    blah8 > @
+                    # No comments.
+                    [] > blah8
+                      blah9 > @
+                      # No comments.
+                      [] > blah9
+                        blah10 > @
+                        # No comments.
+                        [] > blah10
+                          blah11 > @
+                          # No comments.
+                          [] > blah11
+                            blah12 > @
+                            # No comments.
+                            [] > blah12
+                              blah13 > @
+                              # No comments.
+                              [] > blah13
+                                blah14 > @
+                                # No comments.
+                                [] > blah14
+                                  blah15 > @
+                                  # No comments.
+                                  [] > blah15
+                                    blah16 > @
+                                    # No comments.
+                                    [] > blah16
+                                      blah17 > @
+                                      # No comments.
+                                      [] > blah17
+                                        blah18 > @
+                                        # No comments.
+                                        [] > blah18
+                                          blah19 > @
+                                          # No comments.
+                                          [] > blah19
+                                            blah20 > @
+                                            # No comments.
+                                            [] > blah20
+                                              blah21 > @
+                                              # No comments.
+                                              [] > blah21
+                                                blah22 > @
+                                                # No comments.
+                                                [] > blah22
+                                                  blah23 > @
+                                                  # No comments.
+                                                  [] > blah23
+                                                    blah24 > @
+                                                    # No comments.
+                                                    [] > blah24
+                                                      blah25 > @
+                                                      # No comments.
+                                                      [] > blah25
+                                                        blah26 > @
+                                                        # No comments.
+                                                        [] > blah26
+                                                          blah27 > @
+                                                          # No comments.
+                                                          [] > blah27
+                                                            blah28 > @
+                                                            # No comments.
+                                                            [] > blah28
+                                                              blah29 > @
+                                                              # No comments.
+                                                              [] > blah29
+                                                                blah30 > @
+                                                                # No comments.
+                                                                [] > blah30
+                                                                  blah31 > @
+                                                                  # No comments.
+                                                                  [] > blah31
+                                                                    blah32 > @
+                                                                    # No comments.
+                                                                    [] > blah32
+                                                                      blah33 > @
+                                                                      # No comments.
+                                                                      [] > blah33
+                                                                        blah34 > @
+                                                                        # No comments.
+                                                                        [] > blah34
+                                                                          blah35 > @
+                                                                          # No comments.
+                                                                          [] > blah35
+                                                                            blah36 > @
+                                                                            # No comments.
+                                                                            [] > blah36
+                                                                              blah37 > @
+                                                                              # No comments.
+                                                                              [] > blah37
+                                                                                blah38 > @
+                                                                                # No comments.
+                                                                                [] > blah38
+                                                                                  blah39 > @
+                                                                                  # No comments.
+                                                                                  [] > blah39
+                                                                                    true > @

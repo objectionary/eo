@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ jobs:
       - run: |
           # Clean the test classes to avoid caching issues and prepare testing environment
           # without running the tests
-          mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
+          mvn clean install -Pqulice -PskipTests
           # Find script
           SCRIPT=${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh
           # Check that script is exists
