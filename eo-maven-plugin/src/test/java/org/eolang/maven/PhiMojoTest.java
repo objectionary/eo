@@ -28,13 +28,15 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.Requisite;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.footprint.FpDefault;
+import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -230,57 +232,80 @@ final class PhiMojoTest {
 
     @Test
     @ExpectedToFail
-    void touchesCacheNot(@Mktmp final Path temp, @RandomProgram final String program)
-        throws Exception {
+    void usesCache(
+        @Mktmp final Path temp,
+        @RandomProgram final String program
+    ) throws Exception {
+        final Path phi = Paths.get("target/eo/phi/foo.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/foo.xmir");
         final Farea farea = new Farea(temp);
-        this.executeXmirToPhi(farea, program);
-        final File phi = temp.resolve("target/eo/phi/foo.phi").toFile();
-        final long modified = phi.lastModified();
-        this.executeOnlyXmirToPhi(farea);
+        this.parse(farea, program);
+        final String cache = "some valid phi from cache";
+        new FpDefault(
+            src -> cache,
+            temp.resolve("cache").resolve(PhiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("foo.phi")
+        ).apply(temp.resolve(xmir), temp.resolve(phi));
+        this.executeXmirToPhi(farea);
         MatcherAssert.assertThat(
-            "phi expression file recreated twice",
-            modified,
-            Matchers.equalTo(phi.lastModified())
+            "Phi file recreated twice",
+            new TextOf(new HmBase(temp).load(phi)),
+            Matchers.equalTo(cache)
         );
     }
 
     @Test
-    void touchesInvalidCache(@Mktmp final Path temp, final @RandomProgram String program)
-        throws Exception {
+    @ExpectedToFail
+    void invalidatesCache(
+        @Mktmp final Path temp,
+        final @RandomProgram String program
+    ) throws Exception {
         final Farea farea = new Farea(temp);
-        this.executeXmirToPhi(farea, program);
-        farea.together(
-            f -> {
-                final Requisite file = f.files().file("target/eo/2-optimize/foo.xmir");
-                file.write(file.content().getBytes());
-            }
+        this.parse(farea, program);
+        final Path phi = Paths.get("target/eo/phi/foo.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/foo.xmir");
+        final Path cache = Path.of("cache")
+            .resolve(PhiMojo.CACHE)
+            .resolve("version-1.0")
+            .resolve("123ZaRiFcHiK321")
+            .resolve("foo.phi");
+        new FpDefault(
+            src -> "some valid phi from cache",
+            temp.resolve("cache").resolve(PhiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("foo.phi")
+        ).apply(temp.resolve(xmir), temp.resolve(phi));
+        Files.setLastModifiedTime(
+            temp.resolve(cache),
+            FileTime.fromMillis(temp.resolve(xmir).toFile().lastModified() - 50_000)
         );
-        final File phi = temp.resolve("target/eo/phi/foo.phi").toFile();
-        final long modified = phi.lastModified();
-        this.executeOnlyXmirToPhi(farea);
+        final long modified = temp.resolve(cache).toFile().lastModified();
+        this.executeXmirToPhi(farea);
         MatcherAssert.assertThat(
             "xmir-to-phi cache not invalidated",
             modified,
-            Matchers.lessThan(phi.lastModified())
+            Matchers.lessThan(temp.resolve(cache).toFile().lastModified())
         );
     }
 
-    void executeXmirToPhi(final Farea farea, final String program) throws IOException {
+    void parse(final Farea farea, final String program) throws IOException {
         farea.together(
             f -> {
-                f.clean();
                 f.files().file("src/main/eo/foo.eo").write(program.getBytes());
                 f.build()
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "xmir-to-phi");
+                    .goals("register", "parse");
                 f.exec("compile");
             }
         );
     }
 
-    void executeOnlyXmirToPhi(final Farea farea) throws IOException {
+    void executeXmirToPhi(final Farea farea) throws IOException {
         farea.together(
             f -> {
                 f.build()
