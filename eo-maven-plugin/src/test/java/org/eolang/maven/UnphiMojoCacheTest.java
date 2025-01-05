@@ -61,7 +61,7 @@ final class UnphiMojoCacheTest {
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             phi
         );
-        final String cache = "some valid phi cache";
+        final String cache = "some valid XMIR from cache";
         new FpDefault(
             src -> cache,
             temp.resolve("cache").resolve(UnphiMojo.CACHE),
@@ -93,7 +93,7 @@ final class UnphiMojoCacheTest {
             phi
         );
         new FpDefault(
-            src -> "some valid phi cache",
+            src -> "some valid XMIR from cache",
             temp.resolve("cache").resolve(UnphiMojo.CACHE),
             "version-1.0",
             "123ZaRiFcHiK321",
