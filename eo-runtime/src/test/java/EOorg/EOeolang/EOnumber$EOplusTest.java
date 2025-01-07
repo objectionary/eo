@@ -23,45 +23,50 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Expect;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.ExAbstract;
+import org.eolang.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Number.plus.
+ * Test case for {@link EOnumber$EOplus}.
  *
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.51
+ * @checkstyle TypeNameCheck (3 lines)
  */
-@XmirObject(oname = "number.plus")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOplus extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOnumber$EOplus() {
-        this.add("x", new AtVoid("x"));
-    }
+final class EOnumber$EOplusTest {
 
-    @Override
-    public Phi lambda() {
-        Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        Double right = Expect.at(this, "x")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("number.plus expects its second argument to be a number")
-            .it();
-        return new Data.ToPhi(Double.sum(left, right));
+    @Test
+    void throwsCorrectError() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhWith(
+                            new EOnumber$EOplus(),
+                            Attr.RHO,
+                            new Data.ToPhi(42)
+                        ),
+                        "x",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "addition with TRUE fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.containsString("number.plus expects its second argument to be a number")
+        );
     }
 }
