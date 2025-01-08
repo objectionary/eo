@@ -25,7 +25,7 @@
 package org.eolang;
 
 /**
- * Expect exception.
+ * Expect exception for method 'must'.
  *
  * @since 0.51
  */

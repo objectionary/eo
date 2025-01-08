@@ -1,4 +1,4 @@
-package org.eolang;/*
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2025 Objectionary.com
@@ -22,8 +22,10 @@ package org.eolang;/*
  * SOFTWARE.
  */
 
+package org.eolang;
+
 /**
- * Expect exception.
+ * Expect exception for method 'that'.
  *
  * @since 0.51
  */
