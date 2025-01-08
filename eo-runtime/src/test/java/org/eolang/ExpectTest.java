@@ -133,7 +133,7 @@ final class ExpectTest {
                     })
                     .otherwise("something went wrong")
                     .it(),
-                "fails on check integer"
+                "fails on 'that'"
             ).getMessage(),
             Matchers.equalTo("something went wrong")
         );

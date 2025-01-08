@@ -81,7 +81,13 @@ public class Expect<T> {
     public <R> Expect<R> that(final Function<T, R> fun) {
         return new Expect<>(
             this.subject,
-            () -> fun.apply(this.sup.get())
+            () -> {
+                try {
+                    return fun.apply(this.sup.get());
+                } catch (ExFailure ex) {
+                    throw new ExpectFailureInThat(ex.getMessage(), ex);
+                }
+            }
         );
     }
 
@@ -96,9 +102,14 @@ public class Expect<T> {
             () -> {
                 try {
                     return this.sup.get();
-                } catch (final ExFailure ex) {
+                } catch (final ExpectFailureInMust ex) {
                     throw new ExFailure(
                         String.format("%s %s %s", this.subject, ex.getMessage(), message),
+                        ex
+                    );
+                } catch (final ExpectFailureInThat ex) {
+                    throw new ExFailure(
+                        message,
                         ex
                     );
                 }
@@ -117,7 +128,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExFailure(
+                    throw new ExpectFailureInMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -134,5 +145,4 @@ public class Expect<T> {
     public T it() {
         return this.sup.get();
     }
-
 }
