@@ -36,7 +36,7 @@
   false > is-integer
   error "Can't convert NaN to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that $ value is equal to x.
   false > [x] > eq
 
   # Tests that $ < x.
@@ -45,7 +45,7 @@
   # Tests that $ less or equal than x.
   false > [x] > lte
 
-  # Tests that $ > x.
+  # Tests that $ value greater than x.
   false > [x] > gt
 
   # Tests that $ greater or equal than x.
