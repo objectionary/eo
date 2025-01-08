@@ -324,15 +324,18 @@ final class UnphiMojoTest {
                 Path.of("std.xmir")
             ).get()
         ).value();
-        new FakeMaven(temp)
-            .with("cache", cache.toFile())
-            .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
-            .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-            .allTojosWithHash(() -> hash)
-            .execute(UnphiMojo.class);
         MatcherAssert.assertThat(
             "XMIR file is not loaded from cache",
-            new TextOf(Files.readString(temp.resolve("target/eo/1-parse/std.xmir"))),
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("cache", cache.toFile())
+                    .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
+                    .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
+                    .allTojosWithHash(() -> hash)
+                    .execute(UnphiMojo.class)
+                    .result()
+                    .get("target/eo/1-parse/std.xmir")
+            ),
             Matchers.equalTo(expected)
         );
     }
