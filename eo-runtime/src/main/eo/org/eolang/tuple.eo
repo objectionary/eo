@@ -26,6 +26,7 @@
 +version 0.0.0
 
 # Tuple.
+# An ordered, immutable collection of elements.
 [head tail] > tuple
   # Empty tuple.
   [] > empty
