@@ -44,14 +44,17 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junitpioneer.jupiter.ExpectedToFail;
 
 /**
  * Test cases for {@link PhiMojo}.
  * @since 0.34.0
+ * @todo #3708:30min Remove @Disabled annotation on
+ *  {@code PhiMojoTest.usesCache()} and {@code PhiMojoTest.invalidatesCache()}
+ *  when cache is implemented, check that tests is valid otherwise fix them.
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 @ExtendWith(MktmpResolver.class)
@@ -231,7 +234,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    @ExpectedToFail
+    @Disabled
     void usesCache(
         @Mktmp final Path temp,
         @RandomProgram final String program
@@ -257,7 +260,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    @ExpectedToFail
+    @Disabled
     void invalidatesCache(
         @Mktmp final Path temp,
         final @RandomProgram String program
