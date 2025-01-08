@@ -28,15 +28,13 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.util.HmBase;
+import org.eolang.maven.footprint.CachePath;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -239,23 +237,33 @@ final class PhiMojoTest {
         @Mktmp final Path temp,
         @RandomProgram final String program
     ) throws Exception {
-        final Path phi = Paths.get("target/eo/phi/foo.phi");
-        final Path xmir = Paths.get("target/eo/1-parse/foo.xmir");
-        final Farea farea = new Farea(temp);
-        this.parse(farea, program);
-        final String cache = "some valid phi from cache";
-        new FpDefault(
-            src -> cache,
-            temp.resolve("cache").resolve(PhiMojo.CACHE),
-            "version-1.0",
-            "123ZaRiFcHiK321",
-            Path.of("foo.phi")
-        ).apply(temp.resolve(xmir), temp.resolve(phi));
-        this.executeXmirToPhi(farea);
+        final Path cache = temp.resolve("cache");
+        final String hash = "123ZaRiFcHiK321";
+        final Path cached = new Saved(
+            "some valid phi from cache",
+            new CachePath(
+                cache.resolve(PhiMojo.CACHE),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("foo/x/main.phi")
+            ).get()
+        ).value();
+        Files.setLastModifiedTime(
+            cached,
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
         MatcherAssert.assertThat(
-            "Phi file recreated twice",
-            new TextOf(new HmBase(temp).load(phi)),
-            Matchers.equalTo(cache)
+            "Phi is not loaded from cache",
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("cache", cache.toFile())
+                    .withProgram(program)
+                    .allTojosWithHash(() -> hash)
+                    .execute(new FakeMaven.Phi())
+                    .result()
+                    .get("target/phi/foo/x/main.phi")
+            ),
+            Matchers.equalTo(new TextOf(Files.readString(cached)))
         );
     }
 
@@ -265,59 +273,27 @@ final class PhiMojoTest {
         @Mktmp final Path temp,
         final @RandomProgram String program
     ) throws Exception {
-        final Farea farea = new Farea(temp);
-        this.parse(farea, program);
-        final Path phi = Paths.get("target/eo/phi/foo.phi");
-        final Path xmir = Paths.get("target/eo/1-parse/foo.xmir");
-        final Path cache = Path.of("cache")
-            .resolve(PhiMojo.CACHE)
-            .resolve("version-1.0")
-            .resolve("123ZaRiFcHiK321")
-            .resolve("foo.phi");
-        new FpDefault(
-            src -> "some valid phi from cache",
-            temp.resolve("cache").resolve(PhiMojo.CACHE),
-            "version-1.0",
-            "123ZaRiFcHiK321",
-            Path.of("foo.phi")
-        ).apply(temp.resolve(xmir), temp.resolve(phi));
-        Files.setLastModifiedTime(
-            temp.resolve(cache),
-            FileTime.fromMillis(temp.resolve(xmir).toFile().lastModified() - 50_000)
-        );
-        final long modified = temp.resolve(cache).toFile().lastModified();
-        this.executeXmirToPhi(farea);
+        final Path cache = temp.resolve("cache");
+        final String hash = "123ZaRiFcHiK321";
+        final Path cached = new Saved(
+            "some invalid phi (old) from cache",
+            new CachePath(
+                cache.resolve(PhiMojo.CACHE),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("foo/x/main.phi")
+            ).get()
+        ).value();
+        final long old = cached.toFile().lastModified();
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .withProgram(program)
+            .allTojosWithHash(() -> hash)
+            .execute(new FakeMaven.Phi());
         MatcherAssert.assertThat(
-            "xmir-to-phi cache not invalidated",
-            modified,
-            Matchers.lessThan(temp.resolve(cache).toFile().lastModified())
-        );
-    }
-
-    void parse(final Farea farea, final String program) throws IOException {
-        farea.together(
-            f -> {
-                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("register", "parse");
-                f.exec("compile");
-            }
-        );
-    }
-
-    void executeXmirToPhi(final Farea farea) throws IOException {
-        farea.together(
-            f -> {
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("xmir-to-phi");
-                f.exec("compile");
-            }
+            "PHI cache not invalidated",
+            old,
+            Matchers.lessThan(cached.toFile().lastModified())
         );
     }
 }
