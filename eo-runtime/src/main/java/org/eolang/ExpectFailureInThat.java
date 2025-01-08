@@ -34,7 +34,7 @@ class ExpectFailureInThat extends ExFailure {
     /**
      * Serialization identifier.
      */
-    private static final long serialVersionUID = 597748358437012215L;
+    private static final long serialVersionUID = 597748358437012218L;
 
     /**
      * Ctor.
@@ -43,15 +43,6 @@ class ExpectFailureInThat extends ExFailure {
      */
     public ExpectFailureInThat(final String cause, final Object... args) {
         super(String.format(cause, args));
-    }
-
-    /**
-     * Ctor.
-     * @param cause Exception cause
-     * @param root Cause exception
-     */
-    public ExpectFailureInThat(final String cause, final Throwable root) {
-        super(cause, root);
     }
 }
 

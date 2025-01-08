@@ -44,14 +44,5 @@ class ExpectFailureInMust extends ExFailure {
     public ExpectFailureInMust(final String cause, final Object... args) {
         super(String.format(cause, args));
     }
-
-    /**
-     * Ctor.
-     * @param cause Exception cause
-     * @param root Cause exception
-     */
-    public ExpectFailureInMust(final String cause, final Throwable root) {
-        super(cause, root);
-    }
 }
 
