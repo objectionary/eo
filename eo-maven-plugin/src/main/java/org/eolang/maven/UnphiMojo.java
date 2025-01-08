@@ -55,6 +55,15 @@ import org.xembly.Directives;
 /**
  * Read PHI files and parse them to the XMIR.
  * @since 0.34.0
+ * @todo #3708:60min implement cache.
+ *  I assume that files received from dir via Walk should be synced with tojos:
+ *  1) File is not present in tojos ->
+ *  add file to tojos with column PHI equals Path of the file.
+ *  2) File is present in tojos and not unphied
+ *  (XMIR is younger that PHI or XMIR doesn't exist or PHI doesn't exist) ->
+ *  add column PHI equals Path of the file if not exists.
+ *  When all files are synced we should pass all not unphied tojos to the
+ *  {@code FpDefault} reusing existing unPhi logic
  */
 @Mojo(
     name = "phi-to-xmir",
