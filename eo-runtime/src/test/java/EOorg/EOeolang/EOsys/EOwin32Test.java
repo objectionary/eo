@@ -122,10 +122,9 @@ final class EOwin32Test {
         @Test
         void closesTcpSocket() {
             this.startupsWSA();
-            final int socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully close a TCP socket, but it didn't",
-                this.closesSocket(socket),
+                this.closesSocket(this.createsSocket()),
                 Matchers.not(Matchers.equalTo(Winsock.SOCKET_ERROR))
             );
             this.cleanupsWSA();
