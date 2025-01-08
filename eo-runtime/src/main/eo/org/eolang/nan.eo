@@ -25,7 +25,8 @@
 +package org.eolang
 +version 0.0.0
 
-# Not a number.
+# The `not a number` object is an abstraction
+# for representing undefined or unrepresentable numerical results.
 [] > nan
   number 7F-F8-00-00-00-00-00-00 > @
   $ > floor
