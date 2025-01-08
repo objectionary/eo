@@ -66,9 +66,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
- * @todo #3708:30min Remove @Disabled
+ * @todo #3708:30min Remove @Disabled annotation on
  *  {@code UnphiMojoTest.usesCache()} and {@code UnphiMojoTest.invalidatesCache()}
- *  when cache is implemented, fix tests if needed.
+ *  when cache is implemented, check that tests is valid otherwise fix them if needed.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
