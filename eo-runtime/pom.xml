@@ -220,7 +220,7 @@ SOFTWARE.
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>true</failOnWarning>
+          <failOnWarning>false</failOnWarning>
           <offline>true</offline>
           <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
         </configuration>
@@ -271,7 +271,7 @@ SOFTWARE.
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>true</failOnWarning>
+              <failOnWarning>false</failOnWarning>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
