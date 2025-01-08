@@ -31,11 +31,13 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,9 @@ import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.util.HmBase;
+import org.eolang.maven.util.Home;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.StrictXmir;
 import org.eolang.xax.XtSticky;
@@ -54,6 +58,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,6 +68,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
 
@@ -294,6 +300,81 @@ final class UnphiMojoTest {
                 )
             ).parsed(),
             XhtmlMatchers.hasXPath("/program[not(errors)]")
+        );
+    }
+
+    @Test
+    @Disabled
+    void usesCache(@Mktmp final Path temp) throws Exception {
+        final Home workspace = new HmBase(temp);
+        final Path phi = Paths.get("target/eo/phi/std.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/std.xmir");
+        workspace.save(
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            phi
+        );
+        final String cache = "some valid XMIR from cache";
+        new FpDefault(
+            src -> cache,
+            temp.resolve("cache").resolve(UnphiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("std.xmir")
+        ).apply(temp.resolve(phi), temp.resolve(xmir));
+        this.executePhiToXmir(new Farea(temp));
+        MatcherAssert.assertThat(
+            "XMIR file recreated twice",
+            new TextOf(workspace.load(xmir)),
+            Matchers.equalTo(cache)
+        );
+    }
+
+    @Test
+    @Disabled
+    void invalidatesCache(@Mktmp final Path temp) throws Exception {
+        final Home workspace = new HmBase(temp);
+        final Path phi = Paths.get("target/eo/phi/std.phi");
+        final Path xmir = Paths.get("target/eo/1-parse/std.xmir");
+        final Path cache = Path.of("cache")
+            .resolve(UnphiMojo.CACHE)
+            .resolve("version-1.0")
+            .resolve("123ZaRiFcHiK321")
+            .resolve("std.xmir");
+        workspace.save(
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            phi
+        );
+        new FpDefault(
+            src -> "some valid XMIR from cache",
+            temp.resolve("cache").resolve(UnphiMojo.CACHE),
+            "version-1.0",
+            "123ZaRiFcHiK321",
+            Path.of("std.xmir")
+        ).apply(temp.resolve(phi), temp.resolve(xmir));
+        Files.setLastModifiedTime(
+            temp.resolve(phi),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
+        final File cached = temp.resolve(cache).toFile();
+        final long old = cached.lastModified();
+        this.executePhiToXmir(new Farea(temp));
+        MatcherAssert.assertThat(
+            "phi-to-xmir cache not invalidated",
+            old,
+            Matchers.lessThan(cached.lastModified())
+        );
+    }
+
+    private void executePhiToXmir(final Farea farea) throws IOException {
+        farea.together(
+            f -> {
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("phi-to-xmir");
+                f.exec("compile");
+            }
         );
     }
 }
