@@ -39,7 +39,7 @@
   # Tests that $ value is equal to x.
   false > [x] > eq
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   false > [x] > lt
 
   # Tests that $ less or equal than x.
