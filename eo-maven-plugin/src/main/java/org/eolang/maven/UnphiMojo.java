@@ -60,7 +60,7 @@ import org.xembly.Directives;
  *  1) File is not present in tojos ->
  *  add file to tojos with column PHI equals Path of the file.
  *  2) File is present in tojos and not unphied
- *  (XMIR is younger that PHI or XMIR doesn't exist or PHI doesn't exist) ->
+ *  (PHI is younger than XMIR or XMIR doesn't exist or PHI doesn't exist) ->
  *  add column PHI equals Path of the file if not exists.
  *  When all files are synced we should pass all not unphied tojos to the
  *  {@code FpDefault} reusing existing unPhi logic
