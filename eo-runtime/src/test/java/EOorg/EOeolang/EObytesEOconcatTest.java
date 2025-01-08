@@ -47,20 +47,19 @@ final class EObytesEOconcatTest {
 
     @Test
     void concatenatesBytes() {
-        final Phi current = new Data.ToPhi("привет ").take("as-bytes");
-        final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes");
-        final Phi phi = new PhWith(
-            Phi.Φ.take("org.eolang.string"),
-            0,
-            new PhWith(
-                current.take("concat").copy(),
-                "b",
-                provided
-            )
-        );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).asString(),
+            new Dataized(
+                new PhWith(
+                    Phi.Φ.take("org.eolang.string"),
+                    0,
+                    new PhWith(
+                        new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),
+                        "b",
+                        new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes")
+                    )
+                )
+            ).asString(),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );
     }

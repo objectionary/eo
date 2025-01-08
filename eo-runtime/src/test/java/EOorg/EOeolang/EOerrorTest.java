@@ -73,16 +73,12 @@ final class EOerrorTest {
     @ParameterizedTest
     @MethodSource("getTestSources")
     void getsReadableError(final byte[] cnst, final String text) {
-        ExAbstract error = null;
-        try {
-            new Dataized(new MyError(cnst)).take();
-        } catch (final ExAbstract exc) {
-            error = exc;
-        }
-        assert error != null;
         MatcherAssert.assertThat(
             "Bytes must be translated to string correctly",
-            error.toString(),
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(new MyError(cnst)).take()
+            ).toString(),
             Matchers.containsString(text)
         );
     }
