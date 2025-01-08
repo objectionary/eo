@@ -37,7 +37,7 @@
     # Create a new tuple with this element added to the end of it.
     tuple ^ x > [x] > with
 
-  # Obtain the length of the tuple.
+  # Obtain the length value of the tuple.
   [] > length
     head.length.plus 1 > len!
     number len > @
