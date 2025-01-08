@@ -61,7 +61,81 @@ final class ExpectTest {
                     .it(),
                 "fails on check"
             ).getMessage(),
-            Matchers.containsString("negative")
+            Matchers.equalTo("a number (42) must be negative")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithTwoErrors() {
+        MatcherAssert.assertThat(
+            "error message is correct",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i < 0)
+                    .otherwise("must be negative")
+                    .must(i -> i % 1 == 0)
+                    .otherwise("must be an integer")
+                    .it(),
+                "fails for first 'must'"
+            ).getMessage(),
+            Matchers.equalTo("a number (42.2) must be negative")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithOneOkAndOneError() {
+        MatcherAssert.assertThat(
+            "error message is correct",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i > 0)
+                    .otherwise("must be positive")
+                    .must(i -> i % 1 == 0)
+                    .otherwise("must be an integer")
+                    .it(),
+                "fails on checking integer"
+            ).getMessage(),
+            Matchers.equalTo("a number (42.2) must be an integer")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithOneErrorAndOneOk() {
+        MatcherAssert.assertThat(
+            "error message is correct",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i % 1 == 0)
+                    .otherwise("must be an integer")
+                    .must(i -> i > 0)
+                    .otherwise("must be positive")
+                    .it(),
+                "fails on check integer"
+            ).getMessage(),
+            Matchers.equalTo("a number (42.2) must be an integer")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithExFailureInThat() {
+        MatcherAssert.assertThat(
+            "error message is correct",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i > 0)
+                    .otherwise("must be positive")
+                    .that(i -> {
+                        throw new ExFailure("some error");
+                    })
+                    .otherwise("something went wrong")
+                    .it(),
+                "fails on check integer"
+            ).getMessage(),
+            Matchers.equalTo("something went wrong")
         );
     }
 }
