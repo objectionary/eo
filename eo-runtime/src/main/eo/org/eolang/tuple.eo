@@ -29,6 +29,7 @@
 # An ordered, immutable collection of elements.
 [head tail] > tuple
   # Empty tuple.
+  # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
     0 > length
 
