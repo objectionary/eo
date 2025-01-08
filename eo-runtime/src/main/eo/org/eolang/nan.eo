@@ -41,19 +41,19 @@
   # Tests that $ < x.
   false > [x] > lt
 
-  # Tests that $ <= x.
+  # Tests that $ less or equal than x.
   false > [x] > lte
 
   # Tests that $ > x.
   false > [x] > gt
 
-  # Tests that $ >= x.
+  # Tests that $ greater or equal than x.
   false > [x] > gte
 
   # Returns the multiplication of $ and x.
   ^ > [x] > times
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   ^ > [x] > plus
 
   # Returns the difference between $ and x.
