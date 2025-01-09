@@ -57,13 +57,13 @@
         (number value).is-nan
         ^.eq value
 
-  # Tests that $ >= x.
+  # Tests that the value $ greater or equal than x.
   [x] > gte
     x > value!
     not. > @
       (number value).is-nan
 
-  # Multiplication of $ and x.
+  # Returns the result of the multiplication of $ and x.
   [x] > times
     x > value!
     number value > num
@@ -77,7 +77,7 @@
         ^
         negative-infinity
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   [x] > plus
     x > value!
     if. > @
