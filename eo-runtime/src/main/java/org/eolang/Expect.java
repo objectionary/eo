@@ -48,6 +48,38 @@ public class Expect<T> {
     private final Supplier<T> sup;
 
     /**
+     * This exception is used to enhance the error message in the {@link Expect#otherwise(String)} method
+     *
+     * @since 0.51
+     */
+    private static class ExpectFailureInMust extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        public ExpectFailureInMust(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message in the {@link Expect#otherwise(String)} method
+     *
+     * @since 0.51
+     */
+    private static class ExpectFailureInThat extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        public ExpectFailureInThat(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+    
+    /**
      * Ctor.
      * @param subj The subject
      * @param supplier The supplier
