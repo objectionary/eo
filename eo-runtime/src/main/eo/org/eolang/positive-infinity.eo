@@ -37,19 +37,19 @@
   false > is-integer
   error "Can't convert positive infinity to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that the value $ is equal to x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   false > [x] > lt
 
-  # Tests that $ <= x.
+  # Tests that the value $ less or equal than x.
   ^.eq x > [x] > lte
 
-  # Tests that $ > x.
+  # Tests that the value $ greater than x.
   [x] > gt
     x > value!
     not. > @
