@@ -335,7 +335,7 @@ final class UnphiMojoTest {
                     .execute(UnphiMojo.class)
                     .result()
                     .get("target/eo/1-parse/std.xmir")
-            ),
+            ).asString(),
             Matchers.equalTo(expected)
         );
     }
@@ -353,8 +353,7 @@ final class UnphiMojoTest {
                 hash,
                 Path.of("std.xmir")
             ).get()
-        ).value()
-            .toFile();
+        ).value().toFile();
         new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
