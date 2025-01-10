@@ -42,15 +42,6 @@ import org.eolang.parser.Xmir;
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
  * @since 0.34.0
- * @todo #3708:60min implement cache.
- *  I assume that files received from dir via Walk should be synced with tojos:
- *  1) File is not present in tojos ->
- *  add file to tojos with column XMIR equals Path of the file.
- *  2) File is present in tojos and not phied
- *  (XMIR is younger than PHI or XMIR doesn't exist or PHI doesn't exist) ->
- *  add column XMIR equals Path of the file if XMIR not exists.
- *  When all files are synced we should pass all not phied tojos to the
- *  {@code FpDefault} reusing existing xmir-to-phi logic
  */
 @Mojo(
     name = "xmir-to-phi",
