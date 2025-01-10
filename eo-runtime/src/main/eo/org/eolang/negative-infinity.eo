@@ -37,13 +37,13 @@
   false > is-integer
   error "Can't convert negative infinity to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that the value $ is equal to x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   [x] > lt
     x > value!
     not. > @
@@ -51,19 +51,19 @@
         (number value).is-nan
         ^.eq value
 
-  # Tests that $ <= x.
+  # Tests that the value $ less or equal than x.
   [x] > lte
     x > value!
     not. > @
       (number value).is-nan
 
-  # Tests that $ > x.
+  # Tests that the value $ greater than x.
   false > [x] > gt
 
-  # Tests that $ >= x.
+  # Tests that the value $ greater or equal than x.
   ^.eq x > [x] > gte
 
-  # Multiplication of $ and x.
+  # Returns the result of the multiplication of $ and x.
   [x] > times
     x > value!
     number value > num
