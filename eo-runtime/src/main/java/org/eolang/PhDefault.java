@@ -98,7 +98,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     public PhDefault(final byte[] dta) {
         this.data = Optional.ofNullable(dta);
-        this.attrs = Map.of(Attr.RHO, new AtRho());
+        this.attrs = PhDefault.defaults();
         this.order = new HashMap<>(0);
     }
 
@@ -300,6 +300,16 @@ public class PhDefault implements Phi, Cloneable {
             }
         }
         return txt;
+    }
+
+    /**
+     * Default attributes hash map with RHO attribute put.
+     * @return Default attributes hash map
+     */
+    private static Map<String, Attr> defaults() {
+        final Map<String, Attr> attrs = new HashMap<>(0);
+        attrs.put(Attr.RHO, new AtRho());
+        return attrs;
     }
 
     /**
