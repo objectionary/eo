@@ -75,7 +75,7 @@
         ^
         positive-infinity
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   [x] > plus
     x > value!
     if. > @
@@ -85,7 +85,7 @@
       nan
       ^
 
-  # Difference between $ and x.
+  # Difference between the values of $ and x.
   [x] > minus
     x > value!
     if. > @
