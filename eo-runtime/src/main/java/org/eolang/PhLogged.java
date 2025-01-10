@@ -56,6 +56,14 @@ public final class PhLogged implements Phi {
     }
 
     @Override
+    public boolean hasRho() {
+        System.out.printf("%d.hasRho()...\n", this.hashCode());
+        final boolean ret = this.origin.hasRho();
+        System.out.printf("%d.hasRho()! -> %b\n", this.hashCode(), ret);
+        return ret;
+    }
+
+    @Override
     public Phi take(final String name) {
         System.out.printf("%d.take(\"%s\")...\n", this.hashCode(), name);
         final Phi ret = this.origin.take(name);
@@ -64,19 +72,17 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public boolean put(final int pos, final Phi object) {
+    public void put(final int pos, final Phi object) {
         System.out.printf("%d.put(%d, %d)...\n", this.hashCode(), pos, object.hashCode());
-        final boolean ret = this.origin.put(pos, object);
+        this.origin.put(pos, object);
         System.out.printf("%d.put(%d, %d)!\n", this.hashCode(), pos, object.hashCode());
-        return ret;
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
+    public void put(final String name, final Phi object) {
         System.out.printf("%d.put(\"%s\", %d)...\n", this.hashCode(), name, object.hashCode());
-        final boolean ret = this.origin.put(name, object);
+        this.origin.put(name, object);
         System.out.printf("%d.put(\"%s\", %d)!\n", this.hashCode(), name, object.hashCode());
-        return ret;
     }
 
     @Override

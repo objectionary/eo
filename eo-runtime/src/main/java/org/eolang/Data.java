@@ -86,18 +86,23 @@ public interface Data {
         }
 
         @Override
+        public boolean hasRho() {
+            return this.object.hasRho();
+        }
+
+        @Override
         public Phi take(final String name) {
             return this.object.take(name);
         }
 
         @Override
-        public boolean put(final int pos, final Phi obj) {
-            return this.object.put(pos, obj);
+        public void put(final int pos, final Phi obj) {
+            this.object.put(pos, obj);
         }
 
         @Override
-        public boolean put(final String name, final Phi obj) {
-            return this.object.put(name, obj);
+        public void put(final String name, final Phi obj) {
+            this.object.put(name, obj);
         }
 
         @Override

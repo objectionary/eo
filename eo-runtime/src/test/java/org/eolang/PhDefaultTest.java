@@ -493,7 +493,7 @@ final class PhDefaultTest {
                 "φ",
                 new AtComposite(
                     this,
-                    self -> new ToPhi(new SecureRandom().nextDouble())
+                    self -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )
             );
         }

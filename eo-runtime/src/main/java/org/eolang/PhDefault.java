@@ -96,12 +96,10 @@ public class PhDefault implements Phi, Cloneable {
      * Ctor.
      * @param dta Object data
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final byte[] dta) {
         this.data = Optional.ofNullable(dta);
-        this.attrs = new HashMap<>(0);
+        this.attrs = Map.of(Attr.RHO, new AtRho());
         this.order = new HashMap<>(0);
-        this.add(Attr.RHO, new AtRho());
     }
 
     @Override
@@ -130,12 +128,23 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public boolean put(final int pos, final Phi object) {
-        return this.put(this.attr(pos), object);
+    public boolean hasRho() {
+        boolean has = true;
+        try {
+            this.attrs.get(Attr.RHO).get();
+        } catch (final ExUnset exception) {
+            has = false;
+        }
+        return has;
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
+    public void put(final int pos, final Phi object) {
+        this.put(this.attr(pos), object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
         if (!this.attrs.containsKey(name)) {
             throw new ExUnset(
                 String.format(
@@ -144,7 +153,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        return this.attrs.get(name).put(object);
+        this.attrs.get(name).put(object);
     }
 
     @Override
@@ -152,37 +161,25 @@ public class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
-            object = new AtSetRho(
-                this.attrs.get(name),
-                this,
-                name
-            ).get();
+            object = this.attrs.get(name).get();
         } else if (name.equals(Attr.LAMBDA)) {
-            object = new AtSetRho(
-                new AtSimple(new AtomSafe((Atom) this).lambda()),
-                this,
-                name
-            ).get();
+            object = new AtomSafe(this).lambda();
         } else if (this instanceof Atom) {
             object = this.take(Attr.LAMBDA).take(name);
         } else if (this.attrs.containsKey(Attr.PHI)) {
             object = this.take(Attr.PHI).take(name);
         } else {
-            object = new AtGetOnly(
-                () -> {
-                    throw new ExUnset(
-                        String.format(
-                            "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
-                            name,
-                            this.attrs.size(),
-                            this.forma(),
-                            String.join(", ", this.attrs.keySet()),
-                            Attr.PHI,
-                            Attr.LAMBDA
-                        )
-                    );
-                }
-            ).get();
+            throw new ExUnset(
+                String.format(
+                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                    name,
+                    this.attrs.size(),
+                    this.forma(),
+                    String.join(", ", this.attrs.keySet()),
+                    Attr.PHI,
+                    Attr.LAMBDA
+                )
+            );
         }
         PhDefault.debug(
             String.format(
@@ -251,7 +248,7 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, attr);
+        this.attrs.put(name, new AtWithRho(attr, this));
     }
 
     /**

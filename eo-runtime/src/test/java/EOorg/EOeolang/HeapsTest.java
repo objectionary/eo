@@ -28,9 +28,12 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import java.util.function.Supplier;
+import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
+import org.eolang.AtVoid;
 import org.eolang.ExFailure;
-import org.eolang.PhFake;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,7 +54,7 @@ final class HeapsTest {
 
     @Test
     void allocatesMemory() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 10);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertDoesNotThrow(
             () -> HeapsTest.HEAPS.read(idx, 0, 10),
             AtCompositeTest.TO_ADD_MESSAGE
@@ -61,7 +64,7 @@ final class HeapsTest {
 
     @Test
     void failsOnDoubleAllocation() {
-        final Phi phi = new PhFake();
+        final Phi phi = new HeapsTest.PhFake();
         final int idx = HeapsTest.HEAPS.malloc(phi, 10);
         Assertions.assertThrows(
             ExFailure.class,
@@ -73,7 +76,7 @@ final class HeapsTest {
 
     @Test
     void allocatesAndReadsEmptyBytes() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             HeapsTest.HEAPS.read(idx, 0, 5),
@@ -84,7 +87,7 @@ final class HeapsTest {
 
     @Test
     void writesAndReads() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
@@ -99,7 +102,7 @@ final class HeapsTest {
     void failsOnWriteToEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.write(new PhFake().hashCode(), 0, new byte[] {0x01}),
+            () -> HeapsTest.HEAPS.write(new HeapsTest.PhFake().hashCode(), 0, new byte[] {0x01}),
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }
@@ -108,14 +111,14 @@ final class HeapsTest {
     void failsOnReadFromEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.read(new PhFake().hashCode(), 0, 1),
+            () -> HeapsTest.HEAPS.read(new HeapsTest.PhFake().hashCode(), 0, 1),
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
     @Test
     void failsOnReadIfOutOfBounds() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 2);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 2);
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 1, 3),
@@ -125,7 +128,7 @@ final class HeapsTest {
 
     @Test
     void readsByOffsetAndLength() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -136,7 +139,7 @@ final class HeapsTest {
 
     @Test
     void failsOnWriteMoreThanAllocated() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 2);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 2);
         final byte[] bytes = {1, 2, 3, 4, 5};
         Assertions.assertThrows(
             ExFailure.class,
@@ -148,7 +151,7 @@ final class HeapsTest {
 
     @Test
     void failsToWriteMoreThanAllocatedWithOffset() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 3);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 3);
         final byte[] bytes = {1, 2, 3};
         Assertions.assertThrows(
             ExFailure.class,
@@ -160,7 +163,7 @@ final class HeapsTest {
 
     @Test
     void concatsOnWriteLessThanAllocated() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
         HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
@@ -173,7 +176,7 @@ final class HeapsTest {
 
     @Test
     void freesSuccessfully() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         HeapsTest.HEAPS.free(idx);
         Assertions.assertThrows(
             ExFailure.class,
@@ -186,7 +189,7 @@ final class HeapsTest {
     void failsOnClearingEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.free(new PhFake().hashCode()),
+            () -> HeapsTest.HEAPS.free(new HeapsTest.PhFake().hashCode()),
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }
@@ -195,14 +198,14 @@ final class HeapsTest {
     void throwsOnGettingSizeOfEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.size(new PhFake().hashCode()),
+            () -> HeapsTest.HEAPS.size(new HeapsTest.PhFake().hashCode()),
             "Heaps should throw an exception if trying to get size on an empty block, but it didn't"
         );
     }
 
     @Test
     void returnsValidSize() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
             "Heaps should return valid size of allocated block, but it didn't",
             HeapsTest.HEAPS.size(idx),
@@ -213,7 +216,7 @@ final class HeapsTest {
 
     @Test
     void throwsOnChangingSizeToNegative() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.resize(idx, -1),
@@ -226,14 +229,14 @@ final class HeapsTest {
     void throwsOnChangeSizeOfEmtpyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.resize(new PhFake().hashCode(), 10),
+            () -> HeapsTest.HEAPS.resize(new HeapsTest.PhFake().hashCode(), 10),
             "Heaps should throw an exception on changing size of empty block, but it didn't"
         );
     }
 
     @Test
     void increasesSizeSuccessfully() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         HeapsTest.HEAPS.resize(idx, 7);
@@ -247,7 +250,7 @@ final class HeapsTest {
 
     @Test
     void decreasesSizeSuccessfully() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         HeapsTest.HEAPS.resize(idx, 3);
@@ -261,7 +264,7 @@ final class HeapsTest {
 
     @Test
     void returnsValidSizeAfterDecreasing() {
-        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         HeapsTest.HEAPS.resize(idx, 3);
@@ -273,4 +276,27 @@ final class HeapsTest {
         HeapsTest.HEAPS.free(idx);
     }
 
+    /**
+     * Fake object, mostly for unit tests.
+     *
+     * @since 0.29
+     */
+    private static final class PhFake extends PhDefault {
+        /**
+         * Ctor.
+         */
+        PhFake() {
+            this(() -> Phi.Φ);
+        }
+
+        /**
+         * Ctor.
+         * @param sup The function to return the real object
+         */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhFake(final Supplier<Phi> sup) {
+            this.add("args", new AtVoid("args"));
+            this.add("φ", new AtComposite(this, rho -> sup.get()));
+        }
+    }
 }
