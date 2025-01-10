@@ -23,8 +23,14 @@
 line: 4
 message: |-
   [4:4] error: 'Comment here is prohibited'
-      # a comment here is prohibited
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      # The first comment is prohibited
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [5:4] error: 'Comment here is prohibited'
+      # The second comment is prohibited
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [7:6] error: 'Comment here is prohibited'
+        # The third comment is prohibited
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 input: |
   # No comments
   [args] > app

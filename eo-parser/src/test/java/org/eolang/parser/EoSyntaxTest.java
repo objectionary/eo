@@ -30,6 +30,7 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -277,10 +278,10 @@ final class EoSyntaxTest {
         if (story.map().containsKey(msg)) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(story.after()).toString(),
-                story.after()
-                    .xpath("/program/errors/error[1]/text()")
-                    .get(0)
-                    .replaceAll("\r", ""),
+                String.join(
+                    "\n",
+                    story.after().xpath("/program/errors/error/text()")
+                ).replaceAll("\r", ""),
                 Matchers.equalTo(story.map().get(msg).toString())
             );
         }
