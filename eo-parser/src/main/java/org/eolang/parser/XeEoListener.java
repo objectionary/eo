@@ -1268,7 +1268,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * Create parsing exception from given context.
      * @param ctx Context
      * @param msg Error message
-     * @return Parsing exception from current context
+     * @return Parsing exception from the current context
      */
     private static ParsingException error(final ParserRuleContext ctx, final String msg) {
         return new ParsingException(
@@ -1286,22 +1286,27 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         );
     }
 
-    private static ParsingException error(final TerminalNode ctx, final String msg) {
+    /**
+     * Create parsing exception from given terminal node.
+     * @param terminal Terminal node
+     * @param msg Error message
+     * @return Parsing exception from the current terminal node
+     */
+    private static ParsingException error(final TerminalNode terminal, final String msg) {
         return new ParsingException(
-            ctx.getSymbol().getLine(),
+            terminal.getSymbol().getLine(),
             new MsgLocated(
-                ctx.getSymbol().getLine(),
-                ctx.getSymbol().getCharPositionInLine(),
+                terminal.getSymbol().getLine(),
+                terminal.getSymbol().getCharPositionInLine(),
                 msg
             ).formatted(),
             new MsgUnderlined(
-                XeEoListener.line(ctx.getSymbol()),
-                ctx.getSymbol().getCharPositionInLine(),
-                ctx.getText().length()
+                XeEoListener.line(terminal.getSymbol()),
+                terminal.getSymbol().getCharPositionInLine(),
+                terminal.getText().length()
             ).formatted()
         );
     }
-
 
     /**
      * Get line from context.
@@ -1313,7 +1318,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Get line from context.
+     * Get line from token.
      * @param token Token
      * @return Line
      */
