@@ -31,6 +31,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -44,6 +45,8 @@ import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.footprint.CachePath;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.StrictXmir;
@@ -54,6 +57,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,7 +66,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
+ * @todo #3708:30min Remove @Disabled annotation on
+ *  {@code UnphiMojoTest.usesCache()} and {@code UnphiMojoTest.invalidatesCache()}
+ *  when cache is implemented, check that tests is valid otherwise fix them if needed.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
 
@@ -294,6 +302,73 @@ final class UnphiMojoTest {
                 )
             ).parsed(),
             XhtmlMatchers.hasXPath("/program[not(errors)]")
+        );
+    }
+
+    @Test
+    @Disabled
+    void usesCache(@Mktmp final Path temp) throws Exception {
+        new Saved(
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            temp.resolve("target/eo/phi/std.phi")
+        ).value();
+        final String hash = "123ZaRiFcHiK321";
+        final Path cache = temp.resolve("cache");
+        final String expected = "some valid XMIR from cache";
+        new Saved(
+            expected,
+            new CachePath(
+                cache.resolve("unphied"),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("std.xmir")
+            ).get()
+        ).value();
+        MatcherAssert.assertThat(
+            "XMIR file is not loaded from cache",
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("cache", cache.toFile())
+                    .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
+                    .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
+                    .allTojosWithHash(() -> hash)
+                    .execute(UnphiMojo.class)
+                    .result()
+                    .get("target/eo/1-parse/std.xmir")
+            ).asString(),
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    @Disabled
+    void invalidatesCache(@Mktmp final Path temp) throws Exception {
+        final String hash = "123ZaRiFcHiK321";
+        final Path cache = temp.resolve("cache");
+        final File cached = new Saved(
+            "some invalid (old) XMIR from cache",
+            new CachePath(
+                cache.resolve("unphied"),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("std.xmir")
+            ).get()
+        ).value().toFile();
+        new Saved(
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            temp.resolve("target/eo/phi/std.phi")
+        ).value();
+        final long old = cached.lastModified();
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
+            .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
+            .allTojosWithHash(() -> hash)
+            .execute(UnphiMojo.class);
+        MatcherAssert.assertThat(
+            "XMIR cache not invalidated",
+            old,
+            Matchers.lessThan(cached.lastModified())
         );
     }
 }
