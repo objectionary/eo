@@ -28,6 +28,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -262,8 +263,8 @@ final class PhiMojoTest {
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
-            ),
-            Matchers.equalTo(new TextOf(Files.readString(cached)))
+            ).asString(),
+            Matchers.equalTo(new TextOf(cached).asString())
         );
     }
 
@@ -275,7 +276,7 @@ final class PhiMojoTest {
     ) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "123ZaRiFcHiK321";
-        final Path cached = new Saved(
+        final File cached = new Saved(
             "some invalid phi (old) from cache",
             new CachePath(
                 cache.resolve(PhiMojo.CACHE),
@@ -283,8 +284,8 @@ final class PhiMojoTest {
                 hash,
                 Path.of("foo/x/main.phi")
             ).get()
-        ).value();
-        final long old = cached.toFile().lastModified();
+        ).value().toFile();
+        final long old = cached.lastModified();
         new FakeMaven(temp)
             .with("cache", cache.toFile())
             .withProgram(program)
@@ -293,7 +294,7 @@ final class PhiMojoTest {
         MatcherAssert.assertThat(
             "PHI cache not invalidated",
             old,
-            Matchers.lessThan(cached.toFile().lastModified())
+            Matchers.lessThan(cached.lastModified())
         );
     }
 }
