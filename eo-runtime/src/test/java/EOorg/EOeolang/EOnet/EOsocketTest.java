@@ -174,7 +174,7 @@ final class EOsocketTest {
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsSocketTest {
         @RepeatedIfExceptionsTest(repeats = 3)
-        void connectsToLocalServerViaSyscall() throws IOException, InterruptedException {
+        void connectsToLocalServerViaSyscall() throws IOException {
             final RandomServer server = new RandomServer().started();
             final int started = this.startup();
             try {

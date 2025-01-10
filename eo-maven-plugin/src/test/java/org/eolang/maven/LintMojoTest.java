@@ -245,7 +245,15 @@ final class LintMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .withProgram(
+                    "+alias stdout org.eolang.io.stdout",
+                    "+home https://github.com/objectionary/eo",
+                    "+package test",
+                    "+version 0.0.0",
+                    "",
+                    "[x] < wrong>",
+                    "  (stdout \"Hello!\" x).print"
+                )
                 .execute(new FakeMaven.Lint()),
                 "Invalid program with wrong syntax should have failed to assemble, but it didn't"
         );

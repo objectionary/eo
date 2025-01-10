@@ -28,10 +28,14 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.footprint.CachePath;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -39,6 +43,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +51,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test cases for {@link PhiMojo}.
  * @since 0.34.0
+ * @todo #3708:30min Remove @Disabled annotation on
+ *  {@code PhiMojoTest.usesCache()} and {@code PhiMojoTest.invalidatesCache()}
+ *  when cache is implemented, check that tests is valid otherwise fix them.
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 @ExtendWith(MktmpResolver.class)
@@ -221,6 +229,72 @@ final class PhiMojoTest {
                     .get("target/phi/foo/x/main.phi")
             ).asString(),
             Matchers.equalTo(xtory.map().get("salty").toString())
+        );
+    }
+
+    @Test
+    @Disabled
+    void usesCache(
+        @Mktmp final Path temp,
+        @RandomProgram final String program
+    ) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String hash = "123ZaRiFcHiK321";
+        final Path cached = new Saved(
+            "some valid phi from cache",
+            new CachePath(
+                cache.resolve(PhiMojo.CACHE),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("foo/x/main.phi")
+            ).get()
+        ).value();
+        Files.setLastModifiedTime(
+            cached,
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
+        MatcherAssert.assertThat(
+            "Phi is not loaded from cache",
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("cache", cache.toFile())
+                    .withProgram(program)
+                    .allTojosWithHash(() -> hash)
+                    .execute(new FakeMaven.Phi())
+                    .result()
+                    .get("target/phi/foo/x/main.phi")
+            ).asString(),
+            Matchers.equalTo(new TextOf(cached).asString())
+        );
+    }
+
+    @Test
+    @Disabled
+    void invalidatesCache(
+        @Mktmp final Path temp,
+        final @RandomProgram String program
+    ) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String hash = "123ZaRiFcHiK321";
+        final File cached = new Saved(
+            "some invalid phi (old) from cache",
+            new CachePath(
+                cache.resolve(PhiMojo.CACHE),
+                FakeMaven.pluginVersion(),
+                hash,
+                Path.of("foo/x/main.phi")
+            ).get()
+        ).value().toFile();
+        final long old = cached.lastModified();
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .withProgram(program)
+            .allTojosWithHash(() -> hash)
+            .execute(new FakeMaven.Phi());
+        MatcherAssert.assertThat(
+            "PHI cache not invalidated",
+            old,
+            Matchers.lessThan(cached.lastModified())
         );
     }
 }

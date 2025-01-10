@@ -33,7 +33,6 @@ import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -53,19 +52,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class AssembleMojoTest {
-
-    /**
-     * Invalid eo program for testing.
-     */
-    static final String[] INVALID_PROGRAM = {
-        "+alias stdout org.eolang.io.stdout",
-        "+home https://github.com/objectionary/eo",
-        "+package test",
-        "+version 0.0.0",
-        "",
-        "[x] < wrong>",
-        "  (stdout \"Hello!\" x).print",
-    };
 
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
@@ -111,7 +97,15 @@ final class AssembleMojoTest {
     @Test
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+            .withProgram(
+                "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
+                "+package test",
+                "+version 0.0.0",
+                "",
+                "[x] < wrong>",
+                "  (stdout \"Hello!\" x).print"
+            )
             .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
@@ -128,14 +122,12 @@ final class AssembleMojoTest {
 
     @CaptureLogs
     @Test
-    void assemblesSuccessfullyInOfflineMode(final Logs out, @Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .withHelloWorld()
-                .with("offline", true)
-                .execute(AssembleMojo.class),
-            "AssembleMojo should have executed successfully with eo.offline=TRUE, but it didn't"
-        );
+    void assemblesSuccessfullyInOfflineMode(final Logs out,
+        @Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .with("offline", true)
+            .execute(AssembleMojo.class);
         MatcherAssert.assertThat(
             "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
             String.join("\n", out.captured()),
