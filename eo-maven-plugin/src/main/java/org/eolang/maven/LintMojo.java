@@ -193,8 +193,6 @@ public final class LintMojo extends SafeMojo {
             .append(defect.text())
             .append(" (")
             .append(defect.rule())
-            .append(' ')
-            .append(defect.severity())
             .append(')');
         switch (defect.severity()) {
             case WARNING:
