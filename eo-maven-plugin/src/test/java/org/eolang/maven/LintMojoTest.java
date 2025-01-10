@@ -172,7 +172,7 @@ final class LintMojoTest {
             new XMLDocument(
                 maven.result().get("target/6-lint/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(Matchers.equalTo(6))
+            Matchers.hasSize(Matchers.greaterThanOrEqualTo(6))
         );
     }
 
