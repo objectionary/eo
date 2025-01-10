@@ -87,10 +87,9 @@ final class AtLogged implements Attr {
     }
 
     @Override
-    public boolean put(final Phi src) {
+    public void put(final Phi src) {
         this.log.info(String.format("  %s.put()...\n", this.owner));
-        final boolean ret = this.origin.put(src);
+        this.origin.put(src);
         this.log.info(String.format("  %s.put()!\n", this.owner));
-        return ret;
     }
 }

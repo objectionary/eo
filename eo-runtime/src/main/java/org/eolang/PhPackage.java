@@ -78,6 +78,11 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public boolean hasRho() {
+        return true;
+    }
+
+    @Override
     public Phi take(final String name) {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
@@ -94,7 +99,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public boolean put(final int pos, final Phi object) {
+    public void put(final int pos, final Phi object) {
         throw new IllegalStateException(
             String.format(
                 "Can't #put(%d, %s) to package object \"%s\"",
@@ -104,7 +109,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
+    public void put(final String name, final Phi object) {
         throw new IllegalStateException(
             String.format(
                 "Can't #put(%s, %s) to package object \"%s\"",

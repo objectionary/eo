@@ -25,15 +25,31 @@
 package org.eolang;
 
 /**
- * The action.
- * @param <T> The type
- * @since 0.41.0
+ * Default attribute that just keeps single object.
+ * Used for tests mostly.
+ *
+ * <p>The class is NOT thread-safe.</p>
+ *
+ * @since 0.1
  */
-public interface Action<T> {
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "JTCOP.RuleInheritanceInTests"
+})
+final class AtSimple extends AtEnvelope {
+    /**
+     * Ctor.
+     */
+    AtSimple() {
+        this(Phi.Φ);
+    }
 
     /**
-     * Run it.
-     * @return The value
+     * Ctor.
+     * @param object Object that attribute keeps
      */
-    T act();
+    AtSimple(final Phi object) {
+        super(new AtComposite(object, arg -> object));
+    }
 }
