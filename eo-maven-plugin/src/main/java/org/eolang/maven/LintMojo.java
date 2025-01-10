@@ -226,6 +226,7 @@ public final class LintMojo extends SafeMojo {
         }
         return txt.toString();
     }
+
     /**
      * Summarize the counts.
      * @param counts Counts of errors, warnings, and critical
