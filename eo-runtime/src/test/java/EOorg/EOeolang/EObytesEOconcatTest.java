@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,20 +47,19 @@ final class EObytesEOconcatTest {
 
     @Test
     void concatenatesBytes() {
-        final Phi current = new Data.ToPhi("привет ").take("as-bytes");
-        final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes");
-        final Phi phi = new PhWith(
-            Phi.Φ.take("org.eolang.string"),
-            0,
-            new PhWith(
-                current.take("concat").copy(),
-                "b",
-                provided
-            )
-        );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).asString(),
+            new Dataized(
+                new PhWith(
+                    Phi.Φ.take("org.eolang.string"),
+                    0,
+                    new PhWith(
+                        new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),
+                        "b",
+                        new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes")
+                    )
+                )
+            ).asString(),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );
     }

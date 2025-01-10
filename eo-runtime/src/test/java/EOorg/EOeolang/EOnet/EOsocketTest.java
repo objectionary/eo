@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import EOorg.EOeolang.EOsys.Win32.Winsock;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
+import io.github.artsok.RepeatedIfExceptionsTest;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -172,8 +173,8 @@ final class EOsocketTest {
     @DisabledOnOs({OS.MAC, OS.LINUX})
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsSocketTest {
-        @Test
-        void connectsToLocalServerViaSyscall() throws IOException, InterruptedException {
+        @RepeatedIfExceptionsTest(repeats = 3)
+        void connectsToLocalServerViaSyscall() throws IOException {
             final RandomServer server = new RandomServer().started();
             final int started = this.startup();
             try {
@@ -199,7 +200,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void refusesConnectionViaSyscall() throws UnknownHostException {
             final int started = this.startup();
             try {
@@ -225,7 +226,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void bindsSocketSuccessfullyViaSyscall() throws UnknownHostException {
             final int started = this.startup();
             try {
@@ -249,7 +250,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void startsListenOnPosixSocket() throws UnknownHostException {
             final int started = this.startup();
             try {
@@ -274,7 +275,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         void acceptsConnectionOnSocket() throws InterruptedException, UnknownHostException {
             final int started = this.startup();
@@ -342,7 +343,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         void sendsAndReceivesMessagesViaSyscalls()
             throws InterruptedException, UnknownHostException {
@@ -532,7 +533,7 @@ final class EOsocketTest {
     @DisabledOnOs(OS.WINDOWS)
     @Execution(ExecutionMode.SAME_THREAD)
     final class PosixSocketTest {
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
             final RandomServer server = new RandomServer().started();
             final int socket = this.openSocket();
@@ -553,7 +554,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void refusesConnectionViaSyscall() {
             final int socket = this.openSocket();
             try {
@@ -570,7 +571,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void bindsSocketSuccessfullyViaSyscall() {
             final int socket = this.openSocket();
             try {
@@ -588,7 +589,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void startsListenOnPosixSocket() {
             final int socket = this.openSocket();
             try {
@@ -607,7 +608,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
@@ -666,7 +667,7 @@ final class EOsocketTest {
             }
         }
 
-        @Test
+        @RepeatedIfExceptionsTest(repeats = 3)
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();

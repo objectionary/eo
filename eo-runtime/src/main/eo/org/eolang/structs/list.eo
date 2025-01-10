@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -169,7 +169,7 @@
       accum.with item > [accum item]
 
   # Returns index of the first particular item in list.
-  # If the list has no this item, index-of returns -1
+  # If the list has no this item, index-of returns -1.
   [wanted] > index-of
     ^.reducedi > @
       -1
@@ -182,7 +182,7 @@
           accum
 
   # Returns index of the last particular item in list.
-  # If the list has no this item, returns -1
+  # If the list has no this item, returns -1.
   [wanted] > last-index-of
     ^.reducedi > @
       -1

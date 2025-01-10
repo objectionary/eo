@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2024 Objectionary.com
+Copyright (c) 2016-2025 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,15 +38,21 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]">
+  <xsl:template match="o[starts-with(@base, '.') and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]]">
     <xsl:element name="o">
       <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}" select="."/>
       </xsl:for-each>
-      <xsl:attribute name="base" select="'org.eolang'"/>
+      <xsl:attribute name="base">
+        <xsl:text>org.eolang</xsl:text>
+        <xsl:value-of select="@base"/>
+      </xsl:attribute>
       <xsl:for-each select="o[position()!=1]">
-        <xsl:value-of select="."/>
+        <xsl:apply-templates select="."/>
       </xsl:for-each>
+      <xsl:if test="eo:has-data(.)">
+        <xsl:value-of select="normalize-space(string-join(text(), ''))"/>
+      </xsl:if>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

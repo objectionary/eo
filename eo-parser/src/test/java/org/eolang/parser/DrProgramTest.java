@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.StrictXML;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
@@ -40,7 +39,7 @@ import org.xembly.Xembler;
 /**
  * Test case for {@link DrProgram}.
  *
- * @since 0.1
+ * @since 0.49
  */
 final class DrProgramTest {
 
@@ -61,24 +60,37 @@ final class DrProgramTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void setsSchemaLocation() throws Exception {
-        final XML xml = new XMLDocument(new Xembler(new DrProgram("foo")).xml());
         MatcherAssert.assertThat(
             "XSD location is set",
-            xml.toString(),
+            new XMLDocument(new Xembler(new DrProgram("xxx")).xml()).toString(),
             Matchers.containsString(
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             )
         );
-        final String url = xml.xpath("/program/@xsi:noNamespaceSchemaLocation").get(0);
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
-            url,
+            new XMLDocument(new Xembler(new DrProgram("bar")).xml()).xpath(
+                "/program/@xsi:noNamespaceSchemaLocation"
+            ).get(0),
             Matchers.startsWith("file:///")
         );
-        final String path = url.substring("file:///".length());
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void checksThatSchemaLocationPointToExistingFile() throws Exception {
         MatcherAssert.assertThat(
             "XSD file exists",
-            Paths.get(path).toFile().exists(),
+            Paths.get(
+                new XMLDocument(new Xembler(new DrProgram("boom")).xml()).xpath(
+                    "/program/@xsi:noNamespaceSchemaLocation"
+                ).get(0).substring("file:///".length())
+            ).toFile().exists(),
             Matchers.is(true)
         );
     }

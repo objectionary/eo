@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import java.io.IOException;
  * Syntax parser, to XMIR, using ANTLR4.
  * @since 0.34.0
  */
-public interface Syntax {
+interface Syntax {
     /**
      * Canonical Xsline.
      */

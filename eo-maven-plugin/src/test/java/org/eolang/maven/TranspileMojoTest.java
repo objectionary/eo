@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.EoSyntax;
+import org.eolang.parser.TrFull;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
@@ -76,11 +79,20 @@ final class TranspileMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
-    void createsPreStylesheets(final String yaml) {
+    @ClasspathSource(value = "org/eolang/maven/transpile-packs/", glob = "**.yaml")
+    void checksTranspilePacks(final String yaml) {
         MatcherAssert.assertThat(
-            "passes with no exceptions",
-            new XtSticky(new XtYaml(yaml)),
+            "passed without exceptions",
+            new XtSticky(
+                new XtYaml(
+                    yaml,
+                    eo -> new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", eo))
+                    ).parsed(),
+                    new TrFull()
+                )
+            ),
             new XtoryMatcher()
         );
     }
@@ -107,7 +119,7 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile");
+                    .goals("register", "parse", "shake", "transpile");
                 f.exec("process-sources");
             }
         );
@@ -137,7 +149,7 @@ final class TranspileMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "transpile");
+                    .goals("register", "parse", "shake", "transpile");
                 f.exec("process-sources");
             }
         );

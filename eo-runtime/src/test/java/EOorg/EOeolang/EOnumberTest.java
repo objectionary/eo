@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,6 @@ package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtCompositeTest;
 import org.eolang.Data;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,33 +45,28 @@ final class EOnumberTest {
 
     @Test
     void hasDifferentHashes() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            left.hashCode(),
-            Matchers.not(Matchers.equalTo(right.hashCode()))
+            new Data.ToPhi(42L).hashCode(),
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(42L).hashCode()))
         );
     }
 
     @Test
     void hasHashEvenWithoutData() {
-        final Phi phi = new EOnumber();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            phi.hashCode(),
+            new EOnumber().hashCode(),
             Matchers.greaterThan(0)
         );
     }
 
     @Test
     void hasDifferentHash() {
-        final Phi raw = new EOnumber();
-        final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            raw.hashCode(),
-            Matchers.not(initialized.hashCode())
+            new EOnumber().hashCode(),
+            Matchers.not(new Data.ToPhi(0L).hashCode())
         );
     }
 }

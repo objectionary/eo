@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
@@ -70,31 +70,30 @@ final class EObytesEOsliceTest {
 
     @Test
     void takesWrongSlice() {
-        final EOerror.ExError exp = Assertions.assertThrows(
-            EOerror.ExError.class,
-            () -> new Dataized(
-                new PhWith(
-                    new PhWith(
-                        new Data.ToPhi("hello, world!")
-                            .take("as-bytes")
-                            .take("slice")
-                            .copy(),
-                        "start",
-                        new Data.ToPhi(2)
-                    ),
-                    "len",
-                    new Data.ToPhi(-5)
-                )
-            ).asString(),
-            "fails on check"
-        );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (PrintWriter writer = new PrintWriter(baos)) {
-            exp.printStackTrace(writer);
-        }
         MatcherAssert.assertThat(
             "error message is correct",
-            baos.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        EOerror.ExError.class,
+                        () -> new Dataized(
+                            new PhWith(
+                                new PhWith(
+                                    new Data.ToPhi("hello, world!")
+                                        .take("as-bytes")
+                                        .take("slice")
+                                        .copy(),
+                                    "start",
+                                    new Data.ToPhi(2)
+                                ),
+                                "len",
+                                new Data.ToPhi(-5)
+                            )
+                        ).asString(),
+                        "fails on check"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("the 'len' attribute (-5) must be a positive integer")
         );
     }

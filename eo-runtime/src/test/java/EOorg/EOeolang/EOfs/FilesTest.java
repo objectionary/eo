@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,17 +48,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class FilesTest {
-    /**
-     * Files instance.
-     */
-    private static final Files INSTANCE = Files.INSTANCE;
-
     @Test
     void throwsOnReadingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> FilesTest.INSTANCE.read(
-                FilesTest.tempFile(dir), 10
+            () -> Files.INSTANCE.read(
+                dir.resolve("c.txt").toFile().getAbsolutePath(), 10
             ),
             "File should not allow to read before opening"
         );
@@ -68,8 +63,9 @@ final class FilesTest {
     void throwsOnWritingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> FilesTest.INSTANCE.write(
-                FilesTest.tempFile(dir), new byte[]{0x01}
+            () -> Files.INSTANCE.write(
+                dir.resolve("b.txt").toFile().getAbsolutePath(),
+                new byte[]{0x01}
             ),
             "File should not allow to write before opening"
         );
@@ -79,8 +75,8 @@ final class FilesTest {
     void throwsOnClosingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> FilesTest.INSTANCE.close(
-                FilesTest.tempFile(dir)
+            () -> Files.INSTANCE.close(
+                dir.resolve("a.txt").toFile().getAbsolutePath()
             ),
             "File should not allow to close before opening"
         );
@@ -88,46 +84,34 @@ final class FilesTest {
 
     @Test
     void readsFromFile(@Mktmp final Path dir) throws IOException {
-        final String file = FilesTest.tempFile(dir);
+        final String file = dir.resolve("bar.txt").toFile().getAbsolutePath();
         try (BufferedWriter writer =
             java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
             writer.write("Hello, world");
         }
-        FilesTest.INSTANCE.open(file);
+        Files.INSTANCE.open(file);
         MatcherAssert.assertThat(
             "The string should have been read from file",
-            FilesTest.INSTANCE.read(file, 12),
+            Files.INSTANCE.read(file, 12),
             Matchers.equalTo("Hello, world".getBytes(StandardCharsets.UTF_8))
         );
-        FilesTest.INSTANCE.close(file);
+        Files.INSTANCE.close(file);
     }
 
     @Test
     void writesToFile(@Mktmp final Path dir) throws IOException {
-        final String file = FilesTest.tempFile(dir);
+        final String file = dir.resolve("foo.txt").toFile().getAbsolutePath();
         try (BufferedWriter writer =
             java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
             writer.write("Hello, world");
         }
-        FilesTest.INSTANCE.open(file);
-        FilesTest.INSTANCE.write(file, "!".getBytes(StandardCharsets.UTF_8));
+        Files.INSTANCE.open(file);
+        Files.INSTANCE.write(file, "!".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "The string should have been read from file",
-            FilesTest.INSTANCE.read(file, 13),
+            Files.INSTANCE.read(file, 13),
             Matchers.equalTo("Hello, world!".getBytes(StandardCharsets.UTF_8))
         );
-        FilesTest.INSTANCE.close(file);
-    }
-
-    /**
-     * Creates temporary file in directory.
-     * @param dir Directory
-     * @return Absolute path to temp file
-     * @throws IOException If fails to create temp file
-     */
-    private static String tempFile(final Path dir) throws IOException {
-        final Path file = java.nio.file.Files.createTempFile(dir, null, null);
-        file.toFile().deleteOnExit();
-        return file.toAbsolutePath().toString();
+        Files.INSTANCE.close(file);
     }
 }

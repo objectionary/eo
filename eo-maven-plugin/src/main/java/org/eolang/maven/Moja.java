@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import org.cactoos.set.SetOf;
  * @param <T> Type of mojo
  * @since 0.1
  */
-public final class Moja<T extends AbstractMojo> {
+final class Moja<T extends AbstractMojo> {
 
     /**
      * The type of mojo.
@@ -62,7 +62,7 @@ public final class Moja<T extends AbstractMojo> {
      *
      * @param tpe The type
      */
-    public Moja(final Class<T> tpe) {
+    Moja(final Class<T> tpe) {
         this.type = tpe;
         this.attrs = new HashMap<>(0);
     }

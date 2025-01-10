@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,7 +81,7 @@ public final class LatexMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
+        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
             final Path file = tojo.shaken();
             final Place place = new Place(
                 LatexMojo.last(new XMLDocument(file).xpath("/program/@name").get(0))

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ final class SodgMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "sodg");
+                    .goals("register", "parse", "shake", "sodg");
                 f.exec("compile");
                 MatcherAssert.assertThat(
                     "the .sodg file is generated",
@@ -182,7 +182,7 @@ final class SodgMojoTest {
             SodgMojoTest.class,
             "XML: %s",
             new TextOf(
-                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)))
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", ShakeMojo.DIR)))
             ).asString()
         );
         return new XMLDocument(

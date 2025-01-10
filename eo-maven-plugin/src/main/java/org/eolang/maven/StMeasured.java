@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 0.30
  */
-public final class StMeasured implements Shift {
+final class StMeasured implements Shift {
 
     /**
      * Origin shift.
@@ -52,7 +52,7 @@ public final class StMeasured implements Shift {
      * @param shift Origin shift
      * @param log Log file
      */
-    public StMeasured(final Shift shift, final Path log) {
+    StMeasured(final Shift shift, final Path log) {
         this.origin = shift;
         this.path = log;
     }

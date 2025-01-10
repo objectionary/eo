@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,11 +52,12 @@ final class EOmallocTest {
     @Test
     void freesMemory() {
         final Dummy dummy = new Dummy();
-        final Phi phi = EOmallocTest.allocated(
-            new Data.ToPhi(1L),
-            dummy
-        );
-        new Dataized(phi).take();
+        new Dataized(
+            EOmallocTest.allocated(
+                new Data.ToPhi(1L),
+                dummy
+            )
+        ).take();
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
@@ -67,13 +68,14 @@ final class EOmallocTest {
     @Test
     void freesMemoryIfErrorIsOccurred() {
         final ErrorDummy dummy = new ErrorDummy();
-        final Phi phi = EOmallocTest.allocated(
-            new Data.ToPhi(1L),
-            dummy
-        );
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new Dataized(phi).take(),
+            () -> new Dataized(
+                EOmallocTest.allocated(
+                    new Data.ToPhi(1L),
+                    dummy
+                )
+            ).take(),
             AtCompositeTest.TO_ADD_MESSAGE
         );
         Assertions.assertThrows(

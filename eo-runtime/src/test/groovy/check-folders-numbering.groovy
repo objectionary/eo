@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation directories (the "Software"), to deal
@@ -29,8 +29,7 @@ Path target = basedir.toPath().resolve('target/eo')
 List<File> directories = target.toFile().listFiles((FileFilter) { File file -> file.directory })
 List<String> allowed = [
     '1-parse',
-    '2-optimize',
-    '3-shake',
+    '2-shake',
     '4-pull',
     '5-resolve',
     '6-lint',

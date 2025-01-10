@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ final class LintMojoTest {
                     .plugins()
                     .appendItself()
                     .execution()
-                    .goals("register", "parse", "optimize", "shake", "lint")
+                    .goals("register", "parse", "shake", "lint")
                     .configuration()
                     .set("failOnWarning", "false");
                 f.exec("process-classes");
@@ -144,7 +144,7 @@ final class LintMojoTest {
         MatcherAssert.assertThat(
             "Error must exist in shaken XMIR",
             new XMLDocument(
-                maven.result().get("target/3-shake/foo/x/main.xmir")
+                maven.result().get("target/2-shake/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='critical']"),
             Matchers.hasSize(1)
         );
@@ -223,7 +223,7 @@ final class LintMojoTest {
                     "  seq > @",
                     "    TRUE > x",
                     "    FALSE > x"
-                ).with("trackOptimizationSteps", true)
+                ).with("trackTransformationSteps", true)
                 .execute(new FakeMaven.Lint()),
             CatalogsTest.TO_ADD_MESSAGE
         );
@@ -245,7 +245,15 @@ final class LintMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .withProgram(
+                    "+alias stdout org.eolang.io.stdout",
+                    "+home https://github.com/objectionary/eo",
+                    "+package test",
+                    "+version 0.0.0",
+                    "",
+                    "[x] < wrong>",
+                    "  (stdout \"Hello!\" x).print"
+                )
                 .execute(new FakeMaven.Lint()),
                 "Invalid program with wrong syntax should have failed to assemble, but it didn't"
         );
@@ -310,7 +318,7 @@ final class LintMojoTest {
     @Test
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/optimize/main.xml")
+            new ResourceOf("org/eolang/maven/main.xml")
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";

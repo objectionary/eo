@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.xembly.Directives;
  *
  * @since 0.44.0
  */
-final class DrProgram implements Iterable<Directive> {
+public final class DrProgram implements Iterable<Directive> {
 
     /**
      * Name of the program.
@@ -49,7 +49,7 @@ final class DrProgram implements Iterable<Directive> {
      * Ctor.
      * @param nme Name of the program
      */
-    DrProgram(final String nme) {
+    public DrProgram(final String nme) {
         this.name = nme;
     }
 

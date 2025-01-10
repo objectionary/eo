@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -54,19 +53,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class AssembleMojoTest {
 
-    /**
-     * Invalid eo program for testing.
-     */
-    static final String[] INVALID_PROGRAM = {
-        "+alias stdout org.eolang.io.stdout",
-        "+home https://github.com/objectionary/eo",
-        "+package test",
-        "+version 0.0.0",
-        "",
-        "[x] < wrong>",
-        "  (stdout \"Hello!\" x).print",
-    };
-
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
@@ -75,7 +61,7 @@ final class AssembleMojoTest {
             .result();
         final String stdout = "target/%s/org/eolang/io/stdout.%s";
         final String parsed = String.format(stdout, ParseMojo.DIR, AssembleMojo.XMIR);
-        final String optimized = String.format(stdout, OptimizeMojo.DIR, AssembleMojo.XMIR);
+        final String optimized = String.format(stdout, ShakeMojo.DIR, AssembleMojo.XMIR);
         final String pulled = String.format(stdout, PullMojo.DIR, "eo");
         MatcherAssert.assertThat(
             String.format(
@@ -111,8 +97,16 @@ final class AssembleMojoTest {
     @Test
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .execute(new FakeMaven.Optimize())
+            .withProgram(
+                "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
+                "+package test",
+                "+version 0.0.0",
+                "",
+                "[x] < wrong>",
+                "  (stdout \"Hello!\" x).print"
+            )
+            .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
@@ -121,21 +115,19 @@ final class AssembleMojoTest {
         );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to optimize it, but we didn't",
-            result.get(String.format("target/%s", OptimizeMojo.DIR)),
+            result.get(String.format("target/%s", ShakeMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
     }
 
     @CaptureLogs
     @Test
-    void assemblesSuccessfullyInOfflineMode(final Logs out, @Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .withHelloWorld()
-                .with("offline", true)
-                .execute(AssembleMojo.class),
-            "AssembleMojo should have executed successfully with eo.offline=TRUE, but it didn't"
-        );
+    void assemblesSuccessfullyInOfflineMode(final Logs out,
+        @Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .with("offline", true)
+            .execute(AssembleMojo.class);
         MatcherAssert.assertThat(
             "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
             String.join("\n", out.captured()),
@@ -149,14 +141,14 @@ final class AssembleMojoTest {
     void configuresChildParameters(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> res = new FakeMaven(temp)
             .withHelloWorld()
-            .with("trackOptimizationSteps", true)
+            .with("trackTransformationSteps", true)
             .execute(AssembleMojo.class)
             .result();
         MatcherAssert.assertThat(
             "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
             res,
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
+                String.format("target/%s/foo/x/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }

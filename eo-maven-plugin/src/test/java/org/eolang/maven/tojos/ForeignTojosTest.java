@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -142,12 +142,12 @@ final class ForeignTojosTest {
         final ForeignTojo tojo = this.tojos.add("string");
         final AttributeNotFoundException thrown = Assertions.assertThrows(
             AttributeNotFoundException.class,
-            tojo::optimized
+            tojo::shaken
         );
         Assertions.assertEquals(
-            "There is no 'OPTIMIZED' attribute in the tojo",
+            "There is no 'SHAKEN' attribute in the tojo",
             thrown.getMessage(),
-            "Should throw an exception if key 'OPTIMIZED' was not found in Tojo"
+            "Should throw an exception if key 'SHAKEN' was not found in Tojo"
         );
     }
 
@@ -174,7 +174,6 @@ final class ForeignTojosTest {
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<ForeignTojo, Object>) ForeignTojo::xmir),
-            Arguments.of("OPTIMIZED", (Func<ForeignTojo, Object>) ForeignTojo::optimized),
             Arguments.of("SHAKEN", (Func<ForeignTojo, Object>) ForeignTojo::shaken),
             Arguments.of("EO", (Func<ForeignTojo, Object>) ForeignTojo::source),
             Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),

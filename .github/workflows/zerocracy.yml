@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ name: zerocracy
 run-name: "zerocracy judges"
 'on':
   schedule:
-    - cron: '0 0,2,4,6,8,10,12,14,16,18,20,22 * * *'
+    - cron: '0 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
@@ -34,9 +34,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.65
+      - uses: zerocracy/judges-action@0.0.66
         with:
           verbose: false
+          cycles: 1
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repositories: objectionary/*

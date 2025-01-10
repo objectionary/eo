@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -122,10 +122,9 @@ final class EOwin32Test {
         @Test
         void closesTcpSocket() {
             this.startupsWSA();
-            final int socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully close a TCP socket, but it didn't",
-                this.closesSocket(socket),
+                this.closesSocket(this.createsSocket()),
                 Matchers.not(Matchers.equalTo(Winsock.SOCKET_ERROR))
             );
             this.cleanupsWSA();

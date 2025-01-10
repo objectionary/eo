@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2025 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,12 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Tests of the log4j logger messages format.
  *
- * All log messages are written to System.out. System.out is a shared resource among all other
+ * <p>All log messages are written to System.out. System.out is a shared resource among all other
  * threads.  For this reason, we run tests in this class in the same thread (disabling parallelism).
  * This approach prevents log messages from other threads from interfering. Since all the tests in
  * this class are relatively fast, it does not significantly impact overall performance.
  * We disable parallelism by using the {@link Execution} annotation with
- * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!
+ * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!</p>
  *
  * @since 0.28.11
  */
@@ -54,16 +54,12 @@ final class LogFormatTest {
     private static final String FORMAT =
         "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
 
-    /**
-     * Message to log.
-     */
-    private static final String MESSAGE = "Wake up, Neo...";
-
     @Test
     @CaptureLogs
     void printsFormattedMessage(final Logs out) {
-        Logger.info(this, LogFormatTest.MESSAGE);
-        final String actual = out.waitForMessage(LogFormatTest.MESSAGE);
+        final String msg = "Wake up, Neo...";
+        Logger.info(this, msg);
+        final String actual = out.waitForMessage(msg);
         MatcherAssert.assertThat(
             String.format(
                 "Actual log output is '%s', but expected pattern is: '%s'",
