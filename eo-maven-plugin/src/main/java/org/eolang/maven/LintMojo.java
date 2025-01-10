@@ -250,9 +250,7 @@ public final class LintMojo extends SafeMojo {
             parts.add("no complaints");
         }
         final String sum;
-        if (parts.size() == 1) {
-            sum = parts.get(0);
-        } else if (parts.size() == 2) {
+        if (parts.size() < 3) {
             sum = String.join(" and ", parts);
         } else {
             sum = String.format(
