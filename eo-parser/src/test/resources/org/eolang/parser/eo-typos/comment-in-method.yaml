@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-line: 5
-message: |
-  [5:12] error: 'Invalid object declaration'
+line: 4
+message: |-
+  [4:4] error: 'Comment here is prohibited'
       # a comment here is prohibited
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 input: |

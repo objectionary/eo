@@ -583,7 +583,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterProhibitedComment(final EoParser.ProhibitedCommentContext ctx) {
         this.errors.add(
-            XeEoListener.error(ctx.comment(), "Comment here is prohibited")
+            XeEoListener.error(ctx.comment().COMMENTARY(), "Comment here is prohibited")
         );
     }
 
@@ -1286,13 +1286,38 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         );
     }
 
+    private static ParsingException error(final TerminalNode ctx, final String msg) {
+        return new ParsingException(
+            ctx.getSymbol().getLine(),
+            new MsgLocated(
+                ctx.getSymbol().getLine(),
+                ctx.getSymbol().getCharPositionInLine(),
+                msg
+            ).formatted(),
+            new MsgUnderlined(
+                XeEoListener.line(ctx.getSymbol()),
+                ctx.getSymbol().getCharPositionInLine(),
+                ctx.getText().length()
+            ).formatted()
+        );
+    }
+
+
     /**
      * Get line from context.
      * @param ctx Context
      * @return Line
      */
     private static String line(final ParserRuleContext ctx) {
-        final Token token = ctx.start;
+        return XeEoListener.line(ctx.start);
+    }
+
+    /**
+     * Get line from context.
+     * @param token Token
+     * @return Line
+     */
+    private static String line(final Token token) {
         final int number = token.getLine();
         final String[] lines = token.getInputStream().toString().split("\n");
         if (number > 0 && number <= lines.length) {
