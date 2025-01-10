@@ -268,7 +268,6 @@ vapplicationArgsReversed
 vapplicationArgsSpecific
     : vapplicationArgBound+
     | vapplicationArgUnbound+
-    | prohibitedComment+
     ;
 
 // Prohibited comment between vertical arguments
@@ -281,6 +280,7 @@ prohibitedComment
 vapplicationArgBound
     : vapplicationArgBoundCurrent EOL
     | vapplicationArgBoundNext
+    | prohibitedComment+
     ;
 
 // Vertical application arguments with bindings
@@ -304,6 +304,7 @@ vapplicationArgBoundNext
 vapplicationArgUnbound
     : vapplicationArgUnboundCurrent EOL
     | vapplicationArgUnboundNext
+    | prohibitedComment+
     ;
 
 // Vertical application arguments without bindings
