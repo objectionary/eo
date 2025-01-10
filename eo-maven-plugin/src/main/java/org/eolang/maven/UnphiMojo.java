@@ -64,11 +64,6 @@ import org.xembly.Directives;
 public final class UnphiMojo extends SafeMojo {
 
     /**
-     * Subdirectory for parsed cache.
-     */
-    static final String CACHE = "unphied";
-
-    /**
      * Unphi transformations.
      */
     private static final Train<Shift> TRANSFORMATIONS = new TrFull(

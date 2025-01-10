@@ -318,7 +318,7 @@ final class UnphiMojoTest {
         new Saved(
             expected,
             new CachePath(
-                cache.resolve(UnphiMojo.CACHE),
+                cache.resolve("unphied"),
                 FakeMaven.pluginVersion(),
                 hash,
                 Path.of("std.xmir")
@@ -348,7 +348,7 @@ final class UnphiMojoTest {
         final File cached = new Saved(
             "some invalid (old) XMIR from cache",
             new CachePath(
-                cache.resolve(UnphiMojo.CACHE),
+                cache.resolve("unphied"),
                 FakeMaven.pluginVersion(),
                 hash,
                 Path.of("std.xmir")
