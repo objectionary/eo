@@ -581,6 +581,18 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterProhibitedComment(final EoParser.ProhibitedCommentContext ctx) {
+        this.errors.add(
+            XeEoListener.error(ctx.comment(), "Comment here is prohibited")
+        );
+    }
+
+    @Override
+    public void exitProhibitedComment(final EoParser.ProhibitedCommentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationArgsReversed(final EoParser.VapplicationArgsReversedContext ctx) {
         // Nothing here
     }

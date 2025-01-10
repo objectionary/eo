@@ -263,10 +263,18 @@ vapplicationArgsReversed
 
 // Arguments of vertical application
 // Must either all bound or all unbound
+// Comments between vertical arguments are prohibited
 // Ends on the next line
 vapplicationArgsSpecific
     : vapplicationArgBound+
     | vapplicationArgUnbound+
+    | prohibitedComment+
+    ;
+
+// Prohibited comment between vertical arguments
+// If this rule is matched, the parser will throw an error
+prohibitedComment
+    : comment
     ;
 
 // Vertical application arguments with bindings
