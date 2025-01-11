@@ -24,24 +24,45 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="attrs" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="class[not(@base)]/o[@name and not(@level)]">
+  <xsl:template match="class[not(@base)]/o[@name]">
+    <xsl:apply-templates select="." mode="with-attributes"/>
+  </xsl:template>
+  <xsl:template match="o/o[@name]" mode="abstracts">
+    <xsl:apply-templates select="." mode="with-attributes"/>
+  </xsl:template>
+  <xsl:template match="*" mode="with-attributes">
     <xsl:element name="attr">
       <xsl:apply-templates select="@name"/>
-      <xsl:variable name="t">
+      <xsl:variable name="type">
         <xsl:choose>
-          <xsl:when test="@base!='∅'">
+          <xsl:when test="@base and @base!='∅'">
             <xsl:text>bound</xsl:text>
           </xsl:when>
-          <xsl:otherwise>
+          <xsl:when test="@base and @base='∅'">
             <xsl:text>void</xsl:text>
+          </xsl:when>
+          <xsl:when test="@atom">
+            <xsl:text>atom</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>abstract</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
-      <xsl:element name="{$t}">
-        <xsl:copy>
-          <xsl:apply-templates select="node()|@*"/>
-        </xsl:copy>
-      </xsl:element>
+      <xsl:variable name="inner">
+        <xsl:element name="{$type}">
+          <xsl:if test="$type='abstract'">
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="node()" mode="abstracts"/>
+          </xsl:if>
+          <xsl:if test="$type!='abstract'">
+            <xsl:copy>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:if>
+        </xsl:element>
+      </xsl:variable>
+      <xsl:copy-of select="$inner"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

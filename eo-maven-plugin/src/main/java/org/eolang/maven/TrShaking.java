@@ -51,13 +51,13 @@ final class TrShaking extends TrEnvelope {
                     "/org/eolang/parser/shake/explicit-data.xsl",
                     "/org/eolang/parser/shake/set-locators.xsl",
                     "/org/eolang/parser/shake/clean-up.xsl",
-                    "/org/eolang/parser/shake/remove-refs.xsl",
-                    "/org/eolang/parser/shake/abstracts-float-up.xsl",
-                    "/org/eolang/parser/shake/remove-levels.xsl",
-                    "/org/eolang/parser/shake/add-refs.xsl",
-                    "/org/eolang/parser/shake/fix-missed-names.xsl",
-                    "/org/eolang/parser/shake/add-refs.xsl",
-                    "/org/eolang/parser/shake/set-locators.xsl",
+//                    "/org/eolang/parser/shake/remove-refs.xsl",
+//                    "/org/eolang/parser/shake/abstracts-float-up.xsl",
+//                    "/org/eolang/parser/shake/remove-levels.xsl",
+//                    "/org/eolang/parser/shake/add-refs.xsl",
+//                    "/org/eolang/parser/shake/fix-missed-names.xsl",
+//                    "/org/eolang/parser/shake/add-refs.xsl",
+//                    "/org/eolang/parser/shake/set-locators.xsl",
                     "/org/eolang/parser/shake/blank-xsd-schema.xsl"
                 ).back()
             )

@@ -719,4 +719,22 @@ final class PhDefaultTest {
             );
         }
     }
+
+    static class EOnumber extends PhDefault {
+        EOnumber() {
+            this.add("x", new AtOnce(
+                new AtComposite(this, rho -> {
+                    final PhDefault ret = new PhDefault();
+                    ret.add("plus", new AtOnce(
+                        new AtComposite(ret, ret_rho -> {
+                            final PhDefault ret_ret = new PhDefault();
+                            ret_ret.add();
+                            return ret_ret;
+                        })
+                    ));
+                    return ret;
+                })
+            ));
+        }
+    }
 }
