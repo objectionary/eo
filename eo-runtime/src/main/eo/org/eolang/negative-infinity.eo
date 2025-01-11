@@ -26,6 +26,8 @@
 +version 0.0.0
 
 # Negative infinity.
+# A special floating-point value representing an unbounded quantity less than all real numbers.
+# When dataized, it signifies an unbounded lower limit or an unreachable maximum value.
 [] > negative-infinity
   number FF-F0-00-00-00-00-00-00 > @
   $ > floor
@@ -35,13 +37,13 @@
   false > is-integer
   error "Can't convert negative infinity to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that the value $ is equal to x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   [x] > lt
     x > value!
     not. > @
@@ -49,19 +51,19 @@
         (number value).is-nan
         ^.eq value
 
-  # Tests that $ <= x.
+  # Tests that the value $ less or equal than x.
   [x] > lte
     x > value!
     not. > @
       (number value).is-nan
 
-  # Tests that $ > x.
+  # Tests that the value $ greater than x.
   false > [x] > gt
 
-  # Tests that $ >= x.
+  # Tests that the value $ greater or equal than x.
   ^.eq x > [x] > gte
 
-  # Multiplication of $ and x.
+  # Returns the result of the multiplication of $ and x.
   [x] > times
     x > value!
     number value > num
@@ -75,7 +77,7 @@
         ^
         positive-infinity
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   [x] > plus
     x > value!
     if. > @
@@ -85,7 +87,7 @@
       nan
       ^
 
-  # Difference between $ and x.
+  # Difference between the values of $ and x.
   [x] > minus
     x > value!
     if. > @

@@ -241,7 +241,7 @@
           ^.rec-index-of-substr
             idx.plus -1
 
-  # Returns `text` in upper case.
+  # Returns the `text` in upper case.
   [] > up-cased
     ascii "z" > ascii-z!
     ascii "a" > ascii-a!
@@ -277,7 +277,7 @@
             00-00-00-00-00-00-00
             char.as-bytes
 
-  # Returns `text` in lower case.
+  # Returns the `text` in lower case.
   [] > low-cased
     ^.up-cased.ascii "Z" > ascii-z
     ^.up-cased.ascii "A" > ascii-a

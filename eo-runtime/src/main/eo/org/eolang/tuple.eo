@@ -26,8 +26,10 @@
 +version 0.0.0
 
 # Tuple.
+# An ordered, immutable collection of elements.
 [head tail] > tuple
   # Empty tuple.
+  # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
     0 > length
 
@@ -37,7 +39,7 @@
     # Create a new tuple with this element added to the end of it.
     tuple ^ x > [x] > with
 
-  # Obtain the length of the tuple.
+  # Obtain the length value of the tuple.
   [] > length
     head.length.plus 1 > len!
     number len > @
