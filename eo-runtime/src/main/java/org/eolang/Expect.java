@@ -48,7 +48,8 @@ public class Expect<T> {
     private final Supplier<T> sup;
 
     /**
-     * This exception is used to enhance the error message in the {@link Expect#otherwise(String)} method
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
      *
      * @since 0.51
      */
@@ -58,13 +59,14 @@ public class Expect<T> {
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
          */
-        public ExpectFailureInMust(final String cause, final Object... args) {
+        ExpectFailureInMust(final String cause, final Object... args) {
             super(String.format(cause, args));
         }
     }
 
     /**
-     * This exception is used to enhance the error message in the {@link Expect#otherwise(String)} method
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
      *
      * @since 0.51
      */
@@ -74,11 +76,11 @@ public class Expect<T> {
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
          */
-        public ExpectFailureInThat(final String cause, final Object... args) {
+        ExpectFailureInThat(final String cause, final Object... args) {
             super(String.format(cause, args));
         }
     }
-    
+
     /**
      * Ctor.
      * @param subj The subject
@@ -135,8 +137,13 @@ public class Expect<T> {
                 try {
                     return this.sup.get();
                 } catch (final ExpectFailureInMust ex) {
+                    String errorMessage = String.format("%s %s %s",
+                        this.subject,
+                        ex.getMessage(),
+                        message
+                    );
                     throw new ExFailure(
-                        String.format("%s %s %s", this.subject, ex.getMessage(), message),
+                        errorMessage,
                         ex
                     );
                 } catch (final ExpectFailureInThat ex) {
