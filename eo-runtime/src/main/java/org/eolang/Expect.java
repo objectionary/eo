@@ -85,7 +85,7 @@ public class Expect<T> {
                 try {
                     return fun.apply(this.sup.get());
                 } catch (final ExFailure ex) {
-                    throw new ExpectFailureInThat(ex.getMessage(), ex);
+                    throw new ExThat(ex.getMessage(), ex);
                 }
             }
         );
@@ -102,7 +102,7 @@ public class Expect<T> {
             () -> {
                 try {
                     return this.sup.get();
-                } catch (final ExpectFailureInMust ex) {
+                } catch (final ExMust ex) {
                     throw new ExFailure(
                         String.format(
                             "%s %s %s",
@@ -112,7 +112,7 @@ public class Expect<T> {
                         ),
                         ex
                     );
-                } catch (final ExpectFailureInThat ex) {
+                } catch (final ExThat ex) {
                     throw new ExFailure(
                         message,
                         ex
@@ -133,7 +133,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExpectFailureInMust(
+                    throw new ExMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -157,13 +157,13 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExpectFailureInMust extends ExFailure {
+    private static class ExMust extends ExFailure {
         /**
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
          */
-        ExpectFailureInMust(final String cause, final Object... args) {
+        ExMust(final String cause, final Object... args) {
             super(String.format(cause, args));
         }
     }
@@ -174,13 +174,13 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExpectFailureInThat extends ExFailure {
+    private static class ExThat extends ExFailure {
         /**
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
          */
-        ExpectFailureInThat(final String cause, final Object... args) {
+        ExThat(final String cause, final Object... args) {
             super(String.format(cause, args));
         }
     }

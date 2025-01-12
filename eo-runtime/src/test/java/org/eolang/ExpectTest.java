@@ -34,10 +34,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.1.0
  */
 final class ExpectTest {
-    /**
-     * Subject for Expect.
-     */
-    private static final String SUBJ = "a number";
 
     @Test
     void buildsAndChecksWithoutErrors() {
@@ -59,13 +55,13 @@ final class ExpectTest {
             "Throw error in first 'must'. Error message is correct",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>(ExpectTest.SUBJ, () -> 42)
+                () -> new Expect<>("a number", () -> 42)
                     .must(i -> i < 0)
                     .otherwise("must be negative")
                     .it(),
                 "fails on check"
             ).getMessage(),
-            Matchers.equalTo(String.format("%s (42) must be negative", ExpectTest.SUBJ))
+            Matchers.equalTo("a number (42) must be negative")
         );
     }
 
@@ -75,7 +71,7 @@ final class ExpectTest {
             "Throw error in first 'must'. Not add error about second 'must'",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>(ExpectTest.SUBJ, () -> 42.2)
+                () -> new Expect<>("a number", () -> 42.2)
                     .must(i -> i < 0)
                     .otherwise("must be negative")
                     .must(i -> i % 1 == 0)
@@ -83,7 +79,7 @@ final class ExpectTest {
                     .it(),
                 "fails only for first 'must'"
             ).getMessage(),
-            Matchers.equalTo(String.format("%s (42.2) must be negative", ExpectTest.SUBJ))
+            Matchers.equalTo("a number (42.2) must be negative")
         );
     }
 
@@ -93,7 +89,7 @@ final class ExpectTest {
             "Throw error in second 'must'. First 'must' passes check",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>(ExpectTest.SUBJ, () -> 42.2)
+                () -> new Expect<>("a number", () -> 42.2)
                     .must(i -> i > 0)
                     .otherwise("must be positive")
                     .must(i -> i % 1 == 0)
@@ -101,7 +97,7 @@ final class ExpectTest {
                     .it(),
                 "fails on checking integer"
             ).getMessage(),
-            Matchers.equalTo(String.format("%s (42.2) must be an integer", ExpectTest.SUBJ))
+            Matchers.equalTo("a number (42.2) must be an integer")
         );
     }
 
@@ -111,7 +107,7 @@ final class ExpectTest {
             "Take error message from 'otherwise', not from original error",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>(ExpectTest.SUBJ, () -> 42.2)
+                () -> new Expect<>("something", () -> 42.2)
                     .must(i -> i > 0)
                     .otherwise("must be positive")
                     .that(
