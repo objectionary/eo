@@ -1,0 +1,58 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/parser/shake/build-fqns.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/objects[count(o)=3]
+  - /program/objects/o[@base='foo' and @name='bar']
+  - /program/objects/o[@name='foo']
+  - /program/objects/o[@name='first']/o[@base='stdout' and @name='std']/o[@base='.x']/o[@base='$']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[1][@base='$']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[2][@base='.x']/o[1][@base='^']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='number' and @name='x']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[1][@base='.x']/o[1][@base='$']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[2][@base='.y']/o[1][@base='.^']/o[1][@base='^']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[1][@base='^']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[2][@base='qwe']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='string' and @name='inner']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='outer']/o[1][@base='^']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='self']/o[1][@base='$']
+input: |-
+  # No comments.
+  [x y] > first
+    stdout x > std
+    [std] > second
+      std x > inner
+      [] > third
+        5 > x
+        x.plus y > sum
+        std qwe > closest
+      [] > fourth
+        "some" > inner
+        ^.inner > outer
+        inner > self
+  foo > bar
+
+  # Foo.
+  [] > foo
