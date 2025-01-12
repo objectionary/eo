@@ -22,16 +22,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="build-fqns" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="build-fqns" version="2.0">
   <!--
   Here we go through all objects and find what their @base
   are referring to. If we find the object they refer to,
-  we add a new @ref attribute to the object. Those objects
-  which are not getting @ref attributes after this transformation
+  we add either $ object (if target object in the same scope)
+  or necessary amount of ^. objects. Those objects
+  which are skipped after this transformation
   are not visible in the current scope. Maybe they are
   global or just a mistake.
 
-  We must not add "ref" attributes to objects that refer to
+  We must skip objects that refer to
   "bytes", "string" or "number" if such objects are inside the
   "org.eolang.bytes", "org.eolang.string" or "org.eolang.bytes".
   Such a reference would be misleading: instead of referring to the
@@ -150,7 +151,7 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
   <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
-    <xsl:variable name="base" select="./@base"/>
+    <xsl:variable name="base"  select="./@base"/>
     <xsl:choose>
       <!-- Closes object in the same scope -->
       <xsl:when test="parent::o/o[@name=$base]">
