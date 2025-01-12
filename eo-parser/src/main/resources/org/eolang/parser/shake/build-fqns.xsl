@@ -151,7 +151,7 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
   <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
-    <xsl:variable name="base"  select="./@base"/>
+    <xsl:variable name="base" select="./@base"/>
     <xsl:choose>
       <!-- Closes object in the same scope -->
       <xsl:when test="parent::o/o[@name=$base]">
