@@ -39,6 +39,7 @@ final class ExpectTest {
     @Test
     void buildsAndChecksWithoutErrors() {
         MatcherAssert.assertThat(
+            "Passes checks",
             new Expect<>("something", () -> 42)
                 .must(i -> i > 0)
                 .otherwise("must be positive")
@@ -52,6 +53,7 @@ final class ExpectTest {
     @Test
     void failsWithCorrectTraceWithOneError() {
         MatcherAssert.assertThat(
+            "Throw error in first 'must'. Error message is correct",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>(subj, () -> 42)
@@ -67,6 +69,7 @@ final class ExpectTest {
     @Test
     void failsWithCorrectTraceWithTwoErrors() {
         MatcherAssert.assertThat(
+            "Throw error in first 'must'. Not add error about second 'must'",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>(subj, () -> 42.2)
@@ -84,6 +87,7 @@ final class ExpectTest {
     @Test
     void failsWithCorrectTraceWithOneOkAndOneError() {
         MatcherAssert.assertThat(
+            "Throw error in second 'must'. First 'must' passes check",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>(subj, () -> 42.2)
@@ -101,6 +105,7 @@ final class ExpectTest {
     @Test
     void failsWithCorrectTraceWithExFailureInThat() {
         MatcherAssert.assertThat(
+            "Take error message from 'otherwise', not from original error",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>(subj, () -> 42.2)
