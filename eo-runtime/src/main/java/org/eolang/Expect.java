@@ -48,40 +48,6 @@ public class Expect<T> {
     private final Supplier<T> sup;
 
     /**
-     * This exception is used to enhance the error message
-     * in the {@link Expect#otherwise(String)} method.
-     *
-     * @since 0.51
-     */
-    private static class ExpectFailureInMust extends ExFailure {
-        /**
-         * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
-         */
-        ExpectFailureInMust(final String cause, final Object... args) {
-            super(String.format(cause, args));
-        }
-    }
-
-    /**
-     * This exception is used to enhance the error message
-     * in the {@link Expect#otherwise(String)} method.
-     *
-     * @since 0.51
-     */
-    private static class ExpectFailureInThat extends ExFailure {
-        /**
-         * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
-         */
-        ExpectFailureInThat(final String cause, final Object... args) {
-            super(String.format(cause, args));
-        }
-    }
-
-    /**
      * Ctor.
      * @param subj The subject
      * @param supplier The supplier
@@ -118,7 +84,7 @@ public class Expect<T> {
             () -> {
                 try {
                     return fun.apply(this.sup.get());
-                } catch (ExFailure ex) {
+                } catch (final ExFailure ex) {
                     throw new ExpectFailureInThat(ex.getMessage(), ex);
                 }
             }
@@ -137,13 +103,13 @@ public class Expect<T> {
                 try {
                     return this.sup.get();
                 } catch (final ExpectFailureInMust ex) {
-                    String errorMessage = String.format("%s %s %s",
-                        this.subject,
-                        ex.getMessage(),
-                        message
-                    );
                     throw new ExFailure(
-                        errorMessage,
+                        String.format(
+                            "%s %s %s",
+                            this.subject,
+                            ex.getMessage(),
+                            message
+                        ),
                         ex
                     );
                 } catch (final ExpectFailureInThat ex) {
@@ -183,6 +149,40 @@ public class Expect<T> {
      */
     public T it() {
         return this.sup.get();
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static class ExpectFailureInMust extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExpectFailureInMust(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static class ExpectFailureInThat extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExpectFailureInThat(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
     }
 
 }
