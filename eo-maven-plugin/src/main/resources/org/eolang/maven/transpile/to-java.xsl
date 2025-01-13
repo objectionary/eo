@@ -120,7 +120,7 @@ SOFTWARE.
         <xsl:value-of select="$RHO"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('', $n)"/>
+        <xsl:value-of select="$n"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -203,6 +203,7 @@ SOFTWARE.
   </xsl:template>
   <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
+    <xsl:variable name="class" select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
@@ -210,7 +211,7 @@ SOFTWARE.
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public </xsl:text>
-    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:value-of select="$class"/>
     <xsl:text>() {</xsl:text>
     <xsl:choose>
       <xsl:when test="@base">
@@ -232,6 +233,8 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:apply-templates select="attr">
           <xsl:with-param name="indent" select="2"/>
+          <xsl:with-param name="parent" select="$class"/>
+          <xsl:with-param name="context" select="'this'"/>
         </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
@@ -242,14 +245,18 @@ SOFTWARE.
   <!-- Attribute -->
   <xsl:template match="attr">
     <xsl:param name="indent"/>
+    <xsl:param name="parent"/>
+    <xsl:param name="context"/>
     <xsl:variable name="name" select="eo:attr-name(@name)"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>this.add("</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="void|bound">
+    <xsl:apply-templates select="void|bound|atom">
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="parent" select="$parent"/>
+      <xsl:with-param name="context" select="$context"/>
     </xsl:apply-templates>
     <xsl:text>);</xsl:text>
   </xsl:template>
@@ -259,6 +266,47 @@ SOFTWARE.
     <xsl:text>new AtVoid("</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>")</xsl:text>
+  </xsl:template>
+  <!-- Atom as attribute -->
+  <xsl:template match="atom">
+    <xsl:param name="parent"/>
+    <xsl:param name="name"/>
+    <xsl:param name="context"/>
+    <xsl:param name="indent"/>
+    <xsl:text>new AtOnce(new AtComposite(</xsl:text>
+    <xsl:value-of select="$context"/>
+    <xsl:text>, </xsl:text>
+    <xsl:if test="$context!='this'">
+      <xsl:value-of select="$context"/>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="'rho'"/>
+    <xsl:text> -&gt; {</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:variable name="argument" select="o[1]"/>
+    <xsl:variable name="class">
+      <xsl:value-of select="$parent"/>
+      <xsl:value-of select="'$'"/>
+      <xsl:value-of select="eo:class-name($name, eo:suffix($argument/@line, $argument/@pos))"/>
+    </xsl:variable>
+    <xsl:variable name="variable">
+      <xsl:value-of select="$name"/>
+      <xsl:text>_ret</xsl:text>
+    </xsl:variable>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$variable"/>
+    <xsl:text> = new </xsl:text>
+    <xsl:value-of select="$class"/>
+    <xsl:text>();</xsl:text>
+    <xsl:apply-templates select="$argument" mode="located">
+      <xsl:with-param name="indent" select="$indent + 1"/>
+      <xsl:with-param name="name" select="$variable"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>return </xsl:text>
+    <xsl:value-of select="$variable"/>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   <!-- Bound attribute -->
   <xsl:template match="bound">

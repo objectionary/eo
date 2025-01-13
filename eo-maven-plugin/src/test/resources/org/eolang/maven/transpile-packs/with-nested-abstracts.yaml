@@ -22,23 +22,15 @@
 ---
 sheets:
   - /org/eolang/parser/shake/cti-adds-errors.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
   - /org/eolang/parser/shake/add-refs.xsl
   - /org/eolang/parser/shake/expand-qqs.xsl
   - /org/eolang/parser/shake/add-probes.xsl
-  - /org/eolang/parser/shake/vars-float-up.xsl
   - /org/eolang/parser/shake/expand-aliases.xsl
   - /org/eolang/parser/shake/resolve-aliases.xsl
   - /org/eolang/parser/shake/add-default-package.xsl
   - /org/eolang/parser/shake/explicit-data.xsl
-#  - /org/eolang/parser/shake/set-locators.xsl
   - /org/eolang/parser/shake/clean-up.xsl
-#  - /org/eolang/parser/shake/remove-refs.xsl
-#  - /org/eolang/parser/shake/abstracts-float-up.xsl
-#  - /org/eolang/parser/shake/remove-levels.xsl
-#  - /org/eolang/parser/shake/add-refs.xsl
-#  - /org/eolang/parser/shake/fix-missed-names.xsl
-#  - /org/eolang/parser/shake/add-refs.xsl
-#  - /org/eolang/parser/shake/set-locators.xsl
   - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/package.xsl
@@ -46,7 +38,7 @@ sheets:
 #  - /org/eolang/maven/transpile/rename-tests-inners.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
-#  - /org/eolang/maven/transpile/to-java.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[errors]
 input: |
@@ -59,8 +51,8 @@ input: |
     [] > abstract-object
       [] > inner-abstract
       if. > @
-        true
-        false
+        true > tre
+        false > flse
         [] > abstract-as-arg
           x > @
             5
