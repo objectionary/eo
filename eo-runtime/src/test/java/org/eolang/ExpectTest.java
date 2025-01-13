@@ -36,9 +36,9 @@ import org.junit.jupiter.api.Test;
 final class ExpectTest {
 
     @Test
-    void buildsAndChecks() {
+    void buildsAndChecksWithoutErrors() {
         MatcherAssert.assertThat(
-            "passes through and throws correctly",
+            "Passes checks",
             new Expect<>("something", () -> 42)
                 .must(i -> i > 0)
                 .otherwise("must be positive")
@@ -50,9 +50,9 @@ final class ExpectTest {
     }
 
     @Test
-    void failsWithCorrectTrace() {
+    void failsWithCorrectTraceWithOneError() {
         MatcherAssert.assertThat(
-            "error message is correct",
+            "Throw error in first 'must'. Error message is correct",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>("a number", () -> 42)
@@ -61,7 +61,65 @@ final class ExpectTest {
                     .it(),
                 "fails on check"
             ).getMessage(),
-            Matchers.containsString("negative")
+            Matchers.equalTo("a number (42) must be negative")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithTwoErrors() {
+        MatcherAssert.assertThat(
+            "Throw error in first 'must'. Not add error about second 'must'",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i < 0)
+                    .otherwise("must be negative")
+                    .must(i -> i % 1 == 0)
+                    .otherwise("must be an integer")
+                    .it(),
+                "fails only for first 'must'"
+            ).getMessage(),
+            Matchers.equalTo("a number (42.2) must be negative")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithOneOkAndOneError() {
+        MatcherAssert.assertThat(
+            "Throw error in second 'must'. First 'must' passes check",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("a number", () -> 42.2)
+                    .must(i -> i > 0)
+                    .otherwise("must be positive")
+                    .must(i -> i % 1 == 0)
+                    .otherwise("must be an integer")
+                    .it(),
+                "fails on checking integer"
+            ).getMessage(),
+            Matchers.equalTo("a number (42.2) must be an integer")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithExFailureInThat() {
+        MatcherAssert.assertThat(
+            "Take error message from 'otherwise', not from original error",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("something", () -> 42.2)
+                    .must(i -> i > 0)
+                    .otherwise("must be positive")
+                    .that(
+                        i -> {
+                            throw new ExFailure("some error");
+                        }
+                    )
+                    .otherwise("something went wrong")
+                    .it(),
+                "fails on 'that'"
+            ).getMessage(),
+            Matchers.equalTo("something went wrong")
         );
     }
 }

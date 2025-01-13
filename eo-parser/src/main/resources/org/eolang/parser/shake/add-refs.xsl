@@ -32,9 +32,10 @@ SOFTWARE.
   global or just a mistake.
 
   We must not add "ref" attributes to objects that refer to
-  "bytes" if such objects are inside the "org.eolang.bytes". Such
-  a reference would be misleading: instead of referring to the
-  global "org.eolang.bytes" they will lead to local "bytes"
+  "bytes", "string" or "number" if such objects are inside the
+  "org.eolang.bytes", "org.eolang.string" or "org.eolang.bytes".
+  Such a reference would be misleading: instead of referring to the
+  global, for example, "org.eolang.bytes" they will lead to local "bytes"
   defined in this particular file.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
