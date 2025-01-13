@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -53,6 +54,16 @@ final class ArchitectureTest {
             .and().doNotHaveSimpleName("SafeMojo")
             .should()
             .beAssignableTo(SafeMojo.class)
+            .check(new ClassFileImporter().importPackages("org.eolang.maven"));
+    }
+
+    @Test
+    void mojosHaveAnnotation() {
+        ArchRuleDefinition.classes()
+            .that().haveSimpleNameEndingWith("Mojo")
+            .and().doNotHaveSimpleName("SafeMojo")
+            .should()
+            .beAnnotatedWith(Mojo.class)
             .check(new ClassFileImporter().importPackages("org.eolang.maven"));
     }
 
