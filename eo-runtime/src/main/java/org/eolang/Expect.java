@@ -114,7 +114,11 @@ public class Expect<T> {
                     );
                 } catch (final ExThat ex) {
                     throw new ExFailure(
-                        message,
+                        String.format(
+                            "%s %s",
+                            this.subject,
+                            message
+                        ),
                         ex
                     );
                 }
