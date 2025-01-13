@@ -128,13 +128,15 @@ final class ExpectTest {
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Expect<>("attr", () -> "string")
-                    .that(i -> {
-                        try {
-                            return Integer.parseInt(i);
-                        } catch (final NumberFormatException ex) {
-                            throw new ExFailure("Can't parse to integer", ex);
+                    .that(
+                        i -> {
+                            try {
+                                return Integer.parseInt(i);
+                            } catch (final NumberFormatException ex) {
+                                throw new ExFailure("Can't parse to integer", ex);
+                            }
                         }
-                    })
+                    )
                     .otherwise("must be an integer")
                     .it(),
                 "fails on 'that' because can not parse"

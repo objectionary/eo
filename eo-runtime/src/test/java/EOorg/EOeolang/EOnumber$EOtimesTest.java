@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 final class EOnumber$EOtimesTest {
 
     @Test
-    void throwsCorrectErrorWhenRHOAttrIsWrong() {
+    void throwsCorrectErrorWhenRhoAttrIsWrong() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
