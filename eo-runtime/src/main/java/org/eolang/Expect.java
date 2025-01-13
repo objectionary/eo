@@ -81,7 +81,13 @@ public class Expect<T> {
     public <R> Expect<R> that(final Function<T, R> fun) {
         return new Expect<>(
             this.subject,
-            () -> fun.apply(this.sup.get())
+            () -> {
+                try {
+                    return fun.apply(this.sup.get());
+                } catch (final ExFailure ex) {
+                    throw new ExThat(ex.getMessage(), ex);
+                }
+            }
         );
     }
 
@@ -96,9 +102,19 @@ public class Expect<T> {
             () -> {
                 try {
                     return this.sup.get();
-                } catch (final ExFailure ex) {
+                } catch (final ExMust ex) {
                     throw new ExFailure(
-                        String.format("%s %s %s", this.subject, ex.getMessage(), message),
+                        String.format(
+                            "%s %s %s",
+                            this.subject,
+                            ex.getMessage(),
+                            message
+                        ),
+                        ex
+                    );
+                } catch (final ExThat ex) {
+                    throw new ExFailure(
+                        message,
                         ex
                     );
                 }
@@ -117,7 +133,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExFailure(
+                    throw new ExMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -133,6 +149,40 @@ public class Expect<T> {
      */
     public T it() {
         return this.sup.get();
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static class ExMust extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExMust(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static class ExThat extends ExFailure {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExThat(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
     }
 
 }
