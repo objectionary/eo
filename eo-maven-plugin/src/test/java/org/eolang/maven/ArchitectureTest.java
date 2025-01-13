@@ -42,6 +42,17 @@ final class ArchitectureTest {
             .and().doNotHaveSimpleName("SafeMojo")
             .should().resideInAPackage("org.eolang.maven")
             .andShould().bePublic()
+            .andShould().beTopLevelClasses()
+            .check(new ClassFileImporter().importPackages("org.eolang.maven"));
+    }
+
+    @Test
+    void mojosHaveOneParent() {
+        ArchRuleDefinition.classes()
+            .that().haveSimpleNameEndingWith("Mojo")
+            .and().doNotHaveSimpleName("SafeMojo")
+            .should()
+            .beAssignableTo(SafeMojo.class)
             .check(new ClassFileImporter().importPackages("org.eolang.maven"));
     }
 
