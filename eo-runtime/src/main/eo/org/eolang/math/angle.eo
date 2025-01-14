@@ -29,6 +29,8 @@
 +version 0.0.0
 
 # The angle.
+# A measure of how much something is tilted or rotated, measured in degrees or radians.
+# When dataized, it shows direction or how two lines meet.
 [value] > angle
   value > @
   # Converts this from radians to degrees.
