@@ -34,13 +34,13 @@ input: |
     5.plus 5 > bound-attr
 
     [] > atom /org.eolang.string
-  
+
     [] > abstract-object
       [] > inner-atom /obj
       [] > inner-abstract
       if. > @
-        true > tre
-        false > flse
+        true > some
+        false > body
         [] > abstract-as-arg
           void-attr > @
             5
