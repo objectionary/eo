@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="class[descendant::o[not(@base) and not(@name) and o]]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="descendant::o[not(@base) and not(@name) and o]">
+      <xsl:for-each select="./descendant::o[not(@base) and not(@name) and o]">
         <xsl:element name="nested">
           <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
