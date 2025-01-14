@@ -1,0 +1,39 @@
+{⟦
+  k ↦ ⟦
+    x ↦ ξ.t (z ↦ ξ.f) . the-атрибут (p ↦ ξ.ρ.ρ.ρ.f, t ↦ ξ.ρ),
+    t ↦ ∅,
+    Δ ⤍ 42-41-40
+  ⟧.thank.you (z ↦ ξ.f) . very (z ↦ ξ.f) . much (z ↦ ξ.f),
+  self ↦ ξ,
+  φ ↦ ξ.φ,
+  copy_Of_Self ↦ ξ(z ↦ ξ.f),
+  error-on-purpose ↦ ⊥,
+  the-атрибут ↦ Φ.ρ,
+  hi-大家 ↦ ⟦ ⟧,
+  α0 ↦ Φ () () (),
+  α65536 ↦ Φ.r,
+  k ↦ ⟦ λ ⤍ Function_Name_i64, α0 ↦ ⟦ λ ⤍ FunctionName, Δ ⤍ 42- ⟧ ⟧,
+  terminator-application ↦ ⊥ (t ↦ ξ.t),
+  terminator-dispatch ↦ ⊥.t,
+  string ↦ "Hello",
+  int ↦ 42,
+  float ↦ 12.3,
+  float-with-exponent ↦ 0.36e-10,
+  string-dot ↦ "Hello".print,
+  string-application ↦ "Hello"(z ↦ ξ.f),
+  int-dot ↦ 42.plus,
+  int-application ↦ 42(z ↦ ξ.f),
+  float-dot ↦ 52.1.print,
+  float-application ↦ 52.1(z ↦ ξ.f, k ↦ ξ.i),
+  minus ↦ -0,
+  inline-application ↦ Φ.x(
+    "Hello", 42, Φ.y("world", 11.plus(12)), 42.5
+  ),
+  default-package ↦ Φ̇.number(42),
+  inline-voids(text, α0, φ) ↦ ⟦ ⟧,
+  empty-inline-voids() ↦ ⟦
+    num ↦ 42
+  ⟧,
+  with-void-phi-sweet(φ) ↦ ⟦⟧,
+  with-void-phi-salty ↦ ⟦ φ ↦ ∅ ⟧
+⟧}
