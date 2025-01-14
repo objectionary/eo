@@ -51,6 +51,65 @@ SOFTWARE.
       <xsl:attribute name="base" select="'$'"/>
     </xsl:element>
   </xsl:variable>
+  <!-- Build recursive objects chain from package if exists -->
+  <xsl:template match="o" mode="recursive-package">
+    <xsl:param name="pkg"/>
+    <xsl:choose>
+      <xsl:when test="$pkg='' or empty($pkg)">
+        <xsl:copy-of select="."/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="last">
+          <xsl:choose>
+            <xsl:when test="contains($pkg, '.')">
+              <xsl:value-of select="substring-before($pkg, '.')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$pkg"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="elem">
+          <xsl:element name="o">
+            <xsl:attribute name="base">
+              <xsl:text>.</xsl:text>
+              <xsl:value-of select="$last"/>
+            </xsl:attribute>
+            <xsl:copy-of select="."/>
+          </xsl:element>
+        </xsl:variable>
+        <xsl:apply-templates select="$elem" mode="recursive-package">
+          <xsl:with-param name="pkg" select="substring-after($pkg, '.')"/>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- Copy given element and append package if exists -->
+  <xsl:template match="o" mode="with-package">
+    <xsl:param name="parent"/>
+    <xsl:param name="find"/>
+    <xsl:choose>
+      <xsl:when test="$parent/o[@name=$find]">
+        <xsl:variable name="start">
+          <xsl:element name="o">
+            <xsl:attribute name="base" select="'Q'"/>
+          </xsl:element>
+        </xsl:variable>
+        <xsl:apply-templates select="." mode="to-method">
+          <xsl:with-param name="of">
+            <xsl:apply-templates select="$start" mode="recursive-package">
+              <xsl:with-param name="pkg" select="/program/metas/meta[head='package']/part[1]/text()"/>
+            </xsl:apply-templates>
+          </xsl:with-param>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <!-- Convert given object to method -->
   <xsl:template match="o" mode="to-method">
     <xsl:param name="of"/>
@@ -103,9 +162,10 @@ SOFTWARE.
     <xsl:choose>
       <!-- last frontier -->
       <xsl:when test="$parent[name()='objects']">
-        <xsl:element name="o">
-          <xsl:apply-templates select="$self/o|$self/@*"/>
-        </xsl:element>
+        <xsl:apply-templates select="$self" mode="with-package">
+          <xsl:with-param name="find" select="$find"/>
+          <xsl:with-param name="parent" select="$parent"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:when test="eo:abstract($parent)">
         <xsl:choose>
@@ -161,7 +221,10 @@ SOFTWARE.
       </xsl:when>
       <!-- Closest object in the same scope, but global -->
       <xsl:when test="parent::objects/o[@name=$base]">
-        <xsl:copy-of select="."/>
+        <xsl:apply-templates select="." mode="with-package">
+          <xsl:with-param name="parent" select="parent::objects"/>
+          <xsl:with-param name="find" select="$base"/>
+        </xsl:apply-templates>
       </xsl:when>
       <!--- Try to find the closest object in parents -->
       <xsl:otherwise>

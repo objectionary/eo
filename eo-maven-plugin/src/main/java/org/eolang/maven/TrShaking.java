@@ -41,23 +41,15 @@ final class TrShaking extends TrEnvelope {
             new TrFull(
                 new TrClasspath<>(
                     "/org/eolang/parser/shake/cti-adds-errors.xsl",
-                    "/org/eolang/parser/shake/add-refs.xsl",
+                    "/org/eolang/parser/shake/vars-float-up.xsl",
+                    "/org/eolang/parser/shake/build-fqns.xsl",
                     "/org/eolang/parser/shake/expand-qqs.xsl",
                     "/org/eolang/parser/shake/add-probes.xsl",
-                    "/org/eolang/parser/shake/vars-float-up.xsl",
                     "/org/eolang/parser/shake/expand-aliases.xsl",
                     "/org/eolang/parser/shake/resolve-aliases.xsl",
                     "/org/eolang/parser/shake/add-default-package.xsl",
                     "/org/eolang/parser/shake/explicit-data.xsl",
                     "/org/eolang/parser/shake/set-locators.xsl",
-                    "/org/eolang/parser/shake/clean-up.xsl",
-//                    "/org/eolang/parser/shake/remove-refs.xsl",
-//                    "/org/eolang/parser/shake/abstracts-float-up.xsl",
-//                    "/org/eolang/parser/shake/remove-levels.xsl",
-//                    "/org/eolang/parser/shake/add-refs.xsl",
-//                    "/org/eolang/parser/shake/fix-missed-names.xsl",
-//                    "/org/eolang/parser/shake/add-refs.xsl",
-//                    "/org/eolang/parser/shake/set-locators.xsl",
                     "/org/eolang/parser/shake/blank-xsd-schema.xsl"
                 ).back()
             )

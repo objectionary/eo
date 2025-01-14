@@ -21,21 +21,24 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
   - /org/eolang/maven/transpile/classes.xsl
-  - /org/eolang/parser/shake/remove-noise.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
-  - /org/eolang/maven/transpile/tests.xsl
-  - /org/eolang/maven/transpile/align-test-classes.xsl
-  - /org/eolang/maven/transpile/remove-high-level-inner-classes.xsl
-  - /org/eolang/maven/transpile/rename-tests-inners.xsl
+  - /org/eolang/maven/transpile/anonymous-to-nested.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - /program/objects[count(class)=1]
-  - /program/objects/class[count(class)=4]
-  - /program[count(objects/class/class//class)=0]
-  - //class[starts-with(@name, 'ω3t0$a0-hash-') and starts-with(@parent, 'ω2c-hash-')]
-  - //o[starts-with(@base, 'ω2c-hash-') and @name='c']
+  - /program/objects/class/java[contains(text(), 'this.add("b"')]
+  - /program/objects/class/java[contains(text(), 'r.add("c",')]
+  - /program/objects/class/java[contains(text(), 'rr.add("φ",')]
+  - /program/objects/class/java[contains(text(), 'public void works() throws java.lang.Exception')]
+  - /program/objects/class/java[contains(text(), 'private static class EOΦabcφα0')]
+  - /program/objects/class/java[contains(text(), 'PhDefault r1 = new EOΦabcφα0boundα0();')]
+  - /program/objects/class/java[contains(text(), 'private static class EOΦabcφα0boundα0 extends PhDefault')]
+  - /program/objects/class/java[contains(text(), 'private static class EOΦabcφα1 extends PhDefault')]
+  - /program/objects/class/java[contains(text(), 'PhDefault rrr1 = new EOΦabcφα0();')]
+  - /program/objects/class/java[contains(text(), 'PhDefault rrr2 = new EOΦabcφα1();')]
+  - /program/objects/class/java[contains(text(), 'PhDefault rrr3 = new PhDefault();')]
 input: |
   +tests
 
@@ -48,5 +51,9 @@ input: |
         d > @
           []
             c > @
+            [] > named
+            x > bound
+              []
+                [] > y
+          42 > []
           []
-            42 > @

@@ -106,11 +106,9 @@ public final class TranspileMojo extends SafeMojo {
         new TrJoined<>(
             new TrClasspath<>(
                 "/org/eolang/maven/transpile/classes.xsl",
-                "/org/eolang/maven/transpile/package.xsl",
                 "/org/eolang/maven/transpile/tests.xsl",
-                "/org/eolang/maven/transpile/rename-tests-inners.xsl",
-                "/org/eolang/maven/transpile/align-test-classes.xsl",
-                "/org/eolang/maven/transpile/remove-high-level-inner-classes.xsl",
+                "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+                "/org/eolang/maven/transpile/package.xsl",
                 "/org/eolang/maven/transpile/attrs.xsl",
                 "/org/eolang/maven/transpile/data.xsl"
             ).back(),

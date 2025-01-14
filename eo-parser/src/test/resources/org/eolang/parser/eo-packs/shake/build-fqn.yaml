@@ -21,24 +21,29 @@
 # SOFTWARE.
 ---
 sheets:
+  - /org/eolang/parser/shake/vars-float-up.xsl
   - /org/eolang/parser/shake/build-fqns.xsl
 asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=3]
-  - /program/objects/o[@base='foo' and @name='bar']
+  - /program/objects/o[@base='.foo' and @name='bar']/o[@base='.examples']/o[@base='.org']/o[@base='Q']
   - /program/objects/o[@name='foo']
   - /program/objects/o[@name='first']/o[@base='stdout' and @name='std']/o[@base='.x']/o[@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[1][@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[2][@base='.x']/o[1][@base='^']
-  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='number' and @name='x']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='number' and @name='x' and text()!='']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[1][@base='.x']/o[1][@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[2][@base='.y']/o[1][@base='.^']/o[1][@base='^']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[1][@base='^']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[2][@base='qwe']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.third']/o[1][@base='^']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.third']/o[2][@base='.bar']/o[@base='.examples']/o[@base='.org']/o[@base='Q']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='string' and @name='inner']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='outer']/o[1][@base='^']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='self']/o[1][@base='$']
 input: |-
+  +package org.examples
+
   # No comments.
   [x y] > first
     stdout x > std
@@ -47,6 +52,7 @@ input: |-
       [] > third
         5 > x
         x.plus y > sum
+        third bar > baz
         std qwe > closest
       [] > fourth
         "some" > inner

@@ -30,6 +30,9 @@ SOFTWARE.
   <xsl:template match="o/o[@name]" mode="abstracts">
     <xsl:apply-templates select="." mode="with-attributes"/>
   </xsl:template>
+  <xsl:template match="nested/o">
+    <xsl:apply-templates select="." mode="with-attributes"/>
+  </xsl:template>
   <xsl:template match="*" mode="with-attributes">
     <xsl:element name="attr">
       <xsl:apply-templates select="@name"/>

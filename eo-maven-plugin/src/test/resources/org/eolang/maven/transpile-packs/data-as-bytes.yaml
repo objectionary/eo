@@ -21,9 +21,6 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-default-package.xsl
-  - /org/eolang/parser/shake/explicit-data.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
@@ -31,10 +28,10 @@ sheets:
 asserts:
   - /program[not(errors)]
   - //java[contains(text(), '.take("org").take("eolang").take("true")')]
-  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x00}));')]
-  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
-  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
+  - //java[contains(text(), 'r1 = new PhWith(r1, 0, new PhDefault(new byte[] {(byte) 0x00}));')]
+  - //java[contains(text(), 'r1 = new PhWith(r1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'r1 = new PhWith(r1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'r = new PhWith(r, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 input: |
   # No comments.
   [] > t

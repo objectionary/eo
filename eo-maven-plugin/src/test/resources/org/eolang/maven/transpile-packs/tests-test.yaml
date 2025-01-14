@@ -21,20 +21,16 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/remove-refs.xsl
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
-  - /org/eolang/parser/shake/remove-levels.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/fix-missed-names.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/tests.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
   - //java[contains(text(), '@Test')]
+  - //java[contains(text(), 'EOworksTest')]
+  - //java[contains(text(), 'EOthrows_onTest')]
   - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
 input: |
   +tests
