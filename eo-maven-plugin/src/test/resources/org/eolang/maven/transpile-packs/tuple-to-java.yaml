@@ -21,23 +21,21 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-default-package.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), 'Phi ret = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '  Phi ret_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi ret_1_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi ret_1_1_1 = new PhMethod(ret_1_1_1_base, "empty");')]
-  - //java[contains(text(), '  Phi ret_2 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi ret_2_1_1 = new PhMethod(ret_2_1_1_base, "empty");')]
+  - //java[contains(text(), 'Phi r = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '  Phi r1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi r11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi r111b = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi r111 = new PhMethod(r111b, "empty");')]
+  - //java[contains(text(), '  Phi r2 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi r21 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi r211b = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi r211 = new PhMethod(r211b, "empty");')]
 input: |
   # No comments.
   [] > foo

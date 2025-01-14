@@ -29,8 +29,13 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
 +version 0.0.0
++unlint broken-ref
 
 # Text.
+# @todo #3481:30min Remove all +unlit broken-ref from EO source code.
+#  These suppressions were added in order to be compile EO when @ref attribute
+#  from XMIR is removed, by it's checked by LintMojo. We need to remove these
+#  suppressions when `lints` repository is fixed and new version is used in EO.
 [origin] > text
   origin > @
   # Check that all signs in string are numbers or letters.
