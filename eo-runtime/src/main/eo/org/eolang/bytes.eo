@@ -58,9 +58,11 @@
                 * ^
 
   # Equals to another object.
+  # A condition where two objects have the same value or content.
   [b] > eq /org.eolang.bool
 
   # Total number of bytes.
+  # The complete count of bytes used to represent data.
   [] > size /org.eolang.number
 
   # Represents a sub-sequence inside the current one.
