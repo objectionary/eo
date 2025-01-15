@@ -25,7 +25,7 @@ line: 4
 #  Cryptic error message is returned when there are two empty lines between metas.
 #  The error message should be more informative and should highlight the exact location
 #  of the error.
-message: |
+message: |+
   [4:0] error: 'Invalid program declaration'
 
 input: |
