@@ -28,8 +28,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import javax.swing.text.html.Option;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -280,11 +282,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAtom(final EoParser.AtomContext ctx) {
-        this.startObject(ctx)
-            .prop("atom", ctx.type().typeFqn().getText())
-            .leave();
+        final EoParser.TypeFqnContext fqn = ctx.type().typeFqn();
+        if (fqn == null) {
+            this.errors.add(XeEoListener.error(ctx, "Atom must have a type"));
+            this.startObject(ctx).leave();
+        } else {
+            this.startObject(ctx)
+                .prop("atom", fqn.getText())
+                .leave();
+        }
     }
 
     @Override

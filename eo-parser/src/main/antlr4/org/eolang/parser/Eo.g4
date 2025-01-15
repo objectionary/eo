@@ -47,7 +47,7 @@ metas
 // Objects
 // Ends on the next line
 objects
-    : (object EOL?)* object
+    : (object EOL?)+
     ;
 
 comment
