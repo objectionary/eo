@@ -31,6 +31,7 @@
   origin > @
 
   # Is it empty?.
+  # A check to determine if an object contains no elements or data.
   0.eq ^.origin.length > [] > is-empty
 
   # Create a new list with this element added to the end of it.
