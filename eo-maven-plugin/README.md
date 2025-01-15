@@ -133,6 +133,48 @@ mvn clean install -Pqulice -Dstack-size=1M
 
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
 
+## PHI and UNPHI Transformations
+
+`eo-maven-plugin` supports PHI/UNPHI transformations.
+To transform your XMIR files, you need to add the following plugin configuration to your `pom.xml`:
+
+```xml
+<plugin>
+  <groupId>org.eolang</groupId>
+  <artifactId>eo-maven-plugin</artifactId>
+  <version>0.50.0</version>
+  <executions>
+    <execution>
+      <id>xmir-to-phi</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>xmir-to-phi</goal>
+      </goals>
+      <configuration>
+        <phiInputDir>${eo.xmir.files}</phiInputDir>
+        <phiOutputDir>${eo.phi.files}</phiOutputDir>
+      </configuration>
+    </execution>
+    <execution>
+      <id>phi-to-xmir</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>phi-to-xmir</goal>
+      </goals>
+      <configuration>
+        <unphiInputDir>${eo.phi.files}</unphiInputDir>
+        <unphiOutputDir>${eo.xmir.files}</unphiOutputDir>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
+Pay attention, that `PHI/UNPHI` transformations don't support `metas` objects
+in the current version of the plugin. 
+This might lead to possible loss of information about an object's metadata.
+You can read more about it [here](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
+
 ## How To Build Plugin
 
 To build the plugin and install it locally, run the following command under the `eo-maven-plugin` directory:
