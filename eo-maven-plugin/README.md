@@ -3,9 +3,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
 [![Javadoc](http://www.javadoc.io/badge/org.eolang/eo-maven-plugin.svg)](http://www.javadoc.io/doc/org.eolang/eo-maven-plugin)
 
-This is Maven plugin for EO.
+This is a Maven plugin for EO.
 
-Here is a simple program that gets a year from command line and tells you
+Here is a simple program that gets a year from a command line and tells you
 whether it's leap or not:
 
 ```eo
@@ -24,7 +24,7 @@ whether it's leap or not:
 
 ```
 
-In order to compile this program, put it into `src/main/eo/main.eo` and then
+To compile this program, put it into `src/main/eo/main.eo` and then
 create a file `pom.xml` with this content (it's just a sample):
 
 ```xml
@@ -111,7 +111,7 @@ for most popular and important objects that any of you will need in order
 to write even a simple EO program. There are objects like `string`, `int`, `sprintf`,
 `stdout`, and so on. By the way, you may want to contribute there by creating new objects.
 
-## Objectionary objects cache
+### Objectionary objects cache
 
 If any external object is used in EO program it will be pulled from [Objectionary home](https://github.com/objectionary/home).
 By default, during compilation the plugin will check local cache (`~/.eo`) for required objects
@@ -124,7 +124,7 @@ Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven
 mvn -U clean install
 ```
 
-If you want to build your project or run your tests which use eo-maven-plugin, you can change stack
+If you want to build your project or run your tests, which use eo-maven-plugin, you can change stack
 size for your purposes by stack-size option:
 
 ```shell
@@ -133,10 +133,62 @@ mvn clean install -Pqulice -Dstack-size=1M
 
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
 
-## How to run Integration Tests only
+## PHI and UNPHI Transformations
+
+`eo-maven-plugin` supports PHI/UNPHI transformations.
+To transform your XMIR files, you need to add the following plugin configuration to your `pom.xml`:
+
+```xml
+<plugin>
+  <groupId>org.eolang</groupId>
+  <artifactId>eo-maven-plugin</artifactId>
+  <version>0.50.0</version>
+  <executions>
+    <execution>
+      <id>xmir-to-phi</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>xmir-to-phi</goal>
+      </goals>
+      <configuration>
+        <phiInputDir>${eo.xmir.files}</phiInputDir>
+        <phiOutputDir>${eo.phi.files}</phiOutputDir>
+      </configuration>
+    </execution>
+    <execution>
+      <id>phi-to-xmir</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>phi-to-xmir</goal>
+      </goals>
+      <configuration>
+        <unphiInputDir>${eo.phi.files}</unphiInputDir>
+        <unphiOutputDir>${eo.xmir.files}</unphiOutputDir>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
+Pay attention, that `PHI/UNPHI` transformations don't support `metas` objects
+in the current version of the plugin.
+This might lead to possible loss of information about an object's metadata.
+You can read more about it [here](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
+
+## How To Build Plugin
+
+To build the plugin and install it locally, run the following command under the `eo-maven-plugin` directory:
+
+```shell
+mvn clean install -Pqulice
+```
+
+It will build the plugin and install it in your local Maven repository.
+
+### How to run Integration Tests only
 
 If you want to run a specific integration test without waiting until other unit or integration tests
-are executed you need to go to `eo-maven-plugin` directory and execute the next command:
+are executed, you might execute the following command under the `eo-maven-plugin` directory:
 
 ```shell
 mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
@@ -145,7 +197,7 @@ mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
 Here `fibonacci` is the name of the desired integration test, `-DskipTests` is used in order to skip
 `eo-maven-plugin` unit tests.
 
-## How to disable Integration Tests
+### How to disable Integration Tests
 
 It is sometime necessary to temporarily disable the integration tests (for example for introducing
 braking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`

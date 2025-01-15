@@ -244,7 +244,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    protected final void add(final String name, final Attr attr) {
+    public final void add(final String name, final Attr attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }

@@ -120,9 +120,30 @@ SOFTWARE.
         <xsl:value-of select="$RHO"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('', $n)"/>
+        <xsl:value-of select="$n"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!-- Convert location to class name  -->
+  <xsl:function name="eo:loc-to-class">
+    <xsl:param name="loc"/>
+    <xsl:value-of select="concat('EO', replace(string-join(tokenize($loc, '\.'), ''), '-', '_'))"/>
+  </xsl:function>
+  <!-- Get RHO variable depends on context -->
+  <xsl:function name="eo:rho">
+    <xsl:param name="context"/>
+    <xsl:if test="$context!='this'">
+      <xsl:value-of select="$context"/>
+    </xsl:if>
+    <xsl:text>h</xsl:text>
+  </xsl:function>
+  <!-- Get current context variable depends on provided previous context -->
+  <xsl:function name="eo:context">
+    <xsl:param name="context"/>
+    <xsl:if test="$context!='this'">
+      <xsl:value-of select="$context"/>
+    </xsl:if>
+    <xsl:text>r</xsl:text>
   </xsl:function>
   <!-- Class. Entry point  -->
   <xsl:template match="class">
@@ -131,6 +152,8 @@ SOFTWARE.
       <xsl:element name="java">
         <xsl:apply-templates select="/program" mode="license"/>
         <xsl:apply-templates select="/program/metas/meta[head='package']" mode="head"/>
+        <xsl:text>import java.util.function.Function;</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="/program/metas/meta[head='tests']" mode="head"/>
@@ -186,7 +209,34 @@ SOFTWARE.
     <xsl:if test="/program/metas/meta[head='tests'] and not(@parent)">
       <xsl:apply-templates select="." mode="tests"/>
     </xsl:if>
-    <xsl:apply-templates select="class" mode="body"/>
+    <xsl:apply-templates select="nested"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <!-- Nested classes for anonymous abstract objects  -->
+  <xsl:template match="nested">
+    <xsl:variable name="name" select="eo:loc-to-class(@loc)"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>private static class </xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text> extends PhDefault {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="$name"/>
+    <xsl:text>() {</xsl:text>
+    <xsl:apply-templates select="attr">
+      <xsl:with-param name="indent" select="3"/>
+      <xsl:with-param name="context" select="'this'"/>
+      <xsl:with-param name="parent" select="$name"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -203,6 +253,7 @@ SOFTWARE.
   </xsl:template>
   <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
+    <xsl:variable name="class" select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
@@ -210,7 +261,7 @@ SOFTWARE.
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public </xsl:text>
-    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:value-of select="$class"/>
     <xsl:text>() {</xsl:text>
     <xsl:choose>
       <xsl:when test="@base">
@@ -219,11 +270,11 @@ SOFTWARE.
         <xsl:value-of select="eo:eol(3)"/>
         <xsl:text>() -&gt; {</xsl:text>
         <xsl:apply-templates select="o">
-          <xsl:with-param name="name" select="'ret'"/>
+          <xsl:with-param name="name" select="'r'"/>
           <xsl:with-param name="indent" select="4"/>
         </xsl:apply-templates>
         <xsl:value-of select="eo:eol(4)"/>
-        <xsl:text>return ret;</xsl:text>
+        <xsl:text>return r;</xsl:text>
         <xsl:value-of select="eo:eol(3)"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
@@ -232,6 +283,8 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:apply-templates select="attr">
           <xsl:with-param name="indent" select="2"/>
+          <xsl:with-param name="parent" select="$class"/>
+          <xsl:with-param name="context" select="'this'"/>
         </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
@@ -242,14 +295,31 @@ SOFTWARE.
   <!-- Attribute -->
   <xsl:template match="attr">
     <xsl:param name="indent"/>
+    <xsl:param name="parent"/>
+    <xsl:param name="context"/>
     <xsl:variable name="name" select="eo:attr-name(@name)"/>
+    <xsl:if test="not(@name)">
+      <xsl:message terminate="yes">
+        <xsl:text>Unnamed attribute found in </xsl:text>
+        <xsl:value-of select="parent::*/@loc"/>
+      </xsl:message>
+    </xsl:if>
     <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>this.add("</xsl:text>
+    <xsl:if test="$context!='this'">
+      <xsl:text>((PhDefault) </xsl:text>
+    </xsl:if>
+    <xsl:value-of select="$context"/>
+    <xsl:if test="$context!='this'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+    <xsl:text>.add("</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="void|bound">
+    <xsl:apply-templates select="void|bound|atom|abstract">
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="parent" select="$parent"/>
+      <xsl:with-param name="context" select="$context"/>
     </xsl:apply-templates>
     <xsl:text>);</xsl:text>
   </xsl:template>
@@ -260,59 +330,156 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>")</xsl:text>
   </xsl:template>
-  <!-- Bound attribute -->
-  <xsl:template match="bound">
+  <!--
+    Atom as attribute.
+    We use new Function<>() {...} syntax instead of lambdas from Java 8 because
+    1. java does not manage to compile the code with 17+ nested lambdas.
+       It just freezes and fails in 5-10 min with heap overflow error.
+       So we can't compile nested-blah-test from runtime-tests.eo.
+       We haven't reported the bug to openjdk yet, but we will
+    2. it just works faster because dynamic dispatch is not happened
+  -->
+  <xsl:template match="atom">
+    <xsl:param name="parent"/>
+    <xsl:param name="name"/>
+    <xsl:param name="context"/>
     <xsl:param name="indent"/>
-    <xsl:text>new AtOnce(new AtComposite(this, rho -&gt; {</xsl:text>
-    <xsl:apply-templates select="o">
-      <xsl:with-param name="name" select="'ret'"/>
-      <xsl:with-param name="indent" select="$indent + 1"/>
-    </xsl:apply-templates>
+    <xsl:variable name="argument" select="o[1]"/>
+    <xsl:variable name="class">
+      <xsl:value-of select="$parent"/>
+      <xsl:value-of select="'$'"/>
+      <xsl:value-of select="eo:class-name($name, eo:suffix($argument/@line, $argument/@pos))"/>
+    </xsl:variable>
+    <xsl:variable name="variable">
+      <xsl:if test="$context!='this'">
+        <xsl:value-of select="$context"/>
+      </xsl:if>
+      <xsl:text>atom</xsl:text>
+    </xsl:variable>
+    <xsl:text>new AtOnce(new AtComposite(</xsl:text>
+    <xsl:value-of select="$context"/>
+    <xsl:text>, new Function&lt;&gt;() {</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
-    <xsl:text>return ret;</xsl:text>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>public Phi apply(final Phi </xsl:text>
+    <xsl:value-of select="eo:rho($context)"/>
+    <xsl:text>) {</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 2)"/>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$variable"/>
+    <xsl:text> = new </xsl:text>
+    <xsl:value-of select="$class"/>
+    <xsl:text>();</xsl:text>
+    <xsl:apply-templates select="$argument" mode="located">
+      <xsl:with-param name="indent" select="$indent + 2"/>
+      <xsl:with-param name="name" select="$variable"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:eol($indent + 2)"/>
+    <xsl:text>return </xsl:text>
+    <xsl:value-of select="$variable"/>
+    <xsl:text>;</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Anonymous abstract object without attributes -->
+  <!-- Abstract object as attribute -->
+  <xsl:template match="abstract">
+    <xsl:param name="parent"/>
+    <xsl:param name="name"/>
+    <xsl:param name="context"/>
+    <xsl:param name="indent"/>
+    <xsl:variable name="rho" select="eo:rho($context)"/>
+    <xsl:variable name="ctx" select="eo:context($context)"/>
+    <xsl:text>new AtOnce(new AtComposite(</xsl:text>
+    <xsl:value-of select="$context"/>
+    <xsl:text>, new Function&lt;&gt;() {</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>public Phi apply(final Phi </xsl:text>
+    <xsl:value-of select="$rho"/>
+    <xsl:text>) {</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 2)"/>
+    <xsl:text>Phi </xsl:text>
+    <xsl:value-of select="$ctx"/>
+    <xsl:text> = new PhDefault();</xsl:text>
+    <xsl:apply-templates select="attr">
+      <xsl:with-param name="indent" select="$indent + 2"/>
+      <xsl:with-param name="parent">
+        <xsl:value-of select="$parent"/>
+        <xsl:text>$</xsl:text>
+        <xsl:value-of select="eo:class-name($name, eo:suffix(@line, @pos))"/>
+      </xsl:with-param>
+      <xsl:with-param name="context" select="$ctx"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="located">
+      <xsl:with-param name="name" select="$ctx"/>
+      <xsl:with-param name="indent" select="$indent + 2"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:eol($indent + 2)"/>
+    <xsl:text>return </xsl:text>
+    <xsl:value-of select="$ctx"/>
+    <xsl:text>;</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>}))</xsl:text>
+  </xsl:template>
+  <!-- Bound attribute -->
+  <xsl:template match="bound">
+    <xsl:param name="indent"/>
+    <xsl:param name="context"/>
+    <xsl:variable name="rho" select="eo:rho($context)"/>
+    <xsl:variable name="ctx" select="eo:context($context)"/>
+    <xsl:text>new AtOnce(new AtComposite(</xsl:text>
+    <xsl:value-of select="$context"/>
+    <xsl:text>, new Function&lt;&gt;() {</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>public Phi apply(final Phi </xsl:text>
+    <xsl:value-of select="$rho"/>
+    <xsl:text>) {</xsl:text>
+    <xsl:apply-templates select="o">
+      <xsl:with-param name="name" select="$ctx"/>
+      <xsl:with-param name="indent" select="$indent + 2"/>
+      <xsl:with-param name="rho" select="$rho"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:eol($indent + 2)"/>
+    <xsl:text>return </xsl:text>
+    <xsl:value-of select="$ctx"/>
+    <xsl:text>;</xsl:text>
+    <xsl:value-of select="eo:eol($indent + 1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>}))</xsl:text>
+  </xsl:template>
+  <!-- Anonymous abstract object -->
   <xsl:template match="o[not(@base) and not(@name)]">
     <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>Phi </xsl:text>
+    <xsl:param name="name"/>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:text>PhDefault </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
-    <xsl:text>new PhDefault() { </xsl:text>
-    <xsl:text>/</xsl:text>
-    <xsl:text>* anonymous abstract object without attributes */ };</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:choose>
+      <xsl:when test="o">
+        <xsl:text>new </xsl:text>
+        <xsl:value-of select="eo:loc-to-class(@loc)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new PhDefault</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>();</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and @base!='∅' and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:variable name="current" select="."/>
-    <xsl:variable name="source" select="//*[generate-id()!=generate-id($current) and @name=$current/@base and @line=$current/@ref]"/>
-    <!-- Terminate -->
-    <xsl:if test="count($source) &gt; 1">
-      <xsl:message terminate="yes">
-        <xsl:text>Found more than one target of '</xsl:text>
-        <xsl:value-of select="$current/@base"/>
-        <xsl:text>' at the line #</xsl:text>
-        <xsl:value-of select="$current/@line"/>
-        <xsl:text> leading to </xsl:text>
-        <xsl:for-each select="$source">
-          <xsl:if test="position()&gt;1">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:text>&lt;</xsl:text>
-          <xsl:value-of select="name(.)"/>
-          <xsl:text>/&gt;</xsl:text>
-          <xsl:text> at line #</xsl:text>
-          <xsl:value-of select="@line"/>
-        </xsl:for-each>
-        <xsl:text>; it's an internal bug</xsl:text>
-      </xsl:message>
-    </xsl:if>
+    <xsl:param name="rho"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
@@ -323,42 +490,16 @@ SOFTWARE.
         <xsl:text>.copy()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='$'">
-        <xsl:text>rho</xsl:text>
+        <xsl:value-of select="$rho"/>
       </xsl:when>
       <xsl:when test="@base='Q'">
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:text>new PhMethod(rho, "</xsl:text>
-        <xsl:value-of select="$RHO"/>
-        <xsl:text>")</xsl:text>
-      </xsl:when>
-      <!-- TBD -->
-      <xsl:when test="$source/@ancestors">
-        <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name($source/@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>()</xsl:text>
-      </xsl:when>
-      <xsl:when test="$source and name($source)='class'">
-        <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
-      </xsl:when>
-      <xsl:when test="$source/@level">
-        <xsl:for-each select="0 to $source/@level">
-          <xsl:text>new PhMethod(</xsl:text>
-        </xsl:for-each>
-        <xsl:text>rho</xsl:text>
-        <xsl:for-each select="1 to $source/@level">
-          <xsl:text>, "</xsl:text>
-          <xsl:value-of select="$RHO"/>
-          <xsl:text>")</xsl:text>
-        </xsl:for-each>
+        <xsl:text>new PhMethod(</xsl:text>
+        <xsl:value-of select="$rho"/>
         <xsl:text>, "</xsl:text>
-        <xsl:value-of select="$source/@name"/>
-        <xsl:text>")</xsl:text>
-      </xsl:when>
-      <xsl:when test="$source">
-        <xsl:text>new PhMethod(rho, "</xsl:text>
-        <xsl:value-of select="eo:attr-name(@base)"/>
+        <xsl:value-of select="$RHO"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -369,6 +510,7 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
@@ -379,19 +521,21 @@ SOFTWARE.
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
+    <xsl:param name="rho"/>
     <xsl:apply-templates select="o[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
-        <xsl:text>_base</xsl:text>
+        <xsl:text>b</xsl:text>
       </xsl:with-param>
       <xsl:with-param name="indent" select="$indent"/>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base, "</xsl:text>
+    <xsl:text>b, "</xsl:text>
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
     <xsl:choose>
       <xsl:when test="$method='^'">
@@ -406,6 +550,7 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
@@ -438,6 +583,7 @@ SOFTWARE.
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
+    <xsl:param name="rho"/>
     <xsl:param name="skip" select="0"/>
     <xsl:variable name="inners" select="o[position() &gt; $skip and not(@level)]"/>
     <xsl:for-each select="$inners">
@@ -452,12 +598,12 @@ SOFTWARE.
       </xsl:if>
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
-        <xsl:text>_</xsl:text>
         <xsl:value-of select="position()"/>
       </xsl:variable>
       <xsl:apply-templates select=".">
         <xsl:with-param name="name" select="$next"/>
         <xsl:with-param name="indent" select="$indent + 1"/>
+        <xsl:with-param name="rho" select="$rho"/>
       </xsl:apply-templates>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
@@ -486,7 +632,6 @@ SOFTWARE.
       </xsl:choose>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>_</xsl:text>
       <xsl:value-of select="position()"/>
       <xsl:text>);</xsl:text>
     </xsl:for-each>

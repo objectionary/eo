@@ -21,20 +21,19 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/remove-refs.xsl
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
-  - /org/eolang/parser/shake/remove-levels.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/fix-missed-names.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), 'PhMethod(new PhMethod(rho, "ρ"), "ρ")')]
+  - //java[contains(text(), 'this.add("xyz",')]
+  - //java[contains(text(), '((PhDefault) r).add("bar",')]
+  - //java[contains(text(), '((PhDefault) rr).add("φ",')]
+  - //java[contains(text(), 'Phi rrrbbb = new PhMethod(rrh, "ρ")')]
+  - //java[contains(text(), 'Phi rrrbb = new PhMethod(rrrbbb, "ρ")')]
+  - //java[contains(text(), 'Phi rrrb = new PhMethod(rrrbb, "this")')]
+  - //java[contains(text(), 'Phi rrr = new PhMethod(rrrb, "x")')]
 input: |
   # No comments.
   [x] > foo

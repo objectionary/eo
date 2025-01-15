@@ -20,20 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets:
-  - /org/eolang/parser/shake/remove-refs.xsl
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
-  - /org/eolang/parser/shake/remove-levels.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/fix-missed-names.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
-  - /org/eolang/parser/shake/add-default-package.xsl
-  - /org/eolang/parser/shake/constant-folding.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
-asserts:
-  - /program[not(errors)]
-  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='01-']]
-  - //o[@base='org.eolang.bool' and o[@base='org.eolang.bytes' and text()='00-']]
-input: |
-  01-.as-bool
-  00-.as-bool
+name: ort
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  ort:
+    if: false
+    runs-on: ubuntu-24.04
+    steps:
+      - run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
+      - uses: actions/checkout@v4
+      - uses: oss-review-toolkit/ort-ci-github-action@v1
+        with:
+          allow-dynamic-versions: 'true'
+          fail-on: 'violations'
