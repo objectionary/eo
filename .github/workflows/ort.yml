@@ -29,8 +29,8 @@ on:
     branches:
       - master
 jobs:
-  if: false
   ort:
+    if: false
     runs-on: ubuntu-24.04
     steps:
       - run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
