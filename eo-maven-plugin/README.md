@@ -171,7 +171,7 @@ To transform your XMIR files, you need to add the following plugin configuration
 ```
 
 Pay attention, that `PHI/UNPHI` transformations don't support `metas` objects
-in the current version of the plugin. 
+in the current version of the plugin.
 This might lead to possible loss of information about an object's metadata.
 You can read more about it [here](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
 
