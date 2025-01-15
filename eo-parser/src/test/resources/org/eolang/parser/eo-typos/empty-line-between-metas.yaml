@@ -22,7 +22,7 @@
 ---
 line: 3
 message: |-
-  [3:0] error: 'Invalid object list declaration'
+  [3:0] error: 'We expected a list of objects here, but found something else'
   +meta other
   ^^^^^^^^^^
 input: |
