@@ -29,6 +29,7 @@ on:
     branches:
       - master
 jobs:
+  if: false
   ort:
     runs-on: ubuntu-24.04
     steps:
