@@ -28,10 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.swing.text.html.Option;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -1263,7 +1261,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * Create parsing exception from given context.
      * @param ctx Context
      * @param msg Error message
-     * @return Parsing exception from current context
+     * @return Parsing exception from the current context
      */
     private static ParsingException error(final ParserRuleContext ctx, final String msg) {
         return new ParsingException(

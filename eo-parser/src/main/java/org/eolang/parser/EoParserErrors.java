@@ -69,8 +69,14 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         this.lines = lines;
     }
 
-    // @checkstyle ParameterNumberCheck (10 lines)
+    // @checkstyle ParameterNumberCheck (20 lines)
+    // @checkstyle CyclomaticComplexityCheck (100 lines)
+    // @todo #3744:30min Simplify {@link EoParserErrors#syntaxError} method.
+    //  The method is too complex and has a high cognitive complexity. We need to simplify it.
+    //  Don't forget to remove the @checkstyle CyclomaticComplexityCheck annotation and
+    //  the @SuppressWarnings("PMD.CognitiveComplexity") annotation.
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public void syntaxError(
         final Recognizer<?, ?> recognizer,
         final Object symbol,
@@ -121,9 +127,11 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             final String detailed;
             final String[] names = parser.getRuleNames();
             if (names[EoParser.RULE_program].equals(rule)) {
-                detailed = "We expected the program to end here but encountered something unexpected";
+                detailed =
+                    "We expected the program to end here but encountered something unexpected";
             } else if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed = "We expected a list of objects here but encountered something unexpected";
+                detailed =
+                    "We expected a list of objects here but encountered something unexpected";
             } else {
                 detailed = msg;
             }
