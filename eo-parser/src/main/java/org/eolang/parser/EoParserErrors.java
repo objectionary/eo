@@ -87,7 +87,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             );
         }
         final List<String> msgs = new ArrayList<>(0);
-        if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
+        if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
             final Parser parser = (Parser) recognizer;
             final String rule = parser.getRuleInvocationStack().get(0);
@@ -105,6 +105,24 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 detailed = "Invalid object declaration";
             } else {
                 detailed = "no viable alternative at input";
+            }
+            msgs.add(new MsgLocated(line, position, detailed).formatted());
+            msgs.add(
+                new MsgUnderlined(
+                    this.lines.line(line),
+                    position,
+                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                ).formatted()
+            );
+        } else if (error instanceof InputMismatchException) {
+            final Token token = (Token) symbol;
+            final Parser parser = (Parser) recognizer;
+            final String rule = parser.getRuleInvocationStack().get(0);
+            final String detailed;
+            if (parser.getRuleNames()[EoParser.RULE_program].equals(rule)) {
+                detailed = "Unexpected part of the program";
+            } else {
+                detailed = msg;
             }
             msgs.add(new MsgLocated(line, position, detailed).formatted());
             msgs.add(

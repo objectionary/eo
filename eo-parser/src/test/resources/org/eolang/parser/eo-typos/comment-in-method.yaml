@@ -24,9 +24,17 @@ line: 5
 # @todo #3706:30min The error message doesn't highlight the exact position of the
 #  comment. The error message should be updated to point to the exact position
 #  of the comment.
-message: |
+message: |-
   [5:12] error: 'Invalid object declaration'
       sprintwf
+  
+  [5:12] error: 'Invalid objects declaration that may be used inside abstract object'
+      sprintwf
+  
+  [4:-1] error: 'Unexpected part of the program'
+      # a comment here is prohibited
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 input: |
   # No comments
   [args] > app
