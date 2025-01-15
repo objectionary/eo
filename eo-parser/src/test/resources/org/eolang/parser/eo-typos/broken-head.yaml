@@ -22,9 +22,9 @@
 ---
 line: 2
 message: |-
-  [2:7] error: 'Invalid object declaration'
+  [2:0] error: 'Atom must have a type'
   [] > a [] > b [] > c [] > d hello world
-         ^
+  ^^^^^^^
 input: |
   # No comments
   [] > a [] > b [] > c [] > d hello world
