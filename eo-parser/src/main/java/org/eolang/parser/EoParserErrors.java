@@ -121,9 +121,9 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             final String detailed;
             final String[] names = parser.getRuleNames();
             if (names[EoParser.RULE_program].equals(rule)) {
-                detailed = "Unexpected part of the program";
+                detailed = "We expected the program to end here but encountered something unexpected";
             } else if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed = "We expected a list of objects here, but found something else";
+                detailed = "We expected a list of objects here but encountered something unexpected";
             } else {
                 detailed = msg;
             }

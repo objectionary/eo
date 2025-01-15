@@ -31,7 +31,7 @@ message: |-
   [5:12] error: 'Invalid objects declaration that may be used inside abstract object'
       sprintwf
   
-  [4:-1] error: 'Unexpected part of the program'
+  [4:-1] error: 'We expected the program to end here but encountered something unexpected'
       # a comment here is prohibited
   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
