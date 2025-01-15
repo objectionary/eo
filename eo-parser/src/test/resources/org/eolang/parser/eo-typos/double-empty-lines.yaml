@@ -26,7 +26,7 @@ line: 4
 #  The error message should be more informative and should highlight the exact location
 #  of the error.
 message: |+
-  [4:0] error: 'Invalid program declaration'
+  [4:0] error: 'Unexpected part of the program'
 
 input: |
   # No comments.

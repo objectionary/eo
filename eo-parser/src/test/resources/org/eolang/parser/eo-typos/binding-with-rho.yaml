@@ -21,10 +21,13 @@
 # SOFTWARE.
 ---
 line: 2
-message: >-
+message: |-
   [2:4] error: 'Invalid objects declaration that may be used inside abstract object'
     y:^
       ^
+  [3:-1] error: 'Unexpected part of the program'
+  EOF
+  ^^^
 input: |
   x
     y:^

@@ -25,7 +25,6 @@ message: |-
   [2:0] error: 'Atom must have a type'
   [] > a [] > b [] > c [] > d hello world
   ^^^^^^^
-  
   [2:7] error: 'mismatched input '[' expecting '/''
   [] > a [] > b [] > c [] > d hello world
          ^
