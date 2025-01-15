@@ -169,7 +169,7 @@ public final class ParseMojo extends SafeMojo {
             ).toString();
             Logger.debug(
                 ParseMojo.class,
-                "Parsed program %s:\n %s",
+                "Parsedprogram %s:\n %s",
                 name,
                 parsed
             );
