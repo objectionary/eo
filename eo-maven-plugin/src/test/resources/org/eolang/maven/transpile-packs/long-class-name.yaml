@@ -28,8 +28,8 @@ sheets:
 asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'public final class EOtest extends PhDefault')]
-  - //java[contains(text(), 'PhDefault rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr = new PhDefault();')]
-  - //java[contains(text(), 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.add("blah39"')]
+  - //java[contains(text(), 'Phi rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr = new PhDefault();')]
+  - //java[contains(text(), '((PhDefault) rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr).add("blah39"')]
 input: |
   # No comments.
   [] > test

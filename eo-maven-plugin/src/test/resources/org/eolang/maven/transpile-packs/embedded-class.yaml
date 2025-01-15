@@ -28,8 +28,8 @@ sheets:
 asserts:
   - /program[not(errors)]
   - //java[contains(text(), 'this.add("xyz",')]
-  - //java[contains(text(), 'r.add("bar",')]
-  - //java[contains(text(), 'rr.add("φ",')]
+  - //java[contains(text(), '((PhDefault) r).add("bar",')]
+  - //java[contains(text(), '((PhDefault) rr).add("φ",')]
   - //java[contains(text(), 'Phi rrrbbb = new PhMethod(rrh, "ρ")')]
   - //java[contains(text(), 'Phi rrrbb = new PhMethod(rrrbbb, "ρ")')]
   - //java[contains(text(), 'Phi rrrb = new PhMethod(rrrbb, "this")')]

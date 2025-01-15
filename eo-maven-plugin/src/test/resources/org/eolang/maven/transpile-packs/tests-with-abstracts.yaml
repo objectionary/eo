@@ -29,8 +29,8 @@ sheets:
 asserts:
   - /program[not(errors)]
   - /program/objects/class/java[contains(text(), 'this.add("b"')]
-  - /program/objects/class/java[contains(text(), 'r.add("c",')]
-  - /program/objects/class/java[contains(text(), 'rr.add("φ",')]
+  - /program/objects/class/java[contains(text(), '((PhDefault) r).add("c",')]
+  - /program/objects/class/java[contains(text(), '((PhDefault) rr).add("φ",')]
   - /program/objects/class/java[contains(text(), 'public void works() throws java.lang.Exception')]
   - /program/objects/class/java[contains(text(), 'private static class EOΦabcφα0')]
   - /program/objects/class/java[contains(text(), 'PhDefault r1 = new EOΦabcφα0boundα0();')]
