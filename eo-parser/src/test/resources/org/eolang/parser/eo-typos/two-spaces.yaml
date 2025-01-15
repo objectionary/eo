@@ -21,7 +21,13 @@
 # SOFTWARE.
 ---
 line: 5
+# @todo #3744:60min Error Message Duplicates.
+#  As you can see, we have multiple error messages that are the
+#  same. We should remove duplicates and keep only meaningful error messages.
 message: >-
+  [5:2] error: 'Invalid object declaration'
+     *
+    ^
   [5:2] error: 'Invalid object declaration'
      *
     ^
