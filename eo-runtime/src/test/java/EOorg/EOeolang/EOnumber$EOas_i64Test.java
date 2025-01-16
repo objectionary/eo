@@ -23,43 +23,46 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.ExAbstract;
+import org.eolang.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * The number.as-i64.
- * @since 0.40
- * @checkstyle TypeNameCheck (6 lines)
+ * Test case for {@link EOnumber$EOas_i64}.
+ *
+ * @since 0.51
+ * @checkstyle TypeNameCheck (3 lines)
  */
-@XmirObject(oname = "number.as-i64")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
-    @Override
-    public Phi lambda() {
-        final Phi num = Phi.Φ.take("org.eolang.i64").copy();
-        num.put(
-            0,
-            new Data.ToPhi(
-                new BytesOf(
-                    Expect.at(this, Attr.RHO)
-                        .that(phi -> new Dataized(phi).take(Long.class))
-                        .otherwise("must be a number")
-                        .it()
-                ).take()
-            )
+final class EOnumber$EOas_i64Test {
+
+    @Test
+    void throwsCorrectErrorForRhoAttr() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOnumber$EOas_i64(),
+                        Attr.RHO,
+                        new Data.ToPhi("string")
+                    )
+                ).take(),
+                "EOnumber must be a number"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
         );
-        return num;
     }
 }
