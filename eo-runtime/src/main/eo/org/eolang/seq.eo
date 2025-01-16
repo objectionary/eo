@@ -42,11 +42,11 @@
   [index] > loop
     if. > @
       and.
-        index.lt ^.max-len
+        index.lt max-len
         or.
           (dataized (steps.at index)).as-bool
           true
-      ^.loop
+      loop
         index.plus 1
       steps.at index
 

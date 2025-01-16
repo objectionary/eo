@@ -47,7 +47,7 @@
   false > [x] > lt
 
   # Tests that the value $ less or equal than x.
-  ^.eq x > [x] > lte
+  eq x > [x] > lte
 
   # Tests that the value $ greater than x.
   [x] > gt
@@ -55,7 +55,7 @@
     not. > @
       or.
         (number value).is-nan
-        ^.eq value
+        eq value
 
   # Tests that the value $ greater or equal than x.
   [x] > gte
