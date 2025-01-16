@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.50.0</version>
+        <version>0.50.1</version>
         <executions>
           <execution>
             <goals>
@@ -142,7 +142,7 @@ To transform your XMIR files, you need to add the following plugin configuration
 <plugin>
   <groupId>org.eolang</groupId>
   <artifactId>eo-maven-plugin</artifactId>
-  <version>0.50.0</version>
+  <version>0.50.1</version>
   <executions>
     <execution>
       <id>xmir-to-phi</id>
