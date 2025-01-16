@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.0
++version 0.50.1
 
-# Not a number.
+# The `not a number` object is an abstraction
+# for representing undefined or unrepresentable numerical results.
 [] > nan
   number 7F-F8-00-00-00-00-00-00 > @
   $ > floor
@@ -35,25 +36,25 @@
   false > is-integer
   error "Can't convert NaN to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that $ value is equal to x.
   false > [x] > eq
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   false > [x] > lt
 
-  # Tests that $ <= x.
+  # Tests that $ less or equal than x.
   false > [x] > lte
 
-  # Tests that $ > x.
+  # Tests that $ value greater than x.
   false > [x] > gt
 
-  # Tests that $ >= x.
+  # Tests that $ greater or equal than x.
   false > [x] > gte
 
   # Returns the multiplication of $ and x.
   ^ > [x] > times
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   ^ > [x] > plus
 
   # Returns the difference between $ and x.

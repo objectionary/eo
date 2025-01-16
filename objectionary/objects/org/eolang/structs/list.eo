@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.50.0
++version 0.50.1
++unlint broken-ref
 
 # List implements based operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
@@ -31,6 +32,7 @@
   origin > @
 
   # Is it empty?.
+  # A check to determine if an object contains no elements or data.
   0.eq ^.origin.length > [] > is-empty
 
   # Create a new list with this element added to the end of it.
@@ -169,7 +171,7 @@
       accum.with item > [accum item]
 
   # Returns index of the first particular item in list.
-  # If the list has no this item, index-of returns -1
+  # If the list has no this item, index-of returns -1.
   [wanted] > index-of
     ^.reducedi > @
       -1
@@ -182,7 +184,7 @@
           accum
 
   # Returns index of the last particular item in list.
-  # If the list has no this item, returns -1
+  # If the list has no this item, returns -1.
   [wanted] > last-index-of
     ^.reducedi > @
       -1

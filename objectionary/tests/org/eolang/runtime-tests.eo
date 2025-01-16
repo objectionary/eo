@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,11 @@
 +tests
 +package org.eolang
 +unlint abstract-decoratee
-+version 0.50.0
++unlint broken-ref
++version 0.50.1
+
+# This unit test is supposed to check the globals bound objects work as tests.
+true > global-test
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > understands-this-correctly

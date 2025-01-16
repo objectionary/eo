@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.0
++version 0.50.1
 
 # Tuple.
+# An ordered, immutable collection of elements.
 [head tail] > tuple
   # Empty tuple.
+  # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
     0 > length
 
@@ -37,7 +39,7 @@
     # Create a new tuple with this element added to the end of it.
     tuple ^ x > [x] > with
 
-  # Obtain the length of the tuple.
+  # Obtain the length value of the tuple.
   [] > length
     head.length.plus 1 > len!
     number len > @

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.0
++version 0.50.1
 
 # The object is a FALSE boolean state.
 [] > false
@@ -35,7 +35,9 @@
   right > [left right] > if
 
   # And.
+  # A logical operation that returns True only if all given conditions are true.
   ^ > [x] > and
 
   # Or.
+  # A logical operation that returns True if at least one of the given conditions is true.
   01-.eq x > [x] > or

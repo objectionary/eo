@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.50.0
++version 0.50.1
++unlint broken-ref
 
 # Text.
+# A sequence of characters representing words, sentences, or data.
+# @todo #3481:30min Remove all +unlit broken-ref from EO source code.
+#  These suppressions were added in order to be compile EO when @ref attribute
+#  from XMIR is removed, by it's checked by LintMojo. We need to remove these
+#  suppressions when `lints` repository is fixed and new version is used in EO.
 [origin] > text
   origin > @
   # Check that all signs in string are numbers or letters.
@@ -178,7 +184,7 @@
       ^.index-of substring
 
   # Returns index of `substring` in current `text`.
-  # If no `substring` was found, it returns -1
+  # If no `substring` was found, it returns -1.
   [substring] > index-of
     (string ^.origin.as-bytes).length > self-len!
     string > substr
@@ -241,7 +247,7 @@
           ^.rec-index-of-substr
             idx.plus -1
 
-  # Returns `text` in upper case.
+  # Returns the `text` in upper case.
   [] > up-cased
     ascii "z" > ascii-z!
     ascii "a" > ascii-a!
@@ -277,7 +283,7 @@
             00-00-00-00-00-00-00
             char.as-bytes
 
-  # Returns `text` in lower case.
+  # Returns the `text` in lower case.
   [] > low-cased
     ^.up-cased.ascii "Z" > ascii-z
     ^.up-cased.ascii "A" > ascii-a

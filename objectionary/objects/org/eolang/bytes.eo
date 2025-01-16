@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.0
++rt jvm org.eolang:eo-runtime:0.50.1
 +rt node eo2js-runtime:0.0.0
-+version 0.50.0
++version 0.50.1
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -58,9 +58,11 @@
                 * ^
 
   # Equals to another object.
+  # A condition where two objects have the same value or content.
   [b] > eq /org.eolang.bool
 
   # Total number of bytes.
+  # The complete count of bytes used to represent data.
   [] > size /org.eolang.number
 
   # Represents a sub-sequence inside the current one.
@@ -102,22 +104,22 @@
           "Can't convert non 2 length bytes to i16, bytes are %x"
           * ^
 
-  # Calculate bitwise and.
+  # Calculate the bitwise and operation.
   [b] > and /org.eolang.bytes
 
-  # Calculate bitwise or.
+  # Calculate the bitwise or operation.
   [b] > or /org.eolang.bytes
 
-  # Calculate bitwise xor.
+  # Calculate the bitwise xor operation.
   [b] > xor /org.eolang.bytes
 
-  # Calculate bitwise not.
+  # Calculate the bitwise not operation.
   [] > not /org.eolang.bytes
 
-  # Calculate bitwise left shift.
+  # Calculate the bitwise left shift.
   ^.right x.neg > [x] > left
 
-  # Calculate bitwise right shift.
+  # Calculate the bitwise right shift.
   [x] > right /org.eolang.bytes
 
   # Concatenation of two byte sequences:

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2024 Objectionary.com
+# Copyright (c) 2016-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.0
++version 0.50.1
 
 # Positive infinity.
+# A special floating-point value representing an unbounded quantity greater than all real numbers.
+# When dataized, it signifies an unbounded upper limit or an unreachable maximum value.
 [] > positive-infinity
   number 7F-F0-00-00-00-00-00-00 > @
   $ > floor
@@ -35,19 +37,19 @@
   false > is-integer
   error "Can't convert positive infinity to i64" > as-i64
 
-  # Tests that $ = x.
+  # Tests that the value $ is equal to x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x.
+  # Tests that the value $ less than x.
   false > [x] > lt
 
-  # Tests that $ <= x.
+  # Tests that the value $ less or equal than x.
   ^.eq x > [x] > lte
 
-  # Tests that $ > x.
+  # Tests that the value $ greater than x.
   [x] > gt
     x > value!
     not. > @
@@ -55,13 +57,13 @@
         (number value).is-nan
         ^.eq value
 
-  # Tests that $ >= x.
+  # Tests that the value $ greater or equal than x.
   [x] > gte
     x > value!
     not. > @
       (number value).is-nan
 
-  # Multiplication of $ and x.
+  # Returns the result of the multiplication of $ and x.
   [x] > times
     x > value!
     number value > num
@@ -75,7 +77,7 @@
         ^
         negative-infinity
 
-  # Sum of $ and x.
+  # Returns the result of the sum of $ and x.
   [x] > plus
     x > value!
     if. > @
@@ -85,7 +87,7 @@
       nan
       ^
 
-  # Difference between $ and x.
+  # Difference between the values of $ and x.
   [x] > minus
     x > value!
     if. > @
