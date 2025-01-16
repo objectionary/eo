@@ -32,6 +32,7 @@
 +unlint broken-ref
 
 # Text.
+# A sequence of characters representing words, sentences, or data.
 # @todo #3481:30min Remove all +unlit broken-ref from EO source code.
 #  These suppressions were added in order to be compile EO when @ref attribute
 #  from XMIR is removed, by it's checked by LintMojo. We need to remove these

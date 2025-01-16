@@ -65,6 +65,7 @@
       ^.posix.separator
 
   # POSIX specified path.
+  # A standardized way to represent file or directory locations in a Unix-like system.
   [uri] > posix
     $ > determined
     "/" > separator
