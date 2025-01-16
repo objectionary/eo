@@ -65,9 +65,9 @@ public class XslBenchmarkIT {
      * Pairs of XSL and worst XMIR for the XSL.
      */
     @Param({
-        "/org/eolang/parser/add-default-package.xsl|org/eolang/parser/benchmark/native.xmir",
-        "/org/eolang/parser/add-refs.xsl|org/eolang/parser/benchmark/native.xmir",
-        "/org/eolang/parser/explicit-data.xsl|org/eolang/parser/benchmark/native.xmir"
+        "/org/eolang/parser/shake/add-default-package.xsl|org/eolang/parser/benchmark/native.xmir",
+        "/org/eolang/parser/shake/build-fqns.xsl|org/eolang/parser/benchmark/native.xmir",
+        "/org/eolang/parser/shake/explicit-data.xsl|org/eolang/parser/benchmark/native.xmir"
     })
     private String pairs;
 

@@ -12,7 +12,7 @@
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED "AS IS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -22,16 +22,16 @@
 ---
 sheets:
   - /org/eolang/parser/shake/cti-adds-errors.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/build-fqns.xsl
   - /org/eolang/parser/shake/expand-qqs.xsl
   - /org/eolang/parser/shake/add-probes.xsl
-  - /org/eolang/parser/shake/vars-float-up.xsl
   - /org/eolang/parser/shake/expand-aliases.xsl
   - /org/eolang/parser/shake/resolve-aliases.xsl
   - /org/eolang/parser/shake/add-default-package.xsl
   - /org/eolang/parser/shake/explicit-data.xsl
   - /org/eolang/parser/shake/set-locators.xsl
-  - /org/eolang/parser/shake/clean-up.xsl
+  - /org/eolang/parser/shake/blank-xsd-schema.xsl
 asserts:
   - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a']
@@ -44,7 +44,7 @@ asserts:
   - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
   - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
   - //o[@base='.hello' and @loc='Φ.org.abc.tt.α2.φ']
-  - //o[@base='e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
+  - //o[@base='.e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
   - //o[@name='q' and @base='.p' and @loc='Φ.org.abc.q']
   - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ']
   - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ']

@@ -24,7 +24,11 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-default-package" version="2.0">
   <!--
-  Here we go through all objects that DON'T have @ref attributes
+  Here we go through all objects that are not:
+    1. methods (starts with .)
+    2. @, Q, ^ or $
+    3. mentioned in aliases
+
   and add default package to them.
 
   We ignore objects that are present in aliases with their exact
@@ -32,6 +36,8 @@ SOFTWARE.
   won't think that it belongs to org.eolang package:
 
   +alias hello
+
+  # No comment.
   [] > app
     hello > @
   -->
@@ -39,10 +45,7 @@ SOFTWARE.
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[not(@ref)]" mode="with-base">
-    <xsl:apply-templates select="." mode="no-refs"/>
-  </xsl:template>
-  <xsl:template match="o[not(contains(@base, '.'))]" mode="no-refs">
+  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
   <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='∅' and @base!='$']" mode="no-dots">

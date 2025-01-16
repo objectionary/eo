@@ -41,7 +41,10 @@ sweet: |-
       example ↦ ⟦
         fibonacci(n) ↦ ⟦
           φ ↦ ξ.n.lt(2).if(
-            ξ.n, ξ.ρ.fibonacci(ξ.n.minus(1)).plus(ξ.ρ.fibonacci(ξ.n.minus(2)))
+            ξ.n,
+            Φ.eo.example.fibonacci(ξ.n.minus(1)).plus(
+              Φ.eo.example.fibonacci(ξ.n.minus(2))
+            )
           )
         ⟧,
         λ ⤍ Package
@@ -64,7 +67,7 @@ salty: |-
               )
             ).if(
               α0 ↦ ξ.n,
-              α1 ↦ ξ.ρ.fibonacci(
+              α1 ↦ Φ.eo.example.fibonacci(
                 α0 ↦ ξ.n.minus(
                   α0 ↦ Φ.org.eolang.number(
                     α0 ↦ Φ.org.eolang.bytes(
@@ -73,7 +76,7 @@ salty: |-
                   )
                 )
               ).plus(
-                α0 ↦ ξ.ρ.fibonacci(
+                α0 ↦ Φ.eo.example.fibonacci(
                   α0 ↦ ξ.n.minus(
                     α0 ↦ Φ.org.eolang.number(
                       α0 ↦ Φ.org.eolang.bytes(

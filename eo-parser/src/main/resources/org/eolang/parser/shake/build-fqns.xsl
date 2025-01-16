@@ -140,6 +140,7 @@ SOFTWARE.
           <xsl:with-param name="of" select="$current"/>
         </xsl:apply-templates>
       </xsl:when>
+      <!-- Next iteration -->
       <xsl:otherwise>
         <xsl:apply-templates mode="with-rho" select=".">
           <xsl:with-param name="rhos" select="$rhos - 1"/>
