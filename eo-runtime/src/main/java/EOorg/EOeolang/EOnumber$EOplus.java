@@ -28,12 +28,12 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Expect;
 import org.eolang.Attr;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -57,10 +57,13 @@ public final class EOnumber$EOplus extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        Double right = Expect.at(this, "x")
+        final Double left = Expect.at(this, Attr.RHO)
             .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("number.plus expects its second argument to be a number")
+            .otherwise("must be a number")
+            .it();
+        final Double right = Expect.at(this, "x")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
             .it();
         return new Data.ToPhi(Double.sum(left, right));
     }

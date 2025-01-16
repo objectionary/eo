@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 final class EOnumber$EOplusTest {
 
     @Test
-    void throwsCorrectError() {
+    void throwsCorrectErrorForXAttr() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
@@ -66,7 +66,30 @@ final class EOnumber$EOplusTest {
                 ).take(),
                 "addition with TRUE fails with a proper message that explains what happened"
             ).getMessage(),
-            Matchers.containsString("number.plus expects its second argument to be a number")
+            Matchers.equalTo("the 'x' attribute must be a number")
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForRhoAttr() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhWith(
+                            new EOnumber$EOplus(),
+                            Attr.RHO,
+                            new Data.ToPhi(true)
+                        ),
+                        "x",
+                        new Data.ToPhi(42)
+                    )
+                ).take(),
+                "EOnumber must be a number"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
         );
     }
 }
