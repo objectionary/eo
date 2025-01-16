@@ -92,9 +92,6 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="o[@base='bytes']" mode="with-data">
-    <xsl:apply-templates select="." mode="base-bytes"/>
-  </xsl:template>
-  <xsl:template match="o[@ref]" mode="base-bytes">
     <o base="org.eolang.bytes">
       <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}">

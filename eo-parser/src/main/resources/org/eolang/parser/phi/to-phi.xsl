@@ -400,13 +400,6 @@ SOFTWARE.
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:variable name="start">
           <xsl:choose>
-            <xsl:when test="@ref and not(eo:has-data(.))">
-              <xsl:value-of select="eo:add-xi(true())"/>
-              <xsl:apply-templates select="." mode="path">
-                <xsl:with-param name="find" select="@base"/>
-              </xsl:apply-templates>
-              <xsl:value-of select="eo:specials(@base, true())"/>
-            </xsl:when>
             <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
               <xsl:value-of select="text()"/>
             </xsl:when>

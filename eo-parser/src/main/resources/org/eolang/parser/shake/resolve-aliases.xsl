@@ -24,19 +24,17 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
   <!--
-  Here we go through all objects that DON'T have @ref attributes
-  and try to find their references in aliases. If we find them,
-  we change their @base attributes. If not, we decide that they
-  are in org.eolang package and also change the @base attribute.
+  Here we go through all objects that are not methods or have
+  composite FQN and try to find their references in aliases.
+  If we find them, we change their @base attributes. If not,
+  we decide that they are in org.eolang package and also change
+  the @base attribute.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[not(@ref)]" mode="with-base">
-    <xsl:apply-templates select="." mode="with-ref"/>
-  </xsl:template>
-  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-ref">
+  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">

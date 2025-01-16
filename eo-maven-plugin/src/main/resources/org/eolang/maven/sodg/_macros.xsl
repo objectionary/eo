@@ -55,9 +55,6 @@ SOFTWARE.
           <xsl:value-of select="eo:base-to-loc($o/o[1])"/>
           <xsl:value-of select="$o/@base"/>
         </xsl:when>
-        <xsl:when test="$o/@ref">
-          <xsl:value-of select="$o//ancestor::objects//o[@name=$o/@base and @line=$o/@ref]/@loc"/>
-        </xsl:when>
         <xsl:when test="$o/@base = 'Q'">
           <xsl:text>Φ</xsl:text>
         </xsl:when>

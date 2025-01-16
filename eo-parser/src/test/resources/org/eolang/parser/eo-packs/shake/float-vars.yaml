@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/cti-adds-errors.xsl
   - /org/eolang/parser/shake/vars-float-up.xsl
 asserts:
   - /program[not(errors)]
@@ -30,11 +30,10 @@ asserts:
   - //objects[count(.//o[@base='string'])=1]
   - //o[@name='y']/o[@name='t']
   - //o[@name='y']/o[@name='oops']
-  - //o[@name='last' and not(@cut)]
+  - //o[@name='last']
   - //objects[count(//o[@name='oops'])=1]
-  - //objects[count(//o[@cut='0'])=1]
-  - //o[@name='aaa' and not(@cut)]
-  - //o[@name='ooo' and not(@cut)]
+  - //o[@name='aaa']
+  - //o[@name='ooo']
   - //o[@name='mm' and @base='number']
   - //o[@base='mm']
 input: |

@@ -47,7 +47,6 @@ Considering the following `yaml` file:
 
 ```yaml
 sheets:
-  - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
@@ -88,7 +87,6 @@ and the `eo` section is used for defining aliases and the main function.
 This section is used to define the XSLT stylesheets that will be used for transforming the input
 program. The following stylesheets are defined in this section:
 
-- `/org/eolang/parser/add-refs.xsl`: This stylesheet is used to add references to the program.
 - `/org/eolang/parser/expand-aliases.xsl`: This stylesheet is used to expand aliases in the program.
 - `/org/eolang/parser/resolve-aliases.xsl`: This stylesheet is used to resolve aliases in the
 program.

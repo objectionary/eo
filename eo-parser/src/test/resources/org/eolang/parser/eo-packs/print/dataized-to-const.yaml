@@ -21,9 +21,9 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/expand-qqs.xsl
-  - /org/eolang/parser/shake/add-refs.xsl
   - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/build-fqns.xsl
+  - /org/eolang/parser/shake/expand-qqs.xsl
   - /org/eolang/parser/shake/add-default-package.xsl
   - /org/eolang/parser/shake/explicit-data.xsl
   - /org/eolang/parser/print/dataized-to-const.xsl
@@ -32,7 +32,7 @@ asserts:
   - //o[@base='.as-bytes' and @name='second']/o[@base='org.eolang.dataized']
   - //o[@base='org.eolang.a' and @const and @name='third']/o[@base='org.eolang.b']
   - //o[@name='fourth-1' and not(@base)]
-  - //o[@base='fourth-1' and @name='fourth' and @const]
+  - //o[@base='.fourth-1' and @name='fourth' and @const]
   - //o[@base='org.eolang.number' and @name='fifths' and @const]/o[@base='org.eolang.bytes' and text()!='']
   - //o[@base='org.eolang.bytes' and @name='sixth' and @const and text()='2A-']
 input: |
