@@ -107,19 +107,41 @@ final class ExpectTest {
             "Take error message from 'otherwise', not from original error",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>("something", () -> 42.2)
-                    .must(i -> i > 0)
-                    .otherwise("must be positive")
+                () -> new Expect<>("attr", () -> 42.2)
                     .that(
                         i -> {
-                            throw new ExFailure("some error");
+                            throw new ExFailure("Some error in operation");
                         }
                     )
-                    .otherwise("something went wrong")
+                    .otherwise("must be converted to something")
                     .it(),
-                "fails on 'that'"
+                "fails on 'that' because of some internal error"
             ).getMessage(),
-            Matchers.equalTo("something went wrong")
+            Matchers.equalTo("attr must be converted to something")
+        );
+    }
+
+    @Test
+    void failsWithCorrectTraceWithExFailureInThatForParsing() {
+        MatcherAssert.assertThat(
+            "Take error message from 'otherwise', not from original error",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("attr", () -> "string")
+                    .that(
+                        i -> {
+                            try {
+                                return Integer.parseInt(i);
+                            } catch (final NumberFormatException ex) {
+                                throw new ExFailure("Can't parse to integer", ex);
+                            }
+                        }
+                    )
+                    .otherwise("must be an integer")
+                    .it(),
+                "fails on 'that' because can not parse"
+            ).getMessage(),
+            Matchers.equalTo("attr must be an integer")
         );
     }
 }
