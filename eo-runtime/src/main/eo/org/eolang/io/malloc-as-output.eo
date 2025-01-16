@@ -66,6 +66,6 @@
       [buffer] > write
         self. > @
           seq *
-            ^.^.^.allocated.write offset buffer
-            ^.^.output-block
+            allocated.write offset buffer
+            output-block
               offset.plus buffer.size

@@ -47,7 +47,7 @@
   # Consumes all lines from the standard input stream.
   # There's no line to consume - returns an empty string.
   [] > all-lines
-    rec-read ^.next-line -- true > @
+    rec-read next-line -- true > @
     line-separator > separator!
 
     # Recursive reading from console by one line.
@@ -58,12 +58,12 @@
       if. > @
         line.length.eq 0
         string buffer
-        ^.rec-read
-          ^.^.next-line
+        rec-read
+          next-line
           if.
             first
             buffer.concat line
-            (buffer.concat ^.separator).concat line
+            (buffer.concat separator).concat line
           false
 
   # Consumes only one line from the standard input stream.
@@ -91,6 +91,6 @@
               next.as-bytes.eq "\n"
             char.eq "\n"
         string buffer
-        ^.rec-read
+        rec-read
           next
           buffer.concat char

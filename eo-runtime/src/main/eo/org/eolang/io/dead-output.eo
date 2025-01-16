@@ -41,4 +41,4 @@
 
       # Writes given `buffer` to nowhere.
       # Returns new instance of `output-block`.
-      ^.^.output-block > [buffer] > write
+      output-block > [buffer] > write
