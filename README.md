@@ -181,7 +181,7 @@ This is how you iterate:
         *
           x.put 2
           while
-            x.as-number.lt 6 > [i]
+            x.as-number.lt 6 > [i] >>
             [i] >>
               seq > @
                 *
