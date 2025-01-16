@@ -116,9 +116,6 @@ SOFTWARE.
       <xsl:when test="$n='@'">
         <xsl:value-of select="$PHI"/>
       </xsl:when>
-      <xsl:when test="$n='^'">
-        <xsl:value-of select="$RHO"/>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$n"/>
       </xsl:otherwise>
@@ -496,9 +493,8 @@ SOFTWARE.
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:text>new PhMethod(</xsl:text>
         <xsl:value-of select="$rho"/>
-        <xsl:text>, "</xsl:text>
+        <xsl:text>.take("</xsl:text>
         <xsl:value-of select="$RHO"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
@@ -522,6 +518,7 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
+    <xsl:variable name="method" select="substring-after(@base, '.')"/>
     <xsl:apply-templates select="o[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
@@ -533,15 +530,17 @@ SOFTWARE.
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhMethod(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>b, "</xsl:text>
-    <xsl:variable name="method" select="substring-after(@base, '.')"/>
+    <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="$method='^'">
+        <xsl:value-of select="$name"/>
+        <xsl:text>b.take("</xsl:text>
         <xsl:value-of select="$RHO"/>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:text>new PhMethod(</xsl:text>
+        <xsl:value-of select="$name"/>
+        <xsl:text>b, "</xsl:text>
         <xsl:value-of select="eo:attr-name($method)"/>
       </xsl:otherwise>
     </xsl:choose>
