@@ -23,36 +23,46 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.ExAbstract;
+import org.eolang.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Number.floor object.
+ * Test case for {@link EOnumber$EOfloor}.
  *
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.51
+ * @checkstyle TypeNameCheck (3 lines)
  */
-@XmirObject(oname = "number.floor")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOfloor extends PhDefault implements Atom {
-    @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            Expect.at(this, Attr.RHO)
-                .that(phi -> new Dataized(phi).take(Long.class))
-                .otherwise("must be a number")
-                .it()
+final class EOnumber$EOfloorTest {
+
+    @Test
+    void throwsCorrectErrorForRhoAttr() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOnumber$EOfloor(),
+                        Attr.RHO,
+                        new Data.ToPhi("string")
+                    )
+                ).take(),
+                "EOnumber must be a number"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
         );
     }
 }
