@@ -21,10 +21,9 @@
 # SOFTWARE.
 ---
 line: 3
-message: |-
-  [3:-1] error: 'Invalid program declaration'
-  EOF
-  ^^^
+message: |+
+  [3:-1] error: 'We expected the program to end here but encountered something unexpected'
+
 input: |
   1.add 1 > x
     (1.add 1) > y

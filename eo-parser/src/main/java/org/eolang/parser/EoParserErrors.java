@@ -69,8 +69,14 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         this.lines = lines;
     }
 
-    // @checkstyle ParameterNumberCheck (10 lines)
+    // @checkstyle ParameterNumberCheck (20 lines)
+    // @checkstyle CyclomaticComplexityCheck (100 lines)
+    // @todo #3744:30min Simplify {@link EoParserErrors#syntaxError} method.
+    //  The method is too complex and has a high cognitive complexity. We need to simplify it.
+    //  Don't forget to remove the @checkstyle CyclomaticComplexityCheck annotation and
+    //  the @SuppressWarnings("PMD.CognitiveComplexity") annotation.
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public void syntaxError(
         final Recognizer<?, ?> recognizer,
         final Object symbol,
@@ -87,20 +93,47 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             );
         }
         final List<String> msgs = new ArrayList<>(0);
-        if (error instanceof NoViableAltException || error instanceof InputMismatchException) {
+        if (error instanceof NoViableAltException) {
             final Token token = (Token) symbol;
             final Parser parser = (Parser) recognizer;
             final String rule = parser.getRuleInvocationStack().get(0);
             final String[] names = parser.getRuleNames();
             final String detailed;
             if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed = "Invalid object declaration";
+                detailed = "Invalid object list declaration";
             } else if (names[EoParser.RULE_metas].equals(rule)) {
                 detailed = "Invalid meta declaration";
             } else if (names[EoParser.RULE_program].equals(rule)) {
                 detailed = "Invalid program declaration";
+            } else if (names[EoParser.RULE_slave].equals(rule)) {
+                detailed = "Invalid objects declaration that may be used inside abstract object";
+            } else if (names[EoParser.RULE_object].equals(rule)) {
+                detailed = "Invalid object declaration";
             } else {
                 detailed = "no viable alternative at input";
+            }
+            msgs.add(new MsgLocated(line, position, detailed).formatted());
+            msgs.add(
+                new MsgUnderlined(
+                    this.lines.line(line),
+                    position,
+                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+                ).formatted()
+            );
+        } else if (error instanceof InputMismatchException) {
+            final Token token = (Token) symbol;
+            final Parser parser = (Parser) recognizer;
+            final String rule = parser.getRuleInvocationStack().get(0);
+            final String detailed;
+            final String[] names = parser.getRuleNames();
+            if (names[EoParser.RULE_program].equals(rule)) {
+                detailed =
+                    "We expected the program to end here but encountered something unexpected";
+            } else if (names[EoParser.RULE_objects].equals(rule)) {
+                detailed =
+                    "We expected a list of objects here but encountered something unexpected";
+            } else {
+                detailed = msg;
             }
             msgs.add(new MsgLocated(line, position, detailed).formatted());
             msgs.add(
