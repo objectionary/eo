@@ -144,4 +144,23 @@ final class ExpectTest {
             Matchers.equalTo("attr must be an integer")
         );
     }
+
+    @Test
+    void failsWithCorrectTraceForMustAndThat() {
+        MatcherAssert.assertThat(
+            "Take error message from must",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect<>("attr", () -> "string")
+                    .must(i -> false)
+                    .otherwise("in must")
+                    .that(i -> i)
+                    .otherwise("in that")
+                    .it(),
+                "fails on 'must'"
+            ).getMessage(),
+            Matchers.equalTo("attr (string) in must")
+        );
+    }
+
 }
