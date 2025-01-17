@@ -45,6 +45,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -78,6 +79,23 @@ final class EoSyntaxTest {
                 "/program/metas/meta[head='meta2']",
                 "/program/objects/o[@name='fibo']"
             )
+        );
+    }
+
+    @Test
+    @Disabled
+    void prohibitsMoreThanOneTailingEol() throws Exception {
+        MatcherAssert.assertThat(
+            "doesn't prohibit more than one tailing EOL",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf("# No comments.\n[] > foo\n\n\n\n")
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths("/program/errors/error")
         );
     }
 
