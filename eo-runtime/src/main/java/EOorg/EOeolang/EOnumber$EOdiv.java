@@ -33,6 +33,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -56,9 +57,14 @@ public final class EOnumber$EOdiv extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return new Data.ToPhi(
-            new Dataized(this.take(Attr.RHO)).asNumber()
-                / new Dataized(this.take("x")).asNumber()
-        );
+        final Double left = Expect.at(this, Attr.RHO)
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .it();
+        final Double right = Expect.at(this, "x")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .it();
+        return new Data.ToPhi(left / right);
     }
 }
