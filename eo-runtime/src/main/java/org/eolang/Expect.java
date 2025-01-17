@@ -210,4 +210,63 @@ public class Expect<T> {
         }
     }
 
+    /**
+     * Transform Expect to Number
+     *
+     * @since 0.51
+     */
+    public static class Number {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public Number(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        public Double it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .it();
+        }
+    }
+
+    /**
+     * Transform Expect to Integer
+     *
+     * @since 0.51
+     */
+    public static class Integer {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public Integer(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        public java.lang.Integer it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .must(number -> number % 1 == 0)
+                .otherwise("must be an integer")
+                .that(Double::intValue)
+                .it();
+        }
+    }
+
 }

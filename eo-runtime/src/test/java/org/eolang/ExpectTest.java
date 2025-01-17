@@ -163,4 +163,70 @@ final class ExpectTest {
         );
     }
 
+    @Test
+    void failsInTransformingToNumberForNotNumber() {
+        MatcherAssert.assertThat(
+            "inner class Number working throws error if attr is not a number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.Number(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(true)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to Number"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
+        );
+    }
+
+    @Test
+    void failsInTransformingToIntegerForNotNumber() {
+        MatcherAssert.assertThat(
+            "inner class Integer throws error for not a number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.Integer(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(true)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to Integer"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
+        );
+    }
+
+    @Test
+    void failsInTransformingToIntegerForNotInteger() {
+        MatcherAssert.assertThat(
+            "inner class Integer throws error for not an integer number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.Integer(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(42.23)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to Integer"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute (42.23) must be an integer")
+        );
+    }
+
 }
