@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * @param <T> The type of result
  * @since 0.41.0
  */
-@SuppressWarnings("PMD.ShortMethodName")
+@SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
 public class Expect<T> {
 
     /**
@@ -215,7 +215,6 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    @SuppressWarnings("PMD.ShortMethodName")
     public static final class Number {
 
         /**
@@ -249,7 +248,6 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    @SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
     public static final class Integer {
 
         /**
@@ -286,7 +284,6 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    @SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
     public static final class NonNegativeInteger {
 
         /**
