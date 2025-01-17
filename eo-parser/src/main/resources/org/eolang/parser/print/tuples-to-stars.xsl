@@ -27,32 +27,20 @@ SOFTWARE.
     Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='.empty' and o[position()=1 and @base='tuple' or @base='org.eolang.tuple']]">
+  <xsl:template match="o[@base='.empty' and o[1][@base='tuple' or @base='org.eolang.tuple']]">
     <xsl:element name="o">
       <xsl:attribute name="star"/>
-      <xsl:for-each select="@* except @base">
-        <xsl:attribute name="{name()}">
-          <xsl:value-of select="."/>
-        </xsl:attribute>
-      </xsl:for-each>
       <xsl:attribute name="base" select="'tuple'"/>
+      <xsl:apply-templates select="@* except @base"/>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[(@base='tuple' or @base='org.eolang.tuple') and o[position()=1 and @star and @base='tuple']]">
+  <xsl:template match="o[@base='.with' and o[1][@star]]">
     <xsl:element name="o">
       <xsl:attribute name="star"/>
-      <xsl:for-each select="@* except base">
-        <xsl:attribute name="{name()}">
-          <xsl:value-of select="."/>
-        </xsl:attribute>
-      </xsl:for-each>
       <xsl:attribute name="base" select="'tuple'"/>
-      <xsl:for-each select="o[@star]/o">
-        <xsl:copy-of select="."/>
-      </xsl:for-each>
-      <xsl:for-each select="o[not(@star)]">
-        <xsl:copy-of select="."/>
-      </xsl:for-each>
+      <xsl:apply-templates select="@* except @base"/>
+      <xsl:copy-of select="o[@star]/o"/>
+      <xsl:copy-of select="o[not(@star)]"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

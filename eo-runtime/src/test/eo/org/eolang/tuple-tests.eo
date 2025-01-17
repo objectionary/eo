@@ -167,14 +167,14 @@
 [] > at-fast-with-first-element
   * 100 101 102 > arr
   eq. > @
-    (arr.at 0).at-fast arr 3
+    (arr.at 0).at-fast arr
     100
 
 # Test
 [] > at-fast-with-last-element
   * 100 101 102 > arr
   eq. > @
-    (arr.at 2).at-fast arr 3
+    (arr.at 2).at-fast arr
     102
 
 # This unit test is supposed to check the functionality of the corresponding object.

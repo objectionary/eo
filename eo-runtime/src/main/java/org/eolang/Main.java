@@ -196,13 +196,10 @@ public final class Main {
             );
         }
         if (opts.size() > 1) {
-            final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
-            Phi args = tuple.take("empty");
+            Phi args = Phi.Φ.take("org.eolang.tuple");
             for (int idx = 1; idx < opts.size(); ++idx) {
-                final Phi arg = tuple.copy();
-                arg.put(0, args);
-                arg.put(1, new Data.ToPhi(opts.get(idx)));
-                args = arg;
+                args = args.take("with");
+                args.put(0, new Data.ToPhi(opts.get(idx)));
             }
             app.put(0, args);
         }

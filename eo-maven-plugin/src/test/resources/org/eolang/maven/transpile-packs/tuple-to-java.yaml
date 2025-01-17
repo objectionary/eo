@@ -27,15 +27,13 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), 'Phi r = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '  Phi r1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '    Phi r11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi r111b = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi r111 = new PhMethod(r111b, "empty");')]
-  - //java[contains(text(), '  Phi r2 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '    Phi r21 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi r211b = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '      Phi r211 = new PhMethod(r211b, "empty");')]
+  - //java[contains(text(), '        Phi rbbbb = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
+  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
+  - //java[contains(text(), '        rbb = new PhWith(rbb, 0, rbb1);')]
+  - //java[contains(text(), '        Phi rb = new PhMethod(rbb, "with");')]
+  - //java[contains(text(), '        rb = new PhWith(rb, 0, rb1);')]
+  - //java[contains(text(), '        Phi r = new PhMethod(rb, "with");')]
 input: |
   # No comments.
   [] > foo

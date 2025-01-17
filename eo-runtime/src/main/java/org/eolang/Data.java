@@ -137,16 +137,12 @@ public interface Data {
                     phi = eolang.take("false");
                 }
             } else if (obj instanceof Phi[]) {
-                final Phi tuple = eolang.take("tuple");
-                Phi argument = tuple.take("empty");
-                Phi tup;
+                Phi tuple = eolang.take("tuple").take("empty");
                 for (final Phi element : (Phi[]) obj) {
-                    tup = tuple.copy();
-                    tup.put(0, argument);
-                    tup.put(1, element);
-                    argument = tup;
+                    tuple = tuple.take("with");
+                    tuple.put(0, element);
                 }
-                phi = argument;
+                phi = tuple;
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
                 phi.put(0, new PhDefault((byte[]) obj));
