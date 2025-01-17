@@ -37,7 +37,7 @@ sweet: |-
           j$A ↦ ⟦
             access ↦ 32,
             supername ↦ "java/lang/Object",
-            interfaces ↦ Φ̇.tuple(Φ̇.tuple.empty, "org/eolang/benchmark/F")
+            interfaces ↦ Φ̇.tuple.empty.with("org/eolang/benchmark/F")
           ⟧,
           λ ⤍ Package
         ⟧,
@@ -63,9 +63,8 @@ salty: |-
                   α0 ↦ ⟦ Δ ⤍ 6A-61-76-61-2F-6C-61-6E-67-2F-4F-62-6A-65-63-74 ⟧
                 )
               ),
-              interfaces ↦ Φ.org.eolang.tuple(
-                α0 ↦ Φ.org.eolang.tuple.empty,
-                α1 ↦ Φ.org.eolang.string(
+              interfaces ↦ Φ.org.eolang.tuple.empty.with(
+                α0 ↦ Φ.org.eolang.string(
                   α0 ↦ Φ.org.eolang.bytes(
                     α0 ↦ ⟦ Δ ⤍ 6F-72-67-2F-65-6F-6C-61-6E-67-2F-62-65-6E-63-68-6D-61-72-6B-2F-46 ⟧
                   )

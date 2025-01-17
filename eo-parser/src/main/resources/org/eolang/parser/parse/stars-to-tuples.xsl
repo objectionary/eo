@@ -49,68 +49,29 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@star]">
     <xsl:choose>
-      <xsl:when test="count(o)=0">
-        <xsl:choose>
-          <xsl:when test="count(following-sibling::o)=0 or following-sibling::o[1][not(@base) or @base!='.empty']">
-            <o>
-              <xsl:for-each select="@*[name()!='star' and name()!='name']">
-                <xsl:attribute name="{name()}">
-                  <xsl:value-of select="."/>
-                </xsl:attribute>
-              </xsl:for-each>
-            </o>
-            <o base=".empty" method="">
-              <xsl:if test="./@name">
-                <xsl:attribute name="name">
-                  <xsl:value-of select="./@name"/>
-                </xsl:attribute>
-              </xsl:if>
-              <xsl:attribute name="line">
-                <xsl:value-of select="./@line"/>
-              </xsl:attribute>
-              <xsl:attribute name="pos">
-                <xsl:value-of select="./@pos+1"/>
-              </xsl:attribute>
-            </o>
-          </xsl:when>
-          <xsl:otherwise>
-            <o>
-              <xsl:for-each select="@*[name()!='star']">
-                <xsl:attribute name="{name()}">
-                  <xsl:value-of select="."/>
-                </xsl:attribute>
-              </xsl:for-each>
-            </o>
-          </xsl:otherwise>
-        </xsl:choose>
+      <xsl:when test="count(o)&gt;0">
+        <xsl:variable name="nested">
+          <xsl:element name="o">
+            <xsl:attribute name="star"/>
+            <xsl:apply-templates select="o[position()!=last()]"/>
+          </xsl:element>
+        </xsl:variable>
+        <xsl:element name="o">
+          <xsl:attribute name="base" select="'.with'"/>
+          <xsl:apply-templates select="@* except (@star | @base)"/>
+          <xsl:apply-templates select="$nested"/>
+          <xsl:apply-templates select="o[last()]"/>
+        </xsl:element>
       </xsl:when>
-      <xsl:when test="count(o[not(@method)])=1">
-        <o>
-          <xsl:for-each select="@*[name()!='star']">
-            <xsl:attribute name="{name()}">
-              <xsl:value-of select="."/>
-            </xsl:attribute>
-          </xsl:for-each>
-          <o base="tuple"/>
-          <o base=".empty" method=""/>
-          <xsl:copy-of select="o"/>
-        </o>
-      </xsl:when>
-      <xsl:when test="count(o[not(@method)])&gt;1">
-        <o>
-          <xsl:for-each select="@*[name()!='star']">
-            <xsl:attribute name="{name()}">
-              <xsl:value-of select="."/>
-            </xsl:attribute>
-          </xsl:for-each>
-          <o base="tuple" star="">
-            <xsl:for-each select="o[not(@method)][last()]/preceding-sibling::o">
-              <xsl:copy-of select="."/>
-            </xsl:for-each>
-          </o>
-          <xsl:copy-of select="o[not(@method)][last()] | o[not(@method)][last()]/following-sibling::o"/>
-        </o>
-      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="o">
+          <xsl:attribute name="base" select="'.empty'"/>
+          <xsl:apply-templates select="@* except (@star | @base)"/>
+          <xsl:element name="o">
+            <xsl:attribute name="base" select="'tuple'"/>
+          </xsl:element>
+        </xsl:element>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">

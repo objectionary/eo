@@ -23,12 +23,8 @@
  */
 package org.eolang.parser;
 
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
-import com.yegor256.xsline.TrJoined;
 
 /**
  * Train of XSL shifts that turn XMIR into canonical one.
@@ -42,24 +38,14 @@ final class TrCanonical extends TrEnvelope {
     TrCanonical() {
         super(
             new TrFull(
-                new TrJoined<>(
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/move-voids-up.xsl",
-                        "/org/eolang/parser/parse/validate-before-stars.xsl",
-                        "/org/eolang/parser/parse/resolve-before-star.xsl"
-                    ).back(),
-                    new TrDefault<>(
-                        new StEndless(
-                            new StClasspath(
-                                "/org/eolang/parser/parse/stars-to-tuples.xsl"
-                            )
-                        )
-                    ),
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                        "/org/eolang/parser/parse/const-to-dataized.xsl"
-                    ).back()
-                )
+                new TrClasspath<>(
+                    "/org/eolang/parser/parse/move-voids-up.xsl",
+                    "/org/eolang/parser/parse/validate-before-stars.xsl",
+                    "/org/eolang/parser/parse/resolve-before-star.xsl",
+                    "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                    "/org/eolang/parser/parse/const-to-dataized.xsl",
+                    "/org/eolang/parser/parse/stars-to-tuples.xsl"
+                ).back()
             )
         );
     }
