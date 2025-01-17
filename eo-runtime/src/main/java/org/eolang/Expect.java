@@ -165,7 +165,7 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExMust extends RuntimeException {
+    private static final class ExMust extends RuntimeException {
         /**
          * Ctor.
          * @param cause Exception cause
@@ -182,7 +182,7 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExThat extends RuntimeException {
+    private static final class ExThat extends RuntimeException {
         /**
          * Ctor.
          * @param cause Exception cause
@@ -199,7 +199,7 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExOtherwise extends RuntimeException {
+    private static final class ExOtherwise extends RuntimeException {
         /**
          * Ctor.
          * @param cause Exception cause
@@ -211,11 +211,12 @@ public class Expect<T> {
     }
 
     /**
-     * Transform Expect to Number
+     * Transform Expect to Number.
      *
      * @since 0.51
      */
-    public static class Number {
+    @SuppressWarnings("PMD.ShortMethodName")
+    public static final class Number {
 
         /**
          * Expect.
@@ -230,6 +231,11 @@ public class Expect<T> {
             this.expect = expect;
         }
 
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
         public Double it() {
             return this.expect
                 .that(phi -> new Dataized(phi).asNumber())
@@ -239,11 +245,12 @@ public class Expect<T> {
     }
 
     /**
-     * Transform Expect to Integer
+     * Transform Expect to Integer.
      *
      * @since 0.51
      */
-    public static class Integer {
+    @SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
+    public static final class Integer {
 
         /**
          * Expect.
@@ -258,6 +265,11 @@ public class Expect<T> {
             this.expect = expect;
         }
 
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
         public java.lang.Integer it() {
             return this.expect
                 .that(phi -> new Dataized(phi).asNumber())
@@ -265,6 +277,45 @@ public class Expect<T> {
                 .must(number -> number % 1 == 0)
                 .otherwise("must be an integer")
                 .that(Double::intValue)
+                .it();
+        }
+    }
+
+    /**
+     * Transform Expect to NonNegativeInteger.
+     *
+     * @since 0.51
+     */
+    @SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
+    public static final class NonNegativeInteger {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public NonNegativeInteger(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public java.lang.Integer it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .must(number -> number % 1 == 0)
+                .otherwise("must be an integer")
+                .that(Double::intValue)
+                .must(integer -> integer >= 0)
+                .otherwise("must be greater or equal to zero")
                 .it();
         }
     }

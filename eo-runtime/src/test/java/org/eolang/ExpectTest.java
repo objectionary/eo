@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class ExpectTest {
 
     @Test
@@ -226,6 +227,72 @@ final class ExpectTest {
                 "fails with correct error message while transform Phi to Integer"
             ).getMessage(),
             Matchers.equalTo("the 'ρ' attribute (42.23) must be an integer")
+        );
+    }
+
+    @Test
+    void failsInTransformingToNonNegativeIntegerForNotNumber() {
+        MatcherAssert.assertThat(
+            "inner class NonNegativeInteger throws error for not a number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.NonNegativeInteger(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(true)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to NonNegativeInteger"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
+        );
+    }
+
+    @Test
+    void failsInTransformingToNonNegativeIntegerForNotInteger() {
+        MatcherAssert.assertThat(
+            "inner class NonNegativeInteger throws error for not an integer number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.NonNegativeInteger(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(42.23)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to NonNegativeInteger"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute (42.23) must be an integer")
+        );
+    }
+
+    @Test
+    void failsInTransformingToNonNegativeIntegerForNegative() {
+        MatcherAssert.assertThat(
+            "inner class NonNegativeInteger throws error for a negative integer",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.NonNegativeInteger(
+                    Expect.at(
+                        new PhWith(
+                            new PhDefault(),
+                            Attr.RHO,
+                            new Data.ToPhi(-42)
+                        ),
+                        Attr.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to NonNegativeInteger"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute (-42) must be greater or equal to zero")
         );
     }
 
