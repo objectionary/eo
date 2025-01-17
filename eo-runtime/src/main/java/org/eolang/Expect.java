@@ -103,7 +103,7 @@ public class Expect<T> {
                 try {
                     return this.sup.get();
                 } catch (final ExMust ex) {
-                    throw new ExFailure(
+                    throw new ExOtherwise(
                         String.format(
                             "%s %s %s",
                             this.subject,
@@ -113,7 +113,7 @@ public class Expect<T> {
                         ex
                     );
                 } catch (final ExThat ex) {
-                    throw new ExFailure(
+                    throw new ExOtherwise(
                         String.format(
                             "%s %s",
                             this.subject,
@@ -152,7 +152,11 @@ public class Expect<T> {
      * @checkstyle MethodNameCheck (5 lines)
      */
     public T it() {
-        return this.sup.get();
+        try {
+            return this.sup.get();
+        } catch (final ExOtherwise ex) {
+            throw new ExFailure(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -161,7 +165,7 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExMust extends ExFailure {
+    private static class ExMust extends RuntimeException {
         /**
          * Ctor.
          * @param cause Exception cause
@@ -178,13 +182,30 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    private static class ExThat extends ExFailure {
+    private static class ExThat extends RuntimeException {
         /**
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
          */
         ExThat(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#it()} method.
+     *
+     * @since 0.51
+     */
+    private static class ExOtherwise extends RuntimeException {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExOtherwise(final String cause, final Object... args) {
             super(String.format(cause, args));
         }
     }
