@@ -78,9 +78,9 @@
         ^.len.eq index
         true
         seq *
-          tup.tail.deleted.exists
+          tup.value.deleted.exists
           ^.rec-delete
-            tup.head
+            tup.prev
             index.plus 1
 
   # Creates an empty temporary file in the current directory.
