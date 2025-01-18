@@ -35,6 +35,8 @@
   [] > empty
     $ > empty
     0 > length
+    error "Can't get head from the empty tuple" > head
+    error "Can't get tail from the empty tuple" > tail
 
     # Take one element from the tuple, at the given position.
     error "Can't get an object from the empty tuple" > [i] > at
