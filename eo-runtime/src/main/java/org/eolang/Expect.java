@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * @param <T> The type of result
  * @since 0.41.0
  */
-@SuppressWarnings({"PMD.ShortMethodName", "PMD.UnnecessaryFullyQualifiedName"})
+@SuppressWarnings("PMD.ShortMethodName")
 public class Expect<T> {
 
     /**
@@ -248,7 +248,7 @@ public class Expect<T> {
      *
      * @since 0.51
      */
-    public static final class Integer {
+    public static final class Int {
 
         /**
          * Expect.
@@ -259,7 +259,7 @@ public class Expect<T> {
          * Ctor.
          * @param expect Expect
          */
-        public Integer(final Expect<Phi> expect) {
+        public Int(final Expect<Phi> expect) {
             this.expect = expect;
         }
 
@@ -268,7 +268,7 @@ public class Expect<T> {
          * @return The token
          * @checkstyle MethodNameCheck (5 lines)
          */
-        public java.lang.Integer it() {
+        public Integer it() {
             return this.expect
                 .that(phi -> new Dataized(phi).asNumber())
                 .otherwise("must be a number")
@@ -280,11 +280,12 @@ public class Expect<T> {
     }
 
     /**
-     * Transform Expect to NonNegativeInteger.
+     * Transform Expect to Natural number.
+     * Natural number is integer greater or equal to zero.
      *
      * @since 0.51
      */
-    public static final class NonNegativeInteger {
+    public static final class Natural {
 
         /**
          * Expect.
@@ -295,7 +296,7 @@ public class Expect<T> {
          * Ctor.
          * @param expect Expect
          */
-        public NonNegativeInteger(final Expect<Phi> expect) {
+        public Natural(final Expect<Phi> expect) {
             this.expect = expect;
         }
 
@@ -304,7 +305,7 @@ public class Expect<T> {
          * @return The token
          * @checkstyle MethodNameCheck (5 lines)
          */
-        public java.lang.Integer it() {
+        public Integer it() {
             return this.expect
                 .that(phi -> new Dataized(phi).asNumber())
                 .otherwise("must be a number")

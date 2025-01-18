@@ -192,7 +192,7 @@ final class ExpectTest {
             "inner class Integer throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Integer(
+                () -> new Expect.Int(
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
@@ -214,7 +214,7 @@ final class ExpectTest {
             "inner class Integer throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Integer(
+                () -> new Expect.Int(
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
@@ -236,7 +236,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.NonNegativeInteger(
+                () -> new Expect.Natural(
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
@@ -258,7 +258,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.NonNegativeInteger(
+                () -> new Expect.Natural(
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
@@ -280,7 +280,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for a negative integer",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.NonNegativeInteger(
+                () -> new Expect.Natural(
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
