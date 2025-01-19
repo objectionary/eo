@@ -38,7 +38,7 @@
 
   [acc index] > rec-hash-code
     if. > @
-      index.eq ^.size
+      index.eq size
       acc.as-number
       rec-hash-code
         plus.
