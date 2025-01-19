@@ -43,10 +43,10 @@
   [index item] > withi
     concat. > @
       with.
-        ^.head index
+        head index
         item
-      ^.tail
-        ^.origin.length.minus index
+      tail
+        origin.length.minus index
 
   # Reduce with index from "start" using the function "func".
   # Here "func" must be an abstract object with three free attributes.
@@ -166,26 +166,35 @@
   # Returns index of the first particular item in list.
   # If the list has no this item, index-of returns -1.
   [wanted] > index-of
-    reducedi > @
-      -1
-      [accum item index] >>
-        if. > @
-          and.
-            -1.eq accum
-            item.eq wanted
-          index
-          accum
+    number > @
+      rec-index-of origin
+
+    [tup] > rec-index-of
+      rec-index-of tup.prev > next!
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          next.eq -1
+          if.
+            tup.value.eq wanted
+            tup.prev.length
+            -1
+          next
 
   # Returns index of the last particular item in list.
   # If the list has no this item, returns -1.
   [wanted] > last-index-of
-    reducedi > @
-      -1
-      [accum item index] >>
-        if. > @
-          item.eq wanted
-          index
-          accum
+    rec-last-index-of origin > @
+
+    [tup] > rec-last-index-of
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          tup.value.eq wanted
+          tup.prev.length
+          rec-last-index-of tup.prev
 
   # Returns `true` if the list contains `element`.
   # Otherwise, `false`.
@@ -231,30 +240,26 @@
     filteredi > @
       func item > [item index] >>
 
-  # Get the first `index` elements from the start of the list. todo
+  # Get the first `index` elements from the start of the list.
   [index] > head
     index > idx!
-    switch > @
-      *
-        *
-          0.eq idx
-          list *
-        *
-          0.gt idx
-          ^.tail index.as-number.neg
-        *
-          ^.origin.length.lte idx
+    if. > @
+      idx.eq 0
+      list *
+      if.
+        0.gt idx
+        tail (number idx).neg
+        if.
+          (number idx).gte origin.length
           ^
-        *
-          true
           list
-            ^.reducedi
-              *
-              [accum item index] >>
-                if. > @
-                  index.gte ^.idx
-                  accum
-                  accum.with item
+            rec-head origin
+
+    [tup] > rec-head
+      if. > @
+        tup.length.eq idx
+        tup
+        rec-head tup.prev
 
   # Get the last `index` elements from the end of the list.
   [index] > tail
