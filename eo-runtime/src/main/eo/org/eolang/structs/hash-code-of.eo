@@ -40,11 +40,11 @@
     if. > @
       index.eq ^.size
       acc.as-number
-      ^.rec-hash-code
+      rec-hash-code
         plus.
-          ^.magic-number.times acc
+          magic-number.times acc
           as-i64.
             concat.
               00-00-00-00-00-00-00
-              ^.input-as-bytes.slice index 1
-        index.plus 1
+              input-as-bytes.slice index 1
+        (index.plus 1).as-number
