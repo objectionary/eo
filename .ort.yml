@@ -32,3 +32,11 @@ license_choices:
     license_choices:
       - given: CDDL-1.1 OR GPL-2.0-only
         choice: CDDL-1.1
+excludes:
+  scopes:
+    - pattern: "provided.*"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Packages provided"
+    - pattern: "test.*"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Packages for testing only"
