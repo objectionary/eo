@@ -31,10 +31,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > bound-tmpfile-does-not-recreates-file
   tmpdir.tmpfile.as-file > f
-  QQ.io.stdout > @
-    QQ.txt.sprintf
-      "%s %s\n"
-      * f.path f.path
+  f.path.eq f.path > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > makes-new-directory
