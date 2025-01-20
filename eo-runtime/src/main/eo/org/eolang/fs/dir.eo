@@ -92,7 +92,7 @@
         error
           sprintf
             "Directory %s does not exist, can't create temporary file"
-            * path
+            * file
 
     # Creates an empty temporary file in the current directory and
     # returns absolute path to it as `string`.
@@ -107,4 +107,4 @@
     error > @
       sprintf
         "The file %s is a directory, can't open for I/O operations"
-        * path
+        * file
