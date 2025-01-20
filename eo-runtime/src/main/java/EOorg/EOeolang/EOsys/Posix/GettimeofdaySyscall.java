@@ -58,7 +58,7 @@ public final class GettimeofdaySyscall implements Syscall {
         final Phi result = this.posix.take("return").copy();
         final GettimeofdaySyscall.Timeval timeval = new GettimeofdaySyscall.Timeval();
         result.put(0, new Data.ToPhi(CStdLib.INSTANCE.gettimeofday(timeval, null)));
-        final Phi struct = params[0].take("self");
+        final Phi struct = this.posix.take("timeval");
         struct.put(0, new Data.ToPhi(timeval.sec));
         struct.put(1, new Data.ToPhi(timeval.usec));
         result.put(1, struct);

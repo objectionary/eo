@@ -34,7 +34,7 @@
     true
     if.
       steps.length.eq 1
-      steps.tail
+      steps.value
       loop steps
   steps.length.plus -1 > last-index!
 
@@ -46,8 +46,8 @@
     if. > @
       and.
         tup.length.gt 1
-        loop tup.head
-      tup.tail
+        loop tup.prev
+      tup.value
       or.
-        (dataized tup.tail).as-bool.eq --
+        (dataized tup.value).as-bool.eq --
         tup.length.eq last-index
