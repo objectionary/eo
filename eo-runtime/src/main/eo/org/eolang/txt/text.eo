@@ -414,7 +414,7 @@
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
     delimiter > delim!
-    origin.as-bytes > self-as-bytes
+    origin > self-as-bytes!
     self-as-bytes.size > len!
     if. > @
       len.eq 0
@@ -430,17 +430,16 @@
               start
               current.minus start
         if.
-          eq.
-            delim
+          delim.eq
             self-as-bytes.slice current 1
           rec-split
             with-substr
-            current.plus 1
-            current.plus 1
+            (current.plus 1).as-number
+            (current.plus 1).as-number
           rec-split
             accum
             start
-            current.plus 1
+            (current.plus 1).as-number
 
   # Returns concatenation of all `other` strings.
   # Here `others` must be a `tuple` of `strings`.
