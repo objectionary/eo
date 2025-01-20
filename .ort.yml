@@ -20,17 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-[default]
-extend-ignore-identifiers-re = [
-  "Olt*",       # false positive
-  "Onot",       # false positive
-  "BA",         # false positive
-  "thi",        # false positive
-  "lowcase",    # false positive
-  "[D,d]atas*", # valid variable names
-  "thr",        # valid variable name
-  "cutted",     # valid variable name
-  "splitted",   # valid variable name
-  "scrpt",      # valid variable name
-  "fle"         # valid variable name
-]
+# See https://oss-review-toolkit.org/ort/docs/configuration/ort-yml for file specification
+---
+license_choices:
+  package_license_choices:
+  - package_id: "Maven:org.glassfish:javax.json:1.1.4"
+    license_choices:
+    - given: CDDL-1.1 OR GPL-2.0-only
+      choice: CDDL-1.1
+  - package_id: "Maven:javax.json:javax.json-api:1.1.4"
+    license_choices:
+      - given: CDDL-1.1 OR GPL-2.0-only
+        choice: CDDL-1.1
