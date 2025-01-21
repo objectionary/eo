@@ -301,4 +301,3 @@ final class UnplaceMojoTest {
         );
     }
 }
-
