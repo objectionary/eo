@@ -38,7 +38,10 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[eo:abstract(.) and @atom and starts-with(@atom, 'L') and @name and not(o[@base='∅']) and count(o[@base!='∅'])&gt;0]">
+  <xsl:template match="o[@atom and starts-with(@atom, 'L')]">
+    <xsl:apply-templates select="." mode="atom"/>
+  </xsl:template>
+  <xsl:template match="o[not(o[@base='∅']) and count(o[@base!='∅'])&gt;0]" mode="atom">
     <xsl:element name="o">
       <xsl:attribute name="name" select="@name"/>
       <xsl:attribute name="base">
@@ -72,7 +75,7 @@ SOFTWARE.
       </xsl:for-each>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

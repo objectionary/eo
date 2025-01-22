@@ -46,11 +46,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[@base='.bytes' and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]]" mode="with-data">
     <xsl:element name="o">
-      <xsl:for-each select="@*[name()!='base']">
-        <xsl:attribute name="{name()}">
-          <xsl:value-of select="."/>
-        </xsl:attribute>
-      </xsl:for-each>
+      <xsl:apply-templates select="@* except @base"/>
       <xsl:attribute name="base" select="'org.eolang.bytes'"/>
       <xsl:value-of select="text()"/>
     </xsl:element>

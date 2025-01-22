@@ -26,6 +26,8 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -43,6 +45,21 @@ import org.xembly.Xembler;
  * @since 0.34.0
  */
 public final class PhiSyntax implements Syntax {
+    /**
+     * Set of optimizations that builds canonical XMIR from parsed PHI.
+     */
+    private static final Xsline CANONICAL = new Xsline(
+        new TrFull(
+            new TrClasspath<>(
+                "/org/eolang/parser/parse/move-voids-up.xsl",
+                "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                "/org/eolang/parser/unphi/wrap-bytes.xsl",
+                "/org/eolang/parser/unphi/normalize-bytes.xsl",
+                "/org/eolang/parser/unphi/atoms-with-bound-attrs.xsl"
+            ).back()
+        )
+    );
+
     /**
      * Name of the program.
      */
@@ -106,7 +123,7 @@ public final class PhiSyntax implements Syntax {
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = Syntax.CANONICAL.pass(
+        final XML dom = PhiSyntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
                     new Directives(xel).append(new DrErrors(spy)).append(this.extra)
