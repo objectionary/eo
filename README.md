@@ -262,28 +262,28 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          68264  32.87%
-add-refs.xsl                         24448  11.77%
-set-locators.xsl                     12970  6.25%
-tests.xsl                            10989  5.29%
-rename-tests-inners.xsl              9114   4.39%
-add-probes.xsl                       6215   2.99%
-resolve-aliases.xsl                  5968   2.87%
-vars-float-up.xsl                    5879   2.83%
-classes.xsl                          5856   2.82%
-add-default-package.xsl              5548   2.67%
-explicit-data.xsl                    5511   2.65%
-package.xsl                          5313   2.56%
-cti-adds-errors.xsl                  5106   2.46%
-expand-qqs.xsl                       4279   2.06%
-clean-up.xsl                         4133   1.99%
-atoms-with-bound-attrs.xsl           4106   1.98%
+to-java.xsl                 33030  21.68%
+classes.xsl                 14949  9.81%
+set-locators.xsl            11700  7.68%
+build-fqns.xsl              9940   6.52%
+resolve-aliases.xsl         6172   4.05%
+package.xsl                 5906   3.88%
+add-probes.xsl              5795   3.80%
+explicit-data.xsl           5568   3.65%
+attrs.xsl                   5221   3.43%
+add-default-package.xsl     5181   3.40%
+data.xsl                    5136   3.37%
+vars-float-up.xsl           4830   3.17%
+cti-adds-errors.xsl         4610   3.03%
+tests.xsl                   4409   2.89%
+anonymous-to-nested.xsl     4137   2.72%
+expand-aliases.xsl          4133   2.71%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-12-23 at 05:07,
+on 2025-01-20 at 17:26,
 on Linux with 4 CPUs.
-The total is 207665 milliseconds.
+The total is 152362 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -324,4 +324,4 @@ to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12461404086
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12872995680
