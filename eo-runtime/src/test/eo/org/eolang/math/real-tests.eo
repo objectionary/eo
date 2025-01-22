@@ -60,31 +60,31 @@
     17.9
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-1-2
+[] > tests-mod-n1-n2
   eq. > @
     (real 1).mod 2
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-0-5
+[] > tests-mod-n0-n5
   eq. > @
     (real 0).mod 5
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-0-15-neg
+[] > tests-mod-n0-n15-neg
   eq. > @
     (real 0).mod -15
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-1-neg-7
+[] > tests-mod-n1-neg-n7
   eq. > @
     (real -1).mod 7
     -1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-16-200-neg
+[] > tests-mod-n16-n200-neg
   eq. > @
     (real 16).mod -200
     16
@@ -412,14 +412,14 @@
       real nan
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-infinity-1
+[] > tests-sqrt-check-infinity-n1
   eq. > @
     sqrt.
       real positive-infinity
     positive-infinity
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-infinity-2
+[] > tests-sqrt-check-infinity-n2
   is-nan. > @
     sqrt.
       real negative-infinity
@@ -535,7 +535,7 @@
     (real -2.0).acos
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-0
+[] > tests-exp-check-n0
   lt. > @
     abs.
       real
@@ -545,7 +545,7 @@
     0.00000001
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-1
+[] > tests-exp-check-n1
   lt. > @
     abs.
       real
@@ -555,7 +555,7 @@
     0.00000001
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-2
+[] > tests-exp-check-n2
   lt. > @
     abs.
       real
@@ -565,7 +565,7 @@
     0.00000001
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-3
+[] > tests-exp-check-n3
   lt. > @
     abs.
       real
@@ -575,7 +575,7 @@
     0.0000001
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-4
+[] > tests-exp-check-n4
   lt. > @
     abs.
       real
@@ -590,13 +590,13 @@
     (real nan).exp
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-infinity-1
+[] > tests-exp-check-infinity-n1
   eq. > @
     (real positive-infinity).exp
     positive-infinity
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-infinity-2
+[] > tests-exp-check-infinity-n2
   eq. > @
     (real negative-infinity).exp
     0

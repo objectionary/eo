@@ -51,21 +51,21 @@
     D0-B4-D1-80-D1-83-D0-B3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-2-byte-characters
+[] > tests-reads-the-length-with-n2-byte-characters
   "Hello, друг!" > str
   and. > @
     str.length.eq 12
     str.as-bytes.size.eq 16
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-3-byte-characters
+[] > tests-reads-the-length-with-n3-byte-characters
   "The अ devanagari" > str
   and. > @
     str.length.eq 16
     str.as-bytes.size.eq 18
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-4-byte-characters
+[] > tests-reads-the-length-with-n4-byte-characters
   "The 😀 smile" > str
   and. > @
     str.length.eq 11
@@ -74,7 +74,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 # The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
 # incomplete 4 byte character.
-[] > tests-throws-on-taking-length-of-incomplete-4-byte-character
+[] > tests-throws-on-taking-length-of-incomplete-n4-byte-character
   string F0-9F-98 > should-be-smile
   should-be-smile.length > @
 
@@ -237,19 +237,19 @@
     "Ф"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-2-byte-characters
+[] > tests-slice-with-n2-byte-characters
   eq. > @
     "привет".slice 1 2
     "ри"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-3-byte-characters
+[] > tests-slice-with-n3-byte-characters
   eq. > @
     "The अ is अ".slice 1 6
     "he अ i"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-4-byte-characters
+[] > tests-slice-with-n4-byte-characters
   eq. > @
     "One 😀 and 😀 another".slice 3 8
     " 😀 and 😀"
