@@ -79,7 +79,7 @@
   should-be-smile.length > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > compares-two-different-types
+[] > compares-two-different-string-types
   not. > @
     eq.
       "Hello"

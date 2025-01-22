@@ -165,6 +165,9 @@ public final class LintMojo extends SafeMojo {
         for (final ForeignTojo tojo : this.scopedTojos().withLinted()) {
             paths.put(tojo.identifier(), tojo.linted());
         }
+        for (final ForeignTojo tojo : this.compileTojos().withLinted()) {
+            paths.put(tojo.identifier(), tojo.linted());
+        }
         final Map<String, XML> pkg = new HashMap<>();
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));

@@ -37,7 +37,7 @@
   true.as-bool > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > compares-two-different-types
+[] > compares-two-different-bool-types
   not. > @
     eq.
       true

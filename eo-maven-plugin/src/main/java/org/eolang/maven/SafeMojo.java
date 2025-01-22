@@ -359,6 +359,18 @@ abstract class SafeMojo extends AbstractMojo {
     }
 
     /**
+     * Tojos to use, in "compile" scope only.
+     * @return Tojos to use
+     * @checkstyle AnonInnerLengthCheck (100 lines)
+     */
+    protected final ForeignTojos compileTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+            () -> "compile"
+        );
+    }
+
+    /**
      * Make a measured train from another train.
      * @param train The train
      * @return Measured train
