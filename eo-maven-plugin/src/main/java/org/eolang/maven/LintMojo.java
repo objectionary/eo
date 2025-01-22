@@ -162,11 +162,11 @@ public final class LintMojo extends SafeMojo {
      */
     private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
-        for (final ForeignTojo tojo : this.scopedTojos().withLinted()) {
-            paths.put(tojo.identifier(), tojo.linted());
+        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
+            paths.put(tojo.identifier(), tojo.shaken());
         }
-        for (final ForeignTojo tojo : this.compileTojos().withLinted()) {
-            paths.put(tojo.identifier(), tojo.linted());
+        for (final ForeignTojo tojo : this.compileTojos().withShaken()) {
+            paths.put(tojo.identifier(), tojo.shaken());
         }
         final Map<String, XML> pkg = new HashMap<>();
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
