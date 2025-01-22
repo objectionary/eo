@@ -160,7 +160,7 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:function>
   <!-- CAN WE PRINT GIVEN STRING IN SINGLE LINE -->
-  <xsl:function name="eo:can-inline">
+  <xsl:function name="eo:can-inline" as="xs:boolean">
     <xsl:param name="str"/>
     <xsl:param name="extra"/>
     <xsl:sequence select="not(contains($str, $new-line)) and string-length($str) + $extra &lt; 80"/>
@@ -246,7 +246,7 @@ SOFTWARE.
     CHECKS IF APPLICATION ARGUMENTS IS RIGHT ORDER WITH ALPHAS, e.g.
     α0 -> a, α1 -> b, ..., αN -> z
   -->
-  <xsl:function name="eo:is-ordered">
+  <xsl:function name="eo:is-ordered" as="xs:boolean">
     <xsl:param name="current"/>
     <xsl:param name="position"/>
     <xsl:variable name="current-pos" select="eo:element-binding($current, $position - 1)"/>
@@ -400,13 +400,6 @@ SOFTWARE.
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:variable name="start">
           <xsl:choose>
-            <xsl:when test="@ref and not(eo:has-data(.))">
-              <xsl:value-of select="eo:add-xi(true())"/>
-              <xsl:apply-templates select="." mode="path">
-                <xsl:with-param name="find" select="@base"/>
-              </xsl:apply-templates>
-              <xsl:value-of select="eo:specials(@base, true())"/>
-            </xsl:when>
             <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
               <xsl:value-of select="text()"/>
             </xsl:when>
@@ -473,7 +466,7 @@ SOFTWARE.
       <xsl:value-of select="$crb"/>
     </xsl:if>
   </xsl:template>
-  <!-- Nestd applied objects -->
+  <!-- Nested applied objects -->
   <xsl:template match="o" mode="nested">
     <xsl:param name="tabs"/>
     <xsl:param name="after-start"/>

@@ -81,7 +81,13 @@ public class Expect<T> {
     public <R> Expect<R> that(final Function<T, R> fun) {
         return new Expect<>(
             this.subject,
-            () -> fun.apply(this.sup.get())
+            () -> {
+                try {
+                    return fun.apply(this.sup.get());
+                } catch (final ExFailure ex) {
+                    throw new ExThat(ex.getMessage(), ex);
+                }
+            }
         );
     }
 
@@ -96,9 +102,23 @@ public class Expect<T> {
             () -> {
                 try {
                     return this.sup.get();
-                } catch (final ExFailure ex) {
-                    throw new ExFailure(
-                        String.format("%s %s %s", this.subject, ex.getMessage(), message),
+                } catch (final ExMust ex) {
+                    throw new ExOtherwise(
+                        String.format(
+                            "%s %s %s",
+                            this.subject,
+                            ex.getMessage(),
+                            message
+                        ),
+                        ex
+                    );
+                } catch (final ExThat ex) {
+                    throw new ExOtherwise(
+                        String.format(
+                            "%s %s",
+                            this.subject,
+                            message
+                        ),
                         ex
                     );
                 }
@@ -117,7 +137,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExFailure(
+                    throw new ExMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -132,7 +152,170 @@ public class Expect<T> {
      * @checkstyle MethodNameCheck (5 lines)
      */
     public T it() {
-        return this.sup.get();
+        try {
+            return this.sup.get();
+        } catch (final ExOtherwise ex) {
+            throw new ExFailure(ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static final class ExMust extends RuntimeException {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExMust(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#otherwise(String)} method.
+     *
+     * @since 0.51
+     */
+    private static final class ExThat extends RuntimeException {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExThat(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * This exception is used to enhance the error message
+     * in the {@link Expect#it()} method.
+     *
+     * @since 0.51
+     */
+    private static final class ExOtherwise extends RuntimeException {
+        /**
+         * Ctor.
+         * @param cause Exception cause
+         * @param args Arguments for {@link String#format(String, Object...)}
+         */
+        ExOtherwise(final String cause, final Object... args) {
+            super(String.format(cause, args));
+        }
+    }
+
+    /**
+     * Transform Expect to Number.
+     *
+     * @since 0.51
+     */
+    public static final class Number {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public Number(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Double it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .it();
+        }
+    }
+
+    /**
+     * Transform Expect to Integer.
+     *
+     * @since 0.51
+     */
+    public static final class Int {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public Int(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Integer it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .must(number -> number % 1 == 0)
+                .otherwise("must be an integer")
+                .that(Double::intValue)
+                .it();
+        }
+    }
+
+    /**
+     * Transform Expect to Natural number.
+     * Natural number is integer greater or equal to zero.
+     *
+     * @since 0.51
+     */
+    public static final class Natural {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public Natural(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Integer it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .must(number -> number % 1 == 0)
+                .otherwise("must be an integer")
+                .that(Double::intValue)
+                .must(integer -> integer >= 0)
+                .otherwise("must be greater or equal to zero")
+                .it();
+        }
     }
 
 }

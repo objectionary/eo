@@ -29,12 +29,14 @@
 +version 0.0.0
 
 # The angle.
+# A measure of how much something is tilted or rotated, measured in degrees or radians.
+# When dataized, it shows direction or how two lines meet.
 [value] > angle
   value > @
   # Converts this from radians to degrees.
   angle > in-degrees
     div.
-      ^.times 180.0
+      $.times 180.0
       pi
   # Converts this from degrees to radians.
   angle > in-radians
@@ -53,18 +55,17 @@
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.
   [] > tan
-    ^.cos > cosine!
+    cos > cosine!
     if. > @
       cosine.eq 0
       nan
-      ^.sin.div cosine
+      sin.div cosine
 
   # Cotangent of current angle.
   # Please note, that `ctan` is calculated from the angle in radians.
   [] > ctan
-    ^.sin > sine!
+    sin > sine!
     if. > @
       sine.eq 0
       nan
-      ^.cos.div sine
-
+      cos.div sine

@@ -108,7 +108,7 @@ final class ParseMojoTest {
             () -> new FakeMaven(temp)
                 .withHelloWorld()
                 .with("timeout", 0)
-                .execute(InfiniteMojo.class),
+                .execute(Infinite.class),
             CatalogsTest.TO_ADD_MESSAGE
         );
     }
@@ -229,7 +229,7 @@ final class ParseMojoTest {
      * @since 0.29
      */
     @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)
-    private static final class InfiniteMojo extends SafeMojo {
+    private static final class Infinite extends SafeMojo {
         @Override
         public void exec() {
             try {

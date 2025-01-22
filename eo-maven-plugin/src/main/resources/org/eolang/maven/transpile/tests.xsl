@@ -28,9 +28,9 @@ SOFTWARE.
   classes that are unit tests.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:function name="eo:name" as="xs:string">
-    <xsl:param name="n" as="xs:string"/>
-    <xsl:variable name="parts" select="tokenize($n, '\$')"/>
+  <xsl:function name="eo:test-name" as="xs:string">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="parts" select="tokenize($name, '\$')"/>
     <xsl:variable name="p">
       <xsl:for-each select="$parts">
         <xsl:if test="position()&gt;1">
@@ -47,76 +47,14 @@ SOFTWARE.
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:choose>
-        <xsl:when test="//meta[head='tests']">
-          <xsl:value-of select="eo:name(.)"/>
+        <xsl:when test="/program/metas/meta[head='tests']">
+          <xsl:value-of select="eo:test-name(.)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="."/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:attribute>
-  </xsl:template>
-  <xsl:template match="o/@base">
-    <xsl:variable name="a" select="."/>
-    <xsl:variable name="ourRef" select="parent::o/@ref"/>
-    <xsl:attribute name="{name()}">
-      <xsl:choose>
-        <xsl:when test="//meta[head='tests']">
-          <xsl:choose>
-            <xsl:when test="//class[@name=$a and @line=$ourRef]">
-              <xsl:value-of select="eo:name($a)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="."/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="."/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
-  </xsl:template>
-  <xsl:template match="class/@parent">
-    <xsl:variable name="a" select="."/>
-    <xsl:attribute name="{name()}">
-      <xsl:choose>
-        <xsl:when test="//meta[head='tests']">
-          <xsl:choose>
-            <xsl:when test="//class[@name=$a]">
-              <xsl:value-of select="eo:name($a)"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="."/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="."/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:attribute>
-  </xsl:template>
-  <xsl:template match="class" mode="#all">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='tests']">
-        <xsl:variable name="c" select="."/>
-        <xsl:apply-templates select="//class[@parent=$c/@name]" mode="copy"/>
-      </xsl:if>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="objects/class[@parent]" mode="#default">
-    <xsl:choose>
-      <xsl:when test="//meta[head='tests']">
-        <!-- kill them -->
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy>
-          <xsl:apply-templates select="node()|@*"/>
-        </xsl:copy>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>

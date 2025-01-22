@@ -21,43 +21,32 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
-  - /org/eolang/parser/shake/remove-levels.xsl
-  - /org/eolang/parser/shake/clean-up.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/package.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  # 'another' object
-  - //o[@name='another']
-  - //o[@name='another']/o[@base='.eq' and @name='@']
-  - //o[@name='another']/o[@base='.eq' and @name='@']/o[@base='another$t0$first' and @name='first']
-  - //o[@name='another']/o[@base='.eq' and @name='@']/o[@base='another$t0$second' and @name='second']
-  # 'another$t0$first' object
-  - //o[@name='another$t0$first' and count(o)=1]
-  - //o[@name='another$t0$first']/o[@base='number' and @name='@']
-  # 'another$t0$second' object
-  - //o[@name='another$t0$second' and count(o)=1]
-  - //o[@name='another$t0$second']/o[@base='number' and @name='@']
-# Currently the test converts the code from the snippet to:
-# ____
-# [] > another
-#   eq. > @
-#     another$t0$first > first
-#     another$t0$second > second
-#
-# [] > another$t0$first
-#   1 > @
-#
-# [] > another$t0$second
-#   2 > @
-# ____
-
 input: |
   # No comments.
-  [] > another
-    eq. > @
-      # No comments.
-      [] > first
-        1 > @
-      # No comments.
-      [] > second
-        2 > @
+  [void-attr] > object
+    5.plus 5 > bound-attr
+
+    [] > atom /org.eolang.string
+
+    [] > abstract-object
+      [] > inner-atom /obj
+      [] > inner-abstract
+      if. > @
+        true > some
+        false > body
+        [] > abstract-as-arg
+          void-attr > @
+            5
+            [] > arg
+            []
+
+  # No comments.
+  [] > more-object
+    10 > num

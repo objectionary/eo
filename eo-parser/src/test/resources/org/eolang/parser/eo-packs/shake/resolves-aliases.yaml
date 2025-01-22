@@ -21,7 +21,10 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/cti-adds-errors.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/build-fqns.xsl
+  - /org/eolang/parser/shake/expand-qqs.xsl
   - /org/eolang/parser/shake/expand-aliases.xsl
   - /org/eolang/parser/shake/resolve-aliases.xsl
 asserts:

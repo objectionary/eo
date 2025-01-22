@@ -87,4 +87,3 @@ public final class StXPath implements Shift {
     }
 
 }
-

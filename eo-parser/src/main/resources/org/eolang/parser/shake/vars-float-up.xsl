@@ -72,12 +72,6 @@ SOFTWARE.
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
-      <xsl:attribute name="ref">
-        <xsl:value-of select="@line"/>
-      </xsl:attribute>
-      <xsl:attribute name="cut">
-        <xsl:value-of select="count(descendant::o)"/>
-      </xsl:attribute>
       <xsl:apply-templates select="@line"/>
       <xsl:apply-templates select="@method"/>
     </xsl:element>

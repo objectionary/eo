@@ -37,10 +37,10 @@ public final class AtomSafe implements Atom {
 
     /**
      * Ctor.
-     * @param atom Original atom.
+     * @param atom Phi as atom.
      */
-    public AtomSafe(final Atom atom) {
-        this.origin = atom;
+    public AtomSafe(final Phi atom) {
+        this.origin = (Atom) atom;
     }
 
     @Override

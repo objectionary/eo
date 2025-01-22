@@ -146,7 +146,7 @@ final class LintMojoTest {
             new XMLDocument(
                 maven.result().get("target/2-shake/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='critical']"),
-            Matchers.hasSize(1)
+            Matchers.hasSize(3)
         );
     }
 
@@ -172,7 +172,7 @@ final class LintMojoTest {
             new XMLDocument(
                 maven.result().get("target/6-lint/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(Matchers.greaterThanOrEqualTo(6))
+            Matchers.hasSize(Matchers.greaterThanOrEqualTo(2))
         );
     }
 

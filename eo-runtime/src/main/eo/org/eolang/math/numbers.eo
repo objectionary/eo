@@ -33,7 +33,7 @@
 
   # Find max element in the numbers sequence.
   [] > max
-    list ^.sequence > lst
+    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get max number from empty sequence"
@@ -48,7 +48,7 @@
 
   # Find min element in the numbers sequence.
   [] > min
-    list ^.sequence > lst
+    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get min number from empty sequence"

@@ -22,26 +22,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="align-test-classes" version="2.0">
-  <!-- Copies all high-level nesting classes inside the main class.
-  @todo #1249:90min Add link to corresponding xmir2xmir test here as documentation when such tests arrive.
-   Such tests would describe xsl sense via example of input/output. -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="anonymous-to-nested" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:template match="class[descendant::o[not(@base) and not(@name) and o]]">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select=".//o[not(@base) and not(@name) and o]">
+        <xsl:element name="nested">
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+      </xsl:for-each>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="program/objects/class">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='tests']">
-        <xsl:for-each select="class//class">
-          <xsl:copy>
-            <xsl:apply-templates select="node()|@*"/>
-          </xsl:copy>
-        </xsl:for-each>
-      </xsl:if>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

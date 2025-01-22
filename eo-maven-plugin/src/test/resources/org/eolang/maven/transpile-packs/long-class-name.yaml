@@ -21,17 +21,15 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-default-package.xsl
-  - /org/eolang/parser/shake/abstracts-float-up.xsl
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EO89_58 extends PhDefault')]
-  - //java[contains(text(), 'public final class EOtest$EOblah0$EOblah1$EOblah2$EOblah3$EOblah4$EOblah5$EOblah6$EOblah7$EOblah8$EOblah9$EOblah10$EOblah11$EOblah12$EOblah13$EOblah14$EOblah15$EOblah16$EOblah17$EOblah18$EOblah19$EOblah20$EOblah21$EOblah22$EOblah23$EOblah24$EOblah25$EOblah26$EOblah27 extends PhDefault')]
+  - //java[contains(text(), 'public final class EOtest extends PhDefault')]
+  - //java[contains(text(), 'Phi rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr = new PhDefault();')]
+  - //java[contains(text(), '((PhDefault) rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr).add("blah39"')]
 input: |
   # No comments.
   [] > test

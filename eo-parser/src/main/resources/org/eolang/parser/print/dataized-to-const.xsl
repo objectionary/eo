@@ -33,11 +33,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="exists($argument) and not(exists($argument/@name))">
         <xsl:element name="o">
-          <xsl:for-each select="$argument/@*">
-            <xsl:attribute name="{name()}">
-              <xsl:value-of select="."/>
-            </xsl:attribute>
-          </xsl:for-each>
+          <xsl:apply-templates select="$argument/@*"/>
           <xsl:attribute name="name" select="@name"/>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">

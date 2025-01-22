@@ -280,11 +280,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAtom(final EoParser.AtomContext ctx) {
-        this.startObject(ctx)
-            .prop("atom", ctx.type().typeFqn().getText())
-            .leave();
+        final EoParser.TypeFqnContext fqn = ctx.type().typeFqn();
+        if (fqn == null) {
+            this.errors.add(XeEoListener.error(ctx, "Atom must have a type"));
+            this.startObject(ctx).leave();
+        } else {
+            this.startObject(ctx)
+                .prop("atom", fqn.getText())
+                .leave();
+        }
     }
 
     @Override
@@ -1256,7 +1261,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * Create parsing exception from given context.
      * @param ctx Context
      * @param msg Error message
-     * @return Parsing exception from current context
+     * @return Parsing exception from the current context
      */
     private static ParsingException error(final ParserRuleContext ctx, final String msg) {
         return new ParsingException(

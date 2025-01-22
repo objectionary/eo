@@ -28,6 +28,7 @@
 +tests
 +package org.eolang.io
 +version 0.0.0
++unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-bytes-and-writes-to-memory
@@ -80,4 +81,3 @@
                 m1.write 5 2A-
                 m1
     01-02-03-04-05-2A
-

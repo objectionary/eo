@@ -29,7 +29,6 @@ package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Win32.WSAStartupFuncCall;
 import EOorg.EOeolang.EOsys.Win32.Winsock;
-import EOorg.EOeolang.EOtuple$EOempty;
 import java.lang.management.ManagementFactory;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -65,7 +64,7 @@ final class EOwin32Test {
                         new Data.ToPhi("GetCurrentProcessId")
                     ),
                     "args",
-                    new EOtuple$EOempty()
+                    Phi.Φ.take("org.eolang.tuple").take("empty")
                 ).take("code")
             ).asNumber().intValue(),
             Matchers.equalTo(

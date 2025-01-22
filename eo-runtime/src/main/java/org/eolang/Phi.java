@@ -67,19 +67,24 @@ public interface Phi extends Data {
         }
 
         @Override
+        public boolean hasRho() {
+            return false;
+        }
+
+        @Override
         public Phi take(final String name) {
             return this.pkg.take(name);
         }
 
         @Override
-        public boolean put(final int pos, final Phi object) {
+        public void put(final int pos, final Phi object) {
             throw new IllegalStateException(
                 String.format("Can't #put(%d, %s) to Φ", pos, object)
             );
         }
 
         @Override
-        public boolean put(final String name, final Phi object) {
+        public void put(final String name, final Phi object) {
             throw new IllegalStateException(
                 String.format("Can't #put(%s, %s) to Φ", name, object)
             );
@@ -111,6 +116,12 @@ public interface Phi extends Data {
     Phi copy();
 
     /**
+     * Returns true if object has bound rho attribute.
+     * @return True if object has rho bound attribute
+     */
+    boolean hasRho();
+
+    /**
      * Take object by name of the attribute.
      * @param name The name of the attribute
      * @return The object
@@ -121,17 +132,15 @@ public interface Phi extends Data {
      * Put object by position of the attribute.
      * @param pos The position of the attribute.
      * @param object The object to put
-     * @return Was attribute set
      */
-    boolean put(int pos, Phi object);
+    void put(int pos, Phi object);
 
     /**
      * Put object by name of the attribute.
      * @param name The name of the attribute.
      * @param object The object to put
-     * @return Was attribute set
      */
-    boolean put(String name, Phi object);
+    void put(String name, Phi object);
 
     /**
      * Get code locator of the phi.

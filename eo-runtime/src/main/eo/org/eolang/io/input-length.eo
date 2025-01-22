@@ -31,10 +31,10 @@
   rec-read input 0 > @
 
   [input length] > rec-read
-    (input.read ^.chunk).read.^ > read-bytes
+    (input.read chunk).read.^ > read-bytes
     if. > @
       read-bytes.size.eq 0
       length
-      ^.rec-read
+      rec-read
         read-bytes
         length.plus read-bytes.size

@@ -34,23 +34,23 @@
 [data] > bytes
   data > @
   $ > as-bytes
-  $.eq 01- > as-bool
+  eq 01- > as-bool
 
   # Turn this chain of eight bytes into a number.
   # If there are less or more than eight bytes, there will
   # be an error returned.
   [] > as-number
     if. > @
-      ^.eq nan.as-bytes
+      eq nan.as-bytes
       nan
       if.
-        ^.eq positive-infinity.as-bytes
+        eq positive-infinity.as-bytes
         positive-infinity
         if.
-          ^.eq negative-infinity.as-bytes
+          eq negative-infinity.as-bytes
           negative-infinity
           if.
-            ^.size.eq 8
+            size.eq 8
             number ^
             error
               sprintf
@@ -58,9 +58,11 @@
                 * ^
 
   # Equals to another object.
+  # A condition where two objects have the same value or content.
   [b] > eq /org.eolang.bool
 
   # Total number of bytes.
+  # The complete count of bytes used to represent data.
   [] > size /org.eolang.number
 
   # Represents a sub-sequence inside the current one.
@@ -71,7 +73,7 @@
   # be an error returned.
   [] > as-i64
     if. > @
-      ^.size.eq 8
+      size.eq 8
       i64 ^
       error
         sprintf
@@ -83,7 +85,7 @@
   # be an error returned.
   [] > as-i32
     if. > @
-      ^.size.eq 4
+      size.eq 4
       i32 ^
       error
         sprintf
@@ -95,29 +97,29 @@
   # be an error returned.
   [] > as-i16
     if. > @
-      ^.size.eq 2
+      size.eq 2
       i16 ^
       error
         sprintf
           "Can't convert non 2 length bytes to i16, bytes are %x"
           * ^
 
-  # Calculate bitwise and.
+  # Calculate the bitwise and operation.
   [b] > and /org.eolang.bytes
 
-  # Calculate bitwise or.
+  # Calculate the bitwise or operation.
   [b] > or /org.eolang.bytes
 
-  # Calculate bitwise xor.
+  # Calculate the bitwise xor operation.
   [b] > xor /org.eolang.bytes
 
-  # Calculate bitwise not.
+  # Calculate the bitwise not operation.
   [] > not /org.eolang.bytes
 
-  # Calculate bitwise left shift.
-  ^.right x.neg > [x] > left
+  # Calculate the bitwise left shift.
+  right x.neg > [x] > left
 
-  # Calculate bitwise right shift.
+  # Calculate the bitwise right shift.
   [x] > right /org.eolang.bytes
 
   # Concatenation of two byte sequences:

@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/cti-adds-errors.xsl
   - /org/eolang/parser/shake/vars-float-up.xsl
 asserts:
   - /program/objects[not(o[@atom and @base])]

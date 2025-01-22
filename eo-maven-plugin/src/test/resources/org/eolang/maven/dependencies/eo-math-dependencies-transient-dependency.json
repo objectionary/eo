@@ -1,31 +1,47 @@
 {
-  "graphName" : "eo-math",
-  "artifacts" : [ {
-    "id" : "org.eolang:eo-math:jar",
-    "numericId" : 1,
-    "groupId" : "org.eolang",
-    "artifactId" : "eo-math",
-    "version" : "0.2.3",
-    "optional" : false,
-    "scopes" : [ "compile" ],
-    "types" : [ "jar" ]
-  }, {
-    "id" : "org.eolang:eo-runtime:jar",
-    "numericId" : 2,
-    "groupId" : "org.eolang",
-    "artifactId" : "eo-runtime",
-    "version" : "0.28.0",
-    "optional" : false,
-    "scopes" : [ "compile" ],
-    "types" : [ "jar" ]
-  }, {
-    "id" : "org.junit.jupiter:junit-jupiter-api:jar",
-    "numericId" : 3,
-    "groupId" : "org.junit.jupiter",
-    "artifactId" : "junit-jupiter-api",
-    "version" : "5.9.0",
-    "optional" : false,
-    "scopes" : [ "compile" ],
-    "types" : [ "jar" ]
-  }]
+  "artifacts": [
+    {
+      "artifactId": "eo-math",
+      "groupId": "org.eolang",
+      "id": "org.eolang:eo-math:jar",
+      "numericId": 1,
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ],
+      "version": "0.2.3"
+    },
+    {
+      "artifactId": "eo-runtime",
+      "groupId": "org.eolang",
+      "id": "org.eolang:eo-runtime:jar",
+      "numericId": 2,
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ],
+      "version": "0.28.0"
+    },
+    {
+      "artifactId": "junit-jupiter-api",
+      "groupId": "org.junit.jupiter",
+      "id": "org.junit.jupiter:junit-jupiter-api:jar",
+      "numericId": 3,
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ],
+      "version": "5.9.0"
+    }
+  ],
+  "graphName": "eo-math"
 }

@@ -65,5 +65,5 @@
       (condition (index.plus 1)).as-bool
       seq *
         current
-        ^.loop (index.plus 1)
+        loop (index.plus 1)
       current

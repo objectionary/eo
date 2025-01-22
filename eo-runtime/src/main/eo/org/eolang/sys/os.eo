@@ -33,7 +33,7 @@
   name > @
 
   [] > is-windows
-    ^.name > os-name!
+    name > os-name!
     and. > @
       os-name.size.gt 6
       (os-name.slice 0 7).eq "Windows"

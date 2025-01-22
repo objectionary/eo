@@ -42,4 +42,4 @@
 
       # Read `size` amount of bytes from nowhere.
       # Returns new instance of `input-block`.
-      ^.^.input-block > [size] > read
+      input-block > [size] > read

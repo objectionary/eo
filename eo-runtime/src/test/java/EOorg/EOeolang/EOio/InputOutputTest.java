@@ -323,16 +323,15 @@ final class InputOutputTest {
             final File file = InputOutputTest.redirectedStdout(
                 temp,
                 () -> {
-                    final Phi buffer = new Data.ToPhi("Ha");
                     final Phi first = new PhWith(
                         Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
-                        0, buffer
+                        0, new Data.ToPhi("Hey")
                     );
                     final Phi second = new PhWith(
                         new PhCopy(
                             new PhMethod(first, InputOutputTest.WRITE)
                         ),
-                        0, buffer
+                        0, new Data.ToPhi("There")
                     );
                     new Dataized(second).take();
                 }
@@ -340,7 +339,10 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The 'console.write' should have return output block ready to write again, but it didn't",
                 Files.readString(Paths.get(file.getAbsolutePath()), StandardCharsets.UTF_8),
-                Matchers.containsString("HaHa")
+                Matchers.allOf(
+                    Matchers.containsString("Hey"),
+                    Matchers.containsString("There")
+                )
             );
         }
 

@@ -29,15 +29,14 @@
 # Here `bts` is `bytes` objects, the return value is `tuple` where
 # each element is one `byte`.
 [bts] > bytes-as-array
-  bts.size > bytes-size!
-  slice-byte > @
-    *
-    0
+  bts > dataized-bts!
+  dataized-bts.size > bytes-size!
+  slice-byte * 0 > @
 
   [tup index] > slice-byte
     if. > @
-      index.lt ^.bytes-size
-      ^.slice-byte
-        tup.with (^.bts.slice index 1)
-        index.plus 1
+      index.lt bytes-size
+      slice-byte
+        tup.with (bts.slice index 1)
+        (index.plus 1).as-number
       tup

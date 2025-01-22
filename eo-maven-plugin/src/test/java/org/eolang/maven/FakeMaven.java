@@ -330,6 +330,7 @@ public final class FakeMaven {
             "+alias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
+            "+unlint incorrect-alias",
             "+version 0.0.0",
             "",
             "# No comments here, since it's just an example.",

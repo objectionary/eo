@@ -29,8 +29,14 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
 +version 0.0.0
++unlint broken-ref
 
 # Text.
+# A sequence of characters representing words, sentences, or data.
+# @todo #3481:30min Remove all +unlit broken-ref from EO source code.
+#  These suppressions were added in order to be compile EO when @ref attribute
+#  from XMIR is removed, by it's checked by LintMojo. We need to remove these
+#  suppressions when `lints` repository is fixed and new version is used in EO.
 [origin] > text
   origin > @
   # Check that all signs in string are numbers or letters.
@@ -47,95 +53,98 @@
   # `len` must be an integer which shows how much symbols should be sliced.
   [start len] > slice
     text > @
-      ^.origin.slice start len
+      origin.slice start len
 
   # Returns `text` trimmed from left side.
   [] > trimmed-left
-    ^.origin.length > len!
+    origin > bts!
+    bts.size > len!
     first-non-space-index 0 > idx!
+    20- > space
     if. > @
       0.eq len
       ^
-      ^.slice
-        idx
-        (number len).minus (number idx)
+      text
+        string
+          bts.slice
+            idx
+            (number len).minus idx
 
     [index] > first-non-space-index
-      ^.^.origin.slice index 1 > char!
+      bts.slice index 1 > char!
       if. > @
-        ^.len.eq index
+        len.eq index
         index
         if.
-          " ".eq char
-          ^.first-non-space-index
-            index.plus 1
+          char.eq space
+          first-non-space-index (index.plus 1).as-number
           index
 
   # Returns `text` trimmed from right side.
   [] > trimmed-right
-    ^.origin.length > len!
+    origin > bts!
+    bts.size > len!
+    20- > space
     if. > @
       0.eq len
       ^
-      ^.slice
-        0
-        first-non-space-index
-          (number len).plus -1
+      text
+        string
+          bts.slice
+            0
+            first-non-space-index
+              (number len).plus -1
 
     [index] > first-non-space-index
-      ^.^.origin.slice index 1 > char!
+      bts.slice index 1 > char!
       if. > @
         -1.eq index
         0
         if.
-          " ".eq char
-          ^.first-non-space-index
-            index.plus -1
+          char.eq space
+          first-non-space-index (index.plus -1).as-number
           index.plus 1
 
   # Returns `text` trimmed from both sides.
   [] > trimmed
     if. > @
-      0.eq ^.length
+      0.eq origin.as-bytes.size
       ^
-      trimmed-right.
-        trimmed-left.
-          ^
+      trimmed-left.trimmed-right
 
   # Joins `items`, which is a `tuple` of strings, using current `string`
   # as a delimiter.
   [items] > joined
-    ^.origin > delimiter!
-    items.at 0 > first
-    items.length > len!
-    if. > not-empty!
-      1.eq len
-      first
-      concat.
-        first.as-bytes
-        with-delimiter "".as-bytes 1
+    origin > delimiter!
+    if. > joined-bts!
+      items.length.eq 0
+      --
+      with-delimiter items.value items.prev
     text > @
-      if.
-        0.eq len
-        ""
-        string not-empty
+      string joined-bts
 
-    [acc index] > with-delimiter
+    [acc tup] > with-delimiter
       if. > @
-        ^.len.eq index
+        tup.length.eq 0
         acc
-        ^.with-delimiter
-          acc.concat
-            ^.delimiter.concat
-              ^.items.at index
-          index.plus 1
+        with-delimiter
+          concat.
+            concat.
+              dataized tup.value
+              delimiter
+            acc
+          tup.prev
 
   # Returns `text` repeated `times` times.
   # If `times` < 0 - an error is returned.
   # If `times` == 0 - an original text is returned.
   [times] > repeated
-    ^.origin.as-bytes > bts!
+    origin > bts!
     times > amount!
+    if. > repeated-bytes!
+      0.eq amount
+      --
+      rec-repeated bts 1
     if. > @
       0.gt amount
       error
@@ -143,105 +152,141 @@
           "Can't repeat text %d times"
           * amount
       text
-        if.
-          0.eq amount
-          ""
-          string
-            rec-repeated bts 1
+        string repeated-bytes
 
     [accum index] > rec-repeated
       if. > @
-        ^.amount.eq index
+        amount.eq index
         accum
-        ^.rec-repeated
-          accum.concat ^.bts
-          index.plus 1
+        rec-repeated
+          accum.concat bts
+          (index.plus 1).as-number
 
   # Checks if current `text` contains given `substring`.
   [substring] > contains
-    not. > @
-      eq.
-        -1
-        ^.index-of substring
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    (number origin-size).minus substring-size > end!
+    and. > @
+      (number origin-size).gte substring-size
+      or.
+        and.
+          origin-size.eq substring-size
+          origin-bts.eq substring-bts
+        rec-contains 0
+
+    [idx] > rec-contains
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
+      if. > @
+        end.eq idx
+        includes
+        or.
+          includes
+          rec-contains (idx.plus 1).as-number
 
   # Checks that current `text` ends with given `substring`.
   [substring] > ends-with
-    substring > substr!
-    eq. > @
-      ^.index-of substr
-      ^.length.minus substr.size
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    and. > @
+      (number substring-size).lte origin-size
+      eq.
+        origin-bts.slice
+          (number origin-size).minus substring-size
+          substring-size
+        substring-bts
 
   # Checks that current `text` starts with given `substring`.
   [substring] > starts-with
-    eq. > @
-      0
-      ^.index-of substring
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    and. > @
+      (number substring-size).lte origin-size
+      (origin-bts.slice 0 substring-size).eq substring-bts
 
   # Returns index of `substring` in current `text`.
   # If no `substring` was found, it returns -1.
   [substring] > index-of
-    (string ^.origin.as-bytes).length > self-len!
-    string > substr
-      substring > substr-as-bytes!
-    substr.length > sub-len!
-    (number self-len).minus (number sub-len) > end!
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    (number origin-size).minus substring-size > end!
+    rec-index-of 0 > found!
     if. > @
       or.
-        (number sub-len).gt self-len
-        and.
-          sub-len.eq self-len
-          (substr.eq ^.origin).not
+        or.
+          (number substring-size).gt origin-size
+          and.
+            substring-size.eq origin-size
+            (substring-bts.eq origin-bts).not
+        found.eq -1
       -1
-      rec-index-of-substr 0
+      length.
+        string
+          origin-bts.slice 0 found
 
-    [idx] > rec-index-of-substr
+    [idx] > rec-index-of
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
       if. > @
-        ^.end.eq idx
+        end.eq idx
         if.
-          eq. > contains
-            ^.substr
-            ^.^.slice idx ^.sub-len
+          includes
           idx
           -1
         if.
-          contains
+          includes
           idx
-          ^.rec-index-of-substr
-            idx.plus 1
+          rec-index-of (idx.plus 1).as-number
 
   # Returns last index of `substring` in current `text`.
   # If no element was found, it returns -1.
   [substring] > last-index-of
-    (string ^.origin.as-bytes).length > self-len!
-    string > substr
-      substring > substr-as-bytes!
-    substr.length > sub-len!
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    rec-index-of > found!
+      (number origin-size).minus substring-size
     if. > @
       or.
-        (number sub-len).gt self-len
-        and.
-          sub-len.eq self-len
-          (substr.eq ^.origin).not
+        or.
+          (number substring-size).gt origin-size
+          and.
+            substring-size.eq origin-size
+            (substring-bts.eq origin-bts).not
+        found.eq -1
       -1
-      rec-index-of-substr
-        (number self-len).minus (number sub-len)
+      length.
+        string
+          origin-bts.slice 0 found
 
-    [idx] > rec-index-of-substr
+    [idx] > rec-index-of
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
       if. > @
         0.eq idx
         if.
-          eq. > contains
-            ^.substr
-            ^.^.slice idx ^.sub-len
+          includes
           idx
           -1
         if.
-          contains
+          includes
           idx
-          ^.rec-index-of-substr
-            idx.plus -1
+          rec-index-of (idx.plus -1).as-number
 
-  # Returns `text` in upper case.
+  # Returns the `text` in upper case.
   [] > up-cased
     ascii "z" > ascii-z!
     ascii "a" > ascii-a!
@@ -253,19 +298,19 @@
         reduced.
           list
             bytes-as-array
-              ^.origin.as-bytes
+              origin.as-bytes
           --
           [accum byte] >>
-            ^.ascii byte > ascii-bte
+            ascii byte > ascii-bte
             accum.concat > @
               if.
                 and.
-                  ascii-bte.lte ^.ascii-z
-                  ascii-bte.gte ^.ascii-a
+                  ascii-bte.lte ascii-z
+                  ascii-bte.gte ascii-a
                 slice.
                   as-bytes.
                     as-i64.
-                      ascii-bte.minus ^.distance
+                      ascii-bte.minus distance
                   7
                   1
                 byte
@@ -277,28 +322,28 @@
             00-00-00-00-00-00-00
             char.as-bytes
 
-  # Returns `text` in lower case.
+  # Returns the `text` in lower case.
   [] > low-cased
-    ^.up-cased.ascii "Z" > ascii-z
-    ^.up-cased.ascii "A" > ascii-a
+    up-cased.ascii "Z" > ascii-z
+    up-cased.ascii "A" > ascii-a
     text > @
       string
         reduced.
           list
             bytes-as-array
-              ^.origin.as-bytes
+              origin.as-bytes
           --
           [accum byte] >>
-            ^.^.up-cased.ascii byte > ascii-bte
+            up-cased.ascii byte > ascii-bte
             accum.concat > @
               if.
                 and.
-                  ascii-bte.lte ^.ascii-z
-                  ascii-bte.gte ^.ascii-a
+                  ascii-bte.lte ascii-z
+                  ascii-bte.gte ascii-a
                 slice.
                   as-bytes.
                     as-i64.
-                      ascii-bte.plus ^.^.up-cased.distance
+                      ascii-bte.plus up-cased.distance
                   7
                   1
                 byte
@@ -320,14 +365,14 @@
         sprintf
           "Given index %d is out of text bounds"
           * index
-      ^.slice index 1
+      slice index 1
 
   # Returns `text` where all regex target changed to replacement.
   # Here `target` must be a `org.eolang.txt.regex` object.
   # The `replacement` here is a `string` that would be pasted instead of
   # matched text in original one.
   [target replacement] > replaced
-    ^.origin > self-as-bytes!
+    origin > self-as-bytes!
     string self-as-bytes > reinit
     (target.match reinit).next > matched
     if. > @
@@ -339,37 +384,37 @@
     [block accum start] > rec-replaced
       if. > @
         block.exists
-        ^.rec-replaced
+        rec-replaced
           block.next
           concat.
             concat.
               accum
-              ^.reinit.slice
+              reinit.slice
                 start
                 block.from.minus start
-            ^.replacement
+            replacement
           block.to
         string
           accum.concat
-            ^.reinit.slice
+            reinit.slice
               start
-              ^.reinit.length.minus start
+              reinit.length.minus start
 
   # Returns the original `text` as `number`.
   [] > as-number
-    sscanf "%f" ^.origin > scanned
+    (sscanf "%f" origin).as-tuple > scanned
     if. > @
       scanned.length.eq 0
       error
         sprintf
           "Can't convert text %s to number"
-          * ^.origin
-      scanned.tail
+          * origin
+      scanned.value
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
     delimiter > delim!
-    ^.origin.as-bytes > self-as-bytes
+    origin > self-as-bytes!
     self-as-bytes.size > len!
     if. > @
       len.eq 0
@@ -378,27 +423,26 @@
 
     [accum start current] > rec-split
       if. > @
-        ^.len.eq current
+        len.eq current
         accum.with > with-substr
           string
-            ^.self-as-bytes.slice
+            self-as-bytes.slice
               start
               current.minus start
         if.
-          eq.
-            ^.delim
-            ^.self-as-bytes.slice current 1
-          ^.rec-split
+          delim.eq
+            self-as-bytes.slice current 1
+          rec-split
             with-substr
-            current.plus 1
-            current.plus 1
-          ^.rec-split
+            (current.plus 1).as-number
+            (current.plus 1).as-number
+          rec-split
             accum
             start
-            current.plus 1
+            (current.plus 1).as-number
 
   # Returns concatenation of all `other` strings.
-  # Here `other` must be a `tuple` of `strings`.
+  # Here `others` must be a `tuple` of `strings`.
   [others] > chained
     if. > @
       0.eq others.length
@@ -407,5 +451,5 @@
         string
           reduced.
             list others
-            ^.origin.as-bytes
+            origin.as-bytes
             accum.concat str.as-bytes > [accum str]

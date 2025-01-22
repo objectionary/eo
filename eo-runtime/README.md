@@ -43,7 +43,7 @@ By default, logging within tests is limited since it
 produces quite extensive logs which affect performance.
 However, for debugging/analysis purposes extended (debug) logs can be enabled.
 For that both JUL and Logback levels need to be set to `FINE`. This is
-accomplished by amending the following two files:  
+accomplished by amending the following two files:
 _test\resources\jul.properties_:
 
 ```
@@ -59,7 +59,7 @@ _test\resources\logback.xml_:
 
 For the latter `FINE` level must be set to desired object. `Dataized` will
 produce extensive logging for dataization process and `PhDefault` for
-attributes retrieval process.  
+attributes retrieval process.
 By default, dataization will be logged up until nesting level 3.
 If for some reason deeper dataization log is required it can be
 achieved by jvm property `-Dmax.dataization.log=<N>`

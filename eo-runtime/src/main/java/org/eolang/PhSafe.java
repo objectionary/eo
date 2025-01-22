@@ -27,6 +27,7 @@ package org.eolang;
 import EOorg.EOeolang.EOerror;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * An object with coordinates (line and position) and a safe
@@ -130,18 +131,23 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
+    public boolean hasRho() {
+        return this.through(this.origin::hasRho);
+    }
+
+    @Override
     public Phi take(final String name) {
         return this.through(() -> this.origin.take(name));
     }
 
     @Override
-    public boolean put(final int pos, final Phi object) {
-        return this.through(() -> this.origin.put(pos, object));
+    public void put(final int pos, final Phi object) {
+        this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
-    public boolean put(final String nme, final Phi object) {
-        return this.through(() -> this.origin.put(nme, object));
+    public void put(final String nme, final Phi object) {
+        this.through(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -161,7 +167,21 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public Phi lambda() {
-        return this.through(() -> new AtomSafe((Atom) this.origin).lambda(), ".λ");
+        return this.through(new AtomSafe(this.origin)::lambda, ".λ");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     */
+    private void through(final Runnable action) {
+        this.through(
+            () -> {
+                action.run();
+                return true;
+            },
+            ""
+        );
     }
 
     /**
@@ -170,7 +190,7 @@ public final class PhSafe implements Phi, Atom {
      * @param <T> Type of result
      * @return Result
      */
-    private <T> T through(final Action<T> action) {
+    private <T> T through(final Supplier<T> action) {
         return this.through(action, "");
     }
 
@@ -188,9 +208,9 @@ public final class PhSafe implements Phi, Atom {
      * @checkstyle IllegalCatchCheck (20 lines)
      */
     @SuppressWarnings({"PMD.AvoidCatchingThrowable", "PMD.PreserveStackTrace"})
-    private <T> T through(final Action<T> action, final String suffix) {
+    private <T> T through(final Supplier<T> action, final String suffix) {
         try {
-            return action.act();
+            return action.get();
         } catch (final EOerror.ExError ex) {
             throw new EOerror.ExError(ex, this.label(suffix));
         } catch (final ExAbstract ex) {

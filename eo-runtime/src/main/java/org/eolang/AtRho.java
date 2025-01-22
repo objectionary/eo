@@ -70,14 +70,9 @@ final class AtRho implements Attr {
     }
 
     @Override
-    public boolean put(final Phi phi) {
-        final boolean ret;
+    public void put(final Phi phi) {
         if (this.rho.get() == null) {
             this.rho.set(phi);
-            ret = true;
-        } else {
-            ret = false;
         }
-        return ret;
     }
 }

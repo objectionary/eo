@@ -21,15 +21,14 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-default-package.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java/text()[contains(., 'new PhWith(ret, 0')]
-  - //java/text()[contains(., 'new PhWith(ret, "text"')]
+  - //java/text()[contains(., 'new PhWith(r, 0')]
+  - //java/text()[contains(., 'new PhWith(r, "text"')]
 input: |
   # No comments.
   [] > main

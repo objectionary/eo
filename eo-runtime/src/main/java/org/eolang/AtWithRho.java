@@ -25,33 +25,50 @@
 package org.eolang;
 
 /**
- * The attribute tries to copy object and set \rho to it.
- *
- * <p>If the name of the attribute is {@link Attr#RHO} - just object is returned.</p>
- *
+ * The attribute that tries to copy object and set \rho to it if it has not already set.
  * @since 0.36.0
  */
-final class AtSetRho extends AtEnvelope {
+final class AtWithRho implements Attr {
+    /**
+     * Original attribute.
+     */
+    private final Attr origin;
+
+    /**
+     * Rho.
+     */
+    private final Phi rho;
+
     /**
      * Ctor.
-     * @param attr Origin attribute
-     * @param rho Rho that will be set
-     * @param name Name of the attribute
+     * @param attr Attribute
+     * @param rho Rho
      */
-    AtSetRho(final Attr attr, final Phi rho, final String name) {
-        super(
-            new AtGetOnly(
-                () -> {
-                    Phi ret = attr.get();
-                    if (!name.equals(Attr.RHO)) {
-                        final Phi copy = ret.copy();
-                        if (copy.put(Attr.RHO, rho)) {
-                            ret = copy;
-                        }
-                    }
-                    return ret;
-                }
-            )
+    AtWithRho(final Attr attr, final Phi rho) {
+        this.origin = attr;
+        this.rho = rho;
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtWithRho(
+            this.origin.copy(self),
+            self
         );
+    }
+
+    @Override
+    public Phi get() {
+        Phi ret = this.origin.get();
+        if (!ret.hasRho()) {
+            ret = ret.copy();
+            ret.put(Attr.RHO, this.rho);
+        }
+        return ret;
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 }

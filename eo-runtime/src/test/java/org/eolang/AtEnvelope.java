@@ -30,7 +30,8 @@ package org.eolang;
  * @since 0.36.0
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
-public abstract class AtEnvelope implements Attr {
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
+abstract class AtEnvelope implements Attr {
     /**
      * Original attribute.
      */
@@ -40,7 +41,7 @@ public abstract class AtEnvelope implements Attr {
      * Ctor.
      * @param attr Attribute
      */
-    public AtEnvelope(final Attr attr) {
+    AtEnvelope(final Attr attr) {
         this.origin = attr;
     }
 
@@ -55,7 +56,7 @@ public abstract class AtEnvelope implements Attr {
     }
 
     @Override
-    public boolean put(final Phi phi) {
-        return this.origin.put(phi);
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 }

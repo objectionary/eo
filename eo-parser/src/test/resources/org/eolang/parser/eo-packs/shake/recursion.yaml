@@ -21,11 +21,13 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/add-refs.xsl
+  - /org/eolang/parser/shake/cti-adds-errors.xsl
+  - /org/eolang/parser/shake/vars-float-up.xsl
+  - /org/eolang/parser/shake/build-fqns.xsl
 asserts:
   - /program[not(errors)]
   - //o[@name='f' and @line='8']
-  - //o[@base='f' and @ref='8']
+  - //o[@base='.f']/o[@base='^']
 input: |
   +home https://github.com/objectionary/eo
   +package test

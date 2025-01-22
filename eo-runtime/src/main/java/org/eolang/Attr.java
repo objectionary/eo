@@ -56,6 +56,8 @@ public interface Attr {
     /**
      * Take the object out.
      *
+     * <p>If attribute is not set - throws {@link ExUnset}.</p>
+     *
      * @return The object
      */
     Phi get();
@@ -64,7 +66,6 @@ public interface Attr {
      * Put a new object in.
      *
      * @param phi The object to put
-     * @return Was attribute set
      */
-    boolean put(Phi phi);
+    void put(Phi phi);
 }

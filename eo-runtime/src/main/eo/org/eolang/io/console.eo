@@ -118,7 +118,7 @@
           self. > @
             seq *
               read-bytes
-              ^.^.input-block read-bytes
+              input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -144,7 +144,7 @@
                 posix
                   "write"
                   * posix.stdout-fileno buffer buffer.size
-              ^.^.output-block
+              output-block
 
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
@@ -174,7 +174,7 @@
           self. > @
             seq *
               read-bytes
-              ^.^.input-block read-bytes
+              input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -200,4 +200,4 @@
                 win32
                   "WriteFile"
                   * win32.std-output-handle buffer buffer.size
-              ^.^.output-block
+              output-block

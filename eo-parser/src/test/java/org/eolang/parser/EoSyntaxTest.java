@@ -45,6 +45,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -82,6 +83,23 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @Disabled
+    void prohibitsMoreThanOneTailingEol() throws Exception {
+        MatcherAssert.assertThat(
+            "doesn't prohibit more than one tailing EOL",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf("# No comments.\n[] > foo\n\n\n\n")
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths("/program/errors/error")
+        );
+    }
+
+    @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = String.join(
             "\n",
@@ -89,7 +107,7 @@ final class EoSyntaxTest {
             "[] > x-н, 1\n"
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "EO syntax is broken, but listing should be printed",
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -100,7 +118,7 @@ final class EoSyntaxTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/errors[count(error)=2]",
+                "/program/errors[count(error)=3]",
                 String.format("/program[listing='%s']", src)
             )
         );
@@ -279,10 +297,10 @@ final class EoSyntaxTest {
         if (story.map().containsKey(msg)) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(story.after()).toString(),
-                story.after()
-                    .xpath("/program/errors/error[1]/text()")
-                    .get(0)
-                    .replaceAll("\r", ""),
+                String.join(
+                    "\n",
+                    story.after().xpath("/program/errors/error/text()")
+                ).replaceAll("\r", ""),
                 Matchers.equalTo(story.map().get(msg).toString())
             );
         }

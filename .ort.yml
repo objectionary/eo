@@ -19,17 +19,24 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+# See https://oss-review-toolkit.org/ort/docs/configuration/ort-yml for file specification
 ---
-sheets:
-  - /org/eolang/parser/shake/add-refs.xsl
-document:
-  <?xml version="1.0" encoding="UTF-8"?>
-  <program>
-    <objects>
-      <o name="a" line="4">
-        <o base="a"/>
-      </o>
-    </objects>
-  </program>
-asserts:
-  - /program/objects/o[@name='a']/o[@base='a']
+license_choices:
+  package_license_choices:
+    - package_id: "Maven:org.glassfish:javax.json:1.1.4"
+      license_choices:
+        - given: CDDL-1.1 OR GPL-2.0-only
+          choice: CDDL-1.1
+    - package_id: "Maven:javax.json:javax.json-api:1.1.4"
+      license_choices:
+        - given: CDDL-1.1 OR GPL-2.0-only
+          choice: CDDL-1.1
+excludes:
+  scopes:
+    - pattern: "provided.*"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Packages provided"
+    - pattern: "test.*"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Packages for testing only"

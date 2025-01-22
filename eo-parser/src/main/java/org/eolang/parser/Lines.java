@@ -61,6 +61,6 @@ final class Lines {
                 .map(UncheckedText::new)
                 .map(UncheckedText::asString);
         }
-        return result.orElse("EOF");
+        return result.orElse("");
     }
 }

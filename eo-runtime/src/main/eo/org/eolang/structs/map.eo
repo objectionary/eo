@@ -27,41 +27,42 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++unlint broken-ref
 
 # Hash-map.
-# Here `pairs` must be a `tuple` of `tuple`s where each sub-tuple consists of 2
-# elements - key and value.
-# Key must be a dataizable object, value may be any object.
+# Here `pairs` must be a `tuple` of `map.entry` object.
+# The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 [pairs] > map
-  initialized. > @
+  this. > @
     [] >>
-      ^.pairs.length > pairs-size!
-      ^.initialized > @
-        if.
-          pairs-size.eq 0
-          *
-          rec-rebuild
+      initialized > @
+        as-tuple.
+          if.
+            pairs.length.eq 0
             *
-            0
-            list *
+            entries.
+              rec-rebuild
+                pairs
 
-      [accum index hashes] > rec-rebuild
-        ^.^.pairs.at index > entry
-        hash-code-of entry.key > hash!
+      [entries hashes] > couple
+        $ > this
+
+      [tup] > rec-rebuild
+        hash-code-of tup.value.key > hash!
+        (rec-rebuild tup.prev).this > prev
         if. > @
-          ^.pairs-size.eq index
-          accum
-          ^.rec-rebuild
-            if.
-              hashes.contains hash
-              accum
-              accum.with
+          tup.length.eq 0
+          couple * (list *)
+          if.
+            prev.hashes.contains hash
+            prev
+            couple
+              prev.entries.with
                 [] >>
-                  ^.entry.key > key
-                  ^.entry.value > value
+                  tup.value.key > key
+                  tup.value.value > value
                   ^.hash > hash
-            index.plus 1
-            hashes.with hash
+              prev.hashes.with hash
 
   # Hash map entry.
   # Here 'key' is an object which is used to find `value` is hash map.
@@ -72,26 +73,22 @@
 
   # Initialized hash map with rebuilt entries.
   [entries] > initialized
-    $ > initialized
+    $ > this
     entries.length > size
-
     # Returns `list` of all keys in hash map.
     # Keys order is not guaranteed.
-    [] > keys
-      mapped. > @
-        list ^.entries
-        entry.key > [entry]
-
+    mapped. > keys
+      list entries
+      entry.key > [entry]
     # Returns `list` of all values in hash map.
     # Values order is not guaranteed.
-    [] > values
-      mapped. > @
-        list ^.entries
-        entry.value > [entry]
+    mapped. > values
+      list entries
+      entry.value > [entry]
 
     # Returns `true` if hash map has object by given `key`.
     # Here `key` must be dataizable.
-    (^.found key).exists > [key] > has
+    (found key).exists > [key] > has
 
     # Tries to find object in hash map by given `key`.
     # Here `key` must be dataizable.
@@ -114,54 +111,57 @@
     [key] > found
       hash-code-of key > hash!
       if. > @
-        ^.size.eq 0
+        size.eq 0
         not-found
-        rec-key-search
-          not-found
-          0
+        rec-key-search entries
 
-      [found index] > rec-key-search
-        ^.^.entries.at index > entry
+      [tup] > rec-key-search
+        (rec-key-search tup.prev).this > prev
         if. > @
-          or.
-            found.exists
-            ^.^.size.eq index
-          found
-          ^.rec-key-search
+          tup.length.eq 0
+          not-found
+          if.
+            prev.exists
+            prev
             if.
-              ^.hash.eq entry.hash
-              [] (true > exists) (^.entry.value > get) >>
-              found
-            index.plus 1
+              tup.value.hash.eq hash
+              [] >>
+                $ > this
+                true > exists
+                tup.value.value > get
+              not-found
 
       [] > not-found
+        $ > this
         false > exists
         error > get
           sprintf
             "Object by hash code %d from given key does not exists"
-            * ^.hash
+            * hash
 
     # Returns the new `map` with added object
     # Replaces if there was one before.
     [key value] > with
       hash-code-of key > hash!
-      map.initialized > @
-        with.
-          origin.
-            filtered.
-              list ^.entries
-              (^.hash.eq entry.hash).not > [entry] >>
-          [] >>
-            ^.key > key
-            ^.value > value
-            ^.hash > hash
+      this. > @
+        map.initialized
+          with.
+            origin.
+              filtered.
+                list entries
+                (hash.eq entry.hash).not > [entry] >>
+            [] >>
+              ^.key > key
+              ^.value > value
+              ^.hash > hash
 
     # Returns a new `map`, without element with the given `key`
     # Returns the `map` itself, if there was no item with this `key`.
     [key] > without
       hash-code-of key > hash!
-      map.initialized > @
-        origin.
-          filtered.
-            list ^.entries
-            (^.hash.eq entry.hash).not > [entry] >>
+      this. > @
+        map.initialized
+          origin.
+            filtered.
+              list entries
+              (hash.eq entry.hash).not > [entry] >>

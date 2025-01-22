@@ -35,7 +35,9 @@
   right > [left right] > if
 
   # And.
+  # A logical operation that returns True only if all given conditions are true.
   ^ > [x] > and
 
   # Or.
+  # A logical operation that returns True if at least one of the given conditions is true.
   01-.eq x > [x] > or
