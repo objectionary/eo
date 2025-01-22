@@ -27,26 +27,26 @@
 +version 0.0.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > makes-tuple-through-special-syntax
+[] > tests-makes-tuple-through-special-syntax
   eq. > @
     (* 1 2).length
     2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > gets-lengths-of-empty-tuple-through-special-syntax
+[] > tests-gets-lengths-of-empty-tuple-through-special-syntax
   eq. > @
     *.length
     0
 
 # Check that an empty tuples .length equals to zero.
-[] > empty-tuple-length
+[] > tests-empty-tuple-length
   [elements] > arr
   eq. > @
     (arr *).elements.length
     0
 
 # Check that tuple.length works properly for non-empty tuples.
-[] > non-empty-tuple-length-test
+[] > tests-non-empty-tuple-length-test
   [elements] > arr
   eq. > @
     arr
@@ -56,14 +56,14 @@
     5
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-as-a-bound-attribute-size-0
+[] > tests-tuple-as-a-bound-attribute-size-0
   * > anArray
   eq. > @
     anArray.length
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-as-a-bound-attribute-size-1
+[] > tests-tuple-as-a-bound-attribute-size-1
   * > anArray
     100
   eq. > @
@@ -71,7 +71,7 @@
     100
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-as-a-bound-attribute-size-2
+[] > tests-tuple-as-a-bound-attribute-size-2
   * > arr
     1
     2
@@ -84,7 +84,7 @@
       2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-with
+[] > tests-tuple-with
   with. > arr
     * 1 2 3
     "with"
@@ -105,13 +105,13 @@
       "with"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-wrong-tuple-at
+[] > tests-throws-on-wrong-tuple-at
   at. > @
     * 1 2 3 4
     20
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-fluent-with
+[] > tests-tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr
   and. > @
     and.
@@ -126,7 +126,7 @@
       3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-fluent-with-indented
+[] > tests-tuple-fluent-with-indented
   *
   .with 1
   .with 2
@@ -144,41 +144,41 @@
       3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > gets-lengths-of-empty-tuple
+[] > tests-gets-lengths-of-empty-tuple
   tuple.empty > a
   eq. > @
     a.length
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > gets-lengths-of-empty-tuple-without-additional-obj
+[] > tests-gets-lengths-of-empty-tuple-without-additional-obj
   eq. > @
     tuple.empty.length
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > creates-empty-tuple-with-number
+[] > tests-creates-empty-tuple-with-number
   tuple.empty.with 3 > a
   eq. > @
     a.at 0
     3
 
 # Test
-[] > at-fast-with-first-element
+[] > tests-at-fast-with-first-element
   * 100 101 102 > arr
   eq. > @
     (arr.at 0).at-fast arr
     100
 
 # Test
-[] > at-fast-with-last-element
+[] > tests-at-fast-with-last-element
   * 100 101 102 > arr
   eq. > @
     (arr.at 2).at-fast arr
     102
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-empty-fluent-with-indented-keyword
+[] > tests-tuple-empty-fluent-with-indented-keyword
   tuple
   .empty
   .with 1
@@ -197,20 +197,20 @@
       3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-with-negative-index-gets-last
+[] > tests-tuple-with-negative-index-gets-last
   * 0 1 2 3 4 > arr
   eq. > @
     arr.at -1
     4
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tuple-with-negative-index-gets-first
+[] > tests-tuple-with-negative-index-gets-first
   * 0 1 2 3 4 > arr
   eq. > @
     arr.at -5
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-out-of-tuple-bounds-with-negative-index
+[] > tests-throws-on-out-of-tuple-bounds-with-negative-index
   * 0 1 2 3 4 > arr
   arr.at -6 > @

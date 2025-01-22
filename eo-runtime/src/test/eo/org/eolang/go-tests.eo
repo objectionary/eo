@@ -28,7 +28,7 @@
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > goto-jumps-backwards
+[] > tests-goto-jumps-backwards
   eq. > @
     malloc.of
       8
@@ -49,7 +49,7 @@
     10
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > goto-jumps-forward
+[] > tests-goto-jumps-forward
   [x] > div
     malloc.for > @
       0
@@ -72,7 +72,7 @@
       0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-from-method-body
+[] > tests-returns-from-method-body
   [a b] > max
     go.to > @
       [g] >>
@@ -88,7 +88,7 @@
     42
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > nested-goto
+[] > tests-nested-goto
   eq. > @
     go.to
       [g1]

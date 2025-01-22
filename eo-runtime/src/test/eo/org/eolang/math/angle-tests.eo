@@ -29,37 +29,37 @@
 +version 0.0.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-zero
+[] > tests-sin-zero
   eq. > @
     (angle 0).sin
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-pi-div-2
+[] > tests-sin-pi-div-2
   eq. > @
     (angle (pi.div 2)).sin
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-pi-floored
+[] > tests-sin-pi-floored
   eq. > @
     (angle pi).sin.floor
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-zero
+[] > tests-cos-zero
   eq. > @
     (angle 0).cos
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-pi-div-2-floored
+[] > tests-cos-pi-div-2-floored
   eq. > @
     (angle (pi.div 2)).cos.floor
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-pi
+[] > tests-cos-pi
   eq. > @
     (angle pi).cos
     -1

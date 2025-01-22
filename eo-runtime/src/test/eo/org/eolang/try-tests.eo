@@ -27,7 +27,7 @@
 +version 0.0.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > catches-simple-exception
+[] > tests-catches-simple-exception
   try > @
     slice.
       "some string"
@@ -37,7 +37,7 @@
     false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > two-nested-try-blocks
+[] > tests-two-nested-try-blocks
   try > @
     try
       slice.
@@ -50,7 +50,7 @@
     false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > try-without-error-block
+[] > tests-try-without-error-block
   eq. > @
     try
       30.plus 2
@@ -59,7 +59,7 @@
     32
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > try-malloc-update-catch
+[] > tests-try-malloc-update-catch
   eq. > @
     malloc.of
       8

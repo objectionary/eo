@@ -29,7 +29,7 @@
 +version 0.0.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > converts-bytes-to-array
+[] > tests-converts-bytes-to-array
   eq. > @
     list
       bytes-as-array
@@ -37,7 +37,7 @@
     * 20- 1F- EE- B5- FF-
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > single-byte-to-array
+[] > tests-single-byte-to-array
   eq. > @
     list
       bytes-as-array
@@ -45,7 +45,7 @@
     * 1F-
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > zero-bytes-to-array
+[] > tests-zero-bytes-to-array
   eq. > @
     list
       bytes-as-array

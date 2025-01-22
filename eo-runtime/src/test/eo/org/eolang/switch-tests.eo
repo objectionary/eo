@@ -28,7 +28,7 @@
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > switch-simple-case
+[] > tests-switch-simple-case
   eq. > @
     switch
       *
@@ -41,7 +41,7 @@
     "2"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > switch-strings-case
+[] > tests-switch-strings-case
   "swordfish" > password
   eq. > @
     switch
@@ -58,7 +58,7 @@
     "password is correct!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > switch-with-several-true-cases
+[] > tests-switch-with-several-true-cases
   eq. > @
     switch
       *
@@ -74,7 +74,7 @@
     "TRUE1"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > switch-with-all-false-cases
+[] > tests-switch-with-all-false-cases
   switch > @
     *
       *
@@ -85,11 +85,11 @@
         "false2"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-empty-switch
+[] > tests-throws-on-empty-switch
   switch * > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > switch-complex-case
+[] > tests-switch-complex-case
   [] > c1
     false > @
   [] > c2

@@ -31,7 +31,7 @@
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > reads-from-bytes-and-writes-to-memory
+[] > tests-reads-from-bytes-and-writes-to-memory
   eq. > @
     malloc.of
       5
@@ -44,7 +44,7 @@
     01-02-03-04-05
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > reads-from-bytes-and-writes-to-memory-by-portions
+[] > tests-reads-from-bytes-and-writes-to-memory-by-portions
   eq. > @
     malloc.of
       5
@@ -61,7 +61,7 @@
     01-02-03-04-05
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > reads-from-bytes-and-writes-to-two-memory-blocks
+[] > tests-reads-from-bytes-and-writes-to-two-memory-blocks
   eq. > @
     malloc.of
       6

@@ -30,32 +30,32 @@
 +version 0.0.0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string
+[] > tests-sscanf-with-string
   eq. > @
     "hello"
     value.
       sscanf "%s" "hello"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-int
+[] > tests-sscanf-with-int
   eq. > @
     33
     value.
       sscanf "%d" "33"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-float
+[] > tests-sscanf-with-float
   eq. > @
     0.24
     value.
       sscanf "%f" "0.24"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-sscanf-with-wrong-format
+[] > tests-throws-on-sscanf-with-wrong-format
   sscanf "%l" "error" > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string-int-float
+[] > tests-sscanf-with-string-int-float
   eq. > @
     list
       sscanf
@@ -64,35 +64,35 @@
     * "hello" 33 0.24
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string-with-ending
+[] > tests-sscanf-with-string-with-ending
   eq. > @
     "hello"
     value.
       sscanf "%s!" "hello!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-string
+[] > tests-sscanf-with-complex-string
   eq. > @
     "test"
     value.
       sscanf "some%sstring" "someteststring"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-int
+[] > tests-sscanf-with-complex-int
   eq. > @
     734987259
     value.
       sscanf "!%d!" "!734987259!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-float
+[] > tests-sscanf-with-complex-float
   eq. > @
     1991.01
     value.
       sscanf "this will be=%f" "this will be=1991.01"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-sprintf
+[] > tests-sscanf-with-sprintf
   eq. > @
     list
       sscanf
@@ -103,7 +103,7 @@
     * "This" 8
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-complex-case
+[] > tests-sscanf-complex-case
   eq. > @
     list
       sscanf
