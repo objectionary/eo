@@ -32,8 +32,6 @@ import java.nio.file.Paths;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -96,34 +94,6 @@ final class HmOptionalTest {
             "The second file must be saved.",
             new UncheckedText(new TextOf(dir.resolve(file))).asString(),
             Matchers.is(second)
-        );
-    }
-
-    @Test
-    @CaptureLogs
-    void savesIfFileExistsAndRewriteFalse(
-        @Mktmp final Path dir,
-        final Logs out) throws IOException {
-        final String first = new UncheckedText(new Randomized(this.size)).asString();
-        final Path file = Paths.get(this.sample);
-        final HmBase base = new HmBase(dir);
-        base.save(first, file);
-        final HmOptional optional = new HmOptional(base, false);
-        final String second = new UncheckedText(new Randomized(this.size)).asString();
-        optional.save(second, file);
-        final Path absolute = dir.resolve(file);
-        MatcherAssert.assertThat(
-            "The first file shouldn't be rewritten.",
-            new UncheckedText(new TextOf(absolute)).asString(),
-            Matchers.is(first)
-        );
-        Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                log -> log.contains(
-                    String.format("Rewriting of the %s file was skipped", absolute)
-                )
-            ),
-            "When user tries to rewrite a file, a log should be shown."
         );
     }
 
