@@ -25,10 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,19 +34,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.iterable.IterableEnvelope;
-import org.cactoos.iterable.Joined;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.PhiSyntax;
-import org.eolang.parser.TrFull;
+import org.eolang.parser.Phi;
 import org.xembly.Directive;
-import org.xembly.Directives;
 
 /**
  * Read PHI files and parse them to the XMIR.
@@ -62,19 +52,6 @@ import org.xembly.Directives;
     threadSafe = true
 )
 public final class UnphiMojo extends SafeMojo {
-
-    /**
-     * Unphi transformations.
-     */
-    private static final Train<Shift> TRANSFORMATIONS = new TrFull(
-        new TrClasspath<>(
-            "/org/eolang/maven/unphi/wrap-bytes.xsl",
-            "/org/eolang/maven/unphi/normalize-bytes.xsl",
-            "/org/eolang/parser/parse/wrap-method-calls.xsl",
-            "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
-        ).back()
-    );
-
     /**
      * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
@@ -109,8 +86,7 @@ public final class UnphiMojo extends SafeMojo {
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
         final Home home = new HmBase(this.unphiOutputDir);
-        final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
-        final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
+        final Iterable<Directive> metas = new Phi.Metas(this.unphiMetas);
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(
             new Walk(this.unphiInputDir.toPath()),
@@ -122,13 +98,7 @@ public final class UnphiMojo extends SafeMojo {
                         String.format(".%s", AssembleMojo.XMIR)
                     )
                 );
-                final XML result = xsline.pass(
-                    new PhiSyntax(
-                        phi.getFileName().toString().replace(".phi", ""),
-                        new TextOf(phi),
-                        metas
-                    ).parsed()
-                );
+                final XML result = new Phi(phi, metas).unphi();
                 home.save(result.toString(), xmir);
                 Logger.debug(
                     this,
@@ -159,57 +129,6 @@ public final class UnphiMojo extends SafeMojo {
                     "%d files with parsing errors were found:\n%s",
                     errors.size(),
                     String.join("\n", errors)
-                )
-            );
-        }
-    }
-
-    /**
-     * Accumulates all metas that should be attached to unphied XMIR.
-     * +package meta is prohibited since it's converted to special object
-     * with "λ -> Package" binding.
-     * @since 0.36.0
-     */
-    private static class Metas extends IterableEnvelope<Directive> {
-        /**
-         * Package meta.
-         */
-        private static final String PACKAGE = "package";
-
-        /**
-         * Ctor.
-         * @param metas Metas to append
-         */
-        Metas(final Iterable<String> metas) {
-            super(
-                new Joined<>(
-                    new Mapped<>(
-                        meta -> {
-                            final String[] pair = meta.split(" ", 2);
-                            final String head = pair[0].substring(1);
-                            if (UnphiMojo.Metas.PACKAGE.equals(head)) {
-                                throw new IllegalStateException(
-                                    "+package meta is prohibited for attaching to unphied XMIR"
-                                );
-                            }
-                            final Directives dirs = new Directives()
-                                .xpath("/program")
-                                .addIf("metas")
-                                .add("meta")
-                                .add("head").set(head).up()
-                                .add("tail");
-                            if (pair.length > 1) {
-                                dirs.set(pair[1].trim()).up();
-                                for (final String part : pair[1].trim().split(" ")) {
-                                    dirs.add("part").set(part).up();
-                                }
-                            } else {
-                                dirs.up();
-                            }
-                            return dirs.up();
-                        },
-                        metas
-                    )
                 )
             );
         }

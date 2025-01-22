@@ -88,7 +88,6 @@ public final class Xmir implements XML {
             "/org/eolang/parser/shake/resolve-aliases.xsl",
             "/org/eolang/parser/shake/add-default-package.xsl",
             "/org/eolang/parser/shake/explicit-data.xsl",
-            "/org/eolang/parser/phi/incorrect-inners.xsl",
             "/org/eolang/parser/phi/wrap-default-package.xsl"
         ).back()
     );

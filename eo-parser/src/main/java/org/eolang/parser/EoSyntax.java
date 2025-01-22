@@ -26,6 +26,8 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.util.List;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -50,6 +52,22 @@ import org.xembly.Xembler;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class EoSyntax implements Syntax {
+    /**
+     * Set of optimizations that builds canonical XMIR from parsed EO.
+     */
+    private static final Xsline CANONICAL = new Xsline(
+        new TrFull(
+            new TrClasspath<>(
+                "/org/eolang/parser/parse/move-voids-up.xsl",
+                "/org/eolang/parser/parse/validate-before-stars.xsl",
+                "/org/eolang/parser/parse/resolve-before-star.xsl",
+                "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                "/org/eolang/parser/parse/const-to-dataized.xsl",
+                "/org/eolang/parser/parse/stars-to-tuples.xsl"
+            ).back()
+        )
+    );
+
     /**
      * The name of the EO program being parsed, usually the name of
      * <tt>.eo</tt> file itself. This name will be present in the
@@ -126,7 +144,7 @@ public final class EoSyntax implements Syntax {
         parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = Syntax.CANONICAL.pass(
+        final XML dom = EoSyntax.CANONICAL.pass(
             new XMLDocument(
                 new Xembler(
                     new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
