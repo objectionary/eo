@@ -43,12 +43,6 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
       <version>1.0-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
