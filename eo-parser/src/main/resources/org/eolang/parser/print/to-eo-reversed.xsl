@@ -94,6 +94,12 @@ SOFTWARE.
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <xsl:when test="starts-with(@base,'.')">
+        <xsl:if test="starts-with(@base, concat('.', $alpha))">
+          <xsl:message terminate="yes">
+            <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
+            <xsl:value-of select="@base"/>
+          </xsl:message>
+        </xsl:if>
         <xsl:value-of select="substring(@base,2)"/>
         <xsl:text>.</xsl:text>
       </xsl:when>

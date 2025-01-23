@@ -25,6 +25,7 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -33,7 +34,11 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Xmir}.
@@ -41,6 +46,25 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.5
  */
 final class XmirTest {
+
+    @Test
+    void failsOnDispatchingAlphaAttributes() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            new Xmir(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives(new DrProgram("foo"))
+                            .add("objects")
+                            .add("o").attr("name", "foo")
+                            .add("o").attr("base", ".α0").attr("name", "self")
+                            .add("o").attr("base", "$")
+                    ).xmlQuietly()
+                )
+            )::toEO,
+            "XMIR with alpha dispatch should fail on converting to EO"
+        );
+    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")

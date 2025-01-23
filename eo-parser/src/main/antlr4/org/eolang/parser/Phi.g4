@@ -64,6 +64,11 @@ tauBinding
     | attribute voids ARROW formation
     ;
 
+applicationTauBinding
+    : fullAttribute ARROW object
+    | fullAttribute voids ARROW formation
+    ;
+
 voids
     : LB (void? | void (COMMA void)+) RB
     ;
@@ -77,6 +82,10 @@ attribute
     : PHI
     | RHO
     | LABEL
+    ;
+
+fullAttribute
+    : attribute
     | ALPHA
     ;
 
@@ -101,8 +110,8 @@ application
     ;
 
 applicationBindings
-    : tauBinding?
-    | tauBinding (COMMA tauBinding)*
+    : applicationTauBinding?
+    | applicationTauBinding (COMMA applicationTauBinding)*
     ;
 
 applicationObjects
@@ -114,7 +123,7 @@ justObject
     : object
     ;
 
-dispatch: DOT attribute
+dispatch: DOT fullAttribute
     ;
 
 applicationsOrDispatches

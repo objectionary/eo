@@ -519,6 +519,12 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
+    <xsl:if test="starts-with(@base, concat('.', $ALPHA))">
+      <xsl:message terminate="yes">
+        <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
+        <xsl:value-of select="@base"/>
+      </xsl:message>
+    </xsl:if>
     <xsl:apply-templates select="o[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>

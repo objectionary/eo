@@ -79,6 +79,12 @@ SOFTWARE.
     <xsl:choose>
       <!-- METHOD -->
       <xsl:when test="starts-with(@base,'.')">
+        <xsl:if test="starts-with(@base, concat('.', $alpha))">
+          <xsl:message terminate="yes">
+            <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
+            <xsl:value-of select="@base"/>
+          </xsl:message>
+        </xsl:if>
         <xsl:apply-templates select="o[position()=1]">
           <xsl:with-param name="indent" select="$indent"/>
         </xsl:apply-templates>

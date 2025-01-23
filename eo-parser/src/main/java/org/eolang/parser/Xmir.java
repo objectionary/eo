@@ -223,7 +223,7 @@ public final class Xmir implements XML {
      * @return XMIR in other representation as {@link String}.
      */
     private String converted(final Train<Shift> train, final String xsl, final String xpath) {
-        return this.converted(new TrJoined<>(train.with(new StClasspath(xsl))), xpath);
+        return this.converted(train.with(new StClasspath(xsl)), xpath);
     }
 
     /**
