@@ -232,6 +232,16 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterApplicationTauBinding(final PhiParser.ApplicationTauBindingContext ctx) {
+        this.startObject(ctx);
+    }
+
+    @Override
+    public void exitApplicationTauBinding(final PhiParser.ApplicationTauBindingContext ctx) {
+        this.exitObjectBinding();
+    }
+
+    @Override
     public void enterVoids(final PhiParser.VoidsContext ctx) {
         // Nothing here
     }
@@ -267,7 +277,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "@";
         } else if (ctx.RHO() != null) {
             attr = "^";
-        } else if (ctx.LABEL() != null || ctx.ALPHA() != null) {
+        } else if (ctx.LABEL() != null) {
             attr = ctx.getText();
         } else {
             attr = "";
@@ -277,6 +287,18 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitAttribute(final PhiParser.AttributeContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFullAttribute(final PhiParser.FullAttributeContext ctx) {
+        if (ctx.attribute() == null) {
+            this.attributes.push(ctx.getText());
+        }
+    }
+
+    @Override
+    public void exitFullAttribute(final PhiParser.FullAttributeContext ctx) {
         // Nothing here
     }
 

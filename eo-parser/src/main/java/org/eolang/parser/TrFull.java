@@ -27,7 +27,6 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
-import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Train;
 import java.util.logging.Level;
@@ -52,13 +51,10 @@ public final class TrFull extends TrEnvelope {
         super(
             new TrStepped(
                 new TrFast(
-                    new TrLambda(
-                        new TrLogged(
-                            train,
-                            TrFull.class,
-                            Level.FINEST
-                        ),
-                        StEoLogged::new
+                    new TrLogged(
+                        train,
+                        TrFull.class,
+                        Level.FINEST
                     ),
                     TrFull.class,
                     500L
