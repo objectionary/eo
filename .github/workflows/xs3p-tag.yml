@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 name: xs3p-tag
-on:
+'on':
   push:
     tags:
       - '*'
