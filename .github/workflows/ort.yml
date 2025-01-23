@@ -32,6 +32,5 @@ jobs:
   ort:
     runs-on: ubuntu-24.04
     steps:
-      - run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - uses: actions/checkout@v4
       - uses: oss-review-toolkit/ort-ci-github-action@v1
