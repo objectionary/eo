@@ -54,7 +54,7 @@ public class XmirBench {
     /**
      * Large XMIR document.
      */
-    private final XML xmir = new LargeXmir().it();
+    private final XML xmir = new LargeXmir("noname", "com/sun/jna/Klass.class").it();
 
     @Benchmark
     public void xmirToEO() {

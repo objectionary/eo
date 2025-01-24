@@ -49,6 +49,11 @@ public final class LargeXmir {
     private final String name;
 
     /**
+     * Name of file with .class.
+     */
+    private final String file;
+
+    /**
      * Constructor.
      */
     public LargeXmir() {
@@ -60,7 +65,16 @@ public final class LargeXmir {
      * @param nme Program name.
      */
     public LargeXmir(final String nme) {
+        this(nme, "com/sun/jna/Pointer.class");
+    }
+
+    /**
+     * Constructor.
+     * @param nme Program name.
+     */
+    public LargeXmir(final String nme, final String path) {
         this.name = nme;
+        this.file = path;
     }
 
     /**
@@ -81,19 +95,16 @@ public final class LargeXmir {
      */
     private XML unsafe() throws IOException {
         final Path home = Files.createTempDirectory("tmp");
-        final String path = "com/sun/jna/Pointer.class";
         final AtomicReference<XML> ref = new AtomicReference<>();
         new Farea(home).together(
             f -> {
                 f.clean();
                 f.files()
-                    .file(String.format("target/classes/%s", path))
+                    .file(String.format("target/classes/%s", this.file))
                     .write(
                         new UncheckedBytes(
                             new BytesOf(
-                                new ResourceOf(
-                                    "com/sun/jna/Pointer.class"
-                                )
+                                new ResourceOf(this.file)
                             )
                         ).asBytes()
                     );
@@ -107,7 +118,10 @@ public final class LargeXmir {
                 ref.set(
                     new XMLDocument(
                         f.files().file(
-                            "target/generated-sources/jeo-xmir/com/sun/jna/Pointer.xmir"
+                            String.format(
+                                "target/generated-sources/jeo-xmir/%s",
+                                this.file.replace(".class", ".xmir")
+                            )
                         ).path()
                     )
                 );
