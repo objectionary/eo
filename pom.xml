@@ -295,6 +295,12 @@ SOFTWARE.
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.37</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
       <version>5.0.0-alpha-11</version>
@@ -309,6 +315,11 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>pw.krejci</groupId>
+        <artifactId>jmh-maven-plugin</artifactId>
+        <version>0.2.2</version>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
