@@ -34,11 +34,12 @@ SOFTWARE.
 
     Into the next one without @star:
 
-    <o base="tuple">
-      <o base="tuple">
-        <o base="tuple">
-          <o base="tuple">
-          <o base=".empty" method=""/>
+    <o base=".with">
+      <o base=".with">
+        <o base=".with">
+          <o base=".empty">
+            <o base="tuple"/>
+          </o>
           <o base="1"/>
         </o>
         <o base="2"/>
