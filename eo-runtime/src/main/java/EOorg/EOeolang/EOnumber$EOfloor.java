@@ -31,7 +31,6 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -49,10 +48,7 @@ public final class EOnumber$EOfloor extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Expect.at(this, Attr.RHO)
-                .that(phi -> new Dataized(phi).take(Long.class))
-                .otherwise("must be a number")
-                .it()
+            new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
         );
     }
 }

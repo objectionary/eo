@@ -32,7 +32,6 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.BytesOf;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -53,10 +52,7 @@ public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    Expect.at(this, Attr.RHO)
-                        .that(phi -> new Dataized(phi).take(Long.class))
-                        .otherwise("must be a number")
-                        .it()
+                    new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
                 ).take()
             )
         );
