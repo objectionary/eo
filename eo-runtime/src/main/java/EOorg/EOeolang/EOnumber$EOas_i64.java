@@ -32,7 +32,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.BytesOf;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -52,7 +52,7 @@ public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Dataized(this.take(Attr.RHO)).asNumber().longValue()
+                    new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
                 ).take()
             )
         );
