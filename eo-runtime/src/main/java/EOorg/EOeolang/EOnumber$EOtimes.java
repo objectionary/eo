@@ -32,7 +32,6 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;

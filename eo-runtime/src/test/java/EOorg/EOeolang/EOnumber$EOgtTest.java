@@ -64,7 +64,7 @@ final class EOnumber$EOgtTest {
                         new Data.ToPhi(true)
                     )
                 ).take(),
-                "comparison with TRUE fails with a proper message that explains what happened"
+                "comparison with TRUE fails"
             ).getMessage(),
             Matchers.equalTo("the 'x' attribute must be a number")
         );

@@ -58,7 +58,7 @@ final class EOnumber$EOdivTest {
                         new PhWith(
                             new EOnumber$EOdiv(),
                             Attr.RHO,
-                            new Data.ToPhi(42)
+                            new Data.ToPhi(1)
                         ),
                         "x",
                         new Data.ToPhi(true)
