@@ -86,7 +86,7 @@ final class StEoLoggedTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new StEoLogged(new StFailure(), log).apply(1, StEoLoggedTest.example()),
-            "We expect that shift will throw an exception, but it didn't"
+            "We expect that shift will throw an exception, but xml didn't"
         );
         MatcherAssert.assertThat(
             String.format(
