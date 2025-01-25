@@ -42,6 +42,7 @@ import org.openjdk.jmh.annotations.Warmup;
  *
  * @since 0.41
  * @checkstyle DesignForExtensionCheck (100 lines)
+ * @checkstyle NonStaticMethodCheck (100 lines)
  */
 @Fork(1)
 @BenchmarkMode(Mode.AverageTime)
@@ -55,25 +56,25 @@ public class XmirBench {
     /**
      * Large XMIR document.
      */
-    private final XML xmir = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
+    private static final XML XMIR = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
 
     @Benchmark
     public void xmirToEO() {
-        new Xmir(this.xmir).toEO();
+        new Xmir(XmirBench.XMIR).toEO();
     }
 
     @Benchmark
     public void xmirToReversedEo() {
-        new Xmir(this.xmir).toReversedEO();
+        new Xmir(XmirBench.XMIR).toReversedEO();
     }
 
     @Benchmark
     public void xmirToPhi() {
-        new Xmir(this.xmir).toPhi();
+        new Xmir(XmirBench.XMIR).toPhi();
     }
 
     @Benchmark
     public void xmirToSaltyPhi() {
-        new Xmir(this.xmir).toSaltyPhi();
+        new Xmir(XmirBench.XMIR).toSaltyPhi();
     }
 }
