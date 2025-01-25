@@ -41,6 +41,7 @@ import org.xembly.Xembler;
  *
  * @since 0.51
  */
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 public final class LargeXmir {
 
     /**
@@ -71,6 +72,7 @@ public final class LargeXmir {
     /**
      * Constructor.
      * @param nme Program name.
+     * @param path The path to the file
      */
     public LargeXmir(final String nme, final String path) {
         this.name = nme;
@@ -78,10 +80,10 @@ public final class LargeXmir {
     }
 
     /**
-     * Build it.
+     * Build xml.
      * @return XML
      */
-    public XML it() {
+    public XML xml() {
         try {
             return this.unsafe();
         } catch (final IOException ex) {
@@ -90,7 +92,7 @@ public final class LargeXmir {
     }
 
     /**
-     * Build it.
+     * Build xml.
      * @return XML
      */
     private XML unsafe() throws IOException {

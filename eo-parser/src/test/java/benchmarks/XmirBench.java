@@ -49,12 +49,13 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 public class XmirBench {
 
     /**
      * Large XMIR document.
      */
-    private final XML xmir = new LargeXmir("noname", "com/sun/jna/Klass.class").it();
+    private final XML xmir = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
 
     @Benchmark
     public void xmirToEO() {
