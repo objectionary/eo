@@ -174,7 +174,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-3",
+                "test-xml-3",
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -198,7 +198,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-4",
+                "test-xml-4",
                 new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -213,7 +213,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-5",
+                "test-xml-5",
                 new InputOf(
                     String.join(
                         "\n",
@@ -235,11 +235,11 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-1",
+                "test-xml-1",
                 new InputOf("add.\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program[@name='test-it-1']",
+                "/program[@name='test-xml-1']",
                 "/program/objects/o[@base='.add']",
                 "/program/objects/o/o[@base='number']",
                 "/program/objects/o/o[@base='true']"

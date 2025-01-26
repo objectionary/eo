@@ -62,6 +62,11 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>com.github.volodya-lombrozo</groupId>
+      <artifactId>xnav</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->
@@ -132,18 +137,6 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-core</artifactId>
-      <version>1.37</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-generator-annprocess</artifactId>
-      <version>1.37</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <!-- version from parent POM -->
@@ -172,6 +165,18 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
       <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>0.14.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.15.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

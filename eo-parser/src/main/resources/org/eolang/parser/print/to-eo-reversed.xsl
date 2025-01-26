@@ -37,11 +37,13 @@ SOFTWARE.
   <xsl:output method="text" encoding="UTF-8"/>
   <!-- PROGRAM -->
   <xsl:template match="program">
-    <eo>
-      <xsl:apply-templates select="license"/>
-      <xsl:apply-templates select="metas"/>
-      <xsl:apply-templates select="objects"/>
-    </eo>
+    <program>
+      <eo>
+        <xsl:apply-templates select="license"/>
+        <xsl:apply-templates select="metas"/>
+        <xsl:apply-templates select="objects"/>
+      </eo>
+    </program>
   </xsl:template>
   <!-- LICENCE -->
   <xsl:template match="license">
