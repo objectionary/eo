@@ -32,7 +32,7 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -58,9 +58,9 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
     public Phi lambda() {
         return new Data.ToPhi(
             Heaps.INSTANCE.read(
-                new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
-                new Dataized(this.take("offset")).asNumber().intValue(),
-                new Dataized(this.take("length")).asNumber().intValue()
+                new Expect.Int(Expect.at(this.take(Attr.RHO), "id")).it(),
+                new Expect.Int(Expect.at(this, "offset")).it(),
+                new Expect.Int(Expect.at(this, "length")).it()
             )
         );
     }
