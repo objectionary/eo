@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="roll-bases" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="roll-bases" version="2.0">
   <!--
   This XSL rolls ONE reversed object dispatch into single base.
   To get all the dispatches rolled up you need to apply the transformation
@@ -52,7 +52,7 @@ SOFTWARE.
         Process .y
       -->
       <xsl:when test="starts-with($first/@base, '.')">
-        <xsl:variable name="argument">
+        <xsl:variable name="argument" as="element()">
           <xsl:apply-templates select="$first"/>
         </xsl:variable>
         <xsl:choose>
@@ -66,7 +66,7 @@ SOFTWARE.
             <xsl:element name="o">
               <xsl:apply-templates select="@*"/>
               <xsl:copy-of select="$argument"/>
-              <xsl:apply-templates select="o[position()&gt;1]"/>
+              <xsl:apply-templates select="node()[position()&gt;1]"/>
             </xsl:element>
           </xsl:when>
           <!--
@@ -106,8 +106,11 @@ SOFTWARE.
       <xsl:when test="$arg/o">
         <xsl:element name="o">
           <xsl:apply-templates select="@*"/>
-          <xsl:copy-of select="$arg"/>
-          <xsl:apply-templates select="o[position()&gt;1]"/>
+          <xsl:element name="o">
+            <xsl:apply-templates select="$arg/@*"/>
+            <xsl:apply-templates select="$arg/node()"/>
+          </xsl:element>
+          <xsl:apply-templates select="node()[position()&gt;1]"/>
           <xsl:if test="eo:has-data(.)">
             <xsl:value-of select="."/>
           </xsl:if>
@@ -122,16 +125,9 @@ SOFTWARE.
         <xsl:element name="o">
           <xsl:apply-templates select="@* except @base"/>
           <xsl:attribute name="base">
-            <xsl:choose>
-              <xsl:when test="$arg/@base='$' or $arg/@base='Q'">
-                <xsl:value-of select="substring(@base, 2)"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="concat($arg/@base, @base)"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="concat($arg/@base, @base)"/>
           </xsl:attribute>
-          <xsl:apply-templates select="o[position()&gt;1]"/>
+          <xsl:apply-templates select="node()[position()&gt;1]"/>
           <xsl:if test="eo:has-data(.)">
             <xsl:value-of select="."/>
           </xsl:if>

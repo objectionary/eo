@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
@@ -317,9 +319,9 @@ final class EoSyntaxTest {
                         yaml,
                         eo -> new EoSyntax(
                             "scenario",
-                            String.format("%s\n", eo)
-                        ).parsed(),
-                        new TrFull()
+                            String.format("%s\n", eo),
+                            new TrDefault<>()
+                        ).parsed()
                     )
                 )
             ),

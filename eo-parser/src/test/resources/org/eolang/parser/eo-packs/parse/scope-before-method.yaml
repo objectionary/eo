@@ -22,7 +22,7 @@
 ---
 sheets: [ ]
 asserts:
-  - //o[@base='foo' and count(o)=1]
+  - //o[@base='$.foo' and count(o)=1]
 input: |
   # No comments.
   [] > aliases

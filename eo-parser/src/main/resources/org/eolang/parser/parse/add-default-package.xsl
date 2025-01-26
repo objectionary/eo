@@ -45,6 +45,15 @@ SOFTWARE.
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
+  <xsl:template match="o[starts-with(@base, 'org.eolang')]" mode="with-base">
+    <xsl:copy>
+      <xsl:attribute name="base">
+        <xsl:text>Q.</xsl:text>
+        <xsl:value-of select="@base"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()|@* except @base"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
@@ -54,7 +63,7 @@ SOFTWARE.
   <xsl:template match="o[not(@base=/program/metas/meta[head='alias']/part[1])]" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:text>org.eolang.</xsl:text>
+        <xsl:text>Q.org.eolang.</xsl:text>
         <xsl:value-of select="@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>

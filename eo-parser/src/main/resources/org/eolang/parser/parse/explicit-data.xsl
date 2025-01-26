@@ -33,11 +33,11 @@ SOFTWARE.
   - QQ.string "H" => QQ.string "H"
 
   In the level of xmir it looks like:
-  - <o base="org.eolang.bytes">                      <o base="org.eolang.bytes">
+  - <o base="Q.org.eolang.bytes">                      <o base="Q.org.eolang.bytes">
       22-32                                      =>    22-32
     </o>                                             </o>
-  - <o base="org.eolang.number" name="num">          <o base="org.eolang.number" name="num">
-      <o base="org.eolang.number">                     <o base=org.eolang.bytes>
+  - <o base="Q.org.eolang.number" name="num">          <o base="Q.org.eolang.number" name="num">
+      <o base="Q.org.eolang.number">                     <o base=Q.org.eolang.bytes>
         00 00 00 00 00 00 00 01                  =>      00 00 00 00 00 00 00 01
       </o>                                             </o>
     </o>                                             </o>
@@ -47,7 +47,7 @@ SOFTWARE.
           <o base="Q"></o>                                 <o base="Q"/>
         </o>                                             </o>
       </o>                                             </o>
-      <o base="org.eolang.number">               =>    <o base="org.eolang.bytes">
+      <o base="Q.org.eolang.number">               =>    <o base="Q.org.eolang.bytes">
         01                                               01
       </o>                                             </o>
     </o>                                             </o>
@@ -57,7 +57,7 @@ SOFTWARE.
   <xsl:variable name="reversed" as="element()*">
     <xsl:for-each select="$literal-objects">
       <a>
-        <xsl:value-of select="replace(./text(), 'org\.eolang\.', '.')"/>
+        <xsl:value-of select="replace(./text(), 'Q\.org\.eolang\.', '.')"/>
       </a>
     </xsl:for-each>
   </xsl:variable>
@@ -67,10 +67,10 @@ SOFTWARE.
   <xsl:template match="o[string-length(normalize-space(text())) &gt; 0]" mode="no-children">
     <xsl:apply-templates select="." mode="with-data"/>
   </xsl:template>
-  <xsl:template match="o[not(@base='org.eolang.bytes' or @base='bytes')]" mode="with-data">
+  <xsl:template match="o[not(@base='Q.org.eolang.bytes')]" mode="with-data">
     <xsl:choose>
       <xsl:when test="parent::*[$literal-objects/text()=@base or ($reversed/text()=@base and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]])]">
-        <o base="org.eolang.bytes">
+        <o base="Q.org.eolang.bytes">
           <xsl:value-of select="."/>
         </o>
       </xsl:when>
@@ -81,7 +81,7 @@ SOFTWARE.
               <xsl:value-of select="."/>
             </xsl:attribute>
           </xsl:for-each>
-          <o base="org.eolang.bytes">
+          <o base="Q.org.eolang.bytes">
             <xsl:value-of select="."/>
           </o>
         </o>
@@ -91,8 +91,8 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="o[@base='bytes']" mode="with-data">
-    <o base="org.eolang.bytes">
+  <xsl:template match="o[@base='Q.org.eolang.bytes']" mode="with-data">
+    <o base="Q.org.eolang.bytes">
       <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}">
           <xsl:value-of select="."/>
@@ -102,7 +102,7 @@ SOFTWARE.
     </o>
   </xsl:template>
   <xsl:template match="o[((@base='.bytes' and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]) or @base='org.eolang.bytes') and o[last() and not(o) and string-length(normalize-space(text())) &gt; 0]]">
-    <o base="org.eolang.bytes">
+    <o base="Q.org.eolang.bytes">
       <xsl:for-each select="@*[name()!='base']">
         <xsl:attribute name="{name()}">
           <xsl:value-of select="."/>

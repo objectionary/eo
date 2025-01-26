@@ -28,6 +28,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,8 +42,14 @@ import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
+import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrict;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -79,6 +86,26 @@ final class ShakeMojoTest {
             "the .xmir file contains lint defects",
             new XMLDocument(temp.resolve("target/eo/2-shake/foo.xmir")),
             XhtmlMatchers.hasXPaths("/program[not(errors)]")
+        );
+    }
+
+    @Test
+    @ClasspathSource(value = "org/eolang/maven/shake-packs/", glob = "**.yaml")
+    void checksShakePacks(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtStrict(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax(
+                            "scenario",
+                            String.format("%s\n", eo)
+                        ).parsed()
+                    )
+                )
+            ),
+            new XtoryMatcher()
         );
     }
 

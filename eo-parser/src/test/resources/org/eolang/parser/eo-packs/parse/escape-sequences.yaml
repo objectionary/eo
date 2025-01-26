@@ -22,7 +22,7 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(.//o[@base='string'])=7]
+  - //objects[count(.//o[@base='Q.org.eolang.string'])=7]
 input: |
   "\n"
   "\r"

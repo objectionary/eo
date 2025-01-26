@@ -26,10 +26,13 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
@@ -55,19 +58,26 @@ public final class EoSyntax implements Syntax {
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
      */
-    private static final Xsline CANONICAL = new Xsline(
+    private static final Function<XML, XML> CANONICAL = new Xsline(
         new TrFull(
             new TrClasspath<>(
                 "/org/eolang/parser/parse/move-voids-up.xsl",
                 "/org/eolang/parser/parse/validate-before-stars.xsl",
-                "/org/eolang/parser/parse/resolve-before-star.xsl",
+                "/org/eolang/parser/parse/resolve-before-stars.xsl",
                 "/org/eolang/parser/parse/wrap-method-calls.xsl",
                 "/org/eolang/parser/parse/const-to-dataized.xsl",
                 "/org/eolang/parser/parse/stars-to-tuples.xsl",
+                "/org/eolang/parser/parse/vars-float-up.xsl",
+                "/org/eolang/parser/parse/build-fqns.xsl",
+                "/org/eolang/parser/parse/expand-qqs.xsl",
+                "/org/eolang/parser/parse/expand-aliases.xsl",
+                "/org/eolang/parser/parse/resolve-aliases.xsl",
+                "/org/eolang/parser/parse/add-default-package.xsl",
+                "/org/eolang/parser/parse/explicit-data.xsl",
                 "/org/eolang/parser/parse/roll-bases.xsl"
             ).back()
         )
-    );
+    )::pass;
 
     /**
      * The name of the EO program being parsed, usually the name of
@@ -82,6 +92,11 @@ public final class EoSyntax implements Syntax {
      * Text to parse.
      */
     private final Input input;
+
+    /**
+     * Transform XMIR after parsing.
+     */
+    private final Function<XML, XML> transform;
 
     /**
      * Ctor.
@@ -116,9 +131,40 @@ public final class EoSyntax implements Syntax {
      * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      */
+    public EoSyntax(final String nme, final String ipt, final Train<Shift> transform) {
+        this(nme, new InputOf(ipt), transform);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param nme The name of the EO program being parsed
+     * @param ipt The EO program to parse
+     */
     public EoSyntax(final String nme, final Input ipt) {
+        this(nme, ipt, EoSyntax.CANONICAL);
+    }
+
+    /**
+     * Ctor for testing.
+     * @param nme The name of the EO program being parsed
+     * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing train
+     */
+    EoSyntax(final String nme, final Input ipt, final Train<Shift> transform) {
+        this(nme, ipt, new Xsline(transform)::pass);
+    }
+
+    /**
+     * Ctor.
+     * @param nme The name of the EO program being parsed
+     * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing function
+     */
+    EoSyntax(final String nme, final Input ipt, Function<XML, XML> transform) {
         this.name = nme;
         this.input = ipt;
+        this.transform = transform;
     }
 
     /**
@@ -145,7 +191,7 @@ public final class EoSyntax implements Syntax {
         parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = EoSyntax.CANONICAL.pass(
+        final XML dom = this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))

@@ -23,7 +23,11 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - //o[@base='.plus']/o[@base='.value']/o[contains(@base,'other')]
+  - //o[@base='number']/following-sibling::o[@base='.times' and @method]
+  - //o[@base='.times']/o[@base='number' and text()='40-00-00-00-00-00-00-00' and position()=1]
+  - //o[@base='.times']/o[@base='number' and text()='3F-F0-00-00-00-00-00-00' and position()=2]
+  - //o[@base='.times']/o[@base='number' and position()=2]/o[@base='.plus' and @method]
+  - //o[@base='.plus' and @method]/o[@base="other" and o[@base='.value' and @method]]
 input: |
   +home https://github.com/objectionary/eo
   +package org.eolang.priority

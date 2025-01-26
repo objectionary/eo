@@ -69,7 +69,7 @@ public final class Xmir implements XML {
             new StEndless(
                 new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
             ),
-            new StClasspath("/org/eolang/parser/shake/explicit-data.xsl"),
+            new StClasspath("/org/eolang/parser/parse/explicit-data.xsl"),
             new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
             new StUnhex(),
             new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
@@ -81,13 +81,13 @@ public final class Xmir implements XML {
      */
     private static final Train<Shift> FOR_PHI = new TrFull(
         new TrClasspath<>(
-            "/org/eolang/parser/shake/vars-float-up.xsl",
-            "/org/eolang/parser/shake/build-fqns.xsl",
-            "/org/eolang/parser/shake/expand-qqs.xsl",
-            "/org/eolang/parser/shake/expand-aliases.xsl",
-            "/org/eolang/parser/shake/resolve-aliases.xsl",
-            "/org/eolang/parser/shake/add-default-package.xsl",
-            "/org/eolang/parser/shake/explicit-data.xsl",
+            "/org/eolang/parser/parse/vars-float-up.xsl",
+            "/org/eolang/parser/parse/build-fqns.xsl",
+            "/org/eolang/parser/parse/expand-qqs.xsl",
+            "/org/eolang/parser/parse/expand-aliases.xsl",
+            "/org/eolang/parser/parse/resolve-aliases.xsl",
+            "/org/eolang/parser/parse/add-default-package.xsl",
+            "/org/eolang/parser/parse/explicit-data.xsl",
             "/org/eolang/parser/phi/wrap-default-package.xsl"
         ).back()
     );
