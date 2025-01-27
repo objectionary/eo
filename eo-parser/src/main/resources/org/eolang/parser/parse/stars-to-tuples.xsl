@@ -69,7 +69,7 @@ SOFTWARE.
           <xsl:attribute name="base" select="'.empty'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:element name="o">
-            <xsl:attribute name="base" select="'tuple'"/>
+            <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
           </xsl:element>
         </xsl:element>
       </xsl:otherwise>

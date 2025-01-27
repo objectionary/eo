@@ -20,31 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets: [ ]
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
 asserts:
   - //objects[count(o)=7]
   - //objects[count(//o[@star])=0]
   # first
-  - //o[@base='.empty' and @line=1 and @name='xs']/o[@base='tuple' and not(@name)]
+  - //o[@base='.empty' and @line=1 and @name='xs']/o[@base='Q.org.eolang.tuple' and not(@name)]
   # second
-  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='.empty']/o[@base='tuple']
-  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='number']
+  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
+  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='Q.org.eolang.number']
   # third
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='.empty']/o[@base='tuple']
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='number']
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='number']
+  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
+  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='Q.org.eolang.number']
+  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='Q.org.eolang.number']
   # fourth
-  - //o[@base='.empty' and @line=4]/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.empty' and @line=4]/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
   # fifth
-  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.with']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.with']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
   - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.with']/o[@base='.c']
   - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.f']
   - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.i']
   # sixth
-  - //o[@base='.elements']/o[@base='arr']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.elements']/o[@base='arr']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
   # seventh
   - //o[@base='.reduced']/o[@base='list']
-  - //o[@base='.reduced']/o[@base='.empty']/o[@base='tuple']
+  - //o[@base='.reduced']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
   - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
   * > xs

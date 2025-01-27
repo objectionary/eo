@@ -21,18 +21,21 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/expand-qqs.xsl
-  - /org/eolang/parser/shake/add-default-package.xsl
-  - /org/eolang/parser/shake/explicit-data.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/explicit-data.xsl
 asserts:
   - /program[not(errors)]
-  - //o[@base='org.eolang.number' and @name='first' and o[@base='org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']]
-  - //o[@base='org.eolang.number' and @name='bts' and o[@base='org.eolang.bytes' and text()='11-21']]
-  - //o[@base='org.eolang.number' and @name='second' and o[@base='org.eolang.bytes' and text()='40-36-33-33-33-33-33-33']]
-  - //o[@base='org.eolang.bytes' and @name='fourth' and not(o) and text()='11-21']
-  - //o[@base='.string' and @name='str' and count(o)=2 and o[last() and @base='org.eolang.bytes' and text()='48-65-79']]
-  - //o[@base='org.eolang.bytes' and @name='bt' and count(o)=0 and text()='A2-']
-  - //o[@base='.with']/o[@base='.with']/o[@base='.with']/o[@base='org.eolang.number']/o[@base='org.eolang.bytes' and text()='3F-F0-00-00-00-00-00-00']
+  - //o[@base='Q.org.eolang.number' and @name='first' and o[@base='Q.org.eolang.bytes' and text()='40-45-00-00-00-00-00-00']]
+  - //o[@base='Q.org.eolang.number' and @name='bts' and o[@base='Q.org.eolang.bytes' and text()='11-21']]
+  - //o[@base='Q.org.eolang.number' and @name='second' and o[@base='Q.org.eolang.bytes' and text()='40-36-33-33-33-33-33-33']]
+  - //o[@base='Q.org.eolang.bytes' and @name='fourth' and not(o) and text()='11-21']
+  - //o[@base='.string' and @name='str' and count(o)=2 and o[last() and @base='Q.org.eolang.bytes' and text()='48-65-79']]
+  - //o[@base='Q.org.eolang.bytes' and @name='bt' and count(o)=0 and text()='A2-']
+  - //o[@base='.with']/o[@base='.with']/o[@base='.with']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes' and text()='3F-F0-00-00-00-00-00-00']
 input: |
   42 > first
   number 11-21 > bts

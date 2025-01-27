@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +38,7 @@ import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtStrict;
+import org.eolang.xax.XtStrictAfter;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
@@ -310,18 +309,36 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/eo-packs/", glob = "**.yaml")
-    void checksEoPacks(final String yaml) {
+    void checksEoTransformations(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
             new XtSticky(
-                new XtStrict(
+                new XtStrictAfter(
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax(
                             "scenario",
                             String.format("%s\n", eo),
                             new TrDefault<>()
-                        ).parsed()
+                        ).parsed(),
+                        new TrFull()
+                    )
+                )
+            ),
+            new XtoryMatcher()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/eo-syntax/", glob = "**.yaml")
+    void validatesEoSyntax(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtSticky(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed()
                     )
                 )
             ),

@@ -31,11 +31,16 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base='QQ']">
     <xsl:copy>
-      <xsl:attribute name="base">
-        <xsl:text>Q.org.eolang</xsl:text>
-      </xsl:attribute>
-      <xsl:apply-templates select="@* except @base"/>
-      <xsl:apply-templates select="node()"/>
+      <xsl:attribute name="base">.eolang</xsl:attribute>
+      <xsl:copy-of select="@*[name()!='base']"/>
+      <xsl:element name="o">
+        <xsl:attribute name="base">.org</xsl:attribute>
+        <xsl:copy-of select="@*[name()!='base']"/>
+        <xsl:element name="o">
+          <xsl:attribute name="base">Q</xsl:attribute>
+          <xsl:copy-of select="@*[name()!='base']"/>
+        </xsl:element>
+      </xsl:element>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="meta/*[text()[matches(., '^QQ\..*')]]">

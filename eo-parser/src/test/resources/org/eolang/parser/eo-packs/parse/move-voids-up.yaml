@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/move-voids-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
 asserts:
   - /program[not(errors)]
   - /program/objects/o[@name='foo' and o[@name='x']/following-sibling::o[@name='@']]

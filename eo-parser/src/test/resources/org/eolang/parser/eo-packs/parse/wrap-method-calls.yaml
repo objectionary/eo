@@ -21,33 +21,26 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/validate-before-stars.xsl
-  - /org/eolang/parser/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
 asserts:
-  - /program/errors/error[@line='3' and @severity='error']
-  - /program/objects//o[@name='first' and count(o)=1]/o[@base='.with' and count(o)=2]
-  - /program/objects//o[@name='second' and count(o)=2]/o[position()=2 and @base='.with' and count(o)=2]
-  - /program/objects//o[@name='third' and count(o)=3]/o[position()=3 and @base='Q.org.eolang.tuple.empty.with' and count(o)=1]
-  - /program/objects//o[@name='fourth' and count(o)=2]/o[@base='Q.org.eolang.sprintf' and count(o)=1]/o[@base='.with' and count(o)=2]
-  - /program/objects[count(//o[@before-star])=0]
+  - /program[not(errors)]
+  - /program/objects[count(o)=1]
+  - //objects[not(o[@method])]
+  - //o[@base='sprintf' and count(./o)=3]
+  - //o[@base='.foo' and count(./o)=1]
+  - //o[@base='.trim' and count(./o)=2]
+  - //o[@base='.trim']/o[1][@base='.get']
+  - //o[@base='.trim']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='a' and @name='xxx']
+  - //o[@base='.f2' and not(@name)]
 input: |
   # No comments.
-  [] > foo
-    sprintf *2 > with-error
-      x
-    sprintf * > first
-      x
-      y
-    sprintf *1 > second
-      x
-      y
-      z
-    sprintf *2 > third
-      x
-      y
-      z
-    sprintf *1 > fourth
-      sprintf *
-        x
-        y
-      z
+  [args] > app
+    stdout
+      sprintf
+        "%dth Fibonacci number is %d"
+        (args.get.trim 1).foo.tohex > n!
+        fibo n
+    a > xxx
+    .f1
+    .f2

@@ -22,27 +22,13 @@
 ---
 sheets: [ ]
 asserts:
-  - //o[@base='.with' and count(o)=3]/o[@base='foobar']
-  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
-  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
+  - /program[not(errors)]
+  - /program/objects/o[@base='Q.x.first']
+  - /program/objects/o[@name='x']/o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]
 input: |
   # No comments.
-  [] > aliases
-    # No comments.
-    [] > foo
-      # No comments.
-      [y] > with
-        42 > @
-    # No comments.
-    [] > bar
-      # No comments.
-      [x] > with
-        foo > @
-    # No comments.
-    [] > foobar
-      # No comments.
-      [z d] > with
-        bar > @
-    eq. > @
-      ((foobar.with 1 2).with 3).with 4
-      42
+  [] > x
+    y > @
+      []
+      .second
+  .first

@@ -23,11 +23,15 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - //o[@base='.first']/o[not(@base) and @name='x']/o[@base='y' and @name='@']/o[@base='.second']/o[not(@base) and not(@name)]
+  - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=2]
+  - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=10]
+  - //o[@base='.times']/o[@base='.plus']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']
+  - //o[@base='.times']/o[@base='.plus']/o[@base='Q.org.eolang.other.value']
 input: |
+  +home https://github.com/objectionary/eo
+  +package org.eolang.priority
+  +version 0.0.0
+
   # No comments.
   [] > x
-    y > @
-      []
-      .second
-  .first
+    1.times 2 (1.plus other.value) > @

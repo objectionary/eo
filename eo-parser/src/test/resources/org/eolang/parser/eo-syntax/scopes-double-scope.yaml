@@ -22,18 +22,21 @@
 ---
 sheets: [ ]
 asserts:
-  - //o[@base='foo' and count(o)=2]
-  - //o[@base='bar' and count(o)=2]
-  - //o[@base='foobar' and count(o)=2 and o[@base='foo' and count(o)=2]]
+  - //o[@base='$.foo' and count(o)=2]
+  - //o[@base='$.bar' and count(o)=2]
+  - //o[@base='$.foobar' and count(o)=2]
 input: |
   # No comments.
   [] > aliases
+    # No comments.
     [x y] > foo
       42 > @
+    # No comments.
     [z k] > bar
       43 > @
+    # No comments.
     [i j] > foobar
       44 > @
     eq. > @
-      foobar (foo (bar 1 2) 3) 4
+      foobar (foo 1 2) (bar 3 4)
       44

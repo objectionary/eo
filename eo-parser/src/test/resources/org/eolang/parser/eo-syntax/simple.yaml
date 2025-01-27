@@ -20,49 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets:
-  - /org/eolang/parser/shake/cti-adds-errors.xsl
-  - /org/eolang/parser/shake/vars-float-up.xsl
+sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - /program/objects[count(o)=3]
-  - //o[@base='.as-bytes' and @name='t' and @line='8' and o[@base='org.eolang.dataized']]
-  - //objects[count(.//o[@base='string'])=1]
-  - //o[@name='y']/o[@name='t']
-  - //o[@name='y']/o[@name='oops']
-  - //o[@name='last']
-  - //objects[count(//o[@name='oops'])=1]
-  - //o[@name='aaa']
-  - //o[@name='ooo']
-  - //o[@name='mm' and @base='number']
-  - //o[@base='mm']
+  - /program[@name != '']
+  - /program[@version != '']
+  - /program[@time != '']
+  - /program/objects
+  - //o[@base='Q.org.eolang.a' and not(@name) and @line='3']
+  - //o[@base='Q.org.eolang.b-друг' and @line='4']
+  - //o[@base='Q.org.eolang.c4-5' and @line='5']
 input: |
-  # No comments.
-  [] > x
-    first > ff
-    one
-      # No comments.
-      [] > y
-        two
-          input > t!
-            "Hello, world!"
-            # No comments.
-            [] > oops
-              50
-    three t
-    # No comments.
-    [] > last
-      three 1
+  +package test
 
-  # No comments.
-  [ppp] > pp
-    one
-      # No comments.
-      [aaa] > kkk
-        1 > ooo
-  # No comments.
-  [] > head
-    bb > @
-      [zz]
-        tt > @
-          42 > mm
+  a
+    b-друг
+      c4-5

@@ -28,7 +28,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='.as-bytes' and o[position()=1 and @base='org.eolang.dataized']]">
+  <xsl:template match="o[@base='.as-bytes' and o[position()=1 and @base='Q.org.eolang.dataized']]">
     <xsl:variable name="argument" select="o[position()=1]/o[1]"/>
     <xsl:choose>
       <xsl:when test="exists($argument) and not(exists($argument/@name))">

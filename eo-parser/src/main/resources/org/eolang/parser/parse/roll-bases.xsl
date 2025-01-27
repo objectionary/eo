@@ -24,9 +24,6 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="roll-bases" version="2.0">
   <!--
-  This XSL rolls ONE reversed object dispatch into single base.
-  To get all the dispatches rolled up you need to apply the transformation
-  multiple times until it makes no effect.
 
   - <o base=".org">
       <o base="Q"/>  => <o base="org"/>
@@ -40,6 +37,13 @@ SOFTWARE.
   - <o base=".seq">
       <o base="org.eolang"/>  => <o base="org.eolang.seq"/>
     </o>
+  - <o base=".seq">
+      <o base=".eolang">
+        <o base=".org">
+          <o base="Q"/>   => <o base="Q.org.eolang.seq"/>
+        </o>
+      </o>
+    </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -47,9 +51,9 @@ SOFTWARE.
     <xsl:variable name="first" select="o[1]"/>
     <xsl:choose>
       <!--
-        .x
-          .y
-        Process .y
+        x.
+          y.
+        Process y.
       -->
       <xsl:when test="starts-with($first/@base, '.')">
         <xsl:variable name="argument" as="element()">
@@ -58,8 +62,8 @@ SOFTWARE.
         <xsl:choose>
           <!--
             Left as
-            .x
-              .y
+            x.
+              y.
             Copy as is
           -->
           <xsl:when test="starts-with($argument/@base, '.')">
@@ -71,7 +75,7 @@ SOFTWARE.
           </xsl:when>
           <!--
             Changed to
-            .x
+            x.
               z.y
              Try to roll again
           -->
@@ -83,7 +87,22 @@ SOFTWARE.
         </xsl:choose>
       </xsl:when>
       <!--
-        .x
+        x.
+          []
+        Leave as is
+      -->
+      <xsl:when test="not(exists($first/@base))">
+        <xsl:element name="o">
+          <xsl:apply-templates select="@*"/>
+          <xsl:element name="o">
+            <xsl:apply-templates select="$first/@*"/>
+            <xsl:apply-templates select="$first/node()"/>
+          </xsl:element>
+          <xsl:apply-templates select="node()[position()&gt;1]"/>
+        </xsl:element>
+      </xsl:when>
+      <!--
+        x.
           y
       -->
       <xsl:otherwise>
@@ -98,7 +117,7 @@ SOFTWARE.
     <xsl:param name="arg"/>
     <xsl:choose>
       <!--
-        .x
+        x.
           y
             z
         No rolling because of argument
@@ -117,7 +136,7 @@ SOFTWARE.
         </xsl:element>
       </xsl:when>
       <!--
-        .x
+        x.
           y
         Roll into y.x
       -->

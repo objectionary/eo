@@ -21,13 +21,12 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/expand-qqs.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
 asserts:
   - /program[not(errors)]
   - //objects[count(.//o[starts-with(@base, 'QQ')])=0]
-  - //objects[count(.//o[starts-with(@base, 'Q')])=1]
-  - //objects[count(.//o[contains(@base, '.org')])=1]
-  - //objects[count(.//o[contains(@base, '.eolang')])=1]
+  - //objects[count(.//o[starts-with(@base, 'Q')])=3]
   - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
   - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
 input: |

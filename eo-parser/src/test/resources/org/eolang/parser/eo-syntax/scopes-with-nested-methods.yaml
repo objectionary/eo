@@ -22,18 +22,26 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program[@name != '']
-  - /program[@version != '']
-  - /program[@time != '']
-  - /program/objects
-  - //o[not(@name) and @base='a']
-  - //o[@base='a' and @line='3']
-  - //o[@base='b-друг' and @line='4']
-  - //o[@base='c4-5' and @line='5']
+  - //o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
 input: |
-  +package test
-
-  a
-    b-друг
-      c4-5
+  # No comments.
+  [] > aliases
+    # No comments.
+    [] > foo
+      # No comments.
+      [y] > with
+        42 > @
+    # No comments.
+    [] > bar
+      # No comments.
+      [x] > with
+        foo > @
+    # No comments.
+    [] > foobar
+      # No comments.
+      [z d] > with
+        bar > @
+    eq. > @
+      ((foobar.with 1 2).with 3).with 4
+      42

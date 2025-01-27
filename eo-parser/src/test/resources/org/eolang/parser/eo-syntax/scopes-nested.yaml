@@ -22,17 +22,18 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - //o[@base='number']/following-sibling::o[@base='.times' and @method]
-  - //o[@base='.times']/o[@base='number' and text()='40-00-00-00-00-00-00-00' and position()=1]
-  - //o[@base='.times']/o[@base='number' and text()='3F-F0-00-00-00-00-00-00' and position()=2]
-  - //o[@base='.times']/o[@base='number' and position()=2]/o[@base='.plus' and @method]
-  - //o[@base='.plus' and @method]/o[@base="other" and o[@base='.value' and @method]]
+  - //o[@base='$.foo' and count(o)=2]
+  - //o[@base='$.bar' and count(o)=2]
+  - //o[@base='$.foobar' and count(o)=2 and o[@base='$.foo' and count(o)=2]]
 input: |
-  +home https://github.com/objectionary/eo
-  +package org.eolang.priority
-  +version 0.0.0
-
   # No comments.
-  [] > x
-    1.times 2 (1.plus other.value) > @
+  [] > aliases
+    [x y] > foo
+      42 > @
+    [z k] > bar
+      43 > @
+    [i j] > foobar
+      44 > @
+    eq. > @
+      foobar (foo (bar 1 2) 3) 4
+      44
