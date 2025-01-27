@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # Dead output is an output that writes to nowhere.
 [] > dead-output
@@ -41,4 +41,4 @@
 
       # Writes given `buffer` to nowhere.
       # Returns new instance of `output-block`.
-      ^.^.output-block > [buffer] > write
+      output-block > [buffer] > write

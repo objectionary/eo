@@ -24,14 +24,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # The file object in the filesystem.
 [path] > file
+  $ > as-file
   $.path > @
+  # Convert the `file` to the `path`.
+  (QQ.fs.path path).determined > as-path
 
   # Returns `true` if current file is a directory, returns `false` otherwise.
   [] > is-directory /org.eolang.bool
@@ -43,12 +46,13 @@
   # If current file does not exist - create an empty file
   # in filesystem and returns it.
   [] > touched
-    if. > @
-      ^.exists
-      ^
-      seq *
-        touch
+    as-file. > @
+      if.
+        exists
         ^
+        seq *
+          touch
+          ^
 
     # Creates new empty file.
     #
@@ -59,12 +63,13 @@
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
   [] > deleted
-    if. > @
-      ^.exists
-      seq *
-        delete
+    as-file. > @
+      if.
+        exists
+        seq *
+          delete
+          ^
         ^
-      ^
 
     # Deletes the file and returns `true`.
     #
@@ -77,8 +82,8 @@
 
   # Move current file to `target`, making and returning a new `file` from it.
   [target] > moved
-    QQ.fs.file > @
-      string move.as-bytes
+    as-file. > @
+      file move
 
     # Tries to move file from `^.path` to `target`
     # and returns path of moved file as `string`.
@@ -87,9 +92,6 @@
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
     [] > move /org.eolang.string
-
-  # Convert the `file` to the `path`.
-  (QQ.fs.path ^.path).determined > [] > as-path
 
   # Opens the file.
   #
@@ -124,12 +126,12 @@
   # closes the file stream and returns an original file object.
   [mode scope] > open
     mode > access!
-    access.eq "r" > read
-    access.eq "w" > write
-    access.eq "a" > append
-    access.eq "r+" > read-write
-    access.eq "w+" > write-read
-    access.eq "a+" > read-append
+    (access.eq "r").as-bool > read
+    (access.eq "w").as-bool > write
+    (access.eq "a").as-bool > append
+    (access.eq "r+").as-bool > read-write
+    (access.eq "w+").as-bool > write-read
+    (access.eq "a+").as-bool > read-append
     as-bool. > can-read
       or.
         read.or read-write
@@ -144,31 +146,32 @@
       read.or read-write
     as-bool. > truncate
       write.or write-read
-    if. > @
-      can-read.not.and can-write.not
-      error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+    as-file. > @
       if.
-        ^.exists.not
+        can-read.not.and can-write.not
+        error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
         if.
-          must-exists
-          error
-            sprintf
-              "File must exist for given access mod: '%s'"
-              * access
-          seq *
-            ^.touched.touch
-            process-file
-            ^
-        if.
-          truncate
-          seq *
-            ^.deleted.delete
-            ^.touched.touch
-            process-file
-            ^
-          seq *
-            process-file
-            ^
+          exists.not
+          if.
+            must-exists
+            error
+              sprintf
+                "File must exist for given access mod: '%s'"
+                * access
+            seq *
+              touched.touch
+              process-file
+              ^
+          if.
+            truncate
+            seq *
+              deleted.delete
+              touched.touch
+              process-file
+              ^
+            seq *
+              process-file
+              ^
 
     # Process current file in the provided scope.
     #
@@ -191,14 +194,14 @@
       # Returns new instance of `input-block` with `buffer` read from file, or
       # returns `error` if access mode does not allow reading operations.
       [size] > read
-        ((input-block --).read size).self > @
+        ((input-block --).read size).this > @
 
         # File input block
         #
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
         [buffer] > input-block
-          $ > self
+          $ > this
           buffer > @
 
           # Read `size` amount of bytes from file input stream.
@@ -206,18 +209,18 @@
           # returns `error` if provided access mode does not allow reading operations.
           [size] > read
             ^.^.read-bytes size > read-bytes!
-            self. > @
+            this. > @
               if.
-                ^.^.^.^.can-read.not
+                can-read.not
                 [] >>
-                  $ > self
+                  $ > this
                   error > @
                     sprintf
                       "Can't read from file with provided access mode '%s'"
-                      * ^.^.^.^.^.access
+                      * access
                 seq *
                   read-bytes
-                  ^.^.input-block read-bytes
+                  input-block read-bytes
 
         # Bytes read from file input stream
         #
@@ -231,14 +234,14 @@
       # Returns new instance of `output-block` ready to write again, or
       # returns an error if provided access mode does not allow writing operations.
       [buffer] > write
-        (output-block.write buffer).self > @
+        (output-block.write buffer).this > @
 
         # File output block.
         #
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
         [] > output-block
-          $ > self
+          $ > this
           true > @
 
           # Write given `buffer` to file output stream.
@@ -247,18 +250,18 @@
           # Returns new instance of `output-block` ready to write again, or
           # returns an error if provided access mode does not allow writing operations.
           [buffer] > write
-            self. > @
+            this. > @
               if.
-                ^.^.^.^.can-write.not
+                can-write.not
                 [] >>
-                  $ > self
+                  $ > this
                   error > @
                     sprintf
                       "Can't write to file with provided access mode '%s'"
-                      * ^.^.^.^.^.access
+                      * access
                 seq *
-                  ^.^.written-bytes buffer
-                  ^.^.output-block
+                  written-bytes buffer
+                  output-block
 
         # Bytes written to file output stream.
         #

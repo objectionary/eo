@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # Temporary directory.
@@ -39,37 +39,39 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 [] > tmpdir
-  dir > @
-    file
-      string
-        [] > os-tmp-dir!
-          getenv "TMPDIR" > tmpdir!
-          getenv "TMP" > tmp!
-          getenv "TEMP" > temp!
-          getenv "TEMPDIR" > tempdir!
-          getenv "USERPROFILE" > userprofile!
-          if. > @
-            os.is-windows
-            if.
-              tmp.eq ""
+  as-dir. > @
+    dir
+      file
+        string
+          [] > os-tmp-dir!
+            getenv "TMPDIR" > tmpdir!
+            getenv "TMP" > tmp!
+            getenv "TEMP" > temp!
+            getenv "TEMPDIR" > tempdir!
+            getenv "USERPROFILE" > userprofile!
+            -- > empty
+            if. > @
+              os.is-windows
               if.
-                temp.eq ""
+                tmp.eq empty
                 if.
-                  userprofile.eq ""
-                  "C:\\Windows"
-                  userprofile
-                temp
-              tmp
-            if.
-              tmpdir.eq ""
-              if.
-                tmp.eq ""
-                if.
-                  temp.eq ""
+                  temp.eq empty
                   if.
-                    tempdir.eq ""
-                    "/tmp"
-                    tempdir
+                    userprofile.eq empty
+                    "C:\\Windows"
+                    userprofile
                   temp
                 tmp
-              tmpdir
+              if.
+                tmpdir.eq empty
+                if.
+                  tmp.eq empty
+                  if.
+                    temp.eq empty
+                    if.
+                      tempdir.eq empty
+                      "/tmp"
+                      tempdir
+                    temp
+                  tmp
+                tmpdir

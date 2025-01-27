@@ -24,32 +24,32 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # The 64 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
   $ > as-i64
-  $.times -1.as-i64 > neg
-  $.as-i32.as-i16 > as-i16
+  times -1.as-i64 > neg
+  as-i32.as-i16 > as-i16
 
   # Convert this `i64` to `i32`.
   # The `error` is returned if the `i64` number is more than
   # max `i32` value `2147483647`.
   [] > as-i32
-    (^.as-bytes.slice 0 4).as-bytes > left
+    (as-bytes.slice 0 4).as-bytes > left
     if. > @
       or.
         left.eq 00-00-00-00
         left.eq FF-FF-FF-FF
-      i32 (^.as-bytes.slice 4 4)
+      i32 (as-bytes.slice 4 4)
       error
         sprintf
           "Can't convert i64 number %d to i32 because it's out of i32 bounds"
-          * ^.as-number
+          * as-number
 
   # Convert this `i64` to `number` object.
   [] > as-number /org.eolang.number
@@ -59,7 +59,7 @@
   [x] > lt
     x > value!
     0.as-i64.gt > @
-      ^.minus
+      minus
         i64 value
 
   # Returns `true` if `$` <= `x`.
@@ -67,7 +67,7 @@
   [x] > lte
     x > value!
     or. > @
-      ^.lt value
+      lt value
       ^.eq value
 
   # Returns `true` if `$` > `x`.
@@ -79,7 +79,7 @@
   [x] > gte
     x > value!
     or. > @
-      ^.gt value
+      gt value
       ^.eq value
 
   # Multiplication of `$` and `x`.
@@ -94,8 +94,7 @@
   # Here `x` must be an `i64` object.
   [x] > minus
     x > value!
-    ^.plus > @
-      (i64 value).neg
+    plus (i64 value).neg > @
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `i64` object.

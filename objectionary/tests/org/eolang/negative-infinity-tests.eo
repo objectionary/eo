@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.50.1
++version 0.50.2
 
 # Equal to.
 [] > negative-infinity-is-equal-to-one-div-zero
@@ -441,4 +441,3 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > negative-infinity-is-not-integer
   negative-infinity.is-integer.not > @
-

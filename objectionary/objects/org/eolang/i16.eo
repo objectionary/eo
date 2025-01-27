@@ -24,18 +24,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i16
   as-bytes > @
   $ > as-i16
-  $.times -1.as-i64.as-i32.as-i16 > neg
-  $.as-i32.as-i64 > as-i64
-  $.as-i64.as-number > as-number
+  times -1.as-i64.as-i32.as-i16 > neg
+  as-i32.as-i64 > as-i64
+  as-i64.as-number > as-number
 
   # Convert this `i16` to `i32`.
   # The object is an atom because it's not possible to check what

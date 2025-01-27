@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.fs.dir
++alias org.eolang.fs.file
 +alias org.eolang.sys.os
 +alias org.eolang.structs.list
 +alias org.eolang.txt.regex
@@ -27,7 +29,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
@@ -47,13 +49,13 @@
     string > joined-path
       as-bytes.
         joined.
-          text ^.separator
+          text separator
           paths
     normalized. > @
       if.
         os.is-windows
-        ^.win32 joined-path
-        ^.posix joined-path
+        win32 joined-path
+        posix joined-path
 
   # The system-dependent default name-separator character.
   # On UNIX systems the value of this field is "/";
@@ -61,30 +63,30 @@
   [] > separator
     if. > @
       os.is-windows
-      ^.win32.separator
-      ^.posix.separator
+      win32.separator
+      posix.separator
 
   # POSIX specified path.
   # A standardized way to represent file or directory locations in a Unix-like system.
   [uri] > posix
     $ > determined
     "/" > separator
-    (QQ.fs.file uri).size.^ > as-file
-    (QQ.fs.dir (QQ.fs.file uri)).made.^ > as-dir
+    (file uri).as-file > as-file
+    (dir (QQ.fs.file uri)).as-dir > as-dir
     uri > @
 
     # Returns `true` if current path is absolute - starts with '/' char.
     [] > is-absolute
       and. > @
-        ^.uri.length.gt 0
-        (^.uri.as-bytes.slice 0 1).eq ^.separator
+        uri.length.gt 0
+        (uri.as-bytes.slice 0 1).eq separator
 
     # Return new `path` with normalized uri.
     # Normalization includes:
     # - converting multiple slashes into a single slash.
     # - resolving "." (current directory) and ".."  (parent directory) segments.
     [] > normalized
-      ^.uri.as-bytes > uri-as-bytes
+      uri > uri-as-bytes!
       ^.is-absolute.as-bool > is-absolute
       and. > has-trailing-slash
         uri-as-bytes.size.gt 0
@@ -92,14 +94,14 @@
           uri-as-bytes.slice
             uri-as-bytes.size.plus -1
             1
-          ^.separator
+          separator
       joined. > path
-        text ^.separator
+        text separator
         reduced.
           list
             split.
-              text ^.uri
-              ^.separator
+              text uri
+              separator
           *
           [accum segment] >>
             if. > @
@@ -107,10 +109,10 @@
               if.
                 and.
                   accum.length.gt 0
-                  (accum.tail.eq "..").not
-                accum.head
+                  (accum.value.eq "..").not
+                accum.prev
                 if.
-                  ^.is-absolute.not
+                  is-absolute.not
                   accum.with segment
                   accum
               if.
@@ -121,19 +123,19 @@
                 accum.with segment
       as-bytes. > normalized
         if.
-          ^.uri.length.eq 0
+          uri.length.eq 0
           "."
           concat.
             if.
               is-absolute
-              ^.separator.concat path
+              separator.concat path
               path
             if.
               has-trailing-slash
-              ^.separator
+              separator
               --
       determined. > @
-        ^.^.posix
+        posix
           if.
             normalized.eq "//"
             "/"
@@ -157,15 +159,15 @@
     [other] > resolved
       other.as-bytes > other-as-bytes
       normalized. > @
-        ^.^.posix
+        posix
           string
             if.
-              (other-as-bytes.slice 0 1).eq ^.separator
+              (other-as-bytes.slice 0 1).eq separator
               other-as-bytes
               concat.
                 concat.
-                  ^.uri
-                  ^.separator
+                  uri
+                  separator
                 other-as-bytes
 
     # Takes the base name from the provided `path`, for example:
@@ -184,11 +186,11 @@
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
     [] > basename
-      ^.uri > pth!
+      uri > pth!
       text > txt
         string pth
       plus. > slice-start-idx!
-        txt.last-index-of ^.separator
+        txt.last-index-of separator
         1
       string > @
         if.
@@ -217,7 +219,7 @@
     # and returns substring after "." if it's found.
     # If it's not - empty string is returned.
     [] > extname
-      ^.basename > base!
+      basename > base!
       text > txt
         string base
       txt.last-index-of "." > slice-start-idx!
@@ -250,10 +252,10 @@
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/v\a\r/hello" `dir-name` returns `/tmp/v\a\r`.
     [] > dirname
-      ^.uri > pth!
+      uri > pth!
       text > txt
         string pth
-      txt.last-index-of ^.separator > len!
+      txt.last-index-of separator > len!
       string > @
         if.
           or.
@@ -283,8 +285,8 @@
     [uri] > validated
       $ > determined
       ^.separator > separator
-      (QQ.fs.file uri).size.^ > as-file
-      (QQ.fs.dir (QQ.fs.file uri)).made.^ > as-dir
+      (file uri).as-file > as-file
+      (dir (file uri)).as-dir > as-dir
       uri > @
 
       # Returns `true` if given `uri` is drive relative which means it
@@ -297,7 +299,7 @@
         uri > uri-as-bytes!
         and. > @
           uri-as-bytes.size.gt 0
-          (uri-as-bytes.slice 0 1).eq ^.separator
+          (uri-as-bytes.slice 0 1).eq separator
 
       # Replaces slashes '/' with valid windows separator '\'.
       [uri] > separated-correctly
@@ -306,7 +308,7 @@
           string uri-as-bytes
         pth.replaced > replaced!
           regex "/\\//"
-          ^.separator
+          separator
         if. > @
           (pth.index-of path.posix.separator).eq -1
           string uri-as-bytes
@@ -321,10 +323,10 @@
           uri-as-bytes.size.eq 0
           false
           or.
-            ^.is-root-relative uri-as-bytes
+            is-root-relative uri-as-bytes
             and.
               uri-as-bytes.size.gt 1
-              ^.is-drive-relative uri-as-bytes
+              is-drive-relative uri-as-bytes
 
       # Return new `path` with normalized uri.
       # Normalization includes:
@@ -332,7 +334,7 @@
       # - resolving "." (current directory) and ".."  (parent directory) segments.
       # - handling of drive letters in Windows.
       [] > normalized
-        ^.uri > uri-as-bytes!
+        uri > uri-as-bytes!
         (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative
         (^.is-root-relative uri-as-bytes).as-bool > is-root-relative
         if. > driveless!
@@ -347,9 +349,9 @@
             uri-as-bytes.slice
               uri-as-bytes.size.plus -1
               1
-            ^.separator
+            separator
         joined. > path!
-          text ^.separator
+          text separator
           reduced.
             list
               split.
@@ -362,12 +364,12 @@
                 if.
                   and.
                     accum.length.gt 0
-                    (accum.tail.eq "..").not
-                  accum.head
+                    (accum.value.eq "..").not
+                  accum.prev
                   if.
                     and.
-                      ^.is-root-relative.not
-                      ^.is-drive-relative.not
+                      is-root-relative.not
+                      is-drive-relative.not
                     accum.with segment
                     accum
                 if.
@@ -385,23 +387,23 @@
                 if.
                   is-drive-relative
                   if.
-                    (driveless.slice 0 1).eq ^.separator
-                    ^.uri.slice 0 3
-                    ^.uri.slice 0 2
+                    (driveless.slice 0 1).eq separator
+                    uri.slice 0 3
+                    uri.slice 0 2
                   if.
                     is-root-relative
-                    ^.separator
+                    separator
                     --
                 path
               if.
                 has-trailing-slash
-                ^.separator
+                separator
                 --
         determined. > @
-          ^.^.validated
+          validated
             if.
               normalized.eq "\\\\"
-              ^.separator
+              separator
               string normalized
 
       # Resolves `other` path against `^.uri` and returns as new `path` from it.
@@ -426,12 +428,12 @@
       # |--------------------|----------------|-------------------|
       # URI Resolution Rules.
       [other] > resolved
-        ^.uri > uri-as-bytes!
-        ^.separated-correctly other > valid-other!
+        uri > uri-as-bytes!
+        separated-correctly other > valid-other!
         (^.is-drive-relative valid-other).as-bool > other-is-drive-relative
         (^.is-root-relative valid-other).as-bool > other-is-root-relative
         normalized. > @
-          ^.^.validated
+          validated
             string
               if.
                 other-is-drive-relative
@@ -439,7 +441,7 @@
                 if.
                   other-is-root-relative
                   if.
-                    ^.is-drive-relative uri-as-bytes
+                    is-drive-relative uri-as-bytes
                     concat.
                       uri-as-bytes.slice 0 2
                       valid-other
@@ -447,7 +449,7 @@
                   concat.
                     concat.
                       uri-as-bytes
-                      ^.separator
+                      separator
                     valid-other
 
       # Takes the base name from the provided `path`, for example:
@@ -466,11 +468,11 @@
       # is "/" (regular slash) in Unix OS:
       # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
       [] > basename
-        ^.uri > pth!
+        uri > pth!
         text > txt
           string pth
         plus. > slice-start-idx!
-          txt.last-index-of ^.separator
+          txt.last-index-of separator
           1
         string > @
           if.
@@ -499,7 +501,7 @@
       # and returns substring after "." if it's found.
       # If it's not - empty string is returned.
       [] > extname
-        ^.basename > base!
+        basename > base!
         text > txt
           string base
         txt.last-index-of "." > slice-start-idx!
@@ -528,10 +530,10 @@
       # |------------------------------|--------------------|
       # Extracting Directory Names from File Paths.
       [] > dirname
-        ^.uri > pth!
+        uri > pth!
         text > txt
           string pth
-        txt.last-index-of ^.separator > len!
+        txt.last-index-of separator > len!
         string > @
           if.
             or.

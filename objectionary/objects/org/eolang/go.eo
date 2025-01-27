@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # Non-conditional forward and backward jumps.
@@ -54,7 +54,7 @@
 # ```
 # Go to.
 [] > go
-  malloc.of > id!
+  malloc.of > identifier!
     8
     m.put m.id > [m]
 
@@ -63,7 +63,7 @@
       body token
       [e] >>
         if. > @
-          ^.^.id.eq e.id
+          identifier.eq e.id
           e.value
           error e
       true
@@ -71,12 +71,12 @@
     [] > token
       error > backward
         jump
-          ^.^.to ^.body
+          to body
 
       [value] > jump
-        ^.^.^.id > id
+        identifier > id
 
       [res] > forward
         error > @
-          ^.jump
+          jump
             res

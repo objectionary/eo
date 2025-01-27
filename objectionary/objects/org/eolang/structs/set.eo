@@ -25,11 +25,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.50.1
++version 0.50.2
 
 # Set - is an unordered `list` of unique objects.
 [lst] > set
-  initialized. > @
+  this. > @
     initialized
       map
         list
@@ -39,23 +39,24 @@
         .origin
 
   # Initialized set with rebuilt unique sequence.
-  [map] > initialized
-    $ > initialized
-    $.map.keys > @
-    $.map.size > size
+  [mp] > initialized
+    $ > this
+    mp.keys > @
+    mp.size > size
 
     # Append new `item` to set. It must be possible to get
     # hash code of `item` so `item` must be dataizable.
     [item] > with
-      set.initialized > @
-        ^.map.with item true
+      this. > @
+        set.initialized
+          mp.with item true
 
     # Remove `item` from `set`. If `item` is not present,
     # the set wont be changed.
     [item] > without
-      set.initialized > @
-        ^.map.without item
+      this. > @
+        set.initialized
+          mp.without item
 
     # Check if given `item` exists in set.
-    [item] > has
-      ^.map.has item > @
+    mp.has item > [item] > has

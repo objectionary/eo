@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.1
++version 0.50.2
 
 # Negative infinity.
 # A special floating-point value representing an unbounded quantity less than all real numbers.
@@ -49,7 +49,7 @@
     not. > @
       or.
         (number value).is-nan
-        ^.eq value
+        eq value
 
   # Tests that the value $ less or equal than x.
   [x] > lte
@@ -61,7 +61,7 @@
   false > [x] > gt
 
   # Tests that the value $ greater or equal than x.
-  ^.eq x > [x] > gte
+  eq x > [x] > gte
 
   # Returns the result of the multiplication of $ and x.
   [x] > times

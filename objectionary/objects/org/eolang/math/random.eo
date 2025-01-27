@@ -26,7 +26,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.50.1
++version 0.50.2
 
 # Generates a pseudo-random number.
 [seed] > random
@@ -80,15 +80,9 @@
       as-i64.
         if.
           os.is-windows
-          milliseconds.
-            win32
-              "GetSystemTime"
-              * win32.system-time
+          (win32 "GetSystemTime" *).milliseconds
           []
-            output. > timeval
-              posix
-                "gettimeofday"
-                * posix.timeval
+            (posix "gettimeofday" *).output > timeval
             plus. > @
               timeval.tv-sec.times 1000
               as-number.

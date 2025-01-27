@@ -27,27 +27,27 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.50.1
++version 0.50.2
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-string
   eq. > @
     "hello"
-    tail.
+    value.
       sscanf "%s" "hello"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-int
   eq. > @
     33
-    tail.
+    value.
       sscanf "%d" "33"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-float
   eq. > @
     0.24
-    tail.
+    value.
       sscanf "%f" "0.24"
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -67,28 +67,28 @@
 [] > sscanf-with-string-with-ending
   eq. > @
     "hello"
-    tail.
+    value.
       sscanf "%s!" "hello!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-string
   eq. > @
     "test"
-    tail.
+    value.
       sscanf "some%sstring" "someteststring"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-int
   eq. > @
     734987259
-    tail.
+    value.
       sscanf "!%d!" "!734987259!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sscanf-with-complex-float
   eq. > @
     1991.01
-    tail.
+    value.
       sscanf "this will be=%f" "this will be=1991.01"
 
 # This unit test is supposed to check the functionality of the corresponding object.

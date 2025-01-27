@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -34,23 +34,23 @@
 [data] > bytes
   data > @
   $ > as-bytes
-  $.eq 01- > as-bool
+  eq 01- > as-bool
 
   # Turn this chain of eight bytes into a number.
   # If there are less or more than eight bytes, there will
   # be an error returned.
   [] > as-number
     if. > @
-      ^.eq nan.as-bytes
+      eq nan.as-bytes
       nan
       if.
-        ^.eq positive-infinity.as-bytes
+        eq positive-infinity.as-bytes
         positive-infinity
         if.
-          ^.eq negative-infinity.as-bytes
+          eq negative-infinity.as-bytes
           negative-infinity
           if.
-            ^.size.eq 8
+            size.eq 8
             number ^
             error
               sprintf
@@ -73,7 +73,7 @@
   # be an error returned.
   [] > as-i64
     if. > @
-      ^.size.eq 8
+      size.eq 8
       i64 ^
       error
         sprintf
@@ -85,7 +85,7 @@
   # be an error returned.
   [] > as-i32
     if. > @
-      ^.size.eq 4
+      size.eq 4
       i32 ^
       error
         sprintf
@@ -97,7 +97,7 @@
   # be an error returned.
   [] > as-i16
     if. > @
-      ^.size.eq 2
+      size.eq 2
       i16 ^
       error
         sprintf
@@ -117,7 +117,7 @@
   [] > not /org.eolang.bytes
 
   # Calculate the bitwise left shift.
-  ^.right x.neg > [x] > left
+  right x.neg > [x] > left
 
   # Calculate the bitwise right shift.
   [x] > right /org.eolang.bytes

@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # Counts integral from `a` to `b`.
@@ -36,37 +36,37 @@
         b.minus a
         6.0
       plus.
-        ^.fun a
+        fun a
         plus.
           times.
             4.0
-            ^.fun
+            fun
               times.
                 0.5
                 a.plus b
-          ^.fun b
+          fun b
   as-number. > @
     malloc.of
       8
       [sum] >>
         malloc.for > @
-          ^.a
+          a
           [left] >>
-            ^.^.b > right
-            ((right.minus left).div ^.^.n).as-number > step
+            b > right
+            ((right.minus left).div n).as-number > step
             seq * > @
               while
                 [i] >>
                   if. > @
-                    (^.left.as-number.plus ^.step).lt ^.right
+                    (left.as-number.plus step).lt right
                     seq *
-                      ^.^.sum.put
-                        ^.^.sum.as-number.plus
-                          ^.^.^.subsection
-                            ^.left.as-number
-                            ^.left.as-number.plus ^.step
-                      ^.left.put
-                        ^.left.as-number.plus ^.step
+                      sum.put
+                        sum.as-number.plus
+                          subsection
+                            left.as-number
+                            left.as-number.plus step
+                      left.put
+                        left.as-number.plus step
                       true
                     false
                 true > [i]

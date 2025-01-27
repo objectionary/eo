@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # Regular expression in Perl format.
 # Here `pattern` is a string pattern.
@@ -62,7 +62,7 @@
   [serialized] > pattern
     # Returns `true` of given `txt` matches against
     # the provided regular expression pattern.
-    (^.match txt).next.exists > [txt] > matches
+    (match txt).next.exists > [txt] > matches
 
     # Creates a `matcher` that will match the given input against the pattern.
     [txt] > match
@@ -98,7 +98,7 @@
         if. > next
           exists
           matched.
-            ^.matched-from-index
+            matched-from-index
               position.plus 1
               to
           error "Matched block does not exist, can't get next"
@@ -109,12 +109,12 @@
 
         # Returns the string subsequence captured by the group
         # by `index` during the `match` operation.
-        ^.groups.at index > [index] > group
+        groups.at index > [index] > group
 
       # Block which does not match the provided pattern.
       # Decorates `matched` block with corresponding `error`s.
       [position] > not-matched
-        ^.matched > @
+        matched > @
           position
           -1
           error "Matched block does not exist, can't get 'from' position"

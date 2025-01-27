@@ -23,18 +23,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
   $ > as-number
-  $.times -1 > neg
-  $.as-i64.as-i32 > as-i32
-  $.as-i32.as-i16 > as-i16
+  times -1 > neg
+  as-i64.as-i32 > as-i32
+  as-i32.as-i16 > as-i16
   as-bytes.eq nan.as-bytes > is-nan
 
   # Convert this `number` to `i64` object.
@@ -46,12 +46,12 @@
   # According to IEEE 754 float -0.0 and 0.0 are equal.
   [x] > eq
     x > x-as-bytes!
-    ^.as-bytes > self-as-bytes
+    as-bytes > self-as-bytes
     0.as-bytes > pos-zero-as-bytes
     -0.as-bytes > neg-zero-as-bytes
     if. > @
       or.
-        ^.is-nan
+        is-nan
         (number x-as-bytes).is-nan
       false
       or.
@@ -70,7 +70,7 @@
   [x] > lt
     x > value!
     0.gt > @
-      ^.minus
+      minus
         number value
 
   # Returns `true` if `$` <= `x`.
@@ -79,8 +79,8 @@
   [x] > lte
     x > value!
     or. > @
-      ^.lt value
-      ^.eq value
+      lt value
+      eq value
 
   # Returns `true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
@@ -93,8 +93,8 @@
   [x] > gte
     x > value!
     or. > @
-      ^.gt value
-      ^.eq value
+      gt value
+      eq value
 
   # Multiplication of `$` and `x`.
   # Here `x` can be a `number` or any other object which
@@ -111,7 +111,7 @@
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > minus
     x > value!
-    ^.plus > @
+    plus > @
       (number value).neg
 
   # Quotient of the division of `$` by `x`.
@@ -126,15 +126,14 @@
   # Returns `true` if current number does not have a fractional component.
   [] > is-integer
     and. > @
-      ^.is-finite
-      ^.eq ^.floor
+      is-finite
+      eq floor
 
   # Returns `true` if current number is finite.
   [] > is-finite
     and. > @
-      ^.is-nan.not
+      is-nan.not
       not.
         or.
-          ^.eq positive-infinity
-          ^.eq negative-infinity
-
+          eq positive-infinity
+          eq negative-infinity

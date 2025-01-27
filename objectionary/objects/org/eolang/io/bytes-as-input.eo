@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # Makes an `input` from bytes.
 # Here `bts` is sequence of bytes or an object that can be dataized
@@ -52,7 +52,7 @@
   # Returns new instance of `input-block` with set
   # sliced `data` and `buffer`.
   [size] > read
-    ((input-block ^.bts --).read size).self > @
+    ((input-block bts --).read size).self > @
 
     # Bytes-as-input block.
     #
@@ -70,7 +70,7 @@
       # sliced `data` and `buffer`.
       [size] > read
         size > to-read!
-        ^.data.size > available!
+        data.size > available!
         if. > next!
           gt.
             number available
@@ -80,12 +80,12 @@
         self. > @
           if.
             available.eq 0
-            ^.^.input-block -- --
-            ^.^.input-block
+            input-block -- --
+            input-block
               as-bytes.
-                ^.data.slice
+                data.slice
                   next
                   (number available).minus
                     number next
               as-bytes.
-                ^.data.slice 0 next
+                data.slice 0 next

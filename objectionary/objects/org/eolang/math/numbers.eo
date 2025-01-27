@@ -24,7 +24,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.50.1
++version 0.50.2
 
 # Sequence of numbers.
 # Here `sequence` must be a `tuple` or any `tuple` decorator of `number` objects.
@@ -33,7 +33,7 @@
 
   # Find max element in the numbers sequence.
   [] > max
-    list ^.sequence > lst
+    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get max number from empty sequence"
@@ -48,7 +48,7 @@
 
   # Find min element in the numbers sequence.
   [] > min
-    list ^.sequence > lst
+    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get min number from empty sequence"

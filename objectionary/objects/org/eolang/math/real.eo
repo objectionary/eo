@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # Returns a floating point number.
 [num] > real
@@ -37,7 +37,7 @@
   # Calculate MOD.
   # An operation that finds the remainder after dividing one number by another.
   [x] > mod
-    number ^.num.as-bytes > dividend
+    number num.as-bytes > dividend
     number x.as-bytes > divisor
     if. > @
       divisor.eq 0
@@ -48,8 +48,8 @@
         abs-mod.neg
 
     [] > abs-mod
-      (QQ.math.real ^.dividend).abs > dividend-abs
-      (QQ.math.real ^.divisor).abs > divisor-abs
+      (QQ.math.real dividend).abs > dividend-abs
+      (QQ.math.real divisor).abs > divisor-abs
       minus. > @
         dividend-abs
         divisor-abs.times
@@ -58,7 +58,7 @@
 
   # Absolute value of `num` (i.e., with no sign).
   [] > abs
-    number ^.num.as-bytes > value
+    number num.as-bytes > value
     if. > @
       value.gte 0
       value

@@ -23,66 +23,61 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # List implements based operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
 [origin] > list
   origin > @
-
   # Is it empty?.
   # A check to determine if an object contains no elements or data.
-  0.eq ^.origin.length > [] > is-empty
+  0.eq origin.length > is-empty
 
   # Create a new list with this element added to the end of it.
   [x] > with
     list > @
-      with.
-        ^.origin
-        x
+      origin.with x
 
   # Create a new list with an element inserted by the provided index.
   [index item] > withi
     concat. > @
       with.
-        ^.head index
+        head index
         item
-      ^.tail
-        ^.origin.length.minus index
+      tail
+        origin.length.minus index
 
   # Reduce with index from "start" using the function "func".
   # Here "func" must be an abstract object with three free attributes.
   # The first one for the accumulator, the second one
   # for the element of the collection and the third one for the index.
   [start func] > reducedi
-    ^.origin.length > origin-len!
     if. > @
-      0.eq origin-len
+      is-empty
       start
-      rec-reduced start 0.as-bytes
+      rec-reducedi origin
 
-    [accum index] > rec-reduced
-      index.as-number > idx-as-number
-      1.plus idx-as-number > next-index!
+    [tup] > rec-reducedi
       if. > @
-        next-index.eq ^.origin-len
-        ^.func > accumulated
-          accum
-          ^.^.origin.at idx-as-number
-          idx-as-number
-        ^.rec-reduced
-          accumulated
-          next-index
+        tup.length.eq 1
+        func
+          start
+          tup.value
+          0
+        func
+          rec-reducedi tup.prev
+          tup.value
+          tup.prev.length
 
   # Reduce from "start" using the function "func".
   # Here "func" must be an abstract object with two free attributes.
   # The first one for the accumulator, the second one for the element
   # of the collection.
   [start func] > reduced
-    ^.reducedi > @
+    reducedi > @
       start
-      ^.func accum item > [accum item idx] >>
+      func accum item > [accum item idx] >>
 
   # Map with index. Here "func" must be an abstract
   # object with two free attributes. The first
@@ -90,19 +85,18 @@
   # for the index.
   [func] > mappedi
     list > @
-      ^.reducedi
+      reducedi
         *
         [accum item idx] >>
-          with. > @
-            accum
-            ^.func item idx
+          accum.with > @
+            func item idx
 
   # Map without index. Here "func" must be an abstract
   # object with one free attribute, for the element
   # of the collection.
   [func] > mapped
-    ^.mappedi > @
-      ^.func item > [item idx] >>
+    mappedi > @
+      func item > [item idx] >>
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with
@@ -110,39 +104,39 @@
   # collection and its index.
   # The result of `func` must be dataizable.
   [func] > eachi
-    ^.reducedi > @
+    reducedi > @
       true
       [acc item index] >>
         seq * > @
           acc
-          ^.func item index
+          func item index
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with
   # one free attribute, the element of the collection.
   [func] > each
-    ^.eachi > @
-      ^.func item > [item index] >>
+    eachi > @
+      func item > [item index] >>
 
   # Create a new list without the i-th element.
   [i] > withouti
     list > @
-      ^.reducedi
+      reducedi
         *
         [accum item idx] >>
           if. > @
-            ^.i.eq idx
+            i.eq idx
             accum
             accum.with item
 
   # Create a new list without the `element` which is `.eq` to given one.
   [element] > without
     list > @
-      ^.reduced
+      reduced
         *
         [accum item] >>
           if. > @
-            ^.element.eq item
+            element.eq item
             accum
             accum.with item
 
@@ -151,48 +145,56 @@
   [other] > eq
     and. > @
       eq.
-        ^.origin.length
+        origin.length
         other.length
-      ^.reducedi
+      rec-eq origin other
+
+    [first second] > rec-eq
+      if. > @
+        first.length.eq 0
         true
-        [accum item idx] >>
-          and. > @
-            accum
-            eq.
-              item
-              ^.other.at idx
+        and.
+          first.value.eq second.value
+          rec-eq first.prev second.prev
 
   # Concatenates current list with given one.
   [passed] > concat
-    reduced. > @
-      list
-        passed
+    (list passed).reducedi > @
       ^
-      accum.with item > [accum item]
+      accum.with item > [accum item index]
 
   # Returns index of the first particular item in list.
   # If the list has no this item, index-of returns -1.
   [wanted] > index-of
-    ^.reducedi > @
-      -1
-      [accum item index] >>
-        if. > @
-          and.
-            -1.eq accum
-            item.eq ^.wanted
-          index
-          accum
+    number > @
+      rec-index-of origin
+
+    [tup] > rec-index-of
+      rec-index-of tup.prev > next!
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          next.eq -1
+          if.
+            tup.value.eq wanted
+            tup.prev.length
+            -1
+          next
 
   # Returns index of the last particular item in list.
   # If the list has no this item, returns -1.
   [wanted] > last-index-of
-    ^.reducedi > @
-      -1
-      [accum item index] >>
-        if. > @
-          item.eq ^.wanted
-          index
-          accum
+    rec-last-index-of origin > @
+
+    [tup] > rec-last-index-of
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          tup.value.eq wanted
+          tup.prev.length
+          rec-last-index-of tup.prev
 
   # Returns `true` if the list contains `element`.
   # Otherwise, `false`.
@@ -200,7 +202,7 @@
     not. > @
       eq.
         -1
-        ^.index-of element
+        index-of element
 
   # Returns a new list sorted via `.lt` method.
   # @todo #3251:30min The object does not work. After moving `list` object
@@ -216,23 +218,18 @@
   # for the index. The result of dataization
   # the `func` should be boolean, that is `true` or `false`.
   [func] > filteredi
-    ^.origin.length > origin-length!
     list > @
-      rec-filtered 0.as-bytes *
+      rec-filteredi origin
 
-    [idx-as-bytes accum] > rec-filtered
-      ^.^.origin > original
-      idx-as-bytes.as-number > index
-      ^.^.origin.at index > item
+    [tup] > rec-filteredi
+      rec-filteredi tup.prev > next
       if. > @
-        idx-as-bytes.eq ^.origin-length
-        accum
-        ^.rec-filtered
-          (1.plus index).as-bytes
-          if.
-            ^.func item index
-            accum.with item
-            accum
+        tup.length.eq 0
+        *
+        if.
+          func tup.value tup.prev.length
+          next.with tup.value
+          next
 
   # Filter list without index with the function `func`.
   # Here `func` must be an abstract object
@@ -240,46 +237,42 @@
   # The result of dataization the `func`
   # should be boolean, that is `true` or `false`.
   [func] > filtered
-    ^.filteredi > @
-      ^.func item > [item index] >>
+    filteredi > @
+      func item > [item index] >>
 
   # Get the first `index` elements from the start of the list.
   [index] > head
     index > idx!
-    switch > @
-      *
-        *
-          0.eq idx
-          list *
-        *
-          0.gt idx
-          ^.tail index.as-number.neg
-        *
-          ^.origin.length.lte idx
+    if. > @
+      idx.eq 0
+      list *
+      if.
+        0.gt idx
+        tail (number idx).neg
+        if.
+          (number idx).gte origin.length
           ^
-        *
-          true
           list
-            ^.reducedi
-              *
-              [accum item index] >>
-                if. > @
-                  index.gte ^.idx
-                  accum
-                  accum.with item
+            rec-head origin
+
+    [tup] > rec-head
+      if. > @
+        tup.length.eq idx
+        tup
+        rec-head tup.prev
 
   # Get the last `index` elements from the end of the list.
   [index] > tail
     index > idx!
-    ^.origin.length.minus idx.as-number > start!
+    origin.length.minus idx > start!
     if. > @
       0.gt start
       ^
       list
-        ^.reducedi
+        reducedi
           *
           [accum item idx] >>
             if. > @
-              idx.gte ^.start
+              idx.gte start
               accum.with item
               accum

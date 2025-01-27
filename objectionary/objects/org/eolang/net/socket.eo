@@ -27,7 +27,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # Socket.
@@ -119,11 +119,11 @@
         # Read `size` amount of bytes from socket.
         # Returns new instance of `input-block` with `buffer` read from socket.
         [size] > read
-          (^.^.^.recv size).as-bytes > read-bytes
+          (recv size).as-bytes > read-bytes
           self. > @
             seq *
               read-bytes
-              ^.^.input-block read-bytes
+              input-block read-bytes
 
   # Makes an `output` from posix socket.
   # The object allows to use `socket` as output stream and `write` to it sequentially.
@@ -152,8 +152,8 @@
         [buffer] > write
           self. > @
             seq *
-              ^.^.^.send buffer
-              ^.^.output-block
+              send buffer
+              output-block
 
   # Posix platform specified socket.
   #
@@ -177,7 +177,7 @@
       inet-addr.as-i32
     posix.sockaddr-in > sockaddr
       posix.af-inet.as-i16
-      ^.htons port
+      htons port
       inet-addr-as-int
 
     # Scoped posix socket that is passed as argument
@@ -186,10 +186,10 @@
     [sockfd] > scoped-socket
       # Makes an `input` from `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
-      ^.^.^.as-input recv > as-input
+      as-input recv > as-input
       # Makes an `output` from posix socket.
       # The object allows to use `socket` as output stream and `write` to it sequentially.
-      ^.^.^.as-output send > as-output
+      as-output send > as-output
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.
@@ -199,13 +199,13 @@
         code. > sent
           posix
             "send"
-            * ^.sockfd buff buff.size 0
+            * sockfd buff buff.size 0
         if. > @
           sent.eq -1
           error
             sprintf
               "Failed to send message through the socket '%d', reason: %s"
-              * ^.sockfd ^.^.strerror.code
+              * sockfd strerror.code
           sent
 
       # Receive bytes from the socket.
@@ -215,13 +215,13 @@
         called. > received
           posix
             "recv"
-            * ^.sockfd size 0
+            * sockfd size 0
         if. > @
           received.code.eq -1
           error
             sprintf
               "Failed to receive data from the socket '%d', reason: %s"
-              * ^.sockfd ^.^.strerror.code
+              * sockfd strerror.code
           received.output
 
     # Get error message as `string` from ERRNO.
@@ -248,7 +248,7 @@
         error
           sprintf
             "Couldn't close a posix socket '%d', reason: '%s'"
-            * sockfd ^.strerror.code
+            * sockfd strerror.code
         true
 
     # Safe posix socket that ensures that socket is closed even if error is occurred.
@@ -257,21 +257,21 @@
     # the object programmatically outside of `socket` object.
     [scope] > safe-socket
       if. > @
-        ^.sd.eq -1
+        sd.eq -1
         error
           sprintf
             "Couldn't create a posix socket, reason: '%s'"
-            * ^.strerror.code
+            * strerror.code
         try
           scope
           error ex > [ex]
-          ^.closed-socket ^.sd
+          closed-socket sd
 
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
     [scope] > connect
-      ^.safe-socket > @
+      safe-socket > @
         [] >>
           ^.^ > sock
           code. > connected
@@ -295,7 +295,7 @@
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
     [scope] > listen
-      ^.safe-socket > @
+      safe-socket > @
         [] >>
           ^.^ > sock
           code. > bound
@@ -322,14 +322,13 @@
                 dataized
                   scope
                     [] >>
-                      ^.sock.scoped-socket ^.sock.sd > @
+                      sock.scoped-socket sock.sd > @
 
                       # Accept incoming connection on socket
                       # On success the client socket is returned, otherwise `error` is returned.
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        ^.^.sock > sock
                         code. > client-sockfd
                           posix
                             "accept"
@@ -371,7 +370,7 @@
       inet-addr.as-i32
     win32.sockaddr-in > sockaddr
       win32.af-inet.as-i16
-      ^.htons port
+      htons port
       inet-addr-as-int
 
     # Scoped win32 socket that is passed as argument
@@ -380,10 +379,10 @@
     [sockfd] > scoped-socket
       # Makes an `input` from win32 `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
-      ^.^.^.as-input recv > as-input
+      as-input recv > as-input
       # Makes an `output` from win32 socket.
       # The object allows to use `socket` as output stream and `write` to it sequentially.
-      ^.^.^.as-output send > as-output
+      as-output send > as-output
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.
@@ -393,13 +392,13 @@
         code. > sent
           win32
             "send"
-            * ^.sockfd buff buff.size 0
+            * sockfd buff buff.size 0
         if. > @
           sent.eq -1
           error
             sprintf
               "Failed to send message through the socket '%d', WSA error code: %d"
-              * ^.sockfd ^.^.last-error.code
+              * sockfd last-error.code
           sent
 
       # Receive bytes from the socket.
@@ -409,13 +408,13 @@
         called. > received
           win32
             "recv"
-            * ^.sockfd size 0
+            * sockfd size 0
         if. > @
           received.code.eq -1
           error
             sprintf
               "Failed to receive data from the socket '%d', WSA error code: %d"
-              * ^.sockfd ^.^.last-error.code
+              * sockfd last-error.code
           received.output
 
     # Get last error.
@@ -439,7 +438,7 @@
         error
           sprintf
             "Couldn't close a win32 socket '%d', WSA error code: %d"
-            * sockfd ^.last-error.code
+            * sockfd last-error.code
         true
 
     # Safe win32 socket that ensures that socket is closed and Winsock resources are
@@ -461,15 +460,15 @@
             * started-up
         try
           if.
-            ^.sd.eq -1
+            sd.eq -1
             error
               sprintf
                 "Couldn't create a win32 socket, WSA error code: %d"
-                * ^.last-error.code
+                * last-error.code
             try
               scope
               error ex > [ex]
-              ^.closed-socket ^.sd
+              closed-socket sd
           error ex > [ex]
           if.
             cleaned-up.eq win32.socket-error
@@ -480,7 +479,7 @@
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
     [scope] > connect
-      ^.safe-socket > @
+      safe-socket > @
         [] >>
           ^.^ > sock
           code. > connected
@@ -504,7 +503,7 @@
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
     [scope] > listen
-      ^.safe-socket > @
+      safe-socket > @
         [] >>
           ^.^ > sock
           code. > bound
@@ -531,14 +530,13 @@
                 dataized
                   scope
                     [] >>
-                      ^.sock.scoped-socket ^.sock.sd > @
+                      sock.scoped-socket sock.sd > @
 
                       # Accept incoming connection on socket
                       # On success the client socket is returned, otherwise `error` is returned.
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        ^.^.sock > sock
                         code. > client-sockfd
                           win32
                             "accept"

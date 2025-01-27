@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # Tee input is an input that reads from provided `input`,
 # writes to provided `output` and behaves as provided `input`.
@@ -45,7 +45,7 @@
   # Returns new instance of `input-block` with set
   # `input` ready to be read, `output` ready to be written and bytes `buffer`.
   [size] > read
-    ((input-block ^.input ^.output --).read size).self > @
+    ((input-block input output --).read size).self > @
 
     # Tee-input block.
     #
@@ -63,12 +63,12 @@
       # Returns new instance of `input-block` with set
       # `input` ready to be read, `output` ready to be written and bytes `buffer`.
       [size] > read
-        (^.input.read size).read.^ > read-bytes
-        (^.output.write read-bytes).write.^ > written-bytes
+        (input.read size).read.^ > read-bytes
+        (output.write read-bytes).write.^ > written-bytes
         self. > @
           seq *
             written-bytes
-            ^.^.input-block
+            input-block
               read-bytes
               written-bytes
               read-bytes.as-bytes

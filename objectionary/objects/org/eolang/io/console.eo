@@ -26,7 +26,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # The `console` object is basic I/O object that allows to
 # interact with operation system console.
@@ -118,7 +118,7 @@
           self. > @
             seq *
               read-bytes
-              ^.^.input-block read-bytes
+              input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -144,7 +144,7 @@
                 posix
                   "write"
                   * posix.stdout-fileno buffer buffer.size
-              ^.^.output-block
+              output-block
 
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
@@ -174,7 +174,7 @@
           self. > @
             seq *
               read-bytes
-              ^.^.input-block read-bytes
+              input-block read-bytes
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -200,4 +200,4 @@
                 win32
                   "WriteFile"
                   * win32.std-output-handle buffer buffer.size
-              ^.^.output-block
+              output-block

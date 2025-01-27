@@ -26,14 +26,14 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.50.1
++version 0.50.2
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > bound-tmpfile-does-not-recreates-file
-  tmpdir.tmpfile > f
+  tmpdir.tmpfile.as-file > f
   f.path.eq f.path > @
 
-# test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > makes-new-directory
   (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
   and. > @

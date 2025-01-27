@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.50.1
++version 0.50.2
 
 # Hash code - the pseudo-unique float numeric
 # representation of an object.
@@ -38,13 +38,13 @@
 
   [acc index] > rec-hash-code
     if. > @
-      index.eq ^.size
+      index.eq size
       acc.as-number
-      ^.rec-hash-code
+      rec-hash-code
         plus.
-          ^.magic-number.times acc
+          magic-number.times acc
           as-i64.
             concat.
               00-00-00-00-00-00-00
-              ^.input-as-bytes.slice index 1
-        index.plus 1
+              input-as-bytes.slice index 1
+        (index.plus 1).as-number

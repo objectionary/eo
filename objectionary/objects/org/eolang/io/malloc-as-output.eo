@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # Makes an output from allocated block in memory.
 # Here `allocated` is `malloc.of.allocated` object.
@@ -66,6 +66,6 @@
       [buffer] > write
         self. > @
           seq *
-            ^.^.^.allocated.write offset buffer
-            ^.^.output-block
+            allocated.write offset buffer
+            output-block
               offset.plus buffer.size

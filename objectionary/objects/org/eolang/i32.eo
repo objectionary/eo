@@ -24,17 +24,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # The 32 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i32
   as-bytes > @
   $ > as-i32
-  $.times -1.as-i64.as-i32 > neg
-  $.as-i64.as-number > as-number
+  times -1.as-i64.as-i32 > neg
+  as-i64.as-number > as-number
 
   # Convert this `i32` to `i64`.
   # The object is an atom because it's not possible to check what
@@ -46,37 +46,37 @@
   # The `error` is returned if the `i32` number is more than
   # max `i16` value `32767`.
   [] > as-i16
-    (^.as-bytes.slice 0 2).as-bytes > left
+    (as-bytes.slice 0 2).as-bytes > left
     if. > @
       or.
         left.eq 00-00
         left.eq FF-FF
-      i16 (^.as-bytes.slice 2 2)
+      i16 (as-bytes.slice 2 2)
       error
         sprintf
           "Can't convert i32 number %d to i16 because it's out of i16 bounds"
-          * ^.as-i64.as-number
+          * as-i64.as-number
 
   # Returns `true` if `$` < `x`.
   # Here `x` must be an `i32` object.
-  ^.as-i64.lt x.as-i32.as-i64 > [x] > lt
+  as-i64.lt x.as-i32.as-i64 > [x] > lt
 
   # Returns `true` if `$` <= `x`.
   # Here `x` must be an `i32` object.
-  ^.as-i64.lte x.as-i32.as-i64 > [x] > lte
+  as-i64.lte x.as-i32.as-i64 > [x] > lte
 
   # Returns `true` if `$` > `x`.
   # Here `x` must be an `i32` object.
-  ^.as-i64.gt x.as-i32.as-i64 > [x] > gt
+  as-i64.gt x.as-i32.as-i64 > [x] > gt
 
   # Returns `true` if `$` >= `x`.
   # Here `x` must be an `i32` object.
-  ^.as-i64.gte x.as-i32.as-i64 > [x] > gte
+  as-i64.gte x.as-i32.as-i64 > [x] > gte
 
   # Multiplication of `$` and `x`.
   # Here `x` must be an `i32` object.
   [x] > times
-    (^.as-i64.times x.as-i32.as-i64).as-bytes > bts
+    (as-i64.times x.as-i32.as-i64).as-bytes > bts
     bts.slice 0 4 > left
     bts.slice 4 4 > right
     if. > @
@@ -91,7 +91,7 @@
   # Sum of `$` and `x`.
   # Here `x` must be an `i32` object.
   [x] > plus
-    (^.as-i64.plus x.as-i32.as-i64).as-bytes > bts
+    (as-i64.plus x.as-i32.as-i64).as-bytes > bts
     bts.slice 0 4 > left
     bts.slice 4 4 > right
     if. > @
@@ -105,14 +105,14 @@
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `i32` object.
-  ^.plus x.as-i32.neg > [x] > minus
+  plus x.as-i32.neg > [x] > minus
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `i32` object.
   # An `error` is returned if or `x` is equal to 0.
   [x] > div
     x.as-i32 > x-as-i32
-    (^.as-i64.div x-as-i32.as-i64).as-bytes > bts
+    (as-i64.div x-as-i32.as-i64).as-bytes > bts
     bts.slice 0 4 > left
     bts.slice 4 4 > right
     00-00-00-00 > zero
@@ -121,7 +121,7 @@
       error
         sprintf
           "Can't divide %d by i32 zero"
-          * ^.as-i64.as-number
+          * as-i64.as-number
       if.
         or.
           left.eq zero

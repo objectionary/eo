@@ -24,7 +24,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.1
++version 0.50.2
 
 # The `string` object is an abstraction of a text string, which
 # internally is a chain of bytes.
@@ -33,7 +33,7 @@
 
   # Calculates the length of the string.
   [] > length
-    ^.as-bytes.size > size
+    as-bytes.size > size
     80- > pattern-one
     E0- > pattern-two
     F0- > pattern-three
@@ -52,34 +52,34 @@
     # `accum` increased by 1.
     [index char-size len] > increase-length
       if. > @
-        (index.plus char-size).gt ^.size
+        (index.plus char-size).gt size
         error
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
-            * char-size index ^.^.as-bytes
-        ^.rec-length
+            * char-size index as-bytes
+        rec-length
           index.plus char-size
           len.plus 1
 
     # The object recursively calculates the length of current string considering how many bytes
     # the character on each iteration must consist of.
     [index accum] > rec-length
-      ^.^.as-bytes.slice index 1 > byte
+      as-bytes.slice index 1 > byte
       if. > @
-        index.eq ^.size
+        index.eq size
         accum
         if.
           (byte.and pattern-one).eq result-one
-          ^.increase-length index 1 accum
+          increase-length index 1 accum
           if.
             (byte.and pattern-two).eq result-two
-            ^.increase-length index 2 accum
+            increase-length index 2 accum
             if.
               (byte.and pattern-three).eq result-three
-              ^.increase-length index 3 accum
+              increase-length index 3 accum
               if.
                 (byte.and pattern-four).eq result-four
-                ^.increase-length index 4 accum
+                increase-length index 4 accum
                 error
                   sprintf
                     "Unknown byte format (%x), can't recognize character"
@@ -91,7 +91,7 @@
     len > len-bytes!
     number start-bytes > num-start
     number len-bytes > num-len
-    ^.as-bytes.size > size
+    as-bytes.size > size
     num-start.plus num-len > end
     80- > pattern-one
     E0- > pattern-two
@@ -133,19 +133,19 @@
           num-len.eq 0
           ""
           string
-            ^.as-bytes.slice bts-start bts-length
+            as-bytes.slice bts-start bts-length
 
     # The object checks if `index` + provided `char-size` is not out of the string bounds.
     # If not -  the new recursion circle is started with `index` is increased by `char-size` and
     # `accum` is increased by 1.
     [index char-size accum result cause] > increase
       if. > @
-        (index.plus char-size).gt ^.size
+        (index.plus char-size).gt size
         error
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
-            * char-size index ^.^.as-bytes
-        ^.rec-index
+            * char-size index as-bytes
+        rec-index
           index.plus char-size
           accum.plus 1
           result
@@ -158,25 +158,25 @@
     # Also it checks how many bytes (B) must contain character on the current step and tries to
     # increase index by B.
     [index accum result cause] > rec-index
-      ^.^.as-bytes.slice index 1 > byte
+      as-bytes.slice index 1 > byte
       if. > @
         accum.eq result
         index
         if.
-          index.eq ^.size
+          index.eq size
           error cause
           if.
             (byte.and pattern-one).eq result-one
-            ^.increase index 1 accum result cause
+            increase index 1 accum result cause
             if.
               (byte.and pattern-two).eq result-two
-              ^.increase index 2 accum result cause
+              increase index 2 accum result cause
               if.
                 (byte.and pattern-three).eq result-three
-                ^.increase index 3 accum result cause
+                increase index 3 accum result cause
                 if.
                   (byte.and pattern-four).eq result-four
-                  ^.increase index 4 accum result cause
+                  increase index 4 accum result cause
                   error
                     sprintf
                       "Unknown byte format (%x), can't recognize character"

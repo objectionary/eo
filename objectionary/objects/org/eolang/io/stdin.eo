@@ -25,7 +25,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 
 # The `stdin` object is a convenient wrapper on `console` object
 # which is used as input only and allows to read the data from console.
@@ -47,7 +47,7 @@
   # Consumes all lines from the standard input stream.
   # There's no line to consume - returns an empty string.
   [] > all-lines
-    rec-read ^.next-line -- true > @
+    rec-read next-line -- true > @
     line-separator > separator!
 
     # Recursive reading from console by one line.
@@ -58,12 +58,12 @@
       if. > @
         line.length.eq 0
         string buffer
-        ^.rec-read
-          ^.^.next-line
+        rec-read
+          next-line
           if.
             first
             buffer.concat line
-            (buffer.concat ^.separator).concat line
+            (buffer.concat separator).concat line
           false
 
   # Consumes only one line from the standard input stream.
@@ -91,6 +91,6 @@
               next.as-bytes.eq "\n"
             char.eq "\n"
         string buffer
-        ^.rec-read
+        rec-read
           next
           buffer.concat char

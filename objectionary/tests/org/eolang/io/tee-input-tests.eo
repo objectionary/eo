@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -81,4 +81,3 @@
                 m1.write 5 2A-
                 m1
     01-02-03-04-05-2A
-

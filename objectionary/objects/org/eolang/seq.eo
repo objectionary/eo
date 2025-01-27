@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.50.1
++version 0.50.2
 
 # Sequence.
 # The object, when being dataized, dataizes all provided
@@ -32,21 +32,22 @@
   if. > @
     steps.length.eq 0
     true
-    loop 0
-  steps.length.minus 1 > max-len!
+    if.
+      steps.length.eq 1
+      steps.value
+      loop steps
+  steps.length.plus -1 > last-index!
 
   # Recursive steps dataization.
   #
   # Attention! The object is for internal usage only, please
   # don't use the object programmatically outside of `seq` object.
-  [index] > loop
+  [tup] > loop
     if. > @
       and.
-        index.lt ^.max-len
-        or.
-          (dataized (steps.at index)).as-bool
-          true
-      ^.loop
-        index.plus 1
-      steps.at index
-
+        tup.length.gt 1
+        loop tup.prev
+      tup.value
+      or.
+        (dataized tup.value).as-bool.eq --
+        tup.length.eq last-index

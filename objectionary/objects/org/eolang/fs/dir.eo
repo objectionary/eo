@@ -24,25 +24,27 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 
 # Directory in the file system.
 # Apparently every directory is a file.
 [file] > dir
+  $ > as-dir
   $.file > @
   true > is-directory
 
   # Makes a directory together with all required
   # parent directories and returns the created directory.
   [] > made
-    if. > @
-      ^.exists
-      ^
-      seq *
-        mkdir
+    as-dir. > @
+      if.
+        ^.exists
         ^
+        seq *
+          mkdir
+          ^
 
     # Makes a directory together with all required
     # parent directories.
@@ -59,40 +61,38 @@
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
   [] > deleted
-    (^.walk "**").at.^ > walked
-    walked.length > len!
-    if. > @
-      ^.exists
-      seq *
-        rec-delete walked 0
+    as-dir. > @
+      if.
+        ^.exists
+        seq *
+          rec-delete (walk "**").as-tuple
+          ^
         ^
-      ^
 
     # Deletes files and directories in current directory recursively.
     # Returns `true`.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `dir` object.
-    [tup index] > rec-delete
+    [tup] > rec-delete
       if. > @
-        ^.len.eq index
+        tup.length.eq 0
         true
         seq *
-          tup.tail.deleted.exists
-          ^.rec-delete
-            tup.head
-            index.plus 1
+          tup.value.deleted
+          rec-delete tup.prev
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile
-    if. > @
-      ^.exists
-      QQ.fs.file
-        string touch.as-bytes
-      error
-        sprintf
-          "Directory %s does not exist, can't create temporary file"
-          * ^.path
+    as-file. > @
+      if.
+        ^.exists
+        QQ.fs.file
+          touch.as-bytes
+        error
+          sprintf
+            "Directory %s does not exist, can't create temporary file"
+            * file
 
     # Creates an empty temporary file in the current directory and
     # returns absolute path to it as `string`.
@@ -107,4 +107,4 @@
     error > @
       sprintf
         "The file %s is a directory, can't open for I/O operations"
-        * ^.path
+        * file

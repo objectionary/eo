@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.50.1
++rt jvm org.eolang:eo-runtime:0.50.2
 +rt node eo2js-runtime:0.0.0
-+version 0.50.1
++version 0.50.2
 +unlint broken-ref
 
 # The `malloc` object is an abstraction of a storage of data in heap
@@ -96,8 +96,8 @@
       bts.size
       [m] >>
         seq * > @
-          m.write 0 ^.bts
-          ^.scope m
+          m.write 0 bts
+          scope m
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
@@ -122,9 +122,9 @@
       # to the block with offset `target`.
       # Returns `true` on success, or `error` on failure.
       [source target length] > copy
-        ^.write > @
+        write > @
           target
-          ^.read source length
+          read source length
 
       # Read `length` bytes with `offset` from the allocated block in memory.
       [offset length] > read /org.eolang.bytes
@@ -135,5 +135,5 @@
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
         seq * > @
-          ^.write 0 object
-          ^.get
+          write 0 object
+          get
