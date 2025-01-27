@@ -24,13 +24,13 @@
 package org.eolang.parser;
 
 import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.util.Collection;
@@ -71,25 +71,10 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
             ),
             new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
-            new StUnhex(),
-            new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
+            Xmir.UNHEX,
+            new StClasspath("/org/eolang/parser/print/wrap-data.xsl"),
+            new StClasspath("/org/eolang/parser/print/to-eo.xsl")
         )
-    );
-
-    /**
-     * Train of transformations that prepare XMIR for conversion to PHI.
-     */
-    private static final Train<Shift> FOR_PHI = new TrFull(
-        new TrClasspath<>(
-            "/org/eolang/parser/parse/vars-float-up.xsl",
-            "/org/eolang/parser/parse/build-fqns.xsl",
-            "/org/eolang/parser/parse/expand-qqs.xsl",
-            "/org/eolang/parser/parse/expand-aliases.xsl",
-            "/org/eolang/parser/parse/resolve-aliases.xsl",
-            "/org/eolang/parser/parse/add-default-package.xsl",
-            "/org/eolang/parser/parse/explicit-data.xsl",
-            "/org/eolang/parser/phi/wrap-default-package.xsl"
-        ).back()
     );
 
     /**
@@ -161,10 +146,7 @@ public final class Xmir implements XML {
      * @return EO representation as {@link String}
      */
     public String toEO() {
-        return this.converted(
-            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo.xsl",
-            "eo"
-        );
+        return this.converted(Xmir.FOR_EO, "eo");
     }
 
     /**
@@ -182,8 +164,7 @@ public final class Xmir implements XML {
      */
     public String toPhi(final boolean conservative) {
         return this.converted(
-            new TrJoined<>(
-                Xmir.FOR_PHI,
+            new TrFull(
                 new TrDefault<>(
                     Xmir.UNHEX,
                     new StClasspath(
@@ -202,20 +183,11 @@ public final class Xmir implements XML {
      */
     public String toSaltyPhi() {
         return this.converted(
-            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-salty-phi.xsl",
+            new TrFull(
+                new TrClasspath<>("/org/eolang/parser/phi/to-salty-phi.xsl").back()
+            ),
             "phi"
         );
-    }
-
-    /**
-     * Converts XMIR.
-     * @param train Train of transformations that prepares XMIR
-     * @param xsl Final XSL transformation
-     * @param xpath Xpath to retrieve the final result
-     * @return XMIR in other representation as {@link String}.
-     */
-    private String converted(final Train<Shift> train, final String xsl, final String xpath) {
-        return this.converted(train.with(new StClasspath(xsl)), xpath);
     }
 
     /**
@@ -225,7 +197,9 @@ public final class Xmir implements XML {
      * @return XMIR in other representation as {@link String}.
      */
     private String converted(final Train<Shift> train, final String node) {
-        return new Xnav(new Xsline(train).pass(this.xml).inner())
+        final XML xmir = new Xsline(train).pass(this.xml);
+        Logger.debug(this, "XMIR after converting to %s:\n%s", node, xmir);
+        return new Xnav(xmir.inner())
             .element("program")
             .element(node)
             .text()

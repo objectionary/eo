@@ -309,7 +309,7 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/eo-packs/", glob = "**.yaml")
-    void checksEoTransformations(final String yaml) {
+    void checksEoPacks(final String yaml) {
         MatcherAssert.assertThat(
             "passed without exceptions",
             new XtSticky(

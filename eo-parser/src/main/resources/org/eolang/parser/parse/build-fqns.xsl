@@ -27,7 +27,7 @@ SOFTWARE.
   Here we go through all objects and find what their @base
   are referring to. If we find the object they refer to,
   we add either $ object (if target object in the same scope)
-  or necessary amount of ^. objects. Those objects
+  or necessary amount of '^.' objects. Those objects
   which are skipped after this transformation
   are not visible in the current scope. Maybe they are
   global or just a mistake.
@@ -104,6 +104,13 @@ SOFTWARE.
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:if test="$find='@'">
+          <xsl:message terminate="yes">
+            <xsl:text>The </xsl:text>
+            <xsl:value-of select="$find"/>
+            <xsl:text> object is used, but absent in self or parents scope</xsl:text>
+          </xsl:message>
+        </xsl:if>
         <xsl:copy>
           <xsl:apply-templates select="node()|@*"/>
         </xsl:copy>
@@ -176,7 +183,8 @@ SOFTWARE.
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
                 <xsl:element name="o">
-                  <xsl:attribute name="base" select="'^'"/>
+                  <xsl:attribute name="base" select="'.^'"/>
+                  <xsl:copy-of select="$this"/>
                 </xsl:element>
               </xsl:with-param>
             </xsl:apply-templates>
@@ -210,6 +218,17 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
+  </xsl:template>
+  <xsl:template match="o[@base='^']" mode="no-dots">
+    <xsl:element name="o">
+      <xsl:apply-templates select="@* except @base"/>
+      <xsl:attribute name="base" select="'.^'"/>
+      <xsl:element name="o">
+        <xsl:attribute name="line" select="@line"/>
+        <xsl:attribute name="pos" select="@pos - 1"/>
+        <xsl:attribute name="base" select="'$'"/>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>

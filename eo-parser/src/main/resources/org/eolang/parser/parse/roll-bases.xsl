@@ -87,11 +87,17 @@ SOFTWARE.
         </xsl:choose>
       </xsl:when>
       <!--
+        With anonymous
         x.
           []
+
+        Or with data
+        x.
+          2A-
+
         Leave as is
       -->
-      <xsl:when test="not(exists($first/@base))">
+      <xsl:when test="not(exists($first/@base)) or eo:has-data($first)">
         <xsl:element name="o">
           <xsl:apply-templates select="@*"/>
           <xsl:element name="o">
