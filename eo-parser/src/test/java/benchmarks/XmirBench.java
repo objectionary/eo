@@ -64,11 +64,6 @@ public class XmirBench {
     }
 
     @Benchmark
-    public void xmirToReversedEo() {
-        new Xmir(XmirBench.XMIR).toReversedEO();
-    }
-
-    @Benchmark
     public void xmirToPhi() {
         new Xmir(XmirBench.XMIR).toPhi();
     }

@@ -27,8 +27,5 @@ origin: |
    x
   """ > other
 
-straight: |
-  "z\n  y\n x" > other
-
-reversed: |
+printed: |
   "z\n  y\n x" > other

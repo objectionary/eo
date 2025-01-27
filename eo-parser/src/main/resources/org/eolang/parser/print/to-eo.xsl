@@ -78,45 +78,24 @@ SOFTWARE.
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.))]">
     <xsl:param name="indent" select="''"/>
-    <xsl:choose>
-      <!-- METHOD -->
-      <xsl:when test="starts-with(@base,'.')">
-        <xsl:if test="starts-with(@base, concat('.', $alpha))">
-          <xsl:message terminate="yes">
-            <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
-            <xsl:value-of select="@base"/>
-          </xsl:message>
-        </xsl:if>
-        <xsl:apply-templates select="o[position()=1]">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:value-of select="$indent"/>
-        <xsl:apply-templates select="." mode="head">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:apply-templates select="." mode="tail"/>
-        <xsl:value-of select="$eol"/>
-        <xsl:apply-templates select="o[position()&gt;1 and not(eo:void(.))]">
-          <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <!-- NOT METHOD -->
-      <xsl:otherwise>
-        <!--IF NOT THE FIRST TOP OBJECT -->
-        <xsl:if test="position()&gt;1 and parent::objects">
-          <xsl:value-of select="$eol"/>
-        </xsl:if>
-        <xsl:value-of select="$indent"/>
-        <xsl:apply-templates select="." mode="head">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:apply-templates select="." mode="tail"/>
-        <xsl:value-of select="$eol"/>
-        <xsl:apply-templates select="o[not(eo:void(.))]">
-          <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="starts-with(@base, concat('.', $alpha))">
+      <xsl:message terminate="yes">
+        <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
+        <xsl:value-of select="@base"/>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="position()&gt;1 and parent::objects">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
+    <xsl:value-of select="$indent"/>
+    <xsl:apply-templates select="." mode="head">
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="tail"/>
+    <xsl:value-of select="$eol"/>
+    <xsl:apply-templates select="o[not(eo:void(.))]">
+      <xsl:with-param name="indent" select="concat('  ', $indent)"/>
+    </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -126,7 +105,21 @@ SOFTWARE.
         <xsl:text>*</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="@base"/>
+        <xsl:choose>
+          <xsl:when test="starts-with(@base, 'Q.org.eolang.')">
+            <xsl:value-of select="substring-after(@base, 'Q.org.eolang.')"/>
+          </xsl:when>
+          <xsl:when test="starts-with(@base, '$.')">
+            <xsl:value-of select="substring-after(@base, '$.')"/>
+          </xsl:when>
+          <xsl:when test="starts-with(@base, '.')">
+            <xsl:value-of select="substring(@base, 2)"/>
+            <xsl:text>.</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@base"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

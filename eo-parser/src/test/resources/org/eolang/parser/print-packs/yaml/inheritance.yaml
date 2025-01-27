@@ -48,7 +48,7 @@ origin: |
         self
         v
 
-straight: |
+printed: |
   +package sandbox
   +alias stdout org.eolang.io.stdout
   +alias sprintf org.eolang.txt.sprintf
@@ -60,54 +60,19 @@ straight: |
       0
     # No comments.
     [self v] > f
-      x
-      .write > @
+      ^.x.write > @
         v
     # No comments.
     [self v] > g
-      self
-      .f > @
+      self.f > @
         self
         v
 
   # No comments.
   [] > derived
-    base > @
+    Q.sandbox.base > @
     # No comments.
     [self v] > f
-      self
-      .g > @
-        self
-        v
-
-reversed: |
-  +package sandbox
-  +alias stdout org.eolang.io.stdout
-  +alias sprintf org.eolang.txt.sprintf
-  +architect yegor256@gmail.com
-
-  # No comments.
-  [] > base
-    memory > x
-      0
-    # No comments.
-    [self v] > f
-      write. > @
-        x
-        v
-    # No comments.
-    [self v] > g
-      f. > @
-        self
-        self
-        v
-
-  # No comments.
-  [] > derived
-    base > @
-    # No comments.
-    [self v] > f
-      g. > @
-        self
+      self.g > @
         self
         v

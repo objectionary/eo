@@ -29,18 +29,8 @@ origin: |
       it's me
       """
 
-straight: |
+printed: |
   # No comments.
   [] > app
-    QQ
-    .io
-    .stdout > @
-      "Hello\nit's me"
-
-reversed: |
-  # No comments.
-  [] > app
-    stdout. > @
-      io.
-        QQ
+    io.stdout > @
       "Hello\nit's me"

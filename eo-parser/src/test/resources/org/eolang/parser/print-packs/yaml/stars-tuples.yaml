@@ -23,13 +23,7 @@
 origin: |
   * 1 "Hello" x > array
 
-straight: |
-  * > array
-    1
-    "Hello"
-    x
-
-reversed: |
+printed: |
   * > array
     1
     "Hello"

@@ -70,7 +70,6 @@ public final class Xmir implements XML {
             new StEndless(
                 new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
             ),
-            new StClasspath("/org/eolang/parser/parse/explicit-data.xsl"),
             new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
             new StUnhex(),
             new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
@@ -164,17 +163,6 @@ public final class Xmir implements XML {
     public String toEO() {
         return this.converted(
             Xmir.FOR_EO, "/org/eolang/parser/print/to-eo.xsl",
-            "eo"
-        );
-    }
-
-    /**
-     * Converts XMIR to EO, in reverse notation.
-     * @return EO representation as {@link String}
-     */
-    public String toReversedEO() {
-        return this.converted(
-            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo-reversed.xsl",
             "eo"
         );
     }

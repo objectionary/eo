@@ -68,23 +68,16 @@ final class XmirTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
-    void printsToEoStraight(final String pack) throws IOException {
+    void printsToEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
+        final Xmir xmir = this.asXmir((String) xtory.map().get("origin"));
         MatcherAssert.assertThat(
-            "Result EO should be equal to original EO",
-            this.asXmir((String) xtory.map().get("origin")).toEO(),
-            Matchers.equalTo(xtory.map().get("straight"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
-    void printsToEoReversed(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        MatcherAssert.assertThat(
-            "Result EO should be equal to original EO in reverse notation",
-            this.asXmir((String) xtory.map().get("origin")).toReversedEO(),
-            Matchers.equalTo(xtory.map().get("reversed"))
+            String.format(
+                "Result EO should be equal to original EO, XMIR is:\n%s",
+                xmir
+            ),
+            xmir.toEO(),
+            Matchers.equalTo(xtory.map().get("printed"))
         );
     }
 
