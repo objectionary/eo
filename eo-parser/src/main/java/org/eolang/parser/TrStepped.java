@@ -37,7 +37,7 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.text.TextOf;
 
 /**
- * Trains that adds sheet names that were processed.
+ * Train that adds sheet names that were processed.
  *
  * @since 0.1
  */
