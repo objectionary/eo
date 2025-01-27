@@ -54,11 +54,16 @@ final class TrStepped extends TrEnvelope {
         )
     );
 
+    TrStepped(final Train<Shift> train) {
+        this(train, TrStepped.STEPPED);
+    }
+
     /**
      * Ctor.
+     *
      * @param train Original train
      */
-    TrStepped(final Train<Shift> train) {
+    TrStepped(final Train<Shift> train, Scalar<XSL> stepped) {
         super(
             new TrLambda(
                 train,
@@ -66,7 +71,7 @@ final class TrStepped extends TrEnvelope {
                     shift,
                     new StLambda(
                         shift::uid,
-                        (pos, xml) -> TrStepped.STEPPED.value()
+                        (pos, xml) -> stepped.value()
                             .with("step", pos)
                             .with("sheet", shift.uid())
                             .transform(xml)
