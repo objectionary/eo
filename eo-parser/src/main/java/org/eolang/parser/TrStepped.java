@@ -35,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.text.TextOf;
 
 /**
@@ -74,7 +75,7 @@ final class TrStepped extends TrEnvelope {
                     shift,
                     new StLambda(
                         shift::uid,
-                        (pos, xml) -> stepped.value()
+                        (pos, xml) -> new Synced<>(stepped).value()
                             .with("step", pos)
                             .with("sheet", shift.uid())
                             .transform(xml)
