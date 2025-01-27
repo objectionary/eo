@@ -58,6 +58,11 @@ final class TrStepped extends TrEnvelope {
         )
     );
 
+    /**
+     * Ctor.
+     *
+     * @param train Original train
+     */
     TrStepped(final Train<Shift> train) {
         this(train, TrStepped.STEPPED);
     }
@@ -66,8 +71,9 @@ final class TrStepped extends TrEnvelope {
      * Ctor.
      *
      * @param train Original train
+     * @param stepped XSL to apply
      */
-    TrStepped(final Train<Shift> train, Scalar<XSL> stepped) {
+    TrStepped(final Train<Shift> train, final Scalar<XSL> stepped) {
         super(
             new TrLambda(
                 train,
@@ -85,15 +91,39 @@ final class TrStepped extends TrEnvelope {
         );
     }
 
-    static class Once<T> implements Scalar<T> {
+    /**
+     * Scalar that loads the value only once.
+     *
+     * @param <T> Type of the value
+     * @since 0.51
+     */
+    static final class Once<T> implements Scalar<T> {
 
+        /**
+         * Origin scalar.
+         */
         private final Scalar<T> origin;
+
+        /**
+         * Latch to count down.
+         */
         private final CountDownLatch latch;
 
+        /**
+         * Ctor.
+         *
+         * @param origin Origin scalar
+         */
         Once(final Scalar<T> origin) {
             this(origin, new CountDownLatch(1));
         }
 
+        /**
+         * Ctor.
+         *
+         * @param origin Origin scalar
+         * @param latch Latch to count down
+         */
         private Once(final Scalar<T> origin, final CountDownLatch latch) {
             this.origin = origin;
             this.latch = latch;
