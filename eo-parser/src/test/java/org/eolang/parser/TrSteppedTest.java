@@ -32,13 +32,7 @@ import com.yegor256.Together;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import java.io.InputStream;
-import java.net.URLClassLoader;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
-import org.cactoos.Input;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.text.TextOf;
@@ -60,10 +54,10 @@ final class TrSteppedTest {
             new Xsline(
                 new TrStepped(
                     new TrDefault<Shift>().with(
-                        new StClasspath("/org/eolang/parser/print/wrap-data.xsl"))
-                )).pass(
-                new XMLDocument("<program><concurrency>no</concurrency></program>")
-            ).toString(),
+                        new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
+                    )
+                )
+            ).pass(new XMLDocument("<program><concurrency>no</concurrency></program>")).toString(),
             XhtmlMatchers.hasXPath("/program/sheets/sheet[text()='wrap-data']")
         );
     }
@@ -71,19 +65,14 @@ final class TrSteppedTest {
     @RepeatedTest(10)
     void addsSheetNameConcurrently() {
         final XML doc = new XMLDocument("<program><concurrency>yes</concurrency></program>");
-        final CountDownLatch once = new CountDownLatch(1);
         final Sticky<XSL> loading = new Sticky<>(
-            () -> {
-                if (once.getCount() == 0) {
-                    throw new IllegalStateException("Resource should be loaded only once");
-                }
-                once.countDown();
-                return new XSLDocument(
+            new TrStepped.Once<XSL>(
+                () -> new XSLDocument(
                     new TextOf(
                         () -> new ResourceOf("org/eolang/parser/_stepped.xsl").stream()
                     ).asString()
-                );
-            }
+                )
+            )
         );
         MatcherAssert.assertThat(
             "We expect the sheet name to be added successfully in concurrent environment",
@@ -100,6 +89,4 @@ final class TrSteppedTest {
             XhtmlMatchers.hasXPath("/program/sheets/sheet[text()='wrap-data']")
         );
     }
-
-
 }

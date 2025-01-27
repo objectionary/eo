@@ -31,6 +31,7 @@ import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
+import java.util.concurrent.CountDownLatch;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.Sticky;
@@ -47,10 +48,12 @@ final class TrStepped extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final Scalar<XSL> STEPPED = new Sticky<>(
-        () -> new XSLDocument(
-            new TextOf(
-                new ResourceOf("org/eolang/parser/_stepped.xsl")
-            ).asString()
+        new Once<XSL>(
+            () -> new XSLDocument(
+                new TextOf(
+                    new ResourceOf("org/eolang/parser/_stepped.xsl")
+                ).asString()
+            )
         )
     );
 
@@ -79,5 +82,31 @@ final class TrStepped extends TrEnvelope {
                 )
             )
         );
+    }
+
+    static class Once<T> implements Scalar<T> {
+
+        private final Scalar<T> origin;
+        private final CountDownLatch latch;
+
+        Once(final Scalar<T> origin) {
+            this(origin, new CountDownLatch(1));
+        }
+
+        private Once(final Scalar<T> origin, final CountDownLatch latch) {
+            this.origin = origin;
+            this.latch = latch;
+        }
+
+        @Override
+        public T value() throws Exception {
+            if (this.latch.getCount() < 1) {
+                throw new IllegalStateException(
+                    String.format("Resource '%s' should be loaded only once", this.origin)
+                );
+            }
+            this.latch.countDown();
+            return this.origin.value();
+        }
     }
 }
