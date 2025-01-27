@@ -39,4 +39,3 @@ List<String> tests = [
 for (it in tests) {
     evaluate folder.resolve(it).toFile()
 }
-

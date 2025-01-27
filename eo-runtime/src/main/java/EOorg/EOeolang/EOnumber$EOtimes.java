@@ -32,7 +32,6 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -57,14 +56,8 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Double left = Expect.at(this, Attr.RHO)
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .it();
-        final Double right = Expect.at(this, "x")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .it();
+        final Double left = new Expect.Number(Expect.at(this, Attr.RHO)).it();
+        final Double right = new Expect.Number(Expect.at(this, "x")).it();
         return new Data.ToPhi(left * right);
     }
 }

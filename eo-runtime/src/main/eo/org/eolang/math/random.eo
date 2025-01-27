@@ -80,15 +80,9 @@
       as-i64.
         if.
           os.is-windows
-          milliseconds.
-            win32
-              "GetSystemTime"
-              * win32.system-time
+          (win32 "GetSystemTime" *).milliseconds
           []
-            output. > timeval
-              posix
-                "gettimeofday"
-                * posix.timeval
+            (posix "gettimeofday" *).output > timeval
             plus. > @
               timeval.tv-sec.times 1000
               as-number.

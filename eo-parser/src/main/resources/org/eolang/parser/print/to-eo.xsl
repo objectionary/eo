@@ -37,11 +37,13 @@ SOFTWARE.
   <xsl:output method="text" encoding="UTF-8"/>
   <!-- PROGRAM -->
   <xsl:template match="program">
-    <eo>
-      <xsl:apply-templates select="license"/>
-      <xsl:apply-templates select="metas"/>
-      <xsl:apply-templates select="objects"/>
-    </eo>
+    <program>
+      <eo>
+        <xsl:apply-templates select="license"/>
+        <xsl:apply-templates select="metas"/>
+        <xsl:apply-templates select="objects"/>
+      </eo>
+    </program>
   </xsl:template>
   <!-- LICENCE -->
   <xsl:template match="license">
@@ -79,6 +81,12 @@ SOFTWARE.
     <xsl:choose>
       <!-- METHOD -->
       <xsl:when test="starts-with(@base,'.')">
+        <xsl:if test="starts-with(@base, concat('.', $alpha))">
+          <xsl:message terminate="yes">
+            <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
+            <xsl:value-of select="@base"/>
+          </xsl:message>
+        </xsl:if>
         <xsl:apply-templates select="o[position()=1]">
           <xsl:with-param name="indent" select="$indent"/>
         </xsl:apply-templates>

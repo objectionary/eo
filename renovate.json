@@ -3,13 +3,15 @@
   "extends": [
     "config:base"
   ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["maven-compiler-plugin"],
-      "allowedVersions": "3.8.1"
-    }
-  ],
   "ignoreDeps": [
     "org.apache.maven.plugins:maven-compiler-plugin"
+  ],
+  "packageRules": [
+    {
+      "allowedVersions": "3.8.1",
+      "matchPackageNames": [
+        "maven-compiler-plugin"
+      ]
+    }
   ]
 }

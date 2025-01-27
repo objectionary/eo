@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
@@ -88,7 +89,6 @@ public final class Xmir implements XML {
             "/org/eolang/parser/shake/resolve-aliases.xsl",
             "/org/eolang/parser/shake/add-default-package.xsl",
             "/org/eolang/parser/shake/explicit-data.xsl",
-            "/org/eolang/parser/phi/incorrect-inners.xsl",
             "/org/eolang/parser/phi/wrap-default-package.xsl"
         ).back()
     );
@@ -163,7 +163,8 @@ public final class Xmir implements XML {
      */
     public String toEO() {
         return this.converted(
-            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo.xsl", "eo/text()"
+            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo.xsl",
+            "eo"
         );
     }
 
@@ -173,7 +174,8 @@ public final class Xmir implements XML {
      */
     public String toReversedEO() {
         return this.converted(
-            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo-reversed.xsl", "eo/text()"
+            Xmir.FOR_EO, "/org/eolang/parser/print/to-eo-reversed.xsl",
+            "eo"
         );
     }
 
@@ -202,7 +204,7 @@ public final class Xmir implements XML {
                     )
                 )
             ),
-            "program/phi/text()"
+            "phi"
         );
     }
 
@@ -212,7 +214,8 @@ public final class Xmir implements XML {
      */
     public String toSaltyPhi() {
         return this.converted(
-            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-salty-phi.xsl", "program/phi/text()"
+            Xmir.FOR_PHI, "/org/eolang/parser/phi/to-salty-phi.xsl",
+            "phi"
         );
     }
 
@@ -224,16 +227,20 @@ public final class Xmir implements XML {
      * @return XMIR in other representation as {@link String}.
      */
     private String converted(final Train<Shift> train, final String xsl, final String xpath) {
-        return this.converted(new TrJoined<>(train.with(new StClasspath(xsl))), xpath);
+        return this.converted(train.with(new StClasspath(xsl)), xpath);
     }
 
     /**
      * Converts XMIR.
      * @param train Train of transformations that prepares XMIR
-     * @param xpath Xpath to retrieve the final result
+     * @param node XML node name
      * @return XMIR in other representation as {@link String}.
      */
-    private String converted(final Train<Shift> train, final String xpath) {
-        return new Xsline(train).pass(this.xml).xpath(xpath).get(0);
+    private String converted(final Train<Shift> train, final String node) {
+        return new Xnav(new Xsline(train).pass(this.xml).inner())
+            .element("program")
+            .element(node)
+            .text()
+            .get();
     }
 }

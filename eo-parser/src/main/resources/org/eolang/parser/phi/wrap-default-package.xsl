@@ -40,9 +40,7 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[starts-with(@base, '.') and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]]">
     <xsl:element name="o">
-      <xsl:for-each select="@*[name()!='base']">
-        <xsl:attribute name="{name()}" select="."/>
-      </xsl:for-each>
+      <xsl:apply-templates select="@* except @base"/>
       <xsl:attribute name="base">
         <xsl:text>org.eolang</xsl:text>
         <xsl:value-of select="@base"/>

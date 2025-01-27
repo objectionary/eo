@@ -52,7 +52,6 @@
 
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
-    $ > self
 
   # The win32 `sockaddr_in` structure.
   [sin-family sin-port sin-addr] > sockaddr-in
