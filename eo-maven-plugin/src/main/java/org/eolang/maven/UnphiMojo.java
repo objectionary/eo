@@ -113,6 +113,14 @@ public final class UnphiMojo extends SafeMojo {
         }
     }
 
+    /**
+     * Eject errors from parsed xmir file.
+     *
+     * @param errors List of errors
+     * @param parsed Function providing path to parsed xmir
+     * @return Always 1
+     * @throws Exception When failed to unphi
+     */
     private int included(final List<String> errors, final Scalar<Path> parsed) throws Exception {
         final Path xmir = parsed.value();
         final List<String> here = new XMLDocument(xmir).xpath("//errors/error/text()");
