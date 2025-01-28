@@ -27,21 +27,24 @@
 
 # Tuple.
 # An ordered, immutable collection of elements.
-[head tail length] > tuple
-  $ > self
+[prev value length] > tuple
+  $ > as-tuple
 
   # Empty tuple.
   # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
     $ > empty
+    $ > as-tuple
     0 > length
+    error "Can't get prev from the empty tuple" > prev
+    error "Can't get value from the empty tuple" > value
 
     # Take one element from the tuple, at the given position.
     error "Can't get an object from the empty tuple" > [i] > at
 
     # Create a new tuple with this element added to the end of it.
     [x] > with
-      self. > @
+      as-tuple. > @
         tuple
           ^
           x
@@ -64,12 +67,12 @@
     [tup] > at-fast
       if. > @
         (tup.length.plus -1).eq index
-        tup.tail
-        at-fast tup.head
+        tup.value
+        at-fast tup.prev
 
   # Create a new tuple with this element added to the end of it.
   [x] > with
-    self. > @
+    as-tuple. > @
       tuple
         ^
         x

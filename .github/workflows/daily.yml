@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 name: daily
-on:
+'on':
   schedule:
     # Run load testing at 01:30 UTC every day
     - cron: '30 1 * * *'

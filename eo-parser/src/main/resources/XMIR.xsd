@@ -161,15 +161,6 @@ SOFTWARE.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="ref" type="whole">
-      <xs:annotation>
-        <xs:appinfo>The location of the object that is referenced here</xs:appinfo>
-        <xs:documentation>
-          The attribute contains the location of the object that is referenced here.
-          The reference is used to link objects together or to reference objects from other objects or from the global scope.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="atom" type="fqn"/>
     <xs:attribute name="loc" type="locator"/>

@@ -162,4 +162,3 @@ final class StUnhex extends StEnvelope {
         return new Directives().set(after);
     }
 }
-

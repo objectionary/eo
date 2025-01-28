@@ -36,4 +36,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: crate-ci/typos@master
         with:
-          config: ./.github/.typos.toml
+          config: ./.github/typos.toml

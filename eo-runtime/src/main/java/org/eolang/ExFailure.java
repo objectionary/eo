@@ -54,4 +54,3 @@ public class ExFailure extends ExAbstract {
         super(cause, root);
     }
 }
-

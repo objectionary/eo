@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 name: labeler
-on:
+'on':
   - pull_request_target
 jobs:
   labeler:

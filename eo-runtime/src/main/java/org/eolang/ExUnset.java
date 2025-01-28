@@ -54,4 +54,3 @@ public final class ExUnset extends ExFailure {
         super(cause, root);
     }
 }
-
