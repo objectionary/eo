@@ -46,6 +46,12 @@ import org.xembly.Directive;
 /**
  * Read PHI files and parse them to the XMIR.
  * @since 0.34.0
+ * @todo #3708:30min Implement sync with tojos and use it's hash.
+ *  I suggest walk through unphiInputDir and check either phi
+ *  file is present in tojos, if not - add new tojo with empty hash.
+ *  Remove @Disabled annotation on
+ *  {@code UnphiMojoTest.usesCache()} and {@code UnphiMojoTest.invalidatesCache()}
+ *  when synch with is implemented, check that tests is valid otherwise fix them if needed.
  */
 @Mojo(
     name = "phi-to-xmir",
