@@ -34,20 +34,37 @@ SOFTWARE.
   +alias foo org.example.foo
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/metas/meta[head='alias' and not(contains(tail, ' '))]">
+  <xsl:template match="/program/metas/meta[head='alias']">
+    <xsl:variable name="expanded" select="contains(tail, ' ')"/>
+    <xsl:variable name="last">
+      <xsl:choose>
+        <xsl:when test="$expanded">
+          <xsl:value-of select="tokenize(tail/text(), ' ')[last()]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="tail/text()"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="parts" select="tokenize($last, '\.')"/>
+    <xsl:variable name="tail">
+      <xsl:if test="not(starts-with($last, 'Q.'))">
+        <xsl:text>Q.</xsl:text>
+      </xsl:if>
+      <xsl:value-of select="$last"/>
+    </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node() except tail except part|@*"/>
-      <xsl:variable name="parts" select="tokenize(tail, '\.')"/>
       <xsl:element name="tail">
         <xsl:value-of select="$parts[last()]"/>
         <xsl:text> </xsl:text>
-        <xsl:value-of select="tail"/>
+        <xsl:value-of select="$tail"/>
       </xsl:element>
       <xsl:element name="part">
         <xsl:value-of select="$parts[last()]"/>
       </xsl:element>
       <xsl:element name="part">
-        <xsl:value-of select="tail"/>
+        <xsl:value-of select="$tail"/>
       </xsl:element>
     </xsl:copy>
   </xsl:template>

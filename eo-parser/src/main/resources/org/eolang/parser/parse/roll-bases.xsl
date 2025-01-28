@@ -106,17 +106,21 @@ SOFTWARE.
         </xsl:choose>
       </xsl:when>
       <!--
-        With anonymous
+        - With anonymous
         x.
           []
 
-        Or with data
+        - Or with data
         x.
           2A-
 
+        - Or ∅ (in case of parsing errors)
+        x.
+          ∅
+
         Leave as is
       -->
-      <xsl:when test="not(exists($first/@base)) or eo:has-data($first)">
+      <xsl:when test="not(exists($first/@base)) or eo:has-data($first) or eo:void($first)">
         <xsl:element name="o">
           <xsl:apply-templates select="@*"/>
           <xsl:element name="o">
@@ -155,9 +159,6 @@ SOFTWARE.
             <xsl:apply-templates select="$arg/node()"/>
           </xsl:element>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-<!--          <xsl:if test="eo:has-data(.)">-->
-<!--            <xsl:value-of select="."/>-->
-<!--          </xsl:if>-->
         </xsl:element>
       </xsl:when>
       <!--
@@ -172,9 +173,6 @@ SOFTWARE.
             <xsl:value-of select="concat($arg/@base, @base)"/>
           </xsl:attribute>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-<!--          <xsl:if test="eo:has-data(.)">-->
-<!--            <xsl:value-of select="."/>-->
-<!--          </xsl:if>-->
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>

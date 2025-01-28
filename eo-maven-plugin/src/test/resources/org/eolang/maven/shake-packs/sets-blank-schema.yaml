@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/shake/blank-xsd-schema.xsl
 asserts:
   - /program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']
 input: |

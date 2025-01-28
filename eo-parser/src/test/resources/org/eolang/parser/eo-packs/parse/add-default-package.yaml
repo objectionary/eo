@@ -31,7 +31,7 @@ asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - //o[@base='Q.org.eolang.and' and @line='9']
-  - //o[@base='foo']
+  - //o[@base='Q.foo']
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']

@@ -56,6 +56,7 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link ShakeMojo}.
@@ -89,7 +90,7 @@ final class ShakeMojoTest {
         );
     }
 
-    @Test
+    @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/shake-packs/", glob = "**.yaml")
     void checksShakePacks(final String yaml) {
         MatcherAssert.assertThat(
@@ -98,10 +99,7 @@ final class ShakeMojoTest {
                 new XtStrict(
                     new XtYaml(
                         yaml,
-                        eo -> new EoSyntax(
-                            "scenario",
-                            String.format("%s\n", eo)
-                        ).parsed()
+                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed()
                     )
                 )
             ),

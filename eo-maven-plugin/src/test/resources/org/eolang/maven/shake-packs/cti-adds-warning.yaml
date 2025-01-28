@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/parser/shake/cti-adds-errors.xsl
+  - /org/eolang/maven/shake/cti-adds-errors.xsl
 asserts:
   - /program/errors[count(*)=1]
   - /program/errors/error[@check='cti']

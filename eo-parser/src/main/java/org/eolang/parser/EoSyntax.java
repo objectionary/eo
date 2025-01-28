@@ -130,6 +130,7 @@ public final class EoSyntax implements Syntax {
      *
      * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing
      */
     public EoSyntax(final String nme, final String ipt, final Train<Shift> transform) {
         this(nme, new InputOf(ipt), transform);
@@ -161,7 +162,7 @@ public final class EoSyntax implements Syntax {
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
      */
-    EoSyntax(final String nme, final Input ipt, Function<XML, XML> transform) {
+    EoSyntax(final String nme, final Input ipt, final Function<XML, XML> transform) {
         this.name = nme;
         this.input = ipt;
         this.transform = transform;

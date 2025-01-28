@@ -121,7 +121,14 @@ SOFTWARE.
       <xsl:when test="$aliases[text()=$n]">
         <xsl:value-of select="$program"/>
         <xsl:text>.</xsl:text>
-        <xsl:value-of select="$n"/>
+        <xsl:choose>
+          <xsl:when test="starts-with($n, 'Q.')">
+            <xsl:value-of select="substring($n, 3)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$n"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:when test="contains($n, '.')">
         <xsl:for-each select="tokenize($n, '\.')">

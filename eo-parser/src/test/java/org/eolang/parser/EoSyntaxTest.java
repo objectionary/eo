@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -178,7 +177,7 @@ final class EoSyntaxTest {
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@base='number' and @name='x' and text()]"
+                "/program/objects/o[@base='Q.org.eolang.number' and @name='x' and o[text()]]"
             )
         );
     }
@@ -241,8 +240,8 @@ final class EoSyntaxTest {
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-xml-1']",
                 "/program/objects/o[@base='.add']",
-                "/program/objects/o/o[@base='number']",
-                "/program/objects/o/o[@base='true']"
+                "/program/objects/o/o[@base='Q.org.eolang.number']",
+                "/program/objects/o/o[@base='Q.org.eolang.true']"
             )
         );
     }
