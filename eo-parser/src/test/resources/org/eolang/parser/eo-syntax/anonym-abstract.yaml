@@ -22,9 +22,8 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(o)=3]
-  - //o[@base='$.x.plus' and @name='a']
-  - //o[@base='Q.org.eolang.number' and @name='@' and o[@base="Q.org.eolang.bytes" and starts-with(text(), '40-14')]]
+  - //objects[count(o)=1]
+  - //o[@base='.plus' and @name='s' and o[1][not(@name) and not(@base)]/o[@base='$.^']]/o[2][@base='Q.org.eolang.int']
 input: |
   # No comments.
   [] > test

@@ -74,6 +74,25 @@ SOFTWARE.
             </xsl:element>
           </xsl:when>
           <!--
+            Either rolled, but with data:
+              x.
+                z.y
+                  2A-
+            Or not rolled because anonymous:
+              x.
+                []
+          -->
+          <xsl:when test="not(exists($argument/@base)) or eo:has-data($argument)">
+            <xsl:element name="o">
+              <xsl:apply-templates select="@*"/>
+              <xsl:element name="o">
+                <xsl:apply-templates select="$argument/@*"/>
+                <xsl:apply-templates select="$argument/node()"/>
+              </xsl:element>
+              <xsl:apply-templates select="node()[position()&gt;1]"/>
+            </xsl:element>
+          </xsl:when>
+          <!--
             Changed to
             x.
               z.y
@@ -136,9 +155,9 @@ SOFTWARE.
             <xsl:apply-templates select="$arg/node()"/>
           </xsl:element>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-          <xsl:if test="eo:has-data(.)">
-            <xsl:value-of select="."/>
-          </xsl:if>
+<!--          <xsl:if test="eo:has-data(.)">-->
+<!--            <xsl:value-of select="."/>-->
+<!--          </xsl:if>-->
         </xsl:element>
       </xsl:when>
       <!--
@@ -153,9 +172,9 @@ SOFTWARE.
             <xsl:value-of select="concat($arg/@base, @base)"/>
           </xsl:attribute>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-          <xsl:if test="eo:has-data(.)">
-            <xsl:value-of select="."/>
-          </xsl:if>
+<!--          <xsl:if test="eo:has-data(.)">-->
+<!--            <xsl:value-of select="."/>-->
+<!--          </xsl:if>-->
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>

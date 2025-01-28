@@ -24,7 +24,7 @@ sheets: [ ]
 asserts:
   - /program[not(errors)]
   - //o[@name='f' and @line='8']
-  - //o[@base='^.f']
+  - //o[@base='$.^.f']
 input: |
   +home https://github.com/objectionary/eo
   +package test

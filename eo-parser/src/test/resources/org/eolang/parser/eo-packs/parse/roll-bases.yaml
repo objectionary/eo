@@ -36,7 +36,7 @@ sheets:
   - /org/eolang/parser/parse/explicit-data.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
 asserts:
-  - /program/objects[count(o)=2]
+  - /program/objects[count(o)=3]
   - //o[@base='$.two.a' and @name='one']
   - //o[@base='$.three.b' and @name='two']
   - //o[@base='Q.org.eolang.c' and @name='three']
@@ -47,6 +47,7 @@ asserts:
   - //o[@base='.and']/o[1][@base='.eq']/o[2][@base='Q.org.eolang.true']
   - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes' and text()!='']
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Q.org.eolang.false']
+  - //o[@name='bts']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Q.org.eolang.bytes' and text()!='']
 input: |
   # No comment.
   [x] > foo
@@ -66,3 +67,13 @@ input: |
     and. > @
       01-.as-bytes.eq true
       00-.as-bytes.eq false
+
+  # No comments.
+  [] > bts
+    eq. > @
+      as-bytes.
+        bytes.
+          eolang.
+            org.
+              Q
+          01-
