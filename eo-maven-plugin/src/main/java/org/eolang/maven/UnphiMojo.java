@@ -24,12 +24,13 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -38,13 +39,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Scalar;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.util.Threaded;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.PhiSyntax;
@@ -62,6 +63,10 @@ import org.xembly.Directives;
     threadSafe = true
 )
 public final class UnphiMojo extends SafeMojo {
+    /**
+     * Subdirectory for parsed cache.
+     */
+    static final String CACHE = "unphied";
 
     /**
      * Unphi transformations.
@@ -108,45 +113,12 @@ public final class UnphiMojo extends SafeMojo {
     @Override
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
-        final Home home = new HmBase(this.unphiOutputDir);
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(
             new Walk(this.unphiInputDir.toPath()),
-            phi -> {
-                final Path relative = this.unphiInputDir.toPath().relativize(phi);
-                final Path xmir = Paths.get(
-                    relative.toString().replace(
-                        String.format(".%s", PhiMojo.EXT),
-                        String.format(".%s", AssembleMojo.XMIR)
-                    )
-                );
-                final XML result = xsline.pass(
-                    new PhiSyntax(
-                        phi.getFileName().toString().replace(".phi", ""),
-                        new TextOf(phi),
-                        metas
-                    ).parsed()
-                );
-                home.save(result.toString(), xmir);
-                Logger.debug(
-                    this,
-                    "Parsed to xmir: %[file]s -> %[file]s",
-                    phi, this.unphiOutputDir.toPath().resolve(xmir)
-                );
-                final List<String> here = result.xpath("//errors/error/text()");
-                if (!here.isEmpty()) {
-                    errors.add(
-                        Logger.format(
-                            "%[file]s:\n\t%s\n",
-                            xmir,
-                            String.join("\n\t", here)
-                        )
-                    );
-                }
-                return 1;
-            }
+            phi -> this.included(errors, () -> this.unphied(phi, xsline, metas))
         ).total();
         Logger.info(
             this,
@@ -162,6 +134,65 @@ public final class UnphiMojo extends SafeMojo {
                 )
             );
         }
+    }
+
+    private int included(final List<String> errors, final Scalar<Path> parsed) throws Exception {
+        final Path xmir = parsed.value();
+        final List<String> here = new XMLDocument(xmir).xpath("//errors/error/text()");
+        if (!here.isEmpty()) {
+            errors.add(
+                Logger.format(
+                    "%[file]s:\n\t%s\n",
+                    this.unphiOutputDir.toPath().relativize(xmir),
+                    String.join("\n\t", here)
+                )
+            );
+        }
+        return 1;
+    }
+
+    /**
+     * Parses phi to xmir with cache.
+     *
+     * @param phi Path to phi
+     * @param xsline Xsline
+     * @param metas Extra metas to add to unphied XMIR
+     * @return Path to produced xmir
+     * @throws IOException When failed to unphi
+     */
+    private Path unphied(
+        final Path phi,
+        final Xsline xsline,
+        final Iterable<Directive> metas
+    ) throws IOException {
+        final Path xmir = Paths.get(
+            this.unphiInputDir.toPath()
+                .relativize(phi)
+                .toString()
+                .replace(
+                    String.format(".%s", PhiMojo.EXT),
+                    String.format(".%s", AssembleMojo.XMIR)
+                )
+        );
+        final Path target = new FpDefault(
+            ignore -> xsline.pass(
+                new PhiSyntax(
+                    phi.getFileName().toString().replace(".phi", ""),
+                    new TextOf(phi),
+                    metas
+                ).parsed()
+            ).toString(),
+            this.cache.toPath().resolve(UnphiMojo.CACHE),
+            this.plugin.getVersion(),
+            () -> "",
+            xmir
+        ).apply(phi, this.unphiOutputDir.toPath().resolve(xmir));
+        Logger.debug(
+            this,
+            "Parsed to xmir: %[file]s -> %[file]s",
+            phi, target
+        );
+        return target;
     }
 
     /**
