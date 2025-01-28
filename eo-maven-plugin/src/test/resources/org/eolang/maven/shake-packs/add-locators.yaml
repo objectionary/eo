@@ -28,20 +28,16 @@ sheets:
 asserts:
   - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a']
-  - //o[@base='x' and @loc='Φ.org.abc.a.φ.α0']
-  - //o[@base='org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
-  - //o[@base='x' and @name='tt' and @loc='Φ.org.abc.tt']
-  - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α0']
-  - //o[@base='org.eolang.tuple' and @loc='Φ.org.abc.tt.α1.ρ.ρ.ρ']
-  - //o[@base='org.eolang.number' and @loc='Φ.org.abc.tt.α1.ρ.α0']
+  - //o[@base='Q.x' and @loc='Φ.org.abc.a.φ.α0']
+  - //o[@base='Q.org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
+  - //o[@base='Q.x' and @name='tt' and @loc='Φ.org.abc.tt']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α0']
+  - //o[@base='Q.org.eolang.tuple.empty.with' and @loc='Φ.org.abc.tt.α1.ρ']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α1.ρ.α0']
   - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
   - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
-  - //o[@base='.hello' and @loc='Φ.org.abc.tt.α2.φ']
-  - //o[@base='.e' and @loc='Φ.org.abc.tt.α2.φ.ρ']
-  - //o[@name='q' and @base='.p' and @loc='Φ.org.abc.q']
-  - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ']
-  - //o[@base='.^' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ']
-  - //o[@base='$' and not(@name) and @loc='Φ.org.abc.q.ρ.ρ.ρ']
+  - //o[@base='$.e.hello' and @loc='Φ.org.abc.tt.α2.φ']
+  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.q']
 input: |
   +alias org.abc.foo.b
   +alias x
