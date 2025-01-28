@@ -40,7 +40,11 @@ salty: |-
   {
     ⟦
       main ↦ ⟦
-        φ ↦ 5,
+        φ ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
+          )
+        ),
         x ↦ ξ.ρ.x,
         b ↦ ξ.a,
         phi ↦ ξ.φ.φ

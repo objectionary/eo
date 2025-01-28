@@ -85,14 +85,6 @@ SOFTWARE.
     <xsl:value-of select="'&#10;'"/>
   </xsl:variable>
   <!-- Functions -->
-  <!-- ADD XI OR NOT -->
-  <xsl:function name="eo:add-xi">
-    <xsl:param name="add"/>
-    <xsl:if test="$add">
-      <xsl:value-of select="$xi"/>
-      <xsl:text>.</xsl:text>
-    </xsl:if>
-  </xsl:function>
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:lambda-name">
     <xsl:param name="name"/>

@@ -71,14 +71,6 @@ SOFTWARE.
     <xsl:text> </xsl:text>
   </xsl:variable>
   <!-- Functions -->
-  <!-- ADD XI OR NOT -->
-  <xsl:function name="eo:add-xi">
-    <xsl:param name="add"/>
-    <xsl:if test="$add">
-      <xsl:value-of select="$xi"/>
-      <xsl:text>.</xsl:text>
-    </xsl:if>
-  </xsl:function>
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:lambda-name">
     <xsl:param name="name"/>
@@ -87,10 +79,8 @@ SOFTWARE.
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
-    <xsl:param name="is-name"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
         <xsl:value-of select="$phi"/>
       </xsl:when>
       <xsl:when test="$n='.@'">
@@ -98,7 +88,6 @@ SOFTWARE.
         <xsl:value-of select="$phi"/>
       </xsl:when>
       <xsl:when test="$n='^'">
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
         <xsl:value-of select="$rho"/>
       </xsl:when>
       <xsl:when test="$n='.^'">
@@ -121,8 +110,15 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$n"/>
       </xsl:when>
+      <xsl:when test="contains($n, '.')">
+        <xsl:for-each select="tokenize($n, '\.')">
+          <xsl:if test="position()&gt;1">
+            <xsl:text>.</xsl:text>
+          </xsl:if>
+          <xsl:value-of select="eo:specials(.)"/>
+        </xsl:for-each>
+      </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
         <xsl:value-of select="$n"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -149,6 +145,7 @@ SOFTWARE.
     <program>
       <xsl:copy-of select="./sheets"/>
       <xsl:copy-of select="./errors"/>
+      <xsl:copy-of select="./objects"/>
       <phi>
         <xsl:text>{</xsl:text>
         <xsl:variable name="tabs" select="2"/>
@@ -212,7 +209,7 @@ SOFTWARE.
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="o[eo:void(.)]">
-    <xsl:value-of select="eo:specials(@name, true())"/>
+    <xsl:value-of select="eo:specials(@name)"/>
     <xsl:value-of select="$arrow"/>
     <xsl:value-of select="$empty"/>
   </xsl:template>
@@ -221,7 +218,7 @@ SOFTWARE.
     <xsl:param name="find"/>
     <xsl:variable name="parent" select="parent::*"/>
     <xsl:variable name="rho-dot">
-      <xsl:value-of select="eo:specials('^', true())"/>
+      <xsl:value-of select="eo:specials('^')"/>
       <xsl:text>.</xsl:text>
     </xsl:variable>
     <xsl:choose>
@@ -245,7 +242,7 @@ SOFTWARE.
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
     <xsl:if test="@name">
-      <xsl:value-of select="eo:specials(@name, true())"/>
+      <xsl:value-of select="eo:specials(@name)"/>
       <xsl:value-of select="$arrow"/>
     </xsl:if>
     <xsl:choose>
@@ -256,7 +253,7 @@ SOFTWARE.
             <xsl:value-of select="text()"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="eo:specials(@base, false())"/>
+            <xsl:value-of select="eo:specials(@base)"/>
           </xsl:otherwise>
         </xsl:choose>
         <!-- Nested objects -->
@@ -279,7 +276,7 @@ SOFTWARE.
           <xsl:with-param name="tabs" select="$tabs"/>
           <xsl:with-param name="package" select="$package"/>
         </xsl:apply-templates>
-        <xsl:value-of select="eo:specials(@base, true())"/>
+        <xsl:value-of select="eo:specials(@base)"/>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;1">
           <xsl:text>(</xsl:text>
@@ -317,7 +314,7 @@ SOFTWARE.
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
-    <xsl:variable name="name" select="eo:specials(@name, true())"/>
+    <xsl:variable name="name" select="eo:specials(@name)"/>
     <xsl:if test="@name">
       <xsl:value-of select="$name"/>
       <xsl:value-of select="$arrow"/>
@@ -366,7 +363,7 @@ SOFTWARE.
         <xsl:if test="matches(@as,'^[0-9][1-9]*$')">
           <xsl:value-of select="$alpha"/>
         </xsl:if>
-        <xsl:value-of select="eo:specials(@as, true())"/>
+        <xsl:value-of select="eo:specials(@as)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$alpha"/>
