@@ -314,11 +314,18 @@ final class UnphiMojoTest {
         ).value();
         final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
-        final String expected = "some valid XMIR from cache";
+        final String expected = String.join(
+            " ",
+            "<program name='random'><objects>",
+            "<o name='foo'>",
+            "<o name='bar' base='xxx'>",
+            "<o base='org.eolang.bytes'>01-02-03</o>",
+            "</o></o></objects></program>"
+        );
         new Saved(
             expected,
             new CachePath(
-                cache.resolve("unphied"),
+                cache.resolve(UnphiMojo.CACHE),
                 FakeMaven.pluginVersion(),
                 hash,
                 Path.of("std.xmir")
@@ -348,7 +355,7 @@ final class UnphiMojoTest {
         final File cached = new Saved(
             "some invalid (old) XMIR from cache",
             new CachePath(
-                cache.resolve("unphied"),
+                cache.resolve(UnphiMojo.CACHE),
                 FakeMaven.pluginVersion(),
                 hash,
                 Path.of("std.xmir")
