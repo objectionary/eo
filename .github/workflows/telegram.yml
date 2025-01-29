@@ -41,7 +41,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: 3.3
       - run: gem install hoc
       - run: |
           git fetch --tags --force
