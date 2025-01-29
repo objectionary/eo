@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;

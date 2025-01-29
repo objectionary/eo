@@ -19,49 +19,20 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+alias org.eolang.math.pi
-+alias org.eolang.math.angle
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+tests
-+package org.eolang.math
-+version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-zero
-  eq. > @
-    (angle 0).sin
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-pi-div-2
-  eq. > @
-    (angle (pi.div 2)).sin
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > sin-pi-floored
-  eq. > @
-    (angle pi).sin.floor
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-zero
-  eq. > @
-    (angle 0).cos
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-pi-div-2-floored
-  eq. > @
-    (angle (pi.div 2)).cos.floor
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > cos-pi
-  eq. > @
-    (angle pi).cos
-    -1
+---
+sheets:
+  - /org/eolang/maven/shake/cti-adds-errors.xsl
+  - /org/eolang/maven/shake/add-probes.xsl
+  - /org/eolang/maven/shake/blank-xsd-schema.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/sheets[sheet='add-probes']
+  - /program/metas[count(meta[head='probe'])=3]
+  - /program/metas/meta[head='probe' and tail='Q.org']
+  - /program/metas/meta[head='probe' and tail='Q.org.eolang']
+  - /program/metas/meta[head='probe' and tail='Q.org.eolang.int']
+input: |
+  # No comments.
+  [] > test
+    ([] (^ > x)).plus.minus > s
+      int

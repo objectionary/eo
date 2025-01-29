@@ -118,18 +118,23 @@ SOFTWARE.
     <xsl:apply-templates select="o" mode="create"/>
   </xsl:template>
   <!-- Method base -->
-  <xsl:template match="o[starts-with(@base, '.') and o[1][not(eo:abstract(.))]]" mode="create" as="element()*">
+  <xsl:template match="o[starts-with(@base, '.')]" mode="create" as="element()*">
     <xsl:variable name="first" select="o[1]"/>
     <xsl:choose>
+      <xsl:when test="$first[eo:abstract(.)]">
+        <xsl:apply-templates select="o[position()&gt;1]" mode="create"/>
+      </xsl:when>
       <xsl:when test="starts-with($first/@base, '.')">
         <xsl:variable name="nested" as="element()*">
           <xsl:apply-templates select="$first" mode="create"/>
         </xsl:variable>
         <xsl:copy-of select="$nested"/>
         <xsl:apply-templates select="o[position()&gt;1]" mode="create"/>
-        <a>
-          <xsl:value-of select="concat($nested[last()]/text(), @base)"/>
-        </a>
+        <xsl:if test="ends-with($nested[last()]/text(), $first/@base)">
+          <a>
+            <xsl:value-of select="concat($nested[last()]/text(), @base)"/>
+          </a>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="$first" mode="create"/>

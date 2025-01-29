@@ -27,6 +27,9 @@
 +tests
 +package org.eolang.fs
 +version 0.0.0
++unlint object-has-data
++unlint broken-alias-second
++unlint unused-alias
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > bound-tmpfile-does-not-recreates-file

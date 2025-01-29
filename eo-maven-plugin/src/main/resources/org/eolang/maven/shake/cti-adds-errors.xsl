@@ -52,9 +52,9 @@ SOFTWARE.
         <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:attribute name="severity">
-        <xsl:value-of select="eo:hex-to-utf8(element()[last() - 1])"/>
+        <xsl:value-of select="eo:hex-to-utf8(o[last() - 1]/o[1]/text())"/>
       </xsl:attribute>
-      <xsl:value-of select="eo:hex-to-utf8(element()[last()])"/>
+      <xsl:value-of select="eo:hex-to-utf8(o[last()]/o[1]/text())"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
@@ -65,19 +65,22 @@ SOFTWARE.
   <!--Converts hex sting into readable UTF-8 string-->
   <xsl:function name="eo:hex-to-utf8">
     <xsl:param name="str"/>
-    <xsl:variable name="hex">0123456789ABCDEF</xsl:variable>
+    <xsl:variable name="hex" select="'0123456789ABCDEF'"/>
     <xsl:variable name="tail" select="translate($str, '-', '')"/>
-    <xsl:if test="$tail">
-      <!-- extract first 2 digits -->
+    <!-- Base case: Return empty string if input is empty or invalid -->
+    <xsl:if test="string-length($tail) &gt;= 2">
+      <!-- Extract first 2 digits -->
       <xsl:variable name="first" select="substring($tail, 1, 1)"/>
       <xsl:variable name="second" select="substring($tail, 2, 1)"/>
-      <!-- get their hex values -->
+      <!-- Get their hex values -->
       <xsl:variable name="val1" select="string-length(substring-before($hex, $first))"/>
       <xsl:variable name="val2" select="string-length(substring-before($hex, $second))"/>
-      <!-- get the corresponding utf-8 character -->
-      <xsl:variable name="head" select="codepoints-to-string($val1 * 16 + $val2)"/>
-      <!-- recursive call with the rest of the hex string -->
-      <xsl:value-of select="concat($head, eo:hex-to-utf8(substring($tail, 3)))"/>
+      <!-- Ensure valid character range -->
+      <xsl:variable name="codepoint" select="$val1 * 16 + $val2"/>
+      <xsl:if test="$codepoint &gt; 0">
+        <xsl:variable name="head" select="codepoints-to-string($codepoint)"/>
+        <xsl:value-of select="concat($head, eo:hex-to-utf8(substring($tail, 3)))"/>
+      </xsl:if>
     </xsl:if>
   </xsl:function>
 </xsl:stylesheet>

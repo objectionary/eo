@@ -22,13 +22,28 @@
 ---
 sheets:
   - /org/eolang/maven/shake/cti-adds-errors.xsl
+  - /org/eolang/maven/shake/add-probes.xsl
+  - /org/eolang/maven/shake/set-locators.xsl
 asserts:
-  - /program/errors[count(*)=1]
+  - /program/errors[count(*)=2]
   - /program/errors/error[@check='cti']
   - /program/errors/error[@severity='warning']
   - /program/errors/error[text()='This method is deprecated!']
 
 input: |
+  +package org.eolang
+  +version 0.0.0
+  +unlint object-has-data
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > just-prints-warning
+    eq. > @
+      cti
+        2.times 2
+        "warning"
+        "This method is deprecated!"
+      4
+
   # No comments.
   [] > foo
     cti > @

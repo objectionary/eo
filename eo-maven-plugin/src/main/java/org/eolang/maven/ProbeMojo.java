@@ -110,7 +110,6 @@ public final class ProbeMojo extends SafeMojo {
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.shaken();
             final Collection<String> objects = this.probes(src);
-            System.out.println(objects);
             if (!objects.isEmpty()) {
                 Logger.debug(this, "Probing object(s): %s", objects);
             }

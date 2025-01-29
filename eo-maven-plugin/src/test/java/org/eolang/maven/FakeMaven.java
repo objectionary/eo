@@ -712,7 +712,6 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-//                DiscoverMojo.class,
                 ProbeMojo.class
             ).iterator();
         }
@@ -730,7 +729,6 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-//                DiscoverMojo.class,
                 ProbeMojo.class,
                 PullMojo.class
             ).iterator();

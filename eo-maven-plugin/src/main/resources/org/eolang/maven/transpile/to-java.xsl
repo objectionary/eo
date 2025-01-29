@@ -512,6 +512,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="@base='$' or @base='Q'">
         <xsl:value-of select="eo:fqn-start(@base, $rho)"/>
+        <xsl:text>;</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
