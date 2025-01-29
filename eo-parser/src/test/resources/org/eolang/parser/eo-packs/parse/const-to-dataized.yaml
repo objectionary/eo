@@ -20,13 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets: [ ]
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
-  - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='org.eolang.dataized' and o[@base='number' and not(@name)]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@name='m-3']]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='org.eolang.dataized']/o[@base='number' and text()!='']
-  - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='org.eolang.dataized']/o[@base='bytes' and text()='2A-']
-  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='Q.org.eolang.dataized' and o[@base='number' and not(@name)]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='Q.org.eolang.dataized' and o[@base='m-3']]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.number' and text()!='']
+  - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.bytes' and text()='2A-']
+  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='Q.org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
   - //objects[count(//o[@const])=0]
 input: |
   # No comments.

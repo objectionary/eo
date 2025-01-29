@@ -328,6 +328,8 @@ public final class FakeMaven {
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
+            "+unlint object-has-data",
+            "+unlint broken-alias-second",
             "+package f\n",
             "# No comments.",
             "[x] > main",
@@ -710,7 +712,6 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-                DiscoverMojo.class,
                 ProbeMojo.class
             ).iterator();
         }
@@ -728,26 +729,8 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-                DiscoverMojo.class,
                 ProbeMojo.class,
                 PullMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Discovery pipeline.
-     *
-     * @since 0.31
-     */
-    static final class Discover implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                DiscoverMojo.class
             ).iterator();
         }
     }

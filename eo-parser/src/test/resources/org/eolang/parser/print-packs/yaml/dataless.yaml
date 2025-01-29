@@ -33,46 +33,17 @@ origin: |
       input-of
         args.at not-a-number
 
-straight: |
+printed: |
   +package sandbox
 
   # No comments.
   [args] > main
-    QQ
-    .io
-    .stdout > @
-      args
-      .at
-        args
-        .length
-        .neg
-    nan
-    .plus > not-a-number
+    io.stdout > @
+      args.at
+        args.length.neg
+    nan.plus > not-a-number
       negative-infinity
     text-of
       input-of
-        args
-        .at
-          not-a-number
-
-reversed: |
-  +package sandbox
-
-  # No comments.
-  [args] > main
-    stdout. > @
-      io.
-        QQ
-      at.
-        args
-        neg.
-          length.
-            args
-    plus. > not-a-number
-      nan
-      negative-infinity
-    text-of
-      input-of
-        at.
-          args
+        args.at
           not-a-number

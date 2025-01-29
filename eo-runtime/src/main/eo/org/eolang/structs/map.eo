@@ -27,7 +27,9 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++unlint object-has-data
 +unlint broken-ref
++unlint broken-alias-second
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.

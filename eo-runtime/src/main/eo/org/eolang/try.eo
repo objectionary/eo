@@ -26,6 +26,7 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++unlint object-has-data
 
 # Try, catch and finally. This object helps catch errors created by the
 # `error` object. When being dataized, such objects will crash the problem.

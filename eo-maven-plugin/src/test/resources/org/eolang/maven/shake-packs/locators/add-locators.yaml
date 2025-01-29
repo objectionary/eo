@@ -1,0 +1,62 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2025 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/maven/shake/cti-adds-errors.xsl
+  - /org/eolang/maven/shake/add-probes.xsl
+  - /org/eolang/maven/shake/set-locators.xsl
+  - /org/eolang/maven/shake/blank-xsd-schema.xsl
+asserts:
+  - /program[not(errors)]
+  - //o[@name='a' and @loc='Φ.org.abc.a']
+  - //o[@base='Q.x' and @loc='Φ.org.abc.a.φ.α0']
+  - //o[@base='Q.org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
+  - //o[@base='Q.x' and @name='tt' and @loc='Φ.org.abc.tt']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α0']
+  - //o[@base='Q.org.eolang.tuple.empty.with' and @loc='Φ.org.abc.tt.α1.ρ']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α1.ρ.α0']
+  - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
+  - //o[@base='$.e.hello' and @loc='Φ.org.abc.tt.α2.φ']
+  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.q']
+input: |
+  +alias org.abc.foo.b
+  +alias x
+  +package org.abc
+  +home www.abc.com
+  +version 0.0.0
+
+  # No comments.
+  [] > a
+    b > @
+      x
+        "Hello"
+
+  x > tt
+    10
+    *
+      5.1
+      6.2
+    [e]
+      e.hello > @
+
+  $.^.^.p > q

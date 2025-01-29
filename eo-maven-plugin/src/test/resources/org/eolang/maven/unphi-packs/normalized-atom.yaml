@@ -21,9 +21,9 @@
 # SOFTWARE.
 ---
 asserts:
-  - //o[@base='org.eolang.io.stdout' and @name='x']/o[@as='text' and @base='.bytes']
-  - //o[@base='org.eolang.io.stdout' and @name='x']/o[@as='size' and @base='.int']
-  - //o[@base='org.eolang.malloc.@' and @name='y']/o[@as='arg' and @base='.nan']
+  - //o[@base='Q.org.eolang.io.stdout' and @name='x']/o[@as='text' and @base='Q.org.eolang.bytes']
+  - //o[@base='Q.org.eolang.io.stdout' and @name='x']/o[@as='size' and @base='Q.org.eolang.int']
+  - //o[@base='Q.org.eolang.malloc.@' and @name='y']/o[@as='arg' and @base='Q.org.eolang.nan']
 phi: |
   {
     ⟦

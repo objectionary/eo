@@ -134,18 +134,6 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
-     * Get the tojos that are not discovered yet.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> notDiscovered() {
-        return this.select(
-            row ->
-                row.exists(Attribute.SHAKEN.getKey())
-                && !row.exists(Attribute.DISCOVERED.getKey())
-        );
-    }
-
-    /**
      * Get the tojos that have corresponding xmir.
      * @return The tojos.
      */
@@ -245,7 +233,6 @@ public final class ForeignTojos implements Closeable {
             Attribute.EO,
             Attribute.XMIR,
             Attribute.SHAKEN,
-            Attribute.DISCOVERED,
             Attribute.PROBED,
         };
         final Collection<String> parts = new LinkedList<>();
@@ -319,11 +306,6 @@ public final class ForeignTojos implements Closeable {
          * has been found.
          */
         JAR("jar"),
-
-        /**
-         * In how many EO programs this object was seen (integer).
-         */
-        DISCOVERED("discovered"),
 
         /**
          * Absolute path of the {@code .xmir} file where this object was discovered.

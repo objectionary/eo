@@ -26,23 +26,11 @@ origin: |
     and. > @
       true.eq 01-
       false.eq 00-
-straight: |
-  # No comments.
-  [] > compares-bool-to-bytes
-    true
-    .eq
-      01-
-    .and > @
-      false
-      .eq
-        00-
-reversed: |
+printed: |
   # No comments.
   [] > compares-bool-to-bytes
     and. > @
-      eq.
-        true
+      true.eq
         01-
-      eq.
-        false
+      false.eq
         00-

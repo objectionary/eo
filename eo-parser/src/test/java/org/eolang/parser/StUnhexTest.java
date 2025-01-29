@@ -42,7 +42,7 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='72872276393407200']")
@@ -55,11 +55,11 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes'>FF-FF-FF-FF-FF-FF-FF-FF</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>FF-FF-FF-FF-FF-FF-FF-FF</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[@base='number' and @skip and o[@base='org.eolang.bytes' and text()!='']]"
+                "//o[@base='Q.org.eolang.number' and @skip and o[@base='Q.org.eolang.bytes' and text()!='']]"
             )
         );
     }
@@ -72,8 +72,8 @@ final class StUnhexTest {
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='string'><o base='bytes'>41-42-0A-09</o></o>",
-                        "<o base='string'><o base='bytes'>41-42</o></o></p>"
+                        "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42-0A-09</o></o>",
+                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42</o></o></p>"
                     )
                 )
             ),
@@ -90,7 +90,7 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='string'><o base='bytes'/></o></p>"
+                    "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
@@ -105,7 +105,7 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<o base=\"org.eolang.string\"><o base=\"org.eolang.bytes\">7A-0A-20-20-79-0A-20-78</o></o>"
+                    "<o base=\"Q.org.eolang.string\"><o base=\"Q.org.eolang.bytes\">7A-0A-20-20-79-0A-20-78</o></o>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
@@ -120,7 +120,7 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<o base='number'><o base='org.eolang.bytes'>80-00-00-00-00-00-00-00</o></o>"
+                    "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>80-00-00-00-00-00-00-00</o></o>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='-0']")
@@ -133,7 +133,7 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes'>41-42-43-67-AE-CD-3E-FD</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>41-42-43-67-AE-CD-3E-FD</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(

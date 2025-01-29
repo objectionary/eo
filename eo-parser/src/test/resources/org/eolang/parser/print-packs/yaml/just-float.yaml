@@ -26,14 +26,7 @@ origin: |
   [] > foo
     2.18 > e
 
-straight: |
-  3.14 > pi
-
-  # No comments.
-  [] > foo
-    2.18 > e
-
-reversed: |
+printed: |
   3.14 > pi
 
   # No comments.
