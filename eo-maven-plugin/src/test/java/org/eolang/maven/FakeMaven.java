@@ -736,23 +736,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Discovery pipeline.
-     *
-     * @since 0.31
-     */
-    static final class Discover implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                DiscoverMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
      * Printing pipeline.
      *
      * @since 0.33.0

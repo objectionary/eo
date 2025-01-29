@@ -197,16 +197,6 @@ public final class ForeignTojo {
     }
 
     /**
-     * Set the discovered size.
-     * @param size The size.
-     * @return The tojo itself.
-     */
-    public ForeignTojo withDiscovered(final int size) {
-        this.delegate.set(ForeignTojos.Attribute.DISCOVERED.getKey(), Integer.valueOf(size));
-        return this;
-    }
-
-    /**
      * Set the discovered at.
      * @param path The path where was discovered.
      * @return The tojo itself.

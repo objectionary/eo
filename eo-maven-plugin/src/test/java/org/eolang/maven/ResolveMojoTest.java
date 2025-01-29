@@ -118,7 +118,7 @@ final class ResolveMojoTest {
             "    a",
             "    b"
         );
-        maven.foreignTojos().add("sum").withDiscovered(0);
+        maven.foreignTojos().add("sum");
         maven.execute(new FakeMaven.Resolve());
         final Path path = temp
             .resolve("target")
