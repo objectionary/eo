@@ -26,7 +26,8 @@
 +package org.eolang
 +unlint abstract-decoratee
 +unlint broken-ref
-+version 0.50.2
++version 0.51.0
++unlint object-has-data
 
 # This unit test is supposed to check the globals bound objects work as tests.
 true > global-test

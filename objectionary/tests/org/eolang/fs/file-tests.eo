@@ -29,8 +29,11 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.50.2
++version 0.51.0
++unlint object-has-data
 +unlint broken-ref
++unlint broken-alias-second
++unlint unused-alias
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > check-if-current-directory-is-directory

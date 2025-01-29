@@ -24,9 +24,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.50.2
++rt jvm org.eolang:eo-runtime:0.51.0
 +rt node eo2js-runtime:0.0.0
-+version 0.50.2
++version 0.51.0
++unlint object-has-data
++unlint broken-alias-second
 
 # Returns a floating point number.
 [num] > real

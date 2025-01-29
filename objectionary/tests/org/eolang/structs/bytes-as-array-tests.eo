@@ -26,7 +26,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.50.2
++version 0.51.0
++unlint object-has-data
++unlint broken-alias-second
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > converts-bytes-to-array
