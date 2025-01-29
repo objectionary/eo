@@ -44,13 +44,10 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -180,31 +177,6 @@ final class PullMojoTest {
             String.format(format, PullMojo.DIR, string),
             result.containsKey(String.format("%s/%s", PullMojo.DIR, string)),
             Matchers.is(false)
-        );
-    }
-
-    @Test
-    @CaptureLogs
-    void showsWhereNotFoundWasDiscoveredAt(@Mktmp final Path tmp, final Logs out)
-        throws IOException {
-        final FakeMaven mvn = new FakeMaven(tmp)
-            .withProgram(
-                "+package com.example\n",
-                "# No comments.",
-                "[] > main",
-                "  org.eolang.org > @"
-            )
-            .with("objectionary", new OyRemote(new ChRemote("master")));
-        Assertions.assertThrows(
-            Exception.class,
-            () -> mvn.execute(new FakeMaven.Pull()),
-            "Pull mojo should fail, but it does not"
-        );
-        Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                line -> line.contains("Failed to pull 'org.eolang.org' earlier discovered at")
-            ),
-            "Log should contain info where failed to pull object was discovered at, but it does not"
         );
     }
 

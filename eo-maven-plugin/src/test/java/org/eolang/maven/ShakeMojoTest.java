@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
-import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +45,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.TrFull;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtStrict;
 import org.eolang.xax.XtYaml;
@@ -99,7 +99,8 @@ final class ShakeMojoTest {
                 new XtStrict(
                     new XtYaml(
                         yaml,
-                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed()
+                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed(),
+                        new TrFull()
                     )
                 )
             ),

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
@@ -49,7 +50,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ProbeMojoTest {
     @Test
     void findsProbes(@Mktmp final Path temp) throws Exception {
-        final String expected = "5";
+        final String expected = "10";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -73,7 +74,7 @@ final class ProbeMojoTest {
             new ResourceOf(tags),
             Paths.get("tags.txt")
         );
-        final String expected = "5";
+        final String expected = "10";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -104,7 +105,7 @@ final class ProbeMojoTest {
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
-            Matchers.equalTo("2")
+            Matchers.equalTo("5")
         );
     }
 

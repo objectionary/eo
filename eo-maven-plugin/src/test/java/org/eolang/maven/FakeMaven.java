@@ -328,6 +328,8 @@ public final class FakeMaven {
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
+            "+unlint object-has-data",
+            "+unlint broken-alias-second",
             "+package f\n",
             "# No comments.",
             "[x] > main",
@@ -710,7 +712,7 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-                DiscoverMojo.class,
+//                DiscoverMojo.class,
                 ProbeMojo.class
             ).iterator();
         }
@@ -728,7 +730,7 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 ShakeMojo.class,
-                DiscoverMojo.class,
+//                DiscoverMojo.class,
                 ProbeMojo.class,
                 PullMojo.class
             ).iterator();

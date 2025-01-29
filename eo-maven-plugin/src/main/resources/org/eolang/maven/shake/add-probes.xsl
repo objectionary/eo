@@ -24,80 +24,121 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0" exclude-result-prefixes="eo xs">
   <!--
-  For every object that starts with '.' add probe meta
+  For every object FQN add probe meta
   with fully qualified name of the object.
   Example:
    For object:
-   <o base=".abc" line="23" ... >
-     <o base="Q" ... >
+   <o base=".abc" ... >
+     <o base=".edf" ... >
+       <o base="Q.number"/>
      </o>
    </o>
-   Meta will be added:
-   <meta line="23">
+
+   Metas will be added:
+   <meta>
      <head>probe</head>
-     <tail>Q.abc</tail>
-     <part>Q.abc</part>
+     <tail>Q.org</tail>
+     <part>Q.org</part>
+   </meta>
+   <meta>
+     <head>probe</head>
+     <tail>Q.org.number</tail>
+     <part>Q.org.number</part>
+   </meta>
+   <meta>
+     <head>probe</head>
+     <tail>Q.org.number.edf</tail>
+     <part>Q.org.number.edf</part>
+   </meta>
+   <meta>
+     <head>probe</head>
+     <tail>Q.org.number.edf.abc</tail>
+     <part>Q.org.number.edf.abc</part>
    </meta>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:function name="eo:contains-any-of" as="xs:boolean">
     <xsl:param name="original" as="xs:string"/>
     <xsl:param name="chars" as="xs:string*"/>
     <xsl:sequence select="some $char in $chars satisfies contains($original, $char)"/>
   </xsl:function>
-  <xsl:function name="eo:qualify" as="xs:string">
-    <xsl:param name="e" as="element()"/>
-    <xsl:variable name="fco" select="$e/o[1]"/>
-    <xsl:choose>
-      <xsl:when test="starts-with($e/@base, '.')">
-        <xsl:value-of select="concat(eo:qualify($fco), $e/@base)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$e/@base"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:function name="eo:meta">
+    <xsl:param name="arg"/>
+    <xsl:element name="meta">
+      <xsl:element name="head">
+        <xsl:text>probe</xsl:text>
+      </xsl:element>
+      <xsl:element name="tail">
+        <xsl:value-of select="$arg"/>
+      </xsl:element>
+      <xsl:element name="part">
+        <xsl:value-of select="$arg"/>
+      </xsl:element>
+    </xsl:element>
   </xsl:function>
+  <!-- ENTRY POINT 1 - no metas -->
   <xsl:template match="/program[not(metas)]">
-    <xsl:variable name="candidates">
-      <metas>
-        <xsl:apply-templates select="//o[starts-with(@base, '.')]" mode="create"/>
-      </metas>
+    <xsl:variable name="candidates" as="element()*">
+      <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+    </xsl:variable>
+    <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('$', '^', '@'))) and not(.='Q')]"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:if test="not(empty($probes))">
+        <metas>
+          <xsl:for-each select="$probes">
+            <xsl:copy-of select="eo:meta(.)"/>
+          </xsl:for-each>
+        </metas>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
+  <!-- ENTRY POINT 2 - metas exists -->
+  <xsl:template match="/program/metas">
+    <xsl:variable name="candidates" as="element()*">
+      <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="$candidates"/>
+      <xsl:for-each select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('$', '^', '@'))) and not(.='Q')]">
+        <xsl:copy-of select="eo:meta(.)"/>
+      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program/metas">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-      <xsl:variable name="candidates">
-        <xsl:apply-templates select="//o[starts-with(@base, '.')]" mode="create"/>
-      </xsl:variable>
-      <xsl:apply-templates select="$candidates"/>
-    </xsl:copy>
+  <!-- Composite base -->
+  <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
+    <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
+    <xsl:for-each select="$parts">
+      <xsl:variable name="pos" select="position()"/>
+      <p>
+        <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
+      </p>
+    </xsl:for-each>
+    <xsl:apply-templates select="o" mode="create"/>
   </xsl:template>
-  <xsl:template match="metas[not(meta)]"/>
-  <xsl:template match="meta[head/text() = 'probe' and tail/text() = following::meta/tail/text()]"/>
-  <xsl:template match="o" mode="create">
-    <xsl:variable name="p" select="eo:qualify(.)"/>
-    <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
-    <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@'))) and not(starts-with($p, '.')) and $c &gt; 1">
-      <xsl:element name="meta">
-        <xsl:attribute name="line">
-          <xsl:value-of select="if (@line) then @line else '0'"/>
-        </xsl:attribute>
-        <xsl:element name="head">
-          <xsl:text>probe</xsl:text>
-        </xsl:element>
-        <xsl:element name="tail">
-          <xsl:value-of select="string-join(($p, @ver),'|')"/>
-        </xsl:element>
-        <xsl:element name="part">
-          <xsl:value-of select="$p"/>
-        </xsl:element>
-      </xsl:element>
-    </xsl:if>
+  <!-- Method base -->
+  <xsl:template match="o[starts-with(@base, '.') and o[1][not(eo:abstract(.))]]" mode="create" as="element()*">
+    <xsl:variable name="first" select="o[1]"/>
+    <xsl:choose>
+      <xsl:when test="starts-with($first/@base, '.')">
+        <xsl:variable name="nested" as="element()*">
+          <xsl:apply-templates select="$first" mode="create"/>
+        </xsl:variable>
+        <xsl:copy-of select="$nested"/>
+        <xsl:apply-templates select="o[position()&gt;1]" mode="create"/>
+        <a>
+          <xsl:value-of select="concat($nested[last()]/text(), @base)"/>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="$first" mode="create"/>
+        <xsl:apply-templates select="o[position()&gt;1]" mode="create"/>
+        <a>
+          <xsl:value-of select="concat($first/@base, @base)"/>
+        </a>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

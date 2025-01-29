@@ -23,11 +23,10 @@
 sheets:
   - /org/eolang/maven/shake/cti-adds-errors.xsl
   - /org/eolang/maven/shake/add-probes.xsl
-  - /org/eolang/maven/shake/set-locators.xsl
   - /org/eolang/maven/shake/blank-xsd-schema.xsl
 asserts:
   - /program[not(errors)]
-  - //metas[count(.//meta[head/text()='probe'])=1]
+  - //metas[count(.//meta[head/text()='probe'])=2]
   - /program/sheets[sheet='add-probes']
 input: |
   # No comments.

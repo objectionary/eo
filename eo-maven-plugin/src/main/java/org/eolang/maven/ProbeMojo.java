@@ -110,6 +110,7 @@ public final class ProbeMojo extends SafeMojo {
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.shaken();
             final Collection<String> objects = this.probes(src);
+            System.out.println(objects);
             if (!objects.isEmpty()) {
                 Logger.debug(this, "Probing object(s): %s", objects);
             }
@@ -137,10 +138,7 @@ public final class ProbeMojo extends SafeMojo {
                 );
             }
         } else if (probed.isEmpty()) {
-            Logger.debug(
-                this, "No probes found in %d programs",
-                tojos.size()
-            );
+            Logger.info(this, "No probes found in %d programs", tojos.size());
         } else {
             Logger.info(
                 this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",

@@ -21,13 +21,26 @@
 # SOFTWARE.
 ---
 sheets:
-  - /org/eolang/maven/shake/cti-adds-errors.xsl
-  - /org/eolang/maven/shake/add-probes.xsl
-  - /org/eolang/maven/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/package.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - /program[not(metas)]
-  - /program/sheets[sheet='add-probes']
+  - //java[contains(text(), 'Phi rb = new PhMethod(h, "x");')]
+  - //java[contains(text(), 'rb = rb.take("ρ");')]
+  - //java[contains(text(), 'rb = new PhMethod(rb, "or");')]
+  - //java[contains(text(), 'rb = new PhCopy(rb);')]
+  - //java[contains(text(), 'Phi rb1 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), 'Phi rb11 = Phi.Φ.take("org").take("eolang").take("bytes").copy();')]
+  - //java[contains(text(), 'Phi r = new PhMethod(rb, "and");')]
 input: |
-  # No comments.
-  [] > app
+  # Comment.
+  [] > foo
+    and. > q
+      or.
+        ^.
+          x.
+            $
+        2

@@ -106,6 +106,7 @@ final class TranspileMojoTest {
                     String.join(
                         "\n",
                         "+package one",
+                        "+unlint object-has-data",
                         "",
                         "# no comments.",
                         "[] > foo",

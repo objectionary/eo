@@ -30,10 +30,11 @@ asserts:
   - //java[contains(text(), 'this.add("xyz",')]
   - //java[contains(text(), '((PhDefault) r).add("bar",')]
   - //java[contains(text(), '((PhDefault) rr).add("φ",')]
-  - //java[contains(text(), 'Phi rrrbbb = rrh.take("ρ")')]
-  - //java[contains(text(), 'Phi rrrbb = rrrbbb.take("ρ")')]
-  - //java[contains(text(), 'Phi rrrb = new PhMethod(rrrbb, "this")')]
-  - //java[contains(text(), 'Phi rrr = new PhMethod(rrrb, "x")')]
+  - //java[contains(text(), 'Phi rrr = rrh.take("ρ")')]
+  - //java[contains(text(), 'rrr = rrr.take("ρ")')]
+  - //java[contains(text(), 'rrr = new PhMethod(rrr, "this")')]
+  - //java[contains(text(), 'rrr = new PhMethod(rrr, "x")')]
+  - //java[contains(text(), 'return rrr;')]
 input: |
   # No comments.
   [x] > foo

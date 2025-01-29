@@ -53,18 +53,6 @@ SOFTWARE.
       <xsl:text>  </xsl:text>
     </xsl:for-each>
   </xsl:function>
-  <!-- Fetch object by given name -->
-  <!-- org.eolang.int -> Phi.Ф.take("org").take("eolang").take("int")  -->
-  <xsl:function name="eo:fetch">
-    <xsl:param name="object"/>
-    <xsl:variable name="parts" select="tokenize($object, '\.')"/>
-    <xsl:text>Phi.Φ</xsl:text>
-    <xsl:for-each select="$parts">
-      <xsl:text>.take("</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>")</xsl:text>
-    </xsl:for-each>
-  </xsl:function>
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -141,6 +129,46 @@ SOFTWARE.
       <xsl:value-of select="$context"/>
     </xsl:if>
     <xsl:text>r</xsl:text>
+  </xsl:function>
+  <!-- Print first FQN character -->
+  <xsl:function name="eo:fqn-start">
+    <xsl:param name="first"/>
+    <xsl:param name="rho"/>
+    <xsl:choose>
+      <xsl:when test="$first='Q'">
+        <xsl:text>Phi.Φ</xsl:text>
+      </xsl:when>
+      <xsl:when test="$first='$'">
+        <xsl:value-of select="$rho"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="yes">
+          <xsl:text>FQN must start with either with Q or $, but </xsl:text>
+          <xsl:value-of select="$first"/>
+          <xsl:text> found</xsl:text>
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!-- Take method -->
+  <xsl:function name="eo:method">
+    <xsl:param name="base"/>
+    <xsl:param name="mtd"/>
+    <xsl:choose>
+      <xsl:when test="$mtd='^'">
+        <xsl:value-of select="$base"/>
+        <xsl:text>.take("</xsl:text>
+        <xsl:value-of select="$RHO"/>
+        <xsl:text>");</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new PhMethod(</xsl:text>
+        <xsl:value-of select="$base"/>
+        <xsl:text>, "</xsl:text>
+        <xsl:value-of select="eo:attr-name($mtd)"/>
+        <xsl:text>");</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- Class. Entry point  -->
   <xsl:template match="class">
@@ -482,27 +510,37 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="@primitive and @base">
-        <xsl:value-of select="eo:fetch(@base)"/>
-        <xsl:text>.copy()</xsl:text>
-      </xsl:when>
-      <xsl:when test="@base='$'">
-        <xsl:value-of select="$rho"/>
-      </xsl:when>
-      <xsl:when test="@base='Q'">
-        <xsl:text>Phi.Φ</xsl:text>
-      </xsl:when>
-      <xsl:when test="@base='^'">
-        <xsl:value-of select="$rho"/>
-        <xsl:text>.take("</xsl:text>
-        <xsl:value-of select="$RHO"/>
-        <xsl:text>")</xsl:text>
+      <xsl:when test="@base='$' or @base='Q'">
+        <xsl:value-of select="eo:fqn-start(@base, $rho)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="eo:fetch(@base)"/>
+        <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
+        <xsl:choose>
+          <!-- Little optimization -->
+          <xsl:when test="starts-with(@base, 'Q.org.eolang') and not(contains(@base, '^'))">
+            <xsl:value-of select="eo:fqn-start($parts[1], $rho)"/>
+            <xsl:for-each select="$parts[position()&gt;1]">
+              <xsl:text>.take("</xsl:text>
+              <xsl:value-of select="eo:attr-name(.)"/>
+              <xsl:text>")</xsl:text>
+            </xsl:for-each>
+            <xsl:if test="./value">
+              <xsl:text>.copy()</xsl:text>
+            </xsl:if>
+            <xsl:text>;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="eo:method(eo:fqn-start($parts[1], $rho), $parts[2])"/>
+            <xsl:for-each select="$parts[position()&gt;2]">
+              <xsl:value-of select="eo:eol($indent)"/>
+              <xsl:value-of select="$name"/>
+              <xsl:text> = </xsl:text>
+              <xsl:value-of select="eo:method($name, .)"/>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>;</xsl:text>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -537,20 +575,7 @@ SOFTWARE.
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
-    <xsl:choose>
-      <xsl:when test="$method='^'">
-        <xsl:value-of select="$name"/>
-        <xsl:text>b.take("</xsl:text>
-        <xsl:value-of select="$RHO"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>new PhMethod(</xsl:text>
-        <xsl:value-of select="$name"/>
-        <xsl:text>b, "</xsl:text>
-        <xsl:value-of select="eo:attr-name($method)"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>");</xsl:text>
+    <xsl:value-of select="eo:method(string-join(($name, 'b'), ''), $method)"/>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>

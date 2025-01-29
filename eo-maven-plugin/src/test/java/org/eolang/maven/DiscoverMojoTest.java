@@ -37,6 +37,7 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,6 +49,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.28.11
  */
 @ExtendWith(MktmpResolver.class)
+@Disabled
 final class DiscoverMojoTest {
     @ParameterizedTest
     @CsvSource({

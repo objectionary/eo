@@ -21,8 +21,8 @@
 # SOFTWARE.
 ---
 asserts:
-  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()=1 and not(@base) and not(@name)]
-  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[position()>1 and @as='α0' and @base='.int']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[1][not(@base) and not(@name)]
+  - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[2][@as='α0' and @base='Q.org.eolang.int']
 phi: |-
   {
     ⟦
