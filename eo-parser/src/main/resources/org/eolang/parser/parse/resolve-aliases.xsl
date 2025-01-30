@@ -41,7 +41,7 @@ SOFTWARE.
         <xsl:variable name="meta" select="/program/metas/meta[head='alias' and part[1] = $o/@base]"/>
         <xsl:choose>
           <xsl:when test="$meta">
-            <xsl:variable name="tail" select="$meta/part[2]"/>
+            <xsl:variable name="tail" select="$meta/part[last()]"/>
             <xsl:value-of select="$tail[1]"/>
           </xsl:when>
           <xsl:otherwise>

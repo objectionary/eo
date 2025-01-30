@@ -35,18 +35,35 @@ SOFTWARE.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/metas/meta[head='alias']">
-    <xsl:variable name="expanded" select="contains(tail, ' ')"/>
+    <xsl:variable name="composite" select="contains(tail, ' ')"/>
+    <xsl:variable name="split" select="tokenize(tail/text(), ' ')"/>
     <xsl:variable name="last">
       <xsl:choose>
-        <xsl:when test="$expanded">
-          <xsl:value-of select="tokenize(tail/text(), ' ')[last()]"/>
+        <xsl:when test="$composite">
+          <xsl:value-of select="$split[last()]"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="tail/text()"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:variable name="parts" select="tokenize($last, '\.')"/>
+    <xsl:variable name="first">
+      <xsl:choose>
+        <xsl:when test="$composite">
+          <xsl:value-of select="$split[1]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:choose>
+            <xsl:when test="contains($last, '.')">
+              <xsl:value-of select="tokenize($last, '\.')[last()]"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="tail/text()"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="tail">
       <xsl:if test="not(starts-with($last, 'Q.'))">
         <xsl:text>Q.</xsl:text>
@@ -56,13 +73,26 @@ SOFTWARE.
     <xsl:copy>
       <xsl:apply-templates select="node() except tail except part|@*"/>
       <xsl:element name="tail">
-        <xsl:value-of select="$parts[last()]"/>
+        <xsl:value-of select="$first"/>
+        <xsl:if test="$composite">
+          <xsl:for-each select="$split[position()&gt;1 and position()!=last()]">
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="."/>
+          </xsl:for-each>
+        </xsl:if>
         <xsl:text> </xsl:text>
         <xsl:value-of select="$tail"/>
       </xsl:element>
       <xsl:element name="part">
-        <xsl:value-of select="$parts[last()]"/>
+        <xsl:value-of select="$first"/>
       </xsl:element>
+      <xsl:if test="$composite">
+        <xsl:for-each select="$split[position()&gt;1 and position()!=last()]">
+          <xsl:element name="part">
+            <xsl:value-of select="."/>
+          </xsl:element>
+        </xsl:for-each>
+      </xsl:if>
       <xsl:element name="part">
         <xsl:value-of select="$tail"/>
       </xsl:element>
