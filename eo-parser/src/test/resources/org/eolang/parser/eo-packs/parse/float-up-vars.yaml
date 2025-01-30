@@ -36,7 +36,7 @@ asserts:
   - //objects[count(//o[@name='oops'])=1]
   - //o[@name='aaa']
   - //o[@name='ooo']
-  - //o[@name='mm' and @base='Q.org.eolang.number']
+  - //o[@name='mm' and @base='Q.org.eolang.number ']
   - //o[@base='mm']
 input: |
   # no comments.
