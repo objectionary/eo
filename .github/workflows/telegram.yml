@@ -38,7 +38,7 @@ jobs:
       - uses: djdefi/cloc-action@7
         with:
           options: --json --report-file=cloc.json
-      - run: sudo apt-get update && sudo apt-get install --yes jq bc
+      - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
