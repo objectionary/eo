@@ -131,7 +131,7 @@ public final class ParseMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withXmir(
             new FpDefault(
-                ParseMojo.parse(name),
+                this.parse(name),
                 this.cache.toPath().resolve(ParseMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -158,12 +158,12 @@ public final class ParseMojo extends SafeMojo {
      * @param name Name of the EO object
      * @return Function that parses EO source
      */
-    private static Func<Path, String> parse(final String name) {
+    private Func<Path, String> parse(final String name) {
         return source -> {
             final String parsed = new XMLDocument(
                 new Xembler(
                     new Directives().xpath("/program").attr(
-                        "source", source.toAbsolutePath()
+                        "source",  this.sourcesDir.toPath().relativize(source.toAbsolutePath())
                     )
                 ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().inner())
             ).toString();
