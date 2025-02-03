@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 asserts:
-  - //o[@base='org.eolang.error' and @name='x' and not(o)]
+  - //o[@base='Q.org.eolang.error' and @name='x' and not(o)]
 phi: |
   {
   	⟦

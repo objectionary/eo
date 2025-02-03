@@ -27,6 +27,9 @@
 +tests
 +package org.eolang.sys
 +version 0.0.0
++unlint object-has-data
++unlint broken-alias-second
++unlint unused-alias
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-invokes-getpid-correctly

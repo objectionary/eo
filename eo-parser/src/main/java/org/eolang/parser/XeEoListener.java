@@ -449,7 +449,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.startObject(ctx);
         final String base;
         if (ctx.STAR() != null) {
-            base = "tuple";
+            base = "Q.org.eolang.tuple";
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
@@ -971,7 +971,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             if (ctx.XI() != null) {
                 base = "$";
             } else if (ctx.STAR() != null) {
-                base = "tuple";
+                base = "Q.org.eolang.tuple";
                 this.objects.prop("star");
             } else if (ctx.ROOT() != null) {
                 base = "Q";
@@ -1122,10 +1122,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
-            base = "bytes";
+            base = "Q.org.eolang.bytes";
             data = () -> text.replaceAll("\\s+", "").trim();
         } else if (ctx.FLOAT() != null || ctx.INT() != null) {
-            base = "number";
+            base = "Q.org.eolang.number";
             data = new BytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
@@ -1133,7 +1133,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.HEX() != null) {
-            base = "number";
+            base = "Q.org.eolang.number";
             data = new BytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
@@ -1141,14 +1141,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.STRING() != null) {
-            base = "string";
+            base = "Q.org.eolang.string";
             data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(
                     text.substring(1, text.length() - 1)
                 ).getBytes(StandardCharsets.UTF_8)
             );
         } else {
-            base = "string";
+            base = "Q.org.eolang.string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(

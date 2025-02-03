@@ -28,7 +28,10 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.net
 +version 0.0.0
++unlint object-has-data
 +unlint broken-ref
++unlint broken-alias-second
++unlint unused-alias
 
 # Socket.
 #

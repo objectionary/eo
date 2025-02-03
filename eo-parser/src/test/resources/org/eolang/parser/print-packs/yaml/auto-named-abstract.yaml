@@ -25,14 +25,10 @@ origin: |
     [] >>
       5 > five
 
-straight: |
+printed: |
   x > first
-    # No comments.
-    [] > auto-named-attr-at-2-4
-      5 > five
+    Q.auto-named-attr-at-2-4
 
-reversed: |
-  x > first
-    # No comments.
-    [] > auto-named-attr-at-2-4
-      5 > five
+  # No comments.
+  [] > auto-named-attr-at-2-4
+    5 > five

@@ -51,38 +51,7 @@ origin: |
             n
             "hello, 大家!"
 
-straight: |
-  # This is the license part
-  # of the program
-
-  +meta1
-  +meta2 short
-  +meta2 long tail
-
-  3.1415 > pi
-
-  # No comments.
-  [x x2 x3] > idiomatic
-    5 > iTest_me
-    # No comments.
-    [] > rr /int
-    this
-      n
-      .minus
-        "\u5BB6"
-        4.55 > x!
-        *
-          "Hello, \u0434\u0440\u0443\u0433"
-          2.18
-          true
-    .plus
-      bar
-        n
-        .plus
-          "hello, \u5927\u5BB6!"
-    .if > @
-
-reversed: |
+printed: |
   # This is the license part
   # of the program
 
@@ -100,15 +69,14 @@ reversed: |
     if. > @
       plus.
         this
-          minus.
-            n
+          n.minus
             "\u5BB6"
-            4.55 > x!
+            x
             *
               "Hello, \u0434\u0440\u0443\u0433"
               2.18
               true
         bar
-          plus.
-            n
+          n.plus
             "hello, \u5927\u5BB6!"
+    4.55 > x!

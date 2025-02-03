@@ -96,7 +96,31 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|Q|QQ|[A-Z]\S*|\.?(^|$|@|[a-z]\S*)|[a-z]\S*(\.[a-z]\S*)*"/>
+      <xs:pattern value="∅|\.(^|@|[a-z]\S*)|(Q|$)(\.(^|@|[a-z]\S*))*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="program-name">
+    <xs:annotation>
+      <xs:appinfo>The name of the program</xs:appinfo>
+      <xs:documentation>
+        The name of the program
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z]\S*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="atom">
+    <xs:annotation>
+      <xs:appinfo>A fully qualified name of an object starting from global scope</xs:appinfo>
+      <xs:documentation>
+        The global fully qualified name of an object, which includes the names of all the objects that are its ancestors.
+        This type is used to uniquely identify an object within the program. The FQN is typically used to reference
+        from the global scope, ensuring that the correct object is accessed or modified.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(Q(\.(@|[a-z]\S*))*)|[A-Z]\S*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -162,7 +186,7 @@ SOFTWARE.
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="as" type="attribute-name"/>
-    <xs:attribute name="atom" type="fqn"/>
+    <xs:attribute name="atom" type="atom"/>
     <xs:attribute name="loc" type="locator"/>
   </xs:complexType>
   <xs:complexType name="error">
@@ -386,7 +410,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
     </xs:all>
-    <xs:attribute name="name" type="fqn" use="required">
+    <xs:attribute name="name" type="program-name" use="required">
       <xs:annotation>
         <xs:appinfo>The name of the program, usually equal to the name of the object defined in it</xs:appinfo>
         <xs:documentation>

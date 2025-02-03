@@ -28,29 +28,11 @@ origin: |
         "result is %d\n"
         -1.times 228
 
-straight: |
+printed: |
   # No comments.
   [] > app
-    QQ
-    .io
-    .stdout > @
-      QQ
-      .txt
-      .sprintf
-        "result is %d\n"
-        -1
-        .times
-          228
-
-reversed: |
-  # No comments.
-  [] > app
-    stdout. > @
-      io.
-        QQ
-      sprintf.
-        txt.
-          QQ
+    io.stdout > @
+      txt.sprintf
         "result is %d\n"
         times.
           -1

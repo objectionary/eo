@@ -40,17 +40,9 @@ final class TrShaking extends TrEnvelope {
         super(
             new TrFull(
                 new TrClasspath<>(
-                    "/org/eolang/parser/shake/cti-adds-errors.xsl",
-                    "/org/eolang/parser/shake/vars-float-up.xsl",
-                    "/org/eolang/parser/shake/build-fqns.xsl",
-                    "/org/eolang/parser/shake/expand-qqs.xsl",
-                    "/org/eolang/parser/shake/add-probes.xsl",
-                    "/org/eolang/parser/shake/expand-aliases.xsl",
-                    "/org/eolang/parser/shake/resolve-aliases.xsl",
-                    "/org/eolang/parser/shake/add-default-package.xsl",
-                    "/org/eolang/parser/shake/explicit-data.xsl",
-                    "/org/eolang/parser/shake/set-locators.xsl",
-                    "/org/eolang/parser/shake/blank-xsd-schema.xsl"
+                    "/org/eolang/maven/shake/cti-adds-errors.xsl",
+                    "/org/eolang/maven/shake/add-probes.xsl",
+                    "/org/eolang/maven/shake/set-locators.xsl"
                 ).back()
             )
         );

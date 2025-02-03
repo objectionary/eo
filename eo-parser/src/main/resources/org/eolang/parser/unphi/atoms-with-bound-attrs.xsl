@@ -45,6 +45,7 @@ SOFTWARE.
     <xsl:element name="o">
       <xsl:attribute name="name" select="@name"/>
       <xsl:attribute name="base">
+        <xsl:text>Q.</xsl:text>
         <xsl:for-each select="tokenize(@atom,'_')">
           <xsl:choose>
             <xsl:when test="position()=1">
@@ -66,9 +67,7 @@ SOFTWARE.
       </xsl:attribute>
       <xsl:for-each select="o">
         <xsl:element name="o">
-          <xsl:for-each select="@*[name()!='name']">
-            <xsl:attribute name="{name()}" select="."/>
-          </xsl:for-each>
+          <xsl:apply-templates select="@* except @name"/>
           <xsl:attribute name="as" select="@name"/>
           <xsl:copy-of select="*"/>
         </xsl:element>

@@ -26,6 +26,8 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++unlint object-has-data
++unlint broken-alias-second
 
 # Set - is an unordered `list` of unique objects.
 [lst] > set

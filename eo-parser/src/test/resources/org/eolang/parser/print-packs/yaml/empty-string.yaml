@@ -26,24 +26,9 @@ origin: |
     QQ.io.stdout > @
       QQ.txt.sprintf ""
 
-straight: |
+printed: |
   # No comments.
   [] > app
-    QQ
-    .io
-    .stdout > @
-      QQ
-      .txt
-      .sprintf
-        ""
-
-reversed: |
-  # No comments.
-  [] > app
-    stdout. > @
-      io.
-        QQ
-      sprintf.
-        txt.
-          QQ
+    io.stdout > @
+      txt.sprintf
         ""

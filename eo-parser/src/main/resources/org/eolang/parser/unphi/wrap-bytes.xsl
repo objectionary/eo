@@ -33,7 +33,7 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[eo:abstract(.) and @name and eo:has-data(.)]">
     <xsl:element name="o">
-      <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
+      <xsl:attribute name="base">Q.org.eolang.bytes</xsl:attribute>
       <xsl:attribute name="name" select="@name"/>
       <xsl:element name="o">
         <xsl:attribute name="as" select="'α0'"/>

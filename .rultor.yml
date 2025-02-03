@@ -31,7 +31,7 @@ assets:
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
   secring.gpg: yegor256/objectionary-secrets#secring.gpg
 install: |
-  sudo apt-get install -y python3-pygments
+  sudo apt-get install --yes python3-pygments
   sudo pip3 install pygments
   javac -version
   pdd --file=/dev/null

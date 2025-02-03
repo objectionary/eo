@@ -27,6 +27,9 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
 +version 0.0.0
++unlint object-has-data
++unlint broken-alias-second
++unlint unused-alias
 
 # Get environment variable as `string`.
 # If return `string` is empty - the variable does not exist.

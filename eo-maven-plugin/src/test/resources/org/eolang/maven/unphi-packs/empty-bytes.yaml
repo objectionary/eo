@@ -21,5 +21,5 @@
 # SOFTWARE.
 ---
 asserts:
-  - /program/objects/o[@base='.bytes' and @name='empty' and text()='--']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@name='empty' and @base='Q.org.eolang.bytes' and text()='--']
 phi: "{⟦empty ↦ Φ.org.eolang.bytes(α0 ↦ ⟦Δ ⤍ --⟧)⟧}"

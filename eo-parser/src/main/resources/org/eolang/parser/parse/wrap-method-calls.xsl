@@ -27,8 +27,8 @@ SOFTWARE.
   When we see this structure:
 
   <o base="foo"/>
-  <o base=".bar"/>
-  <o base=".test"/>
+  <o base=".bar" method=""/>
+  <o base=".test" method=""/>
 
   We transfer it to this one:
 

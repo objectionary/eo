@@ -27,9 +27,7 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), '        Phi rbbbb = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
-  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
+  - //java[contains(text(), '        Phi rbb = Phi.Φ.take("org").take("eolang").take("tuple").take("empty").take("with");')]
   - //java[contains(text(), '        rbb = new PhWith(rbb, 0, rbb1);')]
   - //java[contains(text(), '        Phi rb = new PhMethod(rbb, "with");')]
   - //java[contains(text(), '        rb = new PhWith(rb, 0, rb1);')]

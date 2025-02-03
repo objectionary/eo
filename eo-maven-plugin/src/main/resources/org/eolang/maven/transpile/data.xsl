@@ -28,7 +28,6 @@ SOFTWARE.
   <xsl:template match="o[eo:has-data(.)]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:attribute name="primitive"/>
       <xsl:element name="value">
         <xsl:text>new byte[] {</xsl:text>
         <xsl:for-each select="tokenize(text(), '-')">

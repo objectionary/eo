@@ -181,7 +181,8 @@ final class LintMojoTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram(
-                    "+package f\n",
+                    "+package f",
+                    "+unlint object-has-data\n",
                     "# No comments.",
                     "[] > main",
                     "  # No comments.",

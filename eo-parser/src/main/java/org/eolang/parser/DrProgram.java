@@ -58,6 +58,12 @@ public final class DrProgram implements Iterable<Directive> {
         final String when = ZonedDateTime.now(ZoneOffset.UTC).format(
             DateTimeFormatter.ISO_INSTANT
         );
+        final String nme;
+        if (this.name.startsWith("Q.")) {
+            nme = this.name.substring(2);
+        } else {
+            nme = this.name;
+        }
         return new Directives()
             .comment(
                 String.join(
@@ -90,7 +96,7 @@ public final class DrProgram implements Iterable<Directive> {
                 "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                 DrProgram.schema()
             )
-            .attr("name", this.name)
+            .attr("name", nme)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
             .attr("dob", Manifests.read("EO-Dob"))

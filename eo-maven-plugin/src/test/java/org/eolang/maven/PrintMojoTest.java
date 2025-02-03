@@ -117,25 +117,13 @@ final class PrintMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
-    void printsInStraightNotation(final String pack, @Mktmp final Path temp) throws Exception {
+    void printsXmirToEo(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
             PrintMojoTest.printed(xtory, temp, false).asString(),
-            Matchers.equalTo((String) xtory.map().get("straight"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
-    void printsInReversedNotation(final String pack, @Mktmp final Path temp) throws Exception {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        MatcherAssert.assertThat(
-            "PrintMojo should print EO in reversed notation, but it didn't",
-            PrintMojoTest.printed(xtory, temp, true).asString(),
-            Matchers.equalTo((String) xtory.map().get("reversed"))
+            Matchers.equalTo((String) xtory.map().get("printed"))
         );
     }
 

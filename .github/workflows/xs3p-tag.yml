@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y xsltproc
+      - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes xsltproc
       - run: |
           mkdir gh-pages
           xsltproc \

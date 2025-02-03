@@ -25,6 +25,8 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++unlint object-has-data
++unlint broken-alias-second
 
 # Range - create a `list` containing a range of elements
 # Here `start` must be a abstract object that must have an object `next` to get

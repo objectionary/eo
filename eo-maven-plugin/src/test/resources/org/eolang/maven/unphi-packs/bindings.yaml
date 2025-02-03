@@ -21,13 +21,10 @@
 # SOFTWARE.
 ---
 asserts:
-  - //o[@base='.x' and @name='xyz']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@base='.y' and @as='attr']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[not(@base) and @as='abs']/o[@name='z' and @base='∅']
-  - //o[@base='.x' and @name='xyz']/o[not(@base) and @as='abs']/o[@base='.w' and @name='@']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='α0' and @base='.bytes']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='α0' and @base='.bytes' and text()!='']
+  - //o[@base='Q.org.eolang.x' and @name='xyz']/o[1][@as='attr' and @base='Q.org.eolang.y']
+  - //o[@name='xyz']/o[2][@as='abs']/o[1][@base='∅' and @name='z']
+  - //o[@name='xyz']/o[2][@as='abs']/o[2][@base='Q.org.eolang.w' and @name='@']
+  - //o[@name='xyz']/o[3][@as='five' and @base='Q.org.eolang.int']/o[1][@as='α0' and @base='Q.org.eolang.bytes' and text()!='']
 phi: |-
   {
     ⟦

@@ -23,11 +23,8 @@
  */
 package org.eolang.maven.hash;
 
+import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -37,15 +34,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link CommitHashesText}.
  *
  * @since 0.37.0
- * @todo #3122:60min Add "Reload" to the test CommitHashesTextTest#isThreadSafe
- *  when issue about "Reload" annotation will be solved.
- *  We need to reinitialize some static fields of the class
- *  before the test will be executed.
  */
+@ExtendWith(WeAreOnline.class)
 final class CommitHashesTextTest {
 
     @Test
-    @ExtendWith(WeAreOnline.class)
     void downloadsDefaultList() throws Exception {
         MatcherAssert.assertThat(
             "CommitHashesText downloads the default list of hashes from Objectionary",
@@ -56,20 +49,12 @@ final class CommitHashesTextTest {
 
     @Test
     void isThreadSafe() {
-        final int threads = 200;
-        boolean nonulls = true;
-        for (final boolean bool: new Threads<>(
-            threads,
-            Stream.generate(
-                () -> (Scalar<Boolean>) () -> new CommitHashesText().asString() != null
-            ).limit(threads).collect(Collectors.toList())
-            )) {
-            nonulls &= bool;
-        }
         MatcherAssert.assertThat(
             "Can be used in different threads without NPE",
-            nonulls,
-            Matchers.equalTo(true)
+            new Together<>(
+                thread -> new CommitHashesText().asString() != null
+            ),
+            Matchers.not(Matchers.hasItems(false))
         );
     }
 }

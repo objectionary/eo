@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
@@ -37,7 +38,7 @@ import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtStrict;
+import org.eolang.xax.XtStrictAfter;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
@@ -172,11 +173,11 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-3",
+                "test-xml-3",
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@base='number' and @name='x' and text()]"
+                "/program/objects/o[@base='Q.org.eolang.number' and @name='x' and o[text()]]"
             )
         );
     }
@@ -196,7 +197,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-4",
+                "test-xml-4",
                 new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -211,7 +212,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-5",
+                "test-xml-5",
                 new InputOf(
                     String.join(
                         "\n",
@@ -233,14 +234,14 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
-                "test-it-1",
+                "test-xml-1",
                 new InputOf("add.\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program[@name='test-it-1']",
+                "/program[@name='test-xml-1']",
                 "/program/objects/o[@base='.add']",
-                "/program/objects/o/o[@base='number']",
-                "/program/objects/o/o[@base='true']"
+                "/program/objects/o/o[@base='Q.org.eolang.number']",
+                "/program/objects/o/o[@base='Q.org.eolang.true']"
             )
         );
     }
@@ -312,14 +313,32 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "passed without exceptions",
             new XtSticky(
-                new XtStrict(
+                new XtStrictAfter(
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax(
                             "scenario",
-                            String.format("%s\n", eo)
+                            String.format("%s\n", eo),
+                            new TrDefault<>()
                         ).parsed(),
                         new TrFull()
+                    )
+                )
+            ),
+            new XtoryMatcher()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/eo-syntax/", glob = "**.yaml")
+    void validatesEoSyntax(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtSticky(
+                    new XtYaml(
+                        yaml,
+                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed()
                     )
                 )
             ),

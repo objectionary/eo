@@ -27,17 +27,24 @@ SOFTWARE.
     Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='.empty' and o[1][@base='tuple' or @base='org.eolang.tuple']]">
+  <xsl:template match="o[@base='Q.org.eolang.tuple.empty' and not(@star)]">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:attribute name="star"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@base='Q.org.eolang.tuple.empty.with']">
     <xsl:element name="o">
       <xsl:attribute name="star"/>
-      <xsl:attribute name="base" select="'tuple'"/>
+      <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
       <xsl:apply-templates select="@* except @base"/>
+      <xsl:apply-templates select="node()"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="o[@base='.with' and o[1][@star]]">
     <xsl:element name="o">
       <xsl:attribute name="star"/>
-      <xsl:attribute name="base" select="'tuple'"/>
+      <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
       <xsl:apply-templates select="@* except @base"/>
       <xsl:copy-of select="o[@star]/o"/>
       <xsl:copy-of select="o[not(@star)]"/>

@@ -23,12 +23,14 @@
 input: |
   # No comments.
   [] > main
+    5 > @
     ^.x > x
     $.a > b
     @.@ > phi
 sweet: |-
   {⟦
     main ↦ ⟦
+      φ ↦ 5,
       x ↦ ξ.ρ.x,
       b ↦ ξ.a,
       phi ↦ ξ.φ.φ
@@ -38,6 +40,11 @@ salty: |-
   {
     ⟦
       main ↦ ⟦
+        φ ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
+          )
+        ),
         x ↦ ξ.ρ.x,
         b ↦ ξ.a,
         phi ↦ ξ.φ.φ

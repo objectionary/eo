@@ -27,6 +27,7 @@
 +unlint abstract-decoratee
 +unlint broken-ref
 +version 0.0.0
++unlint object-has-data
 
 # This unit test is supposed to check the globals bound objects work as tests.
 true > global-test

@@ -232,6 +232,16 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterApplicationTauBinding(final PhiParser.ApplicationTauBindingContext ctx) {
+        this.startObject(ctx);
+    }
+
+    @Override
+    public void exitApplicationTauBinding(final PhiParser.ApplicationTauBindingContext ctx) {
+        this.exitObjectBinding();
+    }
+
+    @Override
     public void enterVoids(final PhiParser.VoidsContext ctx) {
         // Nothing here
     }
@@ -267,7 +277,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "@";
         } else if (ctx.RHO() != null) {
             attr = "^";
-        } else if (ctx.LABEL() != null || ctx.ALPHA() != null) {
+        } else if (ctx.LABEL() != null) {
             attr = ctx.getText();
         } else {
             attr = "";
@@ -277,6 +287,18 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitAttribute(final PhiParser.AttributeContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFullAttribute(final PhiParser.FullAttributeContext ctx) {
+        if (ctx.attribute() == null) {
+            this.attributes.push(ctx.getText());
+        }
+    }
+
+    @Override
+    public void exitFullAttribute(final PhiParser.FullAttributeContext ctx) {
         // Nothing here
     }
 
@@ -397,7 +419,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterTermination(final PhiParser.TerminationContext ctx) {
-        this.objects().prop("base", "org.eolang.error").leave();
+        this.objects().prop("base", "Q.org.eolang.error").leave();
     }
 
     @Override
@@ -411,7 +433,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         final Supplier<String> data;
         final String text = ctx.getText();
         if (ctx.FLOAT() != null || ctx.INT() != null) {
-            base = "org.eolang.number";
+            base = "Q.org.eolang.number";
             data = new BytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
@@ -419,7 +441,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                     .array()
             );
         } else {
-            base = "org.eolang.string";
+            base = "Q.org.eolang.string";
             data = new BytesToHex(
                 StringEscapeUtils.unescapeJava(
                     text.substring(1, text.length() - 1)
@@ -432,7 +454,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + base.length() + 1
             )
-            .prop("base", "org.eolang.bytes")
+            .prop("base", "Q.org.eolang.bytes")
             .data(data.get())
             .leave();
     }

@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.66
+      - uses: zerocracy/judges-action@0.0.67
         with:
           verbose: false
           cycles: 1
@@ -44,7 +44,7 @@ jobs:
           options: |
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.40
+      - uses: zerocracy/pages-action@0.0.41
         with:
           factbase: objectionary.fb
           output: pages

@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
@@ -72,17 +71,6 @@ public final class PrintMojo extends SafeMojo {
     )
     private File printOutputDir;
 
-    /**
-     * Print EO in reversed notation.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(
-        property = "eo.printReversed",
-        required = true,
-        defaultValue = "false"
-    )
-    private boolean printReversed;
-
     @Override
     void exec() throws IOException {
         final Home home = new HmBase(this.printOutputDir);
@@ -93,13 +81,9 @@ public final class PrintMojo extends SafeMojo {
                     this.printSourcesDir.toPath().relativize(source).toString()
                         .replace(".xmir", ".eo")
                 );
-                final XML xml = new XMLDocument(new TextOf(source).asString());
-                final String program;
-                if (this.printReversed) {
-                    program = new Xmir(xml).toReversedEO();
-                } else {
-                    program = new Xmir(xml).toEO();
-                }
+                final String program = new Xmir(
+                    new XMLDocument(new TextOf(source).asString())
+                ).toEO();
                 home.save(program, relative);
                 Logger.info(
                     this,
