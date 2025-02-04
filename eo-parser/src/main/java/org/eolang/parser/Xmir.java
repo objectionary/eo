@@ -58,11 +58,6 @@ import org.xml.sax.SAXParseException;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Xmir implements XML {
     /**
-     * Unhex transformation.
-     */
-    private static final Shift UNHEX = new StUnhex();
-
-    /**
      * Train of transformations that prepare XMIR for conversion to EO.
      */
     private static final Train<Shift> FOR_EO = new TrFull(
@@ -71,7 +66,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
             ),
             new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
-            Xmir.UNHEX,
+            new StClasspath("/org/eolang/parser/print/unhex-data.xsl"),
             new StClasspath("/org/eolang/parser/print/wrap-data.xsl"),
             new StClasspath("/org/eolang/parser/print/to-eo.xsl")
         )
@@ -166,7 +161,7 @@ public final class Xmir implements XML {
         return this.converted(
             new TrFull(
                 new TrDefault<>(
-                    Xmir.UNHEX,
+                    new StClasspath("/org/eolang/parser/print/unhex-data.xsl"),
                     new StClasspath(
                         "/org/eolang/parser/phi/to-phi.xsl",
                         String.format("conservative %b", conservative)
