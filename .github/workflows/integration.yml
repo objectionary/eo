@@ -30,7 +30,6 @@ name: integration
       - master
 jobs:
   integration:
-    name: integration
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

@@ -30,7 +30,6 @@ name: mvn
       - master
 jobs:
   mvn:
-    name: mvn
     strategy:
       matrix:
         os: [ ubuntu-24.04, windows-2022, macos-15 ]
