@@ -26,6 +26,7 @@ SOFTWARE.
   <!--
   For every cti objects add error messages.
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
@@ -52,9 +53,9 @@ SOFTWARE.
         <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:attribute name="severity">
-        <xsl:value-of select="eo:hex-to-utf8(o[last() - 1]/o[1]/text())"/>
+        <xsl:value-of select="eo:unhex(o[last() - 1]/o[1]/text())"/>
       </xsl:attribute>
-      <xsl:value-of select="eo:hex-to-utf8(o[last()]/o[1]/text())"/>
+      <xsl:value-of select="eo:unhex(o[last()]/o[1]/text())"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
@@ -62,25 +63,4 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
-  <!--Converts hex sting into readable UTF-8 string-->
-  <xsl:function name="eo:hex-to-utf8">
-    <xsl:param name="str"/>
-    <xsl:variable name="hex" select="'0123456789ABCDEF'"/>
-    <xsl:variable name="tail" select="translate($str, '-', '')"/>
-    <!-- Base case: Return empty string if input is empty or invalid -->
-    <xsl:if test="string-length($tail) &gt;= 2">
-      <!-- Extract first 2 digits -->
-      <xsl:variable name="first" select="substring($tail, 1, 1)"/>
-      <xsl:variable name="second" select="substring($tail, 2, 1)"/>
-      <!-- Get their hex values -->
-      <xsl:variable name="val1" select="string-length(substring-before($hex, $first))"/>
-      <xsl:variable name="val2" select="string-length(substring-before($hex, $second))"/>
-      <!-- Ensure valid character range -->
-      <xsl:variable name="codepoint" select="$val1 * 16 + $val2"/>
-      <xsl:if test="$codepoint &gt; 0">
-        <xsl:variable name="head" select="codepoints-to-string($codepoint)"/>
-        <xsl:value-of select="concat($head, eo:hex-to-utf8(substring($tail, 3)))"/>
-      </xsl:if>
-    </xsl:if>
-  </xsl:function>
 </xsl:stylesheet>
