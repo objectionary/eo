@@ -116,7 +116,8 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Directory in which .eo files are located.
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         property = "eo.sourcesDir",
