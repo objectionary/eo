@@ -246,7 +246,7 @@ final class ParseMojoTest {
         MatcherAssert.assertThat(
             "The /program/@source attribute must be a relative path to EO source",
             path,
-            Matchers.equalTo("foo/x/main.eo")
+            Matchers.equalTo(Paths.get("foo/x/main.eo").toString())
         );
     }
 
