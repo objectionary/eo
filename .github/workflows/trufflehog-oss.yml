@@ -31,6 +31,7 @@ name: trufflehog-oss
       - master
 jobs:
   trufflehog:
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
