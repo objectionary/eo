@@ -75,11 +75,10 @@
       -3.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-left-with-odd-neg
-  not. > @
-    eq.
-      -17.as-bytes.left 1
-      33.as-bytes
+not. > tests-left-with-odd-neg
+  eq.
+    -17.as-bytes.left 1
+    33.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-left-with-minus-one
