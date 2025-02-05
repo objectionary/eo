@@ -53,7 +53,6 @@ import org.eolang.maven.util.Walk;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidDuplicateLiterals"})
 public final class PlaceMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {

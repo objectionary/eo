@@ -54,7 +54,6 @@ import org.xembly.Xembler;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class ParseMojo extends SafeMojo {
 
     /**
