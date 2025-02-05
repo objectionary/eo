@@ -194,12 +194,16 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.volodya-lombrozo</groupId>
+      <artifactId>xnav</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.18.4</version>
+      <version>0.18.5</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
