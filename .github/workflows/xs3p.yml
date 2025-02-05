@@ -27,6 +27,7 @@ name: xs3p
       - master
 jobs:
   xs3p:
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

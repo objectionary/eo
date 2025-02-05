@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
@@ -222,6 +223,31 @@ final class ParseMojoTest {
                     ))
             );
         }
+    }
+
+    @Test
+    void injectsRelativeSource(@Mktmp final Path temp) throws IOException {
+        final String path = new Xnav(
+            new FakeMaven(temp)
+                .withHelloWorld()
+                .execute(ParseMojo.class)
+                .result()
+                .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, AssembleMojo.XMIR))
+        )
+            .element("program")
+            .attribute("source")
+            .text()
+            .get();
+        MatcherAssert.assertThat(
+            "The /program/@source attribute must be a relative path",
+            Paths.get(path).isAbsolute(),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            "The /program/@source attribute must be a relative path to EO source",
+            path,
+            Matchers.equalTo(Paths.get("foo/x/main.eo").toString())
+        );
     }
 
     /**

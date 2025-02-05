@@ -114,6 +114,19 @@ abstract class SafeMojo extends AbstractMojo {
     protected String foreignFormat = "csv";
 
     /**
+     * Directory in which .eo files are located.
+     *
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        property = "eo.sourcesDir",
+        required = true,
+        defaultValue = "${project.basedir}/src/main/eo"
+    )
+    protected File sourcesDir;
+
+    /**
      * Target directory.
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
