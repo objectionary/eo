@@ -28,71 +28,35 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Pull all necessary EO XML files from Objectionary and parse them all.
+ * Compile and lint all EO files.
  *
- * @since 0.1
+ * @since 0.52
  */
 @Mojo(
-    name = "assemble",
+    name = "compile",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class AssembleMojo extends SafeMojo {
-    /**
-     * The intermediate representation extension.
-     */
-    public static final String XMIR = "xmir";
-
-    /**
-     * Source file extension.
-     */
-    public static final String EO = "eo";
-
+public final class CompileMojo extends SafeMojo {
     /**
      * Mojas to execute.
      */
     private static final Moja<?>[] MOJAS = {
-        new Moja<>(ParseMojo.class),
-        new Moja<>(ShakeMojo.class),
-        new Moja<>(ProbeMojo.class),
-        new Moja<>(PullMojo.class),
-        new Moja<>(ResolveMojo.class),
-        new Moja<>(MarkMojo.class),
-        new Moja<>(PlaceMojo.class),
+        new Moja<>(DownloadDepsMojo.class),
+        new Moja<>(AssembleMojo.class),
+        new Moja<>(LintMojo.class),
     };
 
     @Override
     public void exec() {
         final long begin = System.currentTimeMillis();
-        String before = this.scopedTojos().status();
-        int cycle = 0;
-        while (true) {
-            final long start = System.currentTimeMillis();
-            for (final Moja<?> moja : AssembleMojo.MOJAS) {
-                moja.copy(this).execute();
-            }
-            final String after = this.scopedTojos().status();
-            ++cycle;
-            if (after.equals(before)) {
-                Logger.info(
-                    this, "Last assemble cycle #%d (%s), took %[ms]s",
-                    cycle, after, System.currentTimeMillis() - start
-                );
-                break;
-            } else {
-                Logger.info(
-                    this, "Assemble cycle #%d (%s -> %s), took %[ms]s",
-                    cycle, before, after, System.currentTimeMillis() - start
-                );
-            }
-            before = after;
+        for (final Moja<?> moja : CompileMojo.MOJAS) {
+            moja.copy(this).execute();
         }
         Logger.info(
             this,
-            "%d assemble cycle(s) produced some new object(s) in %[ms]s: %s",
-            cycle,
-            System.currentTimeMillis() - begin,
-            before
+            "Compilation process took %[ms]s",
+            System.currentTimeMillis() - begin
         );
     }
 }

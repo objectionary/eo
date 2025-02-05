@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.CachePath;
 import org.eolang.maven.footprint.Footprint;
@@ -70,14 +69,6 @@ public final class PullMojo extends SafeMojo {
     public static final String CACHE = "pulled";
 
     /**
-     * The Git tag to pull objects from, in objectionary.
-     * @since 0.21.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
-    private String tag = "master";
-
-    /**
      * The Git hash to pull objects from, in objectionary.
      * If not set, will be computed from {@code tag} field.
      * @since 0.29.6
@@ -96,14 +87,6 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary = new OyIndexed(
         new OyRemote(this.hash)
     );
-
-    /**
-     * Pull again even if the .eo file is already present?
-     * @since 0.10.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
-    private boolean overWrite;
 
     @Override
     public void exec() throws IOException {

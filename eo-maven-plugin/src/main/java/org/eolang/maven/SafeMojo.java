@@ -30,16 +30,20 @@ import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoFailureException;
@@ -48,6 +52,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
@@ -137,6 +142,18 @@ abstract class SafeMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/eo"
     )
     protected File targetDir;
+
+    /**
+     * Output.
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(
+        property = "eo.outputDir",
+        required = true,
+        defaultValue = "${project.build.outputDirectory}"
+    )
+    protected File outputDir;
 
     /**
      * Current scope (either "compile" or "test").
@@ -258,6 +275,111 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean offline;
 
     /**
+     * The Git tag to pull objects from, in objectionary.
+     * @since 0.21.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    protected String tag = "master";
+
+    /**
+     * Pull again even if the .eo file is already present?
+     * @since 0.10.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
+    protected boolean overWrite;
+
+    /**
+     * Skip artifact with the version 0.0.0.
+     *
+     * @since 0.9.0
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
+    protected boolean skipZeroVersions;
+
+    /**
+     * Place only binaries that have EO sources inside jar.
+     * @since 0.31
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    @SuppressWarnings("PMD.LongVariable")
+    protected boolean placeBinariesThatHaveSources;
+
+    /**
+     * Fail resolution process on conflicting dependencies.
+     *
+     * @since 0.1.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.LongVariable")
+    protected boolean ignoreVersionConflicts;
+
+    /**
+     * Shall we discover JAR artifacts for .EO sources?
+     *
+     * @since 0.12.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
+    protected boolean discoverSelf;
+
+    /**
+     * List of inclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    protected Set<String> includeBinaries = new SetOf<>("**");
+
+    /**
+     * List of exclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    protected Set<String> excludeBinaries = new SetOf<>();
+
+    /**
+     * Add eo-runtime dependency to the classpath.
+     *
+     * <p>That property is useful only for eo-runtime library compilation.
+     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
+     * (since you compile an eo-runtime library and classpath will anyway have all required classes)
+     * and in this case, you should set this property to false.
+     * In any other cases, the eo-runtime
+     * dependency will be downloaded and added to the classpath automatically.</p>
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    protected boolean withRuntimeDependency = true;
+
+    /**
+     * Fail resolution process on transitive dependencies.
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    protected boolean ignoreTransitive;
+
+    /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.
      * You can read more about that property
@@ -285,6 +407,15 @@ abstract class SafeMojo extends AbstractMojo {
     protected final TranspiledTojos transpiledTojos = new TranspiledTojos(
         new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
     );
+
+    /**
+     * The central.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    protected BiConsumer<Dependency, Path> central;
 
     /**
      * Cached tojos.
@@ -325,6 +456,9 @@ abstract class SafeMojo extends AbstractMojo {
             }
         } else {
             try {
+                if (this.central == null) {
+                    this.central = new Central(this.project, this.session, this.manager);
+                }
                 final long start = System.nanoTime();
                 this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
