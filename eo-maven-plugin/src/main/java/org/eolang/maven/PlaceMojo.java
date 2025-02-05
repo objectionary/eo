@@ -32,13 +32,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.HmOptional;
@@ -58,43 +55,6 @@ import org.eolang.maven.util.Walk;
 )
 @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidDuplicateLiterals"})
 public final class PlaceMojo extends SafeMojo {
-
-    /**
-     * Output.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        property = "eo.outputDir",
-        required = true,
-        defaultValue = "${project.build.outputDirectory}"
-    )
-    private File outputDir;
-
-    /**
-     * List of inclusion GLOB filters for finding class files.
-     * @since 0.15
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    private Set<String> includeBinaries = new SetOf<>("**");
-
-    /**
-     * List of exclusion GLOB filters for finding class files.
-     * @since 0.15
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    private Set<String> excludeBinaries = new SetOf<>();
-
-    /**
-     * Place only binaries that have EO sources inside jar.
-     * @since 0.31
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    @SuppressWarnings("PMD.LongVariable")
-    private boolean placeBinariesThatHaveSources;
-
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);

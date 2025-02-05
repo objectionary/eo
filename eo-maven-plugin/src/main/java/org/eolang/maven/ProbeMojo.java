@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -57,15 +56,6 @@ import org.eolang.maven.tojos.ForeignTojo;
     threadSafe = true
 )
 public final class ProbeMojo extends SafeMojo {
-    /**
-     * The Git tag to pull objects from, in objectionary.
-     *
-     * @since 0.21.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
-    private String tag = "master";
-
     /**
      * The Git hash to pull objects from, in objectionary.
      * If not set, will be computed from {@code tag} field.
