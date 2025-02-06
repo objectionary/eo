@@ -406,7 +406,14 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "forma of 'number' is the full name of the 'number' object",
             new Data.ToPhi(42L).forma(),
-            Matchers.equalTo("org.eolang.number")
+            Matchers.equalTo("Φ.org.eolang.number")
+        );
+    }
+
+    @Test
+    void formas() {
+        System.out.println(
+            new PhDefault().forma()
         );
     }
 
