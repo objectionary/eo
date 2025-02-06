@@ -87,7 +87,7 @@ final class PhPackage implements Phi {
     public Phi take(final String name) {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
-        this.objects.computeIfAbsent(
+        return this.objects.computeIfAbsent(
             key,
             k -> {
                 final Phi initialized = this.loadPhi(key, obj);
@@ -96,8 +96,7 @@ final class PhPackage implements Phi {
                 }
                 return initialized;
             }
-        );
-        return this.objects.get(key).copy();
+        ).copy();
     }
 
     @Override
