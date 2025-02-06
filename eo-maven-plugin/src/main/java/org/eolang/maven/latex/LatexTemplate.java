@@ -26,15 +26,13 @@ package org.eolang.maven.latex;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import com.jcabi.xml.XMLDocument;
 
 /**
  * Latex template. Generates the LaTex template from the code
  * in LaTex notation as a standalone compilable document.
  *
  * @since 0.30
- * @todo #2067:30min We need to refactor LatexTemplate class.
- *  And to remove redundant parts in the code, like DOM variables and
- *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
 public final class LatexTemplate {
 
@@ -57,13 +55,23 @@ public final class LatexTemplate {
      * @return The generated template with the code as string.
      */
     public String asString() {
+        String content;
+        try {
+            content = new XMLDocument(this.code)
+                    .nodes("listing")
+                    .get(0)
+                    .xpath("text()")
+                    .get(0);
+        } catch (Exception e) {
+            content = this.code;
+        }
         return String.format(
-            new UncheckedText(
-                new TextOf(
-                    new ResourceOf("org/eolang/maven/latex/latex-template.txt")
-                )
-            ).asString(),
-            this.code
+                new UncheckedText(
+                        new TextOf(
+                                new ResourceOf("org/eolang/maven/latex/latex-template.txt")
+                        )
+                ).asString(),
+                content.replaceAll("(?s)^.*?(?=\\+package)", "").trim()
         );
     }
 }
