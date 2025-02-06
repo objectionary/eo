@@ -223,7 +223,7 @@ public class PhDefault implements Phi, Cloneable {
     public String forma() {
         final String name = this.oname();
         final String form;
-        if (PhDefault.class.getName().equals(name)) {
+        if (PhDefault.class.getSimpleName().equals(name)) {
             form = "[]";
         } else {
             form = String.join(
