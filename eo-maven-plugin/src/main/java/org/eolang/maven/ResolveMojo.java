@@ -31,13 +31,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -74,65 +72,6 @@ public final class ResolveMojo extends SafeMojo {
     public static final String DIR = "5-resolve";
 
     /**
-     * Skip artifact with the version 0.0.0.
-     *
-     * @since 0.9.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    private boolean skipZeroVersions;
-
-    /**
-     * Shall we discover JAR artifacts for .EO sources?
-     *
-     * @since 0.12.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
-    private boolean discoverSelf;
-
-    /**
-     * Fail resolution process on conflicting dependencies.
-     *
-     * @since 0.1.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.LongVariable")
-    private boolean ignoreVersionConflicts;
-
-    /**
-     * Fail resolution process on transitive dependencies.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean ignoreTransitive;
-
-    /**
-     * Add eo-runtime dependency to the classpath.
-     *
-     * <p>That property is useful only for eo-runtime library compilation.
-     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
-     * (since you compile an eo-runtime library and classpath will anyway have all required classes)
-     * and in this case, you should set this property to false.
-     * In any other cases, the eo-runtime
-     * dependency will be downloaded and added to the classpath automatically.</p>
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
-    private boolean withRuntimeDependency = true;
-
-    /**
-     * The central.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private BiConsumer<Dependency, Path> central;
-
-    /**
      * Transitive dependency extractor. It's a strategy pattern for extracting transitive
      * dependencies for a particular artifact.
      *
@@ -152,9 +91,6 @@ public final class ResolveMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.central == null) {
-            this.central = new Central(this.project, this.session, this.manager);
-        }
         final Collection<Dependency> deps = this.deps();
         final Path target = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         for (final Dependency dep : deps) {

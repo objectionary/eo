@@ -24,9 +24,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -52,17 +50,8 @@ public final class DownloadDepsMojo extends SafeMojo {
         new DepFunc("net.java.dev.jna", "jna", "5.14.0")
     );
 
-    /**
-     * The central.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private BiConsumer<Dependency, Path> central;
-
     @Override
     void exec() throws IOException {
-        if (this.central == null) {
-            this.central = new Central(this.project, this.session, this.manager);
-        }
         for (final Supplier<Dependency> dep : DownloadDepsMojo.DEPS) {
             this.central.accept(dep.get(), this.classesDir.toPath());
         }
