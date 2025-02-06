@@ -57,4 +57,49 @@ final class LatexTemplateTest {
             )
         );
     }
+
+    /**
+     * Check that redundant parts are removed from the code.
+     */
+    @Test
+    void removesRedundantPartsInCode() {
+        String input = "<listing>\n" +
+                        "   # The MIT License (MIT)\n\n" +
+                        "   # Copyright (c) 2016-2025 Objectionary.com\n\n" +
+                        "   # Text.\n" +
+                        "\n" +
+                        "   +package f\n[args] > main\n  stdout \"Hello!\"" +
+                        "</listing>\n";
+        String output = new LatexTemplate(input).asString();
+        MatcherAssert.assertThat(
+                "<listing> should not be present in the output",
+                output,
+                Matchers.not(Matchers.containsString("<listing>"))
+        );
+        MatcherAssert.assertThat(
+                "</listing> should not be present in the output",
+                output,
+                Matchers.not(Matchers.containsString("</listing>"))
+        );
+        MatcherAssert.assertThat(
+                "License text should not be present in the output",
+                output,
+                Matchers.not(Matchers.containsString("The MIT License"))
+        );
+        MatcherAssert.assertThat(
+                "Code listing should be present in the output",
+                output,
+                Matchers.stringContainsInOrder(
+                        "\\documentclass{article}",
+                        "\\usepackage{ffcode}",
+                        "\\begin{document}",
+                        "\\begin{ffcode}",
+                        "+package f",
+                        "[args] > main",
+                        "  stdout \"Hello!\"",
+                        "\\end{ffcode}",
+                        "\\end{document}"
+                )
+        );
+    }
 }
