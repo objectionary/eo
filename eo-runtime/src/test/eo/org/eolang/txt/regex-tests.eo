@@ -64,31 +64,31 @@
     second.to.eq 12
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-next-on-not-matched-block
+[] > throws-on-getting-next-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.next > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-from-position-on-not-matched-block
+[] > throws-on-getting-from-position-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.from > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-to-position-on-not-matched-block
+[] > throws-on-getting-to-position-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.to > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-groups-count-on-not-matched-block
+[] > throws-on-getting-groups-count-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.groups-count > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-groups-on-not-matched-block
+[] > throws-on-getting-groups-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.groups > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-specified-group-on-not-matched-block
+[] > throws-on-getting-specified-group-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.group 1 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-getting-text-on-not-matched-block
+[] > throws-on-getting-text-on-not-matched-block
   ((regex "/[a-z]+/").match "123").next.text > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -156,7 +156,7 @@
     "Yıldırım"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-missing-first-slash-in-regex
+[] > throws-on-missing-first-slash-in-regex
   (regex "(.)+").compiled > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

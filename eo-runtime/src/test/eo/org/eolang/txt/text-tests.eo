@@ -140,7 +140,7 @@
     (text "some").at -2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-text-at-index-more-than-length
+[] > throws-on-text-at-index-more-than-length
   (text "some").at 10 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -183,7 +183,7 @@
       * "hello" "world" "dear" "friend"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-text-repeating-less-than-zero-times
+[] > throws-on-text-repeating-less-than-zero-times
   (text "").repeated -1 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -357,7 +357,7 @@
     (text "5").as-number
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-converting-text-to-number
+[] > throws-on-converting-text-to-number
   (text "Hello").as-number > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

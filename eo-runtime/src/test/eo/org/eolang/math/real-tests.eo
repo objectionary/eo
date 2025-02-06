@@ -152,7 +152,7 @@
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-negative-pow-of-zero
+[] > throws-on-negative-pow-of-zero
   (real 0).pow -567 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

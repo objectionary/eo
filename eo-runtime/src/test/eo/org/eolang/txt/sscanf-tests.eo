@@ -54,7 +54,7 @@
       sscanf "%f" "0.24"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-sscanf-with-wrong-format
+[] > throws-on-sscanf-with-wrong-format
   sscanf "%l" "error" > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

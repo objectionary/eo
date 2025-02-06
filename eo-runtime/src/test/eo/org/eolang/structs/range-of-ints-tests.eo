@@ -52,13 +52,13 @@
     * -5 -4 -3 -2 -1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-range-of-ints-with-non-int-start
+[] > throws-on-range-of-ints-with-non-int-start
   range-of-ints 1.2 3 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-range-of-ints-with-not-int-end
+[] > throws-on-range-of-ints-with-not-int-end
   range-of-ints 1 2.5 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-range-of-not-ints
+[] > throws-on-range-of-not-ints
   range-of-ints 1.5 5.2 > @

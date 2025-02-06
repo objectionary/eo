@@ -73,7 +73,7 @@ true > global-test
           42
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-when-applies-to-closed-object
+[] > throws-when-applies-to-closed-object
   [x] > a
     x > @
   a false > closed

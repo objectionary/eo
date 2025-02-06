@@ -86,7 +86,7 @@
         "false2"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-empty-switch
+[] > throws-on-empty-switch
   switch * > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

@@ -74,7 +74,7 @@
   tmpdir.tmpfile.deleted.deleted.exists.not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-an-error-on-touching-temp-file-in-absent-dir
+[] > throws-an-error-on-touching-temp-file-in-absent-dir
   (tmpdir.as-path.resolved "foo").as-dir.tmpfile > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -103,7 +103,7 @@
     temp.exists.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-opening-with-wrong-mode
+[] > throws-on-opening-with-wrong-mode
   tmpdir
   .tmpfile
   .open > @
@@ -111,7 +111,7 @@
     f > [f]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-reading-from-not-existed-file
+[] > throws-on-reading-from-not-existed-file
   tmpdir
   .tmpfile
   .deleted
@@ -120,7 +120,7 @@
     f > [f]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-reading-or-writing-from-not-existed-file
+[] > throws-on-reading-or-writing-from-not-existed-file
   tmpdir
   .tmpfile
   .deleted
@@ -257,7 +257,7 @@
   .eq 12 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-writing-with-wrong-mode
+[] > throws-on-writing-with-wrong-mode
   tmpdir
   .tmpfile
   .open > @
@@ -286,7 +286,7 @@
   .eq "Hello, world" > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-reading-from-file-with-wrong-mode
+[] > throws-on-reading-from-file-with-wrong-mode
   tmpdir
   .tmpfile
   .open > @

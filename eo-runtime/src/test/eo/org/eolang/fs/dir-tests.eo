@@ -58,7 +58,7 @@
   .not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-opening-directory
+[] > throws-on-opening-directory
   tmpdir.open > @
     "w"
     true > [d]

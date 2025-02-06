@@ -62,7 +62,7 @@
       * "Jeff" "Jeff".as-bytes 42.3 14 false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-sprintf-with-arguments-that-does-not-match
+[] > throws-on-sprintf-with-arguments-that-does-not-match
   sprintf > @
     "%s%s"
     * "Jeff"
@@ -76,7 +76,7 @@
       * "Hey" "Jeff"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-sprintf-unsupported-format
+[] > throws-on-sprintf-unsupported-format
   sprintf "%o" * > @
 
 # This unit test is supposed to check the functionality of the corresponding object.

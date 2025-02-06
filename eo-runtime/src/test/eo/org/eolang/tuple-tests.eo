@@ -106,7 +106,7 @@
       "with"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-wrong-tuple-at
+[] > throws-on-wrong-tuple-at
   at. > @
     * 1 2 3 4
     20
@@ -212,6 +212,6 @@
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-out-of-tuple-bounds-with-negative-index
+[] > throws-on-out-of-tuple-bounds-with-negative-index
   * 0 1 2 3 4 > arr
   arr.at -6 > @

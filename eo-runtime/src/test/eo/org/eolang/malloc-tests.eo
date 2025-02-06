@@ -115,13 +115,13 @@
     b.eq 20
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-overflow-boolean-malloc
+[] > throws-on-overflow-boolean-malloc
   malloc.for > @
     false
     m.put 86124867.88 > [m]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-overflow-string-malloc
+[] > throws-on-overflow-string-malloc
   malloc.for > @
     "Hello"
     m.put "Much longer string!" > [m]
@@ -204,7 +204,7 @@
                 (m.read 0 3).eq "XYX"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-writing-more-than-allocated-to-malloc-with-offset
+[] > throws-on-writing-more-than-allocated-to-malloc-with-offset
   malloc.of > @
     1
     m.write 1 true > [m]
@@ -258,7 +258,7 @@
               m.get.eq 01-02-03
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-changing-size-to-negative
+[] > throws-on-changing-size-to-negative
   malloc.of > @
     1
     m.resized -1 > [m]
@@ -287,19 +287,19 @@
         m.get.eq 01-02-03-01-02-03
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-copying-with-wrong-source
+[] > throws-on-copying-with-wrong-source
   malloc.for > @
     0
     m.copy 9 1 1 > [m]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-copying-with-wrong-target
+[] > throws-on-copying-with-wrong-target
   malloc.for > @
     0
     m.copy 3 9 1 > [m]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-copying-with-wrong-length
+[] > throws-on-copying-with-wrong-length
   malloc.for > @
     0
     m.copy 3 1 9 > [m]

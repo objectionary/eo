@@ -423,11 +423,11 @@ not. > tests-left-with-odd-neg
     FF-FF-FF-FF-00-00-00-01
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-bytes-of-wrong-size-as-number
+[] > throws-on-bytes-of-wrong-size-as-number
   01-01-01-01.as-number > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-throws-on-bytes-of-wrong-size-as-i64
+[] > throws-on-bytes-of-wrong-size-as-i64
   01-01-01-01.as-i64 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
