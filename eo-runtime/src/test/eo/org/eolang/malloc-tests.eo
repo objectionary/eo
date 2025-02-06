@@ -25,8 +25,7 @@
 +tests
 +package org.eolang
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-ref
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-writes-into-memory-of
@@ -223,7 +222,7 @@
               b.put
                 (m.read 2 5).eq "Hello"
 
-# Creates memory block of zero bytes (this should be a legal operation)
+# Creates memory block of zero bytes (this should be a legal operation).
 [] > tests-allocates-zero-bytes
   eq. > @
     0

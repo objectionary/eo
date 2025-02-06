@@ -42,7 +42,7 @@ class JavaPathTest {
         "Φ.obj.sub, EOobj.EOsub",
         "Φ.obj.sub$attr, EOobj.EOsub$EOattr",
         "Φ.obj.sub-dashed$attr, EOobj.EOsub_dashed$EOattr",
-        "Φ.obj.sub-dashed$attr-dashed, EOobj.EOsub_dashed$EOattr_dashed",
+        "Φ.obj.sub-dashed$attr-dashed, EOobj.EOsub_dashed$EOattr_dashed"
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(

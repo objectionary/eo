@@ -402,18 +402,20 @@ final class PhDefaultTest {
     }
 
     @Test
+    void rendersFormaOnAnonymousAbstract() {
+        MatcherAssert.assertThat(
+            "Anonymous abstract object should be rendered without scopes",
+            new PhDefault().forma(),
+            Matchers.equalTo("[]")
+        );
+    }
+
+    @Test
     void rendersFormaProperly() {
         MatcherAssert.assertThat(
             "forma of 'number' is the full name of the 'number' object",
             new Data.ToPhi(42L).forma(),
             Matchers.equalTo("Φ.org.eolang.number")
-        );
-    }
-
-    @Test
-    void formas() {
-        System.out.println(
-            new PhDefault().forma()
         );
     }
 

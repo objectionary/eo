@@ -41,8 +41,11 @@ import java.util.concurrent.ConcurrentHashMap;
 final class PhPackage implements Phi {
     /**
      * Global package.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     * @checkstyle StaticVariableNameCheck (3 lines)
      */
-    public static String GLOBAL = "Φ";
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    public static final String GLOBAL = "Φ";
 
     /**
      * The name of the Java package.
@@ -50,7 +53,7 @@ final class PhPackage implements Phi {
     private final String pkg;
 
     /**
-     * Objects in the package
+     * Objects in the package.
      */
     private final Map<String, Phi> objects;
 
@@ -161,10 +164,10 @@ final class PhPackage implements Phi {
                     .getConstructor()
                     .newInstance();
             } catch (final ClassNotFoundException
-               | NoSuchMethodException
-               | InvocationTargetException
-               | InstantiationException
-               | IllegalAccessException ex
+                | NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException ex
             ) {
                 throw new ExFailure(
                     String.format(

@@ -20,17 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.list
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
-+alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-sscanf-with-string

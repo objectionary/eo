@@ -26,9 +26,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.io
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint unit-test-missing
 
 # The `stdin` object is a convenient wrapper on `console` object
 # which is used as input only and allows to read the data from console.

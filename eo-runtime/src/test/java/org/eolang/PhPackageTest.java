@@ -26,13 +26,6 @@ package org.eolang;
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
 import com.yegor256.Together;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -115,6 +108,7 @@ final class PhPackageTest {
     void returnsSelfOnCopy() {
         final Phi pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         MatcherAssert.assertThat(
+            "Package object should return itself on copying",
             pckg.copy(),
             Matchers.is(pckg)
         );
