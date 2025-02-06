@@ -29,7 +29,7 @@
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > while-dataizes-only-first-cycle
+[] > tests-while-dataizes-only-first-cycle
   eq. > @
     0
     malloc.for
@@ -40,14 +40,14 @@
           m.put i > [i] >>
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > simple-while-with-false-first
+[] > tests-simple-while-with-false-first
   not. > @
     while > res
       false > [i]
       true > [i]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > simple-bool-expression-via-malloc-in-while
+[] > tests-simple-bool-expression-via-malloc-in-while
   eq. > @
     malloc.for
       true
@@ -58,7 +58,7 @@
     false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > last-while-dataization-object
+[] > tests-last-while-dataization-object
   eq. > @
     malloc.for
       0
@@ -69,14 +69,14 @@
     3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > last-while-dataization-object-with-false-condition
+[] > tests-last-while-dataization-object-with-false-condition
   not. > @
     while
       1.gt 2 > [i]
       true > [i]
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > while-simple-iteration
+[] > tests-while-simple-iteration
   eq. > @
     malloc.for
       0
@@ -87,7 +87,7 @@
     9
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > iterating-tuple-with-while-using-internal-iterator
+[] > tests-iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
   arr.length.plus -1 > max
   malloc.for > data
@@ -114,7 +114,7 @@
   data.eq arr.length > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > iterating-tuple-with-while-using-external-iterator
+[] > tests-iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
   arr.length.plus -1 > max
   malloc.for > data
@@ -136,7 +136,7 @@
   data.eq arr.length > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > iterating-tuple-with-while-without-body-multiple
+[] > tests-iterating-tuple-with-while-without-body-multiple
   * 1 1 1 > arr
   arr.length > max
   malloc.for > data
@@ -166,7 +166,7 @@
   data.eq arr.length > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > iterating-tuple-with-while-without-body-single
+[] > tests-iterating-tuple-with-while-without-body-single
   * 1 > arr
   arr.length > max
   malloc.for > data

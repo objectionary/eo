@@ -27,7 +27,10 @@
 +tests
 +package org.eolang.examples
 +version 0.0.0
++unlint atom-is-not-unique
 +unlint broken-ref
++unlint incorrect-alias
++unlint object-is-not-unique
 +unlint broken-alias-second
 +unlint object-has-data
 

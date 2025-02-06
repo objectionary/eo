@@ -256,6 +256,11 @@ SOFTWARE.
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+      <dependency>
         <groupId>org.eolang</groupId>
         <artifactId>jucs</artifactId>
         <version>0.2.0</version>

@@ -31,7 +31,7 @@
 +unlint unused-alias
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > checks-os-family
+[] > tests-checks-os-family
   or. > @
     or.
       os.is-windows

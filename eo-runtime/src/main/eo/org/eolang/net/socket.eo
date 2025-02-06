@@ -189,10 +189,10 @@
     [sockfd] > scoped-socket
       # Makes an `input` from `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
-      as-input recv > as-input
+      ^.^.as-input recv > as-input
       # Makes an `output` from posix socket.
       # The object allows to use `socket` as output stream and `write` to it sequentially.
-      as-output send > as-output
+      ^.^.as-output send > as-output
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.
@@ -382,10 +382,10 @@
     [sockfd] > scoped-socket
       # Makes an `input` from win32 `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
-      as-input recv > as-input
+      ^.^.as-input recv > as-input
       # Makes an `output` from win32 socket.
       # The object allows to use `socket` as output stream and `write` to it sequentially.
-      as-output send > as-output
+      ^.^.as-output send > as-output
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.

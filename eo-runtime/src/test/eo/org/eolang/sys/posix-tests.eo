@@ -32,7 +32,7 @@
 +unlint unused-alias
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > invokes-getpid-correctly
+[] > tests-invokes-getpid-correctly
   or. > @
     os.is-windows
     gt.
@@ -43,7 +43,7 @@
       0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > opens-posix-tcp-socket
+[] > tests-opens-posix-tcp-socket
   code. > sd
     posix
       "socket"
@@ -59,7 +59,7 @@
           * sd
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > closes-posix-tcp-socket
+[] > tests-closes-posix-tcp-socket
   code. > sd
     posix
       "socket"
@@ -78,7 +78,7 @@
             -1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-valid-posix-inet-addr-for-localhost
+[] > tests-returns-valid-posix-inet-addr-for-localhost
   code. > addr
     posix
       "inet_addr"

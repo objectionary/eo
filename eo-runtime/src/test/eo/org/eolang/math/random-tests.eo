@@ -30,7 +30,7 @@
 +unlint broken-alias-second
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > random-with-seed
+[] > tests-random-with-seed
   random 51 > r
   not. > @
     eq.
@@ -38,13 +38,13 @@
       r.next.next
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seeded-randoms-are-equal
+[] > tests-seeded-randoms-are-equal
   eq. > @
     (random 1654).next.next.next
     (random 1654).next.next.next
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > random-is-in-range
+[] > tests-random-is-in-range
   (random 123).fixed > r
   and. > @
     and.
@@ -59,6 +59,6 @@
       (r.next.next.lt 0).not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > two-random-numbers-not-equal
+[] > tests-two-random-numbers-not-equal
   not. > @
     random.pseudo.eq random.pseudo

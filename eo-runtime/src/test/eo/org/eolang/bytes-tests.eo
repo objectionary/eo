@@ -28,7 +28,7 @@
 +unlint object-has-data
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > takes-part-of-bytes
+[] > tests-takes-part-of-bytes
   eq. > @
     slice.
       20-1F-EE-B5-90
@@ -37,7 +37,7 @@
     1F-EE-B5
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > size-of-part-is-correct
+[] > tests-size-of-part-is-correct
   eq. > @
     size.
       slice.
@@ -47,42 +47,41 @@
     3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > counts-size-of-bytes
+[] > tests-counts-size-of-bytes
   eq. > @
     size.
       F1-20-5F-EC-B5-90-32
     7
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > turns-bytes-into-a-string
+[] > tests-turns-bytes-into-a-string
   eq. > @
     string
       E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
     "你好, друг!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-zero
+[] > tests-left-zero
   not. > @
     eq.
       0.as-bytes.left 1
       -1.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-with-zero
+[] > tests-left-with-zero
   not. > @
     eq.
       2.as-bytes.left 0
       -3.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-with-odd-neg
-  not. > @
-    eq.
-      -17.as-bytes.left 1
-      33.as-bytes
+not. > tests-left-with-odd-neg
+  eq.
+    -17.as-bytes.left 1
+    33.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-with-minus-one
+[] > tests-left-with-minus-one
   eq. > @
     eq.
       -1.as-bytes.left 3
@@ -91,55 +90,55 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (-18.left 2).eq 71.not
-[] > left-with-even-neg
+[] > tests-left-with-even-neg
   eq. > @
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
     00-00-00-00-00-00-00-47.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-with-even-plus
+[] > tests-left-with-even-plus
   not. > @
     eq.
       4.as-bytes.left 3
       -33.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > left-with-odd-plus
+[] > tests-left-with-odd-plus
   not. > @
     eq.
       5.as-bytes.left 3
       -41.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-zero
+[] > tests-right-with-zero
   not. > @
     eq.
       0.as-bytes.right 2
       -1.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-odd-neg
+[] > tests-right-with-odd-neg
   not. > @
     eq.
       -37.as-bytes.right 3
       4.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-minus-one
+[] > tests-right-with-minus-one
   not. > @
     eq.
       -1.as-bytes.right 4
       0.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-even-neg
+[] > tests-right-with-even-neg
   not. > @
     eq.
       -38.as-bytes.right 1
       18.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-even-plus
+[] > tests-right-with-even-plus
   eq. > @
     eq.
       36.as-bytes.right 2
@@ -147,14 +146,14 @@
     false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-with-odd-plus
+[] > tests-right-with-odd-plus
   not. > @
     eq.
       37.as-bytes.right 3
       -5.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > and-with-zero
+[] > tests-and-with-zero
   not. > @
     eq.
       and.
@@ -163,14 +162,14 @@
       -1.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > and-with-two-neg
+[] > tests-and-with-two-neg
   not. > @
     eq.
       -6.as-bytes.and -4.as-bytes
       7.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > and-with-two-plus
+[] > tests-and-with-two-plus
   not. > @
     eq.
       and.
@@ -179,91 +178,91 @@
       -1.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > and-with-one-neg-one-plus
+[] > tests-and-with-one-neg-one-plus
   not. > @
     eq.
       -7.as-bytes.and 7.as-bytes
       -2.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > or-with-zero
+[] > tests-or-with-zero
   not. > @
     eq.
       -11.as-bytes.or 0.as-bytes
       10.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > or-with-two-neg
+[] > tests-or-with-two-neg
   not. > @
     eq.
       -27.as-bytes.or -13.as-bytes
       8.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > or-with-two-plus
+[] > tests-or-with-two-plus
   not. > @
     eq.
       5.as-bytes.or 14.as-bytes
       -16.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > or-with-one-neg-one-plus
+[] > tests-or-with-one-neg-one-plus
   not. > @
     eq.
       -7.as-bytes.or 23.as-bytes
       0.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > xor-with-zero
+[] > tests-xor-with-zero
   not. > @
     eq.
       0.as-bytes.xor 29.as-bytes
       -30.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > xor-with-two-neg
+[] > tests-xor-with-two-neg
   not. > @
     eq.
       -1.as-bytes.xor -123.as-bytes
       -123.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > xor-with-two-plus
+[] > tests-xor-with-two-plus
   not. > @
     eq.
       53.as-bytes.xor 24.as-bytes
       -46.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > xor-with-one-neg-one-plus
+[] > tests-xor-with-one-neg-one-plus
   not. > @
     eq.
       -36.as-bytes.xor 43.as-bytes
       8.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > not-with-zero
+[] > tests-not-with-zero
   not. > @
     eq.
       0.as-bytes
       0.as-bytes.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > not-with-neg
+[] > tests-not-with-neg
   not. > @
     eq.
       -1.as-bytes
       -1.as-bytes.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > not-with-plus
+[] > tests-not-with-plus
   not. > @
     eq.
       53.as-bytes
       53.as-bytes.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > conjunction-of-bytes
+[] > tests-conjunction-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   eq. > @
@@ -271,7 +270,7 @@
     02-23-C0-05-5E-70-10
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > written-in-several-lines
+[] > tests-written-in-several-lines
   eq. > @
     size.
       CA-FE-
@@ -279,7 +278,7 @@
     4
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > bitwise-works
+[] > tests-bitwise-works
   eq. > @
     as-number.
       and.
@@ -288,7 +287,7 @@
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > convertible-to-bool
+[] > tests-convertible-to-bool
   not. > @
     eq.
       01-.as-bool
@@ -296,7 +295,7 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (-127.or 127).eq -1
-[] > bitwise-works-negative
+[] > tests-bitwise-works-negative
   eq. > @
     as-number.
       or.
@@ -305,7 +304,7 @@
     FF-FF-FF-FF-FF-FF-FF-FF
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concatenation-of-bytes
+[] > tests-concatenation-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   eq. > @
@@ -313,7 +312,7 @@
     02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concat-bools-as-bytes
+[] > tests-concat-bools-as-bytes
   true.as-bytes > b1
   false.as-bytes > b2
   eq. > @
@@ -323,7 +322,7 @@
     01-00
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concat-with-empty
+[] > tests-concat-with-empty
   eq. > @
     concat.
       05-5E-78
@@ -331,7 +330,7 @@
     05-5E-78
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concat-empty-with
+[] > tests-concat-empty-with
   eq. > @
     concat.
       --
@@ -339,7 +338,7 @@
     05-5E-78
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concat-empty
+[] > tests-concat-empty
   eq. > @
     concat.
       --
@@ -347,7 +346,7 @@
     --
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > concat-strings
+[] > tests-concat-strings
   concat. > s-bytes
     "hello ".as-bytes
     "world".as-bytes
@@ -357,68 +356,68 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (2397719729.xor 4294967295).eq 1897247566
-[] > xor-works
+[] > tests-xor-works
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
     00-00-00-00-71-15-B3-4E
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > one-xor-one-as-number
+[] > tests-one-xor-one-as-number
   eq. > @
     (1.as-bytes.xor 1.as-bytes).as-number
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (2397719729.or -4294967296).eq -1897247567
-[] > or-neg-bytes-with-leading-zeroes
+[] > tests-or-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (2397719729.and -4294967296).eq 0
-[] > and-neg-bytes-as-number-with-leading-zeroes
+[] > tests-and-neg-bytes-as-number-with-leading-zeroes
   eq. > @
     (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (2397719729.xor -4294967296).eq -1897247567
-[] > xor-neg-bytes-with-leading-zeroes
+[] > tests-xor-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (4294967295.or -4294967296).eq -1
-[] > or-neg-bytes-without-leading-zeroes
+[] > tests-or-neg-bytes-without-leading-zeroes
   eq. > @
     00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (4294967295.and -4294967296).eq 0
-[] > and-neg-bytes-as-number-without-leading-zeroes
+[] > tests-and-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (4294967295.xor -4294967296).eq -1
-[] > xor-neg-bytes-as-number-without-leading-zeroes
+[] > tests-xor-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
     FF-FF-FF-FF-FF-FF-FF-FF
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > or-neg-bytes-as-number-with-zero
+[] > tests-or-neg-bytes-as-number-with-zero
   eq. > @
     (-4294967296.as-bytes.or 0.as-bytes).as-number
     -4294967296
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (-4294967296L.or 1).eq -4294967295L
-[] > or-neg-bytes-with-one
+[] > tests-or-neg-bytes-with-one
   eq. > @
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
     FF-FF-FF-FF-00-00-00-01
@@ -432,19 +431,19 @@
   01-01-01-01.as-i64 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > bytes-converts-to-i64
+[] > tests-bytes-converts-to-i64
   eq. > @
     00-00-00-00-00-00-00-2A.as-i64
     42.as-i64
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > bytes-converts-to-i64-and-back
+[] > tests-bytes-converts-to-i64-and-back
   eq. > @
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
+[] > tests-bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
   not. > @
     eq.
       00-00-00-00-00-00-00-2A.as-i64.as-bytes

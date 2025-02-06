@@ -29,7 +29,7 @@
 +unlint broken-ref
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-float-less
+[] > tests-seq-single-dataization-float-less
   malloc.of > @
     1
     [b]
@@ -45,7 +45,7 @@
               1.1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-float-greater
+[] > tests-seq-single-dataization-float-greater
   malloc.of > @
     1
     [b]
@@ -61,7 +61,7 @@
               0.9
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-int-less
+[] > tests-seq-single-dataization-int-less
   malloc.of > @
     1
     [b]
@@ -77,7 +77,7 @@
               2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-int-less-or-equal
+[] > tests-seq-single-dataization-int-less-or-equal
   malloc.of > @
     1
     [b]
@@ -93,7 +93,7 @@
               1
 
 # This test should have acceptable time to pass.
-[] > very-long-seq
+[] > tests-very-long-seq
   eq. > @
     true
     seq
@@ -142,7 +142,7 @@
         true
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-int-equal-to-test
+[] > tests-seq-single-dataization-int-equal-to-test
   malloc.of > @
     1
     [b]
@@ -159,7 +159,7 @@
               1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-single-dataization-int-equal-to-cache-problem-test
+[] > tests-seq-single-dataization-int-equal-to-cache-problem-test
   malloc.of > @
     1
     [b]
@@ -178,7 +178,7 @@
               1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-calculates-and-returns
+[] > tests-seq-calculates-and-returns
   eq. > @
     1
     seq
@@ -187,7 +187,7 @@
         1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > seq-calculates-and-returns-object
+[] > tests-seq-calculates-and-returns-object
   eq. > @
     "Hello!"
     seq

@@ -33,7 +33,7 @@
 +unlint broken-alias-second
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > reads-all-bytes-and-returns-length
+[] > tests-reads-all-bytes-and-returns-length
   eq. > @
     input-length
       bytes-as-input
@@ -41,7 +41,7 @@
     10
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > copies-all-bytes-to-output-and-returns-length
+[] > tests-copies-all-bytes-to-output-and-returns-length
   eq. > @
     malloc.of
       10

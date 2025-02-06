@@ -235,6 +235,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>compile</goal>
+              <goal>lint</goal>
               <goal>transpile</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>

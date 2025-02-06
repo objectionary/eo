@@ -30,14 +30,14 @@
 +unlint broken-alias-second
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > set-rebuilds-itself
+[] > tests-set-rebuilds-itself
   eq. > @
     set
       * 1 2 2
     * 1 2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > does-not-append-existed-item-to-set
+[] > tests-does-not-append-existed-item-to-set
   set
     * 1 2
   .with 1
@@ -45,14 +45,14 @@
   .eq 2 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > appends-new-item-to-set
+[] > tests-appends-new-item-to-set
   set
     * 1 2
   .with 3
   .has 3 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > empty-set-has-size-of-zero
+[] > tests-empty-set-has-size-of-zero
   set
     *
   .size

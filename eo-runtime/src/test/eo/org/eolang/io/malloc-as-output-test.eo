@@ -30,7 +30,7 @@
 +unlint broken-alias-second
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > makes-an-output-from-malloc-and-writes
+[] > tests-makes-an-output-from-malloc-and-writes
   eq. > @
     malloc.of
       10
