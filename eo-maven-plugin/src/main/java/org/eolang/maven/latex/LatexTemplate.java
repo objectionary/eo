@@ -66,12 +66,12 @@ public final class LatexTemplate {
             content = this.code;
         }
         return String.format(
-                new UncheckedText(
-                        new TextOf(
-                                new ResourceOf("org/eolang/maven/latex/latex-template.txt")
-                        )
-                ).asString(),
-                content.replaceAll("(?s)^.*?(?=\\+package)", "").trim()
+            new UncheckedText(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/latex/latex-template.txt")
+                )
+            ).asString(),
+            content.replaceAll("(?s)^.*?(?=\\+package)", "").trim()
         );
     }
 }
