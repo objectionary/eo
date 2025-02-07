@@ -23,10 +23,10 @@
  */
 package org.eolang.maven.latex;
 
+import java.util.regex.Pattern;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import com.jcabi.xml.XMLDocument;
 
 /**
  * Latex template. Generates the LaTex template from the code
@@ -55,23 +55,22 @@ public final class LatexTemplate {
      * @return The generated template with the code as string.
      */
     public String asString() {
-        String content;
-        try {
-            content = new XMLDocument(this.code)
-                    .nodes("listing")
-                    .get(0)
-                    .xpath("text()")
-                    .get(0);
-        } catch (Exception e) {
-            content = this.code;
-        }
         return String.format(
             new UncheckedText(
                 new TextOf(
                     new ResourceOf("org/eolang/maven/latex/latex-template.txt")
                 )
             ).asString(),
-            content.replaceAll("(?s)^.*?(?=\\+package)", "").trim()
+            this.extractedContent()
         );
+    }
+
+    private String extractedContent() {
+        return Pattern.compile("(?s)^\\s*\\+.*", Pattern.MULTILINE)
+            .matcher(this.code)
+            .results()
+            .map(match -> match.group().trim())
+            .findFirst()
+            .orElse(this.code);
     }
 }

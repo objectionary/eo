@@ -35,6 +35,36 @@ import org.junit.jupiter.api.Test;
 final class LatexTemplateTest {
 
     /**
+     * The definition of the documentclass.
+     */
+    private static final String DOCUMENT_CLASS = "\\documentclass{article}";
+
+    /**
+     * The definition of the usepackage.
+     */
+    private static final String USE_PACKAGE = "\\usepackage{ffcode}";
+
+    /**
+     * The beginning of the document.
+     */
+    private static final String BEGIN_DOCUMENT = "\\begin{document}";
+
+    /**
+     * The beginning of the document.
+     */
+    private static final String BEGIN_FF_CODE = "\\begin{ffcode}";
+
+    /**
+     * The ending of the document.
+     */
+    private static final String END_FF_CODE = "\\end{ffcode}";
+
+    /**
+     * The ending of the document.
+     */
+    private static final String END_DOCUMENT = "\\end{document}";
+
+    /**
      * Check the full template.
      */
     @Test
@@ -45,61 +75,52 @@ final class LatexTemplateTest {
                 "+package f\n[args] > main\n  stdout \"Hello!\""
             ).asString(),
             Matchers.stringContainsInOrder(
-                "\\documentclass{article}",
-                "\\usepackage{ffcode}",
-                "\\begin{document}",
-                "\\begin{ffcode}",
+                LatexTemplateTest.DOCUMENT_CLASS,
+                LatexTemplateTest.USE_PACKAGE,
+                LatexTemplateTest.BEGIN_DOCUMENT,
+                LatexTemplateTest.BEGIN_FF_CODE,
                 "+package f",
                 "[args] > main",
                 "  stdout \"Hello!\"",
-                "\\end{ffcode}",
-                "\\end{document}"
+                LatexTemplateTest.END_FF_CODE,
+                LatexTemplateTest.END_DOCUMENT
             )
         );
     }
 
-    /**
-     * Check that redundant parts are removed from the code.
-     */
     @Test
     void removesRedundantPartsInCode() {
-        String input = "<listing>\n" +
-                        "   # The MIT License (MIT)\n\n" +
-                        "   # Copyright (c) 2016-2025 Objectionary.com\n\n" +
-                        "   # Text.\n" +
-                        "\n" +
-                        "   +package f\n[args] > main\n  stdout \"Hello!\"" +
-                        "</listing>\n";
-        String output = new LatexTemplate(input).asString();
+        final String input = LatexTemplateTest.input(
+            "# The MIT License (MIT)\nCopyright (c)",
+            "+architect yegor256@gmail.com",
+            "+package f\n [args] > main",
+            "  stdout \"Hello!\""
+        );
+        final String output = new LatexTemplate(input).asString();
         MatcherAssert.assertThat(
-                "<listing> should not be present in the output",
-                output,
-                Matchers.not(Matchers.containsString("<listing>"))
+            "License header should not be present in the output",
+            output,
+            Matchers.not(Matchers.containsString("The MIT License"))
         );
         MatcherAssert.assertThat(
-                "</listing> should not be present in the output",
-                output,
-                Matchers.not(Matchers.containsString("</listing>"))
+            "Code listing should be present in the output",
+            output,
+            Matchers.stringContainsInOrder(
+                LatexTemplateTest.DOCUMENT_CLASS,
+                LatexTemplateTest.USE_PACKAGE,
+                LatexTemplateTest.BEGIN_DOCUMENT,
+                LatexTemplateTest.BEGIN_FF_CODE,
+                "+architect yegor256@gmail.com",
+                "+package f",
+                "[args] > main",
+                "  stdout \"Hello!\"",
+                LatexTemplateTest.END_FF_CODE,
+                LatexTemplateTest.END_DOCUMENT
+            )
         );
-        MatcherAssert.assertThat(
-                "License text should not be present in the output",
-                output,
-                Matchers.not(Matchers.containsString("The MIT License"))
-        );
-        MatcherAssert.assertThat(
-                "Code listing should be present in the output",
-                output,
-                Matchers.stringContainsInOrder(
-                        "\\documentclass{article}",
-                        "\\usepackage{ffcode}",
-                        "\\begin{document}",
-                        "\\begin{ffcode}",
-                        "+package f",
-                        "[args] > main",
-                        "  stdout \"Hello!\"",
-                        "\\end{ffcode}",
-                        "\\end{document}"
-                )
-        );
+    }
+
+    private static String input(final String... inputs) {
+        return String.join("\n", inputs);
     }
 }
