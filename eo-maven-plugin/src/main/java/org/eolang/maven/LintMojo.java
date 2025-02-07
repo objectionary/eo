@@ -112,17 +112,26 @@ public final class LintMojo extends SafeMojo {
             "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
             passed, tojos.size(), tojos.size(), System.currentTimeMillis() - start, sum
         );
-        if (!counts.get(Severity.ERROR).isEmpty() || !counts.get(Severity.CRITICAL).isEmpty()) {
-            throw new IllegalStateException(
-                String.format(
-                    "In %d XMIR files, we found %s (must stop here)",
-                    tojos.size(), sum
-                )
-            );
-        } else if (!counts.get(Severity.WARNING).isEmpty() && this.failOnWarning) {
+        Logger.info(
+            this,
+            "Read more about lints: https://www.objectionary.com/lints/%s",
+            counts.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList()).get(0).version()
+        );
+        if (!counts.get(Severity.WARNING).isEmpty() && this.failOnWarning) {
             throw new IllegalStateException(
                 String.format(
                     "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore)",
+                    tojos.size(), sum
+                )
+            );
+        } else if (
+            !counts.get(Severity.ERROR).isEmpty() || !counts.get(Severity.CRITICAL).isEmpty()
+        ) {
+            throw new IllegalStateException(
+                String.format(
+                    "In %d XMIR files, we found %s (must stop here)",
                     tojos.size(), sum
                 )
             );
@@ -259,17 +268,6 @@ public final class LintMojo extends SafeMojo {
         }
         if (parts.isEmpty()) {
             parts.add("no complaints");
-        } else {
-            parts.add(
-                String.format(
-                    "Read more about lints: https://www.objectionary.com/lints/%s",
-                    counts.values().stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())
-                        .get(0)
-                        .version()
-                )
-            );
         }
         final String sum;
         if (parts.size() < 3) {
@@ -302,7 +300,8 @@ public final class LintMojo extends SafeMojo {
             counts.compute(
                 defect.severity(),
                 (sev, before) -> {
-                    before.add(defect); return before;
+                    before.add(defect);
+                    return before;
                 }
             );
             LintMojo.logOne(defect);
