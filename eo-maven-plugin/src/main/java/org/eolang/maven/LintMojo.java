@@ -262,7 +262,7 @@ public final class LintMojo extends SafeMojo {
         } else {
             parts.add(
                 String.format(
-                    "Read more about lints: %s",
+                    "Read more about lints: https://www.objectionary.com/lints/%s",
                     counts.values().stream()
                         .flatMap(List::stream)
                         .collect(Collectors.toList())
