@@ -78,12 +78,17 @@ public final class LintMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (11 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "true"
-    )
+    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
     private boolean failOnWarning;
+
+    /**
+     * Whether we should lint all the sources together as package.
+     *
+     * @checkstyle MemberNameCheck (11 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
+    private boolean lintAsPackage;
 
     @Override
     void exec() throws IOException {
@@ -100,11 +105,18 @@ public final class LintMojo extends SafeMojo {
         if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
-        Logger.info(
-            this,
-            "Also, %d XMIR programs linted as a package",
-            this.lintAll(counts)
-        );
+        if (this.lintAsPackage) {
+            Logger.info(
+                this,
+                "XMIR programs linted as a package: %d",
+                this.lintAll(counts)
+            );
+        } else {
+            Logger.info(
+                this,
+                "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
+            );
+        }
         final String sum = LintMojo.summary(counts);
         Logger.info(
             this,

@@ -245,6 +245,7 @@ SOFTWARE.
             <configuration>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+              <lintAsPackage>false</lintAsPackage>
             </configuration>
           </execution>
           <execution>
@@ -252,7 +253,8 @@ SOFTWARE.
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
-              <goal>compile</goal>
+              <goal>assemble</goal>
+              <goal>lint</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
               <goal>transpile</goal>

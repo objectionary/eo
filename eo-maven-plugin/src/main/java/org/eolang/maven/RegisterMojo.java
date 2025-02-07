@@ -47,30 +47,6 @@ import org.eolang.maven.util.Walk;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class RegisterMojo extends SafeMojo {
-
-    /**
-     * Directory in which {@code .eo} files are located.
-     *
-     * <p>If you need to register {@code .eo} files located in many directories,
-     * you can use the {@code &lt;includeSources&gt;} feature, for example:</p>
-     *
-     * <pre> &lt;configuration&gt;
-     *   &lt;sourcesDir&gt;/&lt;/sourcesDir&gt;
-     *   &lt;includeSources&gt;
-     *     &lt;glob&gt;tmp/&#42;&#42;/&#42;.eo&lt;/glob&gt;
-     *     &lt;glob&gt;src/main/&#42;&#42;/&#42;.eo&lt;/glob&gt;
-     *   &lt;/includeSources&gt;
-     * &lt;/configuration&gt;</pre>
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        property = "eo.sourcesDir",
-        required = true,
-        defaultValue = "${project.basedir}/src/main/eo"
-    )
-    private File sourcesDir;
-
     /**
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
