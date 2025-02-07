@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.structs.list
 +alias org.eolang.structs.bytes-as-array
++alias org.eolang.structs.list
 +alias org.eolang.txt.regex
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
@@ -29,10 +29,6 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-ref
-+unlint broken-alias-second
-+unlint unused-alias
 
 # Text.
 # A sequence of characters representing words, sentences, or data.
@@ -50,6 +46,11 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
+  # Returns `text` trimmed from both sides.
+  if. > trimmed
+    0.eq origin.as-bytes.size
+    $
+    trimmed-left.trimmed-right
 
   # Takes a piece of a `text` as another `text`.
   # Here `start` must be an integer index to start slicing from,
@@ -107,13 +108,6 @@
           char.eq space
           first-non-space-index (index.plus -1).as-number
           index.plus 1
-
-  # Returns `text` trimmed from both sides.
-  [] > trimmed
-    if. > @
-      0.eq origin.as-bytes.size
-      ^
-      trimmed-left.trimmed-right
 
   # Joins `items`, which is a `tuple` of strings, using current `string`
   # as a delimiter.

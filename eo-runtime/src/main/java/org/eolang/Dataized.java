@@ -102,11 +102,12 @@ public final class Dataized {
             final List<String> raw = new ArrayList<>(ex.messages().size());
             raw.addAll(ex.messages());
             Collections.reverse(raw);
-            if ("org.eolang.string".equals(ex.enclosure().forma())) {
+            final Phi enc = ex.enclosure();
+            if (String.format("%s.org.eolang.string", PhPackage.GLOBAL).equals(enc.forma())) {
                 raw.add(
                     String.format(
                         "\"%s\"",
-                        new Dataized(ex.enclosure()).take(String.class)
+                        new Dataized(enc).take(String.class)
                     )
                 );
             }
@@ -121,11 +122,11 @@ public final class Dataized {
                 Level.SEVERE,
                 String.format(
                     "Dataized to org.eolang.error with %s inside, at:%n  ⇢ %s",
-                    ex.enclosure().forma(),
+                    enc.forma(),
                     String.join("\n  ⇢ ", clean)
                 )
             );
-            throw new EOerror.ExError(ex.enclosure());
+            throw new EOerror.ExError(enc);
         }
     }
 

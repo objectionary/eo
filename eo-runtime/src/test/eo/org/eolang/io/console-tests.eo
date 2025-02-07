@@ -20,27 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.bytes-as-input
++alias org.eolang.io.console
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-makes-an-input-from-bytes-and-reads
-  bytes-as-input > i
-    01-02-03-04-05-06-07-08-F5-F6
-  i.read 4 > i1
-  i1.read 4 > i2
-  i2.read 4 > i3
-  i3.read 2 > i4
-  and. > @
-    and.
-      and.
-        i1.eq 01-02-03-04
-        i2.eq 05-06-07-08
-      i3.eq F5-F6
-    i4.eq --
+# Prints a simple message to the console. We can't validate
+# the output, so we just run it and see if it crashes.
+[] > tests-writes-to-console
+  console.write > @
+    "Hello, console-test!\n"

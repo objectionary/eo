@@ -28,8 +28,7 @@
 +tests
 +package org.eolang.math
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-abs-int-positive
@@ -93,7 +92,7 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # Checks mathematical equality
-# A = ((A div B) * B) + (A mod B)
+# A = ((A div B) * B) + (A mod B).
 [] > tests-div-mod-compatibility
   -13 > dividend
   5 > divisor
@@ -185,7 +184,7 @@
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# Check if pow is less than zero
+# Check if pow is less than zero.
 [] > tests-zero-to-the-negative-pow-is-positive-infinity
   eq. > @
     (real 0).pow -52

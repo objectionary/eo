@@ -235,7 +235,6 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>compile</goal>
-              <goal>lint</goal>
               <goal>transpile</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
@@ -244,11 +243,6 @@ SOFTWARE.
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <removeBinaries>
-                <glob>EOorg/EOeolang/EOhamcrest/**</glob>
-                <glob>EOorg/EOeolang/EOmath/**</glob>
-                <glob>EOorg/EOeolang/EOfs/**</glob>
-              </removeBinaries>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>

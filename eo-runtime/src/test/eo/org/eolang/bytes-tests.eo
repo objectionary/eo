@@ -25,7 +25,7 @@
 +tests
 +package org.eolang
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-takes-part-of-bytes
@@ -75,10 +75,11 @@
       -3.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
-not. > tests-left-with-odd-neg
-  eq.
-    -17.as-bytes.left 1
-    33.as-bytes
+[] > tests-left-with-odd-neg
+  not. > @
+    eq.
+      -17.as-bytes.left 1
+      33.as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-left-with-minus-one
@@ -89,7 +90,7 @@ not. > tests-left-with-odd-neg
     false
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (-18.left 2).eq 71.not
+# (-18.left 2).eq 71.not.
 [] > tests-left-with-even-neg
   eq. > @
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
@@ -294,7 +295,7 @@ not. > tests-left-with-odd-neg
       00-.as-bool
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (-127.or 127).eq -1
+# (-127.or 127).eq -1.
 [] > tests-bitwise-works-negative
   eq. > @
     as-number.
@@ -355,7 +356,7 @@ not. > tests-left-with-odd-neg
     "hello world"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (2397719729.xor 4294967295).eq 1897247566
+# (2397719729.xor 4294967295).eq 1897247566.
 [] > tests-xor-works
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
@@ -368,42 +369,42 @@ not. > tests-left-with-odd-neg
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (2397719729.or -4294967296).eq -1897247567
+# (2397719729.or -4294967296).eq -1897247567.
 [] > tests-or-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (2397719729.and -4294967296).eq 0
+# (2397719729.and -4294967296).eq 0.
 [] > tests-and-neg-bytes-as-number-with-leading-zeroes
   eq. > @
     (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (2397719729.xor -4294967296).eq -1897247567
+# (2397719729.xor -4294967296).eq -1897247567.
 [] > tests-xor-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (4294967295.or -4294967296).eq -1
+# (4294967295.or -4294967296).eq -1.
 [] > tests-or-neg-bytes-without-leading-zeroes
   eq. > @
     00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (4294967295.and -4294967296).eq 0
+# (4294967295.and -4294967296).eq 0.
 [] > tests-and-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (4294967295.xor -4294967296).eq -1
+# (4294967295.xor -4294967296).eq -1.
 [] > tests-xor-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
@@ -416,7 +417,7 @@ not. > tests-left-with-odd-neg
     -4294967296
 
 # This unit test is supposed to check the functionality of the corresponding object.
-# (-4294967296L.or 1).eq -4294967295L
+# (-4294967296L.or 1).eq -4294967295L.
 [] > tests-or-neg-bytes-with-one
   eq. > @
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01

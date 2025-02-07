@@ -24,10 +24,10 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+unlint abstract-decoratee
-+unlint broken-ref
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
++unlint unit-test-without-phi
++unlint decorated-formation
 
 # This unit test is supposed to check the globals bound objects work as tests.
 true > global-test
@@ -276,7 +276,6 @@ true > global-test
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-right-way-to-use-hierarchy
-  # Bool mock
   [value] > pybool
     value > @
   [value] > pyint
@@ -362,7 +361,7 @@ true > global-test
       .as-bytes:0
     "first"
 
-# Nesting blah test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-nesting-blah-test
   blah0 > @
   [] > blah0

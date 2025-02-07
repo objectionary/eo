@@ -179,22 +179,7 @@ public final class Main {
                 "The name of the object is an empty string, why?"
             );
         }
-        final String path = new JavaPath(obj).toString();
-        final Phi app;
-        try {
-            Main.LOGGER.fine(String.format("Loading class %s...", path));
-            app = (Phi) Class.forName(path)
-                .getConstructor()
-                .newInstance();
-        } catch (final ClassNotFoundException ex) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Can not find \"%s\" object (java path is \"%s\")",
-                    obj, path
-                ),
-                ex
-            );
-        }
+        final Phi app = Phi.Φ.take(obj);
         if (opts.size() > 1) {
             Phi args = Phi.Φ.take("org.eolang.tuple");
             for (int idx = 1; idx < opts.size(); ++idx) {
