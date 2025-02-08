@@ -90,7 +90,12 @@ final class EOmallocTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = EOmalloc$EOof$EOallocated$EOread.class)
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOresized.class,
+        EOmalloc$EOof$EOallocated$EOsize.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
     void throwsCorrectErrorForIdAttrNaN(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -114,7 +119,12 @@ final class EOmallocTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = EOmalloc$EOof$EOallocated$EOread.class)
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOresized.class,
+        EOmalloc$EOof$EOallocated$EOsize.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
     void throwsCorrectErrorForIdAttrNotAnInt(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -134,6 +144,52 @@ final class EOmallocTest {
                 "put double in int attr fails with a proper message that explains what happened"
             ).getMessage(),
             Matchers.equalTo("the 'id' attribute (42.42) must be an integer")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNaN(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithDummyId((Phi) cls.getDeclaredConstructor().newInstance()).it(),
+                        "offset",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "put TRUE in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute must be a number")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNotAnInt(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithDummyId((Phi) cls.getDeclaredConstructor().newInstance()).it(),
+                        "offset",
+                        new Data.ToPhi(42.42)
+                    )
+                ).take(),
+                "put double in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (42.42) must be an integer")
         );
     }
 
@@ -182,10 +238,47 @@ final class EOmallocTest {
     }
 
     /**
-     * Dummy with id attr.
-     * @since 0.51.2
+     * Phi with Dummy with 'id' attribute.
+     *
+     * @since 0.52
      */
-    static class IdDummy extends PhDefault {
+    static class PhiWithDummyId {
+        /**
+         * Phi
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         * @param phi Phi
+         */
+        PhiWithDummyId(Phi phi) {
+            this.phi = phi;
+        }
+
+        /**
+         * Return it.
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Phi it() {
+            return new PhWith(
+                phi,
+                Attr.RHO,
+                new PhWith(
+                    new EOmallocTest.IdDummy(),
+                    "id",
+                    new Data.ToPhi(42)
+                )
+            );
+        }
+    }
+
+    /**
+     * Dummy with id attr.
+     *
+     * @since 0.52
+     */
+    private static class IdDummy extends PhDefault {
         /**
          * Ctor.
          */

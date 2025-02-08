@@ -28,9 +28,12 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import org.eolang.AtVoid;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,58 +41,71 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOmalloc$EOof$EOallocated$EOread}.
+ * Test case for {@link EOmalloc$EOof$EOφ}.
  *
  * @since 0.52
  * @checkstyle TypeNameCheck (5 lines)
  */
 @SuppressWarnings("PMD.AvoidDollarSigns")
-final class EOmalloc$EOof$EOallocated$EOreadTest {
+final class EOmalloc$EOof$EOφTest {
 
     @Test
-    void throwsCorrectErrorForLengthAttrNaN() {
+    void throwsCorrectErrorForSizeAttrNaN() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
+                        new EOmalloc$EOof$EOφ(),
+                        Attr.RHO,
                         new PhWith(
-                            new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOread()).it(),
-                            "offset",
-                            new Data.ToPhi(42)
-                        ),
-                        "length",
-                        new Data.ToPhi(true)
+                            new EOmalloc$EOof$EOφTest.SizeDummy(),
+                            "size",
+                            new Data.ToPhi(true)
+                        )
                     )
                 ).take(),
                 "put TRUE in int attr fails with a proper message that explains what happened"
             ).getMessage(),
-            Matchers.equalTo("the 'length' attribute must be a number")
+            Matchers.equalTo("the 'size' attribute must be a number")
         );
     }
 
     @Test
-    void throwsCorrectErrorForLengthAttrNotAnInt() {
+    void throwsCorrectErrorForSizeAttrNotAnInt() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
+                        new EOmalloc$EOof$EOφ(),
+                        Attr.RHO,
                         new PhWith(
-                            new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOread()).it(),
-                            "offset",
-                            new Data.ToPhi(42)
-                        ),
-                        "length",
-                        new Data.ToPhi(42.42)
+                            new EOmalloc$EOof$EOφTest.SizeDummy(),
+                            "size",
+                            new Data.ToPhi(42.42)
+                        )
                     )
                 ).take(),
                 "put double in int attr fails with a proper message that explains what happened"
             ).getMessage(),
-            Matchers.equalTo("the 'length' attribute (42.42) must be an integer")
+            Matchers.equalTo("the 'size' attribute (42.42) must be an integer")
         );
+    }
+
+    /**
+     * Dummy with size attr.
+     */
+    private static class SizeDummy extends PhDefault {
+        /**
+         * Ctor.
+         */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        SizeDummy() {
+            this.add("size", new AtVoid("size"));
+        }
     }
 
 }
