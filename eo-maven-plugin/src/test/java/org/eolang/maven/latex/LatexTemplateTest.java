@@ -90,13 +90,14 @@ final class LatexTemplateTest {
 
     @Test
     void removesRedundantPartsInCode() {
-        final String input = LatexTemplateTest.input(
-            "# The MIT License (MIT)\nCopyright (c)",
-            "+architect yegor256@gmail.com",
-            "+package f\n [args] > main",
-            "  stdout \"Hello!\""
-        );
-        final String output = new LatexTemplate(input).asString();
+        final String output = new LatexTemplate(
+            LatexTemplateTest.input(
+                "# The MIT License (MIT)\nCopyright (c)",
+                "+architect yegor256@gmail.com",
+                "+package f\n [args] > main",
+                "  stdout \"Hello!\""
+            )
+        ).asString();
         MatcherAssert.assertThat(
             "License header should not be present in the output",
             output,
