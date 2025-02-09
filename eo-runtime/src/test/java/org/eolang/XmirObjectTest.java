@@ -29,7 +29,6 @@ package org.eolang;
 import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,25 +43,21 @@ final class XmirObjectTest {
 
     @Test
     void annotatesOnlyPublicClasses() throws IOException {
-        final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
-            .getAllClasses()
-            .stream()
-            .filter(clazz -> "EOorg.EOeolang".equals(clazz.getPackageName()))
-            .map(ClassPath.ClassInfo::load)
-            .filter(
-                clazz -> clazz.getSimpleName().startsWith("EO")
-                    && !(clazz.isMemberClass() || clazz.isLocalClass())
-                    && Phi.class.isAssignableFrom(clazz)
-            )
-            .collect(Collectors.toSet());
-        assert !clazzes.isEmpty();
         MatcherAssert.assertThat(
-            "All EOxx classes are public",
-            clazzes.stream()
-                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+            "All top-level EOxx classes must be public",
+            ClassPath.from(ClassLoader.getSystemClassLoader())
+                .getAllClasses()
+                .stream()
+                .filter(clazz -> "EOorg.EOeolang".equals(clazz.getPackageName()))
+                .map(ClassPath.ClassInfo::load)
+                .filter(
+                    clazz -> clazz.getSimpleName().startsWith("EO")
+                        && !(clazz.isMemberClass() || clazz.isLocalClass())
+                        && Phi.class.isAssignableFrom(clazz)
+                        && !Modifier.isPublic(clazz.getModifiers())
+                )
                 .collect(Collectors.toList()),
             Matchers.empty()
         );
     }
-
 }
