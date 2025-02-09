@@ -49,7 +49,7 @@ public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
         final int identifier = Heaps.INSTANCE.malloc(
-            this, new Expect.Int(Expect.at(rho, "size")).it()
+            this, new Expect.Natural(Expect.at(rho, "size")).it()
         );
         final Phi res;
         try {

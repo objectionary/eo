@@ -55,7 +55,9 @@ final class EOmalloc$EOof$EOallocated$EOreadTest {
                 () -> new Dataized(
                     new PhWith(
                         new PhWith(
-                            new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOread()).it(),
+                            new EOmallocTest.PhiWithIdDummy(
+                                new EOmalloc$EOof$EOallocated$EOread()
+                            ).it(),
                             "offset",
                             new Data.ToPhi(42)
                         ),
@@ -78,7 +80,9 @@ final class EOmalloc$EOof$EOallocated$EOreadTest {
                 () -> new Dataized(
                     new PhWith(
                         new PhWith(
-                            new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOread()).it(),
+                            new EOmallocTest.PhiWithIdDummy(
+                                new EOmalloc$EOof$EOallocated$EOread()
+                            ).it(),
                             "offset",
                             new Data.ToPhi(42)
                         ),
@@ -89,6 +93,31 @@ final class EOmalloc$EOof$EOallocated$EOreadTest {
                 "put double in int attr fails with a proper message that explains what happened"
             ).getMessage(),
             Matchers.equalTo("the 'length' attribute (42.42) must be an integer")
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForLengthAttrNotNatural() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhWith(
+                            new EOmallocTest.PhiWithIdDummy(
+                                new EOmalloc$EOof$EOallocated$EOread()
+                            ).it(),
+                            "offset",
+                            new Data.ToPhi(42)
+                        ),
+                        "length",
+                        new Data.ToPhi(-42)
+                    )
+                ).take(),
+                "put negative int in natural attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'length' attribute (-42) must be greater or equal to zero")
         );
     }
 

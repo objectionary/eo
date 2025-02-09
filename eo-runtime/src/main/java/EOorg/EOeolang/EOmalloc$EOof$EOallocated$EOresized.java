@@ -55,8 +55,8 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
-        final int id = new Expect.Int(Expect.at(rho, "id")).it();
-        final int size = new Expect.Int(Expect.at(this, "new-size")).it();
+        final int id = new Expect.Natural(Expect.at(rho, "id")).it();
+        final int size = new Expect.Natural(Expect.at(this, "new-size")).it();
         Heaps.INSTANCE.resize(id, size);
         return rho;
     }

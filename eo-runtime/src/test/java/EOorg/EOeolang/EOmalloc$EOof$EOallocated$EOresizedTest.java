@@ -54,7 +54,9 @@ final class EOmalloc$EOof$EOallocated$EOresizedTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
-                        new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOresized()).it(),
+                        new EOmallocTest.PhiWithIdDummy(
+                            new EOmalloc$EOof$EOallocated$EOresized()
+                        ).it(),
                         "new-size",
                         new Data.ToPhi(true)
                     )
@@ -73,7 +75,9 @@ final class EOmalloc$EOof$EOallocated$EOresizedTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
-                        new EOmallocTest.PhiWithDummyId(new EOmalloc$EOof$EOallocated$EOresized()).it(),
+                        new EOmallocTest.PhiWithIdDummy(
+                            new EOmalloc$EOof$EOallocated$EOresized()
+                        ).it(),
                         "new-size",
                         new Data.ToPhi(42.42)
                     )
@@ -81,6 +85,27 @@ final class EOmalloc$EOof$EOallocated$EOresizedTest {
                 "put double in int attr fails with a proper message that explains what happened"
             ).getMessage(),
             Matchers.equalTo("the 'new-size' attribute (42.42) must be an integer")
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForNewSizeAttrNotNatural() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOmallocTest.PhiWithIdDummy(
+                            new EOmalloc$EOof$EOallocated$EOresized()
+                        ).it(),
+                        "new-size",
+                        new Data.ToPhi(-42)
+                    )
+                ).take(),
+                "put negative int in natural attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'new-size' attribute (-42) must be greater or equal to zero")
         );
     }
 

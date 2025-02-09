@@ -58,8 +58,8 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
     @Override
     public Phi lambda() {
         Heaps.INSTANCE.write(
-            new Expect.Int(Expect.at(this.take(Attr.RHO), "id")).it(),
-            new Expect.Int(Expect.at(this, "offset")).it(),
+            new Expect.Natural(Expect.at(this.take(Attr.RHO), "id")).it(),
+            new Expect.Natural(Expect.at(this, "offset")).it(),
             new Dataized(this.take("data")).take()
         );
         return new Data.ToPhi(true);

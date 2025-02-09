@@ -159,7 +159,9 @@ final class EOmallocTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
-                        new PhiWithDummyId((Phi) cls.getDeclaredConstructor().newInstance()).it(),
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
                         "offset",
                         new Data.ToPhi(true)
                     )
@@ -182,7 +184,9 @@ final class EOmallocTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhWith(
-                        new PhiWithDummyId((Phi) cls.getDeclaredConstructor().newInstance()).it(),
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
                         "offset",
                         new Data.ToPhi(42.42)
                     )
@@ -190,6 +194,31 @@ final class EOmallocTest {
                 "put double in int attr fails with a proper message that explains what happened"
             ).getMessage(),
             Matchers.equalTo("the 'offset' attribute (42.42) must be an integer")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNotNatural(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
+                        "offset",
+                        new Data.ToPhi(-42)
+                    )
+                ).take(),
+                "put negative int in natural attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (-42) must be greater or equal to zero")
         );
     }
 
@@ -242,9 +271,10 @@ final class EOmallocTest {
      *
      * @since 0.52
      */
-    static class PhiWithDummyId {
+    @SuppressWarnings("PMD.ShortMethodName")
+    static class PhiWithIdDummy {
         /**
-         * Phi
+         * Phi.
          */
         private final Phi phi;
 
@@ -252,7 +282,7 @@ final class EOmallocTest {
          * Ctor.
          * @param phi Phi
          */
-        PhiWithDummyId(Phi phi) {
+        PhiWithIdDummy(final Phi phi) {
             this.phi = phi;
         }
 
@@ -262,7 +292,7 @@ final class EOmallocTest {
          */
         public Phi it() {
             return new PhWith(
-                phi,
+                this.phi,
                 Attr.RHO,
                 new PhWith(
                     new EOmallocTest.IdDummy(),

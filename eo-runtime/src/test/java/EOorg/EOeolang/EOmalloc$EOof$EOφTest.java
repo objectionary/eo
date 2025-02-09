@@ -40,6 +40,9 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+// @checkstyle MissingDeprecatedCheck (10 lines)
+// @checkstyle AtclauseOrderCheck (10 lines)
+
 /**
  * Test case for {@link EOmalloc$EOof$EOφ}.
  *
@@ -95,8 +98,33 @@ final class EOmalloc$EOof$EOφTest {
         );
     }
 
+    @Test
+    void throwsCorrectErrorForSizeAttrNotNatural() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOmalloc$EOof$EOφ(),
+                        Attr.RHO,
+                        new PhWith(
+                            new EOmalloc$EOof$EOφTest.SizeDummy(),
+                            "size",
+                            new Data.ToPhi(-42)
+                        )
+                    )
+                ).take(),
+                "put negative int in natural attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'size' attribute (-42) must be greater or equal to zero")
+        );
+    }
+
     /**
      * Dummy with size attr.
+     *
+     * @since 0.52
      */
     private static class SizeDummy extends PhDefault {
         /**
