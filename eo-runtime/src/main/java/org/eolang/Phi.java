@@ -42,71 +42,9 @@ public interface Phi extends Data {
      * The global scope object, which owns all other objects.
      *
      * @checkstyle ConstantNameCheck (5 lines)
-     * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     @SuppressWarnings("PMD.FieldNamingConventions")
-    Phi Φ = new Phi() {
-        /**
-         * Default package.
-         */
-        private final Phi pkg = new PhPackage("");
-
-        @Override
-        public boolean equals(final Object obj) {
-            return obj == this;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public Phi copy() {
-            return Phi.Φ;
-        }
-
-        @Override
-        public boolean hasRho() {
-            return false;
-        }
-
-        @Override
-        public Phi take(final String name) {
-            return this.pkg.take(name);
-        }
-
-        @Override
-        public void put(final int pos, final Phi object) {
-            throw new IllegalStateException(
-                String.format("Can't #put(%d, %s) to Φ", pos, object)
-            );
-        }
-
-        @Override
-        public void put(final String name, final Phi object) {
-            throw new IllegalStateException(
-                String.format("Can't #put(%s, %s) to Φ", name, object)
-            );
-        }
-
-        @Override
-        public String locator() {
-            return "?:?";
-        }
-
-        @Override
-        public String forma() {
-            return this.pkg.forma();
-        }
-
-        @Override
-        public byte[] delta() {
-            throw new IllegalStateException(
-                "Can't #data() from Ф"
-            );
-        }
-    };
+    Phi Φ = new PhPackage(PhPackage.GLOBAL);
 
     /**
      * Make a copy, leaving it at the same parent.

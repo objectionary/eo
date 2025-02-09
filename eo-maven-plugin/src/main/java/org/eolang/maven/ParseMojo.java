@@ -29,10 +29,8 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
@@ -56,7 +54,6 @@ import org.xembly.Xembler;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class ParseMojo extends SafeMojo {
 
     /**
@@ -73,16 +70,6 @@ public final class ParseMojo extends SafeMojo {
      * Subdirectory for parsed cache.
      */
     public static final String CACHE = "parsed";
-
-    /**
-     * The current version of eo-maven-plugin.
-     * Maven 3 only.
-     * You can read more about that property
-     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(defaultValue = "${plugin}", readonly = true)
-    private PluginDescriptor plugin;
 
     @Override
     public void exec() {
@@ -131,7 +118,7 @@ public final class ParseMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withXmir(
             new FpDefault(
-                ParseMojo.parse(name),
+                this.parse(name),
                 this.cache.toPath().resolve(ParseMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -158,12 +145,12 @@ public final class ParseMojo extends SafeMojo {
      * @param name Name of the EO object
      * @return Function that parses EO source
      */
-    private static Func<Path, String> parse(final String name) {
+    private Func<Path, String> parse(final String name) {
         return source -> {
             final String parsed = new XMLDocument(
                 new Xembler(
                     new Directives().xpath("/program").attr(
-                        "source", source.toAbsolutePath()
+                        "source",  this.sourcesDir.toPath().relativize(source.toAbsolutePath())
                     )
                 ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().inner())
             ).toString();

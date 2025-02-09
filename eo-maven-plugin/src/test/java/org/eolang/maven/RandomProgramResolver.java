@@ -48,7 +48,6 @@ public final class RandomProgramResolver implements ParameterResolver {
         final ExtensionContext ext) {
         return String.join(
             "\n",
-            "+unlint object-has-data\n",
             "# This is a random program in EO, which supposedly",
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",

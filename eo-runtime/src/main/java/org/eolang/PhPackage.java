@@ -24,9 +24,12 @@
 
 package org.eolang;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,6 +39,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
+    /**
+     * Global package.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     * @checkstyle StaticVariableNameCheck (3 lines)
+     */
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    public static final String GLOBAL = "Φ";
 
     /**
      * The name of the Java package.
@@ -43,9 +53,9 @@ final class PhPackage implements Phi {
     private final String pkg;
 
     /**
-     * All of them.
+     * Objects in the package.
      */
-    private final ThreadLocal<Map<String, Phi>> objects;
+    private final Map<String, Phi> objects;
 
     /**
      * Ctor.
@@ -53,28 +63,22 @@ final class PhPackage implements Phi {
      */
     PhPackage(final String name) {
         this.pkg = name;
-        this.objects = ThreadLocal.withInitial(
-            () -> new ConcurrentHashMap<>(0)
-        );
+        this.objects = new ConcurrentHashMap<>(0);
     }
 
     @Override
     public String locator() {
-        return "?:?";
+        return "?:?:?";
     }
 
     @Override
     public String forma() {
-        throw new ExFailure(
-            String.format("Can't #form() from package object \"%s\"", this.pkg)
-        );
+        return this.pkg;
     }
 
     @Override
     public Phi copy() {
-        throw new ExFailure(
-            String.format("Can't #copy() package object \"%s\"", this.pkg)
-        );
+        return this;
     }
 
     @Override
@@ -86,16 +90,16 @@ final class PhPackage implements Phi {
     public Phi take(final String name) {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
-        if (!this.objects.get().containsKey(key)) {
-            final Phi initialized = this.loadPhi(key).orElseGet(() -> new PhPackage(obj));
-            if (!(initialized instanceof PhPackage)) {
-                initialized.put(Attr.RHO, this);
+        return this.objects.computeIfAbsent(
+            key,
+            k -> {
+                final Phi initialized = this.loadPhi(key, obj);
+                if (!(initialized instanceof PhPackage)) {
+                    initialized.put(Attr.RHO, this);
+                }
+                return initialized;
             }
-            this.objects.get().put(key, initialized);
-        }
-        final Phi res = this.objects.get().get(key);
-        this.objects.remove();
-        return res;
+        ).copy();
     }
 
     @Override
@@ -134,42 +138,46 @@ final class PhPackage implements Phi {
      * @return Eo-package path.
      */
     private String eoPackage(final String name) {
-        final StringBuilder abs = new StringBuilder(0).append(this.pkg);
-        if (abs.length() > 0) {
-            abs.append('.');
-        }
-        abs.append(name);
-        return abs.toString();
+        return String.join(".", this.pkg, name);
     }
 
     /**
      * Load phi object by package name from ClassLoader.
-     * @param target The package name
+     * @param path Path to directory or .java file
+     * @param object Object FQN
      * @return Phi
      */
-    private Optional<Phi> loadPhi(final String target) {
-        Optional<Phi> res;
-        try {
-            res = Optional.of(
-                (Phi) Class.forName(target)
+    private Phi loadPhi(final String path, final String object) {
+        final Path pth = Paths.get("target/classes", path.replace(".", File.separator));
+        final Phi phi;
+        if (Files.exists(pth) && Files.isDirectory(pth)) {
+            phi = new PhPackage(object);
+        } else {
+            final Path clazz = Paths.get(String.format("%s.class", pth));
+            if (!Files.exists(clazz) || Files.isDirectory(clazz)) {
+                throw new ExFailure(
+                    String.format("Couldn't find object '%s'", object)
+                );
+            }
+            try {
+                phi = (Phi) Class.forName(path)
                     .getConstructor()
-                    .newInstance()
-            );
-        } catch (final ClassNotFoundException notfound) {
-            res = Optional.empty();
-        } catch (final NoSuchMethodException
-            | InvocationTargetException
-            | InstantiationException
-            | IllegalAccessException ex
-        ) {
-            throw new ExFailure(
-                String.format(
-                    "Can't find Java object/package \"%s\" in EO package \"%s\"",
-                    target, this.pkg
-                ),
-                ex
-            );
+                    .newInstance();
+            } catch (final ClassNotFoundException
+                | NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException ex
+            ) {
+                throw new ExFailure(
+                    String.format(
+                        "Couldn't build Java object \"%s\" in EO package \"%s\"",
+                        path, this.pkg
+                    ),
+                    ex
+                );
+            }
         }
-        return res;
+        return phi;
     }
 }

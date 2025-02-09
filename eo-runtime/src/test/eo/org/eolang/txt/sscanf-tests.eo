@@ -20,34 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.list
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
-+alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string
+[] > tests-sscanf-with-string
   eq. > @
     "hello"
     value.
       sscanf "%s" "hello"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-int
+[] > tests-sscanf-with-int
   eq. > @
     33
     value.
       sscanf "%d" "33"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-float
+[] > tests-sscanf-with-float
   eq. > @
     0.24
     value.
@@ -58,7 +56,7 @@
   sscanf "%l" "error" > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string-int-float
+[] > tests-sscanf-with-string-int-float
   eq. > @
     list
       sscanf
@@ -67,35 +65,35 @@
     * "hello" 33 0.24
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-string-with-ending
+[] > tests-sscanf-with-string-with-ending
   eq. > @
     "hello"
     value.
       sscanf "%s!" "hello!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-string
+[] > tests-sscanf-with-complex-string
   eq. > @
     "test"
     value.
       sscanf "some%sstring" "someteststring"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-int
+[] > tests-sscanf-with-complex-int
   eq. > @
     734987259
     value.
       sscanf "!%d!" "!734987259!"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-complex-float
+[] > tests-sscanf-with-complex-float
   eq. > @
     1991.01
     value.
       sscanf "this will be=%f" "this will be=1991.01"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-with-sprintf
+[] > tests-sscanf-with-sprintf
   eq. > @
     list
       sscanf
@@ -106,7 +104,7 @@
     * "This" 8
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > sscanf-complex-case
+[] > tests-sscanf-complex-case
   eq. > @
     list
       sscanf

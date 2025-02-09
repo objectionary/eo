@@ -24,16 +24,16 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+unlint abstract-decoratee
-+unlint broken-ref
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
++unlint unit-test-without-phi
++unlint decorated-formation
 
 # This unit test is supposed to check the globals bound objects work as tests.
 true > global-test
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > understands-this-correctly
+[] > tests-understands-this-correctly
   [x] > a
     $.x > @
   eq. > @
@@ -41,7 +41,7 @@ true > global-test
     42
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > takes-parent-object
+[] > tests-takes-parent-object
   [x] > a
     [] > take
       ^.x > @
@@ -51,7 +51,7 @@ true > global-test
     42
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > makes-object-a-constant
+[] > tests-makes-object-a-constant
   [] > foo
     times. > @
       50
@@ -62,7 +62,7 @@ true > global-test
     f
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > takes-parent-through-attribute
+[] > tests-takes-parent-through-attribute
   42 > x
   $ > this
   [] > @
@@ -80,7 +80,7 @@ true > global-test
   closed true > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > makes-deep-object-recursively
+[] > tests-makes-deep-object-recursively
   eq. > @
     x 5
     0
@@ -92,7 +92,7 @@ true > global-test
         i.minus 1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > calculates-only-once
+[] > tests-calculates-only-once
   eq. > @
     malloc.for
       0
@@ -109,7 +109,7 @@ true > global-test
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > recursion-without-arguments
+[] > tests-recursion-without-arguments
   [n] > func
     if. > @
       n.as-number.gt 0
@@ -126,19 +126,19 @@ true > global-test
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > unescapes-slashes
+[] > tests-unescapes-slashes
   eq. > @
     "x\\b\\f\\u\\r\\t\\n\\'"
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > unescapes-symbols
+[] > tests-unescapes-symbols
   eq. > @
     "\b\f\n\r\t\u27E6"
     08-0C-0A-0D-09-E2-9F-A6
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > compiles-correctly-with-long-duplicate-names
+[] > tests-compiles-correctly-with-long-duplicate-names
   [] > long-object-name
     [] > long-object-name
       [] > long-object-name
@@ -148,14 +148,14 @@ true > global-test
   true > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > named-inner-abstract-object
+[] > tests-named-inner-abstract-object
   seq > @
     *
       [] > a
         true > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > app-that-calls-func
+[] > tests-app-that-calls-func
   [] > app
     [args] > f
       1 > a
@@ -168,7 +168,7 @@ true > global-test
     2
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > directly-accesses-objects-from-root
+[] > tests-directly-accesses-objects-from-root
   eq. > @
     Q.org.eolang.malloc.of
       8
@@ -181,7 +181,7 @@ true > global-test
     40
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > directly-accesses-objects-from-standard-root
+[] > tests-directly-accesses-objects-from-standard-root
   eq. > @
     QQ.malloc.of
       8
@@ -194,7 +194,7 @@ true > global-test
     40
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > standard-root-and-root
+[] > tests-standard-root-and-root
   QQ.sys.os > stand-root
   Q.org.eolang.sys.os > root
   eq. > @
@@ -202,7 +202,7 @@ true > global-test
     stand-root
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > extract-attribute-from-decoratee
+[] > tests-extract-attribute-from-decoratee
   [foo] > return
   [] > a
     ^.return > @
@@ -214,7 +214,7 @@ true > global-test
     43
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > constant-defends-against-side-effects
+[] > tests-constant-defends-against-side-effects
   [x] > inc
     seq > @
       *
@@ -234,7 +234,7 @@ true > global-test
     64
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > parent-in-vertical-notation
+[] > tests-parent-in-vertical-notation
   5 > m
   [] > value
     [] > @
@@ -246,7 +246,7 @@ true > global-test
     5
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > parent-in-horizontal-notation
+[] > tests-parent-in-horizontal-notation
   5 > m
   [] > value
     [] > @
@@ -256,7 +256,7 @@ true > global-test
     5
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > phi-in-vertical-notation
+[] > tests-phi-in-vertical-notation
   [] > value
     [] > @
       100 > @
@@ -266,7 +266,7 @@ true > global-test
     100
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > phi-in-horizontal-notation
+[] > tests-phi-in-horizontal-notation
   [] > value
     [] > @
       100 > @
@@ -275,8 +275,7 @@ true > global-test
     100
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > right-way-to-use-hierarchy
-  # Bool mock
+[] > tests-right-way-to-use-hierarchy
   [value] > pybool
     value > @
   [value] > pyint
@@ -287,7 +286,7 @@ true > global-test
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > check-triple-quotes
+[] > tests-check-triple-quotes
   eq. > @
     """
     Hello
@@ -297,7 +296,7 @@ true > global-test
     "Hello\n\nHello"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > correctly-handles-same-name-attrs-simplified
+[] > tests-correctly-handles-same-name-attrs-simplified
   [first second] > calc
     plus. > @
       first
@@ -315,7 +314,7 @@ true > global-test
     3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > correctly-handles-same-name-attrs
+[] > tests-correctly-handles-same-name-attrs
   [f s] > calc
     plus. > @
       f.next
@@ -341,7 +340,7 @@ true > global-test
     9
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > with-void-phi
+[] > tests-with-void-phi
   [@] > x
     "Hello" > hello
   x 5 > five
@@ -353,7 +352,7 @@ true > global-test
 [] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > vertical-bound-method
+[] > tests-vertical-bound-method
   eq. > @
     if.
       true
@@ -362,8 +361,8 @@ true > global-test
       .as-bytes:0
     "first"
 
-# Nesting blah test.
-[] > nesting-blah-test
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > tests-nesting-blah-test
   blah0 > @
   [] > blah0
     blah1 > @

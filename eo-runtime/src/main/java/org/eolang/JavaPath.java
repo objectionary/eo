@@ -28,9 +28,9 @@ package org.eolang;
  *
  * <p>The class converts object path in eolang notation to java notation.
  * For example
- * - "org.eolang" -> "EOorg.EOeolang"
- * - "org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
- * - "org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
+ * - "Φ.org.eolang" -> "EOorg.EOeolang"
+ * - "Φ.org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
+ * - "Φ.org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
  * Since EOLANG allows using dashes in object names, they are converted to
  * underscores for Java.</p>
  *
@@ -53,7 +53,16 @@ final class JavaPath {
 
     @Override
     public String toString() {
+        if (!this.object.startsWith("Φ.")) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Can't build path to .java file from FQN not started from '%s.'",
+                    PhPackage.GLOBAL
+                )
+            );
+        }
         return this.object
+            .substring(2)
             .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
             .replace("$", "$EO")
             .replace("-", "_");

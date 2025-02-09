@@ -234,9 +234,7 @@ SOFTWARE.
             <id>compile</id>
             <goals>
               <goal>register</goal>
-              <goal>deps</goal>
-              <goal>assemble</goal>
-              <goal>lint</goal>
+              <goal>compile</goal>
               <goal>transpile</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
@@ -245,13 +243,9 @@ SOFTWARE.
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <removeBinaries>
-                <glob>EOorg/EOeolang/EOhamcrest/**</glob>
-                <glob>EOorg/EOeolang/EOmath/**</glob>
-                <glob>EOorg/EOeolang/EOfs/**</glob>
-              </removeBinaries>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+              <lintAsPackage>false</lintAsPackage>
             </configuration>
           </execution>
           <execution>
@@ -259,7 +253,6 @@ SOFTWARE.
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
-              <goal>deps</goal>
               <goal>assemble</goal>
               <goal>lint</goal>
               <goal>xmir-to-phi</goal>

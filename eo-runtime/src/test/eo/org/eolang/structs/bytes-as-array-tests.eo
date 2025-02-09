@@ -20,18 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.structs.list
 +alias org.eolang.structs.bytes-as-array
++alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > converts-bytes-to-array
+[] > tests-converts-bytes-to-array
   eq. > @
     list
       bytes-as-array
@@ -39,7 +38,7 @@
     * 20- 1F- EE- B5- FF-
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > single-byte-to-array
+[] > tests-single-byte-to-array
   eq. > @
     list
       bytes-as-array
@@ -47,7 +46,7 @@
     * 1F-
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > zero-bytes-to-array
+[] > tests-zero-bytes-to-array
   eq. > @
     list
       bytes-as-array

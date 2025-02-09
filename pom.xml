@@ -128,7 +128,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.github.volodya-lombrozo</groupId>
         <artifactId>xnav</artifactId>
-        <version>0.1.7</version>
+        <version>0.1.8</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -254,6 +254,11 @@ SOFTWARE.
         <artifactId>annotations</artifactId>
         <version>3.0.1u2</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
       </dependency>
       <dependency>
         <groupId>org.eolang</groupId>

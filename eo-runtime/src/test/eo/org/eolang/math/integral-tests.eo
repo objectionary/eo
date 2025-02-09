@@ -26,11 +26,10 @@
 +tests
 +package org.eolang.math
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > calculates-lineal-integral
+[] > tests-calculates-lineal-integral
   as-number. > lineal
     integral
       x > [x]
@@ -57,7 +56,7 @@
         value.neg
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > calculates-quadratic-integral
+[] > tests-calculates-quadratic-integral
   as-number. > quadratic
     integral
       x.times x > [x]
@@ -84,7 +83,7 @@
         value.neg
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > calculates-cube-integral
+[] > tests-calculates-cube-integral
   as-number. > cube
     integral
       (x.times x).times x > [x]

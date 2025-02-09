@@ -47,7 +47,6 @@ import org.eolang.maven.util.Walk;
     threadSafe = true
 )
 public final class MarkMojo extends SafeMojo {
-
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);

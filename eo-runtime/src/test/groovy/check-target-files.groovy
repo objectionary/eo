@@ -39,7 +39,7 @@ List<String> expected = [
   'eo-test/unphi/org/eolang/number-tests.xmir',
   'generated-sources/EOorg/EOeolang/EOdataized.java',
   'generated-sources/EOorg/EOeolang/EOnet/EOsocket.java',
-  'generated-test-sources/EOorg/EOeolang/EOand_with_zeroTest.java',
+  'generated-test-sources/EOorg/EOeolang/EOtests_and_with_zeroTest.java',
   'classes/EO-SOURCES/org/eolang/false.eo',
 ]
 

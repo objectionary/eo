@@ -147,7 +147,7 @@ public final class PhiMojo extends SafeMojo {
         final XML xml = new XMLDocument(new TextOf(xmir).asString());
         try {
             new Saved(this.translated(xml), target).value();
-            Logger.info(
+            Logger.debug(
                 this,
                 "Translated to phi (#%d/%d): %[file]s (%[size]s) -> %[file]s (%[size]s) in %[ms]s",
                 position, total, xmir,

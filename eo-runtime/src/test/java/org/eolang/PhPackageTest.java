@@ -25,13 +25,7 @@ package org.eolang;
 
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import com.yegor256.Together;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,7 +46,7 @@ final class PhPackageTest {
     /**
      * Default test package.
      */
-    private static final String DEFAULT_PACKAGE = "org.eolang";
+    private static final String DEFAULT_PACKAGE = "Φ.org.eolang";
 
     @Test
     void copiesObject() {
@@ -111,20 +105,21 @@ final class PhPackageTest {
     }
 
     @Test
-    void doesNotCopies() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy(),
-            AtCompositeTest.TO_ADD_MESSAGE
+    void returnsSelfOnCopy() {
+        final Phi pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        MatcherAssert.assertThat(
+            "Package object should return itself on copying",
+            pckg.copy(),
+            Matchers.is(pckg)
         );
     }
 
     @Test
-    void doesNotGetForma() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
-            AtCompositeTest.TO_ADD_MESSAGE
+    void returnsForma() {
+        MatcherAssert.assertThat(
+            "Should return valid forma",
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
+            Matchers.equalTo(PhPackageTest.DEFAULT_PACKAGE)
         );
     }
 
@@ -133,54 +128,26 @@ final class PhPackageTest {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
-            Matchers.equalTo("?:?")
+            Matchers.equalTo("?:?:?")
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.CloseResource")
-    void findsAttributesConcurrently() throws InterruptedException {
-        final int threads = Runtime.getRuntime().availableProcessors() + 10;
-        final ExecutorService service = Executors.newFixedThreadPool(threads);
+    void findsAttributesInThreads() {
         final PhPackage pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
-        final Set<Integer> basket = Collections.synchronizedSet(new HashSet<>(threads));
-        final CountDownLatch latch = new CountDownLatch(1);
-        Stream.generate(
-            () -> (Runnable) () -> {
-                try {
-                    latch.await();
-                    basket.add(System.identityHashCode(pckg.take("go")));
-                } catch (final InterruptedException exception) {
-                    Thread.currentThread().interrupt();
-                    throw new IllegalStateException(
-                        "The testing thread was interrupted, current basket size %d",
-                        exception
-                    );
-                }
-            }
-        ).limit(threads).forEach(service::submit);
-        latch.countDown();
-        service.shutdown();
-        if (service.awaitTermination(1, TimeUnit.SECONDS)) {
-            MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
-                basket.size(),
-                Matchers.equalTo(threads)
-            );
-        } else {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to wait for threads to finish. Current basket size %d, but expected %d",
-                    basket.size(),
-                    threads
-                )
-            );
-        }
+        MatcherAssert.assertThat(
+            "Should take an attribute in multiple threads",
+            new Together<>(
+                thread -> pckg.take("go") instanceof PhPackage
+            ),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasItem(true))
+            )
+        );
     }
 
     private static Stream<Arguments> attributes() {
         return Stream.of(
-            Arguments.of("absent", PhPackage.class),
             Arguments.of("bytes$eq", EObytes$EOeq.class),
             Arguments.of("go", EOgo.class)
         );

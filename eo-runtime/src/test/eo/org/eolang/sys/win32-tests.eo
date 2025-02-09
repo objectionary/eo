@@ -20,19 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.win32
 +alias org.eolang.sys.os
++alias org.eolang.sys.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-valid-win32-inet-addr-for-localhost
+[] > tests-returns-valid-win32-inet-addr-for-localhost
   code. > addr
     win32
       "inet_addr"

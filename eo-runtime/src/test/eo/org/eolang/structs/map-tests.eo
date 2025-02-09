@@ -26,12 +26,10 @@
 +tests
 +package org.eolang.structs
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > map-rebuilds-itself
+[] > tests-map-rebuilds-itself
   map > mp
     *
       map.entry 1 1
@@ -41,7 +39,7 @@
   2.eq mp.size > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > map-rebuilds-itself-only-once
+[] > tests-map-rebuilds-itself-only-once
   eq. > @
     1
     malloc.for
@@ -59,7 +57,7 @@
             m
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-list-of-keys
+[] > tests-returns-list-of-keys
   eq. > @
     keys.
       map
@@ -70,7 +68,7 @@
     * 1 2 3
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-list-of-values
+[] > tests-returns-list-of-values
   eq. > @
     values.
       map
@@ -81,7 +79,7 @@
     * 2 3 4
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > finds-element-by-key-in-map
+[] > tests-finds-element-by-key-in-map
   map > mp
     *
       map.entry "one" 1
@@ -91,7 +89,7 @@
   2.eq found.get > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > does-not-find-element-by-key-in-hash-map
+[] > tests-does-not-find-element-by-key-in-hash-map
   map
     *
       map.entry "one" 1
@@ -101,7 +99,7 @@
   .not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > has-element-with-key-in-hash-map
+[] > tests-has-element-with-key-in-hash-map
   map
     *
       map.entry "one" 1
@@ -109,7 +107,7 @@
   .has "two" > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > does-not-have-element-by-key-in-hash-map
+[] > tests-does-not-have-element-by-key-in-hash-map
   map
     *
       map.entry "one" 1
@@ -118,7 +116,7 @@
   .not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > does-not-change-map-without-non-existed-element
+[] > tests-does-not-change-map-without-non-existed-element
   map
     *
       map.entry "one" 1
@@ -127,7 +125,7 @@
   .eq 1 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > removes-element-from-map-by-key
+[] > tests-removes-element-from-map-by-key
   map
     *
       map.entry "one" 1
@@ -138,7 +136,7 @@
     (mp.has "one").not
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > adds-new-pair-to-hash-map
+[] > tests-adds-new-pair-to-hash-map
   map
     *
       map.entry "one" 1
@@ -148,7 +146,7 @@
     mp.has "two"
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > replaces-value-if-pair-with-key-exists-in-map
+[] > tests-replaces-value-if-pair-with-key-exists-in-map
   map
     *
       map.entry "one" 1

@@ -29,8 +29,6 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -117,23 +115,6 @@ final class AssembleMojoTest {
             "Even if the eo program invalid we still have to optimize it, but we didn't",
             result.get(String.format("target/%s", ShakeMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
-        );
-    }
-
-    @CaptureLogs
-    @Test
-    void assemblesSuccessfullyInOfflineMode(final Logs out,
-        @Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withHelloWorld()
-            .with("offline", true)
-            .execute(AssembleMojo.class);
-        MatcherAssert.assertThat(
-            "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
-            String.join("\n", out.captured()),
-            Matchers.containsString(
-                "No programs were pulled because eo.offline flag is set to TRUE"
-            )
         );
     }
 

@@ -20,19 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.posix
 +alias org.eolang.sys.os
++alias org.eolang.sys.posix
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > invokes-getpid-correctly
+[] > tests-invokes-getpid-correctly
   or. > @
     os.is-windows
     gt.
@@ -43,7 +41,7 @@
       0
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > opens-posix-tcp-socket
+[] > tests-opens-posix-tcp-socket
   code. > sd
     posix
       "socket"
@@ -59,7 +57,7 @@
           * sd
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > closes-posix-tcp-socket
+[] > tests-closes-posix-tcp-socket
   code. > sd
     posix
       "socket"
@@ -78,7 +76,7 @@
             -1
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > returns-valid-posix-inet-addr-for-localhost
+[] > tests-returns-valid-posix-inet-addr-for-localhost
   code. > addr
     posix
       "inet_addr"

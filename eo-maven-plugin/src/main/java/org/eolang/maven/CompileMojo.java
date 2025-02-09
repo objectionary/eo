@@ -23,39 +23,40 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.Mktmp;
-import com.yegor256.MktmpResolver;
-import java.nio.file.Path;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.jcabi.log.Logger;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Test case for {@link SafeMojo}.
+ * Compile and lint all EO files.
  *
- * @since 0.1
+ * @since 0.52
  */
-@ExtendWith(MktmpResolver.class)
-final class SafeMojoTest {
+@Mojo(
+    name = "compile",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
+public final class CompileMojo extends SafeMojo {
+    /**
+     * Mojas to execute.
+     */
+    private static final Moja<?>[] MOJAS = {
+        new Moja<>(DownloadDepsMojo.class),
+        new Moja<>(AssembleMojo.class),
+        new Moja<>(LintMojo.class),
+    };
 
-    @Test
-    @CaptureLogs
-    void logsStackTrace(final Logs out, @Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .withProgram("something > is definitely wrong here")
-                .execute(new FakeMaven.Parse()),
-            CatalogsTest.TO_ADD_MESSAGE
-        );
-        MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
-            String.join("\n", out.captured()),
-            Matchers.containsString("Failed to parse")
+    @Override
+    public void exec() {
+        final long begin = System.currentTimeMillis();
+        for (final Moja<?> moja : CompileMojo.MOJAS) {
+            moja.copy(this).execute();
+        }
+        Logger.info(
+            this,
+            "Compilation process took %[ms]s",
+            System.currentTimeMillis() - begin
         );
     }
-
 }

@@ -42,7 +42,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.0.26</version>
+      <version>0.0.38</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -146,6 +146,11 @@ SOFTWARE.
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
       <!-- version from parent POM -->
     </dependency>
@@ -194,12 +199,16 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.volodya-lombrozo</groupId>
+      <artifactId>xnav</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.18.4</version>
+      <version>0.18.5</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>

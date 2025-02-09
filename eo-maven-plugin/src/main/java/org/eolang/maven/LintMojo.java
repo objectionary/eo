@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -77,12 +78,17 @@ public final class LintMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (11 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "true"
-    )
+    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
     private boolean failOnWarning;
+
+    /**
+     * Whether we should lint all the sources together as package.
+     *
+     * @checkstyle MemberNameCheck (11 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
+    private boolean lintAsPackage;
 
     @Override
     void exec() throws IOException {
@@ -99,11 +105,18 @@ public final class LintMojo extends SafeMojo {
         if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
-        Logger.info(
-            this,
-            "Also, %d XMIR programs linted as a package",
-            this.lintAll(counts)
-        );
+        if (this.lintAsPackage) {
+            Logger.info(
+                this,
+                "XMIR programs linted as a package: %d",
+                this.lintAll(counts)
+            );
+        } else {
+            Logger.info(
+                this,
+                "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
+            );
+        }
         final String sum = LintMojo.summary(counts);
         Logger.info(
             this,
@@ -143,7 +156,7 @@ public final class LintMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> this.counted(LintMojo.lint(xmir), counts).toString(),
+                src -> LintMojo.lint(xmir, counts).toString(),
                 this.cache.toPath().resolve(LintMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -161,8 +174,11 @@ public final class LintMojo extends SafeMojo {
      */
     private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
-        for (final ForeignTojo tojo : this.scopedTojos().withLinted()) {
-            paths.put(tojo.identifier(), tojo.linted());
+        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
+            paths.put(tojo.identifier(), tojo.shaken());
+        }
+        for (final ForeignTojo tojo : this.compileTojos().withShaken()) {
+            paths.put(tojo.identifier(), tojo.shaken());
         }
         final Map<String, XML> pkg = new HashMap<>();
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
@@ -175,48 +191,55 @@ public final class LintMojo extends SafeMojo {
                 pkg.get(defect.program()),
                 new ListOf<>(defect)
             );
+            LintMojo.logOne(defect);
         }
         return pkg.size();
     }
 
     /**
-     * Log errors of XMIR.
-     * @param xml XMIR.
-     * @param counts Counts of errors, warnings, and critical
-     * @return TRUE if it's good
+     * Log one defect.
+     * @param defect The defect to log
      */
-    private XML counted(final XML xml, final ConcurrentHashMap<Severity, Integer> counts) {
-        for (final XML error : xml.nodes("/program/errors/error")) {
-            final List<String> line = error.xpath("@line");
-            final StringBuilder message = new StringBuilder()
-                .append(Logger.format("%[file]s", xml.xpath("/program/@source").get(0)));
-            if (!line.isEmpty()) {
-                message.append(':').append(Integer.parseInt(line.get(0)));
-            }
-            message.append(' ')
-                .append(error.xpath("text()").get(0))
-                .append(" (")
-                .append(error.xpath("@check").get(0))
-                .append(' ')
-                .append(error.xpath("@severity").get(0))
-                .append(')');
-            final Severity severity = Severity.parsed(error.xpath("@severity").get(0));
-            counts.compute(severity, (sev, before) -> before + 1);
-            switch (severity) {
-                case WARNING:
-                    Logger.warn(this, message.toString());
-                    break;
-                case ERROR:
-                case CRITICAL:
-                    Logger.error(this, message.toString());
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                        String.format("Not yet supported severity: %s", severity)
-                    );
-            }
+    private static void logOne(final Defect defect) {
+        final StringBuilder message = new StringBuilder()
+            .append(defect.program())
+            .append(':').append(defect.line())
+            .append(' ')
+            .append(defect.text())
+            .append(" (")
+            .append(defect.rule())
+            .append(')');
+        switch (defect.severity()) {
+            case WARNING:
+                Logger.warn(LintMojo.class, message.toString());
+                break;
+            case ERROR:
+            case CRITICAL:
+                Logger.error(LintMojo.class, message.toString());
+                break;
+            default:
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Not yet supported severity: %s",
+                        defect.severity()
+                    )
+                );
         }
-        return xml;
+    }
+
+    /**
+     * Text in plural or singular form.
+     * @param count Counts of errors, warnings, and critical
+     * @param name Name of them
+     * @return Summary text
+     */
+    private static String plural(final int count, final String name) {
+        final StringBuilder txt = new StringBuilder();
+        txt.append(count).append(' ').append(name);
+        if (count > 1) {
+            txt.append('s');
+        }
+        return txt.toString();
     }
 
     /**
@@ -225,52 +248,52 @@ public final class LintMojo extends SafeMojo {
      * @return Summary text
      */
     private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
-        final StringBuilder sum = new StringBuilder(100);
+        final List<String> parts = new ArrayList<>(0);
         final int criticals = counts.get(Severity.CRITICAL);
         if (criticals > 0) {
-            sum.append(criticals).append(" critical error");
-            if (criticals > 1) {
-                sum.append('s');
-            }
+            parts.add(LintMojo.plural(criticals, "critical error"));
         }
         final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {
-            if (sum.length() > 0) {
-                sum.append(", ");
-            }
-            sum.append(errors).append(" error");
-            if (errors > 1) {
-                sum.append('s');
-            }
+            parts.add(LintMojo.plural(errors, "error"));
         }
         final int warnings = counts.get(Severity.WARNING);
         if (warnings > 0) {
-            if (sum.length() > 0) {
-                sum.append(", ");
-            }
-            sum.append(warnings).append(" warning");
-            if (warnings > 1) {
-                sum.append('s');
-            }
+            parts.add(LintMojo.plural(warnings, "warning"));
         }
-        if (sum.length() == 0) {
-            sum.append("no complaints");
+        if (parts.isEmpty()) {
+            parts.add("no complaints");
         }
-        return sum.toString();
+        final String sum;
+        if (parts.size() < 3) {
+            sum = String.join(" and ", parts);
+        } else {
+            sum = String.format(
+                "%s, and %s",
+                String.join(", ", parts.subList(0, parts.size() - 2)),
+                parts.get(parts.size() - 1)
+            );
+        }
+        return sum;
     }
 
     /**
      * Find all possible linting defects and add them to the XMIR.
      * @param xmir The XML before linting
+     * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
-     * @throws IOException If fails
      */
-    private static XML lint(final XML xmir) throws IOException {
+    private static XML lint(final XML xmir,
+        final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);
             LintMojo.embed(xmir, defects);
+        }
+        for (final Defect defect : defects) {
+            counts.compute(defect.severity(), (sev, before) -> before + 1);
+            LintMojo.logOne(defect);
         }
         final Node node = xmir.inner();
         new Xembler(dirs).applyQuietly(node);
