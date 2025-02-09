@@ -104,7 +104,7 @@ public final class LintMojo extends SafeMojo {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {
-            this.lint();
+            LintMojo.this.lint();
         }
     }
 
