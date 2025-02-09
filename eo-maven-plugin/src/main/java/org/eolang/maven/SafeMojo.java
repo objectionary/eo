@@ -379,6 +379,37 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreTransitive;
 
+
+    /**
+     * Whether we should fail on warning.
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
+    protected boolean failOnWarning;
+
+    /**
+     * Whether we should lint all the sources together as package.
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
+    protected boolean lintAsPackage;
+
+    /**
+     * Whether we should skip linting at all.
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
+    protected boolean skipLinting;
+
     /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.

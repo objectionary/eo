@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
@@ -71,33 +70,6 @@ public final class LintMojo extends SafeMojo {
      * Subdirectory for optimized cache.
      */
     static final String CACHE = "linted";
-
-    /**
-     * Whether we should fail on warning.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
-    private boolean failOnWarning;
-
-    /**
-     * Whether we should lint all the sources together as package.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
-    private boolean lintAsPackage;
-
-    /**
-     * Whether we should skip linting at all.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
-    private boolean skipLinting;
 
     @Override
     void exec() throws IOException {
