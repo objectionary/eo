@@ -31,6 +31,7 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.util.Collection;
@@ -61,14 +62,18 @@ public final class Xmir implements XML {
      * Train of transformations that prepare XMIR for conversion to EO.
      */
     private static final Train<Shift> FOR_EO = new TrFull(
-        new TrDefault<>(
-            new StEndless(
-                new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
+        new TrJoined<>(
+            new TrDefault<>(
+                new StEndless(
+                    new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
+                )
             ),
-            new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
-            new StClasspath("/org/eolang/parser/print/unhex-data.xsl"),
-            new StClasspath("/org/eolang/parser/print/wrap-data.xsl"),
-            new StClasspath("/org/eolang/parser/print/to-eo.xsl")
+            new TrClasspath<>(
+                "/org/eolang/parser/print/dataized-to-const.xsl",
+                "/org/eolang/parser/print/unhex-data.xsl",
+                "/org/eolang/parser/print/wrap-data.xsl",
+                "/org/eolang/parser/print/to-eo.xsl"
+            ).back()
         )
     );
 

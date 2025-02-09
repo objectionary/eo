@@ -90,8 +90,29 @@ public final class LintMojo extends SafeMojo {
     @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
     private boolean lintAsPackage;
 
+    /**
+     * Whether we should skip linting at all.
+     *
+     * @checkstyle MemberNameCheck (11 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
+    private boolean skipLinting;
+
     @Override
     void exec() throws IOException {
+        if (this.skipLinting) {
+            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+        } else {
+            this.lint();
+        }
+    }
+
+    /**
+     * Lint.
+     * @throws IOException If fails
+     */
+    private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
