@@ -104,7 +104,7 @@ public final class LintMojo extends SafeMojo {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {
-            LintMojo.this.lint();
+            this.lint();
         }
     }
 
@@ -177,7 +177,7 @@ public final class LintMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> LintMojo.lint(xmir, counts).toString(),
+                src -> LintMojo.linted(xmir, counts).toString(),
                 this.cache.toPath().resolve(LintMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -304,8 +304,7 @@ public final class LintMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
      */
-    private static XML lint(final XML xmir,
-        final ConcurrentHashMap<Severity, Integer> counts) {
+    private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).defects();
         if (!defects.isEmpty()) {
