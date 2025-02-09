@@ -379,7 +379,6 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreTransitive;
 
-
     /**
      * Whether we should fail on warning.
      *
