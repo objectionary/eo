@@ -29,52 +29,37 @@ package org.eolang;
 import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link XmirObject}.
  *
  * @since 0.38
- * @todo #3481:30min Enable the test. The test was disabled because it's became a bit
- *  irrelevant when we got rid of @ref attributes and "abstract-float-up.xsl" transformation.
- *  We got a much less amount of generated classes after translation to java. So we need to
- *  refactor the test and enable it.
  */
 final class XmirObjectTest {
 
     @Test
-    @Disabled
     void annotatesOnlyPublicClasses() throws IOException {
-        final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
-            .getAllClasses()
-            .stream()
-            .filter(clazz -> "EOorg.EOeolang".equals(clazz.getPackageName()))
-            .map(ClassPath.ClassInfo::load)
-            .filter(
-                clazz -> clazz.getSimpleName().startsWith("EO")
-                    && Phi.class.isAssignableFrom(clazz)
-            )
-            .collect(Collectors.toSet());
-        assert !clazzes.isEmpty();
         MatcherAssert.assertThat(
-            "Some EOxx classes are found",
-            clazzes.stream()
-                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
-                .collect(Collectors.toList()),
-            Matchers.empty()
-        );
-        MatcherAssert.assertThat(
-            "All EOxx classes are public",
-            clazzes.stream()
-                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+            "All top-level EOxx classes must be public",
+            ClassPath.from(ClassLoader.getSystemClassLoader())
+                .getAllClasses()
+                .stream()
+                .filter(
+                    clazz -> "EOorg.EOeolang".equals(clazz.getPackageName())
+                        && clazz.getSimpleName().startsWith("EO")
+                )
+                .map(ClassPath.ClassInfo::load)
+                .filter(
+                    clazz -> !Modifier.isPublic(clazz.getModifiers())
+                        && !(clazz.isMemberClass() || clazz.isLocalClass())
+                        && Phi.class.isAssignableFrom(clazz)
+                )
                 .collect(Collectors.toList()),
             Matchers.empty()
         );
     }
-
 }
