@@ -92,7 +92,7 @@ final class LatexTemplateTest {
     void removesRedundantPartsInCode() {
         final String output = new LatexTemplate(
             LatexTemplateTest.input(
-                "# The MIT License (MIT)\nCopyright (c)",
+                "# The MIT License (MIT)\n# Copyright (c)",
                 "+architect yegor256@gmail.com",
                 "+package f\n [args] > main",
                 "  stdout \"Hello!\""
