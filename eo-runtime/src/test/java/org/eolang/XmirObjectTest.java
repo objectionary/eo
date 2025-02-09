@@ -48,13 +48,15 @@ final class XmirObjectTest {
             ClassPath.from(ClassLoader.getSystemClassLoader())
                 .getAllClasses()
                 .stream()
-                .filter(clazz -> "EOorg.EOeolang".equals(clazz.getPackageName()))
+                .filter(
+                    clazz -> "EOorg.EOeolang".equals(clazz.getPackageName())
+                        && clazz.getSimpleName().startsWith("EO")
+                )
                 .map(ClassPath.ClassInfo::load)
                 .filter(
-                    clazz -> clazz.getSimpleName().startsWith("EO")
+                    clazz -> !Modifier.isPublic(clazz.getModifiers())
                         && !(clazz.isMemberClass() || clazz.isLocalClass())
                         && Phi.class.isAssignableFrom(clazz)
-                        && !Modifier.isPublic(clazz.getModifiers())
                 )
                 .collect(Collectors.toList()),
             Matchers.empty()
