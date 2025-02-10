@@ -96,7 +96,7 @@ SOFTWARE.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|\.(^|@|[a-z]\S*)|(Q|$)(\.(^|@|[a-z]\S*))*"/>
+      <xs:pattern value="^∅$|^\.(\^|@|[a-z][^\s.]*)$|^([Q$])(\.(\^|@|[a-z][^\s.]*))*$"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="program-name">
