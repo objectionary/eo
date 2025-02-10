@@ -25,10 +25,8 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.51.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++version 0.51.3
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 tmpdir.exists > [] > global-temp-dir-exists
