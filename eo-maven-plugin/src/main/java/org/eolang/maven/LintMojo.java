@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
@@ -72,26 +71,20 @@ public final class LintMojo extends SafeMojo {
      */
     static final String CACHE = "linted";
 
-    /**
-     * Whether we should fail on warning.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
-    private boolean failOnWarning;
-
-    /**
-     * Whether we should lint all the sources together as package.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
-    private boolean lintAsPackage;
-
     @Override
     void exec() throws IOException {
+        if (this.skipLinting) {
+            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+        } else {
+            this.lint();
+        }
+    }
+
+    /**
+     * Lint.
+     * @throws IOException If fails
+     */
+    private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -156,7 +149,7 @@ public final class LintMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> LintMojo.lint(xmir, counts).toString(),
+                src -> LintMojo.linted(xmir, counts).toString(),
                 this.cache.toPath().resolve(LintMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -283,8 +276,7 @@ public final class LintMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
      */
-    private static XML lint(final XML xmir,
-        final ConcurrentHashMap<Severity, Integer> counts) {
+    private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).defects();
         if (!defects.isEmpty()) {
