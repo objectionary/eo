@@ -35,6 +35,10 @@ import org.cactoos.text.UncheckedText;
  * @since 0.30
  */
 public final class LatexTemplate {
+    /**
+     * Pattern to extract the content starting with `+`.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(?s)^\\s*\\+.*", Pattern.MULTILINE);
 
     /**
      * The code.
@@ -65,9 +69,16 @@ public final class LatexTemplate {
         );
     }
 
+    /**
+     * Extracts the main content from the code.
+     * <p>
+     * This method removes unnecessary headers (e.g., license information)
+     * and retains the relevant code starting from the first line that begins with `+`.
+     * If no such line is found, the entire input is returned as is.
+     * @return The extracted content.
+     */
     private String extractedContent() {
-        return Pattern.compile("(?s)^\\s*\\+.*", Pattern.MULTILINE)
-            .matcher(this.code)
+        return LatexTemplate.PATTERN.matcher(this.code)
             .results()
             .map(match -> match.group().trim())
             .findFirst()
