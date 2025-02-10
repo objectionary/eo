@@ -325,7 +325,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withHelloWorld() throws IOException {
+    public FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
@@ -347,7 +347,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final String... program) throws IOException {
+    public FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
             String.join("\n", program),
             FakeMaven.tojoId(this.current.get())
@@ -432,7 +432,7 @@ public final class FakeMaven {
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
-    Map<String, Path> result() throws IOException {
+    public Map<String, Path> result() throws IOException {
         final Path root = this.workspace.absolute(Paths.get(""));
         return Files.walk(root).collect(
             Collectors.toMap(
@@ -579,7 +579,7 @@ public final class FakeMaven {
      *
      * @since 0.35.0
      */
-    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
+    public static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
