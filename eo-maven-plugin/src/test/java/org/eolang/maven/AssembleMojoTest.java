@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -57,5 +58,15 @@ final class AssembleMojoTest {
             .execute(AssembleMojo.class)
             .result();
         MatcherAssert.assertThat(result.size(), Matchers.greaterThan(0));
+    }
+
+    @Test
+    void doesNotCreateDuplicatesAfterRestarting(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withHelloWorld();
+        Assertions.assertEquals(
+            maven.execute(AssembleMojo.class).result(),
+            maven.execute(AssembleMojo.class).result(),
+            "Restarting of AssemblyMojo should not change the result"
+        );
     }
 }
