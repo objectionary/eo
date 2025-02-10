@@ -92,7 +92,11 @@ public final class LatexMojo extends SafeMojo {
             );
             new HmBase(dir).save(
                 new LatexTemplate(
-                    new XMLDocument(file).nodes("/program/listing").get(0).toString()
+                    new XMLDocument(file)
+                        .nodes("/program/listing")
+                        .get(0)
+                        .xpath("text()")
+                        .get(0)
                 ).asString(),
                 dir.relativize(target)
             );
