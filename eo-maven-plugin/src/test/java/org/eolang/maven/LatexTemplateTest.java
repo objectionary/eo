@@ -124,16 +124,4 @@ final class LatexTemplateTest {
     private static String input(final String... inputs) {
         return String.join("\n", inputs);
     }
-                "\\documentclass{article}",
-                "\\usepackage{ffcode}",
-                "\\begin{document}",
-                "\\begin{ffcode}",
-                "+package f",
-                "[args] > main",
-                "  stdout \"Hello!\"",
-                "\\end{ffcode}",
-                "\\end{document}"
-            )
-        );
-    }
 }
