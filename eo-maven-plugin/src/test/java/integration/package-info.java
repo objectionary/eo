@@ -27,4 +27,4 @@
  *
  * @since 0.51
  */
-package org.eolang.maven.integration;
+package integration;

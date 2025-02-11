@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.integration;
+package integration;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
