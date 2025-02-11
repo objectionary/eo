@@ -225,9 +225,10 @@ SOFTWARE.
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>false</failOnWarning>
+          <failOnWarning>true</failOnWarning>
           <offline>true</offline>
           <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
+          <skipLinting>true</skipLinting>
         </configuration>
         <executions>
           <execution>
@@ -245,6 +246,7 @@ SOFTWARE.
             <configuration>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+              <lintAsPackage>false</lintAsPackage>
             </configuration>
           </execution>
           <execution>
@@ -252,7 +254,8 @@ SOFTWARE.
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
-              <goal>compile</goal>
+              <goal>assemble</goal>
+              <goal>lint</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
               <goal>transpile</goal>
@@ -267,7 +270,7 @@ SOFTWARE.
               <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>false</failOnWarning>
+              <failOnWarning>true</failOnWarning>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
@@ -375,6 +378,13 @@ SOFTWARE.
       <id>qulice</id>
       <build>
         <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>eo-maven-plugin</artifactId>
+            <configuration>
+              <skipLinting>false</skipLinting>
+            </configuration>
+          </plugin>
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>

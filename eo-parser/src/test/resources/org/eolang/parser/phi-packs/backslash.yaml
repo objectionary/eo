@@ -19,38 +19,35 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+alias org.eolang.io.stdout
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+tests
-+package org.eolang.examples
-+version 0.0.0
-
-3.14 > pi
-
-# No comments.
-[n] > alpha
+---
+input: |
   # No comments.
-  [] > x
-    a > pi
-      pi
-      666
-      two.f1.f2 x
-  stdout > @
-    sprintf > f
-      "Hello, ".trim
-      x 0x1fff n
-
-alpha > beta
-  alpha
-    "Z"
-
-# No comments.
-[n x] > mess
-  # No comments.
-  [a] > test /int
-  n.hello > @
-    "Hello, world!"
-    x
+  [] > main
+    regex "/^[\\x00-\\x7F]*$/" > rgx
+    "foo\\bar<:>?*\"|baz\\asdf" > ptn
+sweet: |-
+  {⟦
+    main ↦ ⟦
+      rgx ↦ Φ̇.regex("/^[\\x00-\\x7F]*$/"),
+      ptn ↦ "foo\\bar<:>?*\"|baz\\asdf"
+    ⟧
+  ⟧}
+salty: |-
+  {
+    ⟦
+      main ↦ ⟦
+        rgx ↦ Φ.org.eolang.regex(
+          α0 ↦ Φ.org.eolang.string(
+            α0 ↦ Φ.org.eolang.bytes(
+              α0 ↦ ⟦ Δ ⤍ 2F-5E-5B-5C-78-30-30-2D-5C-78-37-46-5D-2A-24-2F ⟧
+            )
+          )
+        ),
+        ptn ↦ Φ.org.eolang.string(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 66-6F-6F-5C-62-61-72-3C-3A-3E-3F-2A-22-7C-62-61-7A-5C-61-73-64-66 ⟧
+          )
+        )
+      ⟧
+    ⟧
+  }

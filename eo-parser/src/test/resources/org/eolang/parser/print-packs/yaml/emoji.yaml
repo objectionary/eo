@@ -19,38 +19,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+alias org.eolang.io.stdout
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+tests
-+package org.eolang.examples
-+version 0.0.0
-
-3.14 > pi
-
-# No comments.
-[n] > alpha
+---
+origin: |
   # No comments.
-  [] > x
-    a > pi
-      pi
-      666
-      two.f1.f2 x
-  stdout > @
-    sprintf > f
-      "Hello, ".trim
-      x 0x1fff n
+  [] > main
+    "🌵" > cactoos
+    "😀" > smile
 
-alpha > beta
-  alpha
-    "Z"
-
-# No comments.
-[n x] > mess
+printed: |
   # No comments.
-  [a] > test /int
-  n.hello > @
-    "Hello, world!"
-    x
+  [] > main
+    "\uD83C\uDF35" > cactoos
+    "\uD83D\uDE00" > smile

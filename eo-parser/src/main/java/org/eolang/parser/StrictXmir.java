@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.StrictXML;
@@ -36,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.namespace.NamespaceContext;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
@@ -165,9 +167,12 @@ public final class StrictXmir implements XML {
      * @return New XML with the same node
      */
     private static XML reset(final XML xml, final Path tmp) {
-        final List<String> location = xml.xpath("/program/@xsi:noNamespaceSchemaLocation");
-        if (!location.isEmpty()) {
-            final String before = location.get(0);
+        final Optional<String> location = new Xnav(xml.inner())
+            .element("program")
+            .attribute("xsi:noNamespaceSchemaLocation")
+            .text();
+        if (location.isPresent()) {
+            final String before = location.get();
             final String after;
             if (before.startsWith("http")) {
                 after = String.format(
