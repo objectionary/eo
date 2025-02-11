@@ -21,9 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
+
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.xml.XML;
+import java.util.function.Supplier;
+
 /**
- * LaTex.
- *
- * @since 0.30
+ * Function that extract "/program/@name" from XML.
+ * @since 0.52
  */
-package org.eolang.maven.latex;
+final class ProgramName implements Supplier<String> {
+    /**
+     * Navigator.
+     */
+    private final Xnav xnav;
+
+    /**
+     * Ctor.
+     * @param xml XML
+     */
+    ProgramName(final XML xml) {
+        this.xnav = new Xnav(xml.inner());
+    }
+
+    @Override
+    public String get() {
+        return this.xnav.element("program").attribute("name").text().orElse("");
+    }
+}

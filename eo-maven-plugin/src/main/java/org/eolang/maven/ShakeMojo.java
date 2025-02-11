@@ -103,9 +103,8 @@ public final class ShakeMojo extends SafeMojo {
         throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(ShakeMojo.DIR);
-        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
                 src -> transform.apply(xmir).toString(),
