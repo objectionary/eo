@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -130,10 +131,13 @@ public final class ParseMojo extends SafeMojo {
             Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
         } else {
             for (final XML error : errors) {
+                final Xnav xnav = new Xnav(error.inner());
                 Logger.error(
                     this,
                     "Failed to parse '%[file]s:%s': %s",
-                    source, error.xpath("@line").get(0), error.xpath("text()").get(0)
+                    source,
+                    xnav.attribute("line").text().get(),
+                    xnav.text().get()
                 );
             }
         }
