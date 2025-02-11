@@ -94,7 +94,7 @@ final class BytesRaw implements Bytes {
         final int offset = Math.abs(bits) / Byte.SIZE;
         final Bytes shifted;
         if (bits < 0) {
-            shifted = BytesRaw.shiftLeft(bytes, mod, offset);
+            shifted =  BytesRaw.shiftLeft(bytes, mod, offset);
         } else {
             shifted = BytesRaw.shiftRight(bytes, mod, offset);
         }
