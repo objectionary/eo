@@ -42,11 +42,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
- *
- * @since 0.1
- * @todo #1602:30min Make up how to get rid of excessive usage of
- *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
- *  to replace them with corresponding classes, or something similar
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(WeAreOnline.class)

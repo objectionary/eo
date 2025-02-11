@@ -40,11 +40,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
- * @todo #1602:30min Refactor tests. Logic of AssembleMojo is to run several
- *  phases one-by-one in a loop. Nothing more. Everything else you are trying to
- *  check here is related to particular mojos (and we should check their
- *  behaviour in appropriate tests). In other words there are integration tests
- *  here. And, probably, it is not the best place for them.
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
