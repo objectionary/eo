@@ -42,6 +42,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
+ * 
+ * @since 0.1
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(WeAreOnline.class)
