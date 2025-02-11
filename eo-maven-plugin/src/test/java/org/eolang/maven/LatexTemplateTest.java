@@ -99,7 +99,7 @@ final class LatexTemplateTest {
             )
         ).asString();
         MatcherAssert.assertThat(
-            "License header should not be present in the output",
+            "License header shoud not be present in the output",
             output,
             Matchers.not(Matchers.containsString("The MIT License"))
         );
