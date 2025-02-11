@@ -144,9 +144,8 @@ public final class LintMojo extends SafeMojo {
         final ConcurrentHashMap<Severity, Integer> counts) throws Exception {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
-        final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(LintMojo.DIR);
-        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         tojo.withLinted(
             new FpDefault(
                 src -> LintMojo.linted(xmir, counts).toString(),
