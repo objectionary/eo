@@ -29,7 +29,6 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.ContainsFiles;
 import org.eolang.maven.FakeMaven;
@@ -49,6 +48,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
  */
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MojasIT {
