@@ -22,31 +22,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!--
-  @todo #1115:30m Add conversions for other types (
-    int, float, bytes, etc.) and values here.
-    When all simple cases are covered, add support
-    for recursive reduction.
-    Such as 01-.as-bool.as-bytes.as-bool.
--->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="constant-folding" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="unhex-data" version="2.0">
   <!--
-  Fold expressions like FF-FF.as-int to actual integer value,
-  and remove method call.
+    Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
-  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='.as-bool' and child::o[@base='org.eolang.bytes' and not(*)]]">
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <xsl:template match="o[@base='Q.org.eolang.string' and o[1][eo:has-data(.)]]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:variable name="c" select="child::o"/>
-      <xsl:attribute name="base">org.eolang.bool</xsl:attribute>
-      <xsl:element name="o">
-        <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
-        <xsl:attribute name="data">bytes</xsl:attribute>
-        <xsl:value-of select="$c[text()]"/>
-      </xsl:element>
+      <xsl:text>"</xsl:text>
+      <xsl:value-of select="eo:bytes-to-string(o[1]/text())"/>
+      <xsl:text>"</xsl:text>
     </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@base='Q.org.eolang.number' and o[1][eo:has-data(.)]]">
+    <xsl:variable name="bytes" select="o[1]/text()"/>
+    <xsl:choose>
+      <xsl:when test="$bytes='7F-F8-00-00-00-00-00-00' or $bytes='7F-F0-00-00-00-00-00-00' or $bytes='FF-F0-00-00-00-00-00-00'">
+        <xsl:copy-of select="."/>
+      </xsl:when>
+      <xsl:when test="$bytes='00-00-00-00-00-00-00-00'">
+        <xsl:copy>
+          <xsl:apply-templates select="@*"/>
+          <xsl:text>0</xsl:text>
+        </xsl:copy>
+      </xsl:when>
+      <xsl:when test="$bytes='80-00-00-00-00-00-00-00'">
+        <xsl:copy>
+          <xsl:apply-templates select="@*"/>
+          <xsl:text>-0</xsl:text>
+        </xsl:copy>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:apply-templates select="@*"/>
+          <xsl:value-of select="eo:bytes-to-number($bytes)"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

@@ -23,39 +23,30 @@
  */
 package org.eolang.maven;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.xml.XML;
+import java.util.function.Supplier;
 
 /**
- * This class is instantiated and then called by JUnit when
- * an argument of a test method is marked with the {@link RandomProgram}
- * annotation.
- *
- * @since 0.42.0
+ * Function that extract "/program/@name" from XML.
+ * @since 0.52
  */
-public final class RandomProgramResolver implements ParameterResolver {
+final class ProgramName implements Supplier<String> {
+    /**
+     * Navigator.
+     */
+    private final Xnav xnav;
 
-    @Override
-    public boolean supportsParameter(final ParameterContext context,
-        final ExtensionContext ext) {
-        return context.getParameter().getType().equals(String.class)
-            && context.isAnnotated(RandomProgram.class);
+    /**
+     * Ctor.
+     * @param xml XML
+     */
+    ProgramName(final XML xml) {
+        this.xnav = new Xnav(xml.inner());
     }
 
     @Override
-    public Object resolveParameter(final ParameterContext context,
-        final ExtensionContext ext) {
-        return String.join(
-            "\n",
-            "# This is a random program in EO, which supposedly",
-            "# complies with all syntactic rules of the language,",
-            "# include the requirements for comments.",
-            "[] > foo",
-            "  QQ.io.stdout > @",
-            "    \"Hello, world!\\n\"",
-            ""
-        );
+    public String get() {
+        return this.xnav.element("program").attribute("name").text().orElse("");
     }
-
 }
