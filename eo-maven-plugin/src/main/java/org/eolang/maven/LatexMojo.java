@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -88,7 +89,7 @@ public final class LatexMojo extends SafeMojo {
             ).make(dir.resolve(LatexMojo.DIR), LatexMojo.EXT);
             new HmBase(dir).save(
                 new LatexTemplate(
-                    new XMLDocument(file).nodes("/program/listing").get(0).toString()
+                    new Xnav(file).element("program").element("listing").text().get()
                 ).asString(),
                 dir.relativize(target)
             );

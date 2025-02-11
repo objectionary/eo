@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -70,6 +71,37 @@ final class LatexMojoTest {
             CatalogsTest.TO_ADD_MESSAGE,
             LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
+        );
+    }
+
+    /**
+     * Generate simple main.tex file from main.xmir file
+     * and check that there are no DOM variables.
+     *
+     * @param temp Temporary directory.
+     * @throws Exception
+     */
+    @Test
+    void generatesTexFileWithoutDomVars(@Mktmp final Path temp) throws Exception {
+        final String output = String.join(
+            "\n",
+            Files.readAllLines(
+                new FakeMaven(temp)
+                    .withHelloWorld()
+                    .execute(new FakeMaven.Latex())
+                    .result()
+                    .get(String.format("target/%s/main.%s", LatexMojo.DIR, LatexMojo.EXT))
+            )
+        );
+        MatcherAssert.assertThat(
+            "<listing> should not be present in the output",
+            output,
+            Matchers.not(Matchers.containsString("<listing>"))
+        );
+        MatcherAssert.assertThat(
+            "</listing> should not be present in the output",
+            output,
+            Matchers.not(Matchers.containsString("</listing>"))
         );
     }
 }
