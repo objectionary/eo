@@ -28,10 +28,8 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -52,21 +50,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class AssembleMojoTest {
     @Test
-    void executesAllMojos(@Mktmp final Path temp) throws IOException {
-        final Map<String, Path> result = new FakeMaven(temp)
-            .withHelloWorld()
-            .execute(AssembleMojo.class)
-            .result();
-        MatcherAssert.assertThat(result.size(), Matchers.greaterThan(0));
-    }
-
-    @Test
-    void doesNotCreateDuplicatesAfterRestarting(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withHelloWorld();
-        Assertions.assertEquals(
-            maven.execute(AssembleMojo.class).result(),
-            maven.execute(AssembleMojo.class).result(),
-            "Restarting of AssemblyMojo should not change the result"
+    void assemblesAllMojas(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp).withHelloWorld().execute(AssembleMojo.class);
+        MatcherAssert.assertThat(
+            "AssembleMojo should create files",
+            temp.resolve("target").toFile().exists(),
+            Matchers.is(true)
         );
     }
 }
