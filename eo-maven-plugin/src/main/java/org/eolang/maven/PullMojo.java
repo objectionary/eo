@@ -172,36 +172,31 @@ public final class PullMojo extends SafeMojo {
                 return new TextOf(this.objectionary.get(object)).asString();
             }
         );
-        return new FpIfTargetExists(
+        final Footprint both = new FpUpdateBoth(generated, che);
+        return new FpIfReleased(
+            this.plugin.getVersion(),
+            hsh,
             new FpFork(
                 (src, tgt) -> {
-                    final boolean rewrite = this.overWrite;
-                    if (rewrite) {
+                    if (this.overWrite) {
                         Logger.debug(
                             this,
                             "Pulling sources again since eo.overWrite=TRUE"
                         );
                     }
-                    return rewrite;
+                    return this.overWrite;
                 },
-                new FpIfReleased(
-                    semver,
-                    hsh,
-                    new FpUpdateBoth(generated, che),
-                    generated
-                ),
-                new FpIgnore()
-            ),
-            new FpIfReleased(
-                semver,
-                hsh,
+                both,
                 new FpIfTargetExists(
-                    tgt -> che.get(),
-                    new FpUpdateFromCache(che),
-                    new FpUpdateBoth(generated, che)
-                ),
-                generated
-            )
+                    new FpIgnore(),
+                    new FpIfTargetExists(
+                        tgt -> che.get(),
+                        new FpUpdateFromCache(che),
+                        both
+                    )
+                )
+            ),
+            generated
         ).apply(Paths.get(""), target);
     }
 }

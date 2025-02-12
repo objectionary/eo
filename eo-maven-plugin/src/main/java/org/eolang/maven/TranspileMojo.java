@@ -208,7 +208,7 @@ public final class TranspileMojo extends SafeMojo {
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpDefault(
             src -> {
-                rewrite.set(true);
+                rewrite.compareAndSet(false, true);
                 return transform.apply(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
@@ -278,7 +278,10 @@ public final class TranspileMojo extends SafeMojo {
                     return new Joined("", xnav.element("java").text().get()).asString();
                 }
             );
-            new FpIfTargetExists(
+            final Footprint both = new FpUpdateBoth(generated, che);
+            new FpIfReleased(
+                this.plugin.getVersion(),
+                hsh,
                 new FpFork(
                     (src, trgt) -> {
                         if (rewrite) {
@@ -291,24 +294,17 @@ public final class TranspileMojo extends SafeMojo {
                         }
                         return rewrite;
                     },
-                    new FpIfReleased(
-                        this.plugin.getVersion(),
-                        hsh,
-                        new FpUpdateBoth(generated, che),
-                        generated
-                    ),
-                    new FpIgnore()
-                ),
-                new FpIfReleased(
-                    this.plugin.getVersion(),
-                    hsh,
+                    both,
                     new FpIfTargetExists(
-                        trgt -> che.get(),
-                        new FpUpdateFromCache(che),
-                        new FpUpdateBoth(generated, che)
-                    ),
-                    generated
-                )
+                        new FpIgnore(),
+                        new FpIfTargetExists(
+                            trgt -> che.get(),
+                            new FpUpdateFromCache(che),
+                            both
+                        )
+                    )
+                ),
+                generated
             ).apply(Paths.get(""), tgt);
         }
         return saved.get();

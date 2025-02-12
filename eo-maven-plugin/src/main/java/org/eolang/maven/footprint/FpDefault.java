@@ -36,8 +36,8 @@ import org.cactoos.Func;
  *    It can be created from source, or from global cache if it exists and cacheable and
  *    older than source.
  * 3) the cache is updated if it's cacheable (it does not exist or if it's younger than source)
- * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the cache and target is always
- *    regenerated
+ * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the target is always
+ *    regenerated and cache is not touched at all.
  * </p>
  *
  * <p>Excluding any type of errors there are 4 possible scenarios of this {@link Footprint} work:
@@ -82,28 +82,35 @@ public final class FpDefault extends FpEnvelope {
         final Supplier<String> hash,
         final Path tail
     ) {
-        this(content, semver, hash, new CachePath(base, semver, hash, tail));
+        this(new FpGenerated(content), base, semver, hash, tail);
     }
 
     /**
      * Ctor.
-     * @param content Function that returns content from source
-     * @param semver Semver as part of absolute cache path
-     * @param hash Git hash as part of absolute cache path
-     * @param cache Lazy cache path
+     * @param generated Footprint that generates content
+     * @param base Base cache path
+     * @param semver Cache version
+     * @param hash Cache hash
+     * @param tail Cache tail path
      */
     private FpDefault(
-        final Func<Path, String> content,
+        final Footprint generated,
+        final Path base,
         final String semver,
         final Supplier<String> hash,
-        final Supplier<Path> cache
+        final Path tail
     ) {
-        this(new FpUpdateBoth(new FpGenerated(content), cache), semver, hash, cache);
+        this(
+            generated,
+            semver,
+            hash,
+            new CachePath(base, semver, hash, tail)
+        );
     }
 
     /**
      * Ctor.
-     * @param generated Footprint that generates content and updates in locally and in cache
+     * @param generated Footprint that generates content
      * @param semver Cache version
      * @param hash Cache hash
      * @param cache Lazy cache path
@@ -124,7 +131,7 @@ public final class FpDefault extends FpEnvelope {
                         new FpIfOlder(
                             target -> cache.get(),
                             new FpUpdateFromCache(cache),
-                            generated
+                            new FpUpdateBoth(generated, cache)
                         )
                     ),
                     generated
