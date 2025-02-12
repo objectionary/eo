@@ -129,7 +129,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
         /**
          * Ctor.
          */
-        public Fake() {
+        Fake() {
             super(new CommitHashesMap(CommitHashesMap.FAKES));
         }
     }
