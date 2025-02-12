@@ -21,36 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import com.yegor256.Mktmp;
-import com.yegor256.MktmpResolver;
-import com.yegor256.WeAreOnline;
-import java.io.IOException;
-import java.nio.file.Path;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link AssembleMojo}.
+ * Integration tests only.
  *
- * @since 0.1
- * @todo #1602:30min Make up how to get rid of excessive usage of
- *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
- *  to replace them with corresponding classes, or something similar
+ * @since 0.51
  */
-@ExtendWith(WeAreOnline.class)
-@ExtendWith(MktmpResolver.class)
-final class AssembleMojoTest {
-    @Test
-    void assemblesAllMojas(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp).withHelloWorld().execute(AssembleMojo.class);
-        MatcherAssert.assertThat(
-            "AssembleMojo should create files",
-            temp.resolve("target").toFile().exists(),
-            Matchers.is(true)
-        );
-    }
-}
+package integration;

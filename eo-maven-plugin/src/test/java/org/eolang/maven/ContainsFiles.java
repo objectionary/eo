@@ -40,7 +40,7 @@ import org.hamcrest.TypeSafeMatcher;
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleInheritanceInTests"
 })
-final class ContainsFiles extends TypeSafeMatcher<Path> {
+public final class ContainsFiles extends TypeSafeMatcher<Path> {
     /**
      * Patterns.
      */
@@ -50,7 +50,7 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
      * Ctor.
      * @param glbs Patterns
      */
-    ContainsFiles(final String... glbs) {
+    public ContainsFiles(final String... glbs) {
         this.globs = Arrays.copyOf(glbs, glbs.length);
     }
 
