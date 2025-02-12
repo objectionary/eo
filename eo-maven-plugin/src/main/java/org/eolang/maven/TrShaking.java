@@ -42,7 +42,8 @@ final class TrShaking extends TrEnvelope {
                 new TrClasspath<>(
                     "/org/eolang/maven/shake/cti-adds-errors.xsl",
                     "/org/eolang/maven/shake/add-probes.xsl",
-                    "/org/eolang/maven/shake/set-locators.xsl"
+                    "/org/eolang/maven/shake/set-locators.xsl",
+                    "/org/eolang/maven/shake/set-original-names.xsl"
                 ).back()
             )
         );
