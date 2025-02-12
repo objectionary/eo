@@ -19,19 +19,14 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+---
+origin: |
+  # No comments.
+  [] > main
+    regex "/^[\\x00-\\x7F]*$/" > rgx
 
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+tests
-+package org.eolang
-+version 0.0.0
-+unlint object-has-data
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-tests-just-prints-warning
-  eq. > @
-    cti
-      2.times 2
-      "warning"
-      "This method is deprecated!"
-    4
+printed: |
+  # No comments.
+  [] > main
+    regex > rgx
+      "/^[\\x00-\\x7F]*$/"

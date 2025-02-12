@@ -20,15 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.structs.list
 +alias org.eolang.structs.bytes-as-array
++alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-converts-bytes-to-array

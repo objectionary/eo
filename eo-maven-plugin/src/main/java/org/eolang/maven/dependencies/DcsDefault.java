@@ -23,14 +23,16 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XMLDocument;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.eolang.maven.Coordinates;
 import org.eolang.maven.ParseMojo;
@@ -125,14 +127,7 @@ public final class DcsDefault implements Iterable<Dependency> {
      * @return List of artifact needed
      */
     private static Optional<Dependency> artifact(final Path file) {
-        final Collection<String> coords;
-        try {
-            coords = new XMLDocument(file).xpath(
-                "//meta[head='rt' and part[1]='jvm']/part[2]/text()"
-            );
-        } catch (final FileNotFoundException ex) {
-            throw new IllegalStateException(ex);
-        }
+        final Collection<String> coords = DcsDefault.jvms(file);
         final Optional<Dependency> dep;
         if (coords.isEmpty()) {
             dep = Optional.empty();
@@ -158,4 +153,44 @@ public final class DcsDefault implements Iterable<Dependency> {
         return dep;
     }
 
+    /**
+     * Return collection of +rt metas.
+     * The equivalent xpath is "/program/metas/meta[head='rt' and part[1]='jvm']/part[2]/text()"
+     * @param file XML file
+     * @return Collection of runtime metas
+     */
+    private static Collection<String> jvms(final Path file) {
+        return new Xnav(file)
+            .element("program")
+            .elements(Filter.withName("metas"))
+            .findFirst()
+            .map(
+                metas -> metas.elements(
+                    Filter.all(
+                        Filter.withName("meta"),
+                        meta -> {
+                            final Xnav xnav = new Xnav(meta);
+                            final Optional<String> head = xnav.element("head").text();
+                            final boolean runtime = head.isPresent() && "rt".equals(head.get());
+                            final Optional<Xnav> part = xnav.elements(
+                                Filter.withName("part")
+                            ).findFirst();
+                            return runtime
+                                && part.isPresent()
+                                && "jvm".equals(part.get().text().get());
+                        }
+                    )
+                )
+                .map(
+                    meta -> meta
+                        .elements(Filter.withName("part"))
+                        .limit(2)
+                        .reduce((first, second) -> second)
+                        .get()
+                        .text()
+                        .get()
+                )
+                .collect(Collectors.toList())
+            ).orElse(List.of());
+    }
 }

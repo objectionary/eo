@@ -25,9 +25,10 @@
 +package org.eolang
 +tests
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # Equal to.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-is-equal-to-one-div-zero
   eq. > @
     positive-infinity
@@ -68,6 +69,7 @@
       42.5
 
 # Less than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-lt-positive-infinity
   eq. > @
     positive-infinity.lt positive-infinity
@@ -98,6 +100,7 @@
     false
 
 # Less or equal than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-lte-positive-infinity
   eq. > @
     positive-infinity.lte positive-infinity
@@ -128,6 +131,7 @@
     false
 
 # Greater than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-gt-positive-infinity
   not. > @
     gt.
@@ -160,6 +164,7 @@
     42.5
 
 # Greater or equal than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-gte-positive-infinity
   eq. > @
     positive-infinity.gte positive-infinity

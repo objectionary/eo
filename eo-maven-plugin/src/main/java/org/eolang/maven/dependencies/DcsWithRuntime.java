@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -115,7 +116,12 @@ public final class DcsWithRuntime implements Iterable<Dependency> {
         );
         try {
             return DcsWithRuntime.dependency(
-                new XMLDocument(new URL(url)).xpath("//latest/text()").get(0)
+                new Xnav(new XMLDocument(new URL(url)).inner())
+                    .element("metadata")
+                    .element("versioning")
+                    .element("latest")
+                    .text()
+                    .get()
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(

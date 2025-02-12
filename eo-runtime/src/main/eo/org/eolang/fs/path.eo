@@ -30,10 +30,6 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-ref
-+unlint broken-alias-second
-+unlint unused-alias
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
@@ -45,6 +41,13 @@
         string uri.as-bytes
       posix
         string uri.as-bytes
+  # The system-dependent default name-separator character.
+  # On UNIX systems the value of this field is "/";
+  # on Microsoft Windows systems it is "\\".
+  if. > separator
+    os.is-windows
+    win32.separator
+    posix.separator
 
   # Utility object that joins given `tuple` of paths with current OS separator
   # and normalizes result path.
@@ -60,15 +63,6 @@
         win32 joined-path
         posix joined-path
 
-  # The system-dependent default name-separator character.
-  # On UNIX systems the value of this field is "/";
-  # on Microsoft Windows systems it is "\\".
-  [] > separator
-    if. > @
-      os.is-windows
-      win32.separator
-      posix.separator
-
   # POSIX specified path.
   # A standardized way to represent file or directory locations in a Unix-like system.
   [uri] > posix
@@ -76,13 +70,11 @@
     "/" > separator
     (file uri).as-file > as-file
     (dir (QQ.fs.file uri)).as-dir > as-dir
-    uri > @
-
     # Returns `true` if current path is absolute - starts with '/' char.
-    [] > is-absolute
-      and. > @
-        uri.length.gt 0
-        (uri.as-bytes.slice 0 1).eq separator
+    and. > is-absolute
+      uri.length.gt 0
+      (uri.as-bytes.slice 0 1).eq separator
+    uri > @
 
     # Return new `path` with normalized uri.
     # Normalization includes:

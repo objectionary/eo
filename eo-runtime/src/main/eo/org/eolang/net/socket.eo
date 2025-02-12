@@ -20,18 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.posix
 +alias org.eolang.sys.os
++alias org.eolang.sys.posix
 +alias org.eolang.sys.win32
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-ref
-+unlint broken-alias-second
-+unlint unused-alias
++unlint unit-test-missing
 
 # Socket.
 #
@@ -182,6 +179,9 @@
       posix.af-inet.as-i16
       htons port
       inet-addr-as-int
+    posix > strerror
+      "strerror"
+      * (posix "errno" *).code
 
     # Scoped posix socket that is passed as argument
     # to scope of `posix-socket.connect`, `posix-socket.listen` and `scoped-socket.accept`.
@@ -226,15 +226,6 @@
               "Failed to receive data from the socket '%d', reason: %s"
               * sockfd strerror.code
           received.output
-
-    # Get error message as `string` from ERRNO.
-    #
-    # Attention! The object is for internal usage only, please don't use
-    # the object programmatically outside of `socket` object.
-    [] > strerror
-      posix > @
-        "strerror"
-        * (posix "errno" *).code
 
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.
@@ -375,6 +366,7 @@
       win32.af-inet.as-i16
       htons port
       inet-addr-as-int
+    win32 "WSAGetLastError" * > last-error
 
     # Scoped win32 socket that is passed as argument
     # to scope of `win32-socket.connect`, `win32-socket.listen` and `scoped-socket.accept`.
@@ -419,12 +411,6 @@
               "Failed to receive data from the socket '%d', WSA error code: %d"
               * sockfd last-error.code
           received.output
-
-    # Get last error.
-    #
-    # Attention! The object is for internal usage only, please don't use
-    # the object programmatically outside of `socket` object.
-    win32 "WSAGetLastError" * > [] > last-error
 
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.

@@ -107,10 +107,7 @@ final class MainTest {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
             MainTest.exec("--verbose", "as-bytes"),
-            Matchers.allOf(
-                Matchers.containsString("Loading class EOas_bytes"),
-                Matchers.containsString("Can not find \"as-bytes\" object")
-            )
+            Matchers.containsString("Couldn't find object 'Φ.as-bytes'")
         );
     }
 
@@ -119,10 +116,7 @@ final class MainTest {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
             MainTest.exec("--verbose", "string$as-bytes"),
-            Matchers.allOf(
-                Matchers.containsString("Loading class EOstring$EOas_bytes"),
-                Matchers.containsString("Can not find \"string$as-bytes\" object")
-            )
+            Matchers.containsString("Couldn't find object 'Φ.string$as-bytes'")
         );
     }
 
@@ -142,7 +136,7 @@ final class MainTest {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
             MainTest.exec("unavailable-name"),
-            Matchers.containsString("Can not find \"unavailable-name\" object")
+            Matchers.containsString("Couldn't find object 'Φ.unavailable-name'")
         );
     }
 

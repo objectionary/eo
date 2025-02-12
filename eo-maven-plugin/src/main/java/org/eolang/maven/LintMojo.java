@@ -34,10 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
@@ -73,27 +71,26 @@ public final class LintMojo extends SafeMojo {
      */
     static final String CACHE = "linted";
 
-    /**
-     * Whether we should fail on warning.
-     *
-     * @checkstyle MemberNameCheck (11 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "true"
-    )
-    private boolean failOnWarning;
-
     @Override
     void exec() throws IOException {
+        if (this.skipLinting) {
+            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+        } else {
+            this.lint();
+        }
+    }
+
+    /**
+     * Lint.
+     * @throws IOException If fails
+     */
+    private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
-        final ConcurrentHashMap<Severity, List<Defect>> counts = new ConcurrentHashMap<>();
-        counts.putIfAbsent(Severity.CRITICAL, new ListOf<>());
-        counts.putIfAbsent(Severity.ERROR, new ListOf<>());
-        counts.putIfAbsent(Severity.WARNING, new ListOf<>());
+        final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
+        counts.putIfAbsent(Severity.CRITICAL, 0);
+        counts.putIfAbsent(Severity.ERROR, 0);
+        counts.putIfAbsent(Severity.WARNING, 0);
         final int passed = new Threaded<>(
             tojos,
             tojo -> this.lintOne(tojo, counts)
@@ -101,37 +98,35 @@ public final class LintMojo extends SafeMojo {
         if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
-        Logger.info(
-            this,
-            "Also, %d XMIR programs linted as a package",
-            this.lintAll(counts)
-        );
+        if (this.lintAsPackage) {
+            Logger.info(
+                this,
+                "XMIR programs linted as a package: %d",
+                this.lintAll(counts)
+            );
+        } else {
+            Logger.info(
+                this,
+                "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
+            );
+        }
         final String sum = LintMojo.summary(counts);
         Logger.info(
             this,
             "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
             passed, tojos.size(), tojos.size(), System.currentTimeMillis() - start, sum
         );
-        Logger.info(
-            this,
-            "Read more about lints: https://www.objectionary.com/lints/%s",
-            counts.values().stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList()).get(0).version()
-        );
-        if (!counts.get(Severity.WARNING).isEmpty() && this.failOnWarning) {
-            throw new IllegalStateException(
-                String.format(
-                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore)",
-                    tojos.size(), sum
-                )
-            );
-        } else if (
-            !counts.get(Severity.ERROR).isEmpty() || !counts.get(Severity.CRITICAL).isEmpty()
-        ) {
+        if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
                 String.format(
                     "In %d XMIR files, we found %s (must stop here)",
+                    tojos.size(), sum
+                )
+            );
+        } else if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
+            throw new IllegalStateException(
+                String.format(
+                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore)",
                     tojos.size(), sum
                 )
             );
@@ -146,15 +141,14 @@ public final class LintMojo extends SafeMojo {
      * @throws Exception If failed to lint
      */
     private int lintOne(final ForeignTojo tojo,
-        final ConcurrentHashMap<Severity, List<Defect>> counts) throws Exception {
+        final ConcurrentHashMap<Severity, Integer> counts) throws Exception {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
-        final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(LintMojo.DIR);
-        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> LintMojo.lint(xmir, counts).toString(),
+                src -> LintMojo.linted(xmir, counts).toString(),
                 this.cache.toPath().resolve(LintMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -170,7 +164,7 @@ public final class LintMojo extends SafeMojo {
      * @return Amount of seen XMIR files
      * @throws IOException If failed to lint
      */
-    private int lintAll(final ConcurrentHashMap<Severity, List<Defect>> counts) throws IOException {
+    private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
         for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
             paths.put(tojo.identifier(), tojo.shaken());
@@ -184,13 +178,7 @@ public final class LintMojo extends SafeMojo {
         }
         final Collection<Defect> defects = new Programs(pkg).defects();
         for (final Defect defect : defects) {
-            counts.compute(
-                defect.severity(),
-                (sev, before) -> {
-                    before.add(defect);
-                    return before;
-                }
-            );
+            counts.compute(defect.severity(), (sev, before) -> before + 1);
             LintMojo.embed(
                 pkg.get(defect.program()),
                 new ListOf<>(defect)
@@ -251,18 +239,17 @@ public final class LintMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return Summary text
      */
-    private static String summary(
-        final ConcurrentHashMap<Severity, List<Defect>> counts) {
+    private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
         final List<String> parts = new ArrayList<>(0);
-        final int criticals = counts.get(Severity.CRITICAL).size();
+        final int criticals = counts.get(Severity.CRITICAL);
         if (criticals > 0) {
             parts.add(LintMojo.plural(criticals, "critical error"));
         }
-        final int errors = counts.get(Severity.ERROR).size();
+        final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {
             parts.add(LintMojo.plural(errors, "error"));
         }
-        final int warnings = counts.get(Severity.WARNING).size();
+        final int warnings = counts.get(Severity.WARNING);
         if (warnings > 0) {
             parts.add(LintMojo.plural(warnings, "warning"));
         }
@@ -288,8 +275,7 @@ public final class LintMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
      */
-    private static XML lint(final XML xmir,
-        final ConcurrentHashMap<Severity, List<Defect>> counts) {
+    private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).defects();
         if (!defects.isEmpty()) {
@@ -297,13 +283,7 @@ public final class LintMojo extends SafeMojo {
             LintMojo.embed(xmir, defects);
         }
         for (final Defect defect : defects) {
-            counts.compute(
-                defect.severity(),
-                (sev, before) -> {
-                    before.add(defect);
-                    return before;
-                }
-            );
+            counts.compute(defect.severity(), (sev, before) -> before + 1);
             LintMojo.logOne(defect);
         }
         final Node node = xmir.inner();

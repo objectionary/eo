@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.io.File;
@@ -31,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -105,7 +108,7 @@ public final class UnphiMojo extends SafeMojo {
                     "Parsed to xmir: %[file]s -> %[file]s",
                     phi, this.unphiOutputDir.toPath().resolve(xmir)
                 );
-                final List<String> here = result.xpath("//errors/error/text()");
+                final List<String> here = UnphiMojo.errors(result);
                 if (!here.isEmpty()) {
                     errors.add(
                         Logger.format(
@@ -132,5 +135,22 @@ public final class UnphiMojo extends SafeMojo {
                 )
             );
         }
+    }
+
+    /**
+     * Get errors list.
+     * @param xml XML
+     * @return Errors list
+     */
+    private static List<String> errors(final XML xml) {
+        return new Xnav(xml.inner())
+            .element("program")
+            .elements(Filter.withName("errors"))
+            .findFirst()
+            .map(
+                errors -> errors.elements(Filter.withName("error"))
+                    .map(xnav -> xnav.text().get())
+                    .collect(Collectors.toList())
+            ).orElse(List.of());
     }
 }

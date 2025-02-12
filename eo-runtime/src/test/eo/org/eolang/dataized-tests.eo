@@ -25,7 +25,7 @@
 +tests
 +package org.eolang
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-dataized-does-not-do-recalculation
@@ -46,7 +46,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-dataizes-as-bytes-behaves-as-exclamationed
-  # Func.
   [] > func
     malloc.for > @
       0

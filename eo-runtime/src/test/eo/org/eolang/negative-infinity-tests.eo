@@ -25,9 +25,10 @@
 +package org.eolang
 +tests
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # Equal to.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-is-equal-to-one-div-zero
   eq. > @
     negative-infinity
@@ -68,6 +69,7 @@
       42.5
 
 # Less than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-lt-negative-infinity
   eq. > @
     negative-infinity.lt negative-infinity
@@ -98,6 +100,7 @@
     42.5
 
 # Less or equal than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-lte-negative-infinity
   eq. > @
     negative-infinity.lte negative-infinity
@@ -128,6 +131,7 @@
     true
 
 # Greater than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-gt-negative-infinity
   not. > @
     gt.
@@ -159,6 +163,7 @@
     false
 
 # Greater or equal than.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-gte-negative-infinity
   eq. > @
     negative-infinity.gte negative-infinity
@@ -253,7 +258,7 @@
     negative-infinity.times -42
     positive-infinity
 
-# Plus
+# Plus.
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-plus-nan
   eq. > @
@@ -350,7 +355,7 @@
     negative-infinity.minus -42
     negative-infinity
 
-# Division
+# Division.
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-negative-infinity-div-float-zero
   eq. > @

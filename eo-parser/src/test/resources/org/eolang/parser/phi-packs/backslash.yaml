@@ -19,19 +19,35 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+alias org.eolang.io.console
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+tests
-+package org.eolang.io
-+version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
-
-# Prints a simple message to the console. We can't validate
-# the output, so we just run it and see if it crashes.
-[] > tests-writes-to-console
-  console.write > @
-    "Hello, console-test!\n"
+---
+input: |
+  # No comments.
+  [] > main
+    regex "/^[\\x00-\\x7F]*$/" > rgx
+    "foo\\bar<:>?*\"|baz\\asdf" > ptn
+sweet: |-
+  {⟦
+    main ↦ ⟦
+      rgx ↦ Φ̇.regex("/^[\\x00-\\x7F]*$/"),
+      ptn ↦ "foo\\bar<:>?*\"|baz\\asdf"
+    ⟧
+  ⟧}
+salty: |-
+  {
+    ⟦
+      main ↦ ⟦
+        rgx ↦ Φ.org.eolang.regex(
+          α0 ↦ Φ.org.eolang.string(
+            α0 ↦ Φ.org.eolang.bytes(
+              α0 ↦ ⟦ Δ ⤍ 2F-5E-5B-5C-78-30-30-2D-5C-78-37-46-5D-2A-24-2F ⟧
+            )
+          )
+        ),
+        ptn ↦ Φ.org.eolang.string(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 66-6F-6F-5C-62-61-72-3C-3A-3E-3F-2A-22-7C-62-61-7A-5C-61-73-64-66 ⟧
+          )
+        )
+      ⟧
+    ⟧
+  }

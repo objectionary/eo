@@ -25,7 +25,7 @@
 +tests
 +package org.eolang
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-int-less-true
@@ -176,13 +176,13 @@
         42
     true
 
-# Test
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-one-plus-one
   eq. > @
     1.plus 1
     2
 
-# Test
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-one-minus-one
   eq. > @
     1.minus 1
@@ -196,7 +196,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-calculates-fibonacci-number-with-recursion
-  # Fibonacci.
   [n] > fibo
     if. > @
       n.lt 3
@@ -214,21 +213,18 @@
     fibonacci 4
     3
 
-  # Fibonacci.
   [n] > fibonacci
     if. > @
       n.lt 3
       small n
       rec n 1 1
 
-    # Small.
     [n] > small
       if. > @
         n.eq 2
         1
         n
 
-    # Recursive.
     [n minus1 minus2] > rec
       if. > @
         n.eq 3
@@ -253,12 +249,14 @@
     dividend
 
 # Checks that div works properly with dividends greater than zero
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-div-for-dividend-greater-than-zero
   eq. > @
     256.div 16
     16
 
 # Checks div with remainder
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-div-with-remainder
   eq. > @
     floor.
@@ -310,7 +308,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 32.is-finite > [] > simple-number-is-finite
 
-# Test
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-number-with-nan-bytes-is-nan
   (number nan.as-bytes).is-nan > @
 

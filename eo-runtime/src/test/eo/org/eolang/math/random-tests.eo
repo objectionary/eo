@@ -26,8 +26,7 @@
 +tests
 +package org.eolang.math
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-random-with-seed

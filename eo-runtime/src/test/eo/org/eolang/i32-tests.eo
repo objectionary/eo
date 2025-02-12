@@ -25,7 +25,7 @@
 +tests
 +package org.eolang
 +version 0.0.0
-+unlint object-has-data
++unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-i32-has-valid-bytes
@@ -148,7 +148,7 @@
       123.as-i64.as-i32
       42.as-i64.as-i32
 
-# Test
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-i32-one-plus-i32-one
   eq. > @
     1.as-i64.as-i32.plus 1.as-i64.as-i32
@@ -160,7 +160,7 @@
     2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
     -2147483648.as-i64.as-i32
 
-# Test
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-i32-one-minus-i32-one
   eq. > @
     1.as-i64.as-i32.minus 1.as-i64.as-i32
@@ -178,16 +178,16 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 247483647.as-i64.as-i32.as-i16 > [] > throws-on-converting-to-i16-if-out-of-bounds
 
-# This unit test is supposed to check the functionality of the corresponding object.
 # Checks that division by one returns the dividend.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-i32-div-by-i32-one
   -235.as-i64.as-i32 > dividend
   eq. > @
     dividend.div 1.as-i64.as-i32
     dividend
 
-# This unit test is supposed to check the functionality of the corresponding object.
 # Checks div with remainder
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-i32-div-with-remainder
   eq. > @
     13.as-i64.as-i32.div -5.as-i64.as-i32

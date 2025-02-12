@@ -221,17 +221,21 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public String forma() {
-        final StringBuilder ret = new StringBuilder(0);
-        ret.append(
-            PhDefault.TO_FORMA.matcher(
-                this.getClass().getPackageName()
-            ).replaceAll("$1")
-        );
-        if (ret.length() > 0) {
-            ret.append('.');
+        final String name = this.oname();
+        final String form;
+        if (PhDefault.class.getSimpleName().equals(name)) {
+            form = "[]";
+        } else {
+            form = String.join(
+                ".",
+                PhPackage.GLOBAL,
+                PhDefault.TO_FORMA.matcher(
+                    this.getClass().getPackageName()
+                ).replaceAll("$1"),
+                name
+            );
         }
-        ret.append(this.oname());
-        return ret.toString();
+        return form;
     }
 
     /**

@@ -23,13 +23,13 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.latex.LatexTemplate;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 
@@ -83,16 +83,13 @@ public final class LatexMojo extends SafeMojo {
     void exec() throws IOException {
         for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
             final Path file = tojo.shaken();
-            final Place place = new Place(
-                LatexMojo.last(new XMLDocument(file).xpath("/program/@name").get(0))
-            );
             final Path dir = this.targetDir.toPath();
-            final Path target = place.make(
-                dir.resolve(LatexMojo.DIR), LatexMojo.EXT
-            );
+            final Path target = new Place(
+                LatexMojo.last(new ProgramName(new XMLDocument(file)).get())
+            ).make(dir.resolve(LatexMojo.DIR), LatexMojo.EXT);
             new HmBase(dir).save(
                 new LatexTemplate(
-                    new XMLDocument(file).nodes("/program/listing").get(0).toString()
+                    new Xnav(file).element("program").element("listing").text().get()
                 ).asString(),
                 dir.relativize(target)
             );

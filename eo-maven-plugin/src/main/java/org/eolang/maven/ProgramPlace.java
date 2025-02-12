@@ -37,6 +37,8 @@ final class ProgramPlace extends FuncEnvelope<XML, Path> {
      * @param dir Home directory
      */
     ProgramPlace(final Path dir) {
-        super(xml -> new Place(xml.xpath("/program/@name").get(0)).make(dir, ""));
+        super(
+            xml -> new Place(new ProgramName(xml).get()).make(dir, "")
+        );
     }
 }

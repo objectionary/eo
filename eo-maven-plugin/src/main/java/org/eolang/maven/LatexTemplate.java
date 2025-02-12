@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.latex;
+package org.eolang.maven;
 
+import java.util.regex.Pattern;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -32,11 +33,12 @@ import org.cactoos.text.UncheckedText;
  * in LaTex notation as a standalone compilable document.
  *
  * @since 0.30
- * @todo #2067:30min We need to refactor LatexTemplate class.
- *  And to remove redundant parts in the code, like DOM variables and
- *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
 public final class LatexTemplate {
+    /**
+     * Pattern to extract the content starting with `+`.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(?s)^\\s*\\+.*", Pattern.MULTILINE);
 
     /**
      * The code.
@@ -63,7 +65,23 @@ public final class LatexTemplate {
                     new ResourceOf("org/eolang/maven/latex/latex-template.txt")
                 )
             ).asString(),
-            this.code
+            this.extractedContent()
         );
+    }
+
+    /**
+     * Extracts the main content from the code.
+     * <p>
+     * This method removes unnecessary headers (e.g., license information)
+     * and retains the relevant code starting from the first line that begins with `+`.
+     * If no such line is found, the entire input is returned as is.
+     * @return The extracted content.
+     */
+    private String extractedContent() {
+        return LatexTemplate.PATTERN.matcher(this.code)
+            .results()
+            .map(match -> match.group().trim())
+            .findFirst()
+            .orElse(this.code);
     }
 }

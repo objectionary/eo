@@ -25,17 +25,14 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
 +version 0.0.0
-+unlint object-has-data
-+unlint broken-alias-second
-+unlint unused-alias
++unlint unit-test-missing
 
 # Returns the system-dependent line separator string.
 # On UNIX systems, it returns "\n";
 # on Microsoft Windows systems it returns "\r\n".
-[] > line-separator
-  string > @
-    as-bytes.
-      if.
-        os.is-windows
-        "\r\n"
-        "\n"
+string > line-separator
+  as-bytes.
+    if.
+      os.is-windows
+      "\r\n"
+      "\n"
