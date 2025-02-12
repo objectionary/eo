@@ -42,8 +42,6 @@ import org.eolang.lints.Program;
 import org.eolang.lints.Programs;
 import org.eolang.lints.Severity;
 import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -86,7 +84,7 @@ public final class LintMojo extends SafeMojo {
      */
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
+        final Collection<TjForeign> tojos = this.scopedTojos().withShaken();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
@@ -140,7 +138,7 @@ public final class LintMojo extends SafeMojo {
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
      */
-    private int lintOne(final ForeignTojo tojo,
+    private int lintOne(final TjForeign tojo,
         final ConcurrentHashMap<Severity, Integer> counts) throws Exception {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
@@ -166,10 +164,10 @@ public final class LintMojo extends SafeMojo {
      */
     private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
-        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
+        for (final TjForeign tojo : this.scopedTojos().withShaken()) {
             paths.put(tojo.identifier(), tojo.shaken());
         }
-        for (final ForeignTojo tojo : this.compileTojos().withShaken()) {
+        for (final TjForeign tojo : this.compileTojos().withShaken()) {
             paths.put(tojo.identifier(), tojo.shaken());
         }
         final Map<String, XML> pkg = new HashMap<>();

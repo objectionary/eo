@@ -87,8 +87,8 @@ final class FpDefaultTest {
         final Path result = new FpDefault(
             src -> FpDefaultTest.LAMBDA_CONTENT,
             temp,
-            "",
-            "",
+            "1.2.3",
+            "abcdef",
             Paths.get("")
         ).apply(source, target);
         MatcherAssert.assertThat(

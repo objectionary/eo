@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -76,7 +75,7 @@ public final class MarkMojo extends SafeMojo {
     private long scan(final Path dir, final String version) {
         final Unplace unplace = new Unplace(dir);
         final Collection<Path> sources = new Walk(dir);
-        final ForeignTojos tojos = this.scopedTojos();
+        final TjsForeign tojos = this.scopedTojos();
         final long done = sources.stream()
             .filter(src -> src.toString().endsWith(".eo"))
             .map(unplace::make)

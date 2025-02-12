@@ -61,8 +61,6 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 import org.eolang.parser.TrFull;
 
@@ -163,7 +161,7 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
+        final Collection<TjForeign> sources = this.scopedTojos().withShaken();
         final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
@@ -197,7 +195,7 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpiled(
-        final ForeignTojo tojo,
+        final TjForeign tojo,
         final Function<XML, XML> transform
     ) throws IOException {
         final Path source = tojo.shaken();

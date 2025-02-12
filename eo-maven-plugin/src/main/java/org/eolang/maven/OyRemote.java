@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
-import org.eolang.maven.hash.CommitHash;
 
 /**
  * The simple HTTP Objectionary server.

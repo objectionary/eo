@@ -66,7 +66,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.StXPath;
 import org.xembly.Directive;
@@ -349,7 +348,7 @@ public final class SodgMojo extends SafeMojo {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
+        final Collection<TjForeign> tojos = this.scopedTojos().withShaken();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
@@ -359,7 +358,7 @@ public final class SodgMojo extends SafeMojo {
         final Set<Pattern> excludes = this.sodgExcludes.stream()
             .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
-        for (final ForeignTojo tojo : tojos) {
+        for (final TjForeign tojo : tojos) {
             final String name = tojo.identifier();
             if (this.exclude(name, includes, excludes)) {
                 continue;

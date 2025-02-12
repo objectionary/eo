@@ -36,8 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -94,7 +92,7 @@ final class UnplaceMojoTest {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeJar(temp, UnplaceMojoTest.DEFAULT_JAR);
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<PlacedTojo> tojos = new PlacedTojos(placed).allBinaries();
+        final List<TjPlaced> tojos = new TjsPlaced(placed).allBinaries();
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
@@ -105,7 +103,7 @@ final class UnplaceMojoTest {
         );
         MatcherAssert.assertThat(
             CatalogsTest.TO_ADD_MESSAGE,
-            tojos.stream().allMatch(PlacedTojo::unplaced),
+            tojos.stream().allMatch(TjPlaced::unplaced),
             Matchers.is(true)
         );
     }
@@ -118,7 +116,7 @@ final class UnplaceMojoTest {
         final String other = "other-jar";
         UnplaceMojoTest.placeJar(temp, other);
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<PlacedTojo> tojos = new PlacedTojos(placed).allBinaries();
+        final List<TjPlaced> tojos = new TjsPlaced(placed).allBinaries();
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
@@ -131,7 +129,7 @@ final class UnplaceMojoTest {
             CatalogsTest.TO_ADD_MESSAGE,
             tojos.stream()
                 .filter(tojo -> tojo.identifier().equals(other))
-                .allMatch(PlacedTojo::placed),
+                .allMatch(TjPlaced::placed),
             Matchers.is(true)
         );
     }
@@ -235,7 +233,7 @@ final class UnplaceMojoTest {
      */
     private static Path placeClass(final Path temp, final Path clazz) {
         final Path placed = UnplaceMojoTest.placedFile(temp);
-        new PlacedTojos(placed).placeClass(
+        new TjsPlaced(placed).placeClass(
             clazz,
             temp.relativize(clazz).toString(),
             UnplaceMojoTest.DEFAULT_JAR
@@ -250,7 +248,7 @@ final class UnplaceMojoTest {
      * @return Path to the placed tojos file.
      */
     private static void placeJar(final Path temp, final String name) {
-        new PlacedTojos(UnplaceMojoTest.placedFile(temp)).placeJar(name);
+        new TjsPlaced(UnplaceMojoTest.placedFile(temp)).placeJar(name);
     }
 
     /**

@@ -53,10 +53,6 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 
@@ -302,8 +298,8 @@ public final class FakeMaven {
      * Foreign tojos for eo-foreign.* file.
      * @return Foreign tojos.
      */
-    ForeignTojos foreignTojos() {
-        return new ForeignTojos(
+    TjsForeign foreignTojos() {
+        return new TjsForeign(
             () -> Catalogs.INSTANCE.make(this.foreignPath()),
             this::scope
         );
@@ -421,8 +417,8 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current placed.json file.
      */
-    PlacedTojos placed() {
-        return new PlacedTojos(this.workspace.absolute(Paths.get("placed.json")));
+    TjsPlaced placed() {
+        return new TjsPlaced(this.workspace.absolute(Paths.get("placed.json")));
     }
 
     /**
@@ -449,7 +445,7 @@ public final class FakeMaven {
      * Retrieve the entry of the last program in the eo-foreign.csv file.
      * @return Tojo entry.
      */
-    ForeignTojo programTojo() {
+    TjForeign programTojo() {
         return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
