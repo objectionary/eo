@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -115,6 +116,11 @@ public final class LintMojo extends SafeMojo {
             this,
             "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
             passed, tojos.size(), tojos.size(), System.currentTimeMillis() - start, sum
+        );
+        Logger.info(
+            this,
+            "Read more about lints: https://www.objectionary.com/lints/%s",
+            Manifests.read("Lints-Version")
         );
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
