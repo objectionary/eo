@@ -72,7 +72,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:template match="o">
     <xsl:copy>
-      <xsl:attribute name="original-name" select="eo:original-name(/program, .)"/>        
+      <xsl:attribute name="original-name" select="eo:original-name(/program, .)"/>
       <xsl:apply-templates select="node()|@* except @original-name"/>
     </xsl:copy>
   </xsl:template>
