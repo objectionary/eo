@@ -104,7 +104,8 @@ final class PhiTest {
                 "foobar",
                 123,
                 56,
-                "Φ.org.eolang$obj"
+                "Φ.org.eolang$obj",
+                "org.eolang.obj"
             ).locator(),
             Matchers.equalTo("Φ.org.eolang$obj:123:56")
         );
