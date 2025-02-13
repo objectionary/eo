@@ -166,7 +166,6 @@ public final class PhSafe implements Phi, Atom {
     public String forma() {
         return String.join(
             ".",
-            PhPackage.GLOBAL,
             this.getClass().getPackageName(),
             this.oname
         );
