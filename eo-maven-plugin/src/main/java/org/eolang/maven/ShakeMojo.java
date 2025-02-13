@@ -37,8 +37,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.iterable.Filtered;
 import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 
 /**
@@ -71,11 +69,11 @@ public final class ShakeMojo extends SafeMojo {
     @Override
     public void exec() {
         final long start = System.currentTimeMillis();
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
+        final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
         final Function<XML, XML> transform = this.transformations();
         final int total = new Threaded<>(
             new Filtered<>(
-                ForeignTojo::notShaken,
+                TjForeign::notShaken,
                 tojos
             ),
             tojo -> this.shaken(tojo, transform)
@@ -99,13 +97,12 @@ public final class ShakeMojo extends SafeMojo {
      * @return Amount of optimized XMIR files
      * @throws Exception If fails
      */
-    private int shaken(final ForeignTojo tojo, final Function<XML, XML> transform)
+    private int shaken(final TjForeign tojo, final Function<XML, XML> transform)
         throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final String name = xmir.xpath("/program/@name").get(0);
         final Path base = this.targetDir.toPath().resolve(ShakeMojo.DIR);
-        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         tojo.withShaken(
             new FpDefault(
                 src -> transform.apply(xmir).toString(),

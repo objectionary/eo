@@ -23,23 +23,22 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.tojos.ForeignTojo;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
@@ -96,8 +95,8 @@ public final class ProbeMojo extends SafeMojo {
     private void probe() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<String> probed = new HashSet<>(0);
-        final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
-        for (final ForeignTojo tojo : tojos) {
+        final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
+        for (final TjForeign tojo : tojos) {
             final Path src = tojo.shaken();
             final Collection<String> objects = this.probes(src);
             if (!objects.isEmpty()) {
@@ -152,9 +151,7 @@ public final class ProbeMojo extends SafeMojo {
                 ProbeMojo::noPrefix,
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
-                    new XMLDocument(file).xpath(
-                        "/program/metas/meta[head/text() = 'probe']/tail/text()"
-                    )
+                    ProbeMojo.probeMetas(file)
                 )
             ).iterator()
         );
@@ -173,6 +170,37 @@ public final class ProbeMojo extends SafeMojo {
     }
 
     /**
+     * Return probe metas.
+     * The equivalent xpath is: "/program/metas/meta[head/text() = 'probe']/tail/text()"
+     * @param file XML file
+     * @return Metas to probe
+     */
+    private static Iterable<String> probeMetas(final Path file) {
+        return new IterableOf<>(
+            new Xnav(file)
+                .element("program")
+                .elements(Filter.withName("metas"))
+                .findFirst()
+                .map(
+                    metas -> metas.elements(
+                        Filter.all(
+                            Filter.withName("meta"),
+                            meta -> {
+                                final Optional<String> head = new Xnav(meta)
+                                    .element("head")
+                                    .text();
+                                return head.isPresent() && "probe".equals(head.get());
+                            }
+                        )
+                    )
+                    .map(meta -> meta.element("tail").text().get())
+                )
+                .orElse(Stream.of())
+                .iterator()
+        );
+    }
+
+    /**
      * Trim Q prefix.
      * Q.a.b.c -> a.b
      * a.b.c -> a.b.c
@@ -188,5 +216,4 @@ public final class ProbeMojo extends SafeMojo {
         }
         return result;
     }
-
 }

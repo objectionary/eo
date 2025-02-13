@@ -53,9 +53,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.tojos.PlacedTojos;
-import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -425,7 +422,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final PlacedTojos placedTojos = new PlacedTojos(
+    protected final TjsPlaced placedTojos = new TjsPlaced(
         new Sticky<>(() -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat))
     );
 
@@ -434,7 +431,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final TranspiledTojos transpiledTojos = new TranspiledTojos(
+    protected final TjsTranspiled transpiledTojos = new TjsTranspiled(
         new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
     );
 
@@ -451,7 +448,7 @@ abstract class SafeMojo extends AbstractMojo {
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    private final ForeignTojos tojos = new ForeignTojos(
+    private final TjsForeign tojos = new TjsForeign(
         () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
         () -> this.scope
     );
@@ -531,7 +528,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final ForeignTojos scopedTojos() {
+    protected final TjsForeign scopedTojos() {
         return this.tojos;
     }
 
@@ -540,8 +537,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final ForeignTojos compileTojos() {
-        return new ForeignTojos(
+    protected final TjsForeign compileTojos() {
+        return new TjsForeign(
             () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
             () -> "compile"
         );

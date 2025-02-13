@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -60,8 +61,6 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 import org.eolang.parser.TrFull;
 
@@ -162,7 +161,7 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
+        final Collection<TjForeign> sources = this.scopedTojos().withShaken();
         final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
@@ -196,20 +195,18 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpiled(
-        final ForeignTojo tojo,
+        final TjForeign tojo,
         final Function<XML, XML> transform
     ) throws IOException {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        final Path target = new Place(
-            xmir.xpath("/program/@name").get(0)
-        ).make(base, AssembleMojo.XMIR);
+        final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpDefault(
             src -> {
-                rewrite.set(true);
+                rewrite.compareAndSet(false, true);
                 return transform.apply(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
@@ -257,11 +254,12 @@ public final class TranspileMojo extends SafeMojo {
         final Collection<XML> nodes = new XMLDocument(target).nodes("//class[java and not(@atom)]");
         final AtomicInteger saved = new AtomicInteger(0);
         for (final XML java : nodes) {
-            final String jname = java.xpath("@java-name").get(0);
+            final Xnav xnav = new Xnav(java.inner());
+            final String jname = xnav.attribute("java-name").text().get();
             final Path tgt = new Place(jname).make(
                 this.generatedDir.toPath(), TranspileMojo.JAVA
             );
-            this.pinfo(tgt, jname, java.xpath("@package").stream().findFirst().orElse(""));
+            this.pinfo(tgt, jname, xnav.attribute("package").text().orElse(""));
             final Supplier<Path> che = new CachePath(
                 this.cache.toPath().resolve(TranspileMojo.CACHE),
                 this.plugin.getVersion(),
@@ -275,10 +273,13 @@ public final class TranspileMojo extends SafeMojo {
                         this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
                         tgt, tgt.toFile().length(), target, target.toFile().length()
                     );
-                    return new Joined("", java.xpath("java/text()")).asString();
+                    return new Joined("", xnav.element("java").text().get()).asString();
                 }
             );
-            new FpIfTargetExists(
+            final Footprint both = new FpUpdateBoth(generated, che);
+            new FpIfReleased(
+                this.plugin.getVersion(),
+                hsh,
                 new FpFork(
                     (src, trgt) -> {
                         if (rewrite) {
@@ -291,24 +292,17 @@ public final class TranspileMojo extends SafeMojo {
                         }
                         return rewrite;
                     },
-                    new FpIfReleased(
-                        this.plugin.getVersion(),
-                        hsh,
-                        new FpUpdateBoth(generated, che),
-                        generated
-                    ),
-                    new FpIgnore()
-                ),
-                new FpIfReleased(
-                    this.plugin.getVersion(),
-                    hsh,
+                    both,
                     new FpIfTargetExists(
-                        trgt -> che.get(),
-                        new FpUpdateFromCache(che),
-                        new FpUpdateBoth(generated, che)
-                    ),
-                    generated
-                )
+                        new FpIgnore(),
+                        new FpIfTargetExists(
+                            trgt -> che.get(),
+                            new FpUpdateFromCache(che),
+                            both
+                        )
+                    )
+                ),
+                generated
             ).apply(Paths.get(""), tgt);
         }
         return saved.get();

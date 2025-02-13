@@ -85,6 +85,32 @@ final class LintMojoTest {
     }
 
     @Test
+    void printsLintsUrlWithVersion(@Mktmp final Path temp, @RandomProgram final String program)
+        throws IOException {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "shake", "lint")
+                    .configuration()
+                    .set("failOnWarning", "false");
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "Lints URL was not printed, but it should",
+                    f.log().content(),
+                    Matchers.matchesPattern(
+                        "(?s).*\\[INFO] Read more about lints: https://www\\.objectionary\\.com/lints/\\d+\\.\\d+\\.\\d+.*"
+                    )
+                );
+            }
+        );
+    }
+
+    @Test
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
@@ -281,9 +307,10 @@ final class LintMojoTest {
     }
 
     @Test
-    void skipsAlreadyVerified(@Mktmp final Path temp) throws IOException {
+    void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
+            .allTojosWithHash(CommitHash.FAKE)
             .execute(new FakeMaven.Lint());
         final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", LintMojo.DIR, AssembleMojo.XMIR)
