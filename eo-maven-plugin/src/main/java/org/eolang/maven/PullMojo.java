@@ -42,11 +42,6 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.tojos.ForeignTojo;
 
 /**
  * Pull EO files from Objectionary.
@@ -107,11 +102,11 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.PrematureDeclaration")
     private void pull() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+        final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();
         final Collection<String> names = new ArrayList<>(0);
         final Path base = this.targetDir.toPath().resolve(PullMojo.DIR);
         final String hsh = this.hash.value();
-        for (final ForeignTojo tojo : tojos) {
+        for (final TjForeign tojo : tojos) {
             final String object = tojo.identifier();
             try {
                 tojo.withSource(this.pulled(object, base, hsh))
@@ -172,36 +167,31 @@ public final class PullMojo extends SafeMojo {
                 return new TextOf(this.objectionary.get(object)).asString();
             }
         );
-        return new FpIfTargetExists(
+        final Footprint both = new FpUpdateBoth(generated, che);
+        return new FpIfReleased(
+            this.plugin.getVersion(),
+            hsh,
             new FpFork(
                 (src, tgt) -> {
-                    final boolean rewrite = this.overWrite;
-                    if (rewrite) {
+                    if (this.overWrite) {
                         Logger.debug(
                             this,
                             "Pulling sources again since eo.overWrite=TRUE"
                         );
                     }
-                    return rewrite;
+                    return this.overWrite;
                 },
-                new FpIfReleased(
-                    semver,
-                    hsh,
-                    new FpUpdateBoth(generated, che),
-                    generated
-                ),
-                new FpIgnore()
-            ),
-            new FpIfReleased(
-                semver,
-                hsh,
+                both,
                 new FpIfTargetExists(
-                    tgt -> che.get(),
-                    new FpUpdateFromCache(che),
-                    new FpUpdateBoth(generated, che)
-                ),
-                generated
-            )
+                    new FpIgnore(),
+                    new FpIfTargetExists(
+                        tgt -> che.get(),
+                        new FpUpdateFromCache(che),
+                        both
+                    )
+                )
+            ),
+            generated
         ).apply(Paths.get(""), target);
     }
 }

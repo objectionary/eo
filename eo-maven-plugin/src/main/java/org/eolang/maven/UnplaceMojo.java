@@ -38,7 +38,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.FileHash;
 
 /**
@@ -94,11 +93,11 @@ public final class UnplaceMojo extends SafeMojo {
     private void unplaceJars() {
         final Set<String> used = this.placedTojos.classes()
             .stream()
-            .map(PlacedTojo::dependency)
+            .map(TjPlaced::dependency)
             .collect(Collectors.toSet());
         this.placedTojos.jars().stream()
             .filter(dep -> used.contains(dep.identifier()))
-            .forEach(PlacedTojo::unplace);
+            .forEach(TjPlaced::unplace);
     }
 
     /**
@@ -107,7 +106,7 @@ public final class UnplaceMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private void unplaceClasses() throws IOException {
-        final Collection<PlacedTojo> classes = this.placedTojos.classes();
+        final Collection<TjPlaced> classes = this.placedTojos.classes();
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(classes);
@@ -143,9 +142,9 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private int killThem(final Iterable<PlacedTojo> all) throws IOException {
+    private int killThem(final Iterable<TjPlaced> all) throws IOException {
         int unplaced = 0;
-        for (final PlacedTojo tojo : all) {
+        for (final TjPlaced tojo : all) {
             final String related = tojo.related();
             final Path path = Paths.get(tojo.identifier());
             final String hash = new FileHash(path).toString();
@@ -198,10 +197,10 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    private int keepThem(final Iterable<? extends PlacedTojo> tojos) throws IOException {
+    private int keepThem(final Iterable<? extends TjPlaced> tojos) throws IOException {
         int deleted = 0;
         int remained = 0;
-        for (final PlacedTojo tojo : tojos) {
+        for (final TjPlaced tojo : tojos) {
             final String related = tojo.related();
             final Path path = Paths.get(tojo.identifier());
             if (!this.keepBinaries.isEmpty()

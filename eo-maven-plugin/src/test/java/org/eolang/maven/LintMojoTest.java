@@ -307,9 +307,10 @@ final class LintMojoTest {
     }
 
     @Test
-    void skipsAlreadyVerified(@Mktmp final Path temp) throws IOException {
+    void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
+            .allTojosWithHash(CommitHash.FAKE)
             .execute(new FakeMaven.Lint());
         final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", LintMojo.DIR, AssembleMojo.XMIR)

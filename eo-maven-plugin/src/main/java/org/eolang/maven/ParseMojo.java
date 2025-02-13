@@ -37,8 +37,6 @@ import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
@@ -77,7 +75,7 @@ public final class ParseMojo extends SafeMojo {
         final long start = System.currentTimeMillis();
         final int total = new Threaded<>(
             new Filtered<>(
-                ForeignTojo::notParsed,
+                TjForeign::notParsed,
                 this.scopedTojos().withSources()
             ),
             this::parsed
@@ -112,7 +110,7 @@ public final class ParseMojo extends SafeMojo {
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private int parsed(final ForeignTojo tojo) throws Exception {
+    private int parsed(final TjForeign tojo) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
         final Path base = this.targetDir.toPath().resolve(ParseMojo.DIR);

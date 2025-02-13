@@ -39,11 +39,6 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.tojos.ForeignTojo;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
@@ -100,8 +95,8 @@ public final class ProbeMojo extends SafeMojo {
     private void probe() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<String> probed = new HashSet<>(0);
-        final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
-        for (final ForeignTojo tojo : tojos) {
+        final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
+        for (final TjForeign tojo : tojos) {
             final Path src = tojo.shaken();
             final Collection<String> objects = this.probes(src);
             if (!objects.isEmpty()) {

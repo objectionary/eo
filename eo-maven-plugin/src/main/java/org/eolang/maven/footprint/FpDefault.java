@@ -35,7 +35,9 @@ import org.cactoos.Func;
  * 2) if target younger than source or does not exist - it will be created and filled up.
  *    It can be created from source, or from global cache if it exists and cacheable and
  *    older than source.
- * 3) the cache is updated if it's cacheable AND (it does not exist or if it's younger than source)
+ * 3) the cache is updated if it's cacheable (it does not exist or if it's younger than source)
+ * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the target is always
+ *    regenerated and cache is not touched at all.
  * </p>
  *
  * <p>Excluding any type of errors there are 4 possible scenarios of this {@link Footprint} work:
@@ -121,18 +123,18 @@ public final class FpDefault extends FpEnvelope {
     ) {
         super(
             new FpExistedSource(
-                new FpIfOlder(
-                    new FpIgnore(),
-                    new FpIfReleased(
-                        semver,
-                        hash,
+                new FpIfReleased(
+                    semver,
+                    hash,
+                    new FpIfOlder(
+                        new FpIgnore(),
                         new FpIfOlder(
                             target -> cache.get(),
                             new FpUpdateFromCache(cache),
                             new FpUpdateBoth(generated, cache)
-                        ),
-                        generated
-                    )
+                        )
+                    ),
+                    generated
                 )
             )
         );

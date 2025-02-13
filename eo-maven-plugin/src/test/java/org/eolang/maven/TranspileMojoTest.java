@@ -238,21 +238,23 @@ final class TranspileMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Path java = maven
             .withProgram(this.program)
+            .allTojosWithHash(CommitHash.FAKE)
             .execute(new FakeMaven.Transpile())
-            .result().get(this.compiled);
+            .result()
+            .get(this.compiled);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The .java file must be generated after first transpilation",
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The last modified date of generated .java file must be successfully set",
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         maven.execute(TranspileMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The .java file must not be regenerated after repeat transpilation",
             java.toFile().lastModified(),
             Matchers.is(0L)
         );

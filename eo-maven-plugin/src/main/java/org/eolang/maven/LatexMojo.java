@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 
 /**
@@ -81,7 +80,7 @@ public final class LatexMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        for (final ForeignTojo tojo : this.scopedTojos().withShaken()) {
+        for (final TjForeign tojo : this.scopedTojos().withShaken()) {
             final Path file = tojo.shaken();
             final Path dir = this.targetDir.toPath();
             final Path target = new Place(
