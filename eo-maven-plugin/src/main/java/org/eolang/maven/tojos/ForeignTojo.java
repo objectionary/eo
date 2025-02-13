@@ -118,6 +118,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo phi.
+     * @return The phi.
+     */
+    public Path phi() {
+        return Paths.get(this.attribute(ForeignTojos.Attribute.PHI));
+    }
+
+    /**
      * The tojo hash.
      * @return The hash.
      */
@@ -170,6 +178,48 @@ public final class ForeignTojo {
             if (xmir.toFile().lastModified() >= this.source().toFile().lastModified()) {
                 Logger.debug(
                     this, "Already parsed %s to %[file]s (it's newer than the source)",
+                    this.identifier(), xmir
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Check if the given tojo has not been parsed to phi-expression.
+     *
+     * @return True if the tojo has not been parsed to phi-expression.
+     */
+    public boolean notPhied() {
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())
+            && this.delegate.exists(ForeignTojos.Attribute.XMIR.getKey())) {
+            final Path phi = this.phi();
+            if (phi.toFile().lastModified() >= this.xmir().toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already executed xmir-to-phi: %s to %[file]s (it's newer than the XMIR)",
+                    this.identifier(), phi
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Check if the given tojo has not been parsed to XMIR from phi-expression.
+     *
+     * @return True if the tojo has not been parsed from XMIR to phi-expression.
+     */
+    public boolean notUnphied() {
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.XMIR.getKey())
+            && this.delegate.exists(ForeignTojos.Attribute.PHI.getKey())) {
+            final Path xmir = this.xmir();
+            if (xmir.toFile().lastModified() >= this.phi().toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already executed phi-to-xmir: %s to %[file]s (it's newer than the phi)",
                     this.identifier(), xmir
                 );
                 res = false;
@@ -296,6 +346,16 @@ public final class ForeignTojo {
      */
     public ForeignTojo withScope(final String scope) {
         this.delegate.set(ForeignTojos.Attribute.SCOPE.getKey(), scope);
+        return this;
+    }
+
+    /**
+     * Set the phi.
+     * @param phi The phi.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withPhi(final Path phi) {
+        this.delegate.set(ForeignTojos.Attribute.PHI.getKey(), phi);
         return this;
     }
 
