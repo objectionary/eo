@@ -23,7 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.51.3
++version 0.51.6
 
 # The object allows to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
@@ -43,22 +43,23 @@
 #
 # This object returns value of only first truly statement.
 [cases] > switch
-  cases.length > len!
+  (rec-case cases).self > found
   if. > @
-    len.eq 0
-    error "switch cases are empty"
-    case-at 0
-
-  # Take case by given index.
-  # If case key is true, return case value.
-  # Otherwise take next case.
-  [index] > case-at
-    cases.at index > case
-    if. > @
-      index.eq len
+    cases.length.eq 0
+    error "Switch cases are empty"
+    if.
+      true.eq found.match
+      found.value
       true
-      if.
-        case.at 0
-        case.at 1
-        case-at
-          index.plus 1
+
+  [tup] > rec-case
+    (rec-case tup.prev).self > previous
+    if. > @
+      and.
+        tup.length.gt 1
+        previous.match
+      previous
+      [] >>
+        $ > self
+        tup.value.prev.value > match!
+        tup.value.value > value
