@@ -110,4 +110,20 @@ final class PhiTest {
             Matchers.equalTo("Φ.org.eolang$obj:123:56")
         );
     }
+
+    @Test
+    void getsForma() {
+        MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
+            new PhSafe(
+                Phi.Φ,
+                "foobar",
+                123,
+                56,
+                "Φ.org.eolang$obj",
+                "obj.x"
+            ).forma(),
+            Matchers.equalTo("org.eolang.obj.x")
+        );
+    }
 }
