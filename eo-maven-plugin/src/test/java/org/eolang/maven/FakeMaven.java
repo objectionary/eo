@@ -299,11 +299,33 @@ public final class FakeMaven {
     }
 
     /**
+     * Foreign tojos for eo-foreign.* file.
+     * @return Foreign tojos.
+     */
+    ForeignTojos foreignTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.foreignPath()),
+            this::scope
+        );
+    }
+
+    /**
+     * Sets placed tojo attribute.
+     *
+     * @param binary Binary as class file or jar.
+     * @return The same maven instance.
+     */
+    FakeMaven withPlacedBinary(final Path binary) {
+        this.placed().placeClass(binary, "", "test.jar");
+        return this;
+    }
+
+    /**
      * Adds correct 'Hello world' program to workspace.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    public FakeMaven withHelloWorld() throws IOException {
+    FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
@@ -325,53 +347,11 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    public FakeMaven withProgram(final String... program) throws IOException {
+    FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
             String.join("\n", program),
             FakeMaven.tojoId(this.current.get())
         );
-    }
-
-    /**
-     * Creates of the result map with all files and folders that was created
-     * or compiled during mojo execution.
-     *
-     * @return Map of "relative UNIX path" (key) - "absolute path" (value).
-     * @throws IOException If some problem with filesystem have happened.
-     */
-    public Map<String, Path> result() throws IOException {
-        final Path root = this.workspace.absolute(Paths.get(""));
-        return Files.walk(root).collect(
-            Collectors.toMap(
-                p -> String.join(
-                    "/",
-                    root.relativize(p).toString().split(Pattern.quote(File.separator))
-                ),
-                Function.identity()
-            )
-        );
-    }
-
-    /**
-     * Foreign tojos for eo-foreign.* file.
-     * @return Foreign tojos.
-     */
-    ForeignTojos foreignTojos() {
-        return new ForeignTojos(
-            () -> Catalogs.INSTANCE.make(this.foreignPath()),
-            this::scope
-        );
-    }
-
-    /**
-     * Sets placed tojo attribute.
-     *
-     * @param binary Binary as class file or jar.
-     * @return The same maven instance.
-     */
-    FakeMaven withPlacedBinary(final Path binary) {
-        this.placed().placeClass(binary, "", "test.jar");
-        return this;
     }
 
     /**
@@ -443,6 +423,26 @@ public final class FakeMaven {
      */
     PlacedTojos placed() {
         return new PlacedTojos(this.workspace.absolute(Paths.get("placed.json")));
+    }
+
+    /**
+     * Creates of the result map with all files and folders that was created
+     * or compiled during mojo execution.
+     *
+     * @return Map of "relative UNIX path" (key) - "absolute path" (value).
+     * @throws IOException If some problem with filesystem have happened.
+     */
+    Map<String, Path> result() throws IOException {
+        final Path root = this.workspace.absolute(Paths.get(""));
+        return Files.walk(root).collect(
+            Collectors.toMap(
+                p -> String.join(
+                    "/",
+                    root.relativize(p).toString().split(Pattern.quote(File.separator))
+                ),
+                Function.identity()
+            )
+        );
     }
 
     /**
@@ -579,7 +579,7 @@ public final class FakeMaven {
      *
      * @since 0.35.0
      */
-    public static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
