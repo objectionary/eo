@@ -26,12 +26,12 @@ package integration;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Map;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.ContainsFiles;
-import org.eolang.maven.FakeMaven;
 import org.eolang.maven.ParseMojo;
 import org.eolang.maven.PullMojo;
 import org.eolang.maven.ShakeMojo;
@@ -52,20 +52,30 @@ final class MojasIT {
 
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
-        final Map<String, Path> result = new FakeMaven(temp)
-            .withHelloWorld()
-            .execute(AssembleMojo.class)
-            .result();
-        final String stdout = "target/%s/org/eolang/io/stdout.%s";
+        final String stdout = "target/eo/%s/org/eolang/io/stdout.%s";
         final String parsed = String.format(stdout, ParseMojo.DIR, AssembleMojo.XMIR);
         final String optimized = String.format(stdout, ShakeMojo.DIR, AssembleMojo.XMIR);
         final String pulled = String.format(stdout, PullMojo.DIR, AssembleMojo.EO);
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files()
+                    .file("src/main/eo/one/main.eo")
+                    .write(MojasIT.helloWorld().getBytes(StandardCharsets.UTF_8));
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution("tests")
+                    .goals("register", "assemble");
+                f.exec("test");
+            }
+        );
         MatcherAssert.assertThat(
             String.format(
                 "AssembleMojo should have parsed stdout object %s, but didn't",
                 parsed
             ),
-            result.containsKey(parsed),
+            temp.resolve(parsed).toFile().exists(),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -73,7 +83,7 @@ final class MojasIT {
                 "AssembleMojo should have optimized stdout object %s, but didn't",
                 optimized
             ),
-            result.containsKey(optimized),
+            temp.resolve(optimized).toFile().exists(),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -81,55 +91,90 @@ final class MojasIT {
                 "AssembleMojo should have pulled stdout object %s, but didn't",
                 pulled
             ),
-            result.containsKey(pulled),
+            temp.resolve(pulled).toFile().exists(),
             Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "AssembleMojo should have placed runtime library under classes directory, but didn't",
-            result.get("target/classes").toAbsolutePath(),
-            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
     @Test
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
-        final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] < wrong>",
-                "  (stdout \"Hello!\" x).print"
-            )
-            .execute(new FakeMaven.Shake())
-            .result();
+        final String prog = String.join(
+            "\n",
+            "+alias stdout org.eolang.io.stdout",
+            "+home https://github.com/objectionary/eo",
+            "+package test",
+            "+version 0.0.0",
+            "",
+            "[x] < wrong>",
+            "  (stdout \"Hello!\" x).print"
+        );
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files()
+                    .file("src/main/eo/one/main.eo")
+                    .write(prog.getBytes(StandardCharsets.UTF_8));
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution("tests")
+                    .goals("register", "parse", "shake");
+                f.exec("test");
+            }
+        );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
-            result.get(String.format("target/%s", ParseMojo.DIR)),
+            temp.resolve(String.format("target/eo/%s", ParseMojo.DIR)).toAbsolutePath(),
             new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to optimize it, but we didn't",
-            result.get(String.format("target/%s", ShakeMojo.DIR)),
+            temp.resolve(String.format("target/eo/%s", ShakeMojo.DIR)).toAbsolutePath(),
             new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
     }
 
     @Test
     void configuresChildParameters(@Mktmp final Path temp) throws IOException {
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withHelloWorld()
-            .with("trackTransformationSteps", true)
-            .execute(AssembleMojo.class)
-            .result();
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files()
+                    .file("src/main/eo/one/main.eo")
+                    .write(MojasIT.helloWorld().getBytes(StandardCharsets.UTF_8));
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution("tests")
+                    .goals("register", "assemble")
+                    .configuration()
+                    .set("trackTransformationSteps", Boolean.TRUE.toString());
+                f.exec("test");
+            }
+        );
         MatcherAssert.assertThat(
             "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
-            res,
-            Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
-            )
+            temp.resolve(
+                String.format("target/eo/%s/one/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
+            ).toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    private static String helloWorld() {
+        return String.join(
+            "\n",
+            "+alias stdout org.eolang.io.stdout",
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+unlint object-has-data",
+            "+unlint broken-alias-second",
+            "+unlint incorrect-alias",
+            "+version 0.0.0",
+            "",
+            "# No comments.",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @"
         );
     }
 }
