@@ -25,6 +25,6 @@
 /**
  * Integration tests only.
  *
- * @since 0.51
+ * @since 0.52
  */
 package integration;
