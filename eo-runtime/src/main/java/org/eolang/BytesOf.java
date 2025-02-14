@@ -42,22 +42,6 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param bytes Bytes.
-     */
-    public BytesOf(final Bytes bytes) {
-        this.bytes = bytes;
-    }
-
-    /**
-     * Ctor.
-     * @param data Data.
-     */
-    public BytesOf(final byte[] data) {
-        this(new BytesRaw(Arrays.copyOf(data, data.length)));
-    }
-
-    /**
-     * Ctor.
      * @param str UTF-8 Text.
      */
     public BytesOf(final String str) {
@@ -94,6 +78,22 @@ public final class BytesOf implements Bytes {
      */
     public BytesOf(final double number) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(number).array());
+    }
+
+    /**
+     * Ctor.
+     * @param data Data.
+     */
+    public BytesOf(final byte[] data) {
+        this(new BytesRaw(Arrays.copyOf(data, data.length)));
+    }
+
+    /**
+     * Ctor.
+     * @param bytes Bytes.
+     */
+    public BytesOf(final Bytes bytes) {
+        this.bytes = bytes;
     }
 
     @Override

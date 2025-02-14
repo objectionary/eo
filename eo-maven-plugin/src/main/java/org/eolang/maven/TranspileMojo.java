@@ -61,8 +61,6 @@ import org.eolang.maven.footprint.FpIfTargetExists;
 import org.eolang.maven.footprint.FpIgnore;
 import org.eolang.maven.footprint.FpUpdateBoth;
 import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.TojoHash;
 import org.eolang.maven.util.Threaded;
 import org.eolang.parser.TrFull;
 
@@ -163,7 +161,7 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withShaken();
+        final Collection<TjForeign> sources = this.scopedTojos().withShaken();
         final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
@@ -197,7 +195,7 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpiled(
-        final ForeignTojo tojo,
+        final TjForeign tojo,
         final Function<XML, XML> transform
     ) throws IOException {
         final Path source = tojo.shaken();
@@ -208,7 +206,7 @@ public final class TranspileMojo extends SafeMojo {
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpDefault(
             src -> {
-                rewrite.set(true);
+                rewrite.compareAndSet(false, true);
                 return transform.apply(xmir).toString();
             },
             this.cache.toPath().resolve(TranspileMojo.CACHE),
@@ -278,7 +276,10 @@ public final class TranspileMojo extends SafeMojo {
                     return new Joined("", xnav.element("java").text().get()).asString();
                 }
             );
-            new FpIfTargetExists(
+            final Footprint both = new FpUpdateBoth(generated, che);
+            new FpIfReleased(
+                this.plugin.getVersion(),
+                hsh,
                 new FpFork(
                     (src, trgt) -> {
                         if (rewrite) {
@@ -291,24 +292,17 @@ public final class TranspileMojo extends SafeMojo {
                         }
                         return rewrite;
                     },
-                    new FpIfReleased(
-                        this.plugin.getVersion(),
-                        hsh,
-                        new FpUpdateBoth(generated, che),
-                        generated
-                    ),
-                    new FpIgnore()
-                ),
-                new FpIfReleased(
-                    this.plugin.getVersion(),
-                    hsh,
+                    both,
                     new FpIfTargetExists(
-                        trgt -> che.get(),
-                        new FpUpdateFromCache(che),
-                        new FpUpdateBoth(generated, che)
-                    ),
-                    generated
-                )
+                        new FpIgnore(),
+                        new FpIfTargetExists(
+                            trgt -> che.get(),
+                            new FpUpdateFromCache(che),
+                            both
+                        )
+                    )
+                ),
+                generated
             ).apply(Paths.get(""), tgt);
         }
         return saved.get();
