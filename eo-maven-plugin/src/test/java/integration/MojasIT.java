@@ -34,6 +34,7 @@ import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.ContainsFiles;
 import org.eolang.maven.ParseMojo;
 import org.eolang.maven.PullMojo;
+import org.eolang.maven.ResolveMojo;
 import org.eolang.maven.ShakeMojo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -59,6 +60,8 @@ final class MojasIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
+                f.dependencies()
+                    .append("org.eolang", "eo-runtime", "0.51.6");
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(MojasIT.helloWorld().getBytes(StandardCharsets.UTF_8));
@@ -67,7 +70,21 @@ final class MojasIT {
                     .appendItself()
                     .execution("tests")
                     .goals("register", "assemble");
-                f.exec("test");
+                f.exec("package");
+                MatcherAssert.assertThat(
+                    String.join(
+                        " ",
+                        "AssembleMojo should have placed runtime",
+                        "library, but didn't"
+                    ),
+                    f.files().file(
+                        String.format(
+                            "target/eo/%s/org.eolang/eo-runtime/-/0.51.6/org/eolang/Phi.class",
+                            ResolveMojo.DIR
+                        )
+                    ).exists(),
+                    Matchers.is(true)
+                );
             }
         );
         MatcherAssert.assertThat(
