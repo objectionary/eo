@@ -40,7 +40,7 @@ final class MsgUnderlinedTest {
 
     @ParameterizedTest
     @MethodSource("examples")
-    void addsUndeline(final String input, final int from, final int length, final String expected) {
+    void addsUnderline(final String input, final int from, final int length, final String expected) {
         MatcherAssert.assertThat(
             "We expect the message to be highlighted with underline characters",
             new MsgUnderlined(input, from, length).formatted(),
@@ -49,7 +49,7 @@ final class MsgUnderlinedTest {
     }
 
     /**
-     * Test cases for {@link MsgUnderlinedTest#addsUndeline}.
+     * Test cases for {@link MsgUnderlinedTest#addsUnderline}.
      * ANTLR {@link  org.antlr.v4.runtime.BaseErrorListener} returns strange line numbers
      * and positions like -1. Here I hide this problem intentionally to make all the rest
      * tests pass.
