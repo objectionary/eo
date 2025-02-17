@@ -40,7 +40,8 @@ final class MsgUnderlinedTest {
 
     @ParameterizedTest
     @MethodSource("examples")
-    void addsUnderline(final String input, final int from, final int length, final String expected) {
+    void addsUnderline(
+        final String input, final int from, final int length, final String expected) {
         MatcherAssert.assertThat(
             "We expect the message to be highlighted with underline characters",
             new MsgUnderlined(input, from, length).formatted(),
