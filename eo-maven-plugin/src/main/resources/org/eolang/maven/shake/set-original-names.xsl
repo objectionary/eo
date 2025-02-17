@@ -37,10 +37,11 @@ SOFTWARE.
         <xsl:text>Only 'o' XML elements are accepted here</xsl:text>
       </xsl:message>
     </xsl:if>
+    <xsl:variable name="parent" select="$o/parent::o"/>
     <xsl:variable name="ret">
       <xsl:choose>
-        <xsl:when test="$o/parent::o">
-          <xsl:value-of select="eo:original-name($program, $o/parent::o)"/>
+        <xsl:when test="$parent">
+          <xsl:value-of select="eo:original-name($program, $parent)"/>
           <xsl:text>.</xsl:text>
         </xsl:when>
       </xsl:choose>
@@ -57,12 +58,12 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="starts-with($o/parent::o/@base, '.') and not($o/preceding-sibling::o)">
+            <xsl:when test="starts-with($parent/@base, '.') and not($o/preceding-sibling::o)">
               <xsl:text>ρ</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>α</xsl:text>
-              <xsl:value-of select="count($o/preceding-sibling::o) - count($o/parent::o[starts-with(@base, '.')])"/>
+              <xsl:value-of select="count($o/preceding-sibling::o) - count($parent[starts-with(@base, '.')])"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
@@ -70,10 +71,10 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$ret"/>
   </xsl:function>
-  <xsl:template match="o">
+  <xsl:template match="o[not(@original-name)]">
     <xsl:copy>
       <xsl:attribute name="original-name" select="eo:original-name(/program, .)"/>
-      <xsl:apply-templates select="node()|@* except @original-name"/>
+      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
