@@ -45,7 +45,7 @@ final class StXPathTest {
             new Xsline(
                 new StEndless(
                     new StXPath(
-                        "(//x[@a and not(@b)])[1]",
+                        "//x[@a and not(@b)]",
                         xml -> new Directives().attr(
                             "b", xml.xpath("text()").get(0)
                         )

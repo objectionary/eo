@@ -23,27 +23,20 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import java.util.List;
-import java.util.function.Function;
-import org.xembly.Directive;
-import org.xembly.Directives;
-import org.xembly.Xembler;
+import java.util.function.Consumer;
+import org.w3c.dom.Node;
 
 /**
  * This {@link Shift} finds all XPath matches and replaces them
- * with what a function suggests.
+ * with what a function suggests using {@link com.github.lombrozo.xnav.Xnav}.
  *
- * @since 0.29.0
+ * @since 0.53.0
  */
-public final class StXPath implements Shift {
-    /**
-     * Xpath for finding first element.
-     */
-    private static final String INDEXED = "(%s)[1]";
-
+public final class StXnav implements Shift {
     /**
      * XPath to search for.
      */
@@ -52,14 +45,14 @@ public final class StXPath implements Shift {
     /**
      * The mapping function.
      */
-    private final Function<XML, Iterable<Directive>> fun;
+    private final Consumer<Xnav> fun;
 
     /**
      * Ctor.
      * @param path The XPath
      * @param func The function
      */
-    public StXPath(final String path, final Function<XML, Iterable<Directive>> func) {
+    public StXnav(final String path, final Consumer<Xnav> func) {
         this.xpath = path;
         this.fun = func;
     }
@@ -71,22 +64,8 @@ public final class StXPath implements Shift {
 
     @Override
     public XML apply(final int position, final XML xml) {
-        final List<XML> nodes = xml.nodes(this.xpath);
-        final XML doc;
-        if (nodes.isEmpty()) {
-            doc = xml;
-        } else {
-            final Directives dirs = new Directives();
-            for (final XML node : nodes) {
-                dirs.xpath(String.format(StXPath.INDEXED, this.xpath))
-                    .strict(1)
-                    .append(this.fun.apply(node));
-            }
-            doc = new XMLDocument(
-                new Xembler(dirs).applyQuietly(xml.inner())
-            );
-        }
-        return doc;
+        final Node dom = xml.inner();
+        new Xnav(dom).path(this.xpath).forEach(this.fun);
+        return new XMLDocument(dom);
     }
-
 }
