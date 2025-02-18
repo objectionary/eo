@@ -57,10 +57,10 @@
 - added: 8
   cycles: 1
   removed: 8
-  seconds: 639.708438887
+  seconds: 411.50912953
   version: 0.31.1
   what: judges-summary
-  when: 2025-02-18 06:22:02.472911902 Z
+  when: 2025-02-18 07:14:51.392886445 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -69486,13 +69486,6 @@
   when: 2025-02-16 07:29:27.000000000 Z
   where: github
   who: 526301
-- _id: 45718
-  _time: 2025-02-16 11:04:58.001244871 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46616305915
-  repository: 798766850
-  what: events-were-scanned
-  where: github
 - _id: 45720
   _time: 2025-02-16 11:05:27.474151712 Z
   _version: 0.5.0/0.31.1/
@@ -69919,20 +69912,6 @@
   repository: 510082372
   what: events-were-scanned
   where: github
-- _id: 46259
-  _time: 2025-02-17 06:15:30.968157343 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46616305191
-  repository: 565789755
-  what: events-were-scanned
-  where: github
-- _id: 46263
-  _time: 2025-02-17 06:16:13.280072642 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 568705267
-  what: events-were-scanned
-  where: github
 - _id: 46267
   _time: 2025-02-17 06:17:04.532741614 Z
   _version: 0.5.0/0.31.1/
@@ -69950,13 +69929,6 @@
   _version: 0.5.0/0.31.1/
   latest: 46459155584
   repository: 510102039
-  what: events-were-scanned
-  where: github
-- _id: 46325
-  _time: 2025-02-17 08:15:00.442321502 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46500232914
-  repository: 721146770
   what: events-were-scanned
   where: github
 - _id: 46327
@@ -70313,20 +70285,6 @@
   where: github
   who: 526301
   why: Reviewed code in objectionary/jeo-maven-plugin#1003
-- _id: 46615
-  _time: 2025-02-17 18:16:40.850165179 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 518891717
-  what: labels-were-scanned
-  where: github
-- _id: 46633
-  _time: 2025-02-17 19:03:28.836207171 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 551486781
-  what: min-issue-was-found
-  where: github
 - _id: 46635
   _time: 2025-02-17 19:03:57.788707493 Z
   _version: 0.5.0/0.31.1/
@@ -70376,20 +70334,6 @@
   repository: 501259435
   what: events-were-scanned
   where: github
-- _id: 46698
-  _time: 2025-02-17 21:07:11.051923654 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 403396472
-  what: events-were-scanned
-  where: github
-- _id: 46700
-  _time: 2025-02-17 21:07:31.884461124 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46616349163
-  repository: 447446664
-  what: events-were-scanned
-  where: github
 - _id: 46702
   _time: 2025-02-17 21:07:52.593422566 Z
   _version: 0.5.0/0.31.1/
@@ -70397,47 +70341,12 @@
   repository: 559427983
   what: events-were-scanned
   where: github
-- _id: 46703
-  _time: 2025-02-17 21:08:03.007354949 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46628543244
-  repository: 386420319
-  what: events-were-scanned
-  where: github
-- _id: 46704
-  _time: 2025-02-17 21:08:21.044614141 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 510102039
-  what: labels-were-scanned
-  where: github
 - _id: 46708
   _time: 2025-02-17 21:09:01.166149952 Z
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 551486781
   what: labels-were-scanned
-  where: github
-- _id: 46709
-  _time: 2025-02-17 21:09:11.343124731 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 581460427
-  what: labels-were-scanned
-  where: github
-- _id: 46716
-  _time: 2025-02-17 22:07:36.565400820 Z
-  _version: 0.5.0/0.31.1/
-  latest: 1
-  repository: 489321585
-  what: min-issue-was-found
-  where: github
-- _id: 46718
-  _time: 2025-02-17 22:07:55.602889873 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 721146770
-  what: min-issue-was-found
   where: github
 - _id: 46728
   _time: 2025-02-17 22:09:34.365688428 Z
@@ -70459,13 +70368,6 @@
   latest: 0
   repository: 396732517
   what: labels-were-scanned
-  where: github
-- _id: 46744
-  _time: 2025-02-17 23:08:03.814142414 Z
-  _version: 0.5.0/0.31.1/
-  latest: 3
-  repository: 889819508
-  what: min-issue-was-found
   where: github
 - _id: 46749
   _time: 2025-02-17 23:08:55.334980729 Z
@@ -70516,26 +70418,12 @@
   repository: 570457023
   what: min-issue-was-found
   where: github
-- _id: 46773
-  _time: 2025-02-18 00:37:59.126542025 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 362152931
-  what: min-issue-was-found
-  where: github
 - _id: 46776
   _time: 2025-02-18 00:38:35.380874566 Z
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 568705267
   what: min-issue-was-found
-  where: github
-- _id: 46777
-  _time: 2025-02-18 00:39:03.682761768 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46383843355
-  repository: 492899189
-  what: events-were-scanned
   where: github
 - _id: 46780
   _time: 2025-02-18 00:39:38.326180251 Z
@@ -70591,32 +70479,11 @@
   when: 2024-11-28 12:15:02.000000000 Z
   where: github
   who: 51804353
-- _id: 46801
-  _time: 2025-02-18 02:09:37.311392247 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 483303722
-  what: min-issue-was-found
-  where: github
-- _id: 46802
-  _time: 2025-02-18 02:09:46.386764176 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 558766137
-  what: min-issue-was-found
-  where: github
 - _id: 46803
   _time: 2025-02-18 02:09:55.589722504 Z
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 403396472
-  what: min-issue-was-found
-  where: github
-- _id: 46804
-  _time: 2025-02-18 02:10:04.827902884 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 447446664
   what: min-issue-was-found
   where: github
 - _id: 46805
@@ -70652,25 +70519,11 @@
   when: 2024-06-06 08:53:12.000000000 Z
   where: github
   who: 526301
-- _id: 46817
-  _time: 2025-02-18 02:14:49.757988791 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 510082372
-  what: labels-were-scanned
-  where: github
 - _id: 46819
   _time: 2025-02-18 02:15:08.731165372 Z
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 490221501
-  what: labels-were-scanned
-  where: github
-- _id: 46820
-  _time: 2025-02-18 02:15:18.207684249 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 373900298
   what: labels-were-scanned
   where: github
 - _id: 46823
@@ -70686,13 +70539,6 @@
   latest: 280
   repository: 489321585
   what: labels-were-scanned
-  where: github
-- _id: 46828
-  _time: 2025-02-18 03:12:32.241800514 Z
-  _version: 0.5.0/0.31.1/
-  latest: 1
-  repository: 840332960
-  what: min-issue-was-found
   where: github
 - _id: 46831
   _time: 2025-02-18 03:13:02.996167548 Z
@@ -70720,13 +70566,6 @@
   _version: 0.5.0/0.31.1/
   latest: 46616301401
   repository: 483303722
-  what: events-were-scanned
-  where: github
-- _id: 46839
-  _time: 2025-02-18 03:14:42.367709451 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46606888307
-  repository: 575859928
   what: events-were-scanned
   where: github
 - _id: 46840
@@ -70783,20 +70622,6 @@
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 575859928
-  what: labels-were-scanned
-  where: github
-- _id: 46851
-  _time: 2025-02-18 03:18:43.208311412 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 624420387
-  what: labels-were-scanned
-  where: github
-- _id: 46852
-  _time: 2025-02-18 03:18:53.185166075 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 403396472
   what: labels-were-scanned
   where: github
 - _id: 46855
@@ -70890,13 +70715,6 @@
   repository: 581460427
   what: events-were-scanned
   where: github
-- _id: 46871
-  _time: 2025-02-18 04:12:52.002248834 Z
-  _version: 0.5.0/0.31.1/
-  latest: 44833108021
-  repository: 624420387
-  what: events-were-scanned
-  where: github
 - _id: 46874
   _time: 2025-02-18 04:15:51.754809401 Z
   _version: 0.5.0/0.31.1/
@@ -70932,13 +70750,6 @@
   repository: 501942888
   what: labels-were-scanned
   where: github
-- _id: 46884
-  _time: 2025-02-18 04:17:29.541262966 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 493235807
-  what: labels-were-scanned
-  where: github
 - _id: 46885
   _time: 2025-02-18 04:17:39.114249972 Z
   _version: 0.5.0/0.31.1/
@@ -70951,32 +70762,11 @@
   _version: 0.5.2/0.31.1/0.0.67
   what: learn-eva
   when: 2025-02-18 04:24:01.134392504 Z
-- _id: 46887
-  _time: 2025-02-18 05:08:40.515520223 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 510082372
-  what: min-issue-was-found
-  where: github
-- _id: 46888
-  _time: 2025-02-18 05:08:50.627755396 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 490157985
-  what: min-issue-was-found
-  where: github
 - _id: 46891
   _time: 2025-02-18 05:09:21.640053792 Z
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 574459304
-  what: min-issue-was-found
-  where: github
-- _id: 46892
-  _time: 2025-02-18 05:09:32.013713261 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 552394123
   what: min-issue-was-found
   where: github
 - _id: 46894
@@ -71040,13 +70830,6 @@
   repository: 490258619
   what: labels-were-scanned
   where: github
-- _id: 46904
-  _time: 2025-02-18 05:14:47.753790957 Z
-  _version: 0.5.0/0.31.1/
-  latest: 62
-  repository: 13623548
-  what: labels-were-scanned
-  where: github
 - _id: 46905
   _time: 2025-02-18 05:14:58.018877837 Z
   _version: 0.5.0/0.31.1/
@@ -71081,13 +70864,6 @@
   when: 2024-11-29 08:41:51.000000000 Z
   where: github
   who: 51804353
-- _id: 46910
-  _time: 2025-02-18 05:15:50.098317404 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 562850967
-  what: labels-were-scanned
-  where: github
 - _id: 46911
   _time: 2025-02-18 06:11:44.690380667 Z
   _version: 0.5.0/0.31.1/
@@ -71121,13 +70897,6 @@
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 574534248
-  what: min-issue-was-found
-  where: github
-- _id: 46916
-  _time: 2025-02-18 06:12:32.920474408 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 531151981
   what: min-issue-was-found
   where: github
 - _id: 46917
@@ -71179,25 +70948,11 @@
   repository: 492899189
   what: min-issue-was-found
   where: github
-- _id: 46924
-  _time: 2025-02-18 06:14:03.925161494 Z
-  _version: 0.5.0/0.31.1/
-  latest: 45742056962
-  repository: 501942888
-  what: events-were-scanned
-  where: github
 - _id: 46925
   _time: 2025-02-18 06:14:13.942344067 Z
   _version: 0.5.0/0.31.1/
   latest: 46498652975
   repository: 570457023
-  what: events-were-scanned
-  where: github
-- _id: 46926
-  _time: 2025-02-18 06:14:24.006274877 Z
-  _version: 0.5.0/0.31.1/
-  latest: 46616352214
-  repository: 493235807
   what: events-were-scanned
   where: github
 - _id: 46927
@@ -71233,13 +70988,6 @@
   _version: 0.5.0/0.31.1/
   latest: 0
   repository: 362152931
-  what: labels-were-scanned
-  where: github
-- _id: 46932
-  _time: 2025-02-18 06:17:42.807892765 Z
-  _version: 0.5.0/0.31.1/
-  latest: 0
-  repository: 552394123
   what: labels-were-scanned
   where: github
 - _id: 46933
@@ -71291,16 +71039,11 @@
   repository: 731516758
   what: labels-were-scanned
   where: github
-- _id: 46940
-  _time: 2025-02-18 06:19:02.328303180 Z
-  _version: 0.5.0/0.31.1/
-  latest: 918
-  repository: 671896902
-  what: labels-were-scanned
-  where: github
 - _id: 46941
   _time: 2025-02-18 06:21:23.309911335 Z
   _version: 0.5.0/0.31.1/
+  composite: 141.838
+  ffact: 676
   since: 2025-02-11 06:19:12.140390990 Z
   total_commits_pushed: 170
   total_hoc_committed: 11891
@@ -71309,3 +71052,274 @@
   total_releases_published: 4
   what: quantity-of-deliverables
   when: 2025-02-18 06:19:12.140348111 Z
+- _id: 46942
+  _time: 2025-02-18 07:08:18.704296858 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 531151981
+  what: min-issue-was-found
+  where: github
+- _id: 46943
+  _time: 2025-02-18 07:08:28.367620105 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 490157985
+  what: min-issue-was-found
+  where: github
+- _id: 46944
+  _time: 2025-02-18 07:08:38.046356968 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 362152931
+  what: min-issue-was-found
+  where: github
+- _id: 46945
+  _time: 2025-02-18 07:08:47.660914391 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 552394123
+  what: min-issue-was-found
+  where: github
+- _id: 46946
+  _time: 2025-02-18 07:08:57.271045984 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 510082372
+  what: min-issue-was-found
+  where: github
+- _id: 46947
+  _time: 2025-02-18 07:09:07.683105103 Z
+  _version: 0.5.0/0.31.1/
+  latest: 1
+  repository: 840332960
+  what: min-issue-was-found
+  where: github
+- _id: 46948
+  _time: 2025-02-18 07:09:17.427392335 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 558766137
+  what: min-issue-was-found
+  where: github
+- _id: 46949
+  _time: 2025-02-18 07:09:27.152273656 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 483303722
+  what: min-issue-was-found
+  where: github
+- _id: 46950
+  _time: 2025-02-18 07:09:37.337289708 Z
+  _version: 0.5.0/0.31.1/
+  latest: 3
+  repository: 889819508
+  what: min-issue-was-found
+  where: github
+- _id: 46951
+  _time: 2025-02-18 07:09:47.100091209 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 447446664
+  what: min-issue-was-found
+  where: github
+- _id: 46952
+  _time: 2025-02-18 07:09:57.550743127 Z
+  _version: 0.5.0/0.31.1/
+  latest: 1
+  repository: 489321585
+  what: min-issue-was-found
+  where: github
+- _id: 46953
+  _time: 2025-02-18 07:10:07.279716942 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 551486781
+  what: min-issue-was-found
+  where: github
+- _id: 46954
+  _time: 2025-02-18 07:10:17.043796783 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 721146770
+  what: min-issue-was-found
+  where: github
+- _id: 46955
+  _time: 2025-02-18 07:10:35.344114166 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46616305191
+  repository: 565789755
+  what: events-were-scanned
+  where: github
+- _id: 46956
+  _time: 2025-02-18 07:10:54.938423057 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46660163434
+  repository: 492899189
+  what: events-were-scanned
+  where: github
+- _id: 46957
+  _time: 2025-02-18 07:11:04.814436495 Z
+  _version: 0.5.0/0.31.1/
+  latest: 45742056962
+  repository: 501942888
+  what: events-were-scanned
+  where: github
+- _id: 46958
+  _time: 2025-02-18 07:11:14.692094364 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46606888307
+  repository: 575859928
+  what: events-were-scanned
+  where: github
+- _id: 46959
+  _time: 2025-02-18 07:11:24.696419637 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46616352214
+  repository: 493235807
+  what: events-were-scanned
+  where: github
+- _id: 46960
+  _time: 2025-02-18 07:11:34.737473738 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 568705267
+  what: events-were-scanned
+  where: github
+- _id: 46961
+  _time: 2025-02-18 07:11:44.811552049 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46616349163
+  repository: 447446664
+  what: events-were-scanned
+  where: github
+- _id: 46962
+  _time: 2025-02-18 07:11:54.938539673 Z
+  _version: 0.5.0/0.31.1/
+  latest: 44833108021
+  repository: 624420387
+  what: events-were-scanned
+  where: github
+- _id: 46963
+  _time: 2025-02-18 07:12:05.006605961 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46628543244
+  repository: 386420319
+  what: events-were-scanned
+  where: github
+- _id: 46964
+  _time: 2025-02-18 07:12:15.162645341 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46616305915
+  repository: 798766850
+  what: events-were-scanned
+  where: github
+- _id: 46965
+  _time: 2025-02-18 07:12:25.107864328 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 403396472
+  what: events-were-scanned
+  where: github
+- _id: 46966
+  _time: 2025-02-18 07:12:35.221232493 Z
+  _version: 0.5.0/0.31.1/
+  latest: 46500232914
+  repository: 721146770
+  what: events-were-scanned
+  where: github
+- _id: 46967
+  _time: 2025-02-18 07:12:53.799743409 Z
+  _version: 0.5.0/0.31.1/
+  details: The '#enhancement' label was attached by @volodya-lombrozo to the issue
+    objectionary/jeo-maven-plugin#920.
+  issue: 920
+  label: enhancement
+  repository: 671896902
+  what: label-was-attached
+  when: 2024-11-29 13:03:56.000000000 Z
+  where: github
+  who: 51804353
+- _id: 46968
+  _time: 2025-02-18 07:13:03.517322619 Z
+  _version: 0.5.0/0.31.1/
+  latest: 920
+  repository: 671896902
+  what: labels-were-scanned
+  where: github
+- _id: 46969
+  _time: 2025-02-18 07:13:13.240786478 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 581460427
+  what: labels-were-scanned
+  where: github
+- _id: 46970
+  _time: 2025-02-18 07:13:22.947875921 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 510082372
+  what: labels-were-scanned
+  where: github
+- _id: 46971
+  _time: 2025-02-18 07:13:32.664456771 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 552394123
+  what: labels-were-scanned
+  where: github
+- _id: 46972
+  _time: 2025-02-18 07:13:42.357448450 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 510102039
+  what: labels-were-scanned
+  where: github
+- _id: 46973
+  _time: 2025-02-18 07:13:52.204388552 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 493235807
+  what: labels-were-scanned
+  where: github
+- _id: 46974
+  _time: 2025-02-18 07:14:01.997149997 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 518891717
+  what: labels-were-scanned
+  where: github
+- _id: 46975
+  _time: 2025-02-18 07:14:11.963012255 Z
+  _version: 0.5.0/0.31.1/
+  latest: 83
+  repository: 13623548
+  what: labels-were-scanned
+  where: github
+- _id: 46976
+  _time: 2025-02-18 07:14:21.786856237 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 373900298
+  what: labels-were-scanned
+  where: github
+- _id: 46977
+  _time: 2025-02-18 07:14:31.615586626 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 624420387
+  what: labels-were-scanned
+  where: github
+- _id: 46978
+  _time: 2025-02-18 07:14:41.399708277 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 562850967
+  what: labels-were-scanned
+  where: github
+- _id: 46979
+  _time: 2025-02-18 07:14:51.191505084 Z
+  _version: 0.5.0/0.31.1/
+  latest: 0
+  repository: 403396472
+  what: labels-were-scanned
+  where: github
