@@ -79,31 +79,31 @@ final class AssembleMojoIT {
                     ).exists(),
                     Matchers.is(true)
                 );
+                MatcherAssert.assertThat(
+                    String.format(
+                        "AssembleMojo should have parsed stdout object %s, but didn't",
+                        parsed
+                    ),
+                    f.files().file(parsed).exists(),
+                    Matchers.is(true)
+                );
+                MatcherAssert.assertThat(
+                    String.format(
+                        "AssembleMojo should have optimized stdout object %s, but didn't",
+                        optimized
+                    ),
+                    f.files().file(optimized).exists(),
+                    Matchers.is(true)
+                );
+                MatcherAssert.assertThat(
+                    String.format(
+                        "AssembleMojo should have pulled stdout object %s, but didn't",
+                        pulled
+                    ),
+                    f.files().file(pulled).exists(),
+                    Matchers.is(true)
+                );
             }
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should have parsed stdout object %s, but didn't",
-                parsed
-            ),
-            temp.resolve(parsed).toFile().exists(),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should have optimized stdout object %s, but didn't",
-                optimized
-            ),
-            temp.resolve(optimized).toFile().exists(),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "AssembleMojo should have pulled stdout object %s, but didn't",
-                pulled
-            ),
-            temp.resolve(pulled).toFile().exists(),
-            Matchers.is(true)
         );
     }
 
@@ -131,17 +131,17 @@ final class AssembleMojoIT {
                     .execution("tests")
                     .goals("register", "parse", "shake");
                 f.exec("test");
+                MatcherAssert.assertThat(
+                    "Even if the eo program invalid we still have to parse it, but we didn't",
+                    temp.resolve(String.format("target/eo/%s", ParseMojo.DIR)).toAbsolutePath(),
+                    new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
+                );
+                MatcherAssert.assertThat(
+                    "Even if the eo program invalid we still have to optimize it, but we didn't",
+                    temp.resolve(String.format("target/eo/%s", ShakeMojo.DIR)).toAbsolutePath(),
+                    new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
+                );
             }
-        );
-        MatcherAssert.assertThat(
-            "Even if the eo program invalid we still have to parse it, but we didn't",
-            temp.resolve(String.format("target/eo/%s", ParseMojo.DIR)).toAbsolutePath(),
-            new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
-        );
-        MatcherAssert.assertThat(
-            "Even if the eo program invalid we still have to optimize it, but we didn't",
-            temp.resolve(String.format("target/eo/%s", ShakeMojo.DIR)).toAbsolutePath(),
-            new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
     }
 
@@ -161,14 +161,22 @@ final class AssembleMojoIT {
                     .configuration()
                     .set("trackTransformationSteps", Boolean.TRUE.toString());
                 f.exec("test");
+                MatcherAssert.assertThat(
+                    String.join(
+                        "\n",
+                        "AssembleMojo should have configured parameters",
+                        "within the Mojos that it uses, but it didn't"
+                    ),
+                    f.files().file(
+                        String.format(
+                            "target/eo/%s/one/main.%s",
+                            ShakeMojo.DIR,
+                            AssembleMojo.XMIR
+                        )
+                    ).exists(),
+                    Matchers.is(true)
+                );
             }
-        );
-        MatcherAssert.assertThat(
-            "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
-            temp.resolve(
-                String.format("target/eo/%s/one/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
-            ).toFile().exists(),
-            Matchers.is(true)
         );
     }
 
@@ -178,9 +186,6 @@ final class AssembleMojoIT {
             "+alias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
-            "+unlint object-has-data",
-            "+unlint broken-alias-second",
-            "+unlint incorrect-alias",
             "+version 0.0.0",
             "",
             "# No comments.",
