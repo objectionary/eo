@@ -42,7 +42,12 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
+                    String.join(
+                        "",
+                        "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o>",
+                        "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o>",
+                        "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
+                    )
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='72872276393407200']")
@@ -73,7 +78,9 @@ final class StUnhexTest {
                     String.join(
                         "",
                         "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42-0A-09</o></o>",
-                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42</o></o></p>"
+                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42</o></o>",
+                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42-43</o></o>",
+                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42-43-44</o></o></p>"
                     )
                 )
             ),

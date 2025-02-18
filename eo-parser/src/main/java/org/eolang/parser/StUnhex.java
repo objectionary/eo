@@ -24,14 +24,13 @@
 package org.eolang.parser;
 
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * This {@link Shift} turns hex data inside XMIR
@@ -40,42 +39,38 @@ import org.xembly.Directives;
  * @since 0.29.0
  */
 final class StUnhex extends StEnvelope {
-
     /**
      * Ctor.
      */
     StUnhex() {
         super(
-            new StEndless(
-                new StSequence(
-                    StUnhex.class.getSimpleName(),
-                    new StXPath(
-                        StUnhex.xpath("number"),
-                        xml -> {
-                            final double number = StUnhex.buffer(
-                                StUnhex.undash(xml.xpath("./o/text()").get(0))
-                            ).getDouble();
-                            final Iterable<Directive> dirs;
-                            if (Double.isNaN(number) || Double.isInfinite(number)) {
-                                dirs = new Directives().attr("skip", "");
-                            } else {
-                                dirs = StUnhex.append(StUnhex.number(number));
-                            }
-                            return dirs;
+            new StSequence(
+                StUnhex.class.getSimpleName(),
+                new StXnav(
+                    StUnhex.xpath("number"),
+                    xnav -> {
+                        final double number = StUnhex.buffer(
+                            StUnhex.undash(xnav.element("o").text().orElse(""))
+                        ).getDouble();
+                        final Node node = xnav.node();
+                        if (Double.isNaN(number) || Double.isInfinite(number)) {
+                            ((Element) node).setAttribute("skip", "");
+                        } else {
+                            node.setTextContent(StUnhex.number(number));
                         }
-                    ),
-                    new StXPath(
-                        StUnhex.xpath("string"),
-                        xml -> StUnhex.append(
-                            String.format(
-                                "\"%s\"",
-                                StringEscapeUtils.escapeJava(
-                                    new String(
-                                        StUnhex.buffer(
-                                            StUnhex.undash(xml.xpath("./o/text()").get(0))
-                                        ).array(),
-                                        StandardCharsets.UTF_8
-                                    )
+                    }
+                ),
+                new StXnav(
+                    StUnhex.xpath("string"),
+                    xnav -> xnav.node().setTextContent(
+                        String.format(
+                            "\"%s\"",
+                            StringEscapeUtils.escapeJava(
+                                new String(
+                                    StUnhex.buffer(
+                                        StUnhex.undash(xnav.element("o").text().orElse(""))
+                                    ).array(),
+                                    StandardCharsets.UTF_8
                                 )
                             )
                         )
@@ -148,17 +143,8 @@ final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[@base='Q.org.eolang.%1$s' and(not(@skip)) and o[1][@base='Q.org.eolang.bytes' and not(o) and string-length(normalize-space(text()))>0]])[1]",
+            "//o[@base='Q.org.eolang.%1$s' and(not(@skip)) and o[1][@base='Q.org.eolang.bytes' and not(o) and string-length(normalize-space(text()))>0]]",
             type
         );
-    }
-
-    /**
-     * Append Xemply instructions.
-     * @param after Value after
-     * @return Dirs
-     */
-    private static Iterable<Directive> append(final String after) {
-        return new Directives().set(after);
     }
 }
