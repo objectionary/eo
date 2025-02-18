@@ -65,7 +65,8 @@ public interface Attr {
     /**
      * Put a new object in.
      *
+     * @param pos The position
      * @param phi The object to put
      */
-    void put(Phi phi);
+    void put(int pos, Phi phi);
 }
