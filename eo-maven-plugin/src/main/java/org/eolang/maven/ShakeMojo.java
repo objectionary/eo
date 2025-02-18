@@ -54,7 +54,7 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * The directory where to shake to.
      */
-    public static final String DIR = "2-shake";
+    static final String DIR = "2-shake";
 
     /**
      * Subdirectory for shaken cache.

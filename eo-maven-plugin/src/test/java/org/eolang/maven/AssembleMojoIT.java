@@ -129,7 +129,7 @@ final class AssembleMojoIT {
                     .plugins()
                     .appendItself()
                     .execution("tests")
-                    .goals("register", "parse", "shake");
+                    .goals("register", "assemble");
                 f.exec("test");
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
