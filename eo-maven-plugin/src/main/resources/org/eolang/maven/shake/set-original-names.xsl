@@ -39,12 +39,10 @@ SOFTWARE.
     </xsl:if>
     <xsl:variable name="parent" select="$o/parent::o"/>
     <xsl:variable name="ret">
-      <xsl:choose>
-        <xsl:when test="$parent">
-          <xsl:value-of select="eo:original-name($program, $parent)"/>
-          <xsl:text>.</xsl:text>
-        </xsl:when>
-      </xsl:choose>
+      <xsl:if test="$parent">
+        <xsl:value-of select="eo:original-name($program, $parent)"/>
+        <xsl:text>.</xsl:text>
+      </xsl:if>
       <xsl:choose>
         <xsl:when test="$o/@name">
           <xsl:choose>
@@ -73,8 +71,9 @@ SOFTWARE.
   </xsl:function>
   <xsl:template match="o[not(@original-name)]">
     <xsl:copy>
+      <xsl:apply-templates select="@*"/>
       <xsl:attribute name="original-name" select="eo:original-name(/program, .)"/>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
