@@ -25,19 +25,20 @@ sheets:
   - /org/eolang/maven/shake/add-probes.xsl
   - /org/eolang/maven/shake/set-locators.xsl
   - /org/eolang/maven/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/shake/set-original-names.xsl
 asserts:
   - /program[not(errors)]
-  - //o[@name='a' and @loc='Φ.org.abc.a']
-  - //o[@base='Q.x' and @loc='Φ.org.abc.a.φ.α0']
-  - //o[@base='Q.org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0']
-  - //o[@base='Q.x' and @name='tt' and @loc='Φ.org.abc.tt']
-  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α0']
-  - //o[@base='Q.org.eolang.tuple.empty.with' and @loc='Φ.org.abc.tt.α1.ρ']
-  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α1.ρ.α0']
-  - //o[not(@base) and @loc='Φ.org.abc.tt.α2']
-  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e']
-  - //o[@base='$.e.hello' and @loc='Φ.org.abc.tt.α2.φ']
-  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.q']
+  - //o[@name='a' and @loc='Φ.org.abc.a' and @original-name='a']
+  - //o[@base='Q.x' and @loc='Φ.org.abc.a.φ.α0' and @original-name='a.φ.α0']
+  - //o[@base='Q.org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0' and @original-name='a.φ.α0.α0']
+  - //o[@base='Q.x' and @name='tt' and @loc='Φ.org.abc.tt' and @original-name='tt']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α0' and @original-name='tt.α0']
+  - //o[@base='Q.org.eolang.tuple.empty.with' and @loc='Φ.org.abc.tt.α1.ρ' and @original-name='tt.α1.ρ']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α1.ρ.α0' and @original-name='tt.α1.ρ.α0']
+  - //o[not(@base) and @loc='Φ.org.abc.tt.α2' and @original-name='tt.α2']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e' and @original-name='tt.α2.e']
+  - //o[@base='$.e.hello' and @loc='Φ.org.abc.tt.α2.φ' and @original-name='tt.α2.φ']
+  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.q' and @original-name='q']
 input: |
   +alias org.abc.foo.b
   +alias x
