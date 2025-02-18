@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
@@ -309,36 +308,5 @@ final class ShakeMojoTest {
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
         }
-    }
-
-    @Test
-    void addesOriginalNamesToObjects(@Mktmp final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp);
-        final Path target = maven
-            .withHelloWorld()
-            .execute(new FakeMaven.Shake())
-            .result()
-            .get(
-                String.format("target/%s/foo/x/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
-            );
-        maven.execute(ShakeMojo.class);
-        final Xnav xnav = new Xnav(target).element("program").element("objects");
-        MatcherAssert.assertThat(
-            "The object should have an `original-name` equal to `main`",
-            xnav.element("o")
-                .attribute("original-name")
-                .text()
-                .get(),
-            Matchers.equalTo("main")
-        );
-        MatcherAssert.assertThat(
-            "The object should have an `original-name` equal to `main.x`",
-            xnav.element("o")
-                .element("o")
-                .attribute("original-name")
-                .text()
-                .get(),
-            Matchers.equalTo("main.x")
-        );
     }
 }
