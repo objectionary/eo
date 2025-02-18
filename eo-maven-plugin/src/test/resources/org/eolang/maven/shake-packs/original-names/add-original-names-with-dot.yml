@@ -34,7 +34,7 @@ document:
     </objects>
   </program>
 asserts:
-  - /program/objects/o[@originl-name='a' and @base='.a']
-  - /program/objects/o/o[1][@originl-name='a.ρ' and @base='b']
-  - /program/objects/o/o[2][@originl-name='a.α0' and @base='c']
-  - /program/objects/o/o[3][@originl-name='a.α1' and @base='d']
+  - /program/objects/o[@original-name='a' and @base='.a']
+  - /program/objects/o/o[1][@original-name='a.ρ' and @base='b']
+  - /program/objects/o/o[2][@original-name='a.α0' and @base='c']
+  - /program/objects/o/o[3][@original-name='a.α1' and @base='d']
