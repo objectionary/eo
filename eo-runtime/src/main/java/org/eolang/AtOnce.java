@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import com.ibm.icu.text.RuleBasedNumberFormat;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -84,7 +86,10 @@ public final class AtOnce implements Attr {
         throw new ExReadOnly(
             String.format(
                 "There are no void attributes left, can't set the %s one",
-                pos
+                new RuleBasedNumberFormat(
+                    Locale.ENGLISH,
+                    RuleBasedNumberFormat.ORDINAL
+                ).format(pos)
             )
         );
     }
