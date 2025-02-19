@@ -21,27 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
+
+import com.jcabi.log.Logger;
+import java.nio.file.Path;
+import java.util.function.Supplier;
+import org.cactoos.text.TextOf;
 
 /**
- * Footprint throws exception if source file does not exist.
+ * Footprint that updates target from cache.
  * @since 0.41
  */
-public final class FpExistedSource extends FpEnvelope {
-
+final class FpUpdateFromCache extends FpEnvelope {
     /**
      * Ctor.
-     * @param footprint Original footprint
+     * @param cache Lazy path to cache
      */
-    public FpExistedSource(final Footprint footprint) {
+    FpUpdateFromCache(final Supplier<Path> cache) {
         super(
             (source, target) -> {
-                if (!source.toFile().exists()) {
-                    throw new IllegalStateException(
-                        String.format("Source file %s does not exist", source)
-                    );
-                }
-                return footprint.apply(source, target);
+                Logger.debug(
+                    FpUpdateFromCache.class,
+                    "Updating only target %[file]s from cache %[file]s",
+                    target, source
+                );
+                return new Saved(new TextOf(cache.get()), target).value();
             }
         );
     }

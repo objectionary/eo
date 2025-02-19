@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * Function that builds full path to file in global cache.
  * @since 0.41
  */
-public final class CachePath implements Supplier<Path> {
+final class CachePath implements Supplier<Path> {
     /**
      * Cache base directory.
      */
@@ -59,7 +59,7 @@ public final class CachePath implements Supplier<Path> {
      * @param tail The last part of absolute cache path
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public CachePath(
+    CachePath(
         final Path base, final String semver, final String hash, final Path tail
     ) {
         this(base, semver, () -> hash, tail);
@@ -73,7 +73,7 @@ public final class CachePath implements Supplier<Path> {
      * @param tail The last part of absolute cache path
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public CachePath(
+    CachePath(
         final Path base, final String semver, final Supplier<String> hash, final Path tail
     ) {
         this.base = base;

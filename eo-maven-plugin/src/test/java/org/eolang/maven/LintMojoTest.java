@@ -34,8 +34,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;

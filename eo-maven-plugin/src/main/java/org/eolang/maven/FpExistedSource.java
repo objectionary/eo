@@ -21,7 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
+
 /**
- * Footprint tests.
+ * Footprint throws exception if source file does not exist.
+ * @since 0.41
  */
-package org.eolang.maven.footprint;
+final class FpExistedSource extends FpEnvelope {
+
+    /**
+     * Ctor.
+     * @param footprint Original footprint
+     */
+    public FpExistedSource(final Footprint footprint) {
+        super(
+            (source, target) -> {
+                if (!source.toFile().exists()) {
+                    throw new IllegalStateException(
+                        String.format("Source file %s does not exist", source)
+                    );
+                }
+                return footprint.apply(source, target);
+            }
+        );
+    }
+}

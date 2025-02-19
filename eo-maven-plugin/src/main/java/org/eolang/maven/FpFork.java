@@ -21,49 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
-import java.nio.file.Files;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.Md5DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.InputOf;
+import org.cactoos.BiFunc;
+import org.cactoos.func.UncheckedBiFunc;
 
 /**
- * MD5 hash of a file (its content).
- *
- * @since 0.24
+ * Footprint that behaves like one of the given {@link Footprint}s depending on the give
+ * condition.
+ * @since 0.41
  */
-public final class FileHash {
+final class FpFork implements Footprint {
+    /**
+     * Lazy condition.
+     */
+    private final UncheckedBiFunc<Path, Path, Boolean> condition;
 
     /**
-     * The file.
+     * First wrapped footprint.
      */
-    private final Path file;
+    private final Footprint first;
+
+    /**
+     * Second wrapped footprint.
+     */
+    private final Footprint second;
 
     /**
      * Ctor.
-     * @param path The name of the file
+     * @param condition Lazy condition
+     * @param first First wrapped condition
+     * @param second Second wrapped condition
      */
-    public FileHash(final Path path) {
-        this.file = path;
+    FpFork(
+        final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second
+    ) {
+        this.condition = new UncheckedBiFunc<>(condition);
+        this.first = first;
+        this.second = second;
     }
 
     @Override
-    public String toString() {
-        final String hash;
-        if (Files.exists(this.file)) {
-            hash = Arrays.toString(
-                new UncheckedBytes(
-                    new Md5DigestOf(new InputOf(new BytesOf(this.file)))
-                ).asBytes()
-            );
+    public Path apply(final Path source, final Path target) throws IOException {
+        final Footprint footprint;
+        if (this.condition.apply(source, target)) {
+            footprint = this.first;
         } else {
-            hash = "";
+            footprint = this.second;
         }
-        return hash;
+        return footprint.apply(source, target);
     }
-
 }

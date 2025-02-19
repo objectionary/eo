@@ -21,32 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
-import java.io.IOException;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.cactoos.list.ListOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Wrapper for footprint.
- * @since 0.41
- * @checkstyle DesignForExtensionCheck (50 lines)
+ * Test case for {@link Walk}.
+ *
+ * @since 0.11
  */
-public class FpEnvelope implements Footprint {
-    /**
-     * Wrapped footprint.
-     */
-    private final Footprint origin;
+@ExtendWith(MktmpResolver.class)
+final class WalkTest {
 
-    /**
-     * Ctor.
-     * @param footprint Wrapped footprint
-     */
-    public FpEnvelope(final Footprint footprint) {
-        this.origin = footprint;
+    @Test
+    void findsFiles(@Mktmp final Path temp) throws Exception {
+        new HmBase(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
+        new HmBase(temp).save("", Paths.get("EOxxx/bar"));
+        MatcherAssert.assertThat(
+            "Walk is not iterable with more than 1 item, but it must be",
+            new Walk(temp).includes(new ListOf<>("EO**/*")),
+            Matchers.iterableWithSize(1)
+        );
     }
 
-    @Override
-    public Path apply(final Path source, final Path target) throws IOException {
-        return this.origin.apply(source, target);
-    }
 }

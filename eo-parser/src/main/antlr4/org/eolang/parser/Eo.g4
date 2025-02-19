@@ -65,20 +65,14 @@ commentMandatory
 // Object
 // Ends on the next line
 object
-    : master
-    | slave
+    : commentMandatory masterBody
+    | bound
     ;
 
 // Objects that may be used inside abstract object
 // Ends on the next line
-slave
+bound
     : commentOptional (application | (methodNamed | justNamed) EOL)
-    ;
-
-// Indeprendent objects that may have slaves (except atom)
-// Ends on the next line
-master
-    : commentMandatory masterBody
     ;
 
 subMaster
@@ -102,7 +96,7 @@ justNamed
 
 // Atom - abstract object with mandatory name and type
 // Can't contain inner objects
-atom: voids suffix type
+atom: voids suffix SPACE SLASH typeFqn
     ;
 
 // Formation - abstract object with mandatory name
@@ -124,7 +118,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
+    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
     ;
 
 // Void attributes of an abstract object, atom or horizontal anonym object
@@ -135,10 +129,6 @@ voids
 // Void attribute
 void: NAME
     | PHI
-    ;
-
-// Type of atom
-type: SPACE SLASH typeFqn
     ;
 
 // Type FQN
@@ -172,7 +162,7 @@ happlicationExtended
 
 // Reversed horizontal application
 happlicationReversed
-    : reversed happlicationTailReversed
+    : reversed SPACE happlicationTailReversedFirst happlicationTail?
     ;
 
 // Head of horizontal application
@@ -200,10 +190,6 @@ applicable
 happlicationTail
     : (SPACE happlicationArg as)+
     | (SPACE happlicationArg)+
-    ;
-
-happlicationTailReversed
-    : SPACE happlicationTailReversedFirst happlicationTail?
     ;
 
 // The rule is separated because we should enter to the last object
@@ -245,11 +231,6 @@ vapplicationHeadNamed
     : vapplicationHead oname?
     ;
 
-// Vertical application head with binding
-vapplicationHeadAs
-    : vapplicationHead as
-    ;
-
 // Vertical application arguments
 // Ends on the next line
 vapplicationArgs
@@ -278,16 +259,16 @@ vapplicationArgBound
 // Vertical application arguments with bindings
 // Ends on the current line
 vapplicationArgBoundCurrent
-    : vapplicationArgHapplicationBound // horizontal application
-    | vapplicationArgHanonymBound // horizontal anonym object
+    : LB happlicationExtended RB as oname? // horizontal application
+    | commentOptional LB hanonym RB as fname? // horizontal anonym object
     | (just | method) as oname? // just an object reference | method
     ;
 
 // Vertical application arguments with bindings
 // Ends on the next line
 vapplicationArgBoundNext
-    : vapplicationArgVanonymBound // vertical anonym object
-    | vapplicationHeadAs oname? vapplicationArgs // vertical application
+    : commentOptional voids as fname? innersOrEol // vertical anonym object
+    | vapplicationHead as oname? vapplicationArgs // vertical application
     | reversed as oname? vapplicationArgsReversed // reversed vertical application
     ;
 
@@ -301,8 +282,8 @@ vapplicationArgUnbound
 // Vertical application arguments without bindings
 // Ends on the current line
 vapplicationArgUnboundCurrent
-    : vapplicationArgHapplicationUnbound // horizontal application
-    | vapplicationArgHanonymUnbound // horizontal anonym object
+    : happlicationExtended oname? // horizontal application
+    | commentOptional hanonym fname? // horizontal anonym object
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -310,54 +291,13 @@ vapplicationArgUnboundCurrent
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
-    : formationNamedOrNameless // vertical abstract object
+    : formationNamed // vertical abstract object
     | vapplicationHeadNamed vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
 
-// Horizontal application as argument of vertical application
-vapplicationArgHapplicationBound
-    : LB happlicationExtended RB as oname?
-    ;
-
-vapplicationArgHapplicationUnbound
-    : happlicationExtended oname?
-    ;
-
-formationNameless
-    : voids aname? innersOrEol
-    ;
-
-// Formation with or without name
-formationNamedOrNameless
-    : commentOptional formation
-    | formationNameless
-    ;
-
-// Bound vertical anonym abstract object as argument of vertical application argument
-// Ends on the next line
-vapplicationArgVanonymBound
-    : commentOptional attributesAs oname innersOrEol
-    | attributesAs aname? innersOrEol
-    ;
-
-attributesAs
-    : voids as
-    ;
-
-vapplicationArgHanonymBoundBody
-    : LB hanonym RB as
-    ;
-
-// Horizontal anonym abstract object as argument of vertical application
-vapplicationArgHanonymBound
-    : commentOptional vapplicationArgHanonymBoundBody oname
-    | vapplicationArgHanonymBoundBody aname?
-    ;
-
-vapplicationArgHanonymUnbound
-    : commentOptional hanonym oname
-    | hanonym aname?
+formationNamed
+    : commentOptional voids fname? innersOrEol
     ;
 
 // Horizontal formation
@@ -408,13 +348,7 @@ methodNamed
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
 hmethod
-    : hmethodHead methodTail+
-    ;
-
-// Head of horizontal method
-hmethodHead
-    : just
-    | scope
+    : (just | scope) methodTail+
     ;
 
 // Vertical method
@@ -433,14 +367,10 @@ vmethod
 // 5. unnamed abstract object with only @-bound attribute
 // Ends on the next line
 vmethodHead
-    : vmethodHead methodTailOptional vmethodHeadApplicationTail
+    : vmethodHead methodTail vmethodHeadApplicationTail
     | vmethodHeadVapplication
     | (justNamed | hanonym oname?) EOL
-    | formationNamedOrNameless
-    ;
-
-methodTailOptional
-    : methodTail
+    | formationNamed
     ;
 
 vmethodHeadApplicationTail
@@ -483,14 +413,15 @@ reversed
     : finisher DOT
     ;
 
+// Formation name
+fname
+    : oname
+    | SPACE ARROW ARROW CONST?
+    ;
+
 // Object name
 oname
     : suffix CONST?
-    ;
-
-// Automatic name of the object
-aname
-    : SPACE ARROW ARROW
     ;
 
 // Suffix

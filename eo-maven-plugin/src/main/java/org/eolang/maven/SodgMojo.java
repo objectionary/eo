@@ -66,7 +66,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.HmBase;
 import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -100,7 +99,7 @@ public final class SodgMojo extends SafeMojo {
     /**
      * The directory where to save SODG to.
      */
-    public static final String DIR = "sodg";
+    static final String DIR = "sodg";
 
     /**
      * SODG to plain text.
@@ -583,5 +582,4 @@ public final class SodgMojo extends SafeMojo {
             SodgMojo.traverse(graph, kid, seen);
         }
     }
-
 }

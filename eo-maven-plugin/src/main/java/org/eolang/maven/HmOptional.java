@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.cactoos.Text;
  * @since 0.32.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmOptional implements Home {
+final class HmOptional implements Home {
     /**
      * Original home.
      */
@@ -58,7 +58,7 @@ public final class HmOptional implements Home {
      * @param home Origin home
      * @param rwte Rewrite or not
      */
-    public HmOptional(final Home home, final boolean rwte) {
+    HmOptional(final Home home, final boolean rwte) {
         this.origin = home;
         this.rewrite = rwte;
         this.sve = new HmSave(

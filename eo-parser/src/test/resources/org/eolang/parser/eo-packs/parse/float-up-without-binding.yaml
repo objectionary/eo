@@ -20,19 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-sheets: [ ]
+sheets:
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
   - /program[not(errors)]
-  - //o[not(@base) and @name='a🌵24' and o[@name='five']]
-  - //o[not(@base) and @name='a🌵42' and o[@name='ten']]
-  - //o[not(@base) and @name='a🌵810' and not(@as) and o[@name='eleven']]
+  - /program/objects/o[@base='x' and @name='y']/o[@base='o' and @as='α0']
+  - /program/objects/o[not(@base) and @name='o' and not(@as)]
+  - /program/objects/o[@name='foo']/o[@base='a' and @name='b']/o[@base='c' and @as='hey']
+  - /program/objects/o[@name='foo']/o[not(@base) and @name='c' and not(@as)]
 input: |
-  x > first
-    [] >>
-      5 > five
-  [] >>
-    10 > ten
-  .ten > second
-  y
-    []:hello >>
-      11 > eleven
+  x > y
+    []:0 > o
+  # Foo.
+  [] > foo
+    a > b
+      []:hey > c

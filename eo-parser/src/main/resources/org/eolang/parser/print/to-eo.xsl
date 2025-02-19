@@ -124,7 +124,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
-  <xsl:template match="o[not(@base) and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
     <xsl:param name="indent"/>
     <xsl:if test="@name">
       <xsl:value-of select="$comment"/>
@@ -153,8 +153,15 @@ SOFTWARE.
       </xsl:choose>
     </xsl:if>
     <xsl:if test="@name">
-      <xsl:text> &gt; </xsl:text>
-      <xsl:value-of select="@name"/>
+      <xsl:choose>
+        <xsl:when test="starts-with(@name, 'a🌵')">
+          <xsl:text> &gt;&gt;</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> &gt; </xsl:text>
+          <xsl:value-of select="@name"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="@const">
         <xsl:text>!</xsl:text>
       </xsl:if>

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -48,7 +48,7 @@ import org.cactoos.Func;
  * @since 0.41
  * @checkstyle ParameterNumberCheck (100 lines)
  */
-public final class FpDefault extends FpEnvelope {
+final class FpDefault extends FpEnvelope {
     /**
      * Ctor.
      * @param content Function that returns content from source
@@ -57,7 +57,7 @@ public final class FpDefault extends FpEnvelope {
      * @param hash Git hash as part of absolute cache path
      * @param tail The last part of absolute cache path
      */
-    public FpDefault(
+    FpDefault(
         final Func<Path, String> content,
         final Path base,
         final String semver,
@@ -75,7 +75,7 @@ public final class FpDefault extends FpEnvelope {
      * @param hash Git hash as part of absolute cache path
      * @param tail The last part of absolute cache path
      */
-    public FpDefault(
+    FpDefault(
         final Func<Path, String> content,
         final Path base,
         final String semver,
@@ -93,7 +93,7 @@ public final class FpDefault extends FpEnvelope {
      * @param hash Cache hash
      * @param tail Cache tail path
      */
-    private FpDefault(
+    FpDefault(
         final Footprint generated,
         final Path base,
         final String semver,

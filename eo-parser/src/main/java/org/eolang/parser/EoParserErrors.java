@@ -105,8 +105,8 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 detailed = "Invalid meta declaration";
             } else if (names[EoParser.RULE_program].equals(rule)) {
                 detailed = "Invalid program declaration";
-            } else if (names[EoParser.RULE_slave].equals(rule)) {
-                detailed = "Invalid objects declaration that may be used inside abstract object";
+            } else if (names[EoParser.RULE_bound].equals(rule)) {
+                detailed = "Invalid bound object declaration";
             } else if (names[EoParser.RULE_object].equals(rule)) {
                 detailed = "Invalid object declaration";
             } else {

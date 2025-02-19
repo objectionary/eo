@@ -74,7 +74,7 @@ final class Moja<T extends AbstractMojo> {
      * @param value The value
      * @return Itself
      */
-    public Moja<T> with(final String attr, final Object value) {
+    Moja<T> with(final String attr, final Object value) {
         this.attrs.put(attr, value);
         return this;
     }
@@ -86,7 +86,7 @@ final class Moja<T extends AbstractMojo> {
      * @return Itself
      */
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
-    public Moja<T> copy(final Object mojo) {
+    Moja<T> copy(final Object mojo) {
         final Collection<String> mine = new ListOf<>(
             new Mapped<>(
                 Field::getName,
@@ -113,7 +113,7 @@ final class Moja<T extends AbstractMojo> {
     /**
      * Execute it.
      */
-    public void execute() {
+    void execute() {
         try {
             final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
@@ -187,5 +187,4 @@ final class Moja<T extends AbstractMojo> {
             }
         }
     }
-
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.cactoos.text.TextOf;
  * Returns path to the file
  * @since 0.41.0
  */
-public final class Saved implements Scalar<Path> {
+final class Saved implements Scalar<Path> {
     /**
      * Absolute path to save content to.
      */
@@ -57,7 +57,7 @@ public final class Saved implements Scalar<Path> {
      * @param content Content as string
      * @param target Path to save content to
      */
-    public Saved(final String content, final Path target) {
+    Saved(final String content, final Path target) {
         this(new InputOf(content), target);
     }
 
@@ -66,7 +66,7 @@ public final class Saved implements Scalar<Path> {
      * @param content Content as scalar
      * @param target Path to save content to
      */
-    public Saved(final Scalar<String> content, final Path target) {
+    Saved(final Scalar<String> content, final Path target) {
         this(new TextOf(content), target);
     }
 
@@ -75,7 +75,7 @@ public final class Saved implements Scalar<Path> {
      * @param content Content as text
      * @param target Path to save content to
      */
-    public Saved(final Text content, final Path target) {
+    Saved(final Text content, final Path target) {
         this(new InputOf(content), target);
     }
 

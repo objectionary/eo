@@ -21,47 +21,73 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.nio.file.Path;
-import org.cactoos.Func;
+import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
- * Footprint that behaves like one of the given wrapped footprints depending on
- * existence of provided target path.
+ * Footprint that behaves like one of the given footprints depending on
+ * hash and semver of provided cache.
  * @since 0.41
+ * @checkstyle ParameterNumberCheck (100 lines)
  */
-public final class FpIfTargetExists extends FpEnvelope {
+final class FpIfReleased extends FpEnvelope {
+    /**
+     * Not cacheable versions.
+     */
+    private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
+
     /**
      * Ctor.
+     * @param semver Cache version
+     * @param hash Git hash
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfTargetExists(final Footprint first, final Footprint second) {
-        this(target -> target, first, second);
+    FpIfReleased(
+        final String semver,
+        final String hash,
+        final Footprint first,
+        final Footprint second
+    ) {
+        this(semver, () -> hash, first, second);
     }
 
     /**
      * Ctor.
-     * @param destination Function that modifies result target path
+     * @param semver Cache version
+     * @param hash Git hash
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfTargetExists(
-        final Func<Path, Path> destination, final Footprint first, final Footprint second
+    FpIfReleased(
+        final String semver,
+        final Supplier<String> hash,
+        final Footprint first,
+        final Footprint second
     ) {
         super(
             new FpFork(
                 (source, target) -> {
-                    final Path dest = destination.apply(target);
-                    final boolean exists = dest.toFile().exists();
-                    if (!exists) {
+                    final String hsh = hash.get();
+                    final boolean cacheable = !hsh.isEmpty()
+                        && Arrays.stream(FpIfReleased.NOT_CACHEABLE).noneMatch(semver::contains);
+                    if (cacheable) {
                         Logger.debug(
-                            FpIfTargetExists.class, "Target file %[file]s does not exist", dest
+                            FpIfReleased.class,
+                            "Cache with version '%s' and hash '%s' is cacheable, using it",
+                            semver, hsh
+                        );
+                    } else {
+                        Logger.debug(
+                            FpIfReleased.class,
+                            "Cache with version '%s' and hash '%s' is not cacheable, skipping it",
+                            semver, hsh
                         );
                     }
-                    return exists;
+                    return cacheable;
                 },
                 first,
                 second

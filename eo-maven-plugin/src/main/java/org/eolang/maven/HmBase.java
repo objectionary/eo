@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
@@ -44,7 +44,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmBase implements Home {
+final class HmBase implements Home {
     /**
      * Current working directory.
      */
@@ -60,7 +60,7 @@ public final class HmBase implements Home {
      *
      * @param file File
      */
-    public HmBase(final File file) {
+    HmBase(final File file) {
         this(file.toPath());
     }
 
@@ -69,7 +69,7 @@ public final class HmBase implements Home {
      *
      * @param pth Path
      */
-    public HmBase(final Path pth) {
+    HmBase(final Path pth) {
         this.cwd = pth;
         this.origin = new HmSave(
             (input, path) -> {

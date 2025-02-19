@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -40,7 +40,7 @@ import org.cactoos.list.ListEnvelope;
  *
  * @since 0.1
  */
-public final class Walk extends ListEnvelope<Path> {
+final class Walk extends ListEnvelope<Path> {
 
     /**
      * The home.
@@ -52,7 +52,7 @@ public final class Walk extends ListEnvelope<Path> {
      *
      * @param dir The directory
      */
-    public Walk(final Path dir) {
+    Walk(final Path dir) {
         this(dir, Walk.list(dir));
     }
 
@@ -72,13 +72,12 @@ public final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    public Walk includes(final Collection<String> globs) {
+    Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
             this.stream()
                 .filter(
-                    file -> Walk.stream(globs).anyMatch(
+                    file -> globs.stream().anyMatch(
                         glob -> this.matches(glob, file)
                     )
                 )
@@ -91,13 +90,12 @@ public final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    public Walk excludes(final Collection<String> globs) {
+    Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
             this.stream()
                 .filter(
-                    file -> Walk.stream(globs).noneMatch(
+                    file -> globs.stream().noneMatch(
                         glob -> this.matches(glob, file)
                     )
                 )
@@ -106,19 +104,9 @@ public final class Walk extends ListEnvelope<Path> {
     }
 
     /**
-     * Get stream.
-     * @param globs The globs
-     * @return Stream
-     */
-    private static Stream<String> stream(final Collection<String> globs) {
-        return globs.stream();
-    }
-
-    /**
      * List them all.
      * @param dir The dir
      * @return List
-     * @throws IOException If fails
      */
     private static List<Path> list(final Path dir) {
         try {
@@ -164,5 +152,4 @@ public final class Walk extends ListEnvelope<Path> {
             String.format("glob:%s", text)
         ).matches(rel);
     }
-
 }

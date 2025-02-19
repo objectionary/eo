@@ -46,8 +46,6 @@ import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.CachePath;
-import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.StrictXmir;
 import org.eolang.xax.XtSticky;

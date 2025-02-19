@@ -21,32 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
-import com.jcabi.log.Logger;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Supplier;
-import org.cactoos.text.TextOf;
+import org.cactoos.BiFunc;
 
 /**
- * Footprint that updates target from cache.
- * @since 0.41
+ * Footprint is a function that accepts path to source and
+ * target files, updates target file and returns it.
+ * @since 0.41.0
  */
-public final class FpUpdateFromCache extends FpEnvelope {
-    /**
-     * Ctor.
-     * @param cache Lazy path to cache
-     */
-    public FpUpdateFromCache(final Supplier<Path> cache) {
-        super(
-            (source, target) -> {
-                Logger.debug(
-                    FpUpdateFromCache.class,
-                    "Updating only target %[file]s from cache %[file]s",
-                    target, source
-                );
-                return new Saved(new TextOf(cache.get()), target).value();
-            }
-        );
-    }
+interface Footprint extends BiFunc<Path, Path, Path> {
+    @Override
+    Path apply(Path source, Path target) throws IOException;
 }

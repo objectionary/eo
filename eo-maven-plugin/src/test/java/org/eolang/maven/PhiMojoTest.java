@@ -35,7 +35,6 @@ import java.nio.file.attribute.FileTime;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.footprint.CachePath;
-import org.eolang.maven.footprint.Saved;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;

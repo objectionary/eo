@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.nio.file.Path;
 import org.cactoos.Func;
 
 /**
- * Footprint that behaves as first given wrapped {@link Footprint}
- * if provided target exists and older than source.
- * Behaves as second given wrapped {@link Footprint} otherwise.
+ * Footprint that behaves like one of the given wrapped footprints depending on
+ * existence of provided target path.
  * @since 0.41
  */
-public final class FpIfOlder extends FpEnvelope {
+final class FpIfTargetExists extends FpEnvelope {
     /**
      * Ctor.
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfOlder(final Footprint first, final Footprint second) {
+    FpIfTargetExists(final Footprint first, final Footprint second) {
         this(target -> target, first, second);
     }
 
@@ -48,17 +48,22 @@ public final class FpIfOlder extends FpEnvelope {
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfOlder(
+    FpIfTargetExists(
         final Func<Path, Path> destination, final Footprint first, final Footprint second
     ) {
         super(
-            new FpIfTargetExists(
-                destination,
-                new FpIfTargetOlder(
-                    destination,
-                    first,
-                    second
-                ),
+            new FpFork(
+                (source, target) -> {
+                    final Path dest = destination.apply(target);
+                    final boolean exists = dest.toFile().exists();
+                    if (!exists) {
+                        Logger.debug(
+                            FpIfTargetExists.class, "Target file %[file]s does not exist", dest
+                        );
+                    }
+                    return exists;
+                },
+                first,
                 second
             )
         );

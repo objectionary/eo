@@ -34,9 +34,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.util.Threaded;
-import org.eolang.maven.util.Walk;
 import org.eolang.parser.Xmir;
 
 /**
@@ -52,12 +49,12 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Extension of the file where we put phi-calculus expression (.phi).
      */
-    public static final String EXT = "phi";
+    static final String EXT = "phi";
 
     /**
      * Subdirectory for parsed cache.
      */
-    static final String CACHE = "phied";
+    final String CACHE = "phied";
 
     /**
      * The directory where to take xmir files for translation from.

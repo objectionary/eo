@@ -21,9 +21,11 @@
 # SOFTWARE.
 ---
 origin: |
-  x > first
-    [] >>
-      5 > five
+  # no.
+  [] > y
+    x > first
+      [] >>
+        5 > five
 
 printed: |
   x > first

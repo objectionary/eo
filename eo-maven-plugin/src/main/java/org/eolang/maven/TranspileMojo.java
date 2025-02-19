@@ -51,17 +51,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.text.Joined;
-import org.eolang.maven.footprint.CachePath;
-import org.eolang.maven.footprint.Footprint;
-import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.footprint.FpFork;
-import org.eolang.maven.footprint.FpGenerated;
-import org.eolang.maven.footprint.FpIfReleased;
-import org.eolang.maven.footprint.FpIfTargetExists;
-import org.eolang.maven.footprint.FpIgnore;
-import org.eolang.maven.footprint.FpUpdateBoth;
-import org.eolang.maven.footprint.FpUpdateFromCache;
-import org.eolang.maven.util.Threaded;
 import org.eolang.parser.TrFull;
 
 /**

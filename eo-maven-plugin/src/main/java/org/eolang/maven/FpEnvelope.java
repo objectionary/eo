@@ -21,56 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
+package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import org.cactoos.BiFunc;
-import org.cactoos.func.UncheckedBiFunc;
 
 /**
- * Footprint that behaves like one of the given {@link Footprint}s depending on the give
- * condition.
+ * Wrapper for footprint.
  * @since 0.41
+ * @checkstyle DesignForExtensionCheck (50 lines)
  */
-public final class FpFork implements Footprint {
+class FpEnvelope implements Footprint {
     /**
-     * Lazy condition.
+     * Wrapped footprint.
      */
-    private final UncheckedBiFunc<Path, Path, Boolean> condition;
-
-    /**
-     * First wrapped footprint.
-     */
-    private final Footprint first;
-
-    /**
-     * Second wrapped footprint.
-     */
-    private final Footprint second;
+    private final Footprint origin;
 
     /**
      * Ctor.
-     * @param condition Lazy condition
-     * @param first First wrapped condition
-     * @param second Second wrapped condition
+     * @param footprint Wrapped footprint
      */
-    public FpFork(
-        final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second
-    ) {
-        this.condition = new UncheckedBiFunc<>(condition);
-        this.first = first;
-        this.second = second;
+    public FpEnvelope(final Footprint footprint) {
+        this.origin = footprint;
     }
 
     @Override
     public Path apply(final Path source, final Path target) throws IOException {
-        final Footprint footprint;
-        if (this.condition.apply(source, target)) {
-            footprint = this.first;
-        } else {
-            footprint = this.second;
-        }
-        return footprint.apply(source, target);
+        return this.origin.apply(source, target);
     }
 }

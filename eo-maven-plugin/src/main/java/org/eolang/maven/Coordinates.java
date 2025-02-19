@@ -31,7 +31,7 @@ import org.apache.maven.model.Dependency;
  *
  * @since 0.29.0
  */
-public final class Coordinates implements Comparable<Coordinates> {
+final class Coordinates implements Comparable<Coordinates> {
 
     /**
      * The dependency.
@@ -42,7 +42,7 @@ public final class Coordinates implements Comparable<Coordinates> {
      * Ctor.
      * @param dep The dependency
      */
-    public Coordinates(final Dependency dep) {
+    Coordinates(final Dependency dep) {
         this.dependency = dep;
     }
 

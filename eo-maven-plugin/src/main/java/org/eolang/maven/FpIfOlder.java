@@ -21,45 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
-import com.yegor256.Mktmp;
-import com.yegor256.MktmpResolver;
-import java.io.IOException;
 import java.nio.file.Path;
-import org.eolang.maven.CatalogsTest;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.cactoos.Func;
 
 /**
- * Test for {@link FileHash}.
- *
- * @since 0.26
+ * Footprint that behaves as first given wrapped {@link Footprint}
+ * if provided target exists and older than source.
+ * Behaves as second given wrapped {@link Footprint} otherwise.
+ * @since 0.41
  */
-@ExtendWith(MktmpResolver.class)
-final class FileHashTest {
-
-    @Test
-    void readsFromExistingFile(@Mktmp final Path temp) throws IOException {
-        final Path path = temp.resolve("1.txt");
-        new HmBase(temp).save("hey, you", temp.relativize(path));
-        MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
-            new FileHash(path).toString(),
-            Matchers.startsWith("[-26, 1, -29, 113, ")
-        );
+final class FpIfOlder extends FpEnvelope {
+    /**
+     * Ctor.
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
+     */
+    FpIfOlder(final Footprint first, final Footprint second) {
+        this(target -> target, first, second);
     }
 
-    @Test
-    void readsFromAbsentFile(@Mktmp final Path temp) {
-        final Path path = temp.resolve("2.txt");
-        MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
-            new FileHash(path).toString(),
-            Matchers.equalTo("")
+    /**
+     * Ctor.
+     * @param destination Function that modifies result target path
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
+     */
+    FpIfOlder(
+        final Func<Path, Path> destination, final Footprint first, final Footprint second
+    ) {
+        super(
+            new FpIfTargetExists(
+                destination,
+                new FpIfTargetOlder(
+                    destination,
+                    first,
+                    second
+                ),
+                second
+            )
         );
     }
-
 }

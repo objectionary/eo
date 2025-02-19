@@ -53,8 +53,6 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Home;
 
 /**
  * Fake maven workspace that executes Mojos in order to test

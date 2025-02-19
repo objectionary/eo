@@ -51,7 +51,7 @@ final class Place {
      * @param ext The ext
      * @return Full path
      */
-    public Path make(final Path dir, final String ext) {
+    Path make(final Path dir, final String ext) {
         final StringBuilder out = new StringBuilder();
         out.append(this.name.replace(".", File.separator));
         if (!ext.isEmpty()) {

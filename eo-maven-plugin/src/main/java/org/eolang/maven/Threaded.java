@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import org.cactoos.Func;
 import org.cactoos.experimental.Threads;
@@ -38,7 +38,7 @@ import org.cactoos.number.SumOf;
  * @param <T> The type of the element to iterate
  * @since 0.1
  */
-public final class Threaded<T> {
+final class Threaded<T> {
 
     /**
      * The sources.
@@ -55,7 +55,7 @@ public final class Threaded<T> {
      * @param src The sources
      * @param fun The function to run
      */
-    public Threaded(final Iterable<T> src, final Func<T, Integer> fun) {
+    Threaded(final Iterable<T> src, final Func<T, Integer> fun) {
         this.sources = src;
         this.scalar = fun;
     }
@@ -65,7 +65,7 @@ public final class Threaded<T> {
      * @return How many succeeded
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    public int total() {
+    int total() {
         return new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors() * 2,
@@ -89,5 +89,4 @@ public final class Threaded<T> {
             )
         ).intValue();
     }
-
 }

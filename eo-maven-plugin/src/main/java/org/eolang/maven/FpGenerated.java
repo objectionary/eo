@@ -21,7 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.scalar.ScalarOf;
+
 /**
- * Test cases for {@link org.eolang.maven.util} package.
+ * Footprint that saves content generated from lambda to the target file.
+ * @since 0.41
  */
-package org.eolang.maven.util;
+final class FpGenerated implements Footprint {
+    /**
+     * Content function.
+     */
+    private final Func<Path, String> content;
+
+    /**
+     * Ctor.
+     * @param content Content function
+     */
+    FpGenerated(final Func<Path, String> content) {
+        this.content = content;
+    }
+
+    @Override
+    public Path apply(final Path source, final Path target) throws IOException {
+        return new Saved(new ScalarOf<>(this.content, source), target).value();
+    }
+}

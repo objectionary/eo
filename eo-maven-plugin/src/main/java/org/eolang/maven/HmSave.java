@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import org.cactoos.proc.IoCheckedBiProc;
  *
  * @since 0.37.0
  */
-public final class HmSave implements Home {
+final class HmSave implements Home {
     /**
      * BiProc with two arguments for saving {@link Input} from first argument to file from second.
      */
@@ -49,7 +49,7 @@ public final class HmSave implements Home {
      *
      * @param save BiProc for saving {@link Input} to file.
      */
-    public HmSave(final BiProc<Input, Path> save) {
+    HmSave(final BiProc<Input, Path> save) {
         this.sve = new IoCheckedBiProc<>(save);
     }
 

@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.footprint;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import org.cactoos.BiFunc;
+package org.eolang.maven;
 
 /**
- * Footprint is a function that accepts path to source and
- * target files, updates target file and returns it.
- * @since 0.41.0
+ * Footprint that does not update target path.
+ * @since 0.41
  */
-public interface Footprint extends BiFunc<Path, Path, Path> {
-    @Override
-    Path apply(Path source, Path target) throws IOException;
+final class FpIgnore extends FpEnvelope {
+    /**
+     * Ctor.
+     */
+    FpIgnore() {
+        super((source, target) -> target);
+    }
 }

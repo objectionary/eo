@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * Returns tojo hash if exists or empty string otherwise.
  * @since 0.41
  */
-class TojoHash implements Supplier<String> {
+final class TojoHash implements Supplier<String> {
     /**
      * Tojo.
      */

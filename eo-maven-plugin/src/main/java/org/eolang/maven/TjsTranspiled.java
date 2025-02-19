@@ -85,7 +85,7 @@ final class TjsTranspiled implements Closeable {
      * @param transpiled Transpiled file.
      * @param optimized Optimized xmir file.
      */
-    public void add(final Path transpiled, final Path optimized) {
+    void add(final Path transpiled, final Path optimized) {
         synchronized (this.lock) {
             this.all.value().add(String.valueOf(transpiled)).set(
                 Attribute.OPTIMIZED.getKey(),
@@ -99,7 +99,7 @@ final class TjsTranspiled implements Closeable {
      * @param optimized Optimized xmir file.
      * @return Number of removed files.
      */
-    public long remove(final Path optimized) {
+    long remove(final Path optimized) {
         return this.findByOptimized(optimized)
             .stream()
             .map(row -> row.get(Attribute.ID.getKey()))
