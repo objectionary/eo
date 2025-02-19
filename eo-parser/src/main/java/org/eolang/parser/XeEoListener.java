@@ -1032,7 +1032,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             .prop(
                 "name",
                 String.format(
-                    "auto-named-attr-at-%d-%d",
+                    "α%d%d",
                     ctx.getStart().getLine(),
                     ctx.getStart().getCharPositionInLine()
                 )

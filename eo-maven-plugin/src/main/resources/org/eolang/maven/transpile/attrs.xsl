@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="attrs" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:template match="class[not(@base)]/o[@name]">
     <xsl:apply-templates select="." mode="with-attributes"/>
   </xsl:template>
@@ -38,10 +39,10 @@ SOFTWARE.
       <xsl:apply-templates select="@name"/>
       <xsl:variable name="type">
         <xsl:choose>
-          <xsl:when test="@base and @base!='∅'">
+          <xsl:when test="@base and @base!=$eo:empty">
             <xsl:text>bound</xsl:text>
           </xsl:when>
-          <xsl:when test="@base and @base='∅'">
+          <xsl:when test="@base and @base=$eo:empty">
             <xsl:text>void</xsl:text>
           </xsl:when>
           <xsl:when test="@atom">

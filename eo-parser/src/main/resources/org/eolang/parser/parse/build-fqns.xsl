@@ -230,7 +230,7 @@ SOFTWARE.
       </xsl:element>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
+  <xsl:template match="o[@base!='$' and @base!='^' and @base!=$eo:empty]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>
     <xsl:choose>
       <!-- Closes object in the same scope -->
