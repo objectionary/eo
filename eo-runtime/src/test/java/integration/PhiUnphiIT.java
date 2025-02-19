@@ -68,6 +68,11 @@ final class PhiUnphiIT {
                     "Saxon-HE",
                     "12.4"
                 );
+                f.dependencies().append(
+                    "com.ibm.icu",
+                    "icu4j",
+                    "76.1"
+                );
                 f.build()
                     .plugins()
                     .append(
@@ -128,6 +133,11 @@ final class PhiUnphiIT {
                     "org.junit-pioneer",
                     "junit-pioneer",
                     "2.2.0"
+                );
+                f.dependencies().append(
+                    "com.ibm.icu",
+                    "icu4j",
+                    "76.1"
                 );
                 f.build()
                     .plugins()
