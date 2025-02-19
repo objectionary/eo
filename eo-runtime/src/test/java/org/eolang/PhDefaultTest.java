@@ -501,7 +501,7 @@ final class PhDefaultTest {
             Matchers.equalTo("There are no void attributes left, can't set the 1st one")
         );
     }
-    
+
     /**
      * Rnd.
      * @since 0.1.0

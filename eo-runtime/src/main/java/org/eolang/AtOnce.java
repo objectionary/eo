@@ -70,11 +70,21 @@ public final class AtOnce implements Attr {
     }
 
     @Override
-    public void put(final int pos, final Phi phi) {
+    public void put(final Phi phi) {
         throw new ExReadOnly(
             String.format(
                 "Can't overwrite the \"%s\" attribute",
                 this.origin
+            )
+        );
+    }
+
+    @Override
+    public void put(final int pos, final Phi phi) {
+        throw new ExReadOnly(
+            String.format(
+                "There are no void attributes left, can't set the %s one",
+                pos
             )
         );
     }

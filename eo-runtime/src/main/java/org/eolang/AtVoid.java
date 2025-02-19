@@ -89,7 +89,7 @@ public final class AtVoid implements Attr {
     }
 
     @Override
-    public void put(final int pos, final Phi phi) {
+    public void put(final Phi phi) {
         if (this.object.get() == null) {
             this.object.set(phi);
         } else {
@@ -100,5 +100,10 @@ public final class AtVoid implements Attr {
                 )
             );
         }
+    }
+
+    @Override
+    public void put(final int pos, final Phi phi) {
+        this.put(phi);
     }
 }

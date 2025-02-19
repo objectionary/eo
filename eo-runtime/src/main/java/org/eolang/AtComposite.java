@@ -65,9 +65,14 @@ public final class AtComposite implements Attr {
     }
 
     @Override
-    public void put(final int pos, final Phi phi) {
+    public void put(final Phi phi) {
         throw new ExReadOnly(
             "Can't overwrite lambda expression"
         );
+    }
+
+    @Override
+    public void put(final int pos, final Phi src) {
+        this.put(src);
     }
 }

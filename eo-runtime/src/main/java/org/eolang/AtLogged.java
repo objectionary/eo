@@ -87,9 +87,14 @@ final class AtLogged implements Attr {
     }
 
     @Override
-    public void put(final int pos, final Phi src) {
+    public void put(final Phi src) {
         this.log.info(String.format("  %s.put()...\n", this.owner));
-        this.origin.put(pos, src);
+        this.origin.put(src);
         this.log.info(String.format("  %s.put()!\n", this.owner));
+    }
+
+    @Override
+    public void put(final int pos, final Phi src) {
+        this.put(src);
     }
 }
