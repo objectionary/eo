@@ -477,11 +477,6 @@ SOFTWARE.
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
-            <configuration>
-              <systemPropertyVariables combine.children="append">
-                <java.class.path>${project.build.outputDirectory}</java.class.path>
-              </systemPropertyVariables>
-            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -23,9 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.manifests.Manifests;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,11 +61,7 @@ final class AssembleMojoIT {
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(AssembleMojoIT.helloWorld().getBytes(StandardCharsets.UTF_8));
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution("tests")
-                    .goals("register", "assemble");
+                AssembleMojoIT.appendItself(f);
                 f.exec("package");
                 MatcherAssert.assertThat(
                     String.join(
@@ -125,11 +123,7 @@ final class AssembleMojoIT {
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(prog.getBytes(StandardCharsets.UTF_8));
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution("tests")
-                    .goals("register", "assemble");
+                AssembleMojoIT.appendItself(f);
                 f.exec("test");
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
@@ -153,11 +147,7 @@ final class AssembleMojoIT {
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(AssembleMojoIT.helloWorld().getBytes(StandardCharsets.UTF_8));
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution("tests")
-                    .goals("register", "assemble")
+                AssembleMojoIT.appendItself(f)
                     .configuration()
                     .set("trackTransformationSteps", Boolean.TRUE.toString());
                 f.exec("test");
@@ -192,5 +182,20 @@ final class AssembleMojoIT {
             "[x] > main",
             "  (stdout \"Hello!\" x).print > @"
         );
+    }
+
+    private static Execution appendItself(final Farea farea) throws IOException {
+        return farea.build()
+            .plugins()
+            .append(
+                "org.eolang",
+                "eo-maven-plugin",
+                System.getProperty(
+                    "eo.version",
+                    Manifests.read("EO-Version")
+                )
+            )
+            .execution("tests")
+            .goals("register", "assemble");
     }
 }
