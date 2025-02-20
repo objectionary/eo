@@ -28,16 +28,14 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import matchers.ExpectNumberMatcher;
 import org.eolang.AtCompositeTest;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExAbstract;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -85,25 +83,19 @@ final class EOnumberTest {
         EOnumber$EOplus.class,
         EOnumber$EOtimes.class
     })
-    void throwsCorrectErrorForXAttr(final Class<?> cls) {
+    void throwsCorrectErrorForXAttr(final Class<?> cls) throws Exception {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
-                            (Phi) cls.getDeclaredConstructor().newInstance(),
-                            Attr.RHO,
-                            new Data.ToPhi(42)
-                        ),
-                        "x",
-                        new Data.ToPhi(true)
-                    )
-                ).take(),
-                "operation with TRUE fails with a proper message that explains what happened"
-            ).getMessage(),
-            Matchers.equalTo("the 'x' attribute must be a number")
+            "attr use Expect.Number",
+            new PhWith(
+                new PhWith(
+                    (Phi) cls.getDeclaredConstructor().newInstance(),
+                    Attr.RHO,
+                    new Data.ToPhi(42)
+                ),
+                "x",
+                new Data.ToPhi(true)
+            ),
+            new ExpectNumberMatcher()
         );
     }
 
@@ -116,21 +108,15 @@ final class EOnumberTest {
         EOnumber$EOas_i64.class,
         EOnumber$EOfloor.class
     })
-    void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
+    void throwsCorrectErrorForRhoAttr(final Class<?> cls) throws Exception {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhWith(
-                        (Phi) cls.getDeclaredConstructor().newInstance(),
-                        Attr.RHO,
-                        new Data.ToPhi(true)
-                    )
-                ).take(),
-                "EOnumber must be a number"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute must be a number")
+            "attr use Expect.Number",
+            new PhWith(
+                (Phi) cls.getDeclaredConstructor().newInstance(),
+                Attr.RHO,
+                new Data.ToPhi(true)
+            ),
+            new ExpectNumberMatcher()
         );
     }
 }
