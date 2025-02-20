@@ -38,7 +38,7 @@ final class PhSafeTest {
 
     @Test
     void savesLocationAfterCopying() {
-        final Phi located = new PhSafe(new Data.ToPhi(0L), "foo", 123, 124, "qwerty");
+        final Phi located = new PhSafe(new Data.ToPhi(0L), "foo", 123, 124, "qwerty", "fqn");
         MatcherAssert.assertThat(
             "saves location",
             located.copy().locator(),
