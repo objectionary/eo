@@ -86,6 +86,11 @@ final class SnippetIT {
                         ).getBytes(StandardCharsets.UTF_8)
                     );
                 f.dependencies().appendItself();
+                f.dependencies().append(
+                    "com.ibm.icu",
+                    "icu4j",
+                    "76.1"
+                );
                 f.build()
                     .plugins()
                     .append(

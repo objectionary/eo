@@ -75,4 +75,9 @@ final class AtRho implements Attr {
             this.rho.set(phi);
         }
     }
+
+    @Override
+    public void put(final int pos, final Phi src) {
+        this.put(src);
+    }
 }

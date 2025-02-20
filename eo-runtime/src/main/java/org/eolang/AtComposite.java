@@ -70,4 +70,9 @@ public final class AtComposite implements Attr {
             "Can't overwrite lambda expression"
         );
     }
+
+    @Override
+    public void put(final int pos, final Phi src) {
+        this.put(src);
+    }
 }

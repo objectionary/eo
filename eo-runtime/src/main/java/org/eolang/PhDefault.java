@@ -140,20 +140,12 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.put(this.attr(pos), object);
+        this.attribute(this.attr(pos), object).put(pos, object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!this.attrs.containsKey(name)) {
-            throw new ExUnset(
-                String.format(
-                    "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
-                    name, object, this
-                )
-            );
-        }
-        this.attrs.get(name).put(object);
+        this.attribute(name, object).put(object);
     }
 
     @Override
@@ -253,6 +245,24 @@ public class PhDefault implements Phi, Cloneable {
             this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, new AtWithRho(attr, this));
+    }
+
+    /**
+     * Get an attribute by name.
+     * @param name The name
+     * @param object The object
+     * @return The attribute
+     */
+    private Attr attribute(final String name, final Phi object) {
+        if (!this.attrs.containsKey(name)) {
+            throw new ExUnset(
+                String.format(
+                    "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
+                    name, object, this
+                )
+            );
+        }
+        return this.attrs.get(name);
     }
 
     /**

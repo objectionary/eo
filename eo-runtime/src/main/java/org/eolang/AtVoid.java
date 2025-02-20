@@ -101,4 +101,9 @@ public final class AtVoid implements Attr {
             );
         }
     }
+
+    @Override
+    public void put(final int pos, final Phi phi) {
+        this.put(phi);
+    }
 }
