@@ -468,6 +468,9 @@ SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skipTests>${skipITs}</skipTests>
+        </configuration>
         <version>3.5.2</version>
         <executions>
           <execution>
