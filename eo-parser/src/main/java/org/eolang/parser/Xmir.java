@@ -70,9 +70,9 @@ public final class Xmir implements XML {
                 new StEndless(
                     new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
                 ),
-                new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
                 Xmir.UNHEX,
-                new StClasspath("/org/eolang/parser/print/wrap-data.xsl"),
+                new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
+                new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
                 new StClasspath("/org/eolang/parser/print/to-eo.xsl")
             )
         )

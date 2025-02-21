@@ -33,15 +33,6 @@ import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.CachePath;
-import org.eolang.maven.footprint.Footprint;
-import org.eolang.maven.footprint.FpFork;
-import org.eolang.maven.footprint.FpGenerated;
-import org.eolang.maven.footprint.FpIfReleased;
-import org.eolang.maven.footprint.FpIfTargetExists;
-import org.eolang.maven.footprint.FpIgnore;
-import org.eolang.maven.footprint.FpUpdateBoth;
-import org.eolang.maven.footprint.FpUpdateFromCache;
 
 /**
  * Pull EO files from Objectionary.
@@ -56,12 +47,12 @@ public final class PullMojo extends SafeMojo {
     /**
      * The directory where to process to.
      */
-    public static final String DIR = "4-pull";
+    static final String DIR = "4-pull";
 
     /**
      * Cache directory.
      */
-    public static final String CACHE = "pulled";
+    static final String CACHE = "pulled";
 
     /**
      * The Git hash to pull objects from, in objectionary.

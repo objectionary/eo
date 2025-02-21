@@ -59,7 +59,10 @@ SOFTWARE.
   <xsl:template match="o[eo:abstract(.)]" mode="full" priority="1">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
+      <xsl:if test="not(@name) and @as">
+        <xsl:attribute name="as" select="@as"/>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@* except @as"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
           <xsl:apply-templates select="." mode="full"/>
@@ -73,7 +76,7 @@ SOFTWARE.
         <xsl:value-of select="@name"/>
       </xsl:attribute>
       <xsl:apply-templates select="@line"/>
-      <xsl:apply-templates select="@method"/>
+      <xsl:apply-templates select="@as"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">

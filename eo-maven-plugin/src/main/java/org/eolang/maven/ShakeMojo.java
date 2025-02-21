@@ -36,8 +36,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.iterable.Filtered;
-import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.util.Threaded;
 
 /**
  * Shake (prepare) XMIR for translation to java.

@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.LengthOf;
-import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -41,12 +41,12 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * The intermediate representation extension.
      */
-    public static final String XMIR = "xmir";
+    static final String XMIR = "xmir";
 
     /**
      * Source file extension.
      */
-    public static final String EO = "eo";
+    static final String EO = "eo";
 
     /**
      * Mojas to execute.

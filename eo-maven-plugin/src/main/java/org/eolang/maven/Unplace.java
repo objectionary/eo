@@ -59,7 +59,7 @@ final class Unplace {
      * @param file The file
      * @return The name of the program
      */
-    public String make(final Path file) {
+    String make(final Path file) {
         return file.toString().substring(
             this.parent.toString().length() + 1
         ).replaceAll(".eo$", "").replace(File.separator, ".");

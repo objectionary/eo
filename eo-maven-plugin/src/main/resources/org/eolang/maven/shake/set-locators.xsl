@@ -29,6 +29,7 @@ SOFTWARE.
   of the object.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:function name="eo:locator" as="xs:string">
     <xsl:param name="program" as="node()"/>
     <xsl:param name="o" as="node()"/>
@@ -43,7 +44,7 @@ SOFTWARE.
           <xsl:value-of select="eo:locator($program, $o/parent::o)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>Φ</xsl:text>
+          <xsl:value-of select="$eo:program"/>
           <xsl:if test="$program/metas/meta[head='package']">
             <xsl:text>.</xsl:text>
             <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
@@ -55,7 +56,7 @@ SOFTWARE.
         <xsl:when test="$o/@name">
           <xsl:choose>
             <xsl:when test="$o/@name = '@'">
-              <xsl:text>φ</xsl:text>
+              <xsl:value-of select="$eo:phi"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$o/@name"/>
@@ -65,10 +66,10 @@ SOFTWARE.
         <xsl:otherwise>
           <xsl:choose>
             <xsl:when test="starts-with($o/parent::o/@base, '.') and not($o/preceding-sibling::o)">
-              <xsl:text>ρ</xsl:text>
+              <xsl:value-of select="$eo:rho"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>α</xsl:text>
+              <xsl:value-of select="$eo:alpha"/>
               <xsl:value-of select="count($o/preceding-sibling::o) - count($o/parent::o[starts-with(@base, '.')])"/>
             </xsl:otherwise>
           </xsl:choose>

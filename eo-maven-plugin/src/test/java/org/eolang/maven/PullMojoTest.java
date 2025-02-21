@@ -37,8 +37,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;

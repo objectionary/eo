@@ -40,11 +40,6 @@ import org.xembly.Xembler;
  */
 public final class StXPath implements Shift {
     /**
-     * Xpath for finding first element.
-     */
-    private static final String INDEXED = "(%s)[1]";
-
-    /**
      * XPath to search for.
      */
     private final String xpath;
@@ -77,10 +72,9 @@ public final class StXPath implements Shift {
             doc = xml;
         } else {
             final Directives dirs = new Directives();
+            final String path = String.format("(%s)[1]", this.xpath);
             for (final XML node : nodes) {
-                dirs.xpath(String.format(StXPath.INDEXED, this.xpath))
-                    .strict(1)
-                    .append(this.fun.apply(node));
+                dirs.xpath(path).strict(1).append(this.fun.apply(node));
             }
             doc = new XMLDocument(
                 new Xembler(dirs).applyQuietly(xml.inner())
@@ -88,5 +82,4 @@ public final class StXPath implements Shift {
         }
         return doc;
     }
-
 }

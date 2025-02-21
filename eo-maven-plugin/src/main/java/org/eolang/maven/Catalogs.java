@@ -43,12 +43,12 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.29
  */
-public final class Catalogs {
+final class Catalogs {
 
     /**
      * Singleton.
      */
-    public static final Catalogs INSTANCE = new Catalogs();
+    static final Catalogs INSTANCE = new Catalogs();
 
     /**
      * Singleton.
@@ -87,7 +87,7 @@ public final class Catalogs {
      * @param file The file
      * @return The Tojos
      */
-    public Tojos make(final Path file) {
+    Tojos make(final Path file) {
         return this.all.computeIfAbsent(
             file.toAbsolutePath(), f -> Catalogs.build(f, "csv")
         );
@@ -99,7 +99,7 @@ public final class Catalogs {
      * @param fmt The format
      * @return The Tojos
      */
-    public Tojos make(final Path file, final String fmt) {
+    Tojos make(final Path file, final String fmt) {
         return this.all.computeIfAbsent(
             file.toAbsolutePath(), f -> Catalogs.build(f, fmt)
         );
@@ -133,5 +133,4 @@ public final class Catalogs {
         }
         return new TjSynchronized(new TjCached(new TjDefault(mono)));
     }
-
 }
