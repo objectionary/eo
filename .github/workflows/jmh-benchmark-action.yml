@@ -23,7 +23,7 @@
 # yamllint disable rule:line-length
 name: Performance Regression Check
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - master
 
