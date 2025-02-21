@@ -42,7 +42,7 @@ SOFTWARE.
   <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
   <xsl:template match="o[contains(@base, concat('.', $auto))]" priority="0">
     <xsl:variable name="name" select="substring-after(@base, substring-before(@base, $auto))"/>
-    <xsl:copy-of select="//o[@name=$name]"/>
+    <xsl:copy-of select="ancestor::o/o[@name=$name]"/>
   </xsl:template>
   <xsl:template match="o[starts-with(@name, $auto)]" priority="1">
     <!-- Nothing here -->
