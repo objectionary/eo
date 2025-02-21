@@ -38,6 +38,9 @@ SOFTWARE.
   <!-- PROGRAM -->
   <xsl:template match="program">
     <program>
+      <xsl:copy-of select="sheets"/>
+      <xsl:copy-of select="metas"/>
+      <xsl:copy-of select="objects"/>
       <eo>
         <xsl:apply-templates select="license"/>
         <xsl:apply-templates select="metas"/>
