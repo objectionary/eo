@@ -22,8 +22,8 @@
 ---
 # yamllint disable rule:line-length
 name: Performance Regression Check
-on:
-  pull_request_target
+'on':
+  - pull_request_target
 
 jobs:
   benchmark:
