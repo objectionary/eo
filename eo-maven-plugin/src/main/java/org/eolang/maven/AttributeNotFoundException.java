@@ -34,10 +34,6 @@ final class AttributeNotFoundException extends RuntimeException {
      * @param attribute The attribute of Tojo.
      */
     AttributeNotFoundException(final TjsForeign.Attribute attribute) {
-        super(
-            String.format(
-            "There is no '%s' attribute in the tojo", attribute
-            )
-        );
+        super(String.format("There is no '%s' attribute in the tojo", attribute));
     }
 }

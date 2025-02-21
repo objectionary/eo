@@ -42,8 +42,6 @@ import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
 import org.eolang.lints.Programs;
 import org.eolang.lints.Severity;
-import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.util.Threaded;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -63,7 +61,7 @@ public final class LintMojo extends SafeMojo {
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "6-lint";
+    static final String DIR = "6-lint";
 
     /**
      * Subdirectory for optimized cache.

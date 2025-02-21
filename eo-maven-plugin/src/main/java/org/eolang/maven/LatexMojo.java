@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.util.HmBase;
 
 /**
  * Take .xmir files from target/eo/03-optimize directory and
@@ -53,12 +52,12 @@ public final class LatexMojo extends SafeMojo {
     /**
      * The directory where to generate to.
      */
-    public static final String DIR = "latex";
+    static final String DIR = "latex";
 
     /**
      * Latex extension (.tex).
      */
-    public static final String EXT = "tex";
+    static final String EXT = "tex";
 
     /**
      * Truncated the last part of the filename,

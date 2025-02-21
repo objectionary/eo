@@ -42,8 +42,6 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrFull;
 import org.eolang.xax.XtSticky;

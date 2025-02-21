@@ -55,11 +55,30 @@ final class TjForeign {
         return this.delegate.toString();
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other == null || this.getClass() != other.getClass()) {
+            result = false;
+        } else {
+            final TjForeign tojo = (TjForeign) other;
+            result = Objects.equals(this.delegate, tojo.delegate);
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.delegate);
+    }
+
     /**
      * The id of the tojo.
      * @return The id of the tojo.
      */
-    public String identifier() {
+    String identifier() {
         return this.attribute(TjsForeign.Attribute.ID);
     }
 
@@ -67,7 +86,7 @@ final class TjForeign {
      * The tojo xmir.
      * @return The xmir.
      */
-    public Path xmir() {
+    Path xmir() {
         return Paths.get(this.attribute(TjsForeign.Attribute.XMIR));
     }
 
@@ -75,7 +94,7 @@ final class TjForeign {
      * The tojo shaken xmir.
      * @return The shaken xmir.
      */
-    public Path shaken() {
+    Path shaken() {
         return Paths.get(this.attribute(TjsForeign.Attribute.SHAKEN));
     }
 
@@ -83,7 +102,7 @@ final class TjForeign {
      * The tojo linted xmir.
      * @return The shaken xmir.
      */
-    public Path linted() {
+    Path linted() {
         return Paths.get(this.attribute(TjsForeign.Attribute.LINTED));
     }
 
@@ -91,7 +110,7 @@ final class TjForeign {
      * The tojo eo object.
      * @return The eo object.
      */
-    public Path source() {
+    Path source() {
         return Paths.get(this.attribute(TjsForeign.Attribute.EO));
     }
 
@@ -99,7 +118,7 @@ final class TjForeign {
      * The tojo version.
      * @return The version.
      */
-    public String version() {
+    String version() {
         return this.attribute(TjsForeign.Attribute.VERSION);
     }
 
@@ -107,7 +126,7 @@ final class TjForeign {
      * The tojo description.
      * @return The description.
      */
-    public String description() {
+    String description() {
         return String.format(
             "%s:%s",
             this.attribute(TjsForeign.Attribute.ID),
@@ -119,7 +138,7 @@ final class TjForeign {
      * The tojo hash.
      * @return The hash.
      */
-    public String hash() {
+    String hash() {
         return this.attribute(TjsForeign.Attribute.HASH);
     }
 
@@ -127,7 +146,7 @@ final class TjForeign {
      * The tojo probed.
      * @return The probed.
      */
-    public String probed() {
+    String probed() {
         return this.attribute(TjsForeign.Attribute.PROBED);
     }
 
@@ -135,7 +154,7 @@ final class TjForeign {
      * The discovered at location.
      * @return The discovered at.
      */
-    public String discoveredAt() {
+    String discoveredAt() {
         return this.attribute(TjsForeign.Attribute.DISCOVERED_AT);
     }
 
@@ -143,7 +162,7 @@ final class TjForeign {
      * Checks if tojo was not already shaken.
      * @return True if shake is required, false otherwise.
      */
-    public boolean notShaken() {
+    boolean notShaken() {
         final Path src = this.xmir();
         boolean res = true;
         if (this.delegate.exists(TjsForeign.Attribute.SHAKEN.getKey())) {
@@ -161,7 +180,7 @@ final class TjForeign {
      *
      * @return True if the tojo has not been parsed.
      */
-    public boolean notParsed() {
+    boolean notParsed() {
         boolean res = true;
         if (this.delegate.exists(TjsForeign.Attribute.XMIR.getKey())) {
             final Path xmir = this.xmir();
@@ -180,7 +199,7 @@ final class TjForeign {
      * Checks if tojo has hash.
      * @return True if has hash, false otherwise.
      */
-    public boolean hasHash() {
+    boolean hasHash() {
         return this.delegate.exists(TjsForeign.Attribute.HASH.getKey());
     }
 
@@ -189,7 +208,7 @@ final class TjForeign {
      * @param coordinates The coordinates of jar.
      * @return The tojo itself.
      */
-    public TjForeign withJar(final Coordinates coordinates) {
+    TjForeign withJar(final Coordinates coordinates) {
         this.delegate.set(TjsForeign.Attribute.JAR.getKey(), coordinates.toString());
         return this;
     }
@@ -199,7 +218,7 @@ final class TjForeign {
      * @param path The path where was discovered.
      * @return The tojo itself.
      */
-    public TjForeign withDiscoveredAt(final Path path) {
+    TjForeign withDiscoveredAt(final Path path) {
         if (!this.delegate.exists(TjsForeign.Attribute.VERSION.getKey())) {
             this.delegate.set(TjsForeign.Attribute.VERSION.getKey(), "*.*.*");
         }
@@ -212,7 +231,7 @@ final class TjForeign {
      * @param sodg Sodg.
      * @return The tojo itself.
      */
-    public TjForeign withSodg(final Path sodg) {
+    TjForeign withSodg(final Path sodg) {
         this.delegate.set(TjsForeign.Attribute.SODG.getKey(), sodg.toString());
         return this;
     }
@@ -222,7 +241,7 @@ final class TjForeign {
      * @param xmir The shaken xmir.
      * @return The tojo itself.
      */
-    public TjForeign withShaken(final Path xmir) {
+    TjForeign withShaken(final Path xmir) {
         this.delegate.set(TjsForeign.Attribute.SHAKEN.getKey(), xmir.toString());
         return this;
     }
@@ -232,7 +251,7 @@ final class TjForeign {
      * @param xmir The linted xmir.
      * @return The tojo itself.
      */
-    public TjForeign withLinted(final Path xmir) {
+    TjForeign withLinted(final Path xmir) {
         this.delegate.set(TjsForeign.Attribute.LINTED.getKey(), xmir.toString());
         return this;
     }
@@ -242,7 +261,7 @@ final class TjForeign {
      * @param source The eo path.
      * @return The tojo itself.
      */
-    public TjForeign withSource(final Path source) {
+    TjForeign withSource(final Path source) {
         this.delegate.set(TjsForeign.Attribute.EO.getKey(), source.toString());
         return this;
     }
@@ -252,7 +271,7 @@ final class TjForeign {
      * @param hash The hash.
      * @return The tojo itself.
      */
-    public TjForeign withHash(final CommitHash hash) {
+    TjForeign withHash(final CommitHash hash) {
         this.delegate.set(TjsForeign.Attribute.HASH.getKey(), hash.value());
         return this;
     }
@@ -262,7 +281,7 @@ final class TjForeign {
      * @param count The number of probed objects.
      * @return The tojo itself.
      */
-    public TjForeign withProbed(final int count) {
+    TjForeign withProbed(final int count) {
         this.delegate.set(TjsForeign.Attribute.PROBED.getKey(), Integer.toString(count));
         return this;
     }
@@ -272,7 +291,7 @@ final class TjForeign {
      * @param xmir The xmir.
      * @return The tojo itself.
      */
-    public TjForeign withXmir(final Path xmir) {
+    TjForeign withXmir(final Path xmir) {
         this.delegate.set(TjsForeign.Attribute.XMIR.getKey(), xmir.toString());
         return this;
     }
@@ -282,7 +301,7 @@ final class TjForeign {
      * @param ver The version.
      * @return The tojo itself.
      */
-    public TjForeign withVersion(final String ver) {
+    TjForeign withVersion(final String ver) {
         this.delegate.set(TjsForeign.Attribute.VERSION.getKey(), ver);
         return this;
     }
@@ -292,7 +311,7 @@ final class TjForeign {
      * @param scope The scope.
      * @return The tojo itself.
      */
-    public TjForeign withScope(final String scope) {
+    TjForeign withScope(final String scope) {
         this.delegate.set(TjsForeign.Attribute.SCOPE.getKey(), scope);
         return this;
     }
@@ -301,27 +320,8 @@ final class TjForeign {
      * Return the scope of the tojo.
      * @return The scope.
      */
-    public String scope() {
+    String scope() {
         return this.attribute(TjsForeign.Attribute.SCOPE);
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        final boolean result;
-        if (this == other) {
-            result = true;
-        } else if (other == null || this.getClass() != other.getClass()) {
-            result = false;
-        } else {
-            final TjForeign tojo = (TjForeign) other;
-            result = Objects.equals(this.delegate, tojo.delegate);
-        }
-        return result;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.delegate);
     }
 
     /**

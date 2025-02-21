@@ -36,8 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
-import org.eolang.maven.footprint.FpDefault;
-import org.eolang.maven.util.Threaded;
 import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -58,17 +56,17 @@ public final class ParseMojo extends SafeMojo {
     /**
      * Zero version.
      */
-    public static final String ZERO = "0.0.0";
+    static final String ZERO = "0.0.0";
 
     /**
      * The directory where to parse to.
      */
-    public static final String DIR = "1-parse";
+    static final String DIR = "1-parse";
 
     /**
      * Subdirectory for parsed cache.
      */
-    public static final String CACHE = "parsed";
+    static final String CACHE = "parsed";
 
     @Override
     public void exec() {

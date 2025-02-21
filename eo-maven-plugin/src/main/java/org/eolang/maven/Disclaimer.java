@@ -52,5 +52,4 @@ final class Disclaimer {
             "; your changes will be discarded on the next build"
         );
     }
-
 }

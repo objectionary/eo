@@ -39,7 +39,7 @@ SOFTWARE.
   <xsl:template match="o[@base='Q.org.eolang.number' and o[1][eo:has-data(.)]]">
     <xsl:variable name="bytes" select="o[1]/text()"/>
     <xsl:choose>
-      <xsl:when test="$bytes='7F-F8-00-00-00-00-00-00' or $bytes='7F-F0-00-00-00-00-00-00' or $bytes='FF-F0-00-00-00-00-00-00'">
+      <xsl:when test="$bytes='7F-F8-00-00-00-00-00-00' or $bytes='7F-F0-00-00-00-00-00-00' or $bytes='FF-F0-00-00-00-00-00-00' or $bytes='FF-FF-FF-FF-FF-FF-FF-FF'">
         <xsl:copy-of select="."/>
       </xsl:when>
       <xsl:when test="$bytes='00-00-00-00-00-00-00-00'">

@@ -21,14 +21,15 @@
 # SOFTWARE.
 ---
 origin: |
-  x > first
-    [] >>
-      5 > five
+  # no.
+  [] > y
+    x > first
+      [] >>
+        5 > five
 
 printed: |
-  x > first
-    Q.auto-named-attr-at-2-4
-
   # No comments.
-  [] > auto-named-attr-at-2-4
-    5 > five
+  [] > y
+    x > first
+      [] >>
+        5 > five
