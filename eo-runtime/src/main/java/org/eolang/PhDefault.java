@@ -141,12 +141,11 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public void put(final int pos, final Phi object) {
         final String name = this.attr(pos);
-        final AtWithRho attribute = (AtWithRho) this.attrs.get(name);
-        if (!(attribute.getOrigin() instanceof AtVoid)) {
+        if (!(((AtWithRho) this.attrs.get(name)).getOrigin() instanceof AtVoid)) {
             throw new ExReadOnly(
                 String.format(
-                    "There are no void attributes left, can't set the %s one",
-                    PhDefault.ordinal(pos)
+                    "Can't put attribute with position %d because it's not void one",
+                    pos
                 )
             );
         }
@@ -345,35 +344,5 @@ public class PhDefault implements Phi, Cloneable {
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
-    }
-
-    /**
-     * Returns the ordinal representation of a number (e.g., "1st", "2nd", "3rd", "4th").
-     * @param number The number to format
-     * @return The number with its ordinal suffix
-     */
-    private static String ordinal(final int number) {
-        final int lasts = number % 100;
-        final int last = number % 10;
-        final String suffix;
-        if (lasts >= 11 && lasts <= 13) {
-            suffix = "th";
-        } else {
-            switch (last) {
-                case 1:
-                    suffix = "st";
-                    break;
-                case 2:
-                    suffix = "nd";
-                    break;
-                case 3:
-                    suffix = "rd";
-                    break;
-                default:
-                    suffix = "th";
-                    break;
-            }
-        }
-        return number + suffix;
     }
 }
