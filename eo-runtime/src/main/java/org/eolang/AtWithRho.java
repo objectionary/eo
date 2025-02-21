@@ -71,4 +71,12 @@ final class AtWithRho implements Attr {
     public void put(final Phi phi) {
         this.origin.put(phi);
     }
+
+    /**
+     * Returns the original attribute.
+     * @return The original attribute
+     */
+    public Attr getOrigin() {
+        return this.origin;
+    }
 }

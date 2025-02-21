@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOnumber;
 import com.yegor256.Together;
 import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
@@ -485,6 +486,19 @@ final class PhDefaultTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(rnd).asNumber(),
             Matchers.equalTo(new Dataized(rnd).asNumber())
+        );
+    }
+
+    @Test
+    void failsCorrectlyWhenTooManyAttributesPut() {
+        MatcherAssert.assertThat(
+            "the message explains what's going on",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new EOnumber().put(1, new Data.ToPhi(1)),
+                "fails when trying to set attribute with too big position"
+            ).getMessage(),
+            Matchers.equalTo("There are no void attributes left, can't set the 1st one")
         );
     }
 
