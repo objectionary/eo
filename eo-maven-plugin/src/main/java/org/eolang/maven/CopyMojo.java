@@ -36,8 +36,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Walk;
 
 /**
  * Copy all {@code .eo} files from the {@code src/main/eo} directory
@@ -57,7 +55,7 @@ public final class CopyMojo extends SafeMojo {
     /**
      * Dir with sources.
      */
-    public static final String DIR = "EO-SOURCES";
+    static final String DIR = "EO-SOURCES";
 
     /**
      * Replacer or version.

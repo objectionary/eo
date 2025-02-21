@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;

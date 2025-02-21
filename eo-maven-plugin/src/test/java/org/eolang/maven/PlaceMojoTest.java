@@ -36,7 +36,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

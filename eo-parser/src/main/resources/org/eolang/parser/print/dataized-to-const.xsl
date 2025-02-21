@@ -31,7 +31,7 @@ SOFTWARE.
   <xsl:template match="o[@base='.as-bytes' and o[position()=1 and @base='Q.org.eolang.dataized']]">
     <xsl:variable name="argument" select="o[position()=1]/o[1]"/>
     <xsl:choose>
-      <xsl:when test="exists($argument) and not(exists($argument/@name))">
+      <xsl:when test="exists($argument)">
         <xsl:element name="o">
           <xsl:apply-templates select="$argument/@*"/>
           <xsl:attribute name="name" select="@name"/>

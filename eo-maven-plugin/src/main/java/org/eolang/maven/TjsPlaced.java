@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.util.FileHash;
 
 /**
  * PlacedTojos encapsulates tojos logic and keeps short information about all placed files.
@@ -88,7 +87,7 @@ final class TjsPlaced implements Closeable {
      * Get all classes.
      * @return All classes.
      */
-    public Collection<TjPlaced> classes() {
+    Collection<TjPlaced> classes() {
         return this.allBinaries().stream()
             .filter(TjPlaced::isClass)
             .collect(Collectors.toList());
@@ -98,7 +97,7 @@ final class TjsPlaced implements Closeable {
      * Get all jars.
      * @return All jars.
      */
-    public Collection<TjPlaced> jars() {
+    Collection<TjPlaced> jars() {
         return this.allBinaries().stream()
             .filter(TjPlaced::isJar)
             .collect(Collectors.toList());
@@ -108,7 +107,7 @@ final class TjsPlaced implements Closeable {
      * Get all binaries.
      * @return All binaries jars with classes.
      */
-    public List<TjPlaced> allBinaries() {
+    List<TjPlaced> allBinaries() {
         return this.all.value()
             .select(tojos -> true)
             .stream()
@@ -121,7 +120,7 @@ final class TjsPlaced implements Closeable {
      * @param dep Dependency identifier.
      * @return Placed jar.
      */
-    public Optional<TjPlaced> findJar(final String dep) {
+    Optional<TjPlaced> findJar(final String dep) {
         return this.jars().stream()
             .filter(tojo -> tojo.identifier().equals(dep))
             .findFirst();
@@ -132,7 +131,7 @@ final class TjsPlaced implements Closeable {
      * @param target Path.
      * @return Placed tojo.
      */
-    public Optional<TjPlaced> find(final Path target) {
+    Optional<TjPlaced> find(final Path target) {
         return this.allBinaries().stream().filter(
             tojo -> target.toString().equals(tojo.identifier())
         ).findFirst();
@@ -145,7 +144,7 @@ final class TjsPlaced implements Closeable {
      * @param dep Dependency.
      * @return Placed class.
      */
-    public TjPlaced placeClass(
+    TjPlaced placeClass(
         final Path target,
         final String related,
         final String dep
@@ -164,7 +163,7 @@ final class TjsPlaced implements Closeable {
      * Place jar into placed tojos file.
      * @param name Name of the jar.
      */
-    public void placeJar(final String name) {
+    void placeJar(final String name) {
         this.all.value().add(name)
             .set(Attribute.KIND.getKey(), "jar")
             .set(Attribute.DEPENDENCY.getKey(), String.format("%s.jar", name))
@@ -174,7 +173,7 @@ final class TjsPlaced implements Closeable {
     /**
      * Unplace all tojos.
      */
-    public void unplaceAll() {
+    void unplaceAll() {
         this.allBinaries().forEach(TjPlaced::unplace);
     }
 
@@ -182,7 +181,7 @@ final class TjsPlaced implements Closeable {
      * Check whether tojos is empty.
      * @return True if empty.
      */
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return this.all.value().select(row -> true).isEmpty();
     }
 

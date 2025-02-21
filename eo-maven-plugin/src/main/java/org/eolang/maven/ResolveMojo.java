@@ -40,7 +40,6 @@ import org.cactoos.Func;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Joined;
-import org.eolang.maven.util.Walk;
 
 /**
  * Find all required runtime dependencies, download
@@ -63,7 +62,7 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * The directory where to resolve to.
      */
-    public static final String DIR = "5-resolve";
+    static final String DIR = "5-resolve";
 
     /**
      * Transitive dependency extractor. It's a strategy pattern for extracting transitive

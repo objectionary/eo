@@ -33,10 +33,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Threaded;
-import org.eolang.maven.util.Walk;
 import org.eolang.parser.Xmir;
 
 /**

@@ -34,7 +34,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.30
  */
-public final class LatexTemplate {
+final class LatexTemplate {
     /**
      * Pattern to extract the content starting with `+`.
      */
@@ -49,7 +49,7 @@ public final class LatexTemplate {
      * Ctor.
      * @param code The code.
      */
-    public LatexTemplate(final String code) {
+    LatexTemplate(final String code) {
         this.code = code;
     }
 
@@ -58,7 +58,7 @@ public final class LatexTemplate {
      * resources/latex-template.txt.
      * @return The generated template with the code as string.
      */
-    public String asString() {
+    String asString() {
         return String.format(
             new UncheckedText(
                 new TextOf(

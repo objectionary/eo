@@ -64,5 +64,4 @@ final class ChNarrow implements CommitHash {
         }
         return hash;
     }
-
 }

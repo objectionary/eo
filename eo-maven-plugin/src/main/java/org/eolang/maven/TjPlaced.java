@@ -49,7 +49,7 @@ final class TjPlaced {
      * The tojo id.
      * @return The id.
      */
-    public String identifier() {
+    String identifier() {
         return this.origin.get(TjsPlaced.Attribute.ID.getKey());
     }
 
@@ -57,7 +57,7 @@ final class TjPlaced {
      * The placed tojo dependency.
      * @return The dependency.
      */
-    public String dependency() {
+    String dependency() {
         return this.origin.get(TjsPlaced.Attribute.DEPENDENCY.getKey());
     }
 
@@ -65,7 +65,7 @@ final class TjPlaced {
      * The placed tojo related file path.
      * @return The related file path.
      */
-    public String related() {
+    String related() {
         return this.origin.get(TjsPlaced.Attribute.RELATED.getKey());
     }
 
@@ -74,14 +74,14 @@ final class TjPlaced {
      * @param hash The hash to check.
      * @return True if the hash is the same.
      */
-    public boolean sameHash(final String hash) {
+    boolean sameHash(final String hash) {
         return this.origin.get(TjsPlaced.Attribute.HASH.getKey()).equals(hash);
     }
 
     /**
      * Mark the tojo as unplaced.
      */
-    public void unplace() {
+    void unplace() {
         this.origin.set(TjsPlaced.Attribute.UNPLACED.getKey(), "true");
     }
 
@@ -89,7 +89,7 @@ final class TjPlaced {
      * Check if the tojo is a class.
      * @return True if the tojo is a class.
      */
-    public boolean isClass() {
+    boolean isClass() {
         return "class".equals(this.origin.get(TjsPlaced.Attribute.KIND.getKey()));
     }
 
@@ -97,7 +97,7 @@ final class TjPlaced {
      * Check if the tojo is a jar.
      * @return True if the tojo is a jar.
      */
-    public boolean isJar() {
+    boolean isJar() {
         return "jar".equals(this.origin.get(TjsPlaced.Attribute.KIND.getKey()));
     }
 
@@ -105,7 +105,7 @@ final class TjPlaced {
      * Check if the tojo is placed.
      * @return True if the tojo is placed.
      */
-    public boolean placed() {
+    boolean placed() {
         return !this.unplaced();
     }
 
@@ -113,7 +113,7 @@ final class TjPlaced {
      * Check if the tojo is unplaced.
      * @return True if the tojo is unplaced.
      */
-    public boolean unplaced() {
+    boolean unplaced() {
         return this.origin.exists(TjsPlaced.Attribute.UNPLACED.getKey())
             && "true".equals(this.origin.get(TjsPlaced.Attribute.UNPLACED.getKey()));
     }

@@ -36,9 +36,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.HmOptional;
-import org.eolang.maven.util.Walk;
 
 /**
  * Take binary files from where {@link ResolveMojo} placed them and

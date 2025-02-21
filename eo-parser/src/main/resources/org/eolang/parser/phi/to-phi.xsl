@@ -29,97 +29,42 @@ SOFTWARE.
   <!-- Variables -->
   <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
   <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
-  <xsl:variable name="xi">
-    <select>ξ</select>
-  </xsl:variable>
-  <xsl:variable name="delta">
-    <select>Δ</select>
-  </xsl:variable>
-  <xsl:variable name="alpha">
-    <select>α</select>
-  </xsl:variable>
-  <xsl:variable name="phi">
-    <select>φ</select>
-  </xsl:variable>
-  <xsl:variable name="rho">
-    <select>ρ</select>
-  </xsl:variable>
-  <xsl:variable name="program">
-    <select>Φ</select>
-  </xsl:variable>
-  <xsl:variable name="def-package">
-    <select>Φ̇</select>
-  </xsl:variable>
-  <xsl:variable name="lambda">
-    <select>λ</select>
-  </xsl:variable>
-  <xsl:variable name="arrow">
-    <xsl:value-of select="$space"/>
-    <select>↦</select>
-    <xsl:value-of select="$space"/>
-  </xsl:variable>
-  <xsl:variable name="dashed-arrow">
-    <xsl:value-of select="$space"/>
-    <select>⤍</select>
-    <xsl:value-of select="$space"/>
-  </xsl:variable>
-  <xsl:variable name="lb">
-    <select>⟦</select>
-  </xsl:variable>
-  <xsl:variable name="rb">
-    <select>⟧</select>
-  </xsl:variable>
-  <xsl:variable name="clb">
-    <select>(</select>
-  </xsl:variable>
-  <xsl:variable name="crb">
-    <select>)</select>
-  </xsl:variable>
-  <xsl:variable name="empty">
-    <select>∅</select>
-  </xsl:variable>
-  <xsl:variable name="space">
-    <xsl:text> </xsl:text>
-  </xsl:variable>
-  <xsl:variable name="new-line">
-    <xsl:value-of select="'&#10;'"/>
-  </xsl:variable>
   <!-- Functions -->
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:lambda-name">
     <xsl:param name="name"/>
-    <xsl:value-of select="concat('L', replace(replace(replace(substring($name, 3), '\.', '_'), '-', '_'), '@', 'φ'))"/>
+    <xsl:value-of select="concat('L', replace(replace(replace(substring($name, 3), '\.', '_'), '-', '_'), '@', $eo:phi))"/>
   </xsl:function>
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:value-of select="$phi"/>
+        <xsl:value-of select="$eo:phi"/>
       </xsl:when>
       <xsl:when test="$n='.@'">
         <xsl:text>.</xsl:text>
-        <xsl:value-of select="$phi"/>
+        <xsl:value-of select="$eo:phi"/>
       </xsl:when>
       <xsl:when test="$n='^'">
-        <xsl:value-of select="$rho"/>
+        <xsl:value-of select="$eo:rho"/>
       </xsl:when>
       <xsl:when test="$n='.^'">
         <xsl:text>.</xsl:text>
-        <xsl:value-of select="$rho"/>
+        <xsl:value-of select="$eo:rho"/>
       </xsl:when>
       <xsl:when test="$n='$'">
-        <xsl:value-of select="$xi"/>
+        <xsl:value-of select="$eo:xi"/>
       </xsl:when>
       <xsl:when test="$n='Q'">
-        <xsl:value-of select="$program"/>
+        <xsl:value-of select="$eo:program"/>
       </xsl:when>
       <xsl:when test="starts-with($n, 'Q.org.eolang')">
-        <xsl:value-of select="$def-package"/>
+        <xsl:value-of select="$eo:def-package"/>
         <xsl:value-of select="substring-after($n, 'Q.org.eolang')"/>
       </xsl:when>
       <xsl:when test="$aliases[text()=$n]">
-        <xsl:value-of select="$program"/>
+        <xsl:value-of select="$eo:program"/>
         <xsl:text>.</xsl:text>
         <xsl:choose>
           <xsl:when test="starts-with($n, 'Q.')">
@@ -157,7 +102,7 @@ SOFTWARE.
   <!-- EOL WITH INDENTATION -->
   <xsl:function name="eo:eol">
     <xsl:param name="tabs"/>
-    <xsl:value-of select="$new-line"/>
+    <xsl:value-of select="$eo:new-line"/>
     <xsl:for-each select="1 to $tabs">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
@@ -166,7 +111,7 @@ SOFTWARE.
   <xsl:function name="eo:can-inline" as="xs:boolean">
     <xsl:param name="str"/>
     <xsl:param name="extra"/>
-    <xsl:sequence select="not(contains($str, $new-line)) and string-length($str) + $extra &lt; 80"/>
+    <xsl:sequence select="not(contains($str, $eo:new-line)) and string-length($str) + $extra &lt; 80"/>
   </xsl:function>
   <!-- PRINT ARGUMENTS OF APPLICATION -->
   <xsl:function name="eo:print-args">
@@ -188,7 +133,7 @@ SOFTWARE.
         <xsl:for-each select="$elements">
           <xsl:if test="position()&gt;1">
             <xsl:value-of select="eo:comma(position(), -1)"/>
-            <xsl:value-of select="$space"/>
+            <xsl:value-of select="$eo:space"/>
           </xsl:if>
           <xsl:value-of select="."/>
         </xsl:for-each>
@@ -213,8 +158,8 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="$object/@as">
         <xsl:choose>
-          <xsl:when test="starts-with($object/@as, $alpha)">
-            <xsl:value-of select="number(substring-after($object/@as, $alpha))"/>
+          <xsl:when test="starts-with($object/@as, $eo:alpha)">
+            <xsl:value-of select="number(substring-after($object/@as, $eo:alpha))"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$object/@as"/>
@@ -252,7 +197,7 @@ SOFTWARE.
       <xsl:copy-of select="./objects"/>
       <phi>
         <xsl:text>{</xsl:text>
-        <xsl:value-of select="$lb"/>
+        <xsl:value-of select="$eo:lb"/>
         <xsl:variable name="tabs" select="1"/>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
@@ -264,39 +209,39 @@ SOFTWARE.
             <xsl:for-each select="$parts">
               <xsl:value-of select="."/>
               <xsl:if test="$conservative">
-                <xsl:value-of select="$clb"/>
-                <xsl:value-of select="$crb"/>
+                <xsl:value-of select="$eo:clb"/>
+                <xsl:value-of select="$eo:crb"/>
               </xsl:if>
-              <xsl:value-of select="$arrow"/>
-              <xsl:value-of select="$lb"/>
+              <xsl:value-of select="$eo:arrow"/>
+              <xsl:value-of select="$eo:lb"/>
               <xsl:value-of select="eo:eol($tabs+position())"/>
             </xsl:for-each>
             <xsl:apply-templates select="objects">
               <xsl:with-param name="tabs" select="$tabs + $length + 1"/>
               <xsl:with-param name="package">
-                <xsl:value-of select="$program"/>
+                <xsl:value-of select="$eo:program"/>
                 <xsl:text>.</xsl:text>
                 <xsl:value-of select="$package"/>
               </xsl:with-param>
             </xsl:apply-templates>
             <xsl:for-each select="$parts">
               <xsl:value-of select="eo:comma(2, $tabs + $length + 2 - position())"/>
-              <xsl:value-of select="$lambda"/>
-              <xsl:value-of select="$dashed-arrow"/>
+              <xsl:value-of select="$eo:lambda"/>
+              <xsl:value-of select="$eo:dashed-arrow"/>
               <xsl:text>Package</xsl:text>
               <xsl:value-of select="eo:eol($tabs + $length + 1 - position())"/>
-              <xsl:value-of select="$rb"/>
+              <xsl:value-of select="$eo:rb"/>
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates select="objects">
               <xsl:with-param name="tabs" select="$tabs"/>
-              <xsl:with-param name="package" select="$program"/>
+              <xsl:with-param name="package" select="$eo:program"/>
             </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:value-of select="$rb"/>
+        <xsl:value-of select="$eo:rb"/>
         <xsl:text>}</xsl:text>
       </phi>
     </program>
@@ -317,20 +262,20 @@ SOFTWARE.
   <!-- Void attribute -->
   <xsl:template match="o[eo:void(.)]">
     <xsl:value-of select="eo:specials(@name)"/>
-    <xsl:value-of select="$arrow"/>
-    <xsl:value-of select="$empty"/>
+    <xsl:value-of select="$eo:arrow"/>
+    <xsl:value-of select="$eo:empty"/>
   </xsl:template>
   <!-- Inline void-attributes -->
   <xsl:template match="o" mode="inline-voids">
-    <xsl:value-of select="$clb"/>
+    <xsl:value-of select="$eo:clb"/>
     <xsl:for-each select="o[eo:void(.)]">
       <xsl:if test="position()&gt;1">
         <xsl:value-of select="eo:comma(position(), -1)"/>
-        <xsl:value-of select="$space"/>
+        <xsl:value-of select="$eo:space"/>
       </xsl:if>
       <xsl:value-of select="eo:specials(@name)"/>
     </xsl:for-each>
-    <xsl:value-of select="$crb"/>
+    <xsl:value-of select="$eo:crb"/>
   </xsl:template>
   <!-- Just object -->
   <xsl:template match="o[@base and not(eo:void(.))]">
@@ -340,7 +285,7 @@ SOFTWARE.
     <xsl:variable name="name">
       <xsl:if test="@name">
         <xsl:value-of select="eo:specials(@name)"/>
-        <xsl:value-of select="$arrow"/>
+        <xsl:value-of select="$eo:arrow"/>
       </xsl:if>
     </xsl:variable>
     <xsl:value-of select="$name"/>
@@ -384,7 +329,7 @@ SOFTWARE.
         <xsl:value-of select="$method"/>
         <xsl:variable name="after-start">
           <xsl:choose>
-            <xsl:when test="contains(string-join(($start, $method), ''), $new-line)">
+            <xsl:when test="contains(string-join(($start, $method), ''), $eo:new-line)">
               <xsl:value-of select="$after-name + string-length($method[last()])"/>
             </xsl:when>
             <xsl:otherwise>
@@ -405,15 +350,15 @@ SOFTWARE.
     </xsl:choose>
     <!-- Data -->
     <xsl:if test="eo:has-data(.) and @base!='Q.org.eolang.number' and @base!='Q.org.eolang.string'">
-      <xsl:value-of select="$clb"/>
-      <xsl:value-of select="$lb"/>
-      <xsl:value-of select="$space"/>
-      <xsl:value-of select="$delta"/>
-      <xsl:value-of select="$dashed-arrow"/>
+      <xsl:value-of select="$eo:clb"/>
+      <xsl:value-of select="$eo:lb"/>
+      <xsl:value-of select="$eo:space"/>
+      <xsl:value-of select="$eo:delta"/>
+      <xsl:value-of select="$eo:dashed-arrow"/>
       <xsl:value-of select="text()[last()]"/>
-      <xsl:value-of select="$space"/>
-      <xsl:value-of select="$rb"/>
-      <xsl:value-of select="$crb"/>
+      <xsl:value-of select="$eo:space"/>
+      <xsl:value-of select="$eo:rb"/>
+      <xsl:value-of select="$eo:crb"/>
     </xsl:if>
   </xsl:template>
   <!-- Nested applied objects -->
@@ -438,7 +383,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:value-of select="$clb"/>
+    <xsl:value-of select="$eo:clb"/>
     <xsl:choose>
       <xsl:when test="not(eo:can-inline($applied, $after-start))">
         <xsl:value-of select="eo:eol($tabs+1)"/>
@@ -449,7 +394,7 @@ SOFTWARE.
         <xsl:value-of select="$applied"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:value-of select="$crb"/>
+    <xsl:value-of select="$eo:crb"/>
   </xsl:template>
   <!-- Formation -->
   <xsl:template match="o[eo:abstract(.)]">
@@ -462,9 +407,9 @@ SOFTWARE.
       <xsl:if test="$conservative or count(o[eo:void(.)])&gt;0">
         <xsl:apply-templates select="." mode="inline-voids"/>
       </xsl:if>
-      <xsl:value-of select="$arrow"/>
+      <xsl:value-of select="$eo:arrow"/>
     </xsl:if>
-    <xsl:value-of select="$lb"/>
+    <xsl:value-of select="$eo:lb"/>
     <!-- Atom or not empty formation -->
     <xsl:variable name="inners" select="if ($no-binding or (not(@as) and not(@name))) then o else o[not(eo:void(.))]"/>
     <xsl:if test="@atom or count($inners)&gt;0">
@@ -476,8 +421,8 @@ SOFTWARE.
           <xsl:text>.</xsl:text>
           <xsl:value-of select="$name"/>
         </xsl:variable>
-        <xsl:value-of select="$lambda"/>
-        <xsl:value-of select="$dashed-arrow"/>
+        <xsl:value-of select="$eo:lambda"/>
+        <xsl:value-of select="$eo:dashed-arrow"/>
         <xsl:value-of select="eo:lambda-name($lambda-name)"/>
         <xsl:if test="count($inners)&gt;0">
           <xsl:value-of select="eo:comma(2, $tabs+1)"/>
@@ -498,7 +443,7 @@ SOFTWARE.
       </xsl:for-each>
       <xsl:value-of select="eo:eol($tabs)"/>
     </xsl:if>
-    <xsl:value-of select="$rb"/>
+    <xsl:value-of select="$eo:rb"/>
   </xsl:template>
   <!-- Application -->
   <xsl:template match="o" mode="application">
@@ -512,14 +457,14 @@ SOFTWARE.
           <xsl:value-of select="eo:specials(@as)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="$alpha"/>
+          <xsl:value-of select="$eo:alpha"/>
           <xsl:value-of select="$position - 1"/>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="eo:abstract(.) and ($conservative or o[eo:void(.)])">
         <xsl:apply-templates select="." mode="inline-voids"/>
       </xsl:if>
-      <xsl:value-of select="$arrow"/>
+      <xsl:value-of select="$eo:arrow"/>
     </xsl:variable>
     <xsl:value-of select="$applied"/>
     <xsl:apply-templates select=".">

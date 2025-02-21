@@ -29,7 +29,7 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
-  <xsl:variable name="alpha" select="'α'"/>
+  <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
   <xsl:variable name="comment">
     <xsl:text># No comments.</xsl:text>
     <xsl:value-of select="$eol"/>
@@ -38,6 +38,9 @@ SOFTWARE.
   <!-- PROGRAM -->
   <xsl:template match="program">
     <program>
+      <xsl:copy-of select="sheets"/>
+      <xsl:copy-of select="metas"/>
+      <xsl:copy-of select="objects"/>
       <eo>
         <xsl:apply-templates select="license"/>
         <xsl:apply-templates select="metas"/>
@@ -78,7 +81,7 @@ SOFTWARE.
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.))]">
     <xsl:param name="indent" select="''"/>
-    <xsl:if test="starts-with(@base, concat('.', $alpha))">
+    <xsl:if test="starts-with(@base, concat('.', $eo:alpha))">
       <xsl:message terminate="yes">
         <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
         <xsl:value-of select="@base"/>
@@ -124,9 +127,9 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
-  <xsl:template match="o[not(@base) and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
     <xsl:param name="indent"/>
-    <xsl:if test="@name">
+    <xsl:if test="@name and not(starts-with(@name, $auto))">
       <xsl:value-of select="$comment"/>
       <xsl:value-of select="$indent"/>
     </xsl:if>
@@ -144,8 +147,8 @@ SOFTWARE.
     <xsl:if test="@as">
       <xsl:text>:</xsl:text>
       <xsl:choose>
-        <xsl:when test="starts-with(@as, $alpha)">
-          <xsl:value-of select="substring-after(@as, $alpha)"/>
+        <xsl:when test="starts-with(@as, $eo:alpha)">
+          <xsl:value-of select="substring-after(@as, $eo:alpha)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="@as"/>
@@ -153,8 +156,15 @@ SOFTWARE.
       </xsl:choose>
     </xsl:if>
     <xsl:if test="@name">
-      <xsl:text> &gt; </xsl:text>
-      <xsl:value-of select="@name"/>
+      <xsl:choose>
+        <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
+          <xsl:text> &gt;&gt;</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> &gt; </xsl:text>
+          <xsl:value-of select="@name"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="@const">
         <xsl:text>!</xsl:text>
       </xsl:if>

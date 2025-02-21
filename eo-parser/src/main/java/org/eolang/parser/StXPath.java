@@ -39,7 +39,6 @@ import org.xembly.Xembler;
  * @since 0.29.0
  */
 public final class StXPath implements Shift {
-
     /**
      * XPath to search for.
      */
@@ -68,22 +67,19 @@ public final class StXPath implements Shift {
     @Override
     public XML apply(final int position, final XML xml) {
         final List<XML> nodes = xml.nodes(this.xpath);
-        if (nodes.size() > 1) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "XPath '%s' returned too many elements (%d)",
-                    this.xpath, nodes.size()
-                )
+        final XML doc;
+        if (nodes.isEmpty()) {
+            doc = xml;
+        } else {
+            final Directives dirs = new Directives();
+            final String path = String.format("(%s)[1]", this.xpath);
+            for (final XML node : nodes) {
+                dirs.xpath(path).strict(1).append(this.fun.apply(node));
+            }
+            doc = new XMLDocument(
+                new Xembler(dirs).applyQuietly(xml.inner())
             );
         }
-        final Directives dirs = new Directives();
-        if (!nodes.isEmpty()) {
-            dirs.xpath(this.xpath);
-            dirs.append(this.fun.apply(nodes.get(0)));
-        }
-        return new XMLDocument(
-            new Xembler(dirs).applyQuietly(xml.deepCopy())
-        );
+        return doc;
     }
-
 }

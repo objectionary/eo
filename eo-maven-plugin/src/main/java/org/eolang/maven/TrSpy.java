@@ -33,7 +33,6 @@ import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
 import org.cactoos.Func;
-import org.eolang.maven.footprint.Saved;
 
 /**
  * Train that spies.
