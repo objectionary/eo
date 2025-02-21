@@ -67,6 +67,11 @@ final class Moja<T extends AbstractMojo> {
         this.attrs = new HashMap<>(0);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Moja<%s>", this.type.getSimpleName());
+    }
+
     /**
      * Add one more attribute and return self.
      *
@@ -120,16 +125,15 @@ final class Moja<T extends AbstractMojo> {
                 this.initField(this.type, mojo, ent);
             }
             mojo.execute();
-        } catch (final MojoExecutionException | MojoFailureException
-            | InstantiationException | IllegalAccessException
-            | NoSuchMethodException | InvocationTargetException ex) {
+        } catch (final MojoExecutionException
+            | MojoFailureException
+            | InstantiationException
+            | IllegalAccessException
+            | NoSuchMethodException
+            | InvocationTargetException ex
+        ) {
             throw new IllegalStateException(ex);
         }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Moja<%s>", this.type.getSimpleName());
     }
 
     /**
@@ -153,10 +157,6 @@ final class Moja<T extends AbstractMojo> {
      * @param mojo The mojo
      * @param entry Field name and value
      * @throws java.lang.IllegalAccessException If can't set field.
-     * @todo #1494:30min We have some doubts about using Logger.warn in initField method.
-     *  Since it's important to notice the developer during of using the plugin that the property
-     *  can't be set to the Mojo, we can't just remove Logger.warn. On the other hand, we will
-     *  see warnings all the time during unit testing, which can be an insignificant problem.
      */
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private void initField(

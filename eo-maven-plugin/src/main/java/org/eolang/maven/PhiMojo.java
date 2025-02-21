@@ -54,7 +54,7 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Subdirectory for parsed cache.
      */
-    final String CACHE = "phied";
+    static final String CACHE = "phied";
 
     /**
      * The directory where to take xmir files for translation from.

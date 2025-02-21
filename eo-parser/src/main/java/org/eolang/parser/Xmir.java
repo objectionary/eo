@@ -72,6 +72,7 @@ public final class Xmir implements XML {
                 ),
                 new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
                 Xmir.UNHEX,
+                new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
                 new StClasspath("/org/eolang/parser/print/to-eo.xsl")
             )
         )

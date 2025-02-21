@@ -33,7 +33,7 @@ final class FpExistedSource extends FpEnvelope {
      * Ctor.
      * @param footprint Original footprint
      */
-    public FpExistedSource(final Footprint footprint) {
+    FpExistedSource(final Footprint footprint) {
         super(
             (source, target) -> {
                 if (!source.toFile().exists()) {

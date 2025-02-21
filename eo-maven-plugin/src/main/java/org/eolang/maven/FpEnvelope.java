@@ -41,7 +41,7 @@ class FpEnvelope implements Footprint {
      * Ctor.
      * @param footprint Wrapped footprint
      */
-    public FpEnvelope(final Footprint footprint) {
+    FpEnvelope(final Footprint footprint) {
         this.origin = footprint;
     }
 

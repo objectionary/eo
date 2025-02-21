@@ -40,7 +40,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.footprint.FpDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

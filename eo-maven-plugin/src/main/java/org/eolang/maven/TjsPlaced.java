@@ -87,7 +87,7 @@ final class TjsPlaced implements Closeable {
      * Get all classes.
      * @return All classes.
      */
-     Collection<TjPlaced> classes() {
+    Collection<TjPlaced> classes() {
         return this.allBinaries().stream()
             .filter(TjPlaced::isClass)
             .collect(Collectors.toList());
@@ -97,7 +97,7 @@ final class TjsPlaced implements Closeable {
      * Get all jars.
      * @return All jars.
      */
-     Collection<TjPlaced> jars() {
+    Collection<TjPlaced> jars() {
         return this.allBinaries().stream()
             .filter(TjPlaced::isJar)
             .collect(Collectors.toList());
@@ -107,7 +107,7 @@ final class TjsPlaced implements Closeable {
      * Get all binaries.
      * @return All binaries jars with classes.
      */
-     List<TjPlaced> allBinaries() {
+    List<TjPlaced> allBinaries() {
         return this.all.value()
             .select(tojos -> true)
             .stream()

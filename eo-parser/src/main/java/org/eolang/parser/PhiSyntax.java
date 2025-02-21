@@ -125,6 +125,7 @@ public final class PhiSyntax implements Syntax {
      * @param inpt Input
      * @param extra Extra directives to append
      * @param transform Functions that transforms XMIR after parsing
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private PhiSyntax(
         final String nme,

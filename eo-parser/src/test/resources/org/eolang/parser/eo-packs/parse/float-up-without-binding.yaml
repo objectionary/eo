@@ -29,6 +29,7 @@ asserts:
   - /program/objects/o[not(@base) and @name='o' and not(@as)]
   - /program/objects/o[@name='foo']/o[@base='a' and @name='b']/o[@base='c' and @as='hey']
   - /program/objects/o[@name='foo']/o[not(@base) and @name='c' and not(@as)]
+  - /program/objects/o[@name='foo']/o[@base='a' and @name='b']/o[not(@base) and not(@name) and @as='abs']
 input: |
   x > y
     []:0 > o
@@ -36,3 +37,4 @@ input: |
   [] > foo
     a > b
       []:hey > c
+      [z]:abs

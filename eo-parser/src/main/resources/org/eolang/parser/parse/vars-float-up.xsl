@@ -59,6 +59,9 @@ SOFTWARE.
   <xsl:template match="o[eo:abstract(.)]" mode="full" priority="1">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
+      <xsl:if test="not(@name) and @as">
+        <xsl:attribute name="as" select="@as"/>
+      </xsl:if>
       <xsl:apply-templates select="node()|@* except @as"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">

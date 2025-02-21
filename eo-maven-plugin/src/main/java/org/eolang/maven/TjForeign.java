@@ -55,6 +55,25 @@ final class TjForeign {
         return this.delegate.toString();
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other == null || this.getClass() != other.getClass()) {
+            result = false;
+        } else {
+            final TjForeign tojo = (TjForeign) other;
+            result = Objects.equals(this.delegate, tojo.delegate);
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.delegate);
+    }
+
     /**
      * The id of the tojo.
      * @return The id of the tojo.
@@ -303,25 +322,6 @@ final class TjForeign {
      */
     String scope() {
         return this.attribute(TjsForeign.Attribute.SCOPE);
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        final boolean result;
-        if (this == other) {
-            result = true;
-        } else if (other == null || this.getClass() != other.getClass()) {
-            result = false;
-        } else {
-            final TjForeign tojo = (TjForeign) other;
-            result = Objects.equals(this.delegate, tojo.delegate);
-        }
-        return result;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.delegate);
     }
 
     /**

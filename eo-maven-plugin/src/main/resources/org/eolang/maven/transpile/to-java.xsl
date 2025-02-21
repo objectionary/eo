@@ -49,7 +49,7 @@ SOFTWARE.
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(replace(replace(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
   </xsl:function>
   <!-- Get object name with suffix -->
   <xsl:function name="eo:suffix" as="xs:string">
@@ -105,7 +105,7 @@ SOFTWARE.
   <!-- Convert location to class name  -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', replace(string-join(tokenize($loc, '\.'), ''), '-', '_'))"/>
+    <xsl:value-of select="concat('EO', replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
