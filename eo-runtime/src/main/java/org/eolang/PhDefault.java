@@ -141,7 +141,7 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public void put(final int pos, final Phi object) {
         final String name = this.attr(pos);
-        if (!(((AtWithRho) this.attrs.get(name)).getOrigin() instanceof AtVoid)) {
+        if (!(((AtWithRho) this.attrs.get(name)).origin() instanceof AtVoid)) {
             throw new ExReadOnly(
                 String.format(
                     "Can't put attribute with position %d because it's not void one",
