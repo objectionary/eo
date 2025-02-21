@@ -35,7 +35,7 @@ jobs:
       - run: |
           mkdir -p gh-pages
           cp eo-parser/src/test/resources/org/eolang/parser/phi-syntax/all-the-basics.phi gh-pages/sample.phi
-      - uses: JamesIves/github-pages-deploy-action@v4.7.2
+      - uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           branch: gh-pages
           folder: gh-pages
