@@ -1,0 +1,21 @@
+name: Performance Regression Check
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  benchmark:
+    name: JMH
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run JMH Benchmark Action
+        uses: volodya-lombrozo/jmh-benchmark-action@main
+        with:
+          java-version: "11"
+          base-ref: "main"
+          benchmark-command: |
+            mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
+            cp eo-parser/benchmark.json .
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          benchmark-file: "benchmark.json"
