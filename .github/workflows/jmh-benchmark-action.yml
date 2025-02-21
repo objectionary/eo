@@ -25,7 +25,7 @@ name: Performance Regression Check
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   benchmark:
@@ -36,7 +36,7 @@ jobs:
         uses: volodya-lombrozo/jmh-benchmark-action@main
         with:
           java-version: "11"
-          base-ref: "main"
+          base-ref: "master"
           benchmark-command: |
             mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
             cp eo-parser/benchmark.json .
