@@ -618,7 +618,6 @@ SOFTWARE.
         <xsl:text>new PhCopy(</xsl:text>
         <xsl:value-of select="$name"/>
         <xsl:text>);</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
       </xsl:if>
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
@@ -629,7 +628,6 @@ SOFTWARE.
         <xsl:with-param name="indent" select="$indent + 1"/>
         <xsl:with-param name="rho" select="$rho"/>
       </xsl:apply-templates>
-      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
     <xsl:for-each select="$inners">
       <xsl:value-of select="eo:eol($indent)"/>
