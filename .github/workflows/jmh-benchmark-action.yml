@@ -22,14 +22,17 @@
 ---
 # yamllint disable rule:line-length
 name: Performance Regression Check
-'on':
-  - pull_request_target
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   benchmark:
     name: JMH
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
     steps:
       - name: Run JMH Benchmark Action
