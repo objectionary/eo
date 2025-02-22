@@ -296,6 +296,12 @@ SOFTWARE.
       <version>1.4.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>maybeslow</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -468,10 +474,6 @@ SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skipTests>${skipITs}</skipTests>
-        </configuration>
-        <version>3.5.2</version>
         <executions>
           <execution>
             <id>assemble-test</id>

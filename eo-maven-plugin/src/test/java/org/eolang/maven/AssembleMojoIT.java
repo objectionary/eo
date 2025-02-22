@@ -23,7 +23,8 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
+import  com.jcabi.manifests.Manifests;
+import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
@@ -43,8 +44,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
-@ExtendWith(WeAreOnline.class)
-@ExtendWith(MktmpResolver.class)
+@ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class AssembleMojoIT {
 
     @Test

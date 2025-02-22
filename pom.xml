@@ -419,6 +419,13 @@ SOFTWARE.
             </properties>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <skipTests>${skipITs}</skipTests>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -470,14 +477,6 @@ SOFTWARE.
                 <exclude>checkstyle:/src/site/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <!--In order to include slow tests too-->
-              <excludedGroups>nothing-to-exclude</excludedGroups>
             </configuration>
           </plugin>
           <plugin>
