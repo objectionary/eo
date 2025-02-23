@@ -110,7 +110,7 @@
     <xsl:param name="rho"/>
     <xsl:choose>
       <xsl:when test="$first='Q'">
-        <xsl:text>Phi.Φ</xsl:text>
+        <xsl:text>Phi.&#x3A6;</xsl:text>
       </xsl:when>
       <xsl:when test="$first='$'">
         <xsl:value-of select="$rho"/>
