@@ -5,12 +5,26 @@ version = 1
 [[annotations]]
 path = [
     ".gitattributes",
-    ".gitignore",
+    "**/.gitignore",
+    "**/.xcop",
+    ".codenarc",
+    ".mvn/jvm.config",
+    "CITATION.cff",
+    "CODE_OF_CONDUCT.md",
     ".gitleaksignore",
     ".pdd",
+    "**/CNAME",
+    "**/*.vm",
     "Gemfile.lock",
-    "README.md",
-    "renovate.json"
+    "**/README.md",
+    "**/*.json",
+    "**/*.phi",
+    "eo-maven-plugin/src/main/resources/org/eolang/maven/latex/latex-template.txt",
+    "eo-maven-plugin/src/test/resources/org/eolang/maven/commits/tags.txt",
+    "**/javax.xml.transform.TransformerFactory",
+    "**/javax.xml.xpath.XPathFactory",
+    "**/MANIFEST.MF",
+    "eo-runtime/src/main/resources/org/eolang/version.txt"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2025 Yegor Bugayenko"
