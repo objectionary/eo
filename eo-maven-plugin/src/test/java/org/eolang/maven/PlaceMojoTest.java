@@ -159,7 +159,7 @@ final class PlaceMojoTest {
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
         maven.placed().unplaceAll();
         MatcherAssert.assertThat(
-            "PlaceMojo have to proccess the file",
+            "PlaceMojo have to process the file",
             maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
         );
