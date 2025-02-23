@@ -250,7 +250,7 @@ final class LintMojoTest {
                     "    FALSE > x"
                 ).with("trackTransformationSteps", true)
                 .execute(new FakeMaven.Lint()),
-            CatalogsTest.TO_ADD_MESSAGE
+            "Program should have failed, but it didn't"
         );
     }
 
@@ -372,7 +372,7 @@ final class LintMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Cached result should match the original verified XML document",
             new XMLDocument(
                 new HmBase(temp).load(
                     Paths.get(

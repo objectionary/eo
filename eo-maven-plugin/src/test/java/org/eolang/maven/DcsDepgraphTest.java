@@ -55,7 +55,7 @@ final class DcsDepgraphTest {
         @Mktmp final Path tmp
     ) throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The number of dependencies must be correct, but it isn't",
             new LengthOf(new DcsDepgraph.DcsJson(this.file(tmp, name))).value(),
             Matchers.equalTo(number)
         );

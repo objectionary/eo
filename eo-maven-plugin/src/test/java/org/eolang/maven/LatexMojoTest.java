@@ -50,7 +50,7 @@ final class LatexMojoTest {
     @Test
     void generatesTexFile(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "LatexMojo must geterate a .tex file, but it doesn't",
             new FakeMaven(temp)
                 .withHelloWorld()
                 .execute(new FakeMaven.Latex())
@@ -68,7 +68,7 @@ final class LatexMojoTest {
     @Test
     void checksLastName() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Expected the last part of the input, but it was not",
             LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
         );

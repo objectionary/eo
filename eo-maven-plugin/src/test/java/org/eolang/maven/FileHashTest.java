@@ -45,7 +45,7 @@ final class FileHashTest {
         final Path path = temp.resolve("1.txt");
         new HmBase(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "FileHash must read an existing file, but it doesn't",
             new FileHash(path).toString(),
             Matchers.startsWith("[-26, 1, -29, 113, ")
         );
@@ -55,7 +55,7 @@ final class FileHashTest {
     void readsFromAbsentFile(@Mktmp final Path temp) {
         final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "FileHash must read an absent file, but it doesn't",
             new FileHash(path).toString(),
             Matchers.equalTo("")
         );

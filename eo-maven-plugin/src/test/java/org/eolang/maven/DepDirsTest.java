@@ -48,13 +48,14 @@ final class DepDirsTest {
         new HmBase(temp).save("", Paths.get("a/b/f.txt"));
         new HmBase(temp).save("", Paths.get("test/f.txt"));
         new HmBase(temp).save("", Paths.get("a/g"));
+        final String path = String.format("a%sb%1$sc%1$sf", File.separator);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format("DepDirs should contain %s, but it doesn't", path),
             new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
+            Matchers.contains(path)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "DepDirs should contain one element, but it doesn't",
             new DepDirs(temp),
             Matchers.iterableWithSize(1)
         );

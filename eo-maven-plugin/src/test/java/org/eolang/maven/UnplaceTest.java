@@ -47,7 +47,7 @@ final class UnplaceTest {
         final String name
     ) {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Unplace must make the correct name, but it doesn't",
             new Unplace(Paths.get(base)).make(
                 Paths.get(source)
             ),

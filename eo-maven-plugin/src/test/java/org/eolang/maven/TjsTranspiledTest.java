@@ -97,7 +97,7 @@ final class TjsTranspiledTest {
     void adds() {
         this.tojos.add(this.transpiled.get(0), Paths.get("first.optimized.xmir"));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The original must contain exactly 1 item",
             this.original.select(all -> true),
             Matchers.hasSize(1)
         );
@@ -111,22 +111,22 @@ final class TjsTranspiledTest {
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Removing the first file should return 1",
             this.tojos.remove(first),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Removing the second file should return 1",
             this.tojos.remove(second),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "There should be only 1 file left after removal",
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(1)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The original must contain 3 items",
             this.original.select(all -> true),
             Matchers.hasSize(3)
         );
@@ -135,17 +135,17 @@ final class TjsTranspiledTest {
     @Test
     void removesAbsent() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Removing the file should return 0",
             this.tojos.remove(Paths.get("absent.xmir")),
             Matchers.equalTo(0L)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "There should be 3 files left after removal",
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(3)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The original must be empty",
             this.original.select(all -> true),
             Matchers.hasSize(0)
         );

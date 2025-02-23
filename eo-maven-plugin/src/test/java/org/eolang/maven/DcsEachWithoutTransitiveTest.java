@@ -48,7 +48,7 @@ final class DcsEachWithoutTransitiveTest {
                 new DcsFake(),
                 dep -> new DcsFake(100)
             ).iterator().next(),
-            CatalogsTest.TO_ADD_MESSAGE
+            "We expect an exception when transitive dependencies are found"
         );
     }
 
@@ -56,7 +56,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Dependencies should be kept as transitive",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.randDep("test"))
@@ -69,7 +69,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Dependencies that have the same dependency should be kept as transitive",
             new DcsEachWithoutTransitive(
                 original,
                 DcsFake::new
@@ -82,7 +82,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Dependencies with runtime dependencies should be kept as transitive",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.runtimeDep())

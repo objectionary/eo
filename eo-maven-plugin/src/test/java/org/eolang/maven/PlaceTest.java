@@ -38,7 +38,7 @@ final class PlaceTest {
     @Test
     void makesPath() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Place must make the path by full name of the object",
             new Place("hello.foo.bar")
                 .make(Paths.get("/tmp/test"), AssembleMojo.XMIR)
                 .toString()
@@ -50,7 +50,7 @@ final class PlaceTest {
     @Test
     void makesSimplePath() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Place must make the simple path",
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")
                 .toString()

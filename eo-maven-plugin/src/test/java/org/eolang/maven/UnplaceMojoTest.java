@@ -72,7 +72,7 @@ final class UnplaceMojoTest {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "After executing UnplaceMojo, all class files should be removed",
             new FakeMaven(temp)
                 .with("placed", placed.toFile())
                 .execute(UnplaceMojo.class)
@@ -95,13 +95,17 @@ final class UnplaceMojoTest {
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
+        final int expected = 5;
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                "Expected %d binaries, but got a different number",
+                expected
+            ),
             tojos.size(),
-            Matchers.equalTo(5)
+            Matchers.equalTo(expected)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "All binaries should be marked as unplaced after cleanup",
             tojos.stream().allMatch(TjPlaced::unplaced),
             Matchers.is(true)
         );
@@ -119,13 +123,17 @@ final class UnplaceMojoTest {
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
+        final int expected = 5;
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                "Expected %d binaries, but got a different number",
+                expected
+            ),
             tojos.size(),
-            Matchers.equalTo(5)
+            Matchers.equalTo(expected)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format("JAR file %s should still be placed as it is in use", other),
             tojos.stream()
                 .filter(tojo -> tojo.identifier().equals(other))
                 .allMatch(TjPlaced::placed),
@@ -146,12 +154,12 @@ final class UnplaceMojoTest {
         final Map<String, Path> res = maven.execute(UnplaceMojo.class).result();
         if (params.length == 1 && "keepBinaries".equals(params[0])) {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "Class files must be kept, but they were removed",
                 res.values().stream().anyMatch(UnplaceMojoTest::isClass),
                 Matchers.is(true)
             );
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "Output must contain false, but it doesn't",
                 new TextOf(res.get(placed.getFileName().toString())).asString(),
                 Matchers.allOf(
                     Matchers.containsString("false"),
@@ -160,12 +168,12 @@ final class UnplaceMojoTest {
             );
         } else {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "Class files must be removed, but some were kept",
                 res.values().stream().noneMatch(UnplaceMojoTest::isClass),
                 Matchers.is(true)
             );
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "Output must contain false, but it doesn't",
                 new TextOf(res.get(placed.getFileName().toString())).asString(),
                 Matchers.allOf(
                     Matchers.not(Matchers.containsString("false")),

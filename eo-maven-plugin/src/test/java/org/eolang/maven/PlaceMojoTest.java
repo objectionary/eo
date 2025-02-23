@@ -68,18 +68,19 @@ final class PlaceMojoTest {
         final Map<String, Path> res = new FakeMaven(temp)
             .execute(PlaceMojo.class)
             .result();
+        final String message = "PlaceMojo have to place binaries, but it doesn't";
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            message,
             res,
             Matchers.hasKey("target/classes/EObar/x.bin")
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            message,
             res,
             Matchers.hasKey("target/classes/org/eolang/f/x.a.class")
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            message,
             res,
             Matchers.hasKey("target/classes/org/eolang/t.txt")
         );
@@ -90,7 +91,7 @@ final class PlaceMojoTest {
         final String expected = String.format("%s/EObar/x.bin", CopyMojo.DIR);
         PlaceMojoTest.saveBinary(temp, expected);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have to skip eo source, but it doesn't",
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -117,7 +118,7 @@ final class PlaceMojoTest {
             PlaceMojoTest.saveBinary(temp, binary);
         }
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have to place only classes from package that have sources, but it doesn't",
             new FakeMaven(temp)
                 .with("placeBinariesThatHaveSources", true)
                 .execute(PlaceMojo.class)
@@ -153,7 +154,7 @@ final class PlaceMojoTest {
             binary
         ).toFile().lastModified();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo must skip already placed binaries, but it doesn't",
             new FakeMaven(temp)
                 .withPlacedBinary(
                     temp.resolve(PlaceMojoTest.TARGET_CLASSES).resolve(binary)
@@ -177,12 +178,12 @@ final class PlaceMojoTest {
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
         maven.placed().unplaceAll();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have to proccess the file",
             maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The file must be updated, but it was not",
             content,
             Matchers.is(new TextOf(path).asString())
         );
@@ -192,7 +193,10 @@ final class PlaceMojoTest {
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
         Files.createDirectories(temp.resolve("target").resolve(ResolveMojo.DIR));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                "PlaceMojo must not place binaries from %s",
+                PlaceMojoTest.TARGET_CLASSES
+            ),
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -203,7 +207,14 @@ final class PlaceMojoTest {
     @Test
     void placesWithoutResolveDirectory(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                String.join(
+                    " ",
+                    "PlaceMojo must not place binaries from %s",
+                    "if the resolve directory does not exist"
+                ),
+                PlaceMojoTest.TARGET_CLASSES
+            ),
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -222,12 +233,12 @@ final class PlaceMojoTest {
             .execute(PlaceMojo.class)
             .result();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The first binary file must be placed, but it was not",
             res,
             Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, first))
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The second binary file must be placed, but it was not",
             res,
             Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, second))
         );
@@ -246,7 +257,7 @@ final class PlaceMojoTest {
     void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have to place the runtime file, but doesn't",
             maven.withHelloWorld()
                 .execute(new FakeMaven.Place())
                 .result()
@@ -254,7 +265,7 @@ final class PlaceMojoTest {
             new ContainsFiles("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have to place jar file, but doesn't",
             maven.placed().jars().size(),
             Matchers.is(1)
         );
@@ -264,7 +275,7 @@ final class PlaceMojoTest {
     void placesWithoutEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have not to place the runtime file, but doesn't",
             maven.withHelloWorld()
                 .with("withRuntimeDependency", false)
                 .execute(new FakeMaven.Place())
@@ -273,7 +284,7 @@ final class PlaceMojoTest {
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PlaceMojo have not to place jar file, but doesn't",
             maven.placed().jars().isEmpty(),
             Matchers.is(true)
         );
@@ -289,7 +300,7 @@ final class PlaceMojoTest {
         PlaceMojoTest.saveBinary(temp, "new content", binary);
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The binary file must not be replaced with new content, but it was not",
             new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );
@@ -306,7 +317,7 @@ final class PlaceMojoTest {
         maven.placed().unplaceAll();
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The binary file must be replaced with new content, but it was not",
             new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(updated)
         );

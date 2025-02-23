@@ -57,7 +57,7 @@ final class HmBaseTest {
         final String content = new UncheckedText(new Randomized(size)).asString();
         new HmBase(temp).save(content, resolve);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The saved file contents are not the same as expected",
             new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
         );
@@ -68,7 +68,7 @@ final class HmBaseTest {
         final Path path = Paths.get("file.txt");
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The file should exist, but it doesn't",
             new HmBase(temp).exists(path),
             Matchers.is(true)
         );
@@ -80,7 +80,7 @@ final class HmBaseTest {
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The file in the subdirectory must exist, but it doesn't",
             new HmBase(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
@@ -94,7 +94,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The file with a different name encoding must exist, but it doesn't",
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -108,7 +108,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The file with special characters in the name must exist, but it doesn't",
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -121,7 +121,7 @@ final class HmBaseTest {
         final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The uploaded file content does not match the expected one",
             new TextOf(home.load(subfolder)),
             Matchers.equalTo(new TextOf(content))
         );
@@ -132,7 +132,7 @@ final class HmBaseTest {
         Assertions.assertThrows(
             NoSuchFileException.class,
             () -> new HmBase(temp).load(Paths.get("nonexistent")),
-            CatalogsTest.TO_ADD_MESSAGE
+            "A NoSuchFileException was expected when uploading a missing file"
         );
     }
 
@@ -141,7 +141,7 @@ final class HmBaseTest {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new HmBase(temp).exists(temp.toAbsolutePath()),
-            CatalogsTest.TO_ADD_MESSAGE
+            "IllegalArgumentException was expected when passing an absolute path"
         );
     }
 }

@@ -67,7 +67,7 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.with("skip", false).execute(PullMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PullMojo should have pulled stdout object, but didn't",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
@@ -86,7 +86,7 @@ final class PullMojoTest {
             .with("objectionary", new OyRemote(new ChRemote("master")))
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PullMojo should have pulled from probes, but it didn't",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
@@ -109,7 +109,7 @@ final class PullMojoTest {
             )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PullMojo should have pulled using offline hash file, but it didn't",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("mmmmmmm")
         );
@@ -128,7 +128,7 @@ final class PullMojoTest {
             )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PullMojo should have pulled using offline hash, but it didn't",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
         );
@@ -144,7 +144,7 @@ final class PullMojoTest {
         maven.with("skip", true)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "PullMojo must skip pulling, but it doesn't",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(false)
         );

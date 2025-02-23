@@ -59,12 +59,12 @@ final class CopyMojoTest {
             .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Expected EO source file to be copied, but it was not found",
             new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "EO file should contain the correct version information, but it doesn't",
             new TextOf(new HmBase(classes).load(classes.relativize(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
@@ -92,7 +92,7 @@ final class CopyMojoTest {
             .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "CopyMojo must skip copying, but it doesn't",
             new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(false)
         );

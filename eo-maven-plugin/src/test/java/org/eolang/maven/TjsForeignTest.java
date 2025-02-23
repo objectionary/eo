@@ -69,7 +69,7 @@ final class TjsForeignTest {
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Tojo must contain the name, but it doesn't",
             this.tojos.contains(name),
             Matchers.is(true)
         );
@@ -84,7 +84,7 @@ final class TjsForeignTest {
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Tojo must not contain the name, but it doesn't",
             this.tojos.contains(considered),
             Matchers.is(false)
         );

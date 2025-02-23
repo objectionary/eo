@@ -63,7 +63,7 @@ class ChPatternTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ChPattern should return the correct hash, but it did not",
             new ChPattern(pattern, tag).value(),
             Matchers.equalTo(expected)
         );
