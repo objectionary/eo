@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
  * SPDX-License-Identifier: MIT
