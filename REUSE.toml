@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+
+version = 1
+[[annotations]]
+path = [
+    "**/*.jpg",
+    "**/*.json",
+    "**/*.md",
+    "**/*.pdf",
+    "**/*.phi",
+    "**/*.png",
+    "**/*.svg",
+    "**/*.vm",
+    "**/.gitignore",
+    "**/.xcop",
+    "**/CNAME",
+    "**/MANIFEST.MF",
+    "**/README.md",
+    "**/javax.xml.transform.TransformerFactory",
+    "**/javax.xml.xpath.XPathFactory",
+    ".codenarc",
+    ".gitattributes",
+    ".gitleaksignore",
+    ".mvn/jvm.config",
+    ".pdd",
+    ".xcop",
+    "CITATION.cff",
+    "CODE_OF_CONDUCT.md",
+    "Gemfile.lock",
+    "eo-maven-plugin/src/main/resources/org/eolang/maven/latex/latex-template.txt",
+    "eo-maven-plugin/src/test/resources/org/eolang/maven/commits/tags.txt",
+    "eo-runtime/src/main/resources/org/eolang/version.txt",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright (c) 2016-2025 Objectionary.com"
+SPDX-License-Identifier = "MIT"
