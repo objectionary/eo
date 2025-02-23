@@ -79,7 +79,7 @@ final class UnplaceMojoTest {
         final int expected = 5;
         MatcherAssert.assertThat(
             String.format(
-                "Expected %d binaries, but got a different number",
+                "Expected %d binaries, but it's not",
                 expected
             ),
             tojos.size(),
