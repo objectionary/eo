@@ -44,7 +44,7 @@ class ChPatternTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            "ChPattern should return the correct hash, but it did not",
+            "ChPattern should return the correct hash, but it doesn't",
             new ChPattern(pattern, tag).value(),
             Matchers.equalTo(expected)
         );
