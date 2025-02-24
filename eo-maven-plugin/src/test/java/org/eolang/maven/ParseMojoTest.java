@@ -62,17 +62,20 @@ final class ParseMojoTest {
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
+        final String parsed = String.format(
+            "target/%s/foo/x/main.%s",
+            ParseMojo.DIR,
+            AssembleMojo.XMIR
+        );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
             maven.withHelloWorld()
                 .execute(new FakeMaven.Parse())
                 .result(),
-            Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, AssembleMojo.XMIR)
-            )
+            Matchers.hasKey(parsed)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The resource must exist, but it doesn't",
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -86,7 +89,7 @@ final class ParseMojoTest {
                 .withHelloWorld()
                 .with("timeout", 0)
                 .execute(Infinite.class),
-            CatalogsTest.TO_ADD_MESSAGE
+            "Expected IllegalStateException on timeout"
         );
     }
 
@@ -141,7 +144,7 @@ final class ParseMojoTest {
     @Test
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Even if the eo program invalid we still have to parse it, but we didn't",
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .execute(new FakeMaven.Parse())
@@ -188,7 +191,7 @@ final class ParseMojoTest {
         final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "We have to parse concurrently, but we didn't",
                 res,
                 Matchers.hasKey(
                     String.format(

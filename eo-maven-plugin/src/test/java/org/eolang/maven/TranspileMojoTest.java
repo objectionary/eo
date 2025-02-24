@@ -156,13 +156,13 @@ final class TranspileMojoTest {
         final Path java = res.get(this.compiled);
         final long before = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The timestamp of file should be updated",
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             Matchers.is(true)
         );
         maven.execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Java file should be recompiled",
             java.toFile().lastModified(),
             Matchers.greaterThan(before)
         );
@@ -180,22 +180,22 @@ final class TranspileMojoTest {
             String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Java file should exist after transpile",
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Xmir file should exist after transpile",
             xmir.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Java file's last modified timestamp should be successfully reset",
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Xmir file's last modified timestamp should be successfully reset",
             xmir.toFile().setLastModified(0L),
             Matchers.is(true)
         );
@@ -203,12 +203,12 @@ final class TranspileMojoTest {
         maven.execute(TranspileMojo.class);
         final long after = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Java file should have a valid last modified timestamp after recompilation",
             after,
             Matchers.greaterThan(0L)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The Java file's last modified timestamp should change after recompilation",
             before,
             Matchers.not(Matchers.equalTo(after))
         );
@@ -305,7 +305,7 @@ final class TranspileMojoTest {
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "TranspileMojo should have processed exactly 2 files",
             maven.foreign().size(),
             Matchers.equalTo(2)
         );

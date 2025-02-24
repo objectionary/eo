@@ -98,7 +98,7 @@ final class ShakeMojoTest {
         final long mtime = path.toFile().lastModified();
         maven.execute(ShakeMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ShakeMojo must skip when already shaken, but it doesn't",
             path.toFile().lastModified(),
             Matchers.is(mtime)
         );
@@ -207,7 +207,7 @@ final class ShakeMojoTest {
             .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ShakeMojo must successfully optimize, but it doesn't",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", ShakeMojo.DIR, AssembleMojo.XMIR)
@@ -233,7 +233,7 @@ final class ShakeMojoTest {
             .result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "ShakeMojo must successfully optimize concurrently, but it doesn't",
                 res,
                 Matchers.hasKey(
                     String.format(
@@ -250,7 +250,7 @@ final class ShakeMojoTest {
     @Test
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ShakeMojo must not crash when an incorrect program",
             new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
@@ -270,7 +270,7 @@ final class ShakeMojoTest {
     @Test
     void choosesTransformerFactoryOnce() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "TransformerFactory instance should be of type TransformerFactoryImpl",
             TransformerFactory.newInstance().getClass(),
             Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
         );
@@ -282,7 +282,11 @@ final class ShakeMojoTest {
             .mapToObj(i -> TransformerFactory.newInstance().getClass())
             .collect(Collectors.toList())) {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                String.join(
+                    " ",
+                    "TransformerFactory instance should be of type TransformerFactoryImpl",
+                    "in concurrent environment"
+                ),
                 clazz,
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );

@@ -31,6 +31,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
 
+    /**
+     * The message that the JAR file must exist.
+     */
+    private static final String JAR_MUST_EXIST = "The jar file must exist, but it doesn't";
+
+    /**
+     * The message that the JAR file must not exist.
+     */
+    private static final String JAR_NOT_EXIST = "The jar file must not exist, but it doesn't";
+
     @Test
     void deletesOtherVersions(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
@@ -80,12 +90,12 @@ final class ResolveMojoTest {
             .resolve(ResolveMojo.DIR)
             .resolve("org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Dependency directory must exist, but it doesn't",
             path.toFile(),
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             path.resolve("eo-runtime-0.7.0.jar").toFile(),
             FileMatchers.anExistingFile()
         );
@@ -106,12 +116,12 @@ final class ResolveMojoTest {
             .resolve(ResolveMojo.DIR)
             .resolve("org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The directory with runtime must exist, but doesn't",
             path.toFile(),
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             path,
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -122,7 +132,7 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -135,7 +145,7 @@ final class ResolveMojoTest {
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_NOT_EXIST,
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
@@ -148,7 +158,7 @@ final class ResolveMojoTest {
             .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.22.1.jar")
         );
@@ -163,7 +173,7 @@ final class ResolveMojoTest {
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_NOT_EXIST,
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
@@ -182,7 +192,7 @@ final class ResolveMojoTest {
             .with("project", project)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.7.0.jar")
         );
@@ -199,7 +209,7 @@ final class ResolveMojoTest {
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -228,7 +238,7 @@ final class ResolveMojoTest {
                     )
                 )
                 .execute(new FakeMaven.Resolve()),
-            CatalogsTest.TO_ADD_MESSAGE
+            "Expected an IllegalStateException exception when transitive dependency"
         );
     }
 
@@ -258,7 +268,7 @@ final class ResolveMojoTest {
             () -> maven.execute(new FakeMaven.Resolve())
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Expected that conflicting dependencies were found, but they were not",
             excpt.getCause().getCause().getMessage(),
             Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
@@ -285,7 +295,7 @@ final class ResolveMojoTest {
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            ResolveMojoTest.JAR_MUST_EXIST,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );

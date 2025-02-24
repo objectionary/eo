@@ -37,7 +37,7 @@ final class CleanMojoTest {
             .with("targetDir", dir.toFile())
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "CleanMojo should delete all temp files and directories, but it doesn't",
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
         );
@@ -59,7 +59,7 @@ final class CleanMojoTest {
             .execute(AssembleMojo.class)
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "CleanMojo should delete all files after full compiling lifecycle, but it doesn't",
             temp.resolve("target").toFile().exists(),
             Matchers.is(false)
         );

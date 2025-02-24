@@ -43,7 +43,7 @@ final class ChNarrowTest {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new ChNarrow(new CommitHash.ChConstant("")).value(),
-            CatalogsTest.TO_ADD_MESSAGE
+            "An exception should be thrown for an empty commit hash, but it was not"
         );
     }
 }

@@ -69,7 +69,7 @@ final class ChTextTest {
         final String tag
     ) {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ChText should read the correct hash by tag from the file, but it didn't",
             new ChText(ChTextTest.file, tag).value(),
             Matchers.equalTo(hash)
         );
@@ -78,7 +78,7 @@ final class ChTextTest {
     @Test
     void readsCorrectHashByTagFromSimpleString() {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "ChText should read the correct hash by tag from a simple string, but it didn't",
             new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"
@@ -95,7 +95,7 @@ final class ChTextTest {
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "non-existent-tag"
             ).value(),
-            CatalogsTest.TO_ADD_MESSAGE
+            "Must not find this tag, because it does not exist"
         );
     }
 
