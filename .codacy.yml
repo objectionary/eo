@@ -6,6 +6,4 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/test/java/integration/PhiUnphiIT.java"
-  - "eo-maven-plugin/src/test/java/org/eolang/maven/AssembleMojoIT.java"
-  - "eo-maven-plugin/src/test/java/org/eolang/maven/LintMojoIT.java"
+  - "**/*IT.java"
