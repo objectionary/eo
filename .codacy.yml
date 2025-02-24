@@ -6,8 +6,6 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "src/test/groovy/*.groovy"
   - "eo-runtime/src/test/java/integration/PhiUnphiIT.java"
   - "eo-maven-plugin/src/test/java/org/eolang/maven/AssembleMojoIT.java"
-  - "eo-maven-plugin/src/test/java/org/eolang/maven/LintMojoTest.java"
   - "eo-maven-plugin/src/test/java/org/eolang/maven/LintMojoIT.java"

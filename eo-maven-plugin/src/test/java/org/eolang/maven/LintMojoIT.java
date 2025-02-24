@@ -27,19 +27,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class, RandomProgramResolver.class})
 final class LintMojoIT {
 
-    /**
-     * The path to the EO file.
-     */
-    private static final String EO = "src/main/eo/foo.eo";
-
     @Test
     void lintsAgainAfterModification(@Mktmp final Path temp, @RandomProgram final String program)
         throws Exception {
+        final String source = "src/main/eo/foo.eo";
         final String xmir = String.format("target/eo/%s/foo.xmir", LintMojo.DIR);
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file(LintMojoIT.EO).write(program.getBytes());
+                f.files().file(source).write(program.getBytes());
                 LintMojoIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -49,7 +45,7 @@ final class LintMojoIT {
                     .path()
                     .toFile()
                     .lastModified();
-                f.files().file(LintMojoIT.EO).write(program.getBytes());
+                f.files().file(source).write(program.getBytes());
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "the .xmir file is re-generated",
@@ -66,7 +62,7 @@ final class LintMojoIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file(LintMojoIT.EO).write(program.getBytes());
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
                 LintMojoIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
