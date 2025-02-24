@@ -27,10 +27,6 @@ on:
     branches:
       - master
 
-permissions:
-  contents: read
-  pull-requests: write
-
 jobs:
   benchmark:
     name: JMH
@@ -44,5 +40,5 @@ jobs:
           benchmark-command: |
             mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
             cp eo-parser/benchmark.json .
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.JMH_BENCHMARK_COMMENTER }}
           benchmark-file: "benchmark.json"
