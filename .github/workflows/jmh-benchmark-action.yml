@@ -27,13 +27,14 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   benchmark:
     name: JMH
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
       - name: Run JMH Benchmark Action
         uses: volodya-lombrozo/jmh-benchmark-action@main
