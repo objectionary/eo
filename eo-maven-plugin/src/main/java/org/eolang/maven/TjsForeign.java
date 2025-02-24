@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.maven;
 
@@ -106,7 +87,7 @@ final class TjsForeign implements Closeable {
      * @param name The name of the tojo.
      * @return The tojo.
      */
-    public TjForeign add(final String name) {
+    TjForeign add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
         if (!tojo.exists(Attribute.SCOPE.getKey())) {
             tojo.set(Attribute.SCOPE.getKey(), this.scope.get());
@@ -119,7 +100,7 @@ final class TjsForeign implements Closeable {
      * @param id The id of the tojo.
      * @return The tojo.
      */
-    public TjForeign find(final String id) {
+    TjForeign find(final String id) {
         return new TjForeign(
             this.tojos.value()
                 .select(tojo -> tojo.get(Attribute.ID.getKey()).equals(id))
@@ -137,7 +118,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that have corresponding xmir.
      * @return The tojos.
      */
-    public Collection<TjForeign> withXmir() {
+    Collection<TjForeign> withXmir() {
         return this.select(row -> row.exists(Attribute.XMIR.getKey()));
     }
 
@@ -145,7 +126,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that have corresponding shaken XMIR.
      * @return The tojos.
      */
-    public Collection<TjForeign> withShaken() {
+    Collection<TjForeign> withShaken() {
         return this.select(row -> row.exists(Attribute.SHAKEN.getKey()));
     }
 
@@ -153,7 +134,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that doesn't have dependency.
      * @return The tojos.
      */
-    public Collection<TjForeign> dependencies() {
+    Collection<TjForeign> dependencies() {
         return this.select(
             t -> t.exists(Attribute.XMIR.getKey())
                 && t.exists(Attribute.VERSION.getKey())
@@ -165,7 +146,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that have corresponding eo file.
      * @return The tojos.
      */
-    public Collection<TjForeign> withSources() {
+    Collection<TjForeign> withSources() {
         return this.select(row -> row.exists(Attribute.EO.getKey()));
     }
 
@@ -173,7 +154,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that do not have corresponding eo and xmir.
      * @return The tojos.
      */
-    public Collection<TjForeign> withoutSources() {
+    Collection<TjForeign> withoutSources() {
         return this.select(
             row -> !row.exists(Attribute.EO.getKey())
                 && !row.exists(Attribute.XMIR.getKey())
@@ -184,7 +165,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that have not probed yet.
      * @return The tojos.
      */
-    public Collection<TjForeign> unprobed() {
+    Collection<TjForeign> unprobed() {
         return this.select(
             row -> row.exists(Attribute.SHAKEN.getKey())
                 && !row.exists(Attribute.PROBED.getKey())
@@ -195,7 +176,7 @@ final class TjsForeign implements Closeable {
      * Get all tojos as a collection.
      * @return Collection of tojos.
      */
-    public Collection<TjForeign> all() {
+    Collection<TjForeign> all() {
         return this.select(all -> true);
     }
 
@@ -204,7 +185,7 @@ final class TjsForeign implements Closeable {
      * @param name The name of the tojo.
      * @return True if the tojo exists.
      */
-    public boolean contains(final String name) {
+    boolean contains(final String name) {
         return !this.select(tojo -> tojo.get(Attribute.ID.getKey()).equals(name)).isEmpty();
     }
 
@@ -212,7 +193,7 @@ final class TjsForeign implements Closeable {
      * Get the size of the tojos.
      * @return The size of the tojos.
      */
-    public int size() {
+    int size() {
         return this.select(all -> true).size();
     }
 
@@ -220,7 +201,7 @@ final class TjsForeign implements Closeable {
      * Status of tojos.
      * @return Status in text
      */
-    public String status() {
+    String status() {
         final Attribute[] attrs = {
             Attribute.EO,
             Attribute.XMIR,

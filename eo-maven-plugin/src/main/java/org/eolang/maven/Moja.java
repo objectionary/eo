@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.maven;
 
@@ -67,6 +48,11 @@ final class Moja<T extends AbstractMojo> {
         this.attrs = new HashMap<>(0);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Moja<%s>", this.type.getSimpleName());
+    }
+
     /**
      * Add one more attribute and return self.
      *
@@ -74,7 +60,7 @@ final class Moja<T extends AbstractMojo> {
      * @param value The value
      * @return Itself
      */
-    public Moja<T> with(final String attr, final Object value) {
+    Moja<T> with(final String attr, final Object value) {
         this.attrs.put(attr, value);
         return this;
     }
@@ -86,7 +72,7 @@ final class Moja<T extends AbstractMojo> {
      * @return Itself
      */
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
-    public Moja<T> copy(final Object mojo) {
+    Moja<T> copy(final Object mojo) {
         final Collection<String> mine = new ListOf<>(
             new Mapped<>(
                 Field::getName,
@@ -113,23 +99,22 @@ final class Moja<T extends AbstractMojo> {
     /**
      * Execute it.
      */
-    public void execute() {
+    void execute() {
         try {
             final AbstractMojo mojo = this.type.getConstructor().newInstance();
             for (final Map.Entry<String, Object> ent : this.attrs.entrySet()) {
                 this.initField(this.type, mojo, ent);
             }
             mojo.execute();
-        } catch (final MojoExecutionException | MojoFailureException
-            | InstantiationException | IllegalAccessException
-            | NoSuchMethodException | InvocationTargetException ex) {
+        } catch (final MojoExecutionException
+            | MojoFailureException
+            | InstantiationException
+            | IllegalAccessException
+            | NoSuchMethodException
+            | InvocationTargetException ex
+        ) {
             throw new IllegalStateException(ex);
         }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Moja<%s>", this.type.getSimpleName());
     }
 
     /**
@@ -153,10 +138,6 @@ final class Moja<T extends AbstractMojo> {
      * @param mojo The mojo
      * @param entry Field name and value
      * @throws java.lang.IllegalAccessException If can't set field.
-     * @todo #1494:30min We have some doubts about using Logger.warn in initField method.
-     *  Since it's important to notice the developer during of using the plugin that the property
-     *  can't be set to the Mojo, we can't just remove Logger.warn. On the other hand, we will
-     *  see warnings all the time during unit testing, which can be an insignificant problem.
      */
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private void initField(
@@ -187,5 +168,4 @@ final class Moja<T extends AbstractMojo> {
             }
         }
     }
-
 }

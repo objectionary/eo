@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-The MIT License (MIT)
-
-Copyright (c) 2016-2025 Objectionary.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="build-fqns" version="2.0">
   <!--
@@ -41,11 +22,6 @@ SOFTWARE.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:variable name="primitives" as="element()*">
-    <a>bytes</a>
-    <a>string</a>
-    <a>number</a>
-  </xsl:variable>
   <xsl:variable name="this">
     <xsl:element name="o">
       <xsl:attribute name="base" select="'$'"/>
@@ -162,7 +138,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- BUILD FQN PATH TO OBJECT -->
-  <xsl:template match="o|objects" mode="fqn">
+  <xsl:template match="o" mode="fqn">
     <xsl:param name="rhos"/>
     <xsl:param name="self"/>
     <xsl:param name="find"/>
@@ -210,10 +186,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- ENTRY POINT -->
-  <xsl:template match="o[not($primitives/text()=@base and /program/objects/o/@name=@base and /program/metas/meta[head='package' and tail='org.eolang'])]">
-    <xsl:apply-templates select="." mode="not-primitive"/>
-  </xsl:template>
-  <xsl:template match="o[@base]" mode="not-primitive">
+  <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
@@ -230,31 +203,13 @@ SOFTWARE.
       </xsl:element>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[@base!='$' and @base!='^' and @base!='∅']" mode="no-dots">
+  <xsl:template match="o[@base!='$' and @base!='^' and @base!=$eo:empty]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>
-    <xsl:choose>
-      <!-- Closes object in the same scope -->
-      <xsl:when test="parent::o/o[@name=$base]">
-        <xsl:apply-templates select="." mode="to-method">
-          <xsl:with-param name="of" select="$this"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <!-- Closest object in the same scope, but global -->
-      <xsl:when test="parent::objects/o[@name=$base]">
-        <xsl:apply-templates select="." mode="with-package">
-          <xsl:with-param name="parent" select="parent::objects"/>
-          <xsl:with-param name="find" select="$base"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <!--- Try to find the closest object in parents -->
-      <xsl:otherwise>
-        <xsl:apply-templates select="." mode="fqn">
-          <xsl:with-param name="self" select="."/>
-          <xsl:with-param name="find" select="$base"/>
-          <xsl:with-param name="rhos" select="0"/>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:apply-templates select="." mode="fqn">
+      <xsl:with-param name="self" select="."/>
+      <xsl:with-param name="find" select="$base"/>
+      <xsl:with-param name="rhos" select="0"/>
+    </xsl:apply-templates>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>

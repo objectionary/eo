@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -220,22 +201,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterSlave(final EoParser.SlaveContext ctx) {
+    public void enterBound(final EoParser.BoundContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitSlave(final EoParser.SlaveContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMaster(final EoParser.MasterContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMaster(final EoParser.MasterContext ctx) {
+    public void exitBound(final EoParser.BoundContext ctx) {
         // Nothing here
     }
 
@@ -281,7 +252,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
-        final EoParser.TypeFqnContext fqn = ctx.type().typeFqn();
+        final EoParser.TypeFqnContext fqn = ctx.typeFqn();
         if (fqn == null) {
             this.errors.add(XeEoListener.error(ctx, "Atom must have a type"));
             this.startObject(ctx).leave();
@@ -357,16 +328,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitVoid(final EoParser.VoidContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterType(final EoParser.TypeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitType(final EoParser.TypeContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -477,16 +438,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitHapplicationTail(final EoParser.HapplicationTailContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -631,7 +582,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
-        // Nothing here
+        if (ctx.commentOptional() != null && ctx.voids() != null) {
+            this.startAbstract(ctx);
+        }
     }
 
     @Override
@@ -678,128 +631,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgHapplicationBound(
-        final EoParser.VapplicationArgHapplicationBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHapplicationBound(
-        final EoParser.VapplicationArgHapplicationBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHapplicationUnbound(
-        final EoParser.VapplicationArgHapplicationUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHapplicationUnbound(
-        final EoParser.VapplicationArgHapplicationUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationHeadAs(
-        final EoParser.VapplicationHeadAsContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadAs(final EoParser.VapplicationHeadAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterFormationNameless(final EoParser.FormationNamelessContext ctx) {
+    public void enterFormationNamed(final EoParser.FormationNamedContext ctx) {
         this.startAbstract(ctx);
     }
 
     @Override
-    public void exitFormationNameless(final EoParser.FormationNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgVanonymBound(
-        final EoParser.VapplicationArgVanonymBoundContext ctx
-    ) {
-        this.startAbstract(ctx);
-    }
-
-    @Override
-    public void exitVapplicationArgVanonymBound(
-        final EoParser.VapplicationArgVanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterAttributesAs(final EoParser.AttributesAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAttributesAs(final EoParser.AttributesAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymBoundBody(
-        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymBoundBody(
-        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymBound(
-        final EoParser.VapplicationArgHanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymBound(
-        final EoParser.VapplicationArgHanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymUnbound(
-        final EoParser.VapplicationArgHanonymUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymUnbound(
-        final EoParser.VapplicationArgHanonymUnboundContext ctx
-    ) {
+    public void exitFormationNamed(final EoParser.FormationNamedContext ctx) {
         // Nothing here
     }
 
@@ -884,16 +721,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHmethodHead(final EoParser.HmethodHeadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodHead(final EoParser.HmethodHeadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterVmethod(final EoParser.VmethodContext ctx) {
         // Nothing here
     }
@@ -910,16 +737,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVmethodHead(final EoParser.VmethodHeadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
         // Nothing here
     }
 
@@ -1026,22 +843,25 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects
-            .enter()
-            .prop(
+    public void enterFname(final EoParser.FnameContext ctx) {
+        if (ctx.oname() == null) {
+            this.objects.enter().prop(
                 "name",
                 String.format(
-                    "auto-named-attr-at-%d-%d",
+                    "a\uD83C\uDF35%d%d",
                     ctx.getStart().getLine(),
                     ctx.getStart().getCharPositionInLine()
                 )
-            )
-            .leave();
+            );
+            if (ctx.CONST() != null) {
+                this.objects.prop("const");
+            }
+            this.objects.leave();
+        }
     }
 
     @Override
-    public void exitAname(final EoParser.AnameContext ctx) {
+    public void exitFname(final EoParser.FnameContext ctx) {
         // Nothing here
     }
 

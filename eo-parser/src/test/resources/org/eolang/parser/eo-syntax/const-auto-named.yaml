@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: [ ]
+asserts:
+  - /program[not(errors)]
+  - //o[@base='.as-bytes' and @name='a🌵46']/o[@base='Q.org.eolang.dataized']/o[@base='$.a🌵46-1']
+  - //o[@name='a🌵46-1']
+input: |
+  # No.
+  [] > foo
+    x > first
+      [] >>!
