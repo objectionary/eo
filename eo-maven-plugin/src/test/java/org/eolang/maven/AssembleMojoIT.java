@@ -4,7 +4,7 @@
  */
 package org.eolang.maven;
 
-import  com.jcabi.manifests.Manifests;
+import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
