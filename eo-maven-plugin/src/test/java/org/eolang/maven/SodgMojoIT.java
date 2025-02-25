@@ -36,11 +36,7 @@ final class SodgMojoIT {
                     )
                 );
                 f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        " ",
-                        "# This unit test is supposed to check the functionality",
-                        "of the corresponding object.\n[] > foo\n"
-                    ).getBytes()
+                    "# Check SodgMojo.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()
