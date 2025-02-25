@@ -20,25 +20,33 @@ final class DcsWithRuntimeTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void addsHardcodedVersionOfRuntimeDependency() {
+        final int expected = 6;
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                "Expected %d dependencies when adding runtime dependency",
+                expected
+            ),
             new DcsWithRuntime(
                 new DcsFake(5),
                 DcsFake.runtimeDep()
             ),
-            Matchers.iterableWithSize(6)
+            Matchers.iterableWithSize(expected)
         );
     }
 
     @Test
     @ExtendWith(WeAreOnline.class)
     void addsRemoteVersionOfRuntimeDependency() {
+        final int expected = 3;
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            String.format(
+                "Expected %d dependencies when adding the remote version of runtime dependency",
+                expected
+            ),
             new DcsWithRuntime(
                 new DcsFake(2)
             ),
-            Matchers.iterableWithSize(3)
+            Matchers.iterableWithSize(expected)
         );
     }
 }

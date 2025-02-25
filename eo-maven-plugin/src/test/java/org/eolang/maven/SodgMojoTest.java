@@ -95,7 +95,7 @@ final class SodgMojoTest {
         }
         final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Expected locator to exist in the generated graph",
             ".foo .foo",
             new SodgMojoTest.ExistsIn(graph)
         );
@@ -136,7 +136,7 @@ final class SodgMojoTest {
         for (final String loc : (Iterable<String>) xtory.map().get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
-                    CatalogsTest.TO_ADD_MESSAGE,
+                    "Expected locator to be present in the generated graph",
                     loc,
                     new SodgMojoTest.ExistsIn(graph)
                 )

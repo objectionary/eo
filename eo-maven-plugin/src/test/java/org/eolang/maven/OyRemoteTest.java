@@ -43,7 +43,7 @@ final class OyRemoteTest {
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app"),
-            CatalogsTest.TO_ADD_MESSAGE
+            "Expected MalformedURLException when the URL format is invalid"
         );
     }
 

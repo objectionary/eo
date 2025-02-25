@@ -32,23 +32,24 @@ final class ObjectsIndexTest {
                 }
             )
         );
+        final String message = "The object must contain the value";
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            message,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            message,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The index must not contain the unknown value",
             index.contains("unknown"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The number of calls should be 1",
             calls.get(),
             Matchers.is(1)
         );
@@ -58,7 +59,7 @@ final class ObjectsIndexTest {
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The index must contain the default value",
             new ObjectsIndex().contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

@@ -26,13 +26,18 @@ final class MarkMojoTest {
      */
     private static final String VERSION = "0.28.0";
 
+    /**
+     * The message that versions must match.
+     */
+    private static final String MESSAGE = "Versions must match, but they don't";
+
     @Test
     void extendsForeignWithNewObjects(@Mktmp final Path temp) throws IOException {
         MarkMojoTest.source(temp);
         final FakeMaven maven = new FakeMaven(temp);
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            MarkMojoTest.MESSAGE,
             maven.foreignTojos()
                 .all()
                 .iterator()
@@ -51,12 +56,12 @@ final class MarkMojoTest {
             .withVersion("*.*.*");
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            MarkMojoTest.MESSAGE,
             foreign.all().iterator().next().version(),
             Matchers.equalTo(MarkMojoTest.VERSION)
         );
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "Size must equal 1, but it doesn't",
             foreign.size(),
             Matchers.equalTo(1)
         );

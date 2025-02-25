@@ -27,13 +27,13 @@ final class ChCachedTest {
         );
         for (int idx = 0; idx < 10; ++idx) {
             MatcherAssert.assertThat(
-                CatalogsTest.TO_ADD_MESSAGE,
+                "The cached value should remain consistent across multiple calls",
                 cached.value(),
                 Matchers.equalTo("dummy")
             );
         }
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "The delegate should be called exactly once, but it was not",
             invocations.get(),
             Matchers.equalTo(1)
         );

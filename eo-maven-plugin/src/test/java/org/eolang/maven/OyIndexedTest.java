@@ -28,7 +28,7 @@ final class OyIndexedTest {
     @Test
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "OyIndexed must get a line of program, but it doesn't",
             new TextOf(new OyIndexed(new Objectionary.Fake()).get("foo")).asString(),
             Matchers.equalTo(
                 "# No comments.\n[] > sprintf\n"
@@ -40,7 +40,7 @@ final class OyIndexedTest {
     @ExtendWith(WeAreOnline.class)
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "OyIndexed must contain stdout object, but it doesn't",
             new OyIndexed(new Objectionary.Fake()).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
@@ -49,7 +49,7 @@ final class OyIndexedTest {
     @Test
     void containsInFakeIndex() throws IOException {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "OyIndexed with fake index must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
                 new ObjectsIndex(() -> Collections.singleton(OyIndexedTest.STDOUT_OBJECT))
@@ -61,7 +61,7 @@ final class OyIndexedTest {
     @Test
     void checksContainsInDelegateIfExceptionHappensInIndex() throws IOException {
         MatcherAssert.assertThat(
-            CatalogsTest.TO_ADD_MESSAGE,
+            "OyIndexed with an exception must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
                 new ObjectsIndex(
