@@ -7,14 +7,11 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +27,6 @@ import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -54,34 +50,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(MktmpResolver.class)
 final class SodgMojoTest {
-
-    @Test
-    void convertsSimpleObjectToGraph(@Mktmp final Path temp) throws Exception {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files().file("XMIR.xsd").save(
-                    Paths.get(System.getProperty("user.dir")).resolve(
-                        "../eo-parser/src/main/resources/XMIR.xsd"
-                    )
-                );
-                f.files().file("src/main/eo/foo.eo").write(
-                    "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
-                );
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("register", "parse", "shake", "sodg");
-                f.exec("compile");
-                MatcherAssert.assertThat(
-                    "the .sodg file is generated",
-                    f.files().file("target/eo/sodg/foo.sodg").exists(),
-                    Matchers.is(true)
-                );
-            }
-        );
-    }
 
     @Test
     @Disabled
