@@ -4,6 +4,7 @@
 version = 1
 [[annotations]]
 path = [
+    "**/*.csv",
     "**/*.jpg",
     "**/*.json",
     "**/*.md",
@@ -11,6 +12,7 @@ path = [
     "**/*.phi",
     "**/*.png",
     "**/*.svg",
+    "**/*.txt",
     "**/*.vm",
     "**/.gitignore",
     "**/.xcop",
