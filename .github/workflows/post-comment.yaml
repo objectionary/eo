@@ -17,18 +17,24 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: Show PR Number
-        run: echo "The PR number is ${{ github.event.workflow_run.pull_requests[0].number }}"
-      - name: Download Benchmark Comment
+
+      - name: Download PR Number and Benchmark Comment
         uses: actions/download-artifact@v4
         with:
-          name: benchmark-comment
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read and display PR Number
+        run: |
+          PR_NUMBER=$(cat pr-number/pr-number)
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          echo "The PR number is $PR_NUMBER"
+
       - name: Post Comment on PR
         uses: mshick/add-pr-comment@v2
         with:
-          issue: ${{ github.event.workflow_run.pull_requests[0].number }}
+          issue: ${{ env.PR_NUMBER }}
           message-path: |
-            benchmark-comment.md
+            benchmark-comment/benchmark-comment.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
