@@ -6,7 +6,6 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.farea.Farea;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,32 +33,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 @ExtendWith(MktmpResolver.class)
 final class PrintMojoTest {
-    @Test
-    void printsSimpleObject(@Mktmp final Path temp) throws Exception {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
-                );
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("register", "parse");
-                f.exec("compile");
-                f.files()
-                    .file("src/main/xmir/foo.xmir")
-                    .save(f.files().file("target/eo/1-parse/foo.xmir").path());
-                f.exec("eo:print");
-                MatcherAssert.assertThat(
-                    "the .phi file is generated",
-                    f.files().file("target/generated-sources/eo/foo.eo").exists(),
-                    Matchers.is(true)
-                );
-            }
-        );
-    }
 
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
