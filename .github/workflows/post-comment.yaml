@@ -34,4 +34,3 @@ jobs:
           message-path: |
             benchmark-comment/benchmark-comment.md
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
