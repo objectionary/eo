@@ -21,5 +21,4 @@ jobs:
           benchmark-command: |
             mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
             cp eo-parser/benchmark.json .
-          github-token: ${{ secrets.JMH_BENCHMARK_TOKEN }}
           benchmark-file: "benchmark.json"
