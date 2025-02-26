@@ -104,23 +104,23 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         // Nothing here
     }
 
-    @Override
-    public void enterLicense(final EoParser.LicenseContext ctx) {
-        this.dirs.addIf("license").set(
-            new Joined(
-                "\n",
-                new Mapped<>(
-                    cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENTARY()
-                )
-            )
-        ).up();
-    }
+//    @Override
+//    public void enterComments(final EoParser.CommentsContext ctx) {
+//        this.dirs.addIf("comments").set(
+//            new Joined(
+//                "\n",
+//                new Mapped<>(
+//                    cmt -> cmt.getText().substring(1).trim(),
+//                    ctx.COMMENTARY()
+//                )
+//            )
+//        ).up();
+//    }
 
-    @Override
-    public void exitLicense(final EoParser.LicenseContext ctx) {
-        // Nothing here
-    }
+//    @Override
+//    public void exitComments(final EoParser.CommentsContext ctx) {
+//        // Nothing here
+//    }
 
     @Override
     public void enterMetas(final EoParser.MetasContext ctx) {
