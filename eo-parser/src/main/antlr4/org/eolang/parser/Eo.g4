@@ -15,11 +15,6 @@ program
 eop : EOL EOL
     ;
 
-// Licence
-//comments
-//    : (COMMENTARY EOL)* COMMENTARY eop
-//    ;
-
 // Metas
 metas
     : (META EOL)* META eop

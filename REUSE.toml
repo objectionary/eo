@@ -33,7 +33,7 @@ path = [
     "eo-maven-plugin/src/main/resources/org/eolang/maven/latex/latex-template.txt",
     "eo-maven-plugin/src/test/resources/org/eolang/maven/commits/tags.txt",
     "eo-runtime/src/main/resources/org/eolang/version.txt",
-    # License +spdx meta to be checked by "lints"
+    # License located inside +spdx meta, to be checked by "lints"
     "**/*.eo"
 ]
 precedence = "override"
