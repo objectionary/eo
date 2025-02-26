@@ -302,19 +302,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>jcabi-xcop</id>
-            <phase>none</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>pw.krejci</groupId>
         <artifactId>jmh-maven-plugin</artifactId>
         <version>0.2.2</version>
