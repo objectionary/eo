@@ -40,6 +40,7 @@ input: |
     [@] > x
       "Hello" > hello
     x 5 > five
+    five.~1.y.~2 > hey
     and. > @
       (five.plus 5).eq 10
       five.hello.eq "Hello"

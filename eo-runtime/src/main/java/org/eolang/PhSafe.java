@@ -129,6 +129,11 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
+    public Phi take(final int pos) {
+        return this.through(() -> this.origin.take(pos));
+    }
+
+    @Override
     public void put(final int pos, final Phi object) {
         this.through(() -> this.origin.put(pos, object));
     }

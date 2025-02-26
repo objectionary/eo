@@ -18,7 +18,7 @@ final class ObjectsTest {
 
     @Test
     void parsesOneObject() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(9, 10);
         objs.prop("x", "y");
         objs.data("xxx");
@@ -38,7 +38,7 @@ final class ObjectsTest {
 
     @Test
     void parsesNestedObjects() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(1, 2);
         objs.start(3, 4);
         objs.prop("x", "y");
@@ -57,7 +57,7 @@ final class ObjectsTest {
 
     @Test
     void parsesObjectsWithEnteringPrevious() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(5, 6);
         objs.start(7, 8);
         objs.leave();

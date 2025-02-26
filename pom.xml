@@ -405,6 +405,8 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <configuration>
             <skipTests>${skipITs}</skipTests>
+            <forkCount>1.0C</forkCount>
+            <reuseForks>true</reuseForks>
           </configuration>
         </plugin>
       </plugins>

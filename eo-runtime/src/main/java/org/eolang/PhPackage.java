@@ -84,33 +84,29 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public Phi take(final int pos) {
+        throw new ExFailure(
+            "Can't #take(#d) from package object \"%s\"", pos, this.pkg
+        );
+    }
+
+    @Override
     public void put(final int pos, final Phi object) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #put(%d, %s) to package object \"%s\"",
-                pos, object, this.pkg
-            )
+        throw new ExFailure(
+            "Can't #put(%d, %s) to package object \"%s\"", pos, object, this.pkg
         );
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #put(%s, %s) to package object \"%s\"",
-                name, object, this.pkg
-            )
+        throw new ExFailure(
+            "Can't #put(%s, %s) to package object \"%s\"", name, object, this.pkg
         );
     }
 
     @Override
     public byte[] delta() {
-        throw new IllegalStateException(
-            String.format(
-                "Can't take #data() from package object \"%s\"",
-                this.pkg
-            )
-        );
+        throw new ExFailure("Can't take #data() from package object \"%s\"", this.pkg);
     }
 
     /**

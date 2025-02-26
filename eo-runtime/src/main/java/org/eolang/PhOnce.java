@@ -72,6 +72,11 @@ public class PhOnce implements Phi {
     }
 
     @Override
+    public Phi take(final int pos) {
+        return this.object.get().take(pos);
+    }
+
+    @Override
     public void put(final int pos, final Phi obj) {
         this.object.get().put(pos, obj);
     }
