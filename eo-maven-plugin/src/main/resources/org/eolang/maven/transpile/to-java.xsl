@@ -581,7 +581,9 @@
       <xsl:text>"</xsl:text>
       <xsl:value-of select="@loc"/>
       <xsl:text>"</xsl:text>
-      <xsl:text>);</xsl:text>
+      <xsl:text>, "</xsl:text>
+      <xsl:value-of select="@original-name"/>
+      <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
   <!-- Application  -->
