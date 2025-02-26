@@ -33,6 +33,8 @@ path = [
     "eo-maven-plugin/src/main/resources/org/eolang/maven/latex/latex-template.txt",
     "eo-maven-plugin/src/test/resources/org/eolang/maven/commits/tags.txt",
     "eo-runtime/src/main/resources/org/eolang/version.txt",
+    # to be linted with "lints"
+    "**/*.eo"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2016-2025 Objectionary.com"
