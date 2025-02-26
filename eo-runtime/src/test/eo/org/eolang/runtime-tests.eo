@@ -342,6 +342,14 @@ true > global-test
     "first"
 
 # This unit test is supposed to check the functionality of the corresponding object.
+[] > tests-methods-by-position
+  [first second] > obj
+  obj 1 "Hey" > bound
+  and. > @
+    bound.~0.eq 1
+    bound.~1.eq "Hey"
+
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-nesting-blah-test
   blah0 > @
   [] > blah0

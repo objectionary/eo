@@ -185,6 +185,11 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
+    public Phi take(final int pos) {
+        return this.take(this.attr(pos));
+    }
+
+    @Override
     public byte[] delta() {
         final byte[] bytes;
         if (this.data.isPresent()) {

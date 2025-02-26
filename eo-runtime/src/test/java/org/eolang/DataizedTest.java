@@ -80,6 +80,43 @@ final class DataizedTest {
         );
     }
 
+    @Test
+    void doesNotLogGoToTokenJump() {
+        final Logger log = Logger.getLogger("logsWithPhSafe");
+        final Level before = log.getLevel();
+        log.setLevel(Level.ALL);
+        final List<LogRecord> logs = new LinkedList<>();
+        final Handler hnd = new Hnd(logs);
+        log.addHandler(hnd);
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new EOerror.ExError(
+                            Phi.Φ.take("org")
+                                .take("eolang")
+                                .take("go")
+                                .take("to")
+                                .take("token")
+                                .take("jump")
+                        );
+                    }
+                },
+                log
+            ).take(),
+            "it is expected to fail with and exception"
+        );
+        log.setLevel(before);
+        log.removeHandler(hnd);
+        MatcherAssert.assertThat(
+            "Messages should not be logged",
+            logs,
+            Matchers.empty()
+        );
+    }
+
     /**
      * Handler implementation for tests.
      *

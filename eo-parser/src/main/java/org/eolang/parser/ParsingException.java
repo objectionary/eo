@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @since 0.1
  */
-public final class ParsingException extends RuntimeException {
+final class ParsingException extends RuntimeException {
 
     /**
      * Serialization marker.
@@ -70,7 +70,7 @@ public final class ParsingException extends RuntimeException {
      * Get the place.
      * @return Line
      */
-    public int line() {
+    int line() {
         return this.place;
     }
 }

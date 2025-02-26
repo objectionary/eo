@@ -99,7 +99,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterProgram(final PhiParser.ProgramContext ctx) {
-        this.objs.add(new Objects.ObjXembly());
+        this.objs.add(new Objects());
         this.dirs
             .append(new DrProgram(this.name))
             .append(new DrListing(ctx))
@@ -179,7 +179,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterBindings(final PhiParser.BindingsContext ctx) {
         if (XePhiListener.hasLambdaPackage(ctx)) {
             this.packages.add(this.attributes.peek());
-            this.objs.add(new Objects.ObjXembly());
+            this.objs.add(new Objects());
         }
     }
 
