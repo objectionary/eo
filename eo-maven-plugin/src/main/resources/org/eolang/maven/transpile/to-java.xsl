@@ -74,12 +74,36 @@
   <!-- Get name for special attributes  -->
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
+    <xsl:param name="wrap" select="false()" as="xs:boolean"/>
+    <xsl:variable name="alpha" select="starts-with($n, $eo:alpha)"/>
+    <xsl:variable name="name">
+      <xsl:choose>
+        <xsl:when test="$n='@'">
+          <xsl:value-of select="$eo:phi"/>
+        </xsl:when>
+        <xsl:when test="$alpha">
+          <xsl:value-of select="substring-after($n, $eo:alpha)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$n"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$n='@'">
-        <xsl:value-of select="$eo:phi"/>
+      <xsl:when test="$wrap">
+        <xsl:choose>
+          <xsl:when test="$alpha">
+            <xsl:value-of select="$name"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>"</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>"</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$n"/>
+        <xsl:value-of select="$name"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -138,9 +162,9 @@
       <xsl:otherwise>
         <xsl:text>new PhMethod(</xsl:text>
         <xsl:value-of select="$base"/>
-        <xsl:text>, "</xsl:text>
-        <xsl:value-of select="eo:attr-name($mtd)"/>
-        <xsl:text>");</xsl:text>
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="eo:attr-name($mtd, true())"/>
+        <xsl:text>);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -296,7 +320,7 @@
     <xsl:param name="indent"/>
     <xsl:param name="parent"/>
     <xsl:param name="context"/>
-    <xsl:variable name="name" select="eo:attr-name(@name)"/>
+    <xsl:variable name="name" select="eo:attr-name(@name, false())"/>
     <xsl:if test="not(@name)">
       <xsl:message terminate="yes">
         <xsl:text>Unnamed attribute found in </xsl:text>
@@ -492,12 +516,12 @@
         <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
         <xsl:choose>
           <!-- Little optimization -->
-          <xsl:when test="starts-with(@base, 'Q.org.eolang') and not(contains(@base, '^'))">
+          <xsl:when test="starts-with(@base, 'Q.org.eolang')">
             <xsl:value-of select="eo:fqn-start($parts[1], $rho)"/>
             <xsl:for-each select="$parts[position()&gt;1]">
-              <xsl:text>.take("</xsl:text>
-              <xsl:value-of select="eo:attr-name(.)"/>
-              <xsl:text>")</xsl:text>
+              <xsl:text>.take(</xsl:text>
+              <xsl:value-of select="eo:attr-name(., true())"/>
+              <xsl:text>)</xsl:text>
             </xsl:for-each>
             <xsl:if test="./value">
               <xsl:text>.copy()</xsl:text>
@@ -618,16 +642,7 @@
       <xsl:text>, </xsl:text>
       <xsl:choose>
         <xsl:when test="@as">
-          <xsl:choose>
-            <xsl:when test="starts-with(@as, $eo:alpha)">
-              <xsl:value-of select="eo:attr-name(substring-after(@as, $eo:alpha))"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>"</xsl:text>
-              <xsl:value-of select="eo:attr-name(@as)"/>
-              <xsl:text>"</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:value-of select="eo:attr-name(@as, true())"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="position() - 1"/>

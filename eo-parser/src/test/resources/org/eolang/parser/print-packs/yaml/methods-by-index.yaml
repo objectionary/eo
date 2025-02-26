@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+origin: |
+  # no.
+  [] > y
+    x.~1.~2 > @
+    ~0. > m
+      ~1.
+        x
+      2
+
+printed: |
+  # No comments.
+  [] > y
+    x.~1.~2 > @
+    x.~1.~0 > m
+      2

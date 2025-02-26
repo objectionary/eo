@@ -368,7 +368,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisher
+    : DOT (finisher | TILDA INT)
     ;
 
 // Can be at the beginning of the statement
@@ -391,7 +391,7 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : finisher DOT
+    : (finisher | TILDA INT) DOT
     ;
 
 // Formation name
@@ -438,6 +438,7 @@ COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
+
 META: PLUS NAME (SPACE ~[\t\r\n ]+)*
     ;
 
@@ -488,7 +489,8 @@ RHO : '^'
     ;
 HASH: '#'
     ;
-BAR : '|'
+TILDA
+    : '~'
     ;
 
 fragment INDENT

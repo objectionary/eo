@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: [ ]
+asserts:
+  - /program[not(@errors)]
+  - //o[@name='foo']/o[@base='Q.org.eolang.x.α1.α2' and @name='@']
+  - //o[@base='Q.org.eolang.number' and @name='num']
+  - //o[@name='foo']/o[@base='.α2' and @name='abc']/o[@base='Q.org.eolang.x.α0.α1']/o[@base='Q.org.eolang.y']
+input: |
+  # The purpose of this test case is to make
+  # sure all possible syntax scenarios can
+  # be parsed by the ANTLR
+  [] > foo
+    x.~1.~2 > @
+    1.2 > num
+    ~2. > abc
+      ~1.
+        ~0.
+          x
+        y
+      z

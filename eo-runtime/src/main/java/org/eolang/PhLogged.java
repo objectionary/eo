@@ -53,6 +53,14 @@ public final class PhLogged implements Phi {
     }
 
     @Override
+    public Phi take(final int pos) {
+        System.out.printf("%d.take(\"%d\")...\n", this.hashCode(), pos);
+        final Phi ret = this.origin.take(pos);
+        System.out.printf("%d.take(\"%d\")!\n", this.hashCode(), pos);
+        return ret;
+    }
+
+    @Override
     public void put(final int pos, final Phi object) {
         System.out.printf("%d.put(%d, %d)...\n", this.hashCode(), pos, object.hashCode());
         this.origin.put(pos, object);

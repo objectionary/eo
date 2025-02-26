@@ -77,6 +77,11 @@ public interface Data {
         }
 
         @Override
+        public Phi take(final int pos) {
+            return this.object.take(pos);
+        }
+
+        @Override
         public void put(final int pos, final Phi obj) {
             this.object.put(pos, obj);
         }

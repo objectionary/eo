@@ -27,26 +27,6 @@ import org.xembly.Xembler;
  * @since 0.5
  */
 final class XmirTest {
-
-    @Test
-    void failsOnDispatchingAlphaAttributes() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            new Xmir(
-                new XMLDocument(
-                    new Xembler(
-                        new Directives(new DrProgram("foo"))
-                            .add("objects")
-                            .add("o").attr("name", "foo")
-                            .add("o").attr("base", ".α0").attr("name", "self")
-                            .add("o").attr("base", "$")
-                    ).xmlQuietly()
-                )
-            )::toEO,
-            "XMIR with alpha dispatch should fail on converting to EO"
-        );
-    }
-
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {

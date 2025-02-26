@@ -1,14 +1,18 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-input: x.y.z > xyz
+input: |-
+  x.y.z > xyz
+  x.~1.y.~2 > abc
 sweet: |-
   {⟦
-    xyz ↦ Φ̇.x.y.z
+    xyz ↦ Φ̇.x.y.z,
+    abc ↦ Φ̇.x.α1.y.α2
   ⟧}
 salty: |-
   {
     ⟦
-      xyz ↦ Φ.org.eolang.x.y.z
+      xyz ↦ Φ.org.eolang.x.y.z,
+      abc ↦ Φ.org.eolang.x.α1.y.α2
     ⟧
   }
