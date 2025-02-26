@@ -368,7 +368,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT (finisher | TILDA INT)
+    : DOT (finisher | TILDE INT)
     ;
 
 // Can be at the beginning of the statement
@@ -391,7 +391,7 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : (finisher | TILDA INT) DOT
+    : (finisher | TILDE INT) DOT
     ;
 
 // Formation name
@@ -489,7 +489,7 @@ RHO : '^'
     ;
 HASH: '#'
     ;
-TILDA
+TILDE
     : '~'
     ;
 
