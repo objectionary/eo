@@ -35,7 +35,6 @@ jobs:
             **/*.toml
             **/*.groovy
         ignore: >-
-# checked with lints
           eo-parser/src/test/resources/org/eolang/parser/fibonacci.eo
           eo-parser/src/test/resources/org/eolang/parser/factorial.eo
           eo-maven-plugin/src/test/resources/org/eolang/maven/mess.eo
