@@ -21,8 +21,6 @@ path = [
     "**/README.md",
     "**/javax.xml.transform.TransformerFactory",
     "**/javax.xml.xpath.XPathFactory",
-    # License located inside +spdx meta, to be checked by "lints"
-    "**/*.eo",
     ".codenarc",
     ".gitattributes",
     ".gitleaksignore",
