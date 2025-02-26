@@ -79,7 +79,7 @@ final class SnippetIT {
                     )
                     .execution("compile")
                     .phase("generate-sources")
-                    .goals("register", "assemble", "lint", "transpile")
+                    .goals("register", "compile", "transpile")
                     .configuration()
                     .set("failOnWarning", Boolean.FALSE.toString());
                 f.build()

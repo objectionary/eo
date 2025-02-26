@@ -48,7 +48,7 @@ public interface Phi extends Data {
     Phi take(String name);
 
     /**
-     * Take object by position of the attribute
+     * Take object by position of the attribute.
      * @param pos The position of the attribute
      * @return The object
      */

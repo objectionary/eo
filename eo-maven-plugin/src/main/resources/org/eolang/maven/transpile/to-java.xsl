@@ -74,7 +74,7 @@
   <!-- Get name for special attributes  -->
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:param name="wrap" select="false()" as="xs:boolean"/>
+    <xsl:param name="wrap" as="xs:boolean"/>
     <xsl:variable name="alpha" select="starts-with($n, $eo:alpha)"/>
     <xsl:variable name="name">
       <xsl:choose>
@@ -96,9 +96,12 @@
             <xsl:value-of select="$name"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>"</xsl:text>
-            <xsl:value-of select="$name"/>
-            <xsl:text>"</xsl:text>
+            <xsl:variable name="quoted">
+              <xsl:text>"</xsl:text>
+              <xsl:value-of select="$name"/>
+              <xsl:text>"</xsl:text>
+            </xsl:variable>
+            <xsl:value-of select="$quoted"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>

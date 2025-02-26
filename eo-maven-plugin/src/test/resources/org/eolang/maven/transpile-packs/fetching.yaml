@@ -16,7 +16,7 @@ asserts:
   - //java[contains(text(), 'Phi rb1 = Phi.Φ.take("org").take("eolang").take("number");')]
   - //java[contains(text(), 'Phi rb11 = Phi.Φ.take("org").take("eolang").take("bytes").copy();')]
   - //java[contains(text(), 'Phi r = new PhMethod(rb, "and");')]
-  - //java[contains(text(), 'Phi r = new PhMethod(rb, 0);')]
+  - //java[contains(text(), 'r = new PhMethod(r, 2);')]
 input: |
   # Comment.
   [] > foo
@@ -26,4 +26,4 @@ input: |
           x.
             $
         2
-    q.~0 > w
+    q.~2 > w

@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -15,11 +14,7 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Test case for {@link Xmir}.

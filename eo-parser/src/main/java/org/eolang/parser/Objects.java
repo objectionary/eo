@@ -19,13 +19,18 @@ final class Objects implements Iterable<Directive> {
      */
     private final Directives dirs = new Directives();
 
+    @Override
+    public Iterator<Directive> iterator() {
+        return this.dirs.iterator();
+    }
+
     /**
      * Start new object.
      * @param line At line.
      * @param pos At position.
      * @return Self.
      */
-    public Objects start(final int line, final int pos) {
+    Objects start(final int line, final int pos) {
         this.dirs.add("o");
         return this.prop("line", line).prop("pos", pos);
     }
@@ -87,10 +92,5 @@ final class Objects implements Iterable<Directive> {
     Objects leave() {
         this.dirs.up();
         return this;
-    }
-
-    @Override
-    public Iterator<Directive> iterator() {
-        return this.dirs.iterator();
     }
 }
