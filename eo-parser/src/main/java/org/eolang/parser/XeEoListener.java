@@ -16,8 +16,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.Joined;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -103,24 +101,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void exitEop(final EoParser.EopContext ctx) {
         // Nothing here
     }
-
-//    @Override
-//    public void enterComments(final EoParser.CommentsContext ctx) {
-//        this.dirs.addIf("comments").set(
-//            new Joined(
-//                "\n",
-//                new Mapped<>(
-//                    cmt -> cmt.getText().substring(1).trim(),
-//                    ctx.COMMENTARY()
-//                )
-//            )
-//        ).up();
-//    }
-
-//    @Override
-//    public void exitComments(final EoParser.CommentsContext ctx) {
-//        // Nothing here
-//    }
 
     @Override
     public void enterMetas(final EoParser.MetasContext ctx) {
