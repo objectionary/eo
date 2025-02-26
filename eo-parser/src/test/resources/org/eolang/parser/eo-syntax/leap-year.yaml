@@ -7,11 +7,6 @@ asserts:
   - /program/objects[count(o)=1]
   - //o[@base='.and']
 input: |
-  # This program is from the EOLANG original paper
-  # and must produce a working command line tool
-  #
-  # License is MIT
-
   +alias org.eolang.io.stdin
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.scanner
