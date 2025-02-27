@@ -9,8 +9,8 @@ on:
       - master
 jobs:
   benchmark:
-    name: JMH
-    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
     steps:
       - name: Run JMH Benchmark Action
         uses: volodya-lombrozo/jmh-benchmark-action@main
