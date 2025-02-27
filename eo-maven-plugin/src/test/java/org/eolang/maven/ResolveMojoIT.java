@@ -26,16 +26,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ResolveMojoIT {
 
-    /**
-     * The EO runtime version.
-     */
-    private static final String VERSION = "0.39.0";
-
     @Test
     void resolvesJarFile(@Mktmp final Path temp) throws IOException {
+        final String version = "0.39.0";
         new Farea(temp).together(
             f -> {
-                ResolveMojoIT.configureFarea(f, ResolveMojoIT.VERSION);
+                ResolveMojoIT.configureFarea(f, version);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "the jar file was resolved and unpacked",
@@ -43,7 +39,7 @@ final class ResolveMojoIT {
                         String.format(
                             "target/eo/%s/org.eolang/eo-runtime/-/%s/org/eolang/Phi.class",
                             ResolveMojo.DIR,
-                            ResolveMojoIT.VERSION
+                            version
                         )
                     ).exists(),
                     Matchers.is(true)
@@ -54,9 +50,10 @@ final class ResolveMojoIT {
 
     @Test
     void removesOldJarFile(@Mktmp final Path temp) throws IOException {
+        final String version = "0.38.0";
         new Farea(temp).together(
             f -> {
-                ResolveMojoIT.configureFarea(f, ResolveMojoIT.VERSION);
+                ResolveMojoIT.configureFarea(f, version);
                 f.exec("process-classes");
                 f.dependencies()
                     .append("org.eolang", "eo-runtime", "0.40.0");
@@ -67,7 +64,7 @@ final class ResolveMojoIT {
                         String.format(
                             "target/eo/%s/org.eolang/eo-runtime/-/%s",
                             ResolveMojo.DIR,
-                            ResolveMojoIT.VERSION
+                            version
                         )
                     ).exists(),
                     Matchers.is(false)
