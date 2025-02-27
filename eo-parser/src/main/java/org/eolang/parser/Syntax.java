@@ -10,12 +10,12 @@ import java.io.IOException;
 /**
  * Core interface for syntax parsers that transform source code into the XMIR
  * (XML-based Intermediate Representation) format using ANTLR4.
- * 
+ *
  * <p>This interface abstracts the parsing process for different syntaxes in the
  * EO ecosystem, such as EO language and Phi-calculus notation. Implementations
  * typically perform lexical analysis, syntax parsing, and XMIR generation through
  * a series of XSL transformations to produce canonical XML output.</p>
- * 
+ *
  * <p>The interface is designed to be lightweight with a single method {@code parsed()}
  * that handles the entire conversion process.</p>
  *
@@ -26,7 +26,7 @@ import java.io.IOException;
 interface Syntax {
     /**
      * Parses the source input and transforms it into XMIR format.
-     * 
+     *
      * <p>This method handles the complete parsing workflow: lexical analysis,
      * syntax analysis, and transformation to XML. The resulting XML follows the
      * canonical XMIR structure defined by the EO project.</p>
