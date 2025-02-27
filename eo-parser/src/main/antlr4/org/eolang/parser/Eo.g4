@@ -8,16 +8,11 @@ tokens { TAB, UNTAB }
 
 // Entry point
 program
-    : license? metas? objects EOF
+    : metas? objects EOF
     ;
 
 // Double EOL
 eop : EOL EOL
-    ;
-
-// Licence
-license
-    : (COMMENTARY EOL)* COMMENTARY eop
     ;
 
 // Metas
