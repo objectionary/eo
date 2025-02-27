@@ -16,8 +16,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.Joined;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -101,24 +99,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitEop(final EoParser.EopContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterLicense(final EoParser.LicenseContext ctx) {
-        this.dirs.addIf("license").set(
-            new Joined(
-                "\n",
-                new Mapped<>(
-                    cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENTARY()
-                )
-            )
-        ).up();
-    }
-
-    @Override
-    public void exitLicense(final EoParser.LicenseContext ctx) {
         // Nothing here
     }
 
