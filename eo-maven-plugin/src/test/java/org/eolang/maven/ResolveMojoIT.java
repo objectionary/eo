@@ -25,18 +25,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ResolveMojoIT {
+
+    /**
+     * The EO runtime version.
+     */
+    private static final String VERSION = "0.39.0";
+
     @Test
     void resolvesJarFile(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                ResolveMojoIT.configureFarea(f);
+                ResolveMojoIT.configureFarea(f, ResolveMojoIT.VERSION);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "the jar file was resolved and unpacked",
                     f.files().file(
                         String.format(
-                            "target/eo/%s/org.eolang/eo-runtime/-/0.39.0/org/eolang/Phi.class",
-                            ResolveMojo.DIR
+                            "target/eo/%s/org.eolang/eo-runtime/-/%s/org/eolang/Phi.class",
+                            ResolveMojo.DIR,
+                            ResolveMojoIT.VERSION
                         )
                     ).exists(),
                     Matchers.is(true)
@@ -49,7 +56,7 @@ final class ResolveMojoIT {
     void removesOldJarFile(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                ResolveMojoIT.configureFarea(f);
+                ResolveMojoIT.configureFarea(f, ResolveMojoIT.VERSION);
                 f.exec("process-classes");
                 f.dependencies()
                     .append("org.eolang", "eo-runtime", "0.40.0");
@@ -58,8 +65,9 @@ final class ResolveMojoIT {
                     "binary files from the old JAR were removed",
                     f.files().file(
                         String.format(
-                            "target/eo/%s/org.eolang/eo-runtime/-/0.39.0",
-                            ResolveMojo.DIR
+                            "target/eo/%s/org.eolang/eo-runtime/-/%s",
+                            ResolveMojo.DIR,
+                            ResolveMojoIT.VERSION
                         )
                     ).exists(),
                     Matchers.is(false)
@@ -68,10 +76,10 @@ final class ResolveMojoIT {
         );
     }
 
-    private static void configureFarea(final Farea farea) throws IOException {
+    private static void configureFarea(final Farea farea, final String version) throws IOException {
         farea.clean();
         farea.dependencies()
-            .append("org.eolang", "eo-runtime", "0.39.0");
+            .append("org.eolang", "eo-runtime", version);
         farea.build()
             .plugins()
             .append(
