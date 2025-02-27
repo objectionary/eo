@@ -14,7 +14,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * This {@link Shift} finds all XPath matches and replaces them
+ * Finds all XPath matches and replaces them
  * with what a function suggests.
  *
  * @since 0.29.0

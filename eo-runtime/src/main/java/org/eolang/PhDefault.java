@@ -238,7 +238,7 @@ public class PhDefault implements Phi, Cloneable {
      *
      * <p>This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
-     * protected. Not the brightest design, I admit.</p>
+     * protected.</p>
      *
      * @param name The name
      * @param attr The attr

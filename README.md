@@ -214,13 +214,13 @@ This is our
 [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form),
 of EO language:
 
-<img alt="ENBF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
+<img alt="EBNF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
 
 This is the
 [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
 of 𝜑-calculus:
 
-<img alt="ENBF of 𝜑-calculus" src="https://www.eolang.org/ebnf/Phi.png" width="100%" />
+<img alt="EBNF of 𝜑-calculus" src="https://www.eolang.org/ebnf/Phi.png" width="100%" />
 
 The images were
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
