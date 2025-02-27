@@ -10,6 +10,7 @@
   of the object.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:function name="eo:original-name" as="xs:string">
     <xsl:param name="program" as="node()"/>
     <xsl:param name="o" as="node()"/>
@@ -28,7 +29,7 @@
         <xsl:when test="$o/@name">
           <xsl:choose>
             <xsl:when test="$o/@name = '@'">
-              <xsl:text>φ</xsl:text>
+              <xsl:value-of select="$eo:phi"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="$o/@name"/>
@@ -38,10 +39,10 @@
         <xsl:otherwise>
           <xsl:choose>
             <xsl:when test="starts-with($parent/@base, '.') and not($o/preceding-sibling::o)">
-              <xsl:text>ρ</xsl:text>
+              <xsl:value-of select="$eo:rho"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>α</xsl:text>
+              <xsl:value-of select="$eo:alpha"/>
               <xsl:value-of select="count($o/preceding-sibling::o) - count($parent[starts-with(@base, '.')])"/>
             </xsl:otherwise>
           </xsl:choose>
