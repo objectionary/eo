@@ -316,6 +316,8 @@ mvn clean install -Pqulice
 ```
 
 You will need [Maven 3.3+](https://maven.apache.org) and Java 11+ installed.
+Also, if you have [xcop](https://github.com/yegor256/xcop) installed, make sure
+it is version `0.8.0`+.
 
 ## Special thanks
 
