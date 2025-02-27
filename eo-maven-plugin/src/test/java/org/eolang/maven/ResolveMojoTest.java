@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
-import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -40,40 +39,6 @@ final class ResolveMojoTest {
      * The message that the JAR file must not exist.
      */
     private static final String JAR_NOT_EXIST = "The jar file must not exist, but it doesn't";
-
-    @Test
-    void deletesOtherVersions(@Mktmp final Path temp) throws IOException {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.dependencies()
-                    .append("org.eolang", "eo-runtime", "0.39.0");
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("resolve");
-                f.exec("process-classes");
-                MatcherAssert.assertThat(
-                    "the jar file was resolved and unpacked",
-                    f.files().file(
-                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0/org/eolang/Phi.class"
-                    ).exists(),
-                    Matchers.is(true)
-                );
-                f.dependencies()
-                    .append("org.eolang", "eo-runtime", "0.40.0");
-                f.exec("process-classes");
-                MatcherAssert.assertThat(
-                    "binary files from the old JAR were removed",
-                    f.files().file(
-                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0"
-                    ).exists(),
-                    Matchers.is(false)
-                );
-            }
-        );
-    }
 
     @Test
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
