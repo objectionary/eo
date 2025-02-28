@@ -37,8 +37,6 @@ final class AssembleMojoIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.dependencies()
-                    .append("org.eolang", "eo-runtime", "0.51.6");
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(AssembleMojoIT.helloWorld().getBytes(StandardCharsets.UTF_8));
@@ -50,13 +48,13 @@ final class AssembleMojoIT {
                         "AssembleMojo should have placed runtime",
                         "library, but didn't"
                     ),
-                    f.files().file(
+                    temp.resolve(
                         String.format(
-                            "target/eo/%s/org.eolang/eo-runtime/-/0.51.6/org/eolang/Phi.class",
+                            "target/eo/%s/org.eolang/eo-runtime",
                             ResolveMojo.DIR
                         )
-                    ).exists(),
-                    Matchers.is(true)
+                    ).toAbsolutePath(),
+                    new ContainsFiles("**/org/eolang/Phi.class")
                 );
                 MatcherAssert.assertThat(
                     String.format(

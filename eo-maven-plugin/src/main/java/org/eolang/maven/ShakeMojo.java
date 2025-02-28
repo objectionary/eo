@@ -60,12 +60,12 @@ public final class ShakeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Shaked %d out of %d XMIR program(s) in %[ms]s",
+                "Shaken %d out of %d XMIR program(s) in %[ms]s",
                 total, tojos.size(),
                 System.currentTimeMillis() - start
             );
         } else {
-            Logger.debug(this, "No XMIR programs out of %d shaked", tojos.size());
+            Logger.debug(this, "No XMIR programs out of %d shaken", tojos.size());
         }
     }
 
@@ -96,8 +96,8 @@ public final class ShakeMojo extends SafeMojo {
 
     /**
      * Shake XSL transformations.
-     * If {@link SafeMojo#trackTransformationSteps} is {@code true} - we create new {@link Xsline}
-     * for every XMIR in purpose of thread safety.
+     * If {@link SafeMojo#trackTransformationSteps} is {@code true}, we create a new {@link Xsline}
+     * for every XMIR for thread safety.
      * @return Shake XSL transformations for all tojos.
      */
     private Function<XML, XML> transformations() {

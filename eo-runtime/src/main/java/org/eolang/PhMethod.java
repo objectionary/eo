@@ -21,4 +21,8 @@ public final class PhMethod extends PhOnce {
     public PhMethod(final Phi phi, final String mtd) {
         super(() -> phi.take(mtd));
     }
+
+    public PhMethod(final Phi phi, final int pos) {
+        super(() -> phi.take(pos));
+    }
 }

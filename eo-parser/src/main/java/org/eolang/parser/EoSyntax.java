@@ -30,7 +30,44 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Syntax parser, from EO to XMIR, using ANTLR4.
+ * Syntax parser that converts EO code to XMIR (XML-based Intermediate Representation) using ANTLR4.
+ * EoSyntax parses EO source code, generates a structured XML representation, and applies a series
+ * of transformations to produce canonical XMIR.
+ *
+ * <p>The parsing process includes lexical analysis, syntax analysis, and XML transformation:
+ * 1. EO code is first processed by the EoIndentLexer
+ * 2. Then parsed by ANTLR-generated parser
+ * 3. Finally transformed into XMIR through a series of XSL transformations</p>
+ *
+ * <p>Usage examples:</p>
+ *
+ * <p>1. Parse EO code from a string:</p>
+ * <pre>
+ * XML xmir = new EoSyntax("my-program", "[args] > app\n  42 > @").parsed();
+ * </pre>
+ *
+ * <p>2. Parse EO code from a file:</p>
+ * <pre>
+ * XML xmir = new EoSyntax(
+ *     "fibonacci",
+ *     new InputOf(new File("src/main/eo/fibonacci.eo"))
+ * ).parsed();
+ * </pre>
+ *
+ * <p>3. Parse with custom transformations:</p>
+ * <pre>
+ * XML xmir = new EoSyntax(
+ *     "custom-transform",
+ *     "[x] > f\n  x > @",
+ *     new TrClasspath<>(
+ *         "/org/eolang/parser/pack/validation.xsl",
+ *         "/org/eolang/parser/pack/transform.xsl"
+ *     )
+ * ).parsed();
+ * </pre>
+ *
+ * <p>After parsing, errors can be found in the XML at the "/program/errors" XPath.
+ * If no errors are present, the parsed program is valid EO code.</p>
  *
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (500 lines)

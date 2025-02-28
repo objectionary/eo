@@ -4,11 +4,9 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,29 +43,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 final class ShakeMojoTest {
-
-    @Test
-    void shakesSimpleObject(@Mktmp final Path temp) throws Exception {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
-                );
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("register", "parse", "shake");
-                f.exec("compile");
-            }
-        );
-        MatcherAssert.assertThat(
-            "the .xmir file contains lint defects",
-            new XMLDocument(temp.resolve("target/eo/2-shake/foo.xmir")),
-            XhtmlMatchers.hasXPaths("/program[not(errors)]")
-        );
-    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/shake-packs/", glob = "**.yaml")

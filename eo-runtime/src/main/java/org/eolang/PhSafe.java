@@ -52,6 +52,11 @@ public final class PhSafe implements Phi, Atom {
     private final String location;
 
     /**
+     * The original name.
+     */
+    private final String oname;
+
+    /**
      * Ctor.
      *
      * @param phi The object
@@ -71,7 +76,7 @@ public final class PhSafe implements Phi, Atom {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhSafe(final Phi phi, final String prg, final int lne, final int pos) {
-        this(phi, prg, lne, pos, "?");
+        this(phi, prg, lne, pos, "?", "?");
     }
 
     /**
@@ -82,15 +87,17 @@ public final class PhSafe implements Phi, Atom {
      * @param lne Line
      * @param pos Position
      * @param loc Location
+     * @param oname Original name
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhSafe(final Phi phi, final String prg, final int lne,
-        final int pos, final String loc) {
+        final int pos, final String loc, final String oname) {
         this.origin = phi;
         this.program = prg;
         this.line = lne;
         this.position = pos;
         this.location = loc;
+        this.oname = oname;
     }
 
     @Override
@@ -107,7 +114,7 @@ public final class PhSafe implements Phi, Atom {
     public Phi copy() {
         return new PhSafe(
             this.origin.copy(), this.program,
-            this.line, this.position, this.location
+            this.line, this.position, this.location, this.oname
         );
     }
 
@@ -119,6 +126,11 @@ public final class PhSafe implements Phi, Atom {
     @Override
     public Phi take(final String name) {
         return this.through(() -> this.origin.take(name));
+    }
+
+    @Override
+    public Phi take(final int pos) {
+        return this.through(() -> this.origin.take(pos));
     }
 
     @Override
@@ -138,7 +150,11 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public String forma() {
-        return this.through(this.origin::forma);
+        return String.join(
+            ".",
+            this.getClass().getPackageName(),
+            this.oname
+        );
     }
 
     @Override

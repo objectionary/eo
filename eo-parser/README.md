@@ -6,7 +6,7 @@
 # How to Test
 
 This documentation provides a step-by-step guide to test the `EO` code in `eo-parser` package. There
-are two files provide testing `EO` files: `PacksTest` and `TypoTests`.
+are two files providing tests for `EO` files: `PacksTest` and `TyposTests`.
 
 The `PacksTest` class contains two test methods:
 
@@ -17,7 +17,7 @@ failures, the test is aborted.
 correctly. It reads YAML files from the `org/eolang/parser/xax/` directory and creates an XaxStory
 object. The test passes if the object is created successfully.
 
-`TypoTests` contains only `checksPacks()` method with same functionality as `parsesPacks()`. But it
+`TyposTests` contains only `checksPacks()` method with same functionality as `parsesPacks()`. But it
 takes YAML files from `org/eolang/parser/typos/` directory.
 
 To create YAML file, you can follow the following steps:

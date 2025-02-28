@@ -1,6 +1,5 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
-# SPDX-License-Identifier: MIT
-
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -341,6 +340,14 @@ true > global-test
       "first"
       .as-bytes:0
     "first"
+
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > tests-methods-by-position
+  [first second] > obj
+  obj 1 "Hey" > bound
+  and. > @
+    bound.~0.eq 1
+    bound.~1.eq "Hey"
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-nesting-blah-test

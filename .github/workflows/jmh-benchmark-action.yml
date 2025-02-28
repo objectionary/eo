@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: Performance Regression Check
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  benchmark:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Run JMH Benchmark Action
+        uses: volodya-lombrozo/jmh-benchmark-action@main
+        with:
+          java-version: "11"
+          base-ref: "master"
+          benchmark-command: |
+            mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
+            cp eo-parser/benchmark.json .
+          benchmark-file: "benchmark.json"

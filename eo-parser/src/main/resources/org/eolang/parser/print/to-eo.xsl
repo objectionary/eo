@@ -62,12 +62,6 @@
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.))]">
     <xsl:param name="indent" select="''"/>
-    <xsl:if test="starts-with(@base, concat('.', $eo:alpha))">
-      <xsl:message terminate="yes">
-        <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
-        <xsl:value-of select="@base"/>
-      </xsl:message>
-    </xsl:if>
     <xsl:if test="position()&gt;1 and parent::objects">
       <xsl:value-of select="$eol"/>
     </xsl:if>
@@ -89,12 +83,13 @@
         <xsl:text>*</xsl:text>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:variable name="no-alphas" select="translate(@base, $eo:alpha, '~')"/>
         <xsl:choose>
           <xsl:when test="starts-with(@base, 'Q.org.eolang.')">
-            <xsl:value-of select="substring-after(@base, 'Q.org.eolang.')"/>
+            <xsl:value-of select="substring-after($no-alphas, 'Q.org.eolang.')"/>
           </xsl:when>
           <xsl:when test="starts-with(@base, '$.')">
-            <xsl:value-of select="substring-after(@base, '$.')"/>
+            <xsl:value-of select="substring-after($no-alphas, '$.')"/>
           </xsl:when>
           <xsl:when test="starts-with(@base, '.')">
             <xsl:value-of select="substring(@base, 2)"/>

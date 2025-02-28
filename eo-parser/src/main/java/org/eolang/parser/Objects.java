@@ -12,7 +12,17 @@ import org.xembly.Directives;
  * Object tree.
  * @since 0.1
  */
-interface Objects extends Iterable<Directive> {
+final class Objects implements Iterable<Directive> {
+
+    /**
+     * Collected directives.
+     */
+    private final Directives dirs = new Directives();
+
+    @Override
+    public Iterator<Directive> iterator() {
+        return this.dirs.iterator();
+    }
 
     /**
      * Start new object.
@@ -20,29 +30,40 @@ interface Objects extends Iterable<Directive> {
      * @param pos At position.
      * @return Self.
      */
-    Objects start(int line, int pos);
+    Objects start(final int line, final int pos) {
+        this.dirs.add("o");
+        return this.prop("line", line).prop("pos", pos);
+    }
 
     /**
      * Add data.
      * @param data Data.
      * @return Self.
      */
-    Objects data(String data);
+    Objects data(final String data) {
+        this.dirs.set(data);
+        return this;
+    }
 
     /**
      * Property.
      * @param key Key.
-     * @param value Value.
+     * @param type Type.
      * @return Self.
      */
-    Objects prop(String key, Object value);
+    Objects prop(final String key, final Object type) {
+        this.dirs.attr(key, type);
+        return this;
+    }
 
     /**
      * Empty property.
      * @param key Key.
      * @return Self.
      */
-    Objects prop(String key);
+    Objects prop(final String key) {
+        return this.prop(key, "");
+    }
 
     /**
      * Change property by given xpath.
@@ -50,75 +71,26 @@ interface Objects extends Iterable<Directive> {
      * @param xpath Xpath.
      * @return Self.
      */
-    Objects xprop(String key, Object xpath);
+    Objects xprop(final String key, final Object xpath) {
+        this.dirs.xattr(key, xpath);
+        return this;
+    }
 
     /**
      * Enter last object.
      * @return Self.
      */
-    Objects enter();
+    Objects enter() {
+        this.dirs.xpath("o[last()]").strict(1);
+        return this;
+    }
 
     /**
      * Leave current object.
      * @return Self.
      */
-    Objects leave();
-
-    /**
-     * Xembly object tree.
-     * @since 0.1
-     */
-    final class ObjXembly implements Objects {
-
-        /**
-         * Collected directives.
-         */
-        private final Directives dirs = new Directives();
-
-        @Override
-        public Objects start(final int line, final int pos) {
-            this.dirs.add("o");
-            return this.prop("line", line).prop("pos", pos);
-        }
-
-        @Override
-        public Objects data(final String data) {
-            this.dirs.set(data);
-            return this;
-        }
-
-        @Override
-        public Objects prop(final String key, final Object type) {
-            this.dirs.attr(key, type);
-            return this;
-        }
-
-        @Override
-        public Objects prop(final String key) {
-            return this.prop(key, "");
-        }
-
-        @Override
-        public Objects xprop(final String key, final Object xpath) {
-            this.dirs.xattr(key, xpath);
-            return this;
-        }
-
-        @Override
-        public Objects enter() {
-            this.dirs.xpath("o[last()]").strict(1);
-            return this;
-        }
-
-        @Override
-        public Objects leave() {
-            this.dirs.up();
-            return this;
-        }
-
-        @Override
-        public Iterator<Directive> iterator() {
-            return this.dirs.iterator();
-        }
+    Objects leave() {
+        this.dirs.up();
+        return this;
     }
 }

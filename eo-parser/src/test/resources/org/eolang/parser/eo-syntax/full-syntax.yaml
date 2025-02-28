@@ -4,7 +4,6 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - /program/license[text()!='']
   - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
   - //o[@base='Q.org.eolang.true']
@@ -18,10 +17,6 @@ asserts:
   - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
   - //o[@atom='org.eolang.number']
 input: |
-  # The purpose of this test case is to make
-  # sure all possible syntax scenarios can
-  # be parsed by the ANTLR
-
   +alias org.example.foo
   +alias Test Test
   +bar Some text
@@ -40,6 +35,7 @@ input: |
     [@] > x
       "Hello" > hello
     x 5 > five
+    five.~1.y.~2 > hey
     and. > @
       (five.plus 5).eq 10
       five.hello.eq "Hello"

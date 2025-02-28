@@ -23,8 +23,8 @@ public interface Data {
     /**
      * Makes a {@link Phi} out of a primitive Java object, like {@link String} or {@link Integer}.
      *
-     * <p>This is more convenient than making EOstring, then making EObytes fill it up with data and
-     * then injecting bytes to string.
+     * <p>This is more convenient than making EOstring, then making EObytes fill it up with data,
+     * and then injecting bytes to string.
      * This class is used in Java tests mostly for the sake of brevity.
      * In auto-generated Java code we do:
      * {@code
@@ -74,6 +74,11 @@ public interface Data {
         @Override
         public Phi take(final String name) {
             return this.object.take(name);
+        }
+
+        @Override
+        public Phi take(final int pos) {
+            return this.object.take(pos);
         }
 
         @Override

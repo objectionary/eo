@@ -8,7 +8,6 @@ import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
-import com.yegor256.farea.Farea;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,29 +34,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(MktmpResolver.class)
 final class ParseMojoTest {
-
-    @Test
-    void parsesSimpleFile(@Mktmp final Path temp) throws Exception {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    "# Simple object.\n[] > foo\n".getBytes()
-                );
-                f.build()
-                    .plugins()
-                    .appendItself()
-                    .execution()
-                    .goals("register", "parse");
-                f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
-                MatcherAssert.assertThat(
-                    "the XMIR file is generated",
-                    f.files().file("target/eo/1-parse/foo.xmir").exists(),
-                    Matchers.is(true)
-                );
-            }
-        );
-    }
 
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {

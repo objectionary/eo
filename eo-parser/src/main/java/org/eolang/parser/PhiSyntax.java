@@ -25,7 +25,48 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Syntax parser, from Phi-calculus to XMIR, using ANTLR4.
+ * Syntax parser that converts Phi-calculus notation to XMIR (XML-based Intermediate Representation)
+ * using ANTLR4. PhiSyntax parses Phi-calculus code and transforms it into structured XML
+ * that represents the program in a normalized form.
+ *
+ * <p>The Phi-calculus is a formal model of computation that serves as the theoretical foundation
+ * for the EO language. This parser converts Phi-calculus notation with its specialized
+ * symbols (like ⟦, ⟧, ↦, ⤍, etc.) into XMIR that can be further processed.</p>
+ *
+ * <p>The parsing process includes lexical analysis, syntax analysis, and XML transformations:
+ * 1. Phi code is tokenized by the PhiLexer
+ * 2. Then parsed by the ANTLR-generated PhiParser
+ * 3. Finally transformed into canonical XMIR through a series of XSL transformations</p>
+ *
+ * <p>Usage examples:</p>
+ *
+ * <p>1. Parse basic Phi-calculus notation:</p>
+ * <pre>
+ * XML xmir = new PhiSyntax("{⟦obj ↦ ⟦x ↦ Φ.org.eolang.int⟧⟧}").parsed();
+ * </pre>
+ *
+ * <p>2. Parse with a program name and add extra directives:</p>
+ * <pre>
+ * XML xmir = new PhiSyntax(
+ *     "factorial",
+ *     () -> "{⟦fact ↦ ⟦n ↦ Φ.org.eolang.int⟧⟧}",
+ *     new Directives().xpath("/program").attr("version", "1.0")
+ * ).parsed();
+ * </pre>
+ *
+ * <p>3. Parse with custom transformations:</p>
+ * <pre>
+ * XML xmir = new PhiSyntax(
+ *     "{⟦x ↦ ⟦y ↦ Φ.org.eolang.float⟧⟧}",
+ *     new TrClasspath<>(
+ *         "/org/eolang/parser/unphi/specialized-transform.xsl"
+ *     )
+ * ).parsed();
+ * </pre>
+ *
+ * <p>After parsing, any syntax errors can be found in the XML at the "/program/errors" XPath.
+ * If no errors are present, the parsed program is valid Phi-calculus notation.</p>
+ *
  * @since 0.34.0
  */
 public final class PhiSyntax implements Syntax {

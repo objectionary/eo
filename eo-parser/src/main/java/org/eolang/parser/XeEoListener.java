@@ -16,8 +16,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.Joined;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -71,7 +69,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.name = name;
         this.dirs = new Directives();
         this.errors = new ArrayList<>(0);
-        this.objects = new Objects.ObjXembly();
+        this.objects = new Objects();
         this.start = System.nanoTime();
     }
 
@@ -101,24 +99,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitEop(final EoParser.EopContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterLicense(final EoParser.LicenseContext ctx) {
-        this.dirs.addIf("license").set(
-            new Joined(
-                "\n",
-                new Mapped<>(
-                    cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENTARY()
-                )
-            )
-        ).up();
-    }
-
-    @Override
-    public void exitLicense(final EoParser.LicenseContext ctx) {
         // Nothing here
     }
 
@@ -489,10 +469,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final int count;
         if (ctx.INT() != null) {
             final String num = ctx.INT().getText();
+            final int number = Integer.parseInt(num);
             if (num.charAt(0) == '+'
                 || num.charAt(0) == '-'
                 || num.length() > 1 && num.charAt(0) == '0'
-                || Integer.parseInt(num) < 0
+                || number < 0
             ) {
                 this.errors.add(
                     XeEoListener.error(
@@ -501,7 +482,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                     )
                 );
             }
-            final int number = Integer.parseInt(num);
             count = Math.max(number, 0);
         } else {
             count = 0;
@@ -766,7 +746,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTail(final EoParser.MethodTailContext ctx) {
-        // Nothing here
+        if (ctx.INT() != null) {
+            this.startObject(ctx)
+                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
+                .leave();
+        }
     }
 
     @Override
@@ -834,7 +818,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterReversed(final EoParser.ReversedContext ctx) {
-        // Nothing here
+        if (ctx.INT() != null) {
+            this.startObject(ctx)
+                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
+                .leave();
+        }
     }
 
     @Override
@@ -921,11 +909,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             has = ctx.NAME().getText();
         } else {
-            final int index = Integer.parseInt(ctx.INT().getText());
-            if (index < 0) {
-                this.errors.add(XeEoListener.error(ctx, "Object binding can't be negative"));
-            }
-            has = String.format("α%d", index);
+            has = this.alphaAttr(ctx, "Object binding can't be negative");
         }
         this.objects.prop("as", has);
     }
@@ -1050,6 +1034,20 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }
+    }
+
+    /**
+     * Extract positive integer from context and convert to alpha attribute.
+     * @param ctx Context
+     * @param msg Error message for the case if number is not positive
+     * @return Formatted alpha attribute
+     */
+    private String alphaAttr(final ParserRuleContext ctx, final String msg) {
+        final int index = Integer.parseInt(ctx.getToken(EoParser.INT, 0).getText());
+        if (index < 0) {
+            this.errors.add(XeEoListener.error(ctx, msg));
+        }
+        return String.format("α%d", index);
     }
 
     /**

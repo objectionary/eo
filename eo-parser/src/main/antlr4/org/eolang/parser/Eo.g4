@@ -8,16 +8,11 @@ tokens { TAB, UNTAB }
 
 // Entry point
 program
-    : license? metas? objects EOF
+    : metas? objects EOF
     ;
 
 // Double EOL
 eop : EOL EOL
-    ;
-
-// Licence
-license
-    : (COMMENTARY EOL)* COMMENTARY eop
     ;
 
 // Metas
@@ -368,7 +363,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisher
+    : DOT (finisher | TILDE INT)
     ;
 
 // Can be at the beginning of the statement
@@ -391,7 +386,7 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : finisher DOT
+    : (finisher | TILDE INT) DOT
     ;
 
 // Formation name
@@ -438,6 +433,7 @@ COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
+
 META: PLUS NAME (SPACE ~[\t\r\n ]+)*
     ;
 
@@ -488,7 +484,8 @@ RHO : '^'
     ;
 HASH: '#'
     ;
-BAR : '|'
+TILDE
+    : '~'
     ;
 
 fragment INDENT

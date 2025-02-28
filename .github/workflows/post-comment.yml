@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: Post Benchmark Comment
+on:
+  workflow_run:
+    workflows: [ "Performance Regression Check" ]
+    types:
+      - completed
+
+jobs:
+  post-comment:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Download PR Number and Benchmark Comment
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Read and display PR Number
+        run: |
+          PR_NUMBER=$(cat pr-number/pr-number)
+          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
+          echo "The PR number is $PR_NUMBER"
+      - name: Post Comment on PR
+        uses: mshick/add-pr-comment@v2
+        with:
+          issue: ${{ env.PR_NUMBER }}
+          message-path: |
+            benchmark-comment/benchmark-comment.md
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
