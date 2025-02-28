@@ -80,7 +80,6 @@ public final class PhiSyntax implements Syntax {
                 "/org/eolang/parser/parse/wrap-method-calls.xsl",
                 "/org/eolang/parser/unphi/wrap-bytes.xsl",
                 "/org/eolang/parser/unphi/normalize-bytes.xsl",
-                "/org/eolang/parser/unphi/atoms-with-bound-attrs.xsl",
                 "/org/eolang/parser/parse/roll-bases.xsl"
             ).back()
         )

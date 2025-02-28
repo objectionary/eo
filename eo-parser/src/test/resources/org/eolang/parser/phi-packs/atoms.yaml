@@ -3,11 +3,11 @@
 ---
 input: |
   # No comments.
-  [] > main /int
+  [] > main ?
   # No comments.
   [x] > outer
     # No comments.
-    [] > inner /bytes
+    [] > inner ?
 sweet: |-
   {⟦
     main ↦ ⟦

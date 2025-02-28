@@ -17,6 +17,10 @@
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="$o/@base=$eo:empty"/>
   </xsl:function>
+  <xsl:function name="eo:atom" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="exists($o/o[@name=$eo:lambda])"/>
+  </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>

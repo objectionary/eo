@@ -14,10 +14,10 @@ input: |
   [void-attr] > object
     5.plus 5 > bound-attr
 
-    [] > atom /org.eolang.string
+    [] > atom ?
 
     [] > abstract-object
-      [] > inner-atom /obj
+      [] > inner-atom ?
       [] > inner-abstract
       if. > @
         true > some

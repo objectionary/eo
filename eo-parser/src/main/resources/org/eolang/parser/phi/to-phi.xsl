@@ -346,7 +346,6 @@
   <xsl:template match="o" mode="nested">
     <xsl:param name="tabs"/>
     <xsl:param name="after-start"/>
-    <xsl:param name="o-position"/>
     <xsl:param name="nested"/>
     <xsl:variable name="applied">
       <xsl:choose>
@@ -385,46 +384,43 @@
     <xsl:variable name="name" select="eo:specials(@name)"/>
     <xsl:if test="@name">
       <xsl:value-of select="$name"/>
-      <xsl:if test="$conservative or count(o[eo:void(.)])&gt;0">
-        <xsl:apply-templates select="." mode="inline-voids"/>
-      </xsl:if>
-      <xsl:value-of select="$eo:arrow"/>
+      <xsl:choose>
+        <!-- Atom -->
+        <xsl:when test="@name=$eo:lambda">
+          <xsl:value-of select="$eo:dashed-arrow"/>
+          <xsl:value-of select="eo:lambda-name($package)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:if test="$conservative or count(o[eo:void(.)])&gt;0">
+            <xsl:apply-templates select="." mode="inline-voids"/>
+          </xsl:if>
+          <xsl:value-of select="$eo:arrow"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
-    <xsl:value-of select="$eo:lb"/>
-    <!-- Atom or not empty formation -->
-    <xsl:variable name="inners" select="if ($no-binding or (not(@as) and not(@name))) then o else o[not(eo:void(.))]"/>
-    <xsl:if test="@atom or count($inners)&gt;0">
-      <xsl:value-of select="eo:eol($tabs+1)"/>
-      <!-- Atom -->
-      <xsl:if test="@atom">
-        <xsl:variable name="lambda-name">
-          <xsl:value-of select="$package"/>
-          <xsl:text>.</xsl:text>
-          <xsl:value-of select="$name"/>
-        </xsl:variable>
-        <xsl:value-of select="$eo:lambda"/>
-        <xsl:value-of select="$eo:dashed-arrow"/>
-        <xsl:value-of select="eo:lambda-name($lambda-name)"/>
-        <xsl:if test="count($inners)&gt;0">
-          <xsl:value-of select="eo:comma(2, $tabs+1)"/>
-        </xsl:if>
+    <xsl:if test="not(@name) or @name!=$eo:lambda">
+      <xsl:value-of select="$eo:lb"/>
+      <!-- Atom or not empty formation -->
+      <xsl:variable name="inners" select="if ($no-binding or (not(@as) and not(@name))) then o else o[not(eo:void(.))]"/>
+      <xsl:if test="count($inners)&gt;0">
+        <xsl:value-of select="eo:eol($tabs+1)"/>
+        <!-- Inner objects -->
+        <xsl:for-each select="$inners">
+          <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
+          <xsl:apply-templates select=".">
+            <xsl:with-param name="tabs" select="$tabs+1"/>
+            <xsl:with-param name="package">
+              <xsl:value-of select="$package"/>
+              <xsl:text>.</xsl:text>
+              <xsl:value-of select="$name"/>
+            </xsl:with-param>
+            <xsl:with-param name="before" select="$tabs * 2"/>
+          </xsl:apply-templates>
+        </xsl:for-each>
+        <xsl:value-of select="eo:eol($tabs)"/>
       </xsl:if>
-      <!-- Inner objects -->
-      <xsl:for-each select="$inners">
-        <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
-        <xsl:apply-templates select=".">
-          <xsl:with-param name="tabs" select="$tabs+1"/>
-          <xsl:with-param name="package">
-            <xsl:value-of select="$package"/>
-            <xsl:text>.</xsl:text>
-            <xsl:value-of select="$name"/>
-          </xsl:with-param>
-          <xsl:with-param name="before" select="$tabs * 2"/>
-        </xsl:apply-templates>
-      </xsl:for-each>
-      <xsl:value-of select="eo:eol($tabs)"/>
+      <xsl:value-of select="$eo:rb"/>
     </xsl:if>
-    <xsl:value-of select="$eo:rb"/>
   </xsl:template>
   <!-- Application -->
   <xsl:template match="o" mode="application">

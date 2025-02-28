@@ -318,7 +318,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
-            this.objects().prop("atom", ctx.FUNCTION().getText());
+            this.startObject(ctx).prop("name", ctx.LAMBDA().getText()).leave();
         }
     }
 
