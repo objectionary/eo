@@ -70,7 +70,7 @@ justNamed
     : just oname?
     ;
 
-// Atom - abstract object with mandatory name and type
+// Atom - abstract object with mandatory name
 // Can't contain inner objects
 atom: voids suffix SPACE QUESTION
     ;
