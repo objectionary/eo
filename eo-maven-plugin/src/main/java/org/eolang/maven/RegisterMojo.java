@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,6 +72,10 @@ public final class RegisterMojo extends SafeMojo {
         }
         if (foreign.exists()) {
             Files.delete(foreign.toPath());
+        }
+        final File pulled = this.targetDir.toPath().resolve(PullMojo.DIR).toFile();
+        if (pulled.exists()) {
+            new CleanFiles(pulled).clean();
         }
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();

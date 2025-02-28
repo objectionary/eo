@@ -63,7 +63,6 @@ public final class PullMojo extends SafeMojo {
                 "No programs were pulled because eo.offline flag is set to TRUE"
             );
         } else {
-            new CleanFiles(this.targetDir.toPath().resolve(PullMojo.DIR).toFile()).clean();
             this.pull();
         }
     }
