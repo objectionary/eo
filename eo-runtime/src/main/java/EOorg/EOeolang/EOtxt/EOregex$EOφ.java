@@ -24,13 +24,13 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Regex.compiled.
+ * Regex.@ object.
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "regex.compiled")
+@XmirObject(oname = "regex.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOregex$EOcompiled extends PhDefault implements Atom {
+public final class EOregex$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi regex = this.take(Attr.RHO);

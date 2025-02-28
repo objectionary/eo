@@ -295,7 +295,7 @@
         <xsl:text>super(</xsl:text>
         <xsl:value-of select="eo:eol(3)"/>
         <xsl:text>() -&gt; {</xsl:text>
-        <xsl:apply-templates select="o">
+        <xsl:apply-templates select="o" mode="object">
           <xsl:with-param name="name" select="'r'"/>
           <xsl:with-param name="indent" select="4"/>
         </xsl:apply-templates>
@@ -468,7 +468,7 @@
     <xsl:text>public Phi apply(final Phi </xsl:text>
     <xsl:value-of select="$rho"/>
     <xsl:text>) {</xsl:text>
-    <xsl:apply-templates select="o">
+    <xsl:apply-templates select="o" mode="object">
       <xsl:with-param name="name" select="$ctx"/>
       <xsl:with-param name="indent" select="$indent + 2"/>
       <xsl:with-param name="rho" select="$rho"/>
@@ -483,7 +483,7 @@
     <xsl:text>}))</xsl:text>
   </xsl:template>
   <!-- Anonymous abstract object -->
-  <xsl:template match="o[not(@base) and not(@name)]">
+  <xsl:template match="o[not(@base) and not(@name)]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:value-of select="eo:eol($indent)"/>
@@ -502,7 +502,7 @@
     <xsl:text>();</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
-  <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]">
+  <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
@@ -554,7 +554,7 @@
     </xsl:apply-templates>
   </xsl:template>
   <!-- Attribute body: method object (starts with .) -->
-  <xsl:template match="o[starts-with(@base, '.') and *]">
+  <xsl:template match="o[starts-with(@base, '.') and *]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
@@ -565,7 +565,7 @@
         <xsl:value-of select="@base"/>
       </xsl:message>
     </xsl:if>
-    <xsl:apply-templates select="o[1]">
+    <xsl:apply-templates select="o[1]" mode="object">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
         <xsl:text>b</xsl:text>
@@ -633,7 +633,7 @@
         <xsl:value-of select="$name"/>
         <xsl:value-of select="position()"/>
       </xsl:variable>
-      <xsl:apply-templates select=".">
+      <xsl:apply-templates select="." mode="object">
         <xsl:with-param name="name" select="$next"/>
         <xsl:with-param name="indent" select="$indent + 1"/>
         <xsl:with-param name="rho" select="$rho"/>

@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
@@ -288,8 +289,10 @@ public final class LintMojo extends SafeMojo {
     private static void embed(final XML xmir, final Collection<Defect> defects) {
         final Directives dirs = new Directives();
         dirs.xpath("/program").addIf("errors").strict(1);
+        final Node node = xmir.inner();
+        final Xnav xnav = new Xnav(node);
         for (final Defect defect : defects) {
-            if (LintMojo.suppressed(xmir, defect)) {
+            if (LintMojo.suppressed(xnav, defect)) {
                 continue;
             }
             dirs.add("error")
@@ -301,23 +304,21 @@ public final class LintMojo extends SafeMojo {
             }
             dirs.up();
         }
-        final Node node = xmir.inner();
         new Xembler(dirs).applyQuietly(node);
     }
 
     /**
      * This defect is suppressed?
-     * @param xmir The XMIR
+     * @param xnav The XMIR as {@link Xnav}
      * @param defect The defect
      * @return TRUE if suppressed
      */
-    private static boolean suppressed(final XML xmir, final Defect defect) {
-        return !xmir.nodes(
+    private static boolean suppressed(final Xnav xnav, final Defect defect) {
+        return xnav.path(
             String.format(
                 "/program/metas/meta[head='unlint' and tail='%s']",
                 defect.rule()
             )
-        ).isEmpty();
+        ).findAny().isPresent();
     }
-
 }

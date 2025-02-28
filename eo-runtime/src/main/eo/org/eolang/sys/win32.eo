@@ -7,6 +7,9 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +unlint many-free-attributes
++unlint rt-without-atoms
++unlint empty-object
++unlint decorated-formation
 
 # Makes a kernel32.dll function call by name.
 #
@@ -25,7 +28,9 @@
   -1 > inaddr-none
   02-02 > winsock-version-2-2
 
-  [] > @ /org.eolang.sys.win32.return
+  # Makes an actual function call to operating system
+  # Returns `org.eolang.sys.win32.return` object.
+  [] > @ ?
 
   [code output] > return
     $ > called

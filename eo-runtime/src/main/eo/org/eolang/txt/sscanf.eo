@@ -6,14 +6,16 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++unlint rt-without-atoms
++unlint empty-object
 
 # Reads formatted input from a string.
 # This object has two free attributes:
 # 1. `format` - is a formatter string (e.g. "Hello, %s!")
 # 2. `read` - is a string where data exists (e.g. "Hello, John!")
-# returns a `tuple` of formatted values (e.g. * "John").
+# returns a `org.eolang.tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
-[format read] > sscanf /org.eolang.tuple
+[format read] > sscanf ?
