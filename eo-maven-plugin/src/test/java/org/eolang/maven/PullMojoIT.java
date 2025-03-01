@@ -66,7 +66,7 @@ final class PullMojoIT {
                 );
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
-                    "Foreign must not contain the a reference to an old object, but it doesn't",
+                    "Foreign must not contain a reference to an old object, but it doesn't",
                     PullMojoIT.ids(temp.resolve("target/eo-foreign.json")),
                     Matchers.not(Matchers.hasItem("org.eolang.dataized"))
                 );
@@ -115,7 +115,7 @@ final class PullMojoIT {
                 );
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
-                    "Foreign must not contain the a reference to an old object",
+                    "Foreign must not contain a reference to an old object",
                     PullMojoIT.ids(temp.resolve("target/eo-foreign.json")),
                     Matchers.not(Matchers.hasItem("org.eolang.string"))
                 );
