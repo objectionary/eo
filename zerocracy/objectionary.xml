@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.7.3" size="1752081">
+<fb version="0.7.3" size="1753025">
   <f/>
   <f/>
   <f/>
@@ -69,10 +69,10 @@
     <deleted t="I">8</deleted>
     <error t="S">Judge github-events stopped by timeout: execution expired</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">472.081189283</seconds>
-    <version t="S">0.32.0</version>
+    <seconds t="F">448.00282443</seconds>
+    <version t="S">0.34.0</version>
     <what t="S">judges-summary</what>
-    <when t="T">2025-03-01T22:11:01Z</when>
+    <when t="T">2025-03-01T23:15:20Z</when>
   </f>
   <f>
     <_id t="I">55</_id>
@@ -87624,15 +87624,6 @@
     <who t="I">526301</who>
   </f>
   <f>
-    <_id t="I">53230</_id>
-    <_time t="T">2025-02-28T12:18:03Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">47010979339</latest>
-    <repository t="I">543969974</repository>
-    <what t="S">events-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53238</_id>
     <_time t="T">2025-02-28T12:21:11Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -88170,15 +88161,6 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53698</_id>
-    <_time t="T">2025-03-01T09:14:06Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">254</latest>
-    <repository t="I">13623548</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53701</_id>
     <_time t="T">2025-03-01T09:14:43Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -88320,29 +88302,11 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53788</_id>
-    <_time t="T">2025-03-01T13:14:42Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">709214061</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53793</_id>
     <_time t="T">2025-03-01T13:18:53Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">709214061</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53797</_id>
-    <_time t="T">2025-03-01T13:19:40Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">60</latest>
-    <repository t="I">671896902</repository>
     <what t="S">labels-were-scanned</what>
     <where t="S">github</where>
   </f>
@@ -88483,29 +88447,11 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53856</_id>
-    <_time t="T">2025-03-01T16:09:09Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">3</latest>
-    <repository t="I">671896902</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53860</_id>
     <_time t="T">2025-03-01T16:09:59Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">518891717</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53861</_id>
-    <_time t="T">2025-03-01T16:10:12Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">2</latest>
-    <repository t="I">501259435</repository>
     <what t="S">min-issue-was-found</what>
     <where t="S">github</where>
   </f>
@@ -88713,15 +88659,6 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53926</_id>
-    <_time t="T">2025-03-01T19:03:03Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">551486781</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53927</_id>
     <_time t="T">2025-03-01T19:03:15Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -88736,15 +88673,6 @@
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">2</latest>
     <repository t="I">798766850</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53930</_id>
-    <_time t="T">2025-03-01T19:03:52Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">559427983</repository>
     <what t="S">min-issue-was-found</what>
     <where t="S">github</where>
   </f>
@@ -88795,15 +88723,6 @@
     <who t="I">526301</who>
   </f>
   <f>
-    <_id t="I">53937</_id>
-    <_time t="T">2025-03-01T19:08:01Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">508</latest>
-    <repository t="I">731438612</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53938</_id>
     <_time t="T">2025-03-01T19:08:13Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -88827,15 +88746,6 @@
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">482612876</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53944</_id>
-    <_time t="T">2025-03-01T19:09:24Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">510082372</repository>
     <what t="S">labels-were-scanned</what>
     <where t="S">github</where>
   </f>
@@ -88890,15 +88800,6 @@
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">373900298</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53957</_id>
-    <_time t="T">2025-03-01T20:10:12Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">403396472</repository>
     <what t="S">min-issue-was-found</what>
     <where t="S">github</where>
   </f>
@@ -89064,15 +88965,6 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53977</_id>
-    <_time t="T">2025-03-01T21:03:00Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">574534248</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53979</_id>
     <_time t="T">2025-03-01T21:03:24Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -89144,24 +89036,6 @@
     <when t="T">2025-03-01T05:05:44Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">53987</_id>
-    <_time t="T">2025-03-01T21:07:57Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">25</latest>
-    <repository t="I">489321585</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">53988</_id>
-    <_time t="T">2025-03-01T21:08:09Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">501942888</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
   </f>
   <f>
     <_id t="I">53989</_id>
@@ -89244,29 +89118,11 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">53998</_id>
-    <_time t="T">2025-03-01T22:03:48Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">624420387</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">53999</_id>
     <_time t="T">2025-03-01T22:03:59Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">396732517</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">54000</_id>
-    <_time t="T">2025-03-01T22:04:11Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">483303722</repository>
     <what t="S">min-issue-was-found</what>
     <where t="S">github</where>
   </f>
@@ -89321,15 +89177,6 @@
     <_version t="S">0.7.3/0.32.0/</_version>
     <latest t="I">1</latest>
     <repository t="I">489321585</repository>
-    <what t="S">min-issue-was-found</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">54007</_id>
-    <_time t="T">2025-03-01T22:05:36Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">562850967</repository>
     <what t="S">min-issue-was-found</what>
     <where t="S">github</where>
   </f>
@@ -89404,24 +89251,6 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">54014</_id>
-    <_time t="T">2025-03-01T22:09:50Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">61</latest>
-    <repository t="I">798766850</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
-    <_id t="I">54015</_id>
-    <_time t="T">2025-03-01T22:10:01Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
-    <latest t="I">0</latest>
-    <repository t="I">552394123</repository>
-    <what t="S">labels-were-scanned</what>
-    <where t="S">github</where>
-  </f>
-  <f>
     <_id t="I">54016</_id>
     <_time t="T">2025-03-01T22:10:13Z</_time>
     <_version t="S">0.7.3/0.32.0/</_version>
@@ -89449,20 +89278,229 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">54019</_id>
-    <_time t="T">2025-03-01T22:10:49Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
+    <_id t="I">54021</_id>
+    <_time t="T">2025-03-01T23:08:17Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">3</latest>
+    <repository t="I">671896902</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54022</_id>
+    <_time t="T">2025-03-01T23:08:30Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">2</latest>
+    <repository t="I">501259435</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54023</_id>
+    <_time t="T">2025-03-01T23:08:41Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">551486781</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54024</_id>
+    <_time t="T">2025-03-01T23:08:53Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">483303722</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54025</_id>
+    <_time t="T">2025-03-01T23:09:05Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">709214061</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54026</_id>
+    <_time t="T">2025-03-01T23:09:18Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">403396472</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54027</_id>
+    <_time t="T">2025-03-01T23:09:30Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">574534248</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54028</_id>
+    <_time t="T">2025-03-01T23:09:42Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">624420387</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54029</_id>
+    <_time t="T">2025-03-01T23:09:54Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">559427983</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54030</_id>
+    <_time t="T">2025-03-01T23:10:06Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">562850967</repository>
+    <what t="S">min-issue-was-found</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54031</_id>
+    <_time t="T">2025-03-01T23:10:51Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <commit t="S">a0435adceae1c0bb3202c323345de3ec60811477</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #22908264884 has arrived to objectionary/sodg, made by @yegor256 (default branch is 'master'), not associated with any pull request.</details>
+    <event_id t="I">47056438207</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">22908264884</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">543969974</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2025-02-28T07:35:02Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">54032</_id>
+    <_time t="T">2025-03-01T23:11:03Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">47056438207</latest>
+    <repository t="I">543969974</repository>
+    <what t="S">events-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54033</_id>
+    <_time t="T">2025-03-01T23:11:37Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <commit t="S">c68db8ce6ffcddebf42bac81c8e211717de6a37b</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #22925564999 has arrived to objectionary/xax, made by @yegor256 (default branch is 'master'), not associated with any pull request.</details>
+    <event_id t="I">47089976256</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">22925564999</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">574534248</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2025-03-01T05:10:14Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">54034</_id>
+    <_time t="T">2025-03-01T23:13:30Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">62</latest>
+    <repository t="I">798766850</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54035</_id>
+    <_time t="T">2025-03-01T23:13:42Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">510102039</repository>
     <what t="S">labels-were-scanned</what>
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">54020</_id>
-    <_time t="T">2025-03-01T22:11:00Z</_time>
-    <_version t="S">0.7.3/0.32.0/</_version>
+    <_id t="I">54036</_id>
+    <_time t="T">2025-03-01T23:13:54Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">552394123</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54037</_id>
+    <_time t="T">2025-03-01T23:14:06Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">501942888</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54038</_id>
+    <_time t="T">2025-03-01T23:14:18Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">63</latest>
+    <repository t="I">671896902</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54039</_id>
+    <_time t="T">2025-03-01T23:14:31Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">28</latest>
+    <repository t="I">489321585</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54040</_id>
+    <_time t="T">2025-03-01T23:14:43Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
     <latest t="I">0</latest>
     <repository t="I">731516758</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54041</_id>
+    <_time t="T">2025-03-01T23:14:55Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">509</latest>
+    <repository t="I">731438612</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54042</_id>
+    <_time t="T">2025-03-01T23:15:07Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">0</latest>
+    <repository t="I">510082372</repository>
+    <what t="S">labels-were-scanned</what>
+    <where t="S">github</where>
+  </f>
+  <f>
+    <_id t="I">54043</_id>
+    <_time t="T">2025-03-01T23:15:20Z</_time>
+    <_version t="S">0.7.4/0.34.0/</_version>
+    <latest t="I">263</latest>
+    <repository t="I">13623548</repository>
     <what t="S">labels-were-scanned</what>
     <where t="S">github</where>
   </f>
