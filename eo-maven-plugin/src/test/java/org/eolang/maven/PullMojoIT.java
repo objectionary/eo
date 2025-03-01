@@ -67,17 +67,17 @@ final class PullMojoIT {
                     PullMojoIT.ids(temp.resolve("target/eo-foreign.json")),
                     Matchers.not(Matchers.hasItem("org.eolang.dataized"))
                 );
+                MatcherAssert.assertThat(
+                    "necessary objects must were pulled",
+                    temp.resolve(
+                        String.format(
+                            "target/eo/%s/org/eolang/number.eo",
+                            PullMojo.DIR
+                        )
+                    ).toFile().exists(),
+                    Matchers.is(true)
+                );                
             }
-        );
-        MatcherAssert.assertThat(
-            "necessary objects must were pulled",
-            temp.resolve(
-                String.format(
-                    "target/eo/%s/org/eolang/number.eo",
-                    PullMojo.DIR
-                )
-            ).toFile().exists(),
-            Matchers.is(true)
         );
     }
 
