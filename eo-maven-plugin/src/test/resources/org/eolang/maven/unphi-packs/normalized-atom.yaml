@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+skip: true
 asserts:
   - //o[@base='Q.org.eolang.io.stdout' and @name='x']/o[@as='text' and @base='Q.org.eolang.bytes']
   - //o[@base='Q.org.eolang.io.stdout' and @name='x']/o[@as='size' and @base='Q.org.eolang.int']

@@ -14,8 +14,7 @@ asserts:
   - //o[@as='α0']
   - //o[@base='$.five.plus']
   - //objects[not(.//o[@name=''])]
-  - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
-  - //o[@atom='org.eolang.number']
+  - //o[o[@name='λ'] and @name='atom' and count(o)=3 and o[@name='a']]
 input: |
   +alias org.example.foo
   +alias Test Test
@@ -28,7 +27,7 @@ input: |
   "Hello, друг!" > hello!
 
   # No comments.
-  [tt a] > atom /int
+  [tt a] > atom ?
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] > with-void-phi
@@ -113,7 +112,7 @@ input: |
 
   # No comments.
   [] > ooo
-    [] > o-1 /org.eolang.number
+    [] > o-1 ?
 
     [] > o2
 

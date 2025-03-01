@@ -60,7 +60,7 @@
     <xsl:apply-templates select="o"/>
   </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
-  <xsl:template match="o[not(eo:void(.))]">
+  <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]">
     <xsl:param name="indent" select="''"/>
     <xsl:if test="position()&gt;1 and parent::objects">
       <xsl:value-of select="$eol"/>
@@ -144,9 +144,8 @@
       <xsl:if test="@const">
         <xsl:text>!</xsl:text>
       </xsl:if>
-      <xsl:if test="@atom">
-        <xsl:text> /</xsl:text>
-        <xsl:value-of select="@atom"/>
+      <xsl:if test="eo:atom(.)">
+        <xsl:text> ?</xsl:text>
       </xsl:if>
     </xsl:if>
   </xsl:template>

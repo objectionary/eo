@@ -7,6 +7,7 @@
 +tests
 +package org.eolang.examples
 +version 0.0.0
++unlint rt-without-atoms
 
 3.14 > pi
 
@@ -30,7 +31,7 @@ alpha > beta
 # No comments.
 [n x] > mess
   # No comments.
-  [a] > test /int
+  [a] > test ?
   n.hello > @
     "Hello, world!"
     x

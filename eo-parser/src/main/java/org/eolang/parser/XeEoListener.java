@@ -232,20 +232,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
-        final EoParser.TypeFqnContext fqn = ctx.typeFqn();
-        if (fqn == null) {
-            this.errors.add(XeEoListener.error(ctx, "Atom must have a type"));
-            this.startObject(ctx).leave();
-        } else {
-            this.startObject(ctx)
-                .prop("atom", fqn.getText())
-                .leave();
-        }
+        this.startObject(ctx).leave();
     }
 
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
-        // Nothing here
+        this.objects.enter()
+            .start(ctx.getStart().getLine(), ctx.getStop().getCharPositionInLine() - 1)
+            .prop("name", "λ")
+            .leave()
+            .leave();
     }
 
     @Override
@@ -308,16 +304,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitVoid(final EoParser.VoidContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterTypeFqn(final EoParser.TypeFqnContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitTypeFqn(final EoParser.TypeFqnContext ctx) {
-        // Nothing here
     }
 
     @Override

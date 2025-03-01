@@ -78,6 +78,30 @@ final class TranspileMojoTest {
     }
 
     @Test
+    void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package com.example",
+                "",
+                "# Atom.",
+                "[x y z] > foo ?"
+            );
+        final Map<String, Path> res = maven
+            .execute(new FakeMaven.Transpile())
+            .result();
+        MatcherAssert.assertThat(
+            "TranspileMojo should not touch atoms, but it did",
+            res,
+            Matchers.not(
+                Matchers.allOf(
+                    Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)),
+                    Matchers.hasKey("target/generated/EOcom/EOexample/EOfoo.java")
+                )
+            )
+        );
+    }
+
+    @Test
     void transpilesWithPackage(@Mktmp final Path temp)
         throws Exception {
         new Farea(temp).together(

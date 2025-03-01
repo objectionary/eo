@@ -70,9 +70,9 @@ justNamed
     : just oname?
     ;
 
-// Atom - abstract object with mandatory name and type
+// Atom - abstract object with mandatory name
 // Can't contain inner objects
-atom: voids suffix SPACE SLASH typeFqn
+atom: voids suffix SPACE QUESTION
     ;
 
 // Formation - abstract object with mandatory name
@@ -105,11 +105,6 @@ voids
 // Void attribute
 void: NAME
     | PHI
-    ;
-
-// Type FQN
-typeFqn
-    : NAME (DOT NAME)*
     ;
 
 // Application
@@ -445,9 +440,6 @@ STAR: '*'
     ;
 CONST
     : '!'
-    ;
-SLASH
-    : '/'
     ;
 COLON
     : ':'
