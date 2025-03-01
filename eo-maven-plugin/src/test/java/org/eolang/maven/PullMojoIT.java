@@ -45,8 +45,7 @@ final class PullMojoIT {
                         "# by mistake. The build should fail because of this,",
                         "# in particular its 'pull' step must fail.",
                         "[] > foo",
-                        "  bar 42 > @",
-                        ""
+                        "  bar 42 > @"
                     ).getBytes()
                 );
                 PullMojoIT.configureFarea(f);
@@ -59,8 +58,7 @@ final class PullMojoIT {
                         "# Now, this program, doesn't refer to the 'bar' object",
                         "# which makes this program valid and it must compile.",
                         "[] > foo",
-                        "  42 > @",
-                        ""
+                        "  42 > @"
                     ).getBytes()
                 );
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
@@ -95,8 +93,7 @@ final class PullMojoIT {
                         "",
                         "# In this program, we refer to the 'String' object by mistake.",
                         "[] > foo",
-                        "  \"Hello\" > @",
-                        ""
+                        "  \"Hello\" > @"
                     ).getBytes()
                 );
                 PullMojoIT.configureFarea(f);
@@ -108,8 +105,7 @@ final class PullMojoIT {
                         "",
                         "# Now, this program, doesn't refer to the 'String' object",
                         "[] > foo",
-                        "  42 > @",
-                        ""
+                        "  42 > @"
                     ).getBytes()
                 );
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
