@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonReader;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -160,10 +159,7 @@ final class PullMojoIT {
     }
 
     private static List<String> ids(final Path path) throws IOException {
-        final JsonReader reader = Json.createReader(
-            Files.newBufferedReader(path)
-        );
-        final JsonArray json = reader.readArray();
+        final JsonArray json = Json.createReader(Files.newBufferedReader(path)).readArray();
         return IntStream.range(0, json.size())
             .mapToObj(json::getJsonObject)
             .map(obj -> obj.getString("id"))
