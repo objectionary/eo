@@ -70,8 +70,8 @@ public final class RegisterMojo extends SafeMojo {
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
         }
-        if (foreign.exists()) {
-            Files.delete(foreign.toPath());
+        if (this.foreign.exists()) {
+            Files.delete(this.foreign.toPath());
         }
         final File pulled = this.targetDir.toPath().resolve(PullMojo.DIR).toFile();
         if (pulled.exists()) {
