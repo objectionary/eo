@@ -76,7 +76,7 @@ final class PullMojoIT {
                         )
                     ).toFile().exists(),
                     Matchers.is(true)
-                );                
+                );
             }
         );
     }
