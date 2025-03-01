@@ -14,7 +14,7 @@
 # Decorate them with `try` and errors will be caught by the `catch`
 # abstract object here and the enclosure of the `error` will be passed to it.
 # When object `try` is dataized - it tries to dataize its `main` attribute.
-# If the error is occured during the dataization - it caches it and tries
+# If the error is occurred during the dataization - it caches it and tries
 # to dataize its `catch` attribute. After one the attributes is dataized - it just dataizes
 # its `finally` attribute and returns the result of dataization of `main` or `catch`
 # attribute as `org.eolang.bytes`.
