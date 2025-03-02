@@ -100,7 +100,7 @@ final class EoSyntaxTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/errors[count(error)=3]",
+                "/program/errors[count(error)=2]",
                 String.format("/program[listing='%s']", src)
             )
         );

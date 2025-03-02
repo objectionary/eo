@@ -22,7 +22,7 @@
     dir
       file
         string
-          [] > os-tmp-dir!
+          [] >>!
             getenv "TMPDIR" > tmpdir!
             getenv "TMP" > tmp!
             getenv "TEMP" > temp!

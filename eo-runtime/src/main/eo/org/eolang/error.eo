@@ -7,10 +7,12 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +unlint unit-test-missing
++unlint rt-without-atoms
++unlint empty-object
 
 # This object must be used in order to terminate the program
 # due to an error. Just make a copy of it with any encapsulated object.
 # The first attempt to dataize it will lead to runtime error and program
 # termination. The only way to catch such an error is by using
 # the `try` object.
-[message] > error /org.eolang.error
+[message] > error ?

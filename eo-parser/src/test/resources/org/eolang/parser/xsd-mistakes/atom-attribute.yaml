@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-errors: 2
+errors: 1
 document: |
   <program name='foo'>
     <objects>
-      <o name="foo" atom="Wrong Object Name"/>
+      <o name="foo" atom=""/>
     </objects>
   </program>

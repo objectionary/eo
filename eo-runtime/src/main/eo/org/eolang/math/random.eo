@@ -41,6 +41,7 @@
     17 > const-3
     00-00-00-00-00-00-00-01 > one
     random time-seed > @
+    (posix "gettimeofday" *).output > timeval
     as-number. > time-seed
       plus.
         as-i64.
@@ -61,9 +62,7 @@
         if.
           os.is-windows
           (win32 "GetSystemTime" *).milliseconds
-          []
-            (posix "gettimeofday" *).output > timeval
-            plus. > @
-              timeval.tv-sec.times 1000
-              as-number.
-                timeval.tv-usec.as-i64.div 1000.as-i64
+          plus.
+            timeval.tv-sec.times 1000
+            as-number.
+              timeval.tv-usec.as-i64.div 1000.as-i64

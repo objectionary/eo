@@ -9,7 +9,7 @@ input: |
   [x] > foo
     [] > empty
       m > n
-    [y] > inner /number
+    [y] > inner ?
     bar > baz
       [q]
         a > b
@@ -47,8 +47,8 @@ salty: |-
               n ↦ Φ.org.eolang.m
             ⟧,
             inner ↦ ⟦
-              λ ⤍ Lorg_eolang_foo_inner,
-              y ↦ ∅
+              y ↦ ∅,
+              λ ⤍ Lorg_eolang_foo_inner
             ⟧,
             baz ↦ Φ.org.eolang.bar(
               α0 ↦ ⟦
