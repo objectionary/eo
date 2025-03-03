@@ -63,8 +63,7 @@ final class DcsDefault implements Iterable<Dependency> {
         );
         final Collection<Dependency> deps = new HashSet<>(0);
         for (final TjForeign tojo : list) {
-            if (ParseMojo.ZERO.equals(tojo.version())
-                && !this.discover) {
+            if (ParseMojo.ZERO.equals(tojo.version()) && !this.discover) {
                 Logger.debug(
                     this,
                     "Program %s skipped due to its zero version",
@@ -73,7 +72,7 @@ final class DcsDefault implements Iterable<Dependency> {
                 continue;
             }
             final Optional<Dependency> opt = DcsDefault.artifact(tojo.xmir());
-            if (!opt.isPresent()) {
+            if (opt.isEmpty()) {
                 Logger.debug(this, "No dependencies for %s", tojo.description());
                 continue;
             }
@@ -106,9 +105,14 @@ final class DcsDefault implements Iterable<Dependency> {
     private static Optional<Dependency> artifact(final Path file) {
         final Collection<String> coords = DcsDefault.jvms(file);
         final Optional<Dependency> dep;
+        if (coords.size() > 1) {
+            throw new IllegalStateException(
+                Logger.format("Too many (%d) dependencies at %[file]s", coords.size(), file)
+            );
+        }
         if (coords.isEmpty()) {
             dep = Optional.empty();
-        } else if (coords.size() == 1) {
+        } else {
             final String[] parts = coords.iterator().next().split(":");
             final Dependency dependency = new Dependency();
             dependency.setGroupId(parts[0]);
@@ -122,10 +126,6 @@ final class DcsDefault implements Iterable<Dependency> {
             }
             dependency.setScope("transpile");
             dep = Optional.of(dependency);
-        } else {
-            throw new IllegalStateException(
-                Logger.format("Too many (%d) dependencies at %[file]s", coords.size(), file)
-            );
         }
         return dep;
     }
@@ -148,13 +148,13 @@ final class DcsDefault implements Iterable<Dependency> {
                         meta -> {
                             final Xnav xnav = new Xnav(meta);
                             final Optional<String> head = xnav.element("head").text();
-                            final boolean runtime = head.isPresent() && "rt".equals(head.get());
+                            final boolean runtime = head.map("rt"::equals).orElse(false);
                             final Optional<Xnav> part = xnav.elements(
                                 Filter.withName("part")
                             ).findFirst();
                             return runtime
                                 && part.isPresent()
-                                && "jvm".equals(part.get().text().get());
+                                && part.get().text().map("jvm"::equals).orElse(false);
                         }
                     )
                 )
