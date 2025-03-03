@@ -145,7 +145,7 @@ public final class ProbeMojo extends SafeMojo {
     /**
      * Return metas for probing.
      * The equivalent xpath is:
-     * "/program/metas/meta[head/text()='probe' or head/text()='also']/tail[not(text()='.')]/text()"
+     * "/program/metas/meta[head/text()='probe' or head/text()='also']/tail[not(text()='')]/text()"
      * @param file XML file
      * @return Metas to probe
      */
