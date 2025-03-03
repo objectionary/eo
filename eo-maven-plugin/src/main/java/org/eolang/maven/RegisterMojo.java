@@ -63,7 +63,7 @@ public final class RegisterMojo extends SafeMojo {
     private boolean strictFileNames = true;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
