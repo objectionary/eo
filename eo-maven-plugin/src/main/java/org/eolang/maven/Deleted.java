@@ -6,33 +6,45 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.function.Supplier;
 
 /**
  * Deleting the directory with files.
  *
  * @since 0.52
  */
-final class CleanFiles {
+final class Deleted implements Supplier<Boolean> {
     /**
-     * The directory.
+     * Target file or directory to be deleted.
      */
-    private final File directory;
+    private final File target;
 
     /**
      * Ctor.
-     * @param dir Directory to be deleted
+     * @param file Directory or file to be deleted
      */
-    CleanFiles(final File dir) {
-        this.directory = dir;
+    Deleted(final File file) {
+        this.target = file;
     }
 
-    /**
-     * Cleaning of the files.
-     *
-     * @return State {@code true} if deleted, {@code false} otherwise
-     */
-    public boolean clean() {
-        return this.purge(this.directory);
+    @Override
+    public Boolean get() {
+        boolean state;
+        if (this.target.isFile()) {
+            try {
+                Files.delete(this.target.toPath());
+                Logger.debug(this, "The file %[file]s purged", this.target);
+                state = true;
+            } catch (final IOException ex) {
+                Logger.warn(this, "Failed to delete file: %[file]s", this.target);
+                state = false;
+            }
+        } else {
+            state = this.purge(this.target);
+        }
+        return state;
     }
 
     /**

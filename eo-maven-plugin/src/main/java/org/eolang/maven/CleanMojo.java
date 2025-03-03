@@ -31,7 +31,7 @@ public class CleanMojo extends SafeMojo {
             );
             return;
         }
-        if (new CleanFiles(this.targetDir).clean()) {
+        if (new Deleted(this.targetDir).get()) {
             Logger.info(
                 this,
                 "Deleted all files in the %[file]s directory",

@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -109,17 +108,16 @@ public final class RegisterMojo extends SafeMojo {
         );
     }
 
-    private void removeOldFiles() throws IOException {
-        if (this.foreign.exists()) {
-            Files.delete(this.foreign.toPath());
-        }
-        final File pulled = this.targetDir.toPath().resolve(PullMojo.DIR).toFile();
-        if (pulled.exists()) {
-            new CleanFiles(pulled).clean();
-        }
-        final File resolved = this.targetDir.toPath().resolve(ResolveMojo.DIR).toFile();
-        if (resolved.exists()) {
-            new CleanFiles(resolved).clean();
+    private void removeOldFiles() {
+        final File[] files = {
+            this.foreign,
+            this.targetDir.toPath().resolve(PullMojo.DIR).toFile(),
+            this.targetDir.toPath().resolve(ResolveMojo.DIR).toFile(),
+        };
+        for (final File file : files) {
+            if (file.exists()) {
+                new Deleted(file).get();
+            }
         }
     }
 }
