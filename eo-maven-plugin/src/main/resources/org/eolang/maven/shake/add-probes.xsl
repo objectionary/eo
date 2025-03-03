@@ -7,15 +7,14 @@
   <!--
   For every object FQN add probe meta
   with fully qualified name of the object.
-  Example:
-   For object:
+  For instance, for object:
    <o base=".abc" ... >
      <o base=".edf" ... >
        <o base="Q.number"/>
      </o>
    </o>
 
-   Metas will be added:
+  The next metas will be added:
    <meta>
      <head>probe</head>
      <tail>Q.org</tail>
