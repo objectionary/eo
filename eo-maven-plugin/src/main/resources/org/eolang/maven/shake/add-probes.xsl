@@ -35,8 +35,6 @@
      <tail>Q.org.number.edf.abc</tail>
      <part>Q.org.number.edf.abc</part>
    </meta>
-
-   Also we add to probes objects mentioned in +also meta
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -63,7 +61,6 @@
   <xsl:template match="/program[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="/program/metas/meta[head/text()='also']" mode="also"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('$', '^', '@'))) and not(.='Q')]"/>
     <xsl:copy>
@@ -81,7 +78,6 @@
   <xsl:template match="/program/metas">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="/program/metas/meta[head/text()='also']" mode="also"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
