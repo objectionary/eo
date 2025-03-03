@@ -104,12 +104,12 @@ final class DcsDefault implements Iterable<Dependency> {
      */
     private static Optional<Dependency> artifact(final Path file) {
         final Collection<String> coords = DcsDefault.jvms(file);
-        final Optional<Dependency> dep;
         if (coords.size() > 1) {
             throw new IllegalStateException(
                 Logger.format("Too many (%d) dependencies at %[file]s", coords.size(), file)
             );
         }
+        final Optional<Dependency> dep;
         if (coords.isEmpty()) {
             dep = Optional.empty();
         } else {
