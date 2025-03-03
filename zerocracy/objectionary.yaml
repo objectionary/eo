@@ -66,12 +66,14 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge github-events stopped by timeout: execution expired'
+  error:
+  - Failed to open TCP connection to api.github.com:443 (execution expired)
+  - 'Judge github-events stopped by timeout: execution expired'
   inserted: 8
-  seconds: 451.470198068
+  seconds: 330.326991532
   version: 0.34.0
   what: judges-summary
-  when: 2025-03-03 06:20:00.526906095 Z
+  when: 2025-03-03 07:14:44.254232482 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -78791,13 +78793,6 @@
   when: 2025-03-02 04:54:11.000000000 Z
   where: github
   who: 526301
-- _id: 54188
-  _time: 2025-03-02 07:11:06.112898533 Z
-  _version: 0.7.4/0.34.0/
-  latest: 47104428006
-  repository: 784310467
-  what: events-were-scanned
-  where: github
 - _id: 54189
   _time: 2025-03-02 07:11:39.463769370 Z
   _version: 0.7.4/0.34.0/
@@ -79238,13 +79233,6 @@
   repository: 501259435
   what: events-were-scanned
   where: github
-- _id: 54401
-  _time: 2025-03-02 16:11:34.274522610 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 403396472
-  what: events-were-scanned
-  where: github
 - _id: 54418
   _time: 2025-03-02 17:03:06.541134250 Z
   _version: 0.7.4/0.34.0/
@@ -79594,19 +79582,6 @@
   repository: 493235807
   what: labels-were-scanned
   where: github
-- _id: 54546
-  _time: 2025-03-02 22:09:05.598119244 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 373900298
-  what: labels-were-scanned
-  where: github
-- _id: 54552
-  _job: 15360
-  _time: 2025-03-02 22:14:29.795730937 Z
-  _version: 0.7.4/0.34.0/0.0.69
-  what: learn-eva
-  when: 2025-03-02 22:14:09.918522896 Z
 - _id: 54555
   _time: 2025-03-02 23:07:56.996668371 Z
   _version: 0.7.4/0.34.0/
@@ -79632,13 +79607,6 @@
   _version: 0.7.4/0.34.0/
   latest: 0
   repository: 562850967
-  what: labels-were-scanned
-  where: github
-- _id: 54569
-  _time: 2025-03-02 23:13:44.909737649 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 519299365
   what: labels-were-scanned
   where: github
 - _id: 54572
@@ -79715,13 +79683,6 @@
   repository: 518891717
   what: labels-were-scanned
   where: github
-- _id: 54592
-  _time: 2025-03-03 00:46:09.105235151 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 546194972
-  what: labels-were-scanned
-  where: github
 - _id: 54594
   _time: 2025-03-03 00:46:33.880363197 Z
   _version: 0.7.4/0.34.0/
@@ -79778,13 +79739,6 @@
   repository: 559427983
   what: events-were-scanned
   where: github
-- _id: 54609
-  _time: 2025-03-03 02:21:23.250101710 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 551486781
-  what: labels-were-scanned
-  where: github
 - _id: 54610
   _time: 2025-03-03 02:21:34.939244508 Z
   _version: 0.7.4/0.34.0/
@@ -79797,13 +79751,6 @@
   _version: 0.7.4/0.34.0/
   latest: 0
   repository: 568705267
-  what: labels-were-scanned
-  where: github
-- _id: 54612
-  _time: 2025-03-03 02:21:58.418340940 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 490221501
   what: labels-were-scanned
   where: github
 - _id: 54615
@@ -79974,13 +79921,6 @@
   repository: 510102039
   what: labels-were-scanned
   where: github
-- _id: 54658
-  _time: 2025-03-03 04:16:09.269695162 Z
-  _version: 0.7.4/0.34.0/
-  latest: 73
-  repository: 798766850
-  what: labels-were-scanned
-  where: github
 - _id: 54659
   _time: 2025-03-03 04:16:21.971770267 Z
   _version: 0.7.4/0.34.0/
@@ -80049,13 +79989,6 @@
   _version: 0.7.4/0.34.0/
   latest: 0
   repository: 492899189
-  what: labels-were-scanned
-  where: github
-- _id: 54672
-  _time: 2025-03-03 05:15:25.447824532 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 490258619
   what: labels-were-scanned
   where: github
 - _id: 54674
@@ -80192,13 +80125,6 @@
   when: 2025-03-01 05:06:36.000000000 Z
   where: github
   who: 526301
-- _id: 54692
-  _time: 2025-03-03 06:16:18.619075218 Z
-  _version: 0.7.4/0.34.0/
-  latest: 47104937762
-  repository: 574459304
-  what: events-were-scanned
-  where: github
 - _id: 54693
   _time: 2025-03-03 06:17:28.408840159 Z
   _version: 0.7.4/0.34.0/
@@ -80217,25 +80143,11 @@
   when: 2025-02-28 07:26:35.000000000 Z
   where: github
   who: 526301
-- _id: 54694
-  _time: 2025-03-03 06:18:10.403193298 Z
-  _version: 0.7.4/0.34.0/
-  latest: 7
-  repository: 889819508
-  what: labels-were-scanned
-  where: github
 - _id: 54695
   _time: 2025-03-03 06:18:22.810079472 Z
   _version: 0.7.4/0.34.0/
   latest: 30
   repository: 489321585
-  what: labels-were-scanned
-  where: github
-- _id: 54696
-  _time: 2025-03-03 06:18:35.086410425 Z
-  _version: 0.7.4/0.34.0/
-  latest: 74
-  repository: 501259435
   what: labels-were-scanned
   where: github
 - _id: 54697
@@ -80250,13 +80162,6 @@
   _version: 0.7.4/0.34.0/
   latest: 0
   repository: 733919301
-  what: labels-were-scanned
-  where: github
-- _id: 54699
-  _time: 2025-03-03 06:19:11.477198270 Z
-  _version: 0.7.4/0.34.0/
-  latest: 0
-  repository: 575859928
   what: labels-were-scanned
   where: github
 - _id: 54700
@@ -80285,5 +80190,102 @@
   _version: 0.7.4/0.34.0/
   latest: 34
   repository: 543969974
+  what: labels-were-scanned
+  where: github
+- _id: 54704
+  _job: 15376
+  _time: 2025-03-03 06:24:21.445026519 Z
+  _version: 0.7.4/0.34.0/0.0.69
+  what: learn-eva
+  when: 2025-03-03 06:24:02.032565116 Z
+- _id: 54705
+  _time: 2025-03-03 07:09:52.045610752 Z
+  _version: 0.7.4/0.34.0/
+  latest: 47104937762
+  repository: 574459304
+  what: events-were-scanned
+  where: github
+- _id: 54706
+  _time: 2025-03-03 07:10:04.078756902 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 403396472
+  what: events-were-scanned
+  where: github
+- _id: 54707
+  _time: 2025-03-03 07:10:16.233417700 Z
+  _version: 0.7.4/0.34.0/
+  latest: 47104428006
+  repository: 784310467
+  what: events-were-scanned
+  where: github
+- _id: 54708
+  _time: 2025-03-03 07:12:55.298077320 Z
+  _version: 0.7.4/0.34.0/
+  latest: 76
+  repository: 501259435
+  what: labels-were-scanned
+  where: github
+- _id: 54709
+  _time: 2025-03-03 07:13:07.198070237 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 575859928
+  what: labels-were-scanned
+  where: github
+- _id: 54710
+  _time: 2025-03-03 07:13:19.104064214 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 519299365
+  what: labels-were-scanned
+  where: github
+- _id: 54711
+  _time: 2025-03-03 07:13:31.159031787 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 490258619
+  what: labels-were-scanned
+  where: github
+- _id: 54712
+  _time: 2025-03-03 07:13:43.057744729 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 373900298
+  what: labels-were-scanned
+  where: github
+- _id: 54713
+  _time: 2025-03-03 07:13:55.065058412 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 490221501
+  what: labels-were-scanned
+  where: github
+- _id: 54714
+  _time: 2025-03-03 07:14:07.522656070 Z
+  _version: 0.7.4/0.34.0/
+  latest: 76
+  repository: 798766850
+  what: labels-were-scanned
+  where: github
+- _id: 54715
+  _time: 2025-03-03 07:14:19.843166265 Z
+  _version: 0.7.4/0.34.0/
+  latest: 8
+  repository: 889819508
+  what: labels-were-scanned
+  where: github
+- _id: 54716
+  _time: 2025-03-03 07:14:31.975302634 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 546194972
+  what: labels-were-scanned
+  where: github
+- _id: 54717
+  _time: 2025-03-03 07:14:44.029817053 Z
+  _version: 0.7.4/0.34.0/
+  latest: 0
+  repository: 551486781
   what: labels-were-scanned
   where: github
