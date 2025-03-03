@@ -175,7 +175,7 @@ final class RegisterMojoIT {
     }
 
     @Test
-    void removesUnnesserryPulledObjects(@Mktmp final Path temp) throws Exception {
+    void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
