@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.util.function.Supplier;
 
 /**
- * Deleting the directory with files.
+ * Deleting a directory with files or just a file.
  *
  * @since 0.52
  */
