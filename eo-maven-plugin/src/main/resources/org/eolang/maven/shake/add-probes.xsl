@@ -86,12 +86,6 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <!-- Also meta -->
-  <xsl:template match="meta" mode="also">
-    <a>
-      <xsl:value-of select="tail/text()"/>
-    </a>
-  </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
     <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
