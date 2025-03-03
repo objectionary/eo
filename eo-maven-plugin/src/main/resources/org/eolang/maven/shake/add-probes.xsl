@@ -35,6 +35,8 @@
      <tail>Q.org.number.edf.abc</tail>
      <part>Q.org.number.edf.abc</part>
    </meta>
+
+   Also we add to probes objects mentioned in +also meta
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -61,6 +63,7 @@
   <xsl:template match="/program[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="/program/metas/meta[head/text()='also']" mode="also"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('$', '^', '@'))) and not(.='Q')]"/>
     <xsl:copy>
@@ -78,6 +81,7 @@
   <xsl:template match="/program/metas">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="/program/metas/meta[head/text()='also']" mode="also"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -86,14 +90,20 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
+  <!-- Also meta -->
+  <xsl:template match="meta" mode="also">
+    <a>
+      <xsl:value-of select="tail/text()"/>
+    </a>
+  </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
     <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
     <xsl:for-each select="$parts">
       <xsl:variable name="pos" select="position()"/>
-      <p>
+      <a>
         <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-      </p>
+      </a>
     </xsl:for-each>
     <xsl:apply-templates select="o" mode="create"/>
   </xsl:template>

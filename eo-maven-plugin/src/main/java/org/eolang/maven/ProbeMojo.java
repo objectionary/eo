@@ -89,9 +89,7 @@ public final class ProbeMojo extends SafeMojo {
                     continue;
                 }
                 ++count;
-                this.scopedTojos()
-                    .add(object)
-                    .withDiscoveredAt(src);
+                this.scopedTojos().add(object).withDiscoveredAt(src);
                 probed.add(object);
             }
             tojo.withProbed(count);
@@ -123,17 +121,13 @@ public final class ProbeMojo extends SafeMojo {
      *
      * @param file The .xmir file
      * @return List of foreign objects found
-     * @throws FileNotFoundException If not found
      */
-    private Collection<String> probes(final Path file) throws FileNotFoundException {
+    private Collection<String> probes(final Path file) {
         final long start = System.currentTimeMillis();
         final Collection<String> objects = new ListOf<>(
             new Mapped<>(
                 ProbeMojo::noPrefix,
-                new Filtered<>(
-                    obj -> !obj.isEmpty(),
-                    ProbeMojo.probeMetas(file)
-                )
+                ProbeMojo.metas(file)
             ).iterator()
         );
         if (objects.isEmpty()) {
@@ -151,12 +145,13 @@ public final class ProbeMojo extends SafeMojo {
     }
 
     /**
-     * Return probe metas.
-     * The equivalent xpath is: "/program/metas/meta[head/text() = 'probe']/tail/text()"
+     * Return metas for probing.
+     * The equivalent xpath is:
+     * "/program/metas/meta[head/text()='probe' or head/text()='also']/tail[not(text()='.')]/text()"
      * @param file XML file
      * @return Metas to probe
      */
-    private static Iterable<String> probeMetas(final Path file) {
+    private static Iterable<String> metas(final Path file) {
         return new IterableOf<>(
             new Xnav(file)
                 .element("program")
@@ -170,11 +165,14 @@ public final class ProbeMojo extends SafeMojo {
                                 final Optional<String> head = new Xnav(meta)
                                     .element("head")
                                     .text();
-                                return head.isPresent() && "probe".equals(head.get());
+                                return head.map(
+                                    text -> "probe".equals(text) || "also".equals(text)
+                                ).orElse(false);
                             }
                         )
                     )
                     .map(meta -> meta.element("tail").text().get())
+                    .filter(meta -> !meta.isEmpty())
                 )
                 .orElse(Stream.of())
                 .iterator()
