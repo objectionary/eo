@@ -149,17 +149,17 @@ final class RegisterMojoIT {
                     Matchers.equalTo(3)
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must contain reference to Number, but it doesn't",
+                    "Foreign must contain reference to the Number object, but it doesn't",
                     foreign.getById("org.eolang.number").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must contain reference to Bytes, but it doesn't",
+                    "Foreign must contain reference to the Bytes object, but it doesn't",
                     foreign.getById("org.eolang.bytes").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must contain reference to current object, but it doesn't",
+                    "Foreign must contain reference to the current object, but it doesn't",
                     foreign.getById("foo").exists("id"),
                     Matchers.is(true)
                 );
