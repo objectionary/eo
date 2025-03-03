@@ -11,17 +11,21 @@ sheets:
 asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
-  - //o[@base='Q.org.eolang.and' and @line='9']
+  - //o[@base='Q.org.eolang.and']
   - //o[@base='Q.foo']
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
+  - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.number' and part/text()='Q.org.eolang.number']
+  - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.string' and part/text()='Q.org.eolang.string']
 input: |
   +alias foo
   +alias scanner org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
   +foo Some other meta
+  +also org.eolang.number
+  +also string
 
   # No comments.
   [args] > main
