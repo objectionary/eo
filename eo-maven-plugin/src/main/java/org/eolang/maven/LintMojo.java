@@ -260,7 +260,7 @@ public final class LintMojo extends SafeMojo {
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
      * @todo #3977:25min Enable `unlint-non-existing-defect` lint.
-     *  Currently its disabled because of <a href="https://github.com/objectionary/lints/issues/354">this</a>
+     *  Currently its disabled because of <a href="https://github.com/objectionary/lints/issues/385">this</a>
      *  bug. Once issue will be resolved, we should enable this lint. Don't forget to enable
      *  this lint in WPA scope too.
      */
