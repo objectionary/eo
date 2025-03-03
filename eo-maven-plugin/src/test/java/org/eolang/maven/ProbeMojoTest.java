@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ProbeMojoTest {
     @Test
     void findsProbes(@Mktmp final Path temp) throws Exception {
-        final String expected = "12";
+        final String expected = "11";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -50,7 +50,7 @@ final class ProbeMojoTest {
             new ResourceOf(tags),
             Paths.get("tags.txt")
         );
-        final String expected = "12";
+        final String expected = "11";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -69,7 +69,7 @@ final class ProbeMojoTest {
     @Test
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
         final String tag = "0.50.0";
-        final String expected = "7";
+        final String expected = "6";
         final String found = new FakeMaven(temp)
             .with("tag", tag)
             .with("objectionary", new OyRemote(new ChRemote(tag)))
