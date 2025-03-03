@@ -160,7 +160,8 @@ public final class LintMojo extends SafeMojo {
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
-        final Collection<Defect> defects = new Programs(pkg).defects();
+        final Collection<Defect> defects = new Programs(pkg)
+            .without("unlint-non-existing-defect").defects();
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
             LintMojo.embed(
@@ -266,7 +267,7 @@ public final class LintMojo extends SafeMojo {
     private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).without(
-            "unknown-metas", "unsorted-metas"
+            "unlint-non-existing-defect"
         ).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);

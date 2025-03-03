@@ -1,5 +1,3 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.structs.hash-code-of
 +alias org.eolang.structs.list
 +alias org.eolang.txt.sprintf
@@ -7,6 +5,8 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
