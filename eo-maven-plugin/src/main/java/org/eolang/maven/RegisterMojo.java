@@ -70,13 +70,7 @@ public final class RegisterMojo extends SafeMojo {
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
         }
-        if (this.foreign.exists()) {
-            Files.delete(this.foreign.toPath());
-        }
-        final File pulled = this.targetDir.toPath().resolve(PullMojo.DIR).toFile();
-        if (pulled.exists()) {
-            new CleanFiles(pulled).clean();
-        }
+        this.removeOldFiles();
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
@@ -113,5 +107,19 @@ public final class RegisterMojo extends SafeMojo {
             "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
             sources.size(), this.sourcesDir, this.foreign, this.includeSources, this.excludeSources
         );
+    }
+
+    private void removeOldFiles() throws IOException {
+        if (this.foreign.exists()) {
+            Files.delete(this.foreign.toPath());
+        }
+        final File pulled = this.targetDir.toPath().resolve(PullMojo.DIR).toFile();
+        if (pulled.exists()) {
+            new CleanFiles(pulled).clean();
+        }
+        final File resolved = this.targetDir.toPath().resolve(ResolveMojo.DIR).toFile();
+        if (resolved.exists()) {
+            new CleanFiles(resolved).clean();
+        }
     }
 }
