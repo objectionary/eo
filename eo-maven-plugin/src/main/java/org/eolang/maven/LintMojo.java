@@ -160,7 +160,8 @@ public final class LintMojo extends SafeMojo {
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
-        final Collection<Defect> defects = new Programs(pkg).defects();
+        final Collection<Defect> defects = new Programs(pkg)
+            .without("unlint-non-existing-defect").defects();
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
             LintMojo.embed(
@@ -258,15 +259,15 @@ public final class LintMojo extends SafeMojo {
      * @param xmir The XML before linting
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
-     * @todo #3934:35min Remove .without() from Program to enable `unknown-metas`
-     *  and `unsorted-metas` lints. Currently we disabled them since lints does not
-     *  support `+spdx` meta yet. Once <a href="https://github.com/objectionary/lints/issues/354">this</a>
-     *  issue will be resolved, we should enable all lints.
+     * @todo #3977:25min Enable `unlint-non-existing-defect` lint.
+     *  Currently its disabled because of <a href="https://github.com/objectionary/lints/issues/385">this</a>
+     *  bug. Once issue will be resolved, we should enable this lint. Don't forget to enable
+     *  this lint in WPA scope too.
      */
     private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).without(
-            "unknown-metas", "unsorted-metas"
+            "unlint-non-existing-defect"
         ).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);
