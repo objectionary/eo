@@ -13,10 +13,8 @@ import com.yegor256.farea.Farea;
 import com.yegor256.tojos.TjSmart;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.NoSuchElementException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -163,12 +161,12 @@ final class RegisterMojoIT {
                     foreign.getById("foo").exists("id"),
                     Matchers.is(true)
                 );
-                Assertions.assertThrows(
-                    NoSuchElementException.class,
-                    () -> RegisterMojoIT.foreign(
-                        temp.resolve("target/eo-foreign.csv")
-                    ).getById("org.eolang.string"),
-                    "Foreign must not contain a reference to an old object"
+                MatcherAssert.assertThat(
+                    "Foreign must not contain a reference to an old object",
+                    foreign.select(
+                        tojo -> "org.eolang.string".equals(tojo.get("id"))
+                    ).isEmpty(),
+                    Matchers.is(true)
                 );
             }
         );
