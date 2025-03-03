@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:eo="https://www.eolang.org" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-with-bound-attrs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-with-bound-attrs" version="2.0">
   <!--
   Convert such expression in XMIR:
     x ↦ ⟦

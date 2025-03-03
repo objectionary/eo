@@ -4,13 +4,14 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -103,18 +104,21 @@ public final class ParseMojo extends SafeMojo {
                 base.relativize(target)
             ).apply(source, target)
         );
-        final List<XML> errors = new XMLDocument(target).nodes("/program/errors/error");
+        final List<Xnav> errors = new Xnav(target)
+            .element("program")
+            .element("errors")
+            .elements(Filter.withName("error"))
+            .collect(Collectors.toList());
         if (errors.isEmpty()) {
             Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
         } else {
-            for (final XML error : errors) {
-                final Xnav xnav = new Xnav(error.inner());
+            for (final Xnav error : errors) {
                 Logger.error(
                     this,
                     "Failed to parse '%[file]s:%s': %s",
                     source,
-                    xnav.attribute("line").text().get(),
-                    xnav.text().get()
+                    error.attribute("line").text().get(),
+                    error.text().get()
                 );
             }
         }

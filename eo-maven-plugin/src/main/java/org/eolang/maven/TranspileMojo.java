@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -174,15 +176,22 @@ public final class TranspileMojo extends SafeMojo {
         final Path target = new Place(new ProgramName(xmir).get()).make(base, AssembleMojo.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        new FpDefault(
-            src -> {
-                rewrite.compareAndSet(false, true);
-                return transform.apply(xmir).toString();
-            },
-            this.cache.toPath().resolve(TranspileMojo.CACHE),
-            this.plugin.getVersion(),
-            hsh,
-            base.relativize(target)
+        new FpFork(
+            (src, tgt) -> new Xnav(xmir.inner())
+                .path("/program/objects/o[1]/o[@name='λ']")
+                .findAny()
+                .isEmpty(),
+            new FpDefault(
+                src -> {
+                    rewrite.compareAndSet(false, true);
+                    return transform.apply(xmir).toString();
+                },
+                this.cache.toPath().resolve(TranspileMojo.CACHE),
+                this.plugin.getVersion(),
+                hsh,
+                base.relativize(target)
+            ),
+            new FpIgnore()
         ).apply(source, target);
         return this.javaGenerated(rewrite.get(), target, hsh.get());
     }
@@ -219,61 +228,69 @@ public final class TranspileMojo extends SafeMojo {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
-    private int javaGenerated(final boolean rewrite, final Path target, final String hsh)
-        throws IOException {
-        final Collection<XML> nodes = new XMLDocument(target).nodes("//class[java and not(@atom)]");
+    private int javaGenerated(
+        final boolean rewrite,
+        final Path target,
+        final String hsh
+    ) throws IOException {
         final AtomicInteger saved = new AtomicInteger(0);
-        for (final XML java : nodes) {
-            final Xnav xnav = new Xnav(java.inner());
-            final String jname = xnav.attribute("java-name").text().get();
-            final Path tgt = new Place(jname).make(
-                this.generatedDir.toPath(), TranspileMojo.JAVA
-            );
-            this.pinfo(tgt, jname, xnav.attribute("package").text().orElse(""));
-            final Supplier<Path> che = new CachePath(
-                this.cache.toPath().resolve(TranspileMojo.CACHE),
-                this.plugin.getVersion(),
-                hsh,
-                this.generatedDir.toPath().relativize(tgt)
-            );
-            final Footprint generated = new FpGenerated(
-                src -> {
-                    saved.incrementAndGet();
-                    Logger.debug(
-                        this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
-                        tgt, tgt.toFile().length(), target, target.toFile().length()
-                    );
-                    return new Joined("", xnav.element("java").text().get()).asString();
-                }
-            );
-            final Footprint both = new FpUpdateBoth(generated, che);
-            new FpIfReleased(
-                this.plugin.getVersion(),
-                hsh,
-                new FpFork(
-                    (src, trgt) -> {
-                        if (rewrite) {
-                            Logger.debug(
-                                this,
-                                "Rewriting %[file]s because XMIR %[file]s was changed",
-                                trgt,
-                                target
-                            );
-                        }
-                        return rewrite;
-                    },
-                    both,
-                    new FpIfTargetExists(
-                        new FpIgnore(),
+        if (Files.exists(target)) {
+            final Collection<Xnav> classes = new Xnav(target)
+                .element("program")
+                .element("objects")
+                .elements(Filter.withName("class"))
+                .collect(Collectors.toList());
+            for (final Xnav clazz : classes) {
+                final String jname = clazz.attribute("java-name").text().get();
+                final Path tgt = new Place(jname).make(
+                    this.generatedDir.toPath(), TranspileMojo.JAVA
+                );
+                this.pinfo(tgt, jname, clazz.attribute("package").text().orElse(""));
+                final Supplier<Path> che = new CachePath(
+                    this.cache.toPath().resolve(TranspileMojo.CACHE),
+                    this.plugin.getVersion(),
+                    hsh,
+                    this.generatedDir.toPath().relativize(tgt)
+                );
+                final Footprint generated = new FpGenerated(
+                    src -> {
+                        saved.incrementAndGet();
+                        Logger.debug(
+                            this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
+                            tgt, tgt.toFile().length(), target, target.toFile().length()
+                        );
+                        return new Joined("", clazz.element("java").text().get()).asString();
+                    }
+                );
+                final Footprint both = new FpUpdateBoth(generated, che);
+                new FpIfReleased(
+                    this.plugin.getVersion(),
+                    hsh,
+                    new FpFork(
+                        (src, trgt) -> {
+                            if (rewrite) {
+                                Logger.debug(
+                                    this,
+                                    "Rewriting %[file]s because XMIR %[file]s was changed",
+                                    trgt,
+                                    target
+                                );
+                            }
+                            return rewrite;
+                        },
+                        both,
                         new FpIfTargetExists(
-                            trgt -> che.get(),
-                            new FpUpdateFromCache(che),
-                            both
+                            new FpIgnore(),
+                            new FpIfTargetExists(
+                                trgt -> che.get(),
+                                new FpUpdateFromCache(che),
+                                both
+                            )
                         )
-                    )
-                ),
-                generated
-            ).apply(Paths.get(""), tgt);
+                    ),
+                    generated
+                ).apply(Paths.get(""), tgt);
+            }
         }
         return saved.get();
     }

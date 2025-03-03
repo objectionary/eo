@@ -64,7 +64,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="α[0-9]+|@|[a-z]\S*"/>
+      <xs:pattern value="α[0-9]+|@|[a-z]\S*|λ"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">
@@ -89,19 +89,6 @@
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:pattern value="[a-z]\S*"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="atom">
-    <xs:annotation>
-      <xs:appinfo>A fully qualified name of an object starting from global scope</xs:appinfo>
-      <xs:documentation>
-        The global fully qualified name of an object, which includes the names of all the objects that are its ancestors.
-        This type is used to uniquely identify an object within the program. The FQN is typically used to reference
-        from the global scope, ensuring that the correct object is accessed or modified.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:pattern value="(Q(\.(@|[a-z]\S*))*)|[A-Z]\S*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -167,7 +154,6 @@
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="as" type="attribute-name"/>
-    <xs:attribute name="atom" type="atom"/>
     <xs:attribute name="loc" type="locator"/>
   </xs:complexType>
   <xs:complexType name="error">

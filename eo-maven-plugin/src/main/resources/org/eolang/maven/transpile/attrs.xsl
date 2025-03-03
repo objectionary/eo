@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="attrs" version="2.0">
-  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="class[not(@base)]/o[@name]">
     <xsl:apply-templates select="." mode="with-attributes"/>
@@ -26,7 +26,7 @@
           <xsl:when test="@base and @base=$eo:empty">
             <xsl:text>void</xsl:text>
           </xsl:when>
-          <xsl:when test="@atom">
+          <xsl:when test="eo:atom(.)">
             <xsl:text>atom</xsl:text>
           </xsl:when>
           <xsl:otherwise>

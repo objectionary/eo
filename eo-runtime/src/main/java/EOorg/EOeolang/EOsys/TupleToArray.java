@@ -9,7 +9,6 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import java.util.function.Supplier;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 
@@ -33,13 +32,12 @@ final class TupleToArray implements Supplier<Phi[]> {
 
     @Override
     public Phi[] get() {
-        final Phi retriever = this.tuple.take("at");
         final int length = new Dataized(this.tuple.take("length")).asNumber().intValue();
         final Phi[] arguments = new Phi[length];
-        for (int iter = 0; iter < length; ++iter) {
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(iter));
-            arguments[iter] = taken;
+        Phi tup = this.tuple;
+        for (int idx = length - 1; idx >= 0; --idx) {
+            arguments[idx] = tup.take("value");
+            tup = tup.take("prev");
         }
         return arguments;
     }

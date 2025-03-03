@@ -262,28 +262,23 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl              32861  23.09%
-classes.xsl              15303  10.75%
-set-locators.xsl         12365  8.69%
-build-fqns.xsl           10813  7.60%
-package.xsl              6737   4.73%
-resolve-aliases.xsl      6107   4.29%
-add-probes.xsl           5795   4.07%
-explicit-data.xsl        5668   3.98%
-attrs.xsl                5559   3.91%
-data.xsl                 5410   3.80%
-vars-float-up.xsl        5273   3.71%
-add-default-package.xsl  4874   3.42%
-cti-adds-errors.xsl      4839   3.40%
-tests.xsl                4680   3.29%
-anonymous-to-nested.xsl  4462   3.14%
-blank-xsd-schema.xsl     4009   2.82%
+to-java.xsl              34508  30.67%
+classes.xsl              12905  11.47%
+set-locators.xsl         11884  10.56%
+add-probes.xsl           9816   8.73%
+attrs.xsl                7618   6.77%
+data.xsl                 7063   6.28%
+package.xsl              6919   6.15%
+set-original-names.xsl   6688   5.94%
+cti-adds-errors.xsl      6240   5.55%
+tests.xsl                4639   4.12%
+anonymous-to-nested.xsl  4222   3.75%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2025-01-27 at 10:11,
+on 2025-03-01 at 23:21,
 on Linux with 4 CPUs.
-The total is 142320 milliseconds.
+The total is 112502 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -326,4 +321,4 @@ to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12986508714
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/13609714876

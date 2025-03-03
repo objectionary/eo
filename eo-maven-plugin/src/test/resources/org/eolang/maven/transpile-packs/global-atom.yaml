@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/package.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/objects[not(class) and not(//attr)]
+input: |
+  # No comments.
+  [x y z] > global-atom ?

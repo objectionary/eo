@@ -9,15 +9,17 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
+  - /program/objects/class/java[contains(text(), 'Phi atom = new EOobject$EOatom();')]
+  - /program/objects/class/java[contains(text(), 'Phi ratom = new EOobject$EOabstract_object$EOinner_atom();')]
 input: |
   # No comments.
   [void-attr] > object
     5.plus 5 > bound-attr
 
-    [] > atom /org.eolang.string
+    [] > atom ?
 
     [] > abstract-object
-      [] > inner-atom /obj
+      [] > inner-atom ?
       [] > inner-abstract
       if. > @
         true > some
