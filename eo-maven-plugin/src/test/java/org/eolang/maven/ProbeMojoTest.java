@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ProbeMojoTest {
     @Test
     void findsProbes(@Mktmp final Path temp) throws Exception {
-        final String expected = "10";
+        final String expected = "11";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -50,7 +50,7 @@ final class ProbeMojoTest {
             new ResourceOf(tags),
             Paths.get("tags.txt")
         );
-        final String expected = "10";
+        final String expected = "11";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -68,26 +68,29 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
-        final String tag = "0.40.5";
+        final String tag = "0.50.0";
+        final String expected = "6";
+        final String found = new FakeMaven(temp)
+            .with("tag", tag)
+            .with("objectionary", new OyRemote(new ChRemote(tag)))
+            .withProgram(ProbeMojoTest.program())
+            .execute(new FakeMaven.Probe())
+            .programTojo()
+            .probed();
         MatcherAssert.assertThat(
             String.format(
-                "The hash of the program tojo should be equal to the hash of the commit for the '%s' tag",
-                tag
+                "We should find %s objects in git repository with tag '%s', but %s found",
+                expected, tag, found
             ),
-            new FakeMaven(temp)
-                .with("tag", tag)
-                .with("objectionary", new OyRemote(new ChRemote(tag)))
-                .withProgram(ProbeMojoTest.program())
-                .execute(new FakeMaven.Probe())
-                .programTojo()
-                .probed(),
-            Matchers.equalTo("5")
+            found,
+            Matchers.equalTo(expected)
         );
     }
 
     private static String[] program() {
         return new String[]{
-            "+package org.eolang.custom\n",
+            "+package org.eolang.custom",
+            "+also while\n",
             "# No comments.",
             "[] > main",
             "  QQ.io.stdout > @",

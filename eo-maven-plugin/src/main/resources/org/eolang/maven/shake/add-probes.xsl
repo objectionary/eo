@@ -7,15 +7,14 @@
   <!--
   For every object FQN add probe meta
   with fully qualified name of the object.
-  Example:
-   For object:
+  For instance, for object:
    <o base=".abc" ... >
      <o base=".edf" ... >
        <o base="Q.number"/>
      </o>
    </o>
 
-   Metas will be added:
+  The next metas will be added:
    <meta>
      <head>probe</head>
      <tail>Q.org</tail>
@@ -92,9 +91,9 @@
     <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
     <xsl:for-each select="$parts">
       <xsl:variable name="pos" select="position()"/>
-      <p>
+      <a>
         <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-      </p>
+      </a>
     </xsl:for-each>
     <xsl:apply-templates select="o" mode="create"/>
   </xsl:template>
