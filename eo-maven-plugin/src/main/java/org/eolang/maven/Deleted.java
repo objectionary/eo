@@ -21,7 +21,7 @@ final class Deleted implements Supplier<Boolean> {
 
     /**
      * Ctor.
-     * @param file Directory or file to be deleted
+     * @param file File or directory to be deleted
      */
     Deleted(final File file) {
         this.target = file;
@@ -35,7 +35,7 @@ final class Deleted implements Supplier<Boolean> {
     /**
      * Recursive deletion.
      *
-     * @param dir Directory to be deleted
+     * @param dir File or directory to be deleted
      * @return State {@code true} if deleted, {@code false} otherwise
      */
     private boolean purge(final File dir) {
@@ -49,7 +49,7 @@ final class Deleted implements Supplier<Boolean> {
         }
         final boolean state = dir.delete();
         if (state) {
-            Logger.debug(this, "The directory %[file]s purged", dir);
+            Logger.debug(this, "The file or directory %[file]s purged", dir);
         }
         return state;
     }
