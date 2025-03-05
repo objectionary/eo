@@ -33,8 +33,7 @@ final class ShakeMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Check ShakeMojo.\n[] > foo\n".getBytes()
                 );
-                new EOplugin(f).appendItself()
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse", "shake");
                 f.exec("compile");
             }

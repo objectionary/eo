@@ -42,7 +42,7 @@ final class RegisterMojoIT {
                         "  \"Pull\" > @"
                     ).getBytes()
                 );
-                new EOplugin(f).appendItself();
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -82,7 +82,7 @@ final class RegisterMojoIT {
                         "  \"Resolve\" > @"
                     ).getBytes()
                 );
-                new EOplugin(f).appendItself();
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull", "eo:resolve");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -123,7 +123,7 @@ final class RegisterMojoIT {
                         "  \"42\" > @"
                     ).getBytes()
                 );
-                new EOplugin(f).appendItself();
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -185,7 +185,7 @@ final class RegisterMojoIT {
                         "  \"Hello\" > @"
                     ).getBytes()
                 );
-                new EOplugin(f).appendItself();
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(

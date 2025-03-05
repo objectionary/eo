@@ -35,8 +35,7 @@ final class PrintMojoIT {
                         "the functionality of the corresponding object.\n[] > foo\n"
                     ).getBytes()
                 );
-                new EOplugin(f).appendItself()
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse");
                 f.exec("compile");
                 f.files()

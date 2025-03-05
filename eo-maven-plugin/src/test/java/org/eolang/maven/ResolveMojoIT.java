@@ -76,8 +76,7 @@ final class ResolveMojoIT {
         farea.clean();
         farea.dependencies()
             .append("org.eolang", "eo-runtime", version);
-        new EOplugin(farea).appendItself()
-            .execution()
+        new AppendedPlugin(farea).value()
             .goals("resolve");
     }
 }

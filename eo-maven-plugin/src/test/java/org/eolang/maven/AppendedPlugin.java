@@ -5,15 +5,16 @@
 package org.eolang.maven;
 
 import com.jcabi.manifests.Manifests;
+import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.Plugin;
 import java.io.IOException;
+import org.cactoos.Scalar;
 
 /**
  * Configures the EO Maven plugin within a {@link Farea}.
  * @since 0.52
  */
-final class EOplugin {
+final class AppendedPlugin implements Scalar<Execution> {
     /**
      * The Farea object.
      */
@@ -23,15 +24,12 @@ final class EOplugin {
      * Ctor.
      * @param farea The Farea
      */
-    EOplugin(final Farea farea) {
+    AppendedPlugin(final Farea farea) {
         this.farea = farea;
     }
 
-    /**
-     * Appends the EO Maven plugin.
-     * @return The plugin
-     */
-    public Plugin appendItself() throws IOException {
+    @Override
+    public Execution value() throws IOException {
         return this.farea.build()
             .plugins()
             .append(
@@ -41,6 +39,6 @@ final class EOplugin {
                     "eo.version",
                     Manifests.read("EO-Version")
                 )
-            );
+            ).execution();
     }
 }

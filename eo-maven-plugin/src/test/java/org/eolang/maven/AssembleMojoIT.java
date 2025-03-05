@@ -163,8 +163,7 @@ final class AssembleMojoIT {
     }
 
     private static Execution appendItself(final Farea farea) throws IOException {
-        return new EOplugin(farea).appendItself()
-            .execution("tests")
+        return new AppendedPlugin(farea).value()
             .goals("register", "assemble");
     }
 }

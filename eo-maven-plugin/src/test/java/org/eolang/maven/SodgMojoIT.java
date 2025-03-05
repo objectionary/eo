@@ -37,8 +37,7 @@ final class SodgMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Check SodgMojo.\n[] > foo\n".getBytes()
                 );
-                new EOplugin(f).appendItself()
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse", "shake", "sodg");
                 f.exec("compile");
                 MatcherAssert.assertThat(

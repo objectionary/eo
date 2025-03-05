@@ -31,8 +31,7 @@ final class ParseMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Simple object.\n[] > foo\n".getBytes()
                 );
-                new EOplugin(f).appendItself()
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
                 MatcherAssert.assertThat(
