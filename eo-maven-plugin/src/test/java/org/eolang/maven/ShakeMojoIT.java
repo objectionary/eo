@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.MayBeSlow;
@@ -34,17 +33,7 @@ final class ShakeMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Check ShakeMojo.\n[] > foo\n".getBytes()
                 );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse", "shake");
                 f.exec("compile");
             }
