@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -77,16 +76,7 @@ final class ResolveMojoIT {
         farea.clean();
         farea.dependencies()
             .append("org.eolang", "eo-runtime", version);
-        farea.build()
-            .plugins()
-            .append(
-                "org.eolang",
-                "eo-maven-plugin",
-                System.getProperty(
-                    "eo.version",
-                    Manifests.read("EO-Version")
-                )
-            )
+        new EOplugin(farea).appendItself()
             .execution()
             .goals("resolve");
     }

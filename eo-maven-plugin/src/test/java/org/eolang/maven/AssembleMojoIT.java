@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -164,16 +163,7 @@ final class AssembleMojoIT {
     }
 
     private static Execution appendItself(final Farea farea) throws IOException {
-        return farea.build()
-            .plugins()
-            .append(
-                "org.eolang",
-                "eo-maven-plugin",
-                System.getProperty(
-                    "eo.version",
-                    Manifests.read("EO-Version")
-                )
-            )
+        return new EOplugin(farea).appendItself()
             .execution("tests")
             .goals("register", "assemble");
     }

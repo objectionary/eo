@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -38,16 +37,7 @@ final class SodgMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Check SodgMojo.\n[] > foo\n".getBytes()
                 );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EOplugin(f).appendItself()
                     .execution()
                     .goals("register", "parse", "shake", "sodg");
                 f.exec("compile");
