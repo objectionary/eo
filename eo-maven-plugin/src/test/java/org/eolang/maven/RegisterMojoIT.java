@@ -4,14 +4,12 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import com.yegor256.tojos.TjSmart;
-import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +42,7 @@ final class RegisterMojoIT {
                         "  \"Pull\" > @"
                     ).getBytes()
                 );
-                RegisterMojoIT.configureFarea(f);
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -84,7 +82,7 @@ final class RegisterMojoIT {
                         "  \"Resolve\" > @"
                     ).getBytes()
                 );
-                RegisterMojoIT.configureFarea(f);
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull", "eo:resolve");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -125,7 +123,7 @@ final class RegisterMojoIT {
                         "  \"42\" > @"
                     ).getBytes()
                 );
-                RegisterMojoIT.configureFarea(f);
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -187,7 +185,7 @@ final class RegisterMojoIT {
                         "  \"Hello\" > @"
                     ).getBytes()
                 );
-                RegisterMojoIT.configureFarea(f);
+                new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
@@ -222,19 +220,6 @@ final class RegisterMojoIT {
                 );
             }
         );
-    }
-
-    private static void configureFarea(final Farea farea) throws IOException {
-        farea.build()
-            .plugins()
-            .append(
-                "org.eolang",
-                "eo-maven-plugin",
-                System.getProperty(
-                    "eo.version",
-                    Manifests.read("EO-Version")
-                )
-            );
     }
 
     private static TjSmart foreign(final Path path) {
