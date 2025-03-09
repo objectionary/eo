@@ -55,7 +55,7 @@ final class LintMojoTest {
             () -> maven.execute(new FakeMaven.Lint()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final Path xmir = maven.result().get("target/6-lint/foo/x/main.xmir");
+        final Path xmir = maven.result().get("target/5-lint/foo/x/main.xmir");
         MatcherAssert.assertThat(
             "Linted file should exist",
             xmir,
@@ -116,7 +116,7 @@ final class LintMojoTest {
         MatcherAssert.assertThat(
             "Warning must exist in shaken XMIR",
             new XMLDocument(
-                maven.result().get("target/6-lint/foo/x/main.xmir")
+                maven.result().get("target/5-lint/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
             Matchers.hasSize(Matchers.greaterThanOrEqualTo(2))
         );

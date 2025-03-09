@@ -43,7 +43,7 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * The directory where to resolve to.
      */
-    static final String DIR = "5-resolve";
+    static final String DIR = "6-resolve";
 
     /**
      * Transitive dependency extractor. It's a strategy pattern for extracting transitive

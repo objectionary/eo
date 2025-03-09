@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -133,9 +132,7 @@ public final class PlaceMojo extends SafeMojo {
                 .includes(PlaceMojo.this.includeBinaries)
                 .excludes(PlaceMojo.this.excludeBinaries)
                 .stream()
-                .filter(this::isNotEoSource)
                 .filter(this::isNotAlreadyPlaced)
-                .filter(this::hasEoSource)
                 .peek(this::printLogInfoAboutBinary)
                 .peek(this::placeBinary)
                 .count();
@@ -198,7 +195,7 @@ public final class PlaceMojo extends SafeMojo {
                     && Files.isDirectory(sources)
                     && Arrays.stream(sources.toFile().listFiles())
                     .filter(Objects::nonNull)
-                    .filter(File::isFile).count() > 0;
+                    .anyMatch(File::isFile);
             } else {
                 result = true;
             }
@@ -216,8 +213,11 @@ public final class PlaceMojo extends SafeMojo {
             );
             final Optional<TjPlaced> tojo = PlaceMojo.this.placedTojos.find(target);
             final boolean res;
-            if (tojo.isPresent() && Files.exists(target)
-                && (this.sameLength(target, file) || !tojo.get().unplaced())) {
+            if (tojo.isPresent()
+                && Files.exists(target)
+                && (this.sameLength(target, file)
+                || !tojo.get().unplaced())
+            ) {
                 Logger.debug(
                     this,
                     "The same file %[file]s is already placed to %[file]s maybe by %s, skipping",
@@ -261,16 +261,16 @@ public final class PlaceMojo extends SafeMojo {
 
         /**
          * Place class.
-         * @param file File to place
+         * @param file Absolute path of file to place
          */
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
-                final Path target = PlaceMojo.this.outputDir.toPath().resolve(path);
-                new HmOptional(
-                    new HmBase(PlaceMojo.this.outputDir),
-                    this.rewrite
-                ).save(new InputOf(file), path);
+                final Footprint generated = new FpGenerated(Files::readString);
+                final Path target = new FpIfTargetExists(
+                    new FpFork(this.rewrite, generated, new FpIgnore()),
+                    generated
+                ).apply(file, PlaceMojo.this.outputDir.toPath().resolve(path));
                 PlaceMojo.this.placedTojos.placeClass(
                     target,
                     PlaceMojo.this.outputDir.toPath().relativize(target).toString(),

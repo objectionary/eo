@@ -37,9 +37,6 @@ public final class AssembleMojo extends SafeMojo {
         new Moja<>(ShakeMojo.class),
         new Moja<>(ProbeMojo.class),
         new Moja<>(PullMojo.class),
-        new Moja<>(ResolveMojo.class),
-        new Moja<>(MarkMojo.class),
-        new Moja<>(PlaceMojo.class),
     };
 
     @Override

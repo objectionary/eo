@@ -26,6 +26,8 @@ public final class CompileMojo extends SafeMojo {
         new Moja<>(DownloadDepsMojo.class),
         new Moja<>(AssembleMojo.class),
         new Moja<>(LintMojo.class),
+        new Moja<>(ResolveMojo.class),
+        new Moja<>(PlaceMojo.class),
     };
 
     @Override

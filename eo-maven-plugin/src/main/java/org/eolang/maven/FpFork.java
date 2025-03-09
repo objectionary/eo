@@ -32,9 +32,19 @@ final class FpFork implements Footprint {
 
     /**
      * Ctor.
+     * @param condition Condition as boolean
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
+     */
+    FpFork(final boolean condition, final Footprint first, final Footprint second) {
+        this((src, tgt) -> condition, first, second);
+    }
+
+    /**
+     * Ctor.
      * @param condition Lazy condition
-     * @param first First wrapped condition
-     * @param second Second wrapped condition
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
     FpFork(
         final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second

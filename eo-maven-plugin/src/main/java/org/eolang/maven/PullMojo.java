@@ -148,7 +148,7 @@ public final class PullMojo extends SafeMojo {
                     if (this.overWrite) {
                         Logger.debug(
                             this,
-                            "Pulling sources again since eo.overWrite=TRUE"
+                            "Pulling sources again because \"eo.overWrite=TRUE\""
                         );
                     }
                     return this.overWrite;

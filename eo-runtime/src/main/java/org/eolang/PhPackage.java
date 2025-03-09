@@ -125,7 +125,7 @@ final class PhPackage implements Phi {
      * @return Phi
      */
     private Phi loadPhi(final String path, final String object) {
-        final Path pth = Paths.get("target/classes", path.replace(".", File.separator));
+        final Path pth = Paths.get("target/classes").resolve(path.replace(".", File.separator));
         final Phi phi;
         if (Files.exists(pth) && Files.isDirectory(pth)) {
             phi = new PhPackage(object);
