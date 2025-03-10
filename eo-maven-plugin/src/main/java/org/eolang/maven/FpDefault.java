@@ -4,9 +4,12 @@
  */
 package org.eolang.maven;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import org.cactoos.Func;
+import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 
 /**
  * Default footprint that covers all the scenarios of updating target
@@ -63,7 +66,15 @@ final class FpDefault extends FpEnvelope {
         final Supplier<String> hash,
         final Path tail
     ) {
-        this(new FpGenerated(content), base, semver, hash, tail);
+        this(
+            new FpGenerated(
+                src -> new InputOf(content.apply(src))
+            ),
+            base,
+            semver,
+            hash,
+            tail
+        );
     }
 
     /**

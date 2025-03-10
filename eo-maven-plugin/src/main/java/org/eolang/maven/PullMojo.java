@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.cactoos.text.TextOf;
 
 /**
  * Pull EO files from Objectionary.
@@ -136,7 +135,7 @@ public final class PullMojo extends SafeMojo {
                     "Pulling %s object from remote objectionary with hash %s",
                     object, hsh
                 );
-                return new TextOf(this.objectionary.get(object)).asString();
+                return this.objectionary.get(object);
             }
         );
         final Footprint both = new FpUpdateBoth(generated, che);

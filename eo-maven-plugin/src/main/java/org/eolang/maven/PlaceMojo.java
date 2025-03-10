@@ -6,14 +6,13 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.cactoos.bytes.BytesOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -201,9 +200,7 @@ public final class PlaceMojo extends SafeMojo {
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
-                final Footprint generated = new FpGenerated(
-                    src -> new String(new BytesOf(src).asBytes(), StandardCharsets.UTF_8)
-                );
+                final Footprint generated = new FpGenerated(InputOf::new);
                 final Path target = new FpIfTargetExists(
                     new FpFork(this.rewrite, generated, new FpIgnore()),
                     generated
