@@ -69,7 +69,7 @@ final class PhPackage implements Phi {
 
     @Override
     public Phi take(final String name) {
-        final String obj =  String.join(".", this.pkg, name);
+        final String obj = String.join(".", this.pkg, name);
         final String key = new JavaPath(obj).toString();
         return this.objects.computeIfAbsent(
             key,
