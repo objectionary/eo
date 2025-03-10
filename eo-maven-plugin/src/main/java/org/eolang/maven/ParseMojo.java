@@ -169,10 +169,10 @@ public final class ParseMojo extends SafeMojo {
         final List<Node> parsed
     ) throws FileNotFoundException {
         final Node node;
-        if (!parsed.isEmpty()) {
-            node = parsed.get(0);
-        } else {
+        if (parsed.isEmpty()) {
             node = new XMLDocument(target).inner();
+        } else {
+            node = parsed.get(0);
         }
         return new Xnav(node)
             .element("program")

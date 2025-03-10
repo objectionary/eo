@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.cactoos.bytes.BytesOf;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -139,70 +141,6 @@ public final class PlaceMojo extends SafeMojo {
         }
 
         /**
-         * Check if the file is not a source file.
-         * @param file The file to check.
-         * @return True if the file is not a source file.
-         */
-        private boolean isNotEoSource(final Path file) {
-            final boolean res;
-            final Path path = this.dir.relativize(file);
-            if (path.startsWith(CopyMojo.DIR)) {
-                Logger.debug(
-                    this,
-                    "File %[file]s (%[size]s) is not a binary, but a source, won't place it",
-                    path, path.toFile().length()
-                );
-                res = false;
-            } else {
-                res = true;
-            }
-            return res;
-        }
-
-        /**
-         * Check whether the binary file has corresponding EO sources in the jar.
-         *
-         * <p>The method checks ONLY EO binaries and classes. All other java files or classes in jar
-         * will be included anyway.
-         * Let's consider the next filesystem structure:</p>
-         *
-         * <pre>
-         * Source file:
-         * - "EO-SOURCE/org/eolang/txt/x.eo" -
-         *
-         * Correct:
-         * - "EOorg/EOeolang/EOtxt/x.class" - is correct since has corresponding EO source folder
-         * - "EOorg/EOeolang/EOtxt/y&z.class" - is correct since has corresponding EO source folder
-         * - "com/sun/jna/Callback.class" - is correct since binary file is not in EOorg folder
-         *
-         * Is incorrect (since has no corresponding EO source folder):
-         * - "EOorg/EOeolang/EObool.class"
-         * - "EOorg/x.class"
-         * </pre>
-         *
-         * <p>The filter is disabled by default, works only if the parameter
-         * "placeBinariesThatHaveSources" is set to true.</p>
-         *
-         * @param file The file to check.
-         * @return True if the file has corresponding EO sources.
-         */
-        private boolean hasEoSource(final Path file) {
-            final boolean result;
-            if (PlaceMojo.this.placeBinariesThatHaveSources && file.toString().contains("EOorg")) {
-                final Path sources = this.dir.resolve(CopyMojo.DIR)
-                    .resolve(this.dir.relativize(file.getParent()).toString().replace("EO", ""));
-                result = Files.exists(sources)
-                    && Files.isDirectory(sources)
-                    && Arrays.stream(sources.toFile().listFiles())
-                    .filter(Objects::nonNull)
-                    .anyMatch(File::isFile);
-            } else {
-                result = true;
-            }
-            return result;
-        }
-
-        /**
          * Check if the file is not already placed.
          * @param file The file to check.
          * @return True if the file is not already placed.
@@ -266,7 +204,9 @@ public final class PlaceMojo extends SafeMojo {
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
-                final Footprint generated = new FpGenerated(Files::readString);
+                final Footprint generated = new FpGenerated(
+                    src -> new String(new BytesOf(src).asBytes(), StandardCharsets.UTF_8)
+                );
                 final Path target = new FpIfTargetExists(
                     new FpFork(this.rewrite, generated, new FpIgnore()),
                     generated
@@ -278,10 +218,11 @@ public final class PlaceMojo extends SafeMojo {
                 );
             } catch (final IOException ex) {
                 throw new IllegalStateException(
-                    String.format(
-                        "Failed to place %s to home %s with path %s",
+                    Logger.format(
+                        "Failed to place %[file]s to home %[file]s with path %s",
                         file, PlaceMojo.this.outputDir, path
-                    ), ex
+                    ),
+                    ex
                 );
             }
         }

@@ -123,7 +123,8 @@ final class ResolveMojoTest {
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "+version 0.25.0\n",
                 "# No comments.",
-                "[] > main")
+                "[] > main"
+            )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             ResolveMojoTest.JAR_MUST_EXIST,

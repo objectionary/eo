@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.BiFunc;
 import org.cactoos.func.UncheckedBiFunc;
@@ -14,22 +13,7 @@ import org.cactoos.func.UncheckedBiFunc;
  * condition.
  * @since 0.41
  */
-final class FpFork implements Footprint {
-    /**
-     * Lazy condition.
-     */
-    private final UncheckedBiFunc<Path, Path, Boolean> condition;
-
-    /**
-     * First wrapped footprint.
-     */
-    private final Footprint first;
-
-    /**
-     * Second wrapped footprint.
-     */
-    private final Footprint second;
-
+final class FpFork extends FpEnvelope {
     /**
      * Ctor.
      * @param condition Condition as boolean
@@ -49,19 +33,16 @@ final class FpFork implements Footprint {
     FpFork(
         final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second
     ) {
-        this.condition = new UncheckedBiFunc<>(condition);
-        this.first = first;
-        this.second = second;
-    }
-
-    @Override
-    public Path apply(final Path source, final Path target) throws IOException {
-        final Footprint footprint;
-        if (this.condition.apply(source, target)) {
-            footprint = this.first;
-        } else {
-            footprint = this.second;
-        }
-        return footprint.apply(source, target);
+        super(
+            (src, tgt) -> {
+                final Footprint footprint;
+                if (new UncheckedBiFunc<>(condition).apply(src, tgt)) {
+                    footprint = first;
+                } else {
+                    footprint = second;
+                }
+                return footprint.apply(src, tgt);
+            }
+        );
     }
 }
