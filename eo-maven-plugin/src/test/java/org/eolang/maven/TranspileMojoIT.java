@@ -95,6 +95,7 @@ final class TranspileMojoIT {
                     .goals("register", "parse", "shake", "transpile");
                 f.exec("process-sources");
                 final String java = "EOfoo.java";
+                final String pinfo = "package-info.java";
                 MatcherAssert.assertThat(
                     String.format(
                         "The %s file is re-generated",
@@ -108,7 +109,6 @@ final class TranspileMojoIT {
                     ).toFile().exists(),
                     Matchers.is(true)
                 );
-                final String pinfo = "package-info.java";
                 MatcherAssert.assertThat(
                     String.format(
                         "The %s file must not exist, but it doesn't",
