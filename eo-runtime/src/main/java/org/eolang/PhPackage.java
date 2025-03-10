@@ -69,7 +69,7 @@ final class PhPackage implements Phi {
 
     @Override
     public Phi take(final String name) {
-        final String obj = this.eoPackage(name);
+        final String obj =  String.join(".", this.pkg, name);
         final String key = new JavaPath(obj).toString();
         return this.objects.computeIfAbsent(
             key,
@@ -110,22 +110,15 @@ final class PhPackage implements Phi {
     }
 
     /**
-     * Creates eo-package path by name.
-     * @param name The name of an en object.
-     * @return Eo-package path.
-     */
-    private String eoPackage(final String name) {
-        return String.join(".", this.pkg, name);
-    }
-
-    /**
      * Load phi object by package name from ClassLoader.
      * @param path Path to directory or .java file
      * @param object Object FQN
      * @return Phi
      */
     private Phi loadPhi(final String path, final String object) {
-        final Path pth = Paths.get("target/classes", path.replace(".", File.separator));
+        final Path pth = Paths.get(
+            this.getClass().getResource("/").getPath(), path.replace(".", File.separator)
+        );
         final Phi phi;
         if (Files.exists(pth) && Files.isDirectory(pth)) {
             phi = new PhPackage(object);

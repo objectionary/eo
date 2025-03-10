@@ -48,8 +48,8 @@ final class SnippetIT {
     @SuppressWarnings("unchecked")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
-        final String file = xtory.map().get("file").toString();
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
+        final String file = xtory.map().get("file").toString();
         new Farea(temp).together(
             f -> {
                 f.properties()
@@ -67,6 +67,12 @@ final class SnippetIT {
                         ).getBytes(StandardCharsets.UTF_8)
                     );
                 f.dependencies().appendItself();
+                final String target;
+                if (xtory.map().containsKey("target")) {
+                    target = xtory.map().get("target").toString();
+                } else {
+                    target = "target";
+                }
                 f.build()
                     .plugins()
                     .append(
@@ -91,7 +97,7 @@ final class SnippetIT {
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", xtory.map().get("args"));
-                f.exec("clean", "test");
+                f.exec("clean", "test", "-Dproject.build.directory='hello'");
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     f.log().content(),
