@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -67,6 +68,7 @@ public final class RegisterMojo extends SafeMojo {
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
         }
+        this.removeOldFiles();
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
@@ -103,5 +105,18 @@ public final class RegisterMojo extends SafeMojo {
             "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
             sources.size(), this.sourcesDir, this.foreign, this.includeSources, this.excludeSources
         );
+    }
+
+    private void removeOldFiles() {
+        final File[] files = {
+            this.foreign,
+            this.targetDir.toPath().resolve(PullMojo.DIR).toFile(),
+            this.targetDir.toPath().resolve(ResolveMojo.DIR).toFile(),
+        };
+        for (final File file : files) {
+            if (file.exists()) {
+                new Deleted(file).get();
+            }
+        }
     }
 }

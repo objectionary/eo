@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -32,17 +31,7 @@ final class ParseMojoIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     "# Simple object.\n[] > foo\n".getBytes()
                 );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
-                    .execution()
+                new AppendedPlugin(f).value()
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
                 MatcherAssert.assertThat(

@@ -6,12 +6,14 @@ sheets:
   - /org/eolang/parser/parse/expand-qqs.xsl
 asserts:
   - /program[not(errors)]
-  - //objects[count(.//o[starts-with(@base, 'QQ')])=0]
-  - //objects[count(.//o[starts-with(@base, 'Q')])=3]
-  - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
-  - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
+  - /program/objects[count(.//o[starts-with(@base, 'QQ')])=0]
+  - /program/objects[count(.//o[starts-with(@base, 'Q')])=3]
+  - /program/metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
+  - /program/metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
+  - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.txt.text']
 input: |
   +alias QQ.txt.sprintfQQ
+  +also QQ.txt.text
 
   # No comments.
   [] > app
