@@ -34,7 +34,6 @@ final class TranspileMojoIT {
                     String.join(
                         "\n",
                         "+package one",
-                        "+unlint object-has-data",
                         "",
                         "# no comments.",
                         "[] > foo",
