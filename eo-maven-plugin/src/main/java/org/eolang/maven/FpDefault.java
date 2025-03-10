@@ -4,11 +4,9 @@
  */
 package org.eolang.maven;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import org.cactoos.Func;
-import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 
 /**
