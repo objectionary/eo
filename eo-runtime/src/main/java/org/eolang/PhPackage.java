@@ -117,7 +117,8 @@ final class PhPackage implements Phi {
      */
     private Phi loadPhi(final String path, final String object) {
         final Path pth = Paths.get(
-            this.getClass().getResource("/").getPath(), path.replace(".", File.separator)
+            this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath(),
+            path.replace(".", File.separator)
         );
         final Phi phi;
         if (Files.exists(pth) && Files.isDirectory(pth)) {

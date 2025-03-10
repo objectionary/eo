@@ -74,6 +74,9 @@ final class SnippetIT {
                     target = "target";
                 }
                 f.build()
+                    .properties()
+                    .set("directory", target);
+                f.build()
                     .plugins()
                     .append(
                         "org.eolang",
@@ -97,7 +100,7 @@ final class SnippetIT {
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", xtory.map().get("args"));
-                f.exec("clean", "test", "-Dproject.build.directory='hello'");
+                f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     f.log().content(),
