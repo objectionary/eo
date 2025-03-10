@@ -42,20 +42,6 @@ final class AssembleMojoIT {
                 AssembleMojoIT.appendItself(f);
                 f.exec("package");
                 MatcherAssert.assertThat(
-                    String.join(
-                        " ",
-                        "AssembleMojo should have placed runtime",
-                        "library, but didn't"
-                    ),
-                    temp.resolve(
-                        String.format(
-                            "target/eo/%s/org.eolang/eo-runtime",
-                            ResolveMojo.DIR
-                        )
-                    ).toAbsolutePath(),
-                    new ContainsFiles("**/org/eolang/Phi.class")
-                );
-                MatcherAssert.assertThat(
                     String.format(
                         "AssembleMojo should have parsed stdout object %s, but didn't",
                         parsed

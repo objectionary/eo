@@ -43,7 +43,7 @@ public final class LintMojo extends SafeMojo {
     /**
      * The directory where to transpile to.
      */
-    static final String DIR = "6-lint";
+    static final String DIR = "5-lint";
 
     /**
      * Subdirectory for optimized cache.

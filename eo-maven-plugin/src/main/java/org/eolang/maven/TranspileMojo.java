@@ -33,6 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
 import org.eolang.parser.TrFull;
 
@@ -259,7 +260,14 @@ public final class TranspileMojo extends SafeMojo {
                             this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
                             tgt, tgt.toFile().length(), target, target.toFile().length()
                         );
-                        return new Joined("", clazz.element("java").text().get()).asString();
+                        return new InputOf(
+                            new Joined(
+                                "",
+                                clazz.elements(Filter.withName("java")).map(
+                                    java -> java.text().orElse("")
+                                ).collect(Collectors.toList())
+                            )
+                        );
                     }
                 );
                 final Footprint both = new FpUpdateBoth(generated, che);

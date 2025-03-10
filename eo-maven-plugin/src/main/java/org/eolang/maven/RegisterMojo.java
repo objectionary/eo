@@ -79,8 +79,7 @@ public final class RegisterMojo extends SafeMojo {
             .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
-            if (this.strictFileNames
-                && !pattern.matcher(file.getFileName().toString()).matches()) {
+            if (this.strictFileNames && !pattern.matcher(file.getFileName().toString()).matches()) {
                 throw new IllegalArgumentException(
                     String.format(
                         "Incorrect name found: '%s'. EO name must match '%s'",
@@ -94,10 +93,7 @@ public final class RegisterMojo extends SafeMojo {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
-            this.scopedTojos()
-                .add(name)
-                .withSource(file.toAbsolutePath())
-                .withVersion(ParseMojo.ZERO);
+            this.scopedTojos().add(name).withSource(file.toAbsolutePath());
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(

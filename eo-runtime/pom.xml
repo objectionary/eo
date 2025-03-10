@@ -236,8 +236,7 @@
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
-              <goal>assemble</goal>
-              <goal>lint</goal>
+              <goal>compile</goal>
               <goal>xmir-to-phi</goal>
               <goal>phi-to-xmir</goal>
               <goal>transpile</goal>

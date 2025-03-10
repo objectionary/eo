@@ -7,7 +7,8 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Func;
-import org.cactoos.scalar.ScalarOf;
+import org.cactoos.Input;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Footprint that saves content generated from lambda to the target file.
@@ -17,18 +18,18 @@ final class FpGenerated implements Footprint {
     /**
      * Content function.
      */
-    private final Func<Path, String> content;
+    private final UncheckedFunc<Path, Input> content;
 
     /**
      * Ctor.
-     * @param content Content function
+     * @param content Content as bytes
      */
-    FpGenerated(final Func<Path, String> content) {
-        this.content = content;
+    FpGenerated(final Func<Path, Input> content) {
+        this.content = new UncheckedFunc<>(content);
     }
 
     @Override
     public Path apply(final Path source, final Path target) throws IOException {
-        return new Saved(new ScalarOf<>(this.content, source), target).value();
+        return new Saved(this.content.apply(source), target).value();
     }
 }

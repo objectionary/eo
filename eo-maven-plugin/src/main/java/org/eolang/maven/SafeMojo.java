@@ -84,7 +84,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.foreign",
         required = true,
-        defaultValue = "${project.build.directory}/eo-foreign.csv"
+        defaultValue = "${project.build.directory}/eo-foreign.json"
     )
     protected File foreign;
 
@@ -150,7 +150,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.placed",
         required = true,
-        defaultValue = "${project.build.directory}/eo-placed.csv"
+        defaultValue = "${project.build.directory}/eo-placed.json"
     )
     protected File placed;
 
@@ -170,7 +170,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.transpiled",
         required = true,
-        defaultValue = "${project.build.directory}/eo-transpiled.csv"
+        defaultValue = "${project.build.directory}/eo-transpiled.json"
     )
     protected File transpiled;
 
@@ -184,7 +184,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.xslMeasuresFile",
         required = true,
-        defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
+        defaultValue = "${project.build.directory}/eo/xsl-measures.json"
     )
     protected File xslMeasures;
 
