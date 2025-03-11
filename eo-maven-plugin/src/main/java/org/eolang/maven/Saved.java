@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
@@ -15,7 +16,6 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.TextOf;
 
 /**
  * Content saved to the file.
@@ -39,16 +39,16 @@ final class Saved implements Scalar<Path> {
      * @param target Path to save content to
      */
     Saved(final String content, final Path target) {
-        this(new InputOf(content), target);
+        this(content.getBytes(StandardCharsets.UTF_8), target);
     }
 
     /**
      * Ctor.
-     * @param content Content as scalar
+     * @param content Content as bytes
      * @param target Path to save content to
      */
-    Saved(final Scalar<String> content, final Path target) {
-        this(new TextOf(content), target);
+    Saved(final byte[] content, final Path target) {
+        this(new InputOf(content), target);
     }
 
     /**

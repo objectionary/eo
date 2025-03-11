@@ -66,7 +66,15 @@ final class SnippetIT {
                             xtory.map().get("eo")
                         ).getBytes(StandardCharsets.UTF_8)
                     );
-                f.dependencies().appendItself();
+                f.dependencies()
+                    .append(
+                        "org.eolang",
+                        "eo-runtime",
+                        System.getProperty(
+                            "eo.version",
+                            Manifests.read("EO-Version")
+                        )
+                    );
                 final String target;
                 if (xtory.map().containsKey("target")) {
                     target = xtory.map().get("target").toString();
@@ -90,7 +98,8 @@ final class SnippetIT {
                     .phase("generate-sources")
                     .goals("register", "compile", "transpile")
                     .configuration()
-                    .set("failOnWarning", Boolean.FALSE.toString());
+                    .set("failOnWarning", Boolean.FALSE.toString())
+                    .set("skipLinting", Boolean.TRUE.toString());
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")

@@ -117,14 +117,14 @@ final class RegisterMojoIT {
                     String.join(
                         "\n",
                         "+package org.eolang",
-                        "",
+                        "+rt jvm org.eolang:eo-runtime:0.25.0\n",
                         "# In this program, we refer to the 'String'",
                         "[] > foo",
                         "  \"42\" > @"
                     ).getBytes()
                 );
                 new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
+                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull", "eo:resolve");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -137,7 +137,7 @@ final class RegisterMojoIT {
                 );
                 f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
                 final TjSmart foreign = RegisterMojoIT.foreign(
-                    temp.resolve("target/eo-foreign.csv")
+                    temp.resolve("target/eo-foreign.json")
                 );
                 MatcherAssert.assertThat(
                     "Foreign must contain only 3 references to objects, but it doesn't",

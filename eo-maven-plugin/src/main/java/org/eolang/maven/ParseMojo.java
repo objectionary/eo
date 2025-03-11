@@ -7,18 +7,21 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
+import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -95,15 +98,20 @@ public final class ParseMojo extends SafeMojo {
         final String name = tojo.identifier();
         final Path base = this.targetDir.toPath().resolve(ParseMojo.DIR);
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final List<Node> refs = new ArrayList<>(1);
         tojo.withXmir(
             new FpDefault(
-                this.parse(name),
+                src -> {
+                    final Node node = this.parsed(src, name);
+                    refs.add(node);
+                    return new XMLDocument(node).toString();
+                },
                 this.cache.toPath().resolve(ParseMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)
             ).apply(source, target)
-        );
+        ).withVersion(ParseMojo.version(target, refs));
         final List<Xnav> errors = new Xnav(target)
             .element("program")
             .element("errors")
@@ -126,26 +134,65 @@ public final class ParseMojo extends SafeMojo {
     }
 
     /**
-     * Function that parses EO source.
+     * Source parsed to {@link Node}.
+     * @param source Relative source path
      * @param name Name of the EO object
-     * @return Function that parses EO source
+     * @return Parsed EO object as {@link Node}
+     * @throws IOException If fails to parse
      */
-    private Func<Path, String> parse(final String name) {
-        return source -> {
-            final String parsed = new XMLDocument(
-                new Xembler(
-                    new Directives().xpath("/program").attr(
-                        "source",  this.sourcesDir.toPath().relativize(source.toAbsolutePath())
-                    )
-                ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().inner())
-            ).toString();
-            Logger.debug(
-                ParseMojo.class,
-                "Parsed program %s:\n %s",
-                name,
-                parsed
-            );
-            return parsed;
-        };
+    private Node parsed(final Path source, final String name) throws IOException {
+        final XML xmir = new EoSyntax(name, new InputOf(source)).parsed();
+        final Path src = this.sourcesDir.toPath().relativize(source.toAbsolutePath());
+        final Node node = new Xembler(
+            new Directives().xpath("/program").attr("source",  src)
+        ).applyQuietly(xmir.inner());
+        Logger.debug(
+            ParseMojo.class,
+            "Parsed program '%s' from %[file]s:\n %s",
+            name, src, xmir
+        );
+        return node;
+    }
+
+    /**
+     * Tojo version.
+     * The version can be extracted from:
+     * 1. Parsed {@link Node} if EO object was parsed for the first time
+     * 2. XML document that was already parsed before
+     * @param target Path to result XML document
+     * @param parsed List with either one parsed {@link Node} or empty
+     * @return Tojo version
+     * @throws FileNotFoundException If XML document file does not exist
+     */
+    private static String version(
+        final Path target,
+        final List<Node> parsed
+    ) throws FileNotFoundException {
+        final Node node;
+        if (parsed.isEmpty()) {
+            node = new XMLDocument(target).inner();
+        } else {
+            node = parsed.get(0);
+        }
+        return new Xnav(node)
+            .element("program")
+            .element("metas")
+            .elements(
+                Filter.all(
+                    Filter.withName("meta"),
+                    meta -> new Xnav(meta)
+                        .elements(
+                            Filter.all(
+                                Filter.withName("head"),
+                                head -> head.text().map("version"::equals).orElse(false)
+                            )
+                        )
+                        .findAny()
+                        .isPresent()
+                )
+            )
+            .findFirst()
+            .map(meta -> meta.element("tail").text().get())
+            .orElse(ParseMojo.ZERO);
     }
 }

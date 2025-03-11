@@ -44,11 +44,10 @@ final class ResolveMojoTest {
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
-                String.format(
-                    "%s\n\n%s",
-                    "+rt jvm org.eolang:eo-runtime:0.7.0",
-                    "[] > foo /int"
-                )
+                "+rt jvm org.eolang:eo-runtime:0.7.0",
+                "+version 0.25.0\n",
+                "# No comments.",
+                "[] > foo ?"
             ).execute(new FakeMaven.Resolve());
         final Path path = temp
             .resolve("target")
@@ -120,7 +119,12 @@ final class ResolveMojoTest {
     void resolvesIfRuntimeDependencyComesFromTojos(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
-            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
+            .withProgram(
+                "+rt jvm org.eolang:eo-runtime:0.22.1",
+                "+version 0.25.0\n",
+                "# No comments.",
+                "[] > main"
+            )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             ResolveMojoTest.JAR_MUST_EXIST,
@@ -216,17 +220,15 @@ final class ResolveMojoTest {
     @Test
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.format(
-                "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:0.22.1",
-                "[] > foo /int"
-            )
+            "+rt jvm org.eolang:eo-runtime:0.22.1",
+            "+version 0.25.0\n",
+            "# No comment.",
+            "[] > foo ?"
         ).withProgram(
-            String.format(
-                "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:0.22.0",
-                "[] > foo /int"
-            )
+            "+rt jvm org.eolang:eo-runtime:0.22.0",
+            "+version 0.25.0\n",
+            "# No comment.",
+            "[] > foo ?"
         );
         final Exception excpt = Assertions.assertThrows(
             IllegalStateException.class,
