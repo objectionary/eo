@@ -1,12 +1,14 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
 # The file object in the filesystem.
 [path] > file
@@ -15,11 +17,11 @@
   # Convert the `file` to the `path`.
   (QQ.fs.path path).determined > as-path
 
-  # Returns `true` if current file is a directory, returns `false` otherwise.
-  [] > is-directory /org.eolang.bool
+  # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
+  [] > is-directory ?
 
-  # Returns `true` if file with current `path` exists in filesystem.
-  [] > exists /org.eolang.bool
+  # Returns `org.eolang.true` if file with current `path` exists in filesystem.
+  [] > exists ?
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -33,11 +35,11 @@
           touch
           ^
 
-    # Creates new empty file.
+    # Creates new empty file and returns `org.eolang.true`.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
-    [] > touch /org.eolang.true
+    [] > touch ?
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -50,14 +52,14 @@
           ^
         ^
 
-    # Deletes the file and returns `true`.
+    # Deletes the file and returns `org.eolang.true`.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
-    [] > delete /org.eolang.true
+    [] > delete ?
 
-  # Gets the file size and returns it in bytes.
-  [] > size /org.eolang.number
+  # Gets the file size in bytes and returns it as `org.eolang.number`.
+  [] > size ?
 
   # Move current file to `target`, making and returning a new `file` from it.
   [target] > moved
@@ -65,12 +67,12 @@
       file move
 
     # Tries to move file from `^.path` to `target`
-    # and returns path of moved file as `string`.
-    # Returns `error` is failed to move the file.
+    # and returns path of moved file as `org.eolang.string`.
+    # Returns `org.eolang.error` is failed to move the file.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
-    [] > move /org.eolang.string
+    [] > move ?
 
   # Opens the file.
   #
@@ -156,22 +158,22 @@
     #
     # Here file stream is open, then the stream is passed to `scope`,
     # then given `scope` is dataized and stream is closed.
-    # Returns `true` if there are no errors occurred while `scope`
-    # dataization, returns `error` otherwise.
+    # Returns `org.eolang.true` if there are no errors occurred while `scope`
+    # dataization, returns `org.eolang.error` otherwise.
     #
     # The object is stream-safe, which means that stream is closed anyway,
     # even if errors are occurred while `scope` dataization.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of the `file` object.
-    [] > process-file /org.eolang.true
+    [] > process-file ?
 
     # File stream.
     # The objects provides an API for using file as input or output.
     [] > file-stream
       # Read `size` amount of bytes from file input stream.
       # Returns new instance of `input-block` with `buffer` read from file, or
-      # returns `error` if access mode does not allow reading operations.
+      # returns `org.eolang.error` if access mode does not allow reading operations.
       [size] > read
         ((input-block --).read size).this > @
 
@@ -185,7 +187,7 @@
 
           # Read `size` amount of bytes from file input stream.
           # Returns new instance of `input-block` with `buffer` read from file, or
-          # returns `error` if provided access mode does not allow reading operations.
+          # returns `org.eolang.error` if provided access mode does not allow reading operations.
           [size] > read
             ^.^.read-bytes size > read-bytes!
             this. > @
@@ -201,11 +203,11 @@
                   read-bytes
                   input-block read-bytes
 
-        # Bytes read from file input stream
+        # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
-        [size] > read-bytes /org.eolang.bytes
+        [size] > read-bytes ?
 
       # Write given `buffer` to file output stream.
       # Here `buffer` is either sequence of bytes or and object that can be
@@ -242,8 +244,8 @@
                   written-bytes buffer
                   output-block
 
-        # Bytes written to file output stream.
+        # Writes given `buffer` of bytes to file output stream and returns `org.eolang.true`.
         #
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes /org.eolang.true
+        [buffer] > written-bytes ?

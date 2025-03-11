@@ -1,18 +1,20 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.math.e
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
 # Returns a floating point number.
 [num] > real
   num > @
   # Returns Euler's number raised to the power of a `num`.
-  (QQ.math.real e).pow num > exp
+  (real e).pow num > exp
 
   # Calculate MOD.
   # An operation that finds the remainder after dividing one number by another.
@@ -44,19 +46,19 @@
       value
       value.neg
 
-  # Make `^.num` power `x`.
-  # An operation that raises ^.num (a number) to the power of x.
-  [x] > pow /org.eolang.number
+  # An operation that raises `^.num` (a number) to the power of `x` and returns the result as
+  # `org.eolang.number`.
+  [x] > pow ?
 
-  # Returns the positive square root of a `num`.
-  [] > sqrt /org.eolang.number
+  # Returns the positive square root of a `num` as `org.eolang.number`.
+  [] > sqrt ?
 
-  # Returns the natural logarithm `e` of a `num`.
-  [] > ln /org.eolang.number
+  # Returns the natural logarithm `e` of a `num` as `org.eolang.number`.
+  [] > ln ?
 
-  # Calculates arc cosine of a `num`.
-  [] > acos /org.eolang.number
+  # Calculates arc cosine of a `num` as `org.eolang.number`.
+  [] > acos ?
 
-  # Calculates arc sine of a `num`.
+  # Calculates arc sine of a `num` as `org.eolang.number`.
   # An operation that finds the angle whose sine is num.
-  [] > asin /org.eolang.number
+  [] > asin ?

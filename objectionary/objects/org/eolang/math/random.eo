@@ -1,12 +1,12 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.sys.os
 +alias org.eolang.sys.posix
 +alias org.eolang.sys.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # Generates a pseudo-random number.
 [seed] > random
@@ -41,6 +41,7 @@
     17 > const-3
     00-00-00-00-00-00-00-01 > one
     random time-seed > @
+    (posix "gettimeofday" *).output > timeval
     as-number. > time-seed
       plus.
         as-i64.
@@ -61,9 +62,7 @@
         if.
           os.is-windows
           (win32 "GetSystemTime" *).milliseconds
-          []
-            (posix "gettimeofday" *).output > timeval
-            plus. > @
-              timeval.tv-sec.times 1000
-              as-number.
-                timeval.tv-usec.as-i64.div 1000.as-i64
+          plus.
+            timeval.tv-sec.times 1000
+            as-number.
+              timeval.tv-usec.as-i64.div 1000.as-i64

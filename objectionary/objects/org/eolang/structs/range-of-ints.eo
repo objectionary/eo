@@ -1,10 +1,10 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.structs.range
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # Range of integers from `start` to `end` (soft border) with step = 1.
 # Here `start` and `end` must be `int`s. If they're not - an error will

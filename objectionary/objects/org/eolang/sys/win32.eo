@@ -1,12 +1,15 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 +unlint many-free-attributes
++unlint rt-without-atoms
++unlint empty-object
++unlint decorated-formation
 
 # Makes a kernel32.dll function call by name.
 #
@@ -25,7 +28,9 @@
   -1 > inaddr-none
   02-02 > winsock-version-2-2
 
-  [] > @ /org.eolang.sys.win32.return
+  # Makes an actual function call to operating system
+  # Returns `org.eolang.sys.win32.return` object.
+  [] > @ ?
 
   [code output] > return
     $ > called

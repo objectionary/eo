@@ -1,15 +1,18 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
++unlint decorated-formation
 
 # Regular expression in Perl format.
-# Here `pattern` is a string pattern.
-# It starts and ends with slash (e.g. "/(your-pattern)/"),
+# Here `expression` is a string pattern.
+# It starts and ends with slash (e.g. "/(your-expression)/"),
 # Also it can be specified by the flag option,
 # e.g.
 # ```
@@ -23,23 +26,31 @@
 # /s - Enables dotall mode.
 # /u - Enables Unicode-aware case folding.
 [expression] > regex
-  compiled > @
-
   # Compile regular expression into pattern.
-  # Compilation step is mandatory for usage of `regex` object.
-  # But since `regex` object decorates `compiled` object,
-  # it's not mandatory to write it in EO.
   # ```
   # (regex "/[a-z]+/").compiled.matches "hello"
   # (regex "/[a-z]+").matches "hello"
   # ```
-  # The two lines of code above works the same.
-  [] > compiled /org.eolang.txt.regex.pattern
+  # The two lines of code above works the same, but the usage of `.compiled`
+  # allows you utilize object cache in order to avoid double pattern compilation.
+  # ```
+  # regex "/[a-z]+/" > ptn1
+  # ptn1.matches "hey"                  # compiles regex
+  # ptn1.matches "hello"                # recompiles regex again
+  #
+  # (regex "/[a-z]+/").compiled > ptn2
+  # ptn2.matches "hey"                  # compiles regex
+  # ptn2.matches "hello"                # doesn't recompile regex
+  # ```
+  # Returns `org.eolang.txt.regex.pattern` object.
+  [] > @ ?
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
   # that is built after compilation.
   [serialized] > pattern
+    $ > compiled
+
     # Returns `true` of given `txt` matches against
     # the provided regular expression pattern.
     (match txt).next.exists > [txt] > matches
@@ -49,12 +60,12 @@
       (matched-from-index 1 0).matched > next
 
       # Get `position`-th block matched from `start` position.
-      # If string subsequence is found - returns `matched` object,
-      # returns `not-matched` otherwise.
+      # If string subsequence is found - returns `org.eolang.txt.regex.pattern.match.matched`
+      # object, returns `org.eolang.txt.regex.pattern.match.not-matched` otherwise.
       #
       # Attention! The object is for internal usage only, please
       # don't use the object programmatically outside of `regex` object.
-      [position start] > matched-from-index /org.eolang.txt.regex.pattern.match.matched
+      [position start] > matched-from-index ?
 
       # Block matched the pattern.
       # Here:

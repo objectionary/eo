@@ -1,12 +1,14 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -65,36 +67,33 @@
         "Can't convert non 2 length bytes to i16, bytes are %x"
         * $
 
-  # Equals to another object.
-  # A condition where two objects have the same value or content.
-  [b] > eq /org.eolang.bool
+  # Returns `org.eolang.true` if current sequence of bytes equals to another object.
+  # Before the actual comparison the object `b` is dataized.
+  [b] > eq ?
 
-  # Total number of bytes.
-  # The complete count of bytes used to represent data.
-  [] > size /org.eolang.number
+  # Returns total amount of current bytes as `org.eolang.number`.
+  [] > size ?
 
-  # Represents a sub-sequence inside the current one.
-  [start len] > slice /org.eolang.bytes
+  # Represents a sub-sequence of `org.eolang.bytes` inside the current one.
+  [start len] > slice ?
 
-  # Calculate the bitwise and operation.
-  [b] > and /org.eolang.bytes
+  # Calculate the bitwise AND operation and returns result as `org.eolang.bytes`.
+  [b] > and ?
 
-  # Calculate the bitwise or operation.
-  [b] > or /org.eolang.bytes
+  # Calculate the bitwise OR operation and returns result as `org.eolang.bytes`.
+  [b] > or ?
 
-  # Calculate the bitwise xor operation.
-  [b] > xor /org.eolang.bytes
+  # Calculate the bitwise XOR operation and returns result as `org.eolang.bytes`.
+  [b] > xor ?
 
-  # Calculate the bitwise not operation.
-  [] > not /org.eolang.bytes
+  # Calculate the bitwise NOT operation and returns result as `org.eolang.bytes`.
+  [] > not ?
 
   # Calculate the bitwise left shift.
   right x.neg > [x] > left
 
-  # Calculate the bitwise right shift.
-  [x] > right /org.eolang.bytes
+  # Calculate the bitwise right shift and returns result as `org.eolang.bytes`.
+  [x] > right ?
 
-  # Concatenation of two byte sequences:
-  # the current and the provided one,
-  # as a new sequence.
-  [b] > concat /org.eolang.bytes
+  # Concatenation of two byte sequences and returns result as `org.eolang.bytes`.
+  [b] > concat ?

@@ -1,17 +1,20 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.txt.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
-# Represents the name of the operating system.
+# Represents the current operating system.
 [] > os
   name > @
 
+  # Returns `org.eolang.true` if current OS belongs to `Windows` OS family.
   [] > is-windows
     name > os-name!
     and. > @
@@ -20,4 +23,5 @@
   ((regex "/linux/i").matches name).as-bool > is-linux
   ((regex "/mac/i").matches name).as-bool > is-macos
 
-  [] > name /org.eolang.string
+  # Returns the name of the current operation system as `org.eolang.string`.
+  [] > name ?

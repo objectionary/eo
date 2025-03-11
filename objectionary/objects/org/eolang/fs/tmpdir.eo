@@ -1,5 +1,3 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.fs.dir
 +alias org.eolang.fs.file
 +alias org.eolang.sys.getenv
@@ -7,7 +5,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # Temporary directory.
 # For Unix/MacOS uses the path supplied by the first environment variable
@@ -22,7 +22,7 @@
     dir
       file
         string
-          [] > os-tmp-dir!
+          [] >>!
             getenv "TMPDIR" > tmpdir!
             getenv "TMP" > tmp!
             getenv "TEMP" > temp!

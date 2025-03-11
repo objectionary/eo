@@ -1,11 +1,14 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
++unlint decorated-formation
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -81,7 +84,8 @@
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
   [size scope] > of
-    [] > @ /org.eolang.bytes
+    # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
+    [] > @ ?
 
     # Allocated block in memory that provides an API for writing and reading.
     [id] > allocated
@@ -89,13 +93,14 @@
       # Just get all the data from the allocated block in memory.
       read 0 size > get
 
-      # Returns size of allocated block in memory.
-      [] > size /org.eolang.number
+      # Returns size of allocated block in memory as `org.eolang.number`.
+      [] > size ?
 
       # Resizes allocated block in memory and returns `true`.
       # Here `new-size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
-      [new-size] > resized /org.eolang.malloc.of.allocated
+      # Returns `org.eolang.malloc.of.allocated` object.
+      [new-size] > resized ?
 
       # Reads the data from block in memory with with offset `source` and `length` and writes
       # to the block with offset `target`.
@@ -105,11 +110,13 @@
           target
           read source length
 
-      # Read `length` bytes with `offset` from the allocated block in memory.
-      [offset length] > read /org.eolang.bytes
+      # Read `length` bytes with `offset` from the allocated block in memory and return them
+      # as `org.eolang.bytes`.
+      [offset length] > read ?
 
-      # Write `data` with `offset` to the allocated block in memory.
-      [offset data] > write /org.eolang.true
+      # Write `data` with `offset` to the allocated block in memory
+      # and return `org.eolang.true`.
+      [offset data] > write ?
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

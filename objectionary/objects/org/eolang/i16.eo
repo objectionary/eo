@@ -1,12 +1,14 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -17,30 +19,30 @@
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
 
-  # Convert this `i16` to `i32`.
+  # Convert this `org.eolang.i16` to `org.eolang.i32` and return it.
   # The object is an atom because it's not possible to check what
   # bytes should be added from left so the number is valid.
   # The different bytes should be added if number is positive and negative.
-  [] > as-i32 /org.eolang.i32
+  [] > as-i32 ?
 
-  # Returns `true` if `$` < `x`.
-  # Here `x` must be an `i16` object.
+  # Returns `org.eolang.true` if `$` < `x`.
+  # Here `x` must be an `org.eolang.i16` object.
   as-i32.lt x.as-i16.as-i32 > [x] > lt
 
-  # Returns `true` if `$` <= `x`.
-  # Here `x` must be an `i16` object.
+  # Returns `org.eolang.true` if `$` <= `x`.
+  # Here `x` must be an `org.eolang.i16` object.
   as-i32.lte x.as-i16.as-i32 > [x] > lte
 
-  # Returns `true` if `$` > `x`.
-  # Here `x` must be an `i16` object.
+  # Returns `org.eolang.true` if `$` > `x`.
+  # Here `x` must be an `org.eolang.i16` object.
   as-i32.gt x.as-i16.as-i32 > [x] > gt
 
-  # Returns `true` if `$` >= `x`.
-  # Here `x` must be an `i16` object.
+  # Returns `org.eolang.true` if `$` >= `x`.
+  # Here `x` must be an `org.eolang.i16` object.
   as-i32.gte x.as-i16.as-i32 > [x] > gte
 
   # Multiplication of `$` and `x`.
-  # Here `x` must be an `i16` object.
+  # Here `x` must be an `org.eolang.i16` object.
   [x] > times
     (as-i32.times x.as-i16.as-i32).as-bytes > bts
     bts.slice 0 2 > left
@@ -55,7 +57,7 @@
         i16 right
 
   # Sum of `$` and `x`.
-  # Here `x` must be an `i16` object.
+  # Here `x` must be an `org.eolang.i16` object.
   [x] > plus
     (as-i32.plus x.as-i16.as-i32).as-bytes > bts
     bts.slice 0 2 > left
@@ -70,12 +72,12 @@
         i16 right
 
   # Subtraction between `$` and `x`.
-  # Here `x` must be an `i16` object.
+  # Here `x` must be an `org.eolang.i16` object.
   plus x.as-i16.neg > [x] > minus
 
   # Quotient of the division of `$` by `x`.
-  # Here `x` must be an `i16` object.
-  # An `error` is returned if or `x` is equal to 0.
+  # Here `x` must be an `org.eolang.i16` object.
+  # An `org.eolang.error` is returned if or `x` is equal to `0`.
   [x] > div
     x.as-i16 > x-as-i16
     (as-i32.div x-as-i16.as-i32).as-bytes > bts

@@ -1,11 +1,13 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
@@ -26,8 +28,8 @@
         eq positive-infinity
         eq negative-infinity
 
-  # Convert this `number` to `i64` object.
-  [] > as-i64 /org.eolang.i64
+  # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
+  [] > as-i64 ?
 
   # Returns true if `$` = `x` in terms of bytes.
   # Here `x` can be a `number` or any other object which
@@ -71,10 +73,10 @@
       lt value
       eq value
 
-  # Returns `true` if `$` > `x`.
+  # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > gt /org.eolang.bool
+  [x] > gt ?
 
   # Returns `true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
@@ -85,15 +87,15 @@
       gt value
       eq value
 
-  # Multiplication of `$` and `x`.
+  # Multiplication of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > times /org.eolang.number
+  [x] > times ?
 
-  # Sum of `$` and `x`.
+  # Sum of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > plus /org.eolang.number
+  [x] > plus ?
 
   # Difference between `$` and `x`.
   # Here `x` can be a `number` or any other object which
@@ -103,11 +105,12 @@
     plus > @
       (number value).neg
 
-  # Quotient of the division of `$` by `x`.
+  # Quotient of the division of `$` by `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > div /org.eolang.number
+  [x] > div ?
 
-  # The object rounds down the original `number`  to the nearest
-  # whole `number` that is less than or equal to the original one.
-  [] > floor /org.eolang.number
+  # The object rounds down the original `number` to the nearest
+  # whole `number` that is less than or equal to the original one
+  # and returns the result as `org.eolang.number`.
+  [] > floor ?

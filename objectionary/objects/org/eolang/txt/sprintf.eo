@@ -1,14 +1,17 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint rt-without-atoms
++unlint empty-object
 
-# The sprintf object allows you to format and output text depending
-# on the arguments passed to it.
+# The `sprintf` object allows you to format and output text depending
+# on the arguments passed to it and return it as `org.eolang.string`.
+#
 # When arguments are processed - they're dataized and converted to objects
 # depending on next flags:
 # - %s - converts object to `string`
@@ -16,4 +19,4 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
-[format args] > sprintf /org.eolang.string
+[format args] > sprintf ?

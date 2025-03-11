@@ -1,12 +1,14 @@
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +alias org.eolang.math.pi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.52.0
++rt jvm org.eolang:eo-runtime:0.53.0
 +rt node eo2js-runtime:0.0.0
-+version 0.52.0
++version 0.53.0
++unlint rt-without-atoms
++unlint empty-object
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # The angle.
 # A measure of how much something is tilted or rotated, measured in degrees or radians.
@@ -24,13 +26,13 @@
       $.times pi
       180.0
 
-  # Sine of current angle.
+  # Calculates sine of current angle and returns it as `org.eolang.number`.
   # Please note, that `sin` is calculated from the angle in radians.
-  [] > sin /org.eolang.number
+  [] > sin ?
 
-  # Cosine of current angle.
+  # Calculates cosine of current angle and returns it as `org.eolang.number`.
   # Please note, that `cos` is calculated from the angle in radians.
-  [] > cos /org.eolang.number
+  [] > cos ?
 
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.
