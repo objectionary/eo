@@ -4,7 +4,7 @@
 out:
   - ".*Hello, Jeff.*"
   - ".*eoc/classes.*"
-  - ".*eoc/eo/5-resolve.*"
+  - ".*eoc/eo/6-resolve.*"
   - ".*eoc/eo-foreign.csv.*"
 file: simple.eo
 args: [ "simple", "Jeff" ]
