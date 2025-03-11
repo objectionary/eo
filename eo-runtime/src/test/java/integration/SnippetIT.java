@@ -48,8 +48,8 @@ final class SnippetIT {
     @SuppressWarnings("unchecked")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
-        final String file = xtory.map().get("file").toString();
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
+        final String file = xtory.map().get("file").toString();
         new Farea(temp).together(
             f -> {
                 f.properties()
@@ -75,6 +75,15 @@ final class SnippetIT {
                             Manifests.read("EO-Version")
                         )
                     );
+                final String target;
+                if (xtory.map().containsKey("target")) {
+                    target = xtory.map().get("target").toString();
+                } else {
+                    target = "target";
+                }
+                f.build()
+                    .properties()
+                    .set("directory", target);
                 f.build()
                     .plugins()
                     .append(

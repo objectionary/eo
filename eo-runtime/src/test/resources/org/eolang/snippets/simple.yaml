@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+out:
+  - ".*Hello, Jeff.*"
+  - ".*eoc/classes.*"
+  - ".*eoc/eo/5-resolve.*"
+  - ".*eoc/eo-foreign.csv.*"
+file: simple.eo
+args: [ "simple", "Jeff" ]
+target: "eoc"
+eo: |
+  +alias org.eolang.io.stdout
+  +alias org.eolang.txt.sprintf
+
+  # No comments.
+  [args] > simple
+    stdout > @
+      sprintf *1
+        "Hello, %s"
+        args.at 0
