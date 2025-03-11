@@ -9,11 +9,9 @@ eo: |
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.sprintf
   +package org.eolang.snippets
-  +unlint object-has-data
-  +unlint broken-alias-second
 
   # No comments.
-  [args] > fibo
+  [] > fibo
     # No comments.
     [n] > f
       if. > @

@@ -162,7 +162,7 @@ public final class Main {
         }
         final Phi app = Phi.Φ.take(obj);
         if (opts.size() > 1) {
-            Phi args = Phi.Φ.take("org.eolang.tuple");
+            Phi args = Phi.Φ.take("org.eolang.tuple").take("empty");
             for (int idx = 1; idx < opts.size(); ++idx) {
                 args = args.take("with");
                 args.put(0, new Data.ToPhi(opts.get(idx)));
