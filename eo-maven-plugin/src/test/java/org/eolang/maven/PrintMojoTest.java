@@ -36,7 +36,7 @@ final class PrintMojoTest {
 
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
-        final Home home = new HmBase(temp);
+        final HmBase home = new HmBase(temp);
         final Path resources = new File(
             "../eo-parser/src/test/resources/org/eolang/parser/print-packs/xmir"
         ).toPath();
@@ -88,7 +88,7 @@ final class PrintMojoTest {
      */
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
         throws Exception {
-        final Home home = new HmBase(temp);
+        final HmBase home = new HmBase(temp);
         home.save(
             new EoSyntax(
                 "test",
