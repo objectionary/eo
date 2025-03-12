@@ -68,7 +68,7 @@ final class MarkMojoTest {
     }
 
     private static void source(final Path temp) throws IOException {
-        new HmBase(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
             "hi",
             Paths.get(
                 String.format(

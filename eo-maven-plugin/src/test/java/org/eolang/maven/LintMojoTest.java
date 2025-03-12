@@ -296,7 +296,7 @@ final class LintMojoTest {
         MatcherAssert.assertThat(
             "Cached result should match the original verified XML document",
             new XMLDocument(
-                new HmBase(temp).load(
+                new Home(temp).load(
                     Paths.get(
                         String.format(
                             "target/%s/foo/x/main.%s",

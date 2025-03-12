@@ -66,7 +66,7 @@ public final class LatexMojo extends SafeMojo {
             final Path target = new Place(
                 LatexMojo.last(new ProgramName(new XMLDocument(file)).get())
             ).make(dir.resolve(LatexMojo.DIR), LatexMojo.EXT);
-            new HmBase(dir).save(
+            new Home(dir).save(
                 new LatexTemplate(
                     new Xnav(file).element("program").element("listing").text().get()
                 ).asString(),

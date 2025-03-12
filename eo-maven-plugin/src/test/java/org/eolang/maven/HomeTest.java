@@ -24,19 +24,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test for {@link HmBase}.
+ * Test for {@link Home}.
  *
  * @since 0.22
  */
 @ExtendWith(MktmpResolver.class)
-final class HmBaseTest {
+final class HomeTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @Mktmp final Path temp) throws IOException {
         final Path resolve = Paths.get("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
-        new HmBase(temp).save(content, resolve);
+        new Home(temp).save(content, resolve);
         MatcherAssert.assertThat(
             "The saved file contents are not the same as expected",
             new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
@@ -50,7 +50,7 @@ final class HmBaseTest {
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
             "The file should exist, but it doesn't",
-            new HmBase(temp).exists(path),
+            new Home(temp).exists(path),
             Matchers.is(true)
         );
     }
@@ -62,7 +62,7 @@ final class HmBaseTest {
         Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
             "The file in the subdirectory must exist, but it doesn't",
-            new HmBase(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
+            new Home(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
     }
@@ -73,10 +73,10 @@ final class HmBaseTest {
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
         final Path directory = temp.resolve("directory");
-        new HmBase(directory).save("any content", Paths.get(decoded));
+        new Home(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
             "The file with a different name encoding must exist, but it doesn't",
-            new HmBase(directory).exists(Paths.get(filename)),
+            new Home(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
@@ -87,17 +87,17 @@ final class HmBaseTest {
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
         final Path directory = temp.resolve("directory");
-        new HmBase(directory).save("any content", Paths.get(decoded));
+        new Home(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
             "The file with special characters in the name must exist, but it doesn't",
-            new HmBase(directory).exists(Paths.get(filename)),
+            new Home(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
 
     @Test
     void loadsBytesFromExistingFile(@Mktmp final Path temp) throws IOException {
-        final HmBase home = new HmBase(temp);
+        final Home home = new Home(temp);
         final String content = "bar";
         final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
@@ -112,7 +112,7 @@ final class HmBaseTest {
     void loadsFromAbsentFile(@Mktmp final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
-            () -> new HmBase(temp).load(Paths.get("nonexistent")),
+            () -> new Home(temp).load(Paths.get("nonexistent")),
             "A NoSuchFileException was expected when uploading a missing file"
         );
     }
@@ -121,7 +121,7 @@ final class HmBaseTest {
     void throwsExceptionOnAbsolute(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HmBase(temp).exists(temp.toAbsolutePath()),
+            () -> new Home(temp).exists(temp.toAbsolutePath()),
             "IllegalArgumentException was expected when passing an absolute path"
         );
     }

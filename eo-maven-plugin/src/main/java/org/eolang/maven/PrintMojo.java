@@ -50,7 +50,7 @@ public final class PrintMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        final HmBase home = new HmBase(this.printOutputDir);
+        final Home home = new Home(this.printOutputDir);
         final int total = new Threaded<>(
             new Walk(this.printSourcesDir.toPath()),
             source -> {

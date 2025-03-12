@@ -185,7 +185,7 @@ final class UnplaceMojoTest {
             .resolve("EOeolang")
             .resolve("EOharmcrest")
             .resolve("EOassert.class");
-        final HmBase workspace = new HmBase(temp);
+        final Home workspace = new Home(temp);
         workspace.save(UUID.randomUUID().toString(), source);
         workspace.save(UUID.randomUUID().toString(), test);
         workspace.save(UUID.randomUUID().toString(), remaining);
@@ -257,7 +257,7 @@ final class UnplaceMojoTest {
     private static Path clazz(final Path temp) throws IOException {
         final Path path =
             Paths.get(String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt()));
-        new HmBase(temp).save(
+        new Home(temp).save(
             () -> UUID.randomUUID().toString(),
             path
         );

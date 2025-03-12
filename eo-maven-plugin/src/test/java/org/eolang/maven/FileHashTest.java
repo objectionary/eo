@@ -24,7 +24,7 @@ final class FileHashTest {
     @Test
     void readsFromExistingFile(@Mktmp final Path temp) throws IOException {
         final Path path = temp.resolve("1.txt");
-        new HmBase(temp).save("hey, you", temp.relativize(path));
+        new Home(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
             "FileHash must read an existing file, but it doesn't",
             new FileHash(path).toString(),

@@ -110,7 +110,7 @@ final class UnphiMojoTest {
 
     @Test
     void createsFile(@Mktmp final Path temp) throws Exception {
-        new HmBase(temp).save(
+        new Home(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/phi/std.phi")
         );
@@ -128,7 +128,7 @@ final class UnphiMojoTest {
 
     @Test
     void failsIfParsedWithErrors(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
             Paths.get("target/phi/std.phi")
         );
@@ -142,7 +142,7 @@ final class UnphiMojoTest {
 
     @Test
     void addsMetas(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
         );
@@ -167,7 +167,7 @@ final class UnphiMojoTest {
 
     @Test
     void failsIfPackageMetaIsAdded(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
         );
@@ -187,7 +187,7 @@ final class UnphiMojoTest {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         final String phi = xtory.map().get("phi").toString();
-        new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
+        new Home(temp).save(phi, Paths.get("target/phi/main.phi"));
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
         final XML doc = new StrictXmir(
@@ -224,7 +224,7 @@ final class UnphiMojoTest {
         final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
-        new HmBase(temp).save(phi, path);
+        new Home(temp).save(phi, path);
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));

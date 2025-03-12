@@ -65,7 +65,7 @@ public final class UnphiMojo extends SafeMojo {
     @Override
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
-        final HmBase home = new HmBase(this.unphiOutputDir);
+        final Home home = new Home(this.unphiOutputDir);
         final Iterable<Directive> metas = new Phi.Metas(this.unphiMetas);
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(

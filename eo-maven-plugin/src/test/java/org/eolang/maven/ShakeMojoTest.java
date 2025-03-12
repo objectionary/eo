@@ -140,7 +140,7 @@ final class ShakeMojoTest {
         MatcherAssert.assertThat(
             "OptimizeMojo must load optimized XMIR from cache",
             new XMLDocument(
-                new HmBase(temp).load(
+                new Home(temp).load(
                     Paths.get(
                         String.format(
                             "target/%s/foo/x/main.%s",

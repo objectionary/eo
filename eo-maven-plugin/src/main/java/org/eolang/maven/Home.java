@@ -27,7 +27,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
-final class HmBase {
+final class Home {
     /**
      * Current working directory.
      */
@@ -43,7 +43,7 @@ final class HmBase {
      *
      * @param file File
      */
-    HmBase(final File file) {
+    Home(final File file) {
         this(file.toPath());
     }
 
@@ -52,7 +52,7 @@ final class HmBase {
      *
      * @param pth Path
      */
-    HmBase(final Path pth) {
+    Home(final Path pth) {
         this.cwd = pth;
         this.sve = new IoCheckedBiProc<>(
             (input, path) -> {
@@ -70,7 +70,7 @@ final class HmBase {
                         )
                     ).value();
                     Logger.debug(
-                        HmBase.class, "File %s saved (%d bytes)",
+                        Home.class, "File %s saved (%d bytes)",
                         target, bytes
                     );
                 } catch (final IOException ex) {

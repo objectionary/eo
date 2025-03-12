@@ -35,7 +35,7 @@ final class RegisterMojoTest {
 
     @Test
     void registersOkNames(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/abc-def.eo")
         );
@@ -51,7 +51,7 @@ final class RegisterMojoTest {
 
     @Test
     void failsWithDotNames(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
         );
@@ -72,7 +72,7 @@ final class RegisterMojoTest {
 
     @Test
     void doesNotFailWhenNoStrictNames(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
         );

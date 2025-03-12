@@ -75,7 +75,7 @@ public final class CopyMojo extends SafeMojo {
         final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
         for (final Path src : sources) {
-            new HmBase(target).save(
+            new Home(target).save(
                 CopyMojo.REPLACE
                     .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),

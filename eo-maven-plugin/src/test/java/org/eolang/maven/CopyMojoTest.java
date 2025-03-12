@@ -27,7 +27,7 @@ final class CopyMojoTest {
     void copiesSources(@Mktmp final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new HmBase(src).save(
+        new Home(src).save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             Paths.get("foo/main.eo")
         );
@@ -41,12 +41,12 @@ final class CopyMojoTest {
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
             "Expected EO source file to be copied, but it was not found",
-            new HmBase(classes).exists(classes.relativize(out)),
+            new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             "EO file should contain the correct version information, but it doesn't",
-            new TextOf(new HmBase(classes).load(classes.relativize(out))).asString(),
+            new TextOf(new Home(classes).load(classes.relativize(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
@@ -74,7 +74,7 @@ final class CopyMojoTest {
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
             "CopyMojo must skip copying, but it doesn't",
-            new HmBase(classes).exists(classes.relativize(out)),
+            new Home(classes).exists(classes.relativize(out)),
             Matchers.is(false)
         );
     }

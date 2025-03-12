@@ -53,7 +53,7 @@ public final class FakeMaven {
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
-    private final HmBase workspace;
+    private final Home workspace;
 
     /**
      * Mojos params.
@@ -89,7 +89,7 @@ public final class FakeMaven {
      */
     private FakeMaven(final Path workspace, final boolean defaults) {
         this(
-            new HmBase(workspace),
+            new Home(workspace),
             new HashMap<>(),
             new AtomicInteger(0),
             defaults
@@ -105,7 +105,7 @@ public final class FakeMaven {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
-        final HmBase workspace,
+        final Home workspace,
         final Map<String, Object> params,
         final AtomicInteger current,
         final boolean defaults

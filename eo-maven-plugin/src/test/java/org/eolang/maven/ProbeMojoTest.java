@@ -46,7 +46,7 @@ final class ProbeMojoTest {
     void findsProbesViaOfflineHashFile(@Mktmp final Path temp) throws IOException {
         final String tag = "master";
         final String tags = "org/eolang/maven/commits/tags.txt";
-        new HmBase(temp).save(
+        new Home(temp).save(
             new ResourceOf(tags),
             Paths.get("tags.txt")
         );

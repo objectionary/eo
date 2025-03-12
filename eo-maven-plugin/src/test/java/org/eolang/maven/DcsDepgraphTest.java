@@ -45,7 +45,7 @@ final class DcsDepgraphTest {
     private Path file(final Path tmp, final String name) {
         try {
             final Path res = tmp.resolve(name);
-            new HmBase(tmp).save(
+            new Home(tmp).save(
                 new ResourceOf(
                     String.format("org/eolang/maven/dependencies/%s", name)
                 ),
