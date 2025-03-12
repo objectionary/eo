@@ -431,26 +431,17 @@ public final class SodgMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "SODGs:\n%s", instructions);
         }
-        new Home(sodg.getParent()).save(
-            String.format("# %s\n\n%s", new Disclaimer(), instructions),
-            sodg.getParent().relativize(sodg)
-        );
+        new Saved(String.format("# %s\n\n%s", new Disclaimer(), instructions), sodg).value();
         if (this.generateSodgXmlFiles) {
             final Path sibling = sodg.resolveSibling(String.format("%s.xml", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
-                after.toString(),
-                sibling.getParent().relativize(sibling)
-            );
+            new Saved(after.toString(), sibling).value();
         }
         if (this.generateXemblyFiles) {
             final String xembly = new Xsline(this.measured(SodgMojo.TO_XEMBLY))
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
             final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
-                String.format("# %s\n\n%s\n", new Disclaimer(), xembly),
-                sibling.getParent().relativize(sibling)
-            );
+            new Saved(String.format("# %s\n\n%s\n", new Disclaimer(), xembly), sibling).value();
             this.makeGraph(xembly, sodg);
         }
         return instructions.split("\n").length;
@@ -485,10 +476,7 @@ public final class SodgMojo extends SafeMojo {
             final Path sibling = sodg.resolveSibling(
                 String.format("%s.graph.xml", sodg.getFileName())
             );
-            new Home(sibling.getParent()).save(
-                graph.toString(),
-                sibling.getParent().relativize(sibling)
-            );
+            new Saved(graph.toString(), sibling).value();
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Graph:\n%s", graph.toString());
             }
@@ -510,10 +498,10 @@ public final class SodgMojo extends SafeMojo {
                 Logger.trace(this, "Dot:\n%s", dot);
             }
             final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
+            new Saved(
                 String.format("/%s %s %1$s/\n\n%s", "*", new Disclaimer(), dot),
-                sibling.getParent().relativize(sibling)
-            );
+                sibling
+            ).value();
         }
     }
 

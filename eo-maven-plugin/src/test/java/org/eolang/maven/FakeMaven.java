@@ -53,7 +53,7 @@ public final class FakeMaven {
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
-    private final Home workspace;
+    private final Path workspace;
 
     /**
      * Mojos params.
@@ -89,7 +89,7 @@ public final class FakeMaven {
      */
     private FakeMaven(final Path workspace, final boolean defaults) {
         this(
-            new Home(workspace),
+            workspace,
             new HashMap<>(),
             new AtomicInteger(0),
             defaults
@@ -105,7 +105,7 @@ public final class FakeMaven {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
-        final Home workspace,
+        final Path workspace,
         final Map<String, Object> params,
         final AtomicInteger current,
         final boolean defaults
@@ -168,9 +168,9 @@ public final class FakeMaven {
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            final Path transpiled = Paths.get("transpiled");
+            final Path transpiled = this.workspace.resolve("transpiled");
             final Path placed = Paths.get("placed.json");
-            this.workspace.save(new TextOf(""), transpiled);
+            new Saved(new TextOf(""), transpiled).value();
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
                 "xslMeasures",
@@ -179,26 +179,26 @@ public final class FakeMaven {
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
-            this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
+            this.params.putIfAbsent("transpiled", transpiled.toFile());
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("discoverSelf", false);
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
-            this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
+            this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
                 "sourcesDir",
-                this.workspace.absolute(Paths.get(".")).toFile()
+                this.workspace.resolve(".").toFile()
             );
             this.params.putIfAbsent(
                 "outputDir",
-                this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
+                this.workspace.resolve("target/classes").toFile()
             );
             this.params.putIfAbsent(
                 "cache",
-                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed").toFile()
+                this.workspace.resolve("eo/cache/parsed").toFile()
             );
             this.params.putIfAbsent("generateSodgXmlFiles", true);
             this.params.putIfAbsent("generateXemblyFiles", true);
@@ -216,27 +216,27 @@ public final class FakeMaven {
             this.params.putIfAbsent("conservative", false);
             this.params.putIfAbsent(
                 "phiInputDir",
-                this.workspace.absolute(
-                    Paths.get(String.format("target/%s", ParseMojo.DIR))
+                this.workspace.resolve(
+                    String.format("target/%s", ParseMojo.DIR)
                 ).toFile()
             );
             this.params.putIfAbsent(
                 "phiOutputDir",
-                this.workspace.absolute(Paths.get("target/phi")).toFile()
+                this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
                 "unphiInputDir",
-                this.workspace.absolute(Paths.get("target/phi")).toFile()
+                this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
                 "unphiOutputDir",
-                this.workspace.absolute(
-                    Paths.get(String.format("target/%s", ParseMojo.DIR))
+                this.workspace.resolve(
+                    String.format("target/%s", ParseMojo.DIR)
                 ).toFile()
             );
             this.params.putIfAbsent(
                 "classesDir",
-                this.workspace.absolute(Paths.get("target/classes")).toFile()
+                this.workspace.resolve("target/classes").toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);
@@ -262,7 +262,7 @@ public final class FakeMaven {
      * @return Path to target dir.
      */
     public Path targetPath() {
-        return this.workspace.absolute(Paths.get("target"));
+        return this.workspace.resolve("target");
     }
 
     /**
@@ -349,13 +349,12 @@ public final class FakeMaven {
      */
     FakeMaven withProgram(final String content, final String object)
         throws IOException {
-        final Path path = Paths.get(
+        final Path source = this.workspace.resolve(
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
-        this.workspace.save(content, path);
+        new Saved(content, source).value();
         final String scope = this.scope();
         final String version = "0.25.0";
-        final Path source = this.workspace.absolute(path);
         this.foreignTojos()
             .add(object)
             .withScope(scope)
@@ -388,7 +387,7 @@ public final class FakeMaven {
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
-        return this.workspace.absolute(Paths.get("eo-foreign.csv"));
+        return this.workspace.resolve("eo-foreign.csv");
     }
 
     /**
@@ -397,7 +396,7 @@ public final class FakeMaven {
      * @return TjSmart of the current placed.json file.
      */
     TjsPlaced placed() {
-        return new TjsPlaced(this.workspace.absolute(Paths.get("placed.json")));
+        return new TjsPlaced(this.workspace.resolve("placed.json"));
     }
 
     /**
@@ -408,7 +407,7 @@ public final class FakeMaven {
      * @throws IOException If some problem with filesystem have happened.
      */
     Map<String, Path> result() throws IOException {
-        final Path root = this.workspace.absolute(Paths.get(""));
+        final Path root = this.workspace.resolve("");
         return Files.walk(root).collect(
             Collectors.toMap(
                 p -> String.join(

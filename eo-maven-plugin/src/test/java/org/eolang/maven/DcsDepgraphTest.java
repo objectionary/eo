@@ -8,7 +8,6 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
@@ -44,14 +43,12 @@ final class DcsDepgraphTest {
 
     private Path file(final Path tmp, final String name) {
         try {
-            final Path res = tmp.resolve(name);
-            new Home(tmp).save(
+            return new Saved(
                 new ResourceOf(
                     String.format("org/eolang/maven/dependencies/%s", name)
                 ),
-                Paths.get(name)
-            );
-            return res;
+                tmp.resolve(name)
+            ).value();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }

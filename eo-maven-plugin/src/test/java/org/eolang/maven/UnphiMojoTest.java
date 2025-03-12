@@ -110,10 +110,10 @@ final class UnphiMojoTest {
 
     @Test
     void createsFile(@Mktmp final Path temp) throws Exception {
-        new Home(temp).save(
+        new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
-            Paths.get("target/phi/std.phi")
-        );
+            temp.resolve("target/phi/std.phi")
+        ).value();
         MatcherAssert.assertThat(
             String.format(
                 "There should be file with .%s extension after parsing phi to XMIR, but there isn't",
@@ -128,10 +128,10 @@ final class UnphiMojoTest {
 
     @Test
     void failsIfParsedWithErrors(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
-            Paths.get("target/phi/std.phi")
-        );
+            temp.resolve("target/phi/std.phi")
+        ).value();
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -142,10 +142,10 @@ final class UnphiMojoTest {
 
     @Test
     void addsMetas(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
-            Paths.get("target/phi/std.phi")
-        );
+            temp.resolve("target/phi/std.phi")
+        ).value();
         MatcherAssert.assertThat(
             "Unphied XMIR must contain metas, added via \"unphiMetas\" parameter",
             new XMLDocument(
@@ -167,10 +167,10 @@ final class UnphiMojoTest {
 
     @Test
     void failsIfPackageMetaIsAdded(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
-            Paths.get("target/phi/std.phi")
-        );
+            temp.resolve("target/phi/std.phi")
+        ).value();
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -187,7 +187,7 @@ final class UnphiMojoTest {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         final String phi = xtory.map().get("phi").toString();
-        new Home(temp).save(phi, Paths.get("target/phi/main.phi"));
+        new Saved(phi, temp.resolve("target/phi/main.phi")).value();
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
         final XML doc = new StrictXmir(
@@ -223,9 +223,9 @@ final class UnphiMojoTest {
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
-        final Path path = Paths.get(main);
-        new Home(temp).save(phi, path);
-        final long saved = temp.resolve(path).toFile().lastModified();
+        final Path path = temp.resolve(main);
+        new Saved(phi, path).value();
+        final long saved = path.toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
         maven.foreignTojos().add("name").withXmir(xmir);

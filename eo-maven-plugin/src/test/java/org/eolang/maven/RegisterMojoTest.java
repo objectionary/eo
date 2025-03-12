@@ -8,7 +8,6 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,10 +34,10 @@ final class RegisterMojoTest {
 
     @Test
     void registersOkNames(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
-            Paths.get("src/eo/org/eolang/maven/abc-def.eo")
-        );
+            temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
+        ).value();
         final FakeMaven maven = new FakeMaven(temp)
             .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
             .execute(new FakeMaven.Register());
@@ -51,10 +50,10 @@ final class RegisterMojoTest {
 
     @Test
     void failsWithDotNames(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
-            Paths.get("src/eo/org/eolang/maven/.abc.eo")
-        );
+            temp.resolve("src/eo/org/eolang/maven/.abc.eo")
+        ).value();
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,
             () -> {
@@ -72,10 +71,10 @@ final class RegisterMojoTest {
 
     @Test
     void doesNotFailWhenNoStrictNames(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
-            Paths.get("src/eo/org/eolang/maven/.abc.eo")
-        );
+            temp.resolve("src/eo/org/eolang/maven/.abc.eo")
+        ).value();
         final FakeMaven maven = new FakeMaven(temp)
             .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
             .with("strictFileNames", false)

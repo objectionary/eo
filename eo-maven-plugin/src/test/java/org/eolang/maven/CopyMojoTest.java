@@ -7,8 +7,10 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import org.cactoos.bytes.BytesOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -27,10 +29,10 @@ final class CopyMojoTest {
     void copiesSources(@Mktmp final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new Home(src).save(
+        new Saved(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
-            Paths.get("foo/main.eo")
-        );
+            src.resolve("foo/main.eo")
+        ).value();
         final String ver = "1.1.1";
         new FakeMaven(temp)
             .with("sourcesDir", src.toFile())
@@ -41,12 +43,12 @@ final class CopyMojoTest {
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
             "Expected EO source file to be copied, but it was not found",
-            new Home(classes).exists(classes.relativize(out)),
+            Files.exists(out),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             "EO file should contain the correct version information, but it doesn't",
-            new TextOf(new Home(classes).load(classes.relativize(out))).asString(),
+            new TextOf(new BytesOf(Files.readAllBytes(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
@@ -74,7 +76,7 @@ final class CopyMojoTest {
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
             "CopyMojo must skip copying, but it doesn't",
-            new Home(classes).exists(classes.relativize(out)),
+            Files.exists(out),
             Matchers.is(false)
         );
     }

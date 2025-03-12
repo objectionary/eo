@@ -73,10 +73,10 @@ final class PullMojoTest {
 
     @Test
     void pullsUsingOfflineHashFile(@Mktmp final Path temp) throws IOException {
-        new Home(temp).save(
+        new Saved(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            Paths.get("tags.txt")
-        );
+            temp.resolve("tags.txt")
+        ).value();
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
@@ -227,15 +227,15 @@ final class PullMojoTest {
         MatcherAssert.assertThat(
             "PullMojo should take source from cache, but it does not",
             new TextOf(
-                new Home(temp).load(
-                    Paths.get(
+                Files.readAllBytes(
+                    temp.resolve(
                         String.format(
                             "target/%s/org/eolang/io/stdout.%s",
                             PullMojo.DIR,
                             AssembleMojo.EO
                         )
                     )
-                ).asBytes()
+                )
             ).asString(),
             Matchers.is(cached)
         );
@@ -249,7 +249,7 @@ final class PullMojoTest {
      * @return If given source file exists.
      */
     private static boolean exists(final Path temp, final String source) {
-        return new Home(temp.resolve("target")).exists(PullMojoTest.path(source));
+        return Files.exists(temp.resolve("target").resolve(PullMojoTest.path(source)));
     }
 
     /**

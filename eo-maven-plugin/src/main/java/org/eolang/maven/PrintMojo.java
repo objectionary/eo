@@ -50,7 +50,7 @@ public final class PrintMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        final Home home = new Home(this.printOutputDir);
+        final Path home = this.printOutputDir.toPath();
         final int total = new Threaded<>(
             new Walk(this.printSourcesDir.toPath()),
             source -> {
@@ -61,7 +61,7 @@ public final class PrintMojo extends SafeMojo {
                 final String program = new Xmir(
                     new XMLDocument(new TextOf(source).asString())
                 ).toEO();
-                home.save(program, relative);
+                new Saved(program, home.resolve(relative)).value();
                 Logger.info(
                     this,
                     "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",

@@ -29,9 +29,9 @@ final class UnspileMojoTest {
         final Path classes = Paths.get("classes");
         final Path foo = Paths.get("a/b/c/foo.class");
         final FakeMaven maven = new FakeMaven(temp);
-        new Home(temp).save("abc", foo);
-        new Home(temp).save("xxx", generated.resolve("a/b/c/foo.java"));
-        new Home(temp).save("cde", classes.resolve("foo.txt"));
+        new Saved("abc", temp.resolve(foo)).value();
+        new Saved("xxx", temp.resolve(generated).resolve("a/b/c/foo.java")).value();
+        new Saved("cde", temp.resolve(classes).resolve("foo.txt")).value();
         maven.with("generatedDir", generated.toFile())
             .with("classesDir", classes.toFile())
             .execute(UnspileMojo.class);
