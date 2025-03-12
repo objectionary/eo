@@ -14,8 +14,10 @@ import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
+import org.cactoos.proc.IoCheckedBiProc;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 
@@ -32,9 +34,9 @@ final class HmBase implements Home {
     private final Path cwd;
 
     /**
-     * Home with "save" functionality.
+     * BiProc with two arguments for saving {@link Input} from first argument to file from second.
      */
-    private final Home origin;
+    private final IoCheckedBiProc<Input, Path> sve;
 
     /**
      * Ctor.
@@ -52,7 +54,7 @@ final class HmBase implements Home {
      */
     HmBase(final Path pth) {
         this.cwd = pth;
-        this.origin = new HmSave(
+        this.sve = new IoCheckedBiProc<>(
             (input, path) -> {
                 final Path target = this.absolute(this.onlyRelative(path));
                 if (target.toFile().getParentFile().mkdirs()) {
@@ -86,27 +88,27 @@ final class HmBase implements Home {
 
     @Override
     public void save(final String str, final Path path) throws IOException {
-        this.origin.save(str, path);
+        this.save(new InputOf(str), path);
     }
 
     @Override
     public void save(final Text txt, final Path path) throws IOException {
-        this.origin.save(txt, path);
+        this.save(new InputOf(txt), path);
     }
 
     @Override
-    public void save(final InputStream stream, final Path path) throws IOException  {
-        this.origin.save(stream, path);
+    public void save(final InputStream stream, final Path path) throws IOException {
+        this.save(new InputOf(stream), path);
     }
 
     @Override
-    public void save(final byte[] bytes, final Path path) throws IOException  {
-        this.origin.save(bytes, path);
+    public void save(final byte[] bytes, final Path path) throws IOException {
+        this.save(new InputOf(bytes), path);
     }
 
     @Override
     public void save(final Input input, final Path path) throws IOException {
-        this.origin.save(input, path);
+        this.sve.exec(input, path);
     }
 
     @Override
