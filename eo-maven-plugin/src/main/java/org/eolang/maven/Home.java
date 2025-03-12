@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
@@ -56,7 +55,7 @@ final class Home {
         this.cwd = pth;
         this.sve = new IoCheckedBiProc<>(
             (input, path) -> {
-                final Path target = this.absolute(this.onlyRelative(path));
+                final Path target = this.resolve(path);
                 if (target.toFile().getParentFile().mkdirs()) {
                     Logger.debug(this, "Directory created: %[file]s", target.getParent());
                 }
@@ -93,7 +92,7 @@ final class Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    public void save(final String str, final Path path) throws IOException {
+    void save(final String str, final Path path) throws IOException {
         this.save(new InputOf(str), path);
     }
 
@@ -104,30 +103,8 @@ final class Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    public void save(final Text txt, final Path path) throws IOException {
+    void save(final Text txt, final Path path) throws IOException {
         this.save(new InputOf(txt), path);
-    }
-
-    /**
-     * Saving stream.
-     *
-     * @param stream Input stream
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
-    public void save(final InputStream stream, final Path path) throws IOException {
-        this.save(new InputOf(stream), path);
-    }
-
-    /**
-     * Saving bytes.
-     *
-     * @param bytes Byte array
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
-    public void save(final byte[] bytes, final Path path) throws IOException {
-        this.save(new InputOf(bytes), path);
     }
 
     /**
@@ -138,7 +115,7 @@ final class Home {
      * @throws IOException If fails
      * @throws IllegalArgumentException If given path is absolute
      */
-    public void save(final Input input, final Path path) throws IOException {
+    void save(final Input input, final Path path) throws IOException {
         this.sve.exec(input, path);
     }
 
@@ -149,8 +126,8 @@ final class Home {
      * @return True if exists
      * @throws IllegalArgumentException If given path is absolute
      */
-    public boolean exists(final Path path) {
-        return Files.exists(this.absolute(this.onlyRelative(path)));
+    boolean exists(final Path path) {
+        return Files.exists(this.resolve(path));
     }
 
     /**
@@ -162,8 +139,8 @@ final class Home {
      *  if some exception happens during reading the file
      * @throws IllegalArgumentException If given path is absolute
      */
-    public Bytes load(final Path path) throws IOException {
-        return new BytesOf(Files.readAllBytes(this.absolute(this.onlyRelative(path))));
+    Bytes load(final Path path) throws IOException {
+        return new BytesOf(Files.readAllBytes(this.resolve(path)));
     }
 
     /**
@@ -172,17 +149,18 @@ final class Home {
      * @param path Cwd-relative path to file
      * @return Absolute path
      */
-    public Path absolute(final Path path) {
+    Path absolute(final Path path) {
         return this.cwd.resolve(path);
     }
 
     /**
-     * Verifies that given path is relative and throws exception.
-     * @param path Path to be verified
-     * @return Given path if it's relative
+     * Absolute path to a file.
+     *
+     * @param path Relative path to file
+     * @return Absolute path
      * @throws IllegalArgumentException If given path is Absolute
      */
-    public Path onlyRelative(final Path path) {
+    private Path resolve(Path path) {
         if (path.isAbsolute()) {
             throw new IllegalArgumentException(
                 String.format(
@@ -192,6 +170,6 @@ final class Home {
                 )
             );
         }
-        return path;
+        return this.absolute(path);
     }
 }
