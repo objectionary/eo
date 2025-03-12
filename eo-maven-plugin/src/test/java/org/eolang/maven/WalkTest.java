@@ -23,14 +23,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class WalkTest {
 
     @Test
-    void findsFiles(@Mktmp final Path temp) throws Exception {
-        new HmBase(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
-        new HmBase(temp).save("", Paths.get("EOxxx/bar"));
+    void findsFilesMatchingGlobPattern(@Mktmp final Path temp) throws Exception {
+        final String nonMatchingFile = "foo/hello/0.1/EObar/x.bin";
+        final String matchingFile = "EOxxx/bar";
+        final String includePattern = "EO**/*";
+        final int expectedCount = 1;
+        
+        new HmBase(temp).save("", Paths.get(nonMatchingFile));
+        new HmBase(temp).save("", Paths.get(matchingFile));
+        
         MatcherAssert.assertThat(
-            "Walk is not iterable with more than 1 item, but it must be",
-            new Walk(temp).includes(new ListOf<>("EO**/*")),
-            Matchers.iterableWithSize(1)
+            String.format(
+                "Expected %d file(s) matching pattern '%s'",
+                expectedCount,
+                includePattern
+            ),
+            new Walk(temp).includes(new ListOf<>(includePattern)),
+            Matchers.iterableWithSize(expectedCount)
         );
     }
-
 }
