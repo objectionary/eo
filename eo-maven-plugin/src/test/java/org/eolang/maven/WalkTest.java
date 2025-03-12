@@ -24,12 +24,10 @@ final class WalkTest {
 
     @Test
     void findsFilesMatchingGlobPattern(@Mktmp final Path temp) throws Exception {
-        final String nonmatch = "foo/hello/0.1/EObar/x.bin";
-        final String match = "EOxxx/bar";
+        new Saved("", temp.resolve("foo/hello/0.1/EObar/x.bin")).value();
+        new Saved("", temp.resolve("EOxxx/bar")).value();
         final String pattern = "EO**/*";
         final int count = 1;
-        new HmBase(temp).save("", Paths.get(nonmatch));
-        new HmBase(temp).save("", Paths.get(match));
         MatcherAssert.assertThat(
             String.format(
                 "Expected %d file(s) matching pattern '%s'",
