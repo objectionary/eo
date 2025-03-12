@@ -4,9 +4,7 @@
  */
 package org.eolang.maven;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
-import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -15,19 +13,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link DcsEachWithoutTransitive}.
+ * Test case for {@link DpsEachWithoutTransitive}.
  *
  * @since 0.30
  */
-final class DcsEachWithoutTransitiveTest {
+final class DpsEachWithoutTransitiveTest {
 
     @Test
     void failsIfHasTransitiveDependencies() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new DcsEachWithoutTransitive(
-                new DcsFake(),
-                dep -> new DcsFake(100)
+            () -> new DpsEachWithoutTransitive(
+                new Dependencies.Fake(),
+                dep -> new Dependencies.Fake(100)
             ).iterator().next(),
             "We expect an exception when transitive dependencies are found"
         );
@@ -35,40 +33,40 @@ final class DcsEachWithoutTransitiveTest {
 
     @Test
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
-        final DcsFake original = new DcsFake();
+        final Dependencies original = new Dependencies.Fake();
         MatcherAssert.assertThat(
             "Dependencies should be kept as transitive",
-            new DcsEachWithoutTransitive(
+            new DpsEachWithoutTransitive(
                 original,
-                dep -> Collections.singleton(DcsFake.randDep("test"))
+                dep -> new Dependencies.Fake(Dependencies.Fake.randDep("test"))
             ),
-            DcsEachWithoutTransitiveTest.hasAll(original)
+            DpsEachWithoutTransitiveTest.hasAll(original)
         );
     }
 
     @Test
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
-        final DcsFake original = new DcsFake();
+        final Dependencies original = new Dependencies.Fake();
         MatcherAssert.assertThat(
             "Dependencies that have the same dependency should be kept as transitive",
-            new DcsEachWithoutTransitive(
+            new DpsEachWithoutTransitive(
                 original,
-                DcsFake::new
+                Dependencies.Fake::new
             ),
-            DcsEachWithoutTransitiveTest.hasAll(original)
+            DpsEachWithoutTransitiveTest.hasAll(original)
         );
     }
 
     @Test
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
-        final DcsFake original = new DcsFake();
+        final Dependencies original = new Dependencies.Fake();
         MatcherAssert.assertThat(
             "Dependencies with runtime dependencies should be kept as transitive",
-            new DcsEachWithoutTransitive(
+            new DpsEachWithoutTransitive(
                 original,
-                dep -> Collections.singleton(DcsFake.runtimeDep())
+                dep -> new Dependencies.Fake(Dependencies.Fake.randDep("test"))
             ),
-            DcsEachWithoutTransitiveTest.hasAll(original)
+            DpsEachWithoutTransitiveTest.hasAll(original)
         );
     }
 
@@ -77,9 +75,7 @@ final class DcsEachWithoutTransitiveTest {
      * @param deps Iterable of dependencies
      * @return Matcher
      */
-    private static Matcher<? super Iterable<Dependency>> hasAll(
-        final Iterable<? extends Dependency> deps
-    ) {
+    private static Matcher<Dependencies> hasAll(final Dependencies deps) {
         return Matchers.allOf(
             new ListOf<>(deps)
                 .stream()

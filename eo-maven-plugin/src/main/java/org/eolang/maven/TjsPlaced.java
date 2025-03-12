@@ -102,7 +102,8 @@ final class TjsPlaced implements Closeable {
      * @return Placed jar.
      */
     Optional<TjPlaced> findJar(final String dep) {
-        return this.jars().stream()
+        return this.jars()
+            .stream()
             .filter(tojo -> tojo.identifier().equals(dep))
             .findFirst();
     }

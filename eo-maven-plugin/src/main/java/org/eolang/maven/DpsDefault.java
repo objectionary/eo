@@ -14,14 +14,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.maven.model.Dependency;
 
 /**
- * It is a list of dependencies that are needed by the build.
- *
+ * List of default dependencies.
+ * <p>The dependencies are:
+ * 1. net.java.dev.jna:jna:5.14.0 which is we need for syscalls
+ * 2. all the dependencies extracted from "+rt" metas from XMIRs noted in all the tojos</p>
  * @since 0.29.0
  */
-final class DcsDefault implements Iterable<Dependency> {
+final class DpsDefault implements Dependencies {
+    /**
+     * JNA dependency.
+     */
+    private static final Dep JNA = new Dep()
+        .withGroupId("net.java.dev.jna")
+        .withArtifactId("jna")
+        .withVersion("5.14.0");
 
     /**
      * List of tojos.
@@ -39,29 +47,41 @@ final class DcsDefault implements Iterable<Dependency> {
     private final boolean skip;
 
     /**
+     * Add default JNA dependency or not.
+     */
+    private final boolean jna;
+
+    /**
      * Ctor.
      * @param tjs Tojos
      * @param self Self
      * @param skip Skip
+     * @param jna Add JNA dependency
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DcsDefault(
+    DpsDefault(
         final TjsForeign tjs,
         final boolean self,
-        final boolean skip
+        final boolean skip,
+        final boolean jna
     ) {
         this.tojos = tjs;
         this.discover = self;
         this.skip = skip;
+        this.jna = jna;
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
+    public Iterator<Dep> iterator() {
         final Collection<TjForeign> list = this.tojos.dependencies();
         Logger.debug(
             this, "%d suitable tojo(s) found out of %d",
             list.size(), this.tojos.size()
         );
-        final Collection<Dependency> deps = new HashSet<>(0);
+        final Collection<Dep> deps = new HashSet<>(0);
+        if (this.jna) {
+            deps.add(DpsDefault.JNA);
+        }
         for (final TjForeign tojo : list) {
             if (ParseMojo.ZERO.equals(tojo.version()) && !this.discover) {
                 Logger.debug(
@@ -71,27 +91,26 @@ final class DcsDefault implements Iterable<Dependency> {
                 );
                 continue;
             }
-            final Optional<Dependency> opt = DcsDefault.artifact(tojo.xmir());
+            final Optional<Dep> opt = DpsDefault.artifact(tojo.xmir());
             if (opt.isEmpty()) {
                 Logger.debug(this, "No dependencies for %s", tojo.description());
                 continue;
             }
-            final Dependency dep = opt.get();
-            if (this.skip && ParseMojo.ZERO.equals(dep.getVersion())) {
+            final Dep dep = opt.get();
+            final String coords = dep.toString();
+            if (this.skip && ParseMojo.ZERO.equals(dep.get().getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s skipped: %s",
-                    tojo.description(),
-                    new Coordinates(dep)
+                    tojo.description(), coords
                 );
                 continue;
             }
             Logger.info(
                 this, "Dependency found for %s: %s",
-                tojo.description(),
-                new Coordinates(dep)
+                tojo.description(), coords
             );
             deps.add(dep);
-            tojo.withJar(new Coordinates(dep));
+            tojo.withJar(coords);
         }
         return deps.iterator();
     }
@@ -102,30 +121,25 @@ final class DcsDefault implements Iterable<Dependency> {
      * @param file EO file
      * @return List of artifact needed
      */
-    private static Optional<Dependency> artifact(final Path file) {
-        final Collection<String> coords = DcsDefault.jvms(file);
+    private static Optional<Dep> artifact(final Path file) {
+        final Collection<String> coords = DpsDefault.jvms(file);
         if (coords.size() > 1) {
             throw new IllegalStateException(
                 Logger.format("Too many (%d) dependencies at %[file]s", coords.size(), file)
             );
         }
-        final Optional<Dependency> dep;
+        final Optional<Dep> dep;
         if (coords.isEmpty()) {
             dep = Optional.empty();
         } else {
             final String[] parts = coords.iterator().next().split(":");
-            final Dependency dependency = new Dependency();
-            dependency.setGroupId(parts[0]);
-            dependency.setArtifactId(parts[1]);
+            final Dep dependency = new Dep().withGroupId(parts[0]).withArtifactId(parts[1]);
             if (parts.length == 3) {
-                dependency.setVersion(parts[2]);
-                dependency.setClassifier("");
+                dependency.withClassifier("").withVersion(parts[2]);
             } else {
-                dependency.setClassifier(parts[2]);
-                dependency.setVersion(parts[3]);
+                dependency.withClassifier(parts[2]).withVersion(parts[3]);
             }
-            dependency.setScope("transpile");
-            dep = Optional.of(dependency);
+            dep = Optional.of(dependency.withScope("transpile"));
         }
         return dep;
     }

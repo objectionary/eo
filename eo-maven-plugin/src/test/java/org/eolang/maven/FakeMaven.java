@@ -302,12 +302,9 @@ public final class FakeMaven {
      */
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
-            "+alias stdout org.eolang.io.stdout",
+            "+alDias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
-            "+unlint object-has-data",
-            "+unlint broken-alias-second",
-            "+unlint incorrect-alias",
             "+version 0.0.0",
             "",
             "# No comments.",

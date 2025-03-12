@@ -16,47 +16,47 @@ import org.cactoos.iterable.Mapped;
  *
  * @since 0.29.0
  */
-final class DcsEachWithoutTransitive implements Iterable<Dependency> {
+final class DpsEachWithoutTransitive implements Dependencies {
 
     /**
      * Original dependencies.
      */
-    private final Iterable<Dependency> delegate;
+    private final Dependencies delegate;
 
     /**
      * Strategy to get transitive dependencies for a particular dependency.
      */
-    private final Func<? super Dependency, ? extends Iterable<Dependency>> transitive;
+    private final Func<Dep, Dependencies> transitive;
 
     /**
      * Ctor.
      * @param dependencies Dependencies
      * @param strategy Strategy
      */
-    DcsEachWithoutTransitive(
-        final Iterable<Dependency> dependencies,
-        final Func<? super Dependency, ? extends Iterable<Dependency>> strategy
+    DpsEachWithoutTransitive(
+        final Dependencies dependencies,
+        final Func<Dep, Dependencies> strategy
     ) {
         this.delegate = dependencies;
         this.transitive = strategy;
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
+    public Iterator<Dep> iterator() {
         return new Mapped<>(
             dependency -> {
-                final Iterable<Dependency> transitives = new Filtered<>(
-                    dep -> !DcsEachWithoutTransitive.eqTo(dep, dependency)
-                        && DcsEachWithoutTransitive.isRuntimeRequired(dep)
-                        && !ResolveMojo.isRuntime(dep),
+                final Iterable<Dep> transitives = new Filtered<>(
+                    dep -> {
+                        final Dependency dpndncy = dep.get();
+                        return !DpsEachWithoutTransitive.eqTo(dpndncy, dependency.get())
+                            && DpsEachWithoutTransitive.isRuntimeRequired(dpndncy)
+                            && !ResolveMojo.isRuntime(dpndncy);
+                    },
                     this.transitive.apply(dependency)
                 );
                 final String list = String.join(
                     ", ",
-                    new Mapped<>(
-                        dep -> new Coordinates(dep).toString(),
-                        transitives
-                    )
+                    new Mapped<>(Dep::toString, transitives)
                 );
                 if (!list.isEmpty()) {
                     throw new IllegalStateException(

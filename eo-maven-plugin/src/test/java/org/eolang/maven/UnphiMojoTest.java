@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link UnphiMojo}.
@@ -223,9 +222,9 @@ final class UnphiMojoTest {
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         final String phi = xtory.map().get("sweet").toString();
         final String main = "target/phi/main.phi";
-        final Path path = Paths.get(main);
-        new HmBase(temp).save(phi, path);
-        final long saved = temp.resolve(path).toFile().lastModified();
+        final Path path = temp.resolve(main);
+        new Saved(phi, path).value();
+        final long saved = path.toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
         maven.foreignTojos().add("name").withXmir(xmir);
@@ -247,20 +246,19 @@ final class UnphiMojoTest {
         );
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void convertsValidXmirAndParsableEO(final boolean reversed, @Mktmp final Path temp)
+    @Test
+    void convertsValidXmirAndParsableEO(@Mktmp final Path temp)
         throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
                 "# No comments.",
                 "[args] > app",
                 "  QQ.io.stdout > @",
-                "    \"Hello, world!\""
+                "    \"Hello, world!\"",
+                "  args.@ > phi!"
             )
             .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
-            .with("printReversed", reversed)
             .execute(ParseMojo.class)
             .execute(ShakeMojo.class)
             .execute(PhiMojo.class)

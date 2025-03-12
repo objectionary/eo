@@ -189,8 +189,8 @@ final class TjForeign {
      * @param coordinates The coordinates of jar.
      * @return The tojo itself.
      */
-    TjForeign withJar(final Coordinates coordinates) {
-        this.delegate.set(TjsForeign.Attribute.JAR.getKey(), coordinates.toString());
+    TjForeign withJar(final String coordinates) {
+        this.delegate.set(TjsForeign.Attribute.JAR.getKey(), coordinates);
         return this;
     }
 

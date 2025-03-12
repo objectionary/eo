@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import java.util.Iterator;
-import org.apache.maven.model.Dependency;
 import org.cactoos.iterator.Filtered;
 
 /**
@@ -14,25 +13,25 @@ import org.cactoos.iterator.Filtered;
  *
  * @since 0.29
  */
-final class DcsWithoutRuntime implements Iterable<Dependency> {
+final class DpsWithoutRuntime implements Dependencies {
 
     /**
      * All dependencies.
      */
-    private final Iterable<? extends Dependency> delegate;
+    private final Dependencies delegate;
 
     /**
      * Constructor.
      * @param decoratee Dependencies delegate.
      */
-    DcsWithoutRuntime(final Iterable<? extends Dependency> decoratee) {
+    DpsWithoutRuntime(final Dependencies decoratee) {
         this.delegate = decoratee;
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
+    public Iterator<Dep> iterator() {
         return new Filtered<>(
-            dep -> !"eo-runtime".equals(dep.getArtifactId()),
+            dep -> !"eo-runtime".equals(dep.get().getArtifactId()),
             this.delegate.iterator()
         );
     }

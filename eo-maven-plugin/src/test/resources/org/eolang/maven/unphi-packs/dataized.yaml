@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+asserts:
+  - /program[not(errors)]
+phi: |-
+  {
+    ⟦
+      tests-makes-object-a-constant() ↦ ⟦
+        foo ↦ 50.times(50),
+        f ↦ Φ̇.dataized(ξ.foo.φ).as-bytes
+      ⟧
+    ⟧
+  }

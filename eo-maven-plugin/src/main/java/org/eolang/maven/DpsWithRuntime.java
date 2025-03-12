@@ -22,30 +22,30 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.28.11
  */
-final class DcsWithRuntime implements Iterable<Dependency> {
+final class DpsWithRuntime implements Dependencies {
 
     /**
      * Dependency downloaded by HTTP from Maven Central.
      */
-    private static final Unchecked<Dependency> MAVEN_DEPENDENCY = DcsWithRuntime.mavenDependency();
+    private static final Unchecked<Dep> MAVEN_DEPENDENCY = DpsWithRuntime.mavenDependency();
 
     /**
      * All dependencies.
      */
-    private final Iterable<Dependency> delegate;
+    private final Iterable<Dep> delegate;
 
     /**
      * Supplier of the eo-runtime dependency.
      */
-    private final Unchecked<Dependency> supplied;
+    private final Unchecked<Dep> supplied;
 
     /**
      * Constructor.
      *
      * @param dlg Dependencies delegate.
      */
-    DcsWithRuntime(final Iterable<Dependency> dlg) {
-        this(dlg, DcsWithRuntime.MAVEN_DEPENDENCY);
+    DpsWithRuntime(final Iterable<Dep> dlg) {
+        this(dlg, DpsWithRuntime.MAVEN_DEPENDENCY);
     }
 
     /**
@@ -54,9 +54,9 @@ final class DcsWithRuntime implements Iterable<Dependency> {
      * @param dlg Dependencies delegate.
      * @param sup Dependency.
      */
-    DcsWithRuntime(
-        final Iterable<Dependency> dlg,
-        final Dependency sup
+    DpsWithRuntime(
+        final Iterable<Dep> dlg,
+        final Dep sup
     ) {
         this(dlg, new Unchecked<>(() -> sup));
     }
@@ -67,18 +67,18 @@ final class DcsWithRuntime implements Iterable<Dependency> {
      * @param dlg Dependencies delegate.
      * @param sup Supplier of the eo-runtime dependency.
      */
-    DcsWithRuntime(
-        final Iterable<Dependency> dlg,
-        final Unchecked<Dependency> sup
+    DpsWithRuntime(
+        final Iterable<Dep> dlg,
+        final Unchecked<Dep> sup
     ) {
         this.delegate = dlg;
         this.supplied = sup;
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
-        final ListOf<Dependency> all = new ListOf<>(this.delegate);
-        if (all.stream().noneMatch(DcsWithRuntime::isRuntime)) {
+    public Iterator<Dep> iterator() {
+        final ListOf<Dep> all = new ListOf<>(this.delegate);
+        if (all.stream().noneMatch(dep -> DpsWithRuntime.isRuntime(dep.get()))) {
             all.add(this.supplied.value());
         }
         return all.iterator();
@@ -90,13 +90,13 @@ final class DcsWithRuntime implements Iterable<Dependency> {
      * @return Runtime dependency from Maven Central.
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static Unchecked<Dependency> mavenDependency() {
+    private static Unchecked<Dep> mavenDependency() {
         final String url = String.format(
             "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",
             "org/eolang/eo-runtime"
         );
         try {
-            return DcsWithRuntime.dependency(
+            return DpsWithRuntime.dependency(
                 new Xnav(new XMLDocument(new URL(url)).inner())
                     .element("metadata")
                     .element("versioning")
@@ -128,18 +128,15 @@ final class DcsWithRuntime implements Iterable<Dependency> {
      * @param version Version of eo-runtime
      * @return Maven Dependency.
      */
-    private static Unchecked<Dependency> dependency(final String version) {
+    private static Unchecked<Dep> dependency(final String version) {
         return new Unchecked<>(
             new Synced<>(
                 new Sticky<>(
-                    () -> {
-                        final Dependency dependency = new Dependency();
-                        dependency.setGroupId("org.eolang");
-                        dependency.setArtifactId("eo-runtime");
-                        dependency.setVersion(version);
-                        dependency.setClassifier("");
-                        return dependency;
-                    }
+                    () -> new Dep()
+                        .withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withVersion(version)
+                        .withClassifier("")
                 )
             )
         );
