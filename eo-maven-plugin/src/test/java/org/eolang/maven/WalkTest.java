@@ -24,22 +24,20 @@ final class WalkTest {
 
     @Test
     void findsFilesMatchingGlobPattern(@Mktmp final Path temp) throws Exception {
-        final String nonMatchingFile = "foo/hello/0.1/EObar/x.bin";
-        final String matchingFile = "EOxxx/bar";
-        final String includePattern = "EO**/*";
-        final int expectedCount = 1;
-        
-        new HmBase(temp).save("", Paths.get(nonMatchingFile));
-        new HmBase(temp).save("", Paths.get(matchingFile));
-        
+        final String nonmatch = "foo/hello/0.1/EObar/x.bin";
+        final String match = "EOxxx/bar";
+        final String pattern = "EO**/*";
+        final int count = 1;
+        new HmBase(temp).save("", Paths.get(nonmatch));
+        new HmBase(temp).save("", Paths.get(match));
         MatcherAssert.assertThat(
             String.format(
                 "Expected %d file(s) matching pattern '%s'",
-                expectedCount,
-                includePattern
+                count,
+                pattern
             ),
-            new Walk(temp).includes(new ListOf<>(includePattern)),
-            Matchers.iterableWithSize(expectedCount)
+            new Walk(temp).includes(new ListOf<>(pattern)),
+            Matchers.iterableWithSize(count)
         );
     }
 }
