@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import org.apache.maven.model.Dependency;
 
 /**
- * Maven coordinates as a string.
+ * Wrapped for maven model {@link Dependency}.
  *
  * @since 0.54
  */
