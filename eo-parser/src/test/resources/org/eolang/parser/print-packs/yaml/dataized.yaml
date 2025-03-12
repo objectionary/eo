@@ -5,7 +5,7 @@ origin: |
   # Foo.
   [] > foo
     [] > f
-    as-bytes. > som
+    as-bytes. > some
       dataized
         f:0
 
@@ -14,4 +14,4 @@ printed: |
   [] > foo
     # No comments.
     [] > f
-    f > som!
+    f > some!
