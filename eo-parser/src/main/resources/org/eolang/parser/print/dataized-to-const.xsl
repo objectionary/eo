@@ -14,7 +14,7 @@
     <xsl:choose>
       <xsl:when test="exists($argument)">
         <xsl:element name="o">
-          <xsl:apply-templates select="$argument/@*"/>
+          <xsl:apply-templates select="$argument/@*[name()!='as']"/>
           <xsl:attribute name="name" select="@name"/>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">

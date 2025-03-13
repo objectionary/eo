@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link UnphiMojo}.
@@ -247,20 +246,19 @@ final class UnphiMojoTest {
         );
     }
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void convertsValidXmirAndParsableEO(final boolean reversed, @Mktmp final Path temp)
+    @Test
+    void convertsValidXmirAndParsableEO(@Mktmp final Path temp)
         throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
                 "# No comments.",
                 "[args] > app",
                 "  QQ.io.stdout > @",
-                "    \"Hello, world!\""
+                "    \"Hello, world!\"",
+                "  args.@ > phi!"
             )
             .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
-            .with("printReversed", reversed)
             .execute(ParseMojo.class)
             .execute(ShakeMojo.class)
             .execute(PhiMojo.class)

@@ -17,12 +17,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link DcsDepgraph.DcsJson}.
+ * Test case for {@link DpsDepgraph.DpsJson}.
  *
  * @since 0.28.11
  */
 @ExtendWith(MktmpResolver.class)
-final class DcsDepgraphTest {
+final class DpsDepgraphTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -36,7 +36,7 @@ final class DcsDepgraphTest {
     ) throws Exception {
         MatcherAssert.assertThat(
             "The number of dependencies must be correct, but it isn't",
-            new LengthOf(new DcsDepgraph.DcsJson(this.file(tmp, name))).value(),
+            new LengthOf(new DpsDepgraph.DpsJson(this.file(tmp, name))).value(),
             Matchers.equalTo(number)
         );
     }

@@ -25,6 +25,7 @@ asserts:
   - //o[@base='$.fourth-1' and @name='fourth' and @const]
   - //o[@base='Q.org.eolang.number' and @name='fifths' and @const]/o[@base='Q.org.eolang.bytes' and text()!='']
   - //o[@base='Q.org.eolang.bytes' and @name='sixth' and @const and text()='2A-']
+  - //o[@base='$.third' and @const and not(@as)]
 input: |
   # No comments.
   [] > foo
@@ -34,3 +35,6 @@ input: |
     [] > fourth!
     5 > fifths!
     2A- > sixth!
+    as-bytes. > seventh
+      dataized
+        third:0

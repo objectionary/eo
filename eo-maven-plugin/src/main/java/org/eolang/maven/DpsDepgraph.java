@@ -32,9 +32,8 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @see <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  * @since 0.28.11
- * @checkstyle NoJavadocForOverriddenMethodsCheck (200 lines)
  */
-final class DcsDepgraph implements Iterable<Dependency> {
+final class DpsDepgraph implements Dependencies {
 
     /**
      * Maven project.
@@ -59,7 +58,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
     /**
      * Dependency for which we are looking transitive dependencies.
      */
-    private final Dependency dependency;
+    private final Dep dependency;
 
     /**
      * The main constructor.
@@ -71,12 +70,12 @@ final class DcsDepgraph implements Iterable<Dependency> {
      * @param dep Dependency
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    DcsDepgraph(
+    DpsDepgraph(
         final MavenProject pkt,
         final MavenSession ssn,
         final BuildPluginManager mgr,
         final Path path,
-        final Dependency dep
+        final Dep dep
     ) {
         this.project = pkt;
         this.session = ssn;
@@ -86,19 +85,20 @@ final class DcsDepgraph implements Iterable<Dependency> {
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
-        return new DcsDepgraph.DcsJson(this.file(this.dependency)).iterator();
+    public Iterator<Dep> iterator() {
+        return new DpsJson(this.file(this.dependency)).iterator();
     }
 
     /**
      * Receive file with dependencies jar file.
      *
-     * @param origin Dependency
+     * @param dep Dependency
      * @return Path to the saved json dependency file
      */
-    private Path file(final Dependency origin) {
+    private Path file(final Dep dep) {
         try {
-            final String name = DcsDepgraph.fileName(origin);
+            final Dependency dpndncy = dep.get();
+            final String name = DpsDepgraph.fileName(dpndncy);
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("com.github.ferstl"),
@@ -107,9 +107,9 @@ final class DcsDepgraph implements Iterable<Dependency> {
                 ),
                 MojoExecutor.goal("for-artifact"),
                 MojoExecutor.configuration(
-                    MojoExecutor.element("groupId", origin.getGroupId()),
-                    MojoExecutor.element("artifactId", origin.getArtifactId()),
-                    MojoExecutor.element("version", origin.getVersion()),
+                    MojoExecutor.element("groupId", dpndncy.getGroupId()),
+                    MojoExecutor.element("artifactId", dpndncy.getArtifactId()),
+                    MojoExecutor.element("version", dpndncy.getVersion()),
                     MojoExecutor.element("graphFormat", "json"),
                     MojoExecutor.element("outputDirectory", this.dir.toString()),
                     MojoExecutor.element("outputFileName", name)
@@ -125,7 +125,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
             throw new IllegalStateException(
                 String.format(
                     "Dphgraph. Creation of the dependencies file failed for the dependency %s",
-                    origin
+                    dep
                 ),
                 ex
             );
@@ -153,7 +153,7 @@ final class DcsDepgraph implements Iterable<Dependency> {
      *
      * @since 0.28.11
      */
-    static final class DcsJson implements Iterable<Dependency> {
+    static final class DpsJson implements Dependencies {
 
         /**
          * File path.
@@ -165,22 +165,14 @@ final class DcsDepgraph implements Iterable<Dependency> {
          *
          * @param path File path
          */
-        DcsJson(final Path path) {
+        DpsJson(final Path path) {
             this.file = path;
         }
 
-        /**
-         * Returns an iterator over elements of type {@code T}.
-         *
-         * @return Iterator.
-         * @todo #1897:30m Close `JsonReader` object in `DcsJson`.
-         *  SonarCloud mandates readers to be closed.
-         *  Use try-with-resources or close this "JsonReader" in a "finally" clause. (line 203)
-         */
         @Override
-        public Iterator<Dependency> iterator() {
+        public Iterator<Dep> iterator() {
             try {
-                final Collection<Dependency> all = new ArrayList<>(0);
+                final Collection<Dep> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
                     Logger.debug(this, String.format("Dependencies file: %s", this.file));
                     final JsonArray artifacts;
@@ -191,18 +183,19 @@ final class DcsDepgraph implements Iterable<Dependency> {
                     }
                     for (final JsonValue artifact : artifacts) {
                         final JsonObject obj = artifact.asJsonObject();
-                        final String group = obj.getString("groupId");
-                        final String id = obj.getString("artifactId");
-                        final String version = obj.getString("version");
-                        final String scope = obj.getJsonArray("scopes").stream()
-                            .map(JsonValue::toString)
-                            .findFirst().orElseThrow(IllegalStateException::new);
-                        final Dependency dependency = new Dependency();
-                        dependency.setGroupId(group);
-                        dependency.setArtifactId(id);
-                        dependency.setVersion(version);
-                        dependency.setScope(scope);
-                        all.add(dependency);
+                        all.add(
+                            new Dep(new Dependency())
+                                .withGroupId(obj.getString("groupId"))
+                                .withArtifactId(obj.getString("artifactId"))
+                                .withVersion(obj.getString("version"))
+                                .withScope(
+                                    obj.getJsonArray("scopes")
+                                        .stream()
+                                        .map(JsonValue::toString)
+                                        .findFirst()
+                                        .orElseThrow(IllegalStateException::new)
+                                )
+                        );
                     }
                 }
                 return all.iterator();

@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+origin: |
+  # Foo.
+  [] > foo
+    [] > f
+    as-bytes. > some
+      dataized
+        f:0
+
+printed: |
+  # No comments.
+  [] > foo
+    # No comments.
+    [] > f
+    f > some!

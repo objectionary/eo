@@ -25,6 +25,9 @@
     <xsl:variable name="name" select="substring-after(@base, substring-before(@base, $auto))"/>
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:element name="o">
+      <xsl:if test="@as">
+        <xsl:apply-templates select="@as"/>
+      </xsl:if>
       <xsl:apply-templates select="$target/@*"/>
       <xsl:apply-templates select="$target/node()"/>
     </xsl:element>

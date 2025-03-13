@@ -52,52 +52,57 @@ public final class ResolveMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
-    private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
-        dependency -> new DcsDepgraph(
-            this.project,
-            this.session,
-            this.manager,
-            this.targetDir.toPath()
-                .resolve(ResolveMojo.DIR)
-                .resolve("dependencies-info"),
-            dependency
-        );
+    private Func<Dep, Dependencies> transitiveStrategy = dependency -> new DpsDepgraph(
+        this.project,
+        this.session,
+        this.manager,
+        this.targetDir.toPath().resolve(ResolveMojo.DIR).resolve("dependencies-info"),
+        dependency
+    );
+
+    /**
+     * Resolve default JNA dependency or not.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean resolveJna = true;
 
     @Override
     public void exec() throws IOException {
-        final Collection<Dependency> deps = this.deps();
+        final Collection<Dep> deps = this.deps();
         final Path target = this.targetDir.toPath().resolve(ResolveMojo.DIR);
-        for (final Dependency dep : deps) {
-            String classifier = dep.getClassifier();
-            if (classifier == null || classifier.isEmpty()) {
+        for (final Dep dep : deps) {
+            final String classifier;
+            final Dependency dependency = dep.get();
+            if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
                 classifier = "-";
+            } else {
+                classifier = dependency.getClassifier();
             }
             final Path dest = this.cleanPlace(
                 target
-                    .resolve(dep.getGroupId())
-                    .resolve(dep.getArtifactId())
+                    .resolve(dependency.getGroupId())
+                    .resolve(dependency.getArtifactId())
                     .resolve(classifier),
-                dep.getVersion()
+                dependency.getVersion()
             );
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved and exists in %[file]s",
-                    new Coordinates(dep), dest
-                );
-                continue;
-            }
-            this.central.accept(dep, dest);
-            final int files = new Walk(dest).size();
-            if (files == 0) {
-                Logger.warn(
-                    this, "No new files after unpacking of %s!",
-                    new Coordinates(dep)
+                    dep, dest
                 );
             } else {
-                Logger.info(
-                    this, "Found %d new file(s) after unpacking of %s",
-                    files, new Coordinates(dep)
-                );
+                this.central.accept(dependency, dest);
+                final int files = new Walk(dest).size();
+                if (files == 0) {
+                    Logger.warn(this, "No new files after unpacking of %s!", dep);
+                } else {
+                    Logger.info(
+                        this, "Found %d new file(s) after unpacking of %s",
+                        files, dep
+                    );
+                }
             }
         }
         if (deps.isEmpty()) {
@@ -107,16 +112,7 @@ public final class ResolveMojo extends SafeMojo {
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
                 deps.size(), target,
-                new Joined(
-                    ", ",
-                    new Mapped<>(
-                        dep -> String.format(
-                            "%s:%s:%s", dep.getGroupId(), dep.getArtifactId(),
-                            dep.getVersion()
-                        ),
-                        deps
-                    )
-                )
+                new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
     }
@@ -155,6 +151,7 @@ public final class ResolveMojo extends SafeMojo {
         if (subs != null) {
             for (final File sub : subs) {
                 final String base = sub.getName();
+                Logger.info(this, "Base if %s", base);
                 if (base.equals(version)) {
                     continue;
                 }
@@ -180,39 +177,35 @@ public final class ResolveMojo extends SafeMojo {
      *
      * @return List of them
      */
-    private Collection<Dependency> deps() {
-        Iterable<Dependency> deps = new DcsDefault(
-            this.scopedTojos(),
-            this.discoverSelf,
-            this.skipZeroVersions
+    private Collection<Dep> deps() {
+        Dependencies deps = new DpsDefault(
+            this.scopedTojos(), this.discoverSelf, this.skipZeroVersions, this.resolveJna
         );
         if (this.withRuntimeDependency) {
             final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
             if (runtime.isPresent()) {
-                deps = new DcsWithRuntime(deps, runtime.get());
+                deps = new DpsWithRuntime(deps, new Dep(runtime.get()));
                 Logger.info(
                     this,
                     "Runtime dependency added from pom with version: %s",
                     runtime.get().getVersion()
                 );
             } else {
-                deps = new DcsWithRuntime(deps);
+                deps = new DpsWithRuntime(deps);
             }
         } else {
-            deps = new DcsWithoutRuntime(deps);
+            deps = new DpsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
-            deps = new DcsUniquelyVersioned(deps);
+            deps = new DpsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
-            deps = new DcsEachWithoutTransitive(deps, this.transitiveStrategy);
+            deps = new DpsEachWithoutTransitive(deps, this.transitiveStrategy);
         }
         return new ListOf<>(deps)
             .stream()
-            .map(ResolveMojo.Wrap::new)
             .sorted()
             .distinct()
-            .map(ResolveMojo.Wrap::dep)
             .collect(Collectors.toList());
     }
 
@@ -233,56 +226,5 @@ public final class ResolveMojo extends SafeMojo {
                 .findFirst();
         }
         return res;
-    }
-
-    /**
-     * Wrapper for comparing.
-     *
-     * @since 0.1
-     */
-    private static final class Wrap implements Comparable<ResolveMojo.Wrap> {
-        /**
-         * Dependency.
-         */
-        private final Dependency dependency;
-
-        /**
-         * Ctor.
-         *
-         * @param dep Dependency
-         */
-        Wrap(final Dependency dep) {
-            this.dependency = dep;
-        }
-
-        /**
-         * Return it.
-         *
-         * @return The dep
-         */
-        public Dependency dep() {
-            return this.dependency;
-        }
-
-        @Override
-        public int compareTo(final ResolveMojo.Wrap wrap) {
-            return new Coordinates(this.dependency).compareTo(
-                new Coordinates(wrap.dependency)
-            );
-        }
-
-        @Override
-        public boolean equals(final Object wrap) {
-            return new Coordinates(this.dependency).equals(
-                new Coordinates(
-                    ResolveMojo.Wrap.class.cast(wrap).dependency
-                )
-            );
-        }
-
-        @Override
-        public int hashCode() {
-            return new Coordinates(this.dependency).hashCode();
-        }
     }
 }

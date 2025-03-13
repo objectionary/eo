@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 
 /**
@@ -18,32 +17,32 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.28.11
  */
-final class DcsUniquelyVersioned implements Iterable<Dependency> {
+final class DpsUniquelyVersioned implements Dependencies {
 
     /**
      * Source of dependencies.
      */
-    private final Iterable<Dependency> delegate;
+    private final Dependencies delegate;
 
     /**
      * The main constructor.
      *
      * @param dlg Source of dependencies.
      */
-    DcsUniquelyVersioned(final Iterable<Dependency> dlg) {
+    DpsUniquelyVersioned(final Dependencies dlg) {
         this.delegate = dlg;
     }
 
     @Override
-    public Iterator<Dependency> iterator() {
-        final Collection<Dependency> deps = new ListOf<>(this.delegate.iterator());
+    public Iterator<Dep> iterator() {
+        final Collection<Dep> deps = new ListOf<>(this.delegate.iterator());
         final Map<String, Set<String>> conflicts = deps
             .stream()
             .collect(
                 Collectors.groupingBy(
-                    Dependency::getManagementKey,
+                    dep -> dep.get().getManagementKey(),
                     Collectors.mapping(
-                        Dependency::getVersion,
+                        dep -> dep.get().getVersion(),
                         Collectors.toSet()
                     )
                 )
