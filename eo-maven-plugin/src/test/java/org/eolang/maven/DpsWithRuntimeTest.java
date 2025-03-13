@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link DcsWithRuntime}.
+ * Test case for {@link DpsWithRuntime}.
  *
  * @since 0.28.11
  */
-final class DcsWithRuntimeTest {
+final class DpsWithRuntimeTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
@@ -26,9 +26,9 @@ final class DcsWithRuntimeTest {
                 "Expected %d dependencies when adding runtime dependency",
                 expected
             ),
-            new DcsWithRuntime(
-                new DcsFake(5),
-                DcsFake.runtimeDep()
+            new DpsWithRuntime(
+                new Dependencies.Fake(5),
+                Dependencies.Fake.runtimeDep()
             ),
             Matchers.iterableWithSize(expected)
         );
@@ -43,8 +43,8 @@ final class DcsWithRuntimeTest {
                 "Expected %d dependencies when adding the remote version of runtime dependency",
                 expected
             ),
-            new DcsWithRuntime(
-                new DcsFake(2)
+            new DpsWithRuntime(
+                new Dependencies.Fake(2)
             ),
             Matchers.iterableWithSize(expected)
         );

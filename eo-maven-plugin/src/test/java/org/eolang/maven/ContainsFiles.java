@@ -44,7 +44,7 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
     public boolean matchesSafely(final Path path) {
         return Arrays.stream(this.globs)
             .anyMatch(
-                glob -> matchesGlob(
+                glob -> ContainsFiles.matchesGlob(
                     path,
                     glob
                 )

@@ -66,6 +66,19 @@ final class ResolveMojoTest {
     }
 
     @Test
+    void resolvesDefaultJnaDependency(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "Default JNA dependency must be resolved",
+            new FakeMaven(temp)
+                .withHelloWorld()
+                .with("withRuntimeDependency", false)
+                .execute(new FakeMaven.Resolve())
+                .result(),
+            Matchers.hasKey("target/6-resolve/net.java.dev.jna/jna/-/5.14.0")
+        );
+    }
+
+    @Test
     void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "[a b] > sum",
@@ -174,7 +187,7 @@ final class ResolveMojoTest {
             .with("ignoreTransitive", false)
             .with(
                 "transitiveStrategy",
-                (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.emptyList()
+                (Func<Dep, Dependencies>) ignore -> new Dependencies.Fake(0)
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(

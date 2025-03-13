@@ -23,7 +23,6 @@ public final class CompileMojo extends SafeMojo {
      * Mojas to execute.
      */
     private static final Moja<?>[] MOJAS = {
-        new Moja<>(DownloadDepsMojo.class),
         new Moja<>(AssembleMojo.class),
         new Moja<>(LintMojo.class),
         new Moja<>(ResolveMojo.class),

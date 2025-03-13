@@ -7,6 +7,8 @@ origin: |
     x > first
       [] >>
         5 > five
+    x > second
+      [f]:1 >>
 
 printed: |
   # No comments.
@@ -14,3 +16,5 @@ printed: |
     x > first
       [] >>
         5 > five
+    x > second
+      [f]:1 >>
