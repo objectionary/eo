@@ -16,7 +16,7 @@ asserts:
   - //o[@base='Q.org.eolang.bytes' and @name='fourth' and not(o) and text()='11-21']
   - //o[@base='.string' and @name='str' and count(o)=2 and o[last() and @base='Q.org.eolang.bytes' and text()='48-65-79']]
   - //o[@base='Q.org.eolang.bytes' and @name='bt' and count(o)=0 and text()='A2-']
-  - //o[@base='.with']/o[@base='.with']/o[@base='.with']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes' and text()='3F-F0-00-00-00-00-00-00']
+  - //o[@base='Q.org.eolang.tuple']/o[@base='Q.org.eolang.tuple']/o[@base='Q.org.eolang.tuple']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes' and text()='3F-F0-00-00-00-00-00-00']
 input: |
   42 > first
   number 11-21 > bts

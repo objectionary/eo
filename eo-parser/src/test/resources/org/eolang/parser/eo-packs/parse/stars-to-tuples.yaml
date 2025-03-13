@@ -8,26 +8,32 @@ asserts:
   - //objects[count(o)=7]
   - //objects[count(//o[@star])=0]
   # first
-  - //o[@base='.empty' and @line=1 and @name='xs']/o[@base='Q.org.eolang.tuple' and not(@name)]
+  - //o[@base='Q.org.eolang.tuple.empty' and @line=1 and @name='xs']
   # second
-  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
-  - //o[@base='.with' and @line=2 and @name='xl']/o[@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[3][@base='Q.org.eolang.number']/o[1][@hex and text()='1']
   # third
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='.with']/o[@base='Q.org.eolang.number']
-  - //o[@base='.with' and @line=3 and not(@name)]/o[@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[1][@hex and text()='1']
+  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[3][@base='Q.org.eolang.number']/o[1][@hex and text()='2']
   # fourth
-  - //o[@base='.empty' and @line=4]/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
+  - //o[@base='.empty' and @line=4]/o[@base='Q.org.eolang.tuple.empty']
   # fifth
-  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.with']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
-  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.with']/o[@base='.c']
-  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.with']/o[@base='.f']
-  - //o[@base='.with' and @line=5 and not(@name)]/o[@base='.i']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.c']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@hex and text()='1']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.f']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@hex and text()='2']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[2][@base='.i']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[3][@base='Q.org.eolang.number']/o[@hex and text()='3']
   # sixth
-  - //o[@base='.elements']/o[@base='arr']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
+  - //o[@base='.elements']/o[@base='arr']/o[@base='Q.org.eolang.tuple.empty']
   # seventh
   - //o[@base='.reduced']/o[@base='list']
-  - //o[@base='.reduced']/o[@base='.empty']/o[@base='Q.org.eolang.tuple']
+  - //o[@base='.reduced']/o[@base='Q.org.eolang.tuple.empty']
   - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
   * > xs

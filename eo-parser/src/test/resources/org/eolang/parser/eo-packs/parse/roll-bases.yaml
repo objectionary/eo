@@ -21,7 +21,7 @@ asserts:
   - //o[@base='$.two.a' and @name='one']
   - //o[@base='$.three.b' and @name='two']
   - //o[@base='Q.org.eolang.c' and @name='three']
-  - //o[@base='.with']/o[@base='Q.org.eolang.tuple.empty.with' and o[@base='Q.org.eolang.number']]
+  - //o[@base='Q.org.eolang.tuple']/o[@base='Q.org.eolang.tuple' and o[@base='Q.org.eolang.tuple.empty'] and o[@base='Q.org.eolang.number']]
   - //o[@base='Q.org.eolang.true.if' and count(o)=2]
   - //o[@base='.if' and count(o)=3]/o[1][@base='$.x']/o[1][@base='Q.org.eolang.y']
   - //o[@base='.and']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes' and text()!='']

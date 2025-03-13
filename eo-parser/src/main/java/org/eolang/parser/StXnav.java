@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
  *
  * @since 0.53.0
  */
-public final class StXnav implements Shift {
+final class StXnav implements Shift {
     /**
      * XPath to search for.
      */
@@ -29,18 +29,34 @@ public final class StXnav implements Shift {
     private final Consumer<Xnav> fun;
 
     /**
+     * UID.
+     */
+    private final String identifier;
+
+    /**
      * Ctor.
      * @param path The XPath
      * @param func The function
      */
-    public StXnav(final String path, final Consumer<Xnav> func) {
+    StXnav(final String path, final Consumer<Xnav> func) {
+        this("st-xnav", path, func);
+    }
+
+    /**
+     * Ctor.
+     * @param identifier UID
+     * @param path The XPath
+     * @param func The function
+     */
+    StXnav(final String identifier, final String path, final Consumer<Xnav> func) {
+        this.identifier = identifier;
         this.xpath = path;
         this.fun = func;
     }
 
     @Override
     public String uid() {
-        return this.getClass().getSimpleName();
+        return this.identifier;
     }
 
     @Override
