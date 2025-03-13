@@ -23,7 +23,7 @@ final class StHexTest {
         "1, 3F-F0-00-00-00-00-00-00",
         "2, 40-00-00-00-00-00-00-00",
         "3, 40-08-00-00-00-00-00-00",
-        "10, 40-24-00-00-00-00-00-00",
+        "10, 40-24-00-00-00-00-00-00"
     })
     void convertsNumberToHex(final String number, final String bytes) {
         MatcherAssert.assertThat(
