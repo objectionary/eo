@@ -24,7 +24,6 @@
       <xsl:variable name="arg">
         <xsl:apply-templates select="o[2]"/>
       </xsl:variable>
-      <xsl:message select="$arg"/>
       <xsl:apply-templates select="o[1]" mode="inner"/>
       <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:if>
