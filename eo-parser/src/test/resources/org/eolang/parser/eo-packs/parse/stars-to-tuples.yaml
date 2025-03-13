@@ -5,7 +5,7 @@ sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/stars-to-tuples.xsl
 asserts:
-  - //objects[count(o)=7]
+  - //objects[count(o)=8]
   - //objects[count(//o[@star])=0]
   # first
   - //o[@base='Q.org.eolang.tuple.empty' and @line=1 and @name='xs']
@@ -49,3 +49,4 @@ input: |
   .reduced > y
     *
     [x]
+  * (* 1 2) (* 3 4) (* 5 6) > last

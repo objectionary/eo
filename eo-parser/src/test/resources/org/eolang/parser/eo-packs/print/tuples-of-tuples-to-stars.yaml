@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-skip: true
 sheets:
   - /org/eolang/parser/parse/move-voids-up.xsl
   - /org/eolang/parser/parse/validate-before-stars.xsl
@@ -18,10 +17,9 @@ sheets:
   - /org/eolang/parser/parse/explicit-data.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/tuples-to-stars.xsl
-  - /org/eolang/parser/print/tuples-to-stars.xsl
-  - /org/eolang/parser/print/tuples-to-stars.xsl
 asserts:
-  - /program/objects/o[@name='foo']/o[@star and count(o[@star])=3]
+  - /program/objects/o[@name='foo']/o[@name='xs' and @star and count(o[@star])=3]
+  - /program/objects/o[@name='foo']/o[@name='yx' and @star and count(o[@star])=3]
 input: |
   +package test
 
@@ -31,3 +29,13 @@ input: |
       * 1 2
       * 3 4
       * 5 6
+    * > yx
+      *:0
+        1:0
+        2:1
+      *:1
+        3:0
+        4:1
+      *:2
+        5:0
+        6:1

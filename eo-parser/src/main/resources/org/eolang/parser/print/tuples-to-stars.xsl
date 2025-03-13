@@ -9,18 +9,31 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[starts-with(@base, 'Q.org.eolang.tuple') and o[1][starts-with(@base, 'Q.org.eolang.tuple')]]">
+    <xsl:variable name="arg">
+      <xsl:apply-templates select="o[2]"/>
+    </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="star"/>
       <xsl:apply-templates select="o[1]" mode="inner"/>
-      <xsl:apply-templates select="o[2]"/>
+      <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="inner">
     <xsl:if test="@base='Q.org.eolang.tuple'">
+      <xsl:variable name="arg">
+        <xsl:apply-templates select="o[2]"/>
+      </xsl:variable>
+      <xsl:message select="$arg"/>
       <xsl:apply-templates select="o[1]" mode="inner"/>
-      <xsl:apply-templates select="o[2]"/>
+      <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:if>
+  </xsl:template>
+  <xsl:template match="*" mode="no-as">
+    <xsl:copy>
+      <xsl:copy-of select="@* except @as"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

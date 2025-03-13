@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,7 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class PhiUnphiIT {
 
     @Test
-    @Disabled
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
