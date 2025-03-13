@@ -9,7 +9,6 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
