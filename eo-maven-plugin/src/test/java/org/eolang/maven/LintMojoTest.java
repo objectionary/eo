@@ -296,15 +296,15 @@ final class LintMojoTest {
         MatcherAssert.assertThat(
             "Cached result should match the original verified XML document",
             new XMLDocument(
-                new HmBase(temp).load(
-                    Paths.get(
+                Files.readAllBytes(
+                    temp.resolve(
                         String.format(
                             "target/%s/foo/x/main.%s",
                             LintMojo.DIR,
                             AssembleMojo.XMIR
                         )
                     )
-                ).asBytes()
+                )
             ),
             Matchers.is(new XMLDocument(cached.asString()))
         );

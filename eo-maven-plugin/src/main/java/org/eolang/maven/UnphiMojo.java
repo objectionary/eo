@@ -65,7 +65,7 @@ public final class UnphiMojo extends SafeMojo {
     @Override
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
-        final Home home = new HmBase(this.unphiOutputDir);
+        final Path home = this.unphiOutputDir.toPath();
         final Iterable<Directive> metas = new Phi.Metas(this.unphiMetas);
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(
@@ -79,7 +79,7 @@ public final class UnphiMojo extends SafeMojo {
                     )
                 );
                 final XML result = new Phi(phi, metas).unphi();
-                home.save(result.toString(), xmir);
+                new Saved(result.toString(), home.resolve(xmir)).value();
                 Logger.debug(
                     this,
                     "Parsed to xmir: %[file]s -> %[file]s",

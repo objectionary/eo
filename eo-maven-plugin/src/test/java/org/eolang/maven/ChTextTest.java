@@ -35,10 +35,10 @@ final class ChTextTest {
     @ExtendWith(MktmpResolver.class)
     static void setUp(@Mktmp final Path dir) throws IOException {
         ChTextTest.file = dir.resolve("tags.txt");
-        new HmBase(dir).save(
+        new Saved(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            dir.relativize(ChTextTest.file)
-        );
+            ChTextTest.file
+        ).value();
     }
 
     @ParameterizedTest

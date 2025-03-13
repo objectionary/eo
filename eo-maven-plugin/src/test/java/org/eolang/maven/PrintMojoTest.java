@@ -36,14 +36,13 @@ final class PrintMojoTest {
 
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
-        final Home home = new HmBase(temp);
         final Path resources = new File(
             "../eo-parser/src/test/resources/org/eolang/parser/print-packs/xmir"
         ).toPath();
         final Collection<Path> walk = new Walk(resources);
         Assumptions.assumeTrue(!walk.isEmpty());
         for (final Path source : walk) {
-            home.save(new TextOf(source), source);
+            new Saved(new TextOf(source), temp.resolve(source)).value();
         }
         final Path output = temp.resolve("output");
         final Path sources = temp.resolve(resources);
@@ -88,14 +87,13 @@ final class PrintMojoTest {
      */
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
         throws Exception {
-        final Home home = new HmBase(temp);
-        home.save(
+        new Saved(
             new EoSyntax(
                 "test",
                 new InputOf(xtory.map().get("origin").toString())
             ).parsed().toString(),
-            Paths.get("xmir/foo/x/main.xmir")
-        );
+            temp.resolve("xmir/foo/x/main.xmir")
+        ).value();
         final Map<String, Path> result = new FakeMaven(temp)
             .with("printSourcesDir", temp.resolve("xmir").toFile())
             .with("printOutputDir", temp.resolve("eo").toFile())

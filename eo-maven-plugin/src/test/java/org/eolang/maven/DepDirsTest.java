@@ -9,7 +9,6 @@ import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -25,10 +24,10 @@ final class DepDirsTest {
 
     @Test
     void findsDirs(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save("", Paths.get("a/b/c/f/test.txt"));
-        new HmBase(temp).save("", Paths.get("a/b/f.txt"));
-        new HmBase(temp).save("", Paths.get("test/f.txt"));
-        new HmBase(temp).save("", Paths.get("a/g"));
+        new Saved("", temp.resolve("a/b/c/f/test.txt")).value();
+        new Saved("", temp.resolve("a/b/f.txt")).value();
+        new Saved("", temp.resolve("test/f.txt")).value();
+        new Saved("", temp.resolve("a/g")).value();
         final String path = String.format("a%sb%1$sc%1$sf", File.separator);
         MatcherAssert.assertThat(
             String.format("DepDirs should contain %s, but it doesn't", path),

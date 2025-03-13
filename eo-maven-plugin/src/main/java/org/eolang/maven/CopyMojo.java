@@ -8,7 +8,6 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -75,16 +74,16 @@ public final class CopyMojo extends SafeMojo {
         final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
         for (final Path src : sources) {
-            new HmBase(target).save(
+            new Saved(
                 CopyMojo.REPLACE
                     .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),
-                Paths.get(
+                target.resolve(
                     src.toAbsolutePath().toString().substring(
                         this.sourcesDir.toPath().toAbsolutePath().toString().length() + 1
                     )
                 )
-            );
+            ).value();
         }
         if (sources.isEmpty()) {
             Logger.warn(

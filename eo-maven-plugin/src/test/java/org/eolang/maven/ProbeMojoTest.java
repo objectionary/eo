@@ -9,7 +9,6 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -46,10 +45,10 @@ final class ProbeMojoTest {
     void findsProbesViaOfflineHashFile(@Mktmp final Path temp) throws IOException {
         final String tag = "master";
         final String tags = "org/eolang/maven/commits/tags.txt";
-        new HmBase(temp).save(
+        new Saved(
             new ResourceOf(tags),
-            Paths.get("tags.txt")
-        );
+            temp.resolve("tags.txt")
+        ).value();
         final String expected = "11";
         MatcherAssert.assertThat(
             String.format(
