@@ -17,8 +17,6 @@ sheets:
   - /org/eolang/parser/parse/explicit-data.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/tuples-to-stars.xsl
-  - /org/eolang/parser/print/tuples-to-stars.xsl
-  - /org/eolang/parser/print/tuples-to-stars.xsl
 asserts:
   - /program/objects/o[@name='foo']/o[@base='Q.org.eolang.tuple' and @star and count(o)=3 and count(o[@star]=0)]
 input: |
@@ -26,10 +24,13 @@ input: |
 
   # No comments.
   [] > foo
-    with.
-      with.
-        with.
+    tuple
+      tuple
+        tuple
           tuple.empty
+          "hey"
           1
+        "jeff"
         2
+      "!"
       3

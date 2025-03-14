@@ -8,11 +8,14 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /program[not(errors)]
-  - //java[contains(text(), '        Phi rbb = Phi.Φ.take("org").take("eolang").take("tuple").take("empty").take("with");')]
-  - //java[contains(text(), '        rbb = new PhWith(rbb, 0, rbb1);')]
-  - //java[contains(text(), '        Phi rb = new PhMethod(rbb, "with");')]
-  - //java[contains(text(), '        rb = new PhWith(rb, 0, rb1);')]
-  - //java[contains(text(), '        Phi r = new PhMethod(rb, "with");')]
+  - //java[contains(text(), 'Phi r11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), 'r11 = new PhCopy(r11);')]
+  - //java[contains(text(), '  Phi r111 = Phi.Φ.take("org").take("eolang").take("tuple").take("empty");')]
+  - //java[contains(text(), '  Phi r112 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), '  Phi r113 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), 'r11 = new PhWith(r11, 0, r111);')]
+  - //java[contains(text(), 'r11 = new PhWith(r11, 1, r112);')]
+  - //java[contains(text(), 'r11 = new PhWith(r11, 2, r113);')]
 input: |
   # No comments.
   [] > foo

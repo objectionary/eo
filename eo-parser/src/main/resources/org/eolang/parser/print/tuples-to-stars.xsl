@@ -8,28 +8,31 @@
     Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='Q.org.eolang.tuple.empty' and not(@star)]">
+  <xsl:template match="o[starts-with(@base, 'Q.org.eolang.tuple') and o[1][starts-with(@base, 'Q.org.eolang.tuple')]]">
+    <xsl:variable name="arg">
+      <xsl:apply-templates select="o[2]"/>
+    </xsl:variable>
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*"/>
       <xsl:attribute name="star"/>
+      <xsl:apply-templates select="o[1]" mode="inner"/>
+      <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base='Q.org.eolang.tuple.empty.with']">
-    <xsl:element name="o">
-      <xsl:attribute name="star"/>
-      <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
-      <xsl:apply-templates select="@* except @base"/>
-      <xsl:apply-templates select="node()"/>
-    </xsl:element>
+  <xsl:template match="o" mode="inner">
+    <xsl:if test="@base='Q.org.eolang.tuple'">
+      <xsl:variable name="arg">
+        <xsl:apply-templates select="o[2]"/>
+      </xsl:variable>
+      <xsl:apply-templates select="o[1]" mode="inner"/>
+      <xsl:apply-templates select="$arg" mode="no-as"/>
+    </xsl:if>
   </xsl:template>
-  <xsl:template match="o[@base='.with' and o[1][@star]]">
-    <xsl:element name="o">
-      <xsl:attribute name="star"/>
-      <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
-      <xsl:apply-templates select="@* except @base"/>
-      <xsl:copy-of select="o[@star]/o"/>
-      <xsl:copy-of select="o[not(@star)]"/>
-    </xsl:element>
+  <xsl:template match="*" mode="no-as">
+    <xsl:copy>
+      <xsl:copy-of select="@* except @as"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

@@ -9,6 +9,8 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
@@ -78,22 +80,25 @@ public final class EoSyntax implements Syntax {
      */
     private static final Function<XML, XML> CANONICAL = new Xsline(
         new TrFull(
-            new TrClasspath<>(
-                "/org/eolang/parser/parse/move-voids-up.xsl",
-                "/org/eolang/parser/parse/validate-before-stars.xsl",
-                "/org/eolang/parser/parse/resolve-before-stars.xsl",
-                "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                "/org/eolang/parser/parse/const-to-dataized.xsl",
-                "/org/eolang/parser/parse/stars-to-tuples.xsl",
-                "/org/eolang/parser/parse/vars-float-up.xsl",
-                "/org/eolang/parser/parse/build-fqns.xsl",
-                "/org/eolang/parser/parse/expand-qqs.xsl",
-                "/org/eolang/parser/parse/expand-aliases.xsl",
-                "/org/eolang/parser/parse/resolve-aliases.xsl",
-                "/org/eolang/parser/parse/add-default-package.xsl",
-                "/org/eolang/parser/parse/explicit-data.xsl",
-                "/org/eolang/parser/parse/roll-bases.xsl"
-            ).back()
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/parser/parse/move-voids-up.xsl",
+                    "/org/eolang/parser/parse/validate-before-stars.xsl",
+                    "/org/eolang/parser/parse/resolve-before-stars.xsl",
+                    "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                    "/org/eolang/parser/parse/const-to-dataized.xsl",
+                    "/org/eolang/parser/parse/stars-to-tuples.xsl",
+                    "/org/eolang/parser/parse/vars-float-up.xsl",
+                    "/org/eolang/parser/parse/build-fqns.xsl",
+                    "/org/eolang/parser/parse/expand-qqs.xsl",
+                    "/org/eolang/parser/parse/expand-aliases.xsl",
+                    "/org/eolang/parser/parse/resolve-aliases.xsl",
+                    "/org/eolang/parser/parse/add-default-package.xsl",
+                    "/org/eolang/parser/parse/explicit-data.xsl",
+                    "/org/eolang/parser/parse/roll-bases.xsl"
+                ).back(),
+                new TrDefault<>(new StHex())
+            )
         )
     )::pass;
 

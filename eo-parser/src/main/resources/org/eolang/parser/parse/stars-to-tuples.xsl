@@ -15,17 +15,24 @@
 
     Into the next one without @star:
 
-    <o base=".with">
-      <o base=".with">
-        <o base=".with">
-          <o base=".empty">
-            <o base="tuple"/>
-          </o>
+    <o base="Q.org.eolang.tuple">
+      <o base="Q.org.eolang.tuple">
+        <o base="Q.org.eolang.tuple">
+          <o base="Q.org.eolang.tuple.empty"/>
           <o base="1"/>
+          <o base="Q.org.eolang.number">
+            <o base="Q.org.eolang.bytes" hex="">1</o>
+          </o>
         </o>
         <o base="2"/>
+        <o base="Q.org.eolang.number">
+          <o base="Q.org.eolang.bytes" hex="">2</o>
+        </o>
       </o>
       <o base="3"/>
+      <o base="Q.org.eolang.number">
+        <o base="Q.org.eolang.bytes" hex="">3</o>
+      </o>
     </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -39,19 +46,24 @@
           </xsl:element>
         </xsl:variable>
         <xsl:element name="o">
-          <xsl:attribute name="base" select="'.with'"/>
+          <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:apply-templates select="$nested"/>
           <xsl:apply-templates select="o[last()]"/>
+          <xsl:element name="o">
+            <xsl:attribute name="base" select="'Q.org.eolang.number'"/>
+            <xsl:element name="o">
+              <xsl:attribute name="base" select="'Q.org.eolang.bytes'"/>
+              <xsl:attribute name="hex"/>
+              <xsl:value-of select="count(o)"/>
+            </xsl:element>
+          </xsl:element>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="o">
-          <xsl:attribute name="base" select="'.empty'"/>
+          <xsl:attribute name="base" select="'Q.org.eolang.tuple.empty'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
-          <xsl:element name="o">
-            <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
-          </xsl:element>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>

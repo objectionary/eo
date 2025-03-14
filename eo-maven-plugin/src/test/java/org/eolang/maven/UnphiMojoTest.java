@@ -255,7 +255,8 @@ final class UnphiMojoTest {
                 "[args] > app",
                 "  QQ.io.stdout > @",
                 "    \"Hello, world!\"",
-                "  args.@ > phi!"
+                "  args.@ > phi!",
+                "  * (* 1 2) (* 3 4) (* 5 6) > mx"
             )
             .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())

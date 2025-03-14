@@ -9,9 +9,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
 import java.util.Collection;
 import java.util.List;
@@ -47,14 +47,14 @@ public final class Xmir implements XML {
      */
     private static final Xsline FOR_EO = new Xsline(
         new TrFull(
-            new TrDefault<>(
-                new StEndless(
-                    new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl")
-                ),
-                Xmir.UNHEX,
-                new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
-                new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
-                new StClasspath("/org/eolang/parser/print/to-eo.xsl")
+            new TrJoined<>(
+                new TrDefault<>(Xmir.UNHEX),
+                new TrClasspath<>(
+                    "/org/eolang/parser/print/tuples-to-stars.xsl",
+                    "/org/eolang/parser/print/inline-cactoos.xsl",
+                    "/org/eolang/parser/print/dataized-to-const.xsl",
+                    "/org/eolang/parser/print/to-eo.xsl"
+                ).back()
             )
         )
     );
@@ -204,6 +204,13 @@ public final class Xmir implements XML {
             .element("program")
             .element(node)
             .text()
-            .get();
+            .orElseThrow(
+                () -> new IllegalStateException(
+                    String.format(
+                        "Couldn't find element '/program/%s' after converting to %s",
+                        node, node
+                    )
+                )
+            );
     }
 }

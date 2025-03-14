@@ -30,8 +30,12 @@ sweet: |-
                 Φ̇.error(
                   Φ̇.txt.sprintf(
                     "Expected %d byte character at %d index, but there are not enough bytes for it: %x",
-                    Φ̇.tuple.empty.with(ξ.char-size).with(ξ.index).with(
-                      ξ.ρ.ρ.as-bytes
+                    Φ̇.tuple(
+                      Φ̇.tuple(
+                        Φ̇.tuple(Φ̇.tuple.empty, ξ.char-size, 1), ξ.index, 2
+                      ),
+                      ξ.ρ.ρ.as-bytes,
+                      3
                     )
                   )
                 )
@@ -68,12 +72,30 @@ salty: |-
                           α0 ↦ ⟦ Δ ⤍ 45-78-70-65-63-74-65-64-20-25-64-20-62-79-74-65-20-63-68-61-72-61-63-74-65-72-20-61-74-20-25-64-20-69-6E-64-65-78-2C-20-62-75-74-20-74-68-65-72-65-20-61-72-65-20-6E-6F-74-20-65-6E-6F-75-67-68-20-62-79-74-65-73-20-66-6F-72-20-69-74-3A-20-25-78 ⟧
                         )
                       ),
-                      α1 ↦ Φ.org.eolang.tuple.empty.with(
-                        α0 ↦ ξ.char-size
-                      ).with(
-                        α0 ↦ ξ.index
-                      ).with(
-                        α0 ↦ ξ.ρ.ρ.as-bytes
+                      α1 ↦ Φ.org.eolang.tuple(
+                        α0 ↦ Φ.org.eolang.tuple(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple.empty,
+                            α1 ↦ ξ.char-size,
+                            α2 ↦ Φ.org.eolang.number(
+                              α0 ↦ Φ.org.eolang.bytes(
+                                α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧
+                              )
+                            )
+                          ),
+                          α1 ↦ ξ.index,
+                          α2 ↦ Φ.org.eolang.number(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              α0 ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧
+                            )
+                          )
+                        ),
+                        α1 ↦ ξ.ρ.ρ.as-bytes,
+                        α2 ↦ Φ.org.eolang.number(
+                          α0 ↦ Φ.org.eolang.bytes(
+                            α0 ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧
+                          )
+                        )
                       )
                     )
                   )

@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,12 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test for phi-unphi.
  *
  * @since 0.1
- * @todo #3199:30min Enable PhiUnphiIT. The test was disabled because tuples are converted to EO
- *  incorrectly after phi-unphi. The key problem is recursive representation of tuples via
- *  tuple.with method. It should be done via simple application of tuple like it was done before,
- *  but with calculated length.
- *  Check the disabled org/eolang/parser/eo-packs/print/tuples-of-tuples-to-stars.yaml pack in
- *  eo-parser module.
  * @checkstyle MethodLengthCheck (500 lines)
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -37,7 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class PhiUnphiIT {
 
     @Test
-    @Disabled
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
