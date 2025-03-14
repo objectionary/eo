@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * This {@link Shift} turns regular data (numbers) inside XMIR.
+ * This {@link Shift} turns regular data (numbers) inside XMIR
  * into hexadecimal representation.
  *
  * @since 0.54
