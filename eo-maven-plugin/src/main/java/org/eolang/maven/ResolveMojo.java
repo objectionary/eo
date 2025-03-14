@@ -181,7 +181,10 @@ public final class ResolveMojo extends SafeMojo {
         Dependencies deps = new DpsDefault(
             this.scopedTojos(), this.discoverSelf, this.skipZeroVersions, this.resolveJna
         );
-        if (!this.ignoreRuntime) {
+        if (this.ignoreRuntime) {
+            Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
+            deps = new DpsWithoutRuntime(deps);
+        } else {
             final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
             if (runtime.isPresent()) {
                 deps = new DpsWithRuntime(deps, new Dep(runtime.get()));
@@ -193,9 +196,6 @@ public final class ResolveMojo extends SafeMojo {
             } else {
                 deps = new DpsWithRuntime(deps);
             }
-        } else {
-            Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
-            deps = new DpsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DpsUniquelyVersioned(deps);
