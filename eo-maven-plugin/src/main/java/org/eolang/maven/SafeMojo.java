@@ -336,16 +336,16 @@ abstract class SafeMojo extends AbstractMojo {
      * <p>That property is useful only for eo-runtime library compilation.
      * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
      * (since you compile an eo-runtime library and classpath will anyway have all required classes)
-     * and in this case, you should set this property to false.
+     * and in this case, you should set this property to true.
      * In any other cases, the eo-runtime
      * dependency will be downloaded and added to the classpath automatically.</p>
      *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
-    protected boolean withRuntimeDependency = true;
+    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.ImmutableField")
+    protected boolean ignoreRuntime;
 
     /**
      * Fail resolution process on transitive dependencies.

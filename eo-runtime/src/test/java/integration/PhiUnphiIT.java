@@ -133,7 +133,7 @@ final class PhiUnphiIT {
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("offline", Boolean.TRUE.toString())
                     .set("skipLinting", Boolean.TRUE.toString())
-                    .set("withRuntimeDependency", Boolean.FALSE.toString())
+                    .set("ignoreRuntime", Boolean.TRUE.toString())
                     .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
                 f.build()
                     .plugins()
@@ -164,7 +164,7 @@ final class PhiUnphiIT {
                     .set("addTestSourcesRoot", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("withRuntimeDependency", Boolean.FALSE.toString())
+                    .set("ignoreRuntime", Boolean.TRUE.toString())
                     .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(

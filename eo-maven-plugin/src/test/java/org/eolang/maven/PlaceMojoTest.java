@@ -121,7 +121,7 @@ final class PlaceMojoTest {
             "PlaceMojo have to place default Jna binary",
             new FakeMaven(temp)
                 .withHelloWorld()
-                .with("withRuntimeDependency", false)
+                .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
@@ -200,7 +200,7 @@ final class PlaceMojoTest {
         MatcherAssert.assertThat(
             "PlaceMojo have not to place the runtime file, but doesn't",
             maven.withHelloWorld()
-                .with("withRuntimeDependency", false)
+                .with("ignoreRuntime", true)
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()

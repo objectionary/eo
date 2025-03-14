@@ -71,7 +71,7 @@ final class ResolveMojoTest {
             "Default JNA dependency must be resolved",
             new FakeMaven(temp)
                 .withHelloWorld()
-                .with("withRuntimeDependency", false)
+                .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Resolve())
                 .result(),
             Matchers.hasKey("target/6-resolve/net.java.dev.jna/jna/-/5.14.0")
@@ -119,7 +119,7 @@ final class ResolveMojoTest {
     void resolvesWithoutEoRuntimeDependency(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
-            .with("withRuntimeDependency", false)
+            .with("ignoreRuntime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             ResolveMojoTest.JAR_NOT_EXIST,
@@ -152,7 +152,7 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
-            .with("withRuntimeDependency", false)
+            .with("ignoreRuntime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             ResolveMojoTest.JAR_NOT_EXIST,

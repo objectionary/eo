@@ -226,7 +226,7 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <withRuntimeDependency>false</withRuntimeDependency>
+              <ignoreRuntime>true</ignoreRuntime>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
               <lintAsPackage>false</lintAsPackage>
             </configuration>
@@ -253,7 +253,7 @@
               <addTestSourcesRoot>true</addTestSourcesRoot>
               <failOnWarning>true</failOnWarning>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
-              <withRuntimeDependency>false</withRuntimeDependency>
+              <ignoreRuntime>true</ignoreRuntime>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
