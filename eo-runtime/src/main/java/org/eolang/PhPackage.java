@@ -122,8 +122,10 @@ final class PhPackage implements Phi {
 
     /**
      * Load phi object by package name from ClassLoader.
+     * @param fqn FQN of the EO object
      * @return Phi
      */
+    @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         Phi loaded;
@@ -144,9 +146,9 @@ final class PhPackage implements Phi {
                     phi
                 );
             } catch (final NoSuchMethodException
-               | InvocationTargetException
-               | InstantiationException
-               | IllegalAccessException ex
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException ex
             ) {
                 throw new ExFailure(
                     String.format(

@@ -33,10 +33,10 @@ final class PhPackageTest {
     void copiesObject() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org").take("eolang").take("seq"),
+            Phi.Φ.take("org.eolang.seq"),
             Matchers.not(
                 Matchers.equalTo(
-                    Phi.Φ.take("org").take("eolang").take("seq")
+                    Phi.Φ.take("org.eolang.seq")
                 )
             )
         );
@@ -67,7 +67,7 @@ final class PhPackageTest {
 
     @Test
     void setsRhoToObject() {
-        final Phi eolang = Phi.Φ.take("org").take("eolang");
+        final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -80,9 +80,7 @@ final class PhPackageTest {
     void findsLongClass() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org")
-                .take("eolang")
-                .take("bytes$eq").copy(),
+            Phi.Φ.take("org.eolang.bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }

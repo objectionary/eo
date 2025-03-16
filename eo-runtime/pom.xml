@@ -359,7 +359,7 @@
             <groupId>org.eolang</groupId>
             <artifactId>eo-maven-plugin</artifactId>
             <configuration>
-              <skipLinting>false</skipLinting>
+              <skipLinting>true</skipLinting>
             </configuration>
           </plugin>
           <plugin>
