@@ -5,43 +5,33 @@
 package integration;
 
 import com.jcabi.manifests.Manifests;
+import com.yegor256.Jaxec;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
-import org.cactoos.iterable.Mapped;
-import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtYaml;
-import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Integration test for simple snippets.
- * @since 0.1
+ * Integration test that runs simple EO program from packaged jar.
+ * @since 0.54
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
-final class SnippetIT {
-    @ParameterizedTest
+final class JarIT {
+    @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
-    @SuppressWarnings("unchecked")
-    void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(yml));
-        Assumptions.assumeFalse(xtory.map().containsKey("skip"));
-        final String file = xtory.map().get("file").toString();
+    void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.properties()
@@ -51,12 +41,9 @@ final class SnippetIT {
                     Paths.get(System.getProperty("user.dir")).resolve("src/main")
                 );
                 f.files()
-                    .file(String.format("src/main/eo/%s", file))
+                    .file("src/main/eo/simple.eo")
                     .write(
-                        String.format(
-                            "%s\n",
-                            xtory.map().get("eo")
-                        ).getBytes(StandardCharsets.UTF_8)
+                        "QQ.io.stdout \"Hello, world!\" > simple\n".getBytes(StandardCharsets.UTF_8)
                     );
                 f.dependencies()
                     .append(
@@ -67,15 +54,6 @@ final class SnippetIT {
                             Manifests.read("EO-Version")
                         )
                     );
-                final String target;
-                if (xtory.map().containsKey("target")) {
-                    target = xtory.map().get("target").toString();
-                } else {
-                    target = "target";
-                }
-                f.build()
-                    .properties()
-                    .set("directory", target);
                 f.build()
                     .plugins()
                     .append(
@@ -92,26 +70,22 @@ final class SnippetIT {
                     .configuration()
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("skipLinting", Boolean.TRUE.toString());
-                f.build()
-                    .plugins()
-                    .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
-                    .execution("run")
-                    .phase("test")
-                    .goals("java")
-                    .configuration()
-                    .set("mainClass", "org.eolang.Main")
-                    .set("arguments", xtory.map().get("args"));
-                f.exec("clean", "test");
+                f.exec("clean", "compile", "jar:jar");
                 MatcherAssert.assertThat(
-                    String.format("'%s' printed something wrong", yml),
-                    f.log().content(),
+                    "Project must be successfully built and packaged into jar",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
+                    "Simple program must be successfully executed from jar",
+                    new Jaxec(
+                        "java", "-cp", "test-0.0.0.jar",
+                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                        "org.eolang.Main", "simple"
+                    ).withHome(temp.resolve("target")).exec().stdout(),
                     Matchers.allOf(
-                        new Mapped<>(
-                            ptn -> Matchers.matchesPattern(
-                                Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
-                            ),
-                            (Iterable<String>) xtory.map().get("out")
-                        )
+                        Matchers.containsString("Hello, world!"),
+                        Matchers.containsString("[0x01] = true")
                     )
                 );
             }
