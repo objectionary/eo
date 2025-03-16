@@ -76,16 +76,8 @@ final class SnippetIT {
                 f.build()
                     .properties()
                     .set("directory", target);
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "compile", "transpile")

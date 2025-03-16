@@ -49,16 +49,8 @@ final class PhiUnphiIT {
                     "Saxon-HE",
                     "12.4"
                 );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("phi-unphi")
                     .phase("process-sources")
                     .goals(
@@ -135,16 +127,8 @@ final class PhiUnphiIT {
                     .set("skipLinting", Boolean.TRUE.toString())
                     .set("ignoreRuntime", Boolean.TRUE.toString())
                     .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("tests")
                     .phase("generate-test-sources")
                     .goals(

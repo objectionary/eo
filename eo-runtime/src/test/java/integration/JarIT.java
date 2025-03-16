@@ -54,16 +54,8 @@ final class JarIT {
                             Manifests.read("EO-Version")
                         )
                     );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "compile", "transpile")
