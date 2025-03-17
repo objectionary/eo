@@ -5,11 +5,7 @@
 
 package org.eolang;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,18 +65,35 @@ final class PhPackage implements Phi {
 
     @Override
     public Phi take(final String name) {
-        final String obj = String.join(".", this.pkg, name);
-        final String key = new JavaPath(obj).toString();
-        return this.objects.computeIfAbsent(
-            key,
-            k -> {
-                final Phi initialized = this.loadPhi(key, obj);
-                if (!(initialized instanceof PhPackage)) {
-                    initialized.put(Attr.RHO, this);
-                }
-                return initialized;
+        final String fqn = String.join(".", this.pkg, name);
+        final Phi taken;
+        if (name.equals(Attr.RHO)) {
+            if (this.objects.containsKey(Attr.RHO)) {
+                taken = this.objects.get(Attr.RHO);
+            } else {
+                throw new ExUnset(
+                    String.format(
+                        "The %s attribute is absent in package object '%s'",
+                        Attr.RHO, this.pkg
+                    )
+                );
             }
-        ).copy();
+        } else if (this.objects.containsKey(fqn)) {
+            taken = this.objects.get(fqn).copy();
+        } else if (name.contains(".")) {
+            final String[] parts = name.split("\\.");
+            Phi next = this.take(parts[0]);
+            for (int idx = 1; idx < parts.length; ++idx) {
+                next = next.take(parts[idx]);
+            }
+            taken = next;
+        } else {
+            final Phi loaded = this.loadPhi(fqn);
+            loaded.put(Attr.RHO, this);
+            this.put(fqn, loaded);
+            taken = this.take(name);
+        }
+        return taken;
     }
 
     @Override
@@ -99,9 +112,7 @@ final class PhPackage implements Phi {
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new ExFailure(
-            "Can't #put(%s, %s) to package object \"%s\"", name, object, this.pkg
-        );
+        this.objects.put(name, object);
     }
 
     @Override
@@ -111,30 +122,30 @@ final class PhPackage implements Phi {
 
     /**
      * Load phi object by package name from ClassLoader.
-     * @param path Path to directory or .java file
-     * @param object Object FQN
+     * @param fqn FQN of the EO object
      * @return Phi
      */
-    private Phi loadPhi(final String path, final String object) {
-        final Path pth = new File(
-            this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
-        ).toPath().resolve(path.replace(".", File.separator));
-        final Phi phi;
-        if (Files.exists(pth) && Files.isDirectory(pth)) {
-            phi = new PhPackage(object);
-        } else {
-            final Path clazz = Paths.get(String.format("%s.class", pth));
-            if (!Files.exists(clazz) || Files.isDirectory(clazz)) {
-                throw new ExFailure(
-                    String.format("Couldn't find object '%s'", object)
-                );
-            }
+    @SuppressWarnings("PMD.PreserveStackTrace")
+    private Phi loadPhi(final String fqn) {
+        final String target = new JavaPath(fqn).toString();
+        Phi loaded;
+        try {
+            Class.forName(String.format("%s.package-info", target));
+            loaded = new PhPackage(fqn);
+        } catch (final ClassNotFoundException pckg) {
             try {
-                phi = (Phi) Class.forName(path)
+                loaded = (Phi) Class.forName(target)
                     .getConstructor()
                     .newInstance();
-            } catch (final ClassNotFoundException
-                | NoSuchMethodException
+            } catch (final ClassNotFoundException phi) {
+                throw new ExFailure(
+                    String.format(
+                        "Couldn't find object '%s' because there's no class or package '%s'",
+                        fqn, target
+                    ),
+                    phi
+                );
+            } catch (final NoSuchMethodException
                 | InvocationTargetException
                 | InstantiationException
                 | IllegalAccessException ex
@@ -142,12 +153,12 @@ final class PhPackage implements Phi {
                 throw new ExFailure(
                     String.format(
                         "Couldn't build Java object \"%s\" in EO package \"%s\"",
-                        path, this.pkg
+                        target, this.pkg
                     ),
                     ex
                 );
             }
         }
-        return phi;
+        return loaded;
     }
 }

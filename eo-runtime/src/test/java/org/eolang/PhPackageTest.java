@@ -33,18 +33,41 @@ final class PhPackageTest {
     void copiesObject() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org").take("eolang").take("seq"),
+            Phi.Φ.take("org.eolang.seq"),
             Matchers.not(
                 Matchers.equalTo(
-                    Phi.Φ.take("org").take("eolang").take("seq")
+                    Phi.Φ.take("org.eolang.seq")
                 )
             )
         );
     }
 
     @Test
+    void doesNotSetRhoToGlobalObject() {
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> Phi.Φ.take(Attr.RHO),
+            String.format(
+                "Global object '%s' must not have %s attribute",
+                PhPackage.GLOBAL, Attr.RHO
+            )
+        );
+    }
+
+    @Test
+    void setsRhoToPackage() {
+        final Phi org = Phi.Φ.take("org");
+        final Phi eolang = org.take("eolang");
+        MatcherAssert.assertThat(
+            String.format("The %s attribute must be set to package object on dispatch", Attr.RHO),
+            eolang.take(Attr.RHO),
+            Matchers.equalTo(org)
+        );
+    }
+
+    @Test
     void setsRhoToObject() {
-        final Phi eolang = Phi.Φ.take("org").take("eolang");
+        final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -57,9 +80,7 @@ final class PhPackageTest {
     void findsLongClass() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org")
-                .take("eolang")
-                .take("bytes$eq").copy(),
+            Phi.Φ.take("org.eolang.bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }

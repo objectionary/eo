@@ -28,14 +28,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Integration test for simple snippets.
- *
- * <p>This test will/may fail if you change something in {@code to-java.xsl}
- * or some other place where Java sources are generated. This happens
- * because this test relies on {@code eo-runtime.jar}, which it finds in Maven
- * Central. Thus, when changes are made, it is recommended to disable this test.
- * Then, when new {@code eo-runtime.jar} is
- * released to Maven Central, you enable this test again.</p>
- *
  * @since 0.1
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -84,16 +76,8 @@ final class SnippetIT {
                 f.build()
                     .properties()
                     .set("directory", target);
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "compile", "transpile")
