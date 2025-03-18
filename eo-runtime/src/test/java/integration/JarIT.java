@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
     @Test
