@@ -25,14 +25,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle MethodLengthCheck (500 lines)
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
 
     @Test
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
-    void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
+    void runsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.files().file("src/main").save(
@@ -49,16 +49,8 @@ final class PhiUnphiIT {
                     "Saxon-HE",
                     "12.4"
                 );
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("phi-unphi")
                     .phase("process-sources")
                     .goals(
@@ -135,16 +127,8 @@ final class PhiUnphiIT {
                     .set("skipLinting", Boolean.TRUE.toString())
                     .set("ignoreRuntime", Boolean.TRUE.toString())
                     .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
-                f.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
-                    )
+                new EoMavenPlugin(f)
+                    .appended()
                     .execution("tests")
                     .phase("generate-test-sources")
                     .goals(

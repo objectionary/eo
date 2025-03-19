@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import java.util.regex.Pattern;
+
 /**
  * Java path.
  *
@@ -18,6 +20,15 @@ package org.eolang;
  * @since 0.29
  */
 final class JavaPath {
+    /**
+     * Phi pattern.
+     */
+    private static final Pattern PHI = Pattern.compile("^Φ\\.?");
+
+    /**
+     * Dots pattern.
+     */
+    private static final Pattern DOTS = Pattern.compile("(^|\\.)([^.]+)");
 
     /**
      * Object name in eolang notation.
@@ -34,17 +45,8 @@ final class JavaPath {
 
     @Override
     public String toString() {
-        if (!this.object.startsWith("Φ.")) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Can't build path to .java file from FQN not started from '%s.'",
-                    PhPackage.GLOBAL
-                )
-            );
-        }
-        return this.object
-            .substring(2)
-            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
+        return DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
+            .replaceAll("$1EO$2")
             .replace("$", "$EO")
             .replace("-", "_");
     }
