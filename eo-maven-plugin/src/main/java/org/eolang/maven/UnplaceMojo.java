@@ -183,8 +183,7 @@ public final class UnplaceMojo extends SafeMojo {
         for (final TjPlaced tojo : tojos) {
             final String related = tojo.related();
             final Path path = Paths.get(tojo.identifier());
-            if (!this.keepBinaries.isEmpty()
-                && UnplaceMojo.inside(related, this.keepBinaries)) {
+            if (!this.keepBinaries.isEmpty() && UnplaceMojo.inside(related, this.keepBinaries)) {
                 remained += 1;
                 continue;
             }
