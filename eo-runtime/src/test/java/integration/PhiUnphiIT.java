@@ -25,14 +25,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle MethodLengthCheck (500 lines)
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
 
     @Test
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
-    void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
+    void runsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.files().file("src/main").save(
