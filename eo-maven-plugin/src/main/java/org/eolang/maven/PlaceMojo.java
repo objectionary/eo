@@ -149,8 +149,7 @@ public final class PlaceMojo extends SafeMojo {
             final boolean res;
             if (tojo.isPresent()
                 && Files.exists(target)
-                && (this.sameLength(target, file)
-                || !tojo.get().unplaced())
+                && (this.sameLength(target, file) || !tojo.get().unplaced())
             ) {
                 Logger.debug(
                     this,
