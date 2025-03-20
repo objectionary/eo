@@ -9,17 +9,17 @@ import org.cactoos.Func;
 
 /**
  * Footprint that behaves as first given wrapped {@link Footprint}
- * if provided target exists and older than source.
+ * if provided target exists and actual toward source.
  * Behaves as second given wrapped {@link Footprint} otherwise.
  * @since 0.41
  */
-final class FpIfOlder extends FpEnvelope {
+final class FpIfActual extends FpEnvelope {
     /**
      * Ctor.
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    FpIfOlder(final Footprint first, final Footprint second) {
+    FpIfActual(final Footprint first, final Footprint second) {
         this(target -> target, first, second);
     }
 
@@ -29,13 +29,13 @@ final class FpIfOlder extends FpEnvelope {
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    FpIfOlder(
+    FpIfActual(
         final Func<Path, Path> destination, final Footprint first, final Footprint second
     ) {
         super(
             new FpIfTargetExists(
                 destination,
-                new FpIfTargetOlder(
+                new FpIfTargetActual(
                     destination,
                     first,
                     second
