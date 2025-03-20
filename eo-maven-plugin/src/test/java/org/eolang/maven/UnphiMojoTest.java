@@ -35,7 +35,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,9 +42,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
- * @todo #3708:30min Remove @Disabled annotation on
- *  {@code UnphiMojoTest.usesCache()} and {@code UnphiMojoTest.invalidatesCache()}
- *  when cache is implemented, check that tests is valid otherwise fix them if needed.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
@@ -283,13 +279,12 @@ final class UnphiMojoTest {
     }
 
     @Test
-    @Disabled
     void usesCache(@Mktmp final Path temp) throws Exception {
         new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
         ).value();
-        final String hash = "123ZaRiFcHiK321";
+        final String hash = UnphiMojo.FAKE_HASH;
         final Path cache = temp.resolve("cache");
         final String expected = "some valid XMIR from cache";
         new Saved(
@@ -318,9 +313,8 @@ final class UnphiMojoTest {
     }
 
     @Test
-    @Disabled
     void invalidatesCache(@Mktmp final Path temp) throws Exception {
-        final String hash = "123ZaRiFcHiK321";
+        final String hash = UnphiMojo.FAKE_HASH;
         final Path cache = temp.resolve("cache");
         final File cached = new Saved(
             "some invalid (old) XMIR from cache",
