@@ -97,4 +97,13 @@ final class EoIndentLexerTest {
             Matchers.is(EoParser.EOF)
         );
     }
+
+    @Test
+    void emitsTabWithCorrectLine() throws IOException {
+        MatcherAssert.assertThat(
+            "We expect the token to be a tab indentation with line 2",
+            new EoIndentLexer(new TextOf("\n  ")).getAllTokens().get(1).getLine(),
+            Matchers.equalTo(2)
+        );
+    }
 }
