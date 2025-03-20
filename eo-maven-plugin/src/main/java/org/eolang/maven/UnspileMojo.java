@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -32,6 +32,10 @@ import org.cactoos.set.SetOf;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class UnspileMojo extends SafeMojo {
+    /**
+     * Pattern for matching paths ended with .class.
+     */
+    private static final Pattern CLASS = Pattern.compile("\\.class$");
 
     /**
      * Directory with Java classes.
@@ -63,68 +67,102 @@ public final class UnspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final List<Path> all = new Walk(this.classesDir.toPath()).stream()
-            .filter(
-                file -> this.includes.stream().anyMatch(
-                    glob -> UnspileMojo.matcher(glob).matches(file)
-                )
-            )
-            .collect(Collectors.toList());
-        int unspiled = 0;
-        for (final Path path : all) {
-            if (this.delete(path)) {
-                unspiled += 1;
-            }
-        }
-        if (all.isEmpty()) {
+        final Collection<Path> classes = new Walk(this.classesDir.toPath());
+        if (classes.isEmpty()) {
             Logger.warn(
                 this, "No .class files in %[file]s including %s, nothing to unspile",
                 this.classesDir, this.includes
             );
-        } else if (unspiled == 0) {
+        } else {
+            this.unspile(classes);
+        }
+    }
+
+    /**
+     * Unspile classes.
+     * @param classes Collection of compiled classes
+     */
+    private void unspile(final Collection<Path> classes) {
+        final int unspiled = new Threaded<>(
+            classes,
+            path -> {
+                final int deleted;
+                if (UnspileMojo.matchesPattern(path, this.includes)
+                    && this.wasGenerated(path)
+                    && this.notFromSources(path)
+                ) {
+                    Files.delete(path);
+                    Logger.debug(
+                        this,
+                        "Deleted %[file]s since was compiled only from %[file]s",
+                        path, this.generatedDir
+                    );
+                    deleted = 1;
+                } else {
+                    Logger.debug(
+                        this,
+                        "Not deleted %[file]s since either compiled from %[file]s or wasn't compiled from %[file]s",
+                        path, this.javaSourcesDir, this.generatedDir
+                    );
+                    deleted = 0;
+                }
+                return deleted;
+            }
+        ).total();
+        if (unspiled == 0) {
             Logger.info(
                 this, "No .class files out of %d deleted in %[file]s including %s",
-                all.size(), this.classesDir, this.includes
+                classes.size(), this.classesDir, this.includes
             );
         } else {
             Logger.info(
                 this, "Deleted %d .class files out of %d in %[file]s",
-                unspiled, all.size(), this.classesDir
+                unspiled, classes.size(), this.classesDir
             );
         }
     }
 
     /**
-     * Create glob matcher from text.
-     * @param text The pattern
-     * @return Matcher
+     * Returns true if given path matches to any of provided globs.
+     * @param path Path to file
+     * @param includes Stream of globs
+     * @return True if matches to any glob
      */
-    private static PathMatcher matcher(final String text) {
-        return FileSystems.getDefault()
-            .getPathMatcher(String.format("glob:%s", text));
+    private static boolean matchesPattern(final Path path, final Collection<String> includes) {
+        return includes.stream().anyMatch(
+            glob -> FileSystems.getDefault().getPathMatcher(
+                String.format("glob:%s", glob)
+            ).matches(path)
+        );
     }
 
     /**
-     * Delete .class file if .java file is present.
-     * @param file EO file
-     * @return TRUE if deleted
-     * @throws IOException If fails
+     * Returns true class file by given path was compiled from generated sources directory.
+     * @param path Path to class file
+     * @return True if compiled from generated sources.
      */
-    private boolean delete(final Path file) throws IOException {
-        final String name = file.toString().substring(
-            this.classesDir.toString().length() + 1
+    private boolean wasGenerated(final Path path) {
+        return Files.exists(
+            this.generatedDir.toPath().resolve(
+                UnspileMojo.CLASS.matcher(
+                    path.toString().substring(this.classesDir.toString().length() + 1)
+                ).replaceAll(".java")
+            )
         );
-        final Path java = this.generatedDir.toPath().resolve(
-            name.replaceAll("\\.class$", ".java")
+    }
+
+    /**
+     * Returns true if class by given path was not compiled from java sources directory.
+     * @param path Path to class file
+     * @return True if not compiled from java sources.
+     */
+    private boolean notFromSources(final Path path) {
+        return !Files.exists(
+            this.javaSourcesDir.toPath().resolve(
+                UnspileMojo.CLASS.matcher(
+                    path.toString().substring(this.classesDir.toString().length() + 1)
+                ).replaceAll(".java")
+            )
         );
-        boolean deleted = false;
-        if (Files.exists(java)) {
-            Files.delete(file);
-            Logger.debug(this, "Deleted %[file]s since %[file]s is present", file, java);
-            deleted = true;
-        } else {
-            Logger.debug(this, "Not deleted %[file]s since %[file]s is absent", file, java);
-        }
-        return deleted;
     }
 }

@@ -110,6 +110,15 @@ abstract class SafeMojo extends AbstractMojo {
     protected File sourcesDir;
 
     /**
+     * Directory where java sources are located.
+     *
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(required = true, defaultValue = "${project.build.sourceDirectory}", readonly = true)
+    protected File javaSourcesDir;
+
+    /**
      * Target directory.
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)

@@ -173,8 +173,7 @@ public final class FakeMaven {
             new Saved(new TextOf(""), transpiled).value();
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures",
-                this.targetPath().resolve("measures.csv").toFile()
+                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
@@ -189,16 +188,16 @@ public final class FakeMaven {
             this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
-                "sourcesDir",
-                this.workspace.resolve(".").toFile()
+                "javaSourcesDir", this.workspace.resolve("src/main/java").toFile()
             );
             this.params.putIfAbsent(
-                "outputDir",
-                this.workspace.resolve("target/classes").toFile()
+                "sourcesDir", this.workspace.resolve(".").toFile()
             );
             this.params.putIfAbsent(
-                "cache",
-                this.workspace.resolve("eo/cache/parsed").toFile()
+                "outputDir", this.workspace.resolve("target/classes").toFile()
+            );
+            this.params.putIfAbsent(
+                "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
             this.params.putIfAbsent("generateSodgXmlFiles", true);
             this.params.putIfAbsent("generateXemblyFiles", true);
@@ -221,12 +220,10 @@ public final class FakeMaven {
                 ).toFile()
             );
             this.params.putIfAbsent(
-                "phiOutputDir",
-                this.workspace.resolve("target/phi").toFile()
+                "phiOutputDir", this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
-                "unphiInputDir",
-                this.workspace.resolve("target/phi").toFile()
+                "unphiInputDir", this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
                 "unphiOutputDir",
@@ -235,8 +232,7 @@ public final class FakeMaven {
                 ).toFile()
             );
             this.params.putIfAbsent(
-                "classesDir",
-                this.workspace.resolve("target/classes").toFile()
+                "classesDir", this.workspace.resolve("target/classes").toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);
@@ -451,18 +447,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Plugin descriptor with test version.
-     * @return Plugin descriptor.
-     */
-    static PluginDescriptor pluginDescriptor() {
-        final PluginDescriptor descriptor = new PluginDescriptor();
-        descriptor.setGroupId("org.eolang");
-        descriptor.setArtifactId("eo-maven-plugin");
-        descriptor.setVersion(FakeMaven.pluginVersion());
-        return descriptor;
-    }
-
-    /**
      * Ensures the map of allowed params for the Mojo.
      *
      * @param mojo Mojo
@@ -494,6 +478,18 @@ public final class FakeMaven {
      */
     private static String tojoId(final int id) {
         return String.format("foo.x.main%s", FakeMaven.suffix(id));
+    }
+
+    /**
+     * Plugin descriptor with test version.
+     * @return Plugin descriptor.
+     */
+    private static PluginDescriptor pluginDescriptor() {
+        final PluginDescriptor descriptor = new PluginDescriptor();
+        descriptor.setGroupId("org.eolang");
+        descriptor.setArtifactId("eo-maven-plugin");
+        descriptor.setVersion(FakeMaven.pluginVersion());
+        return descriptor;
     }
 
     /**
