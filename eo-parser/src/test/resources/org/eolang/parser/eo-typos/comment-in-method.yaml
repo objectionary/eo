@@ -9,10 +9,9 @@ message: |-
   [5:12] error: 'Invalid bound object declaration'
       sprintwf
 
-  [4:-1] error: 'We expected the program to end here but encountered something unexpected'
-      # a comment here is prohibited
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+  [3:-1] error: 'We expected the program to end here but encountered something unexpected'
+    stdout > @
+  ^^^^^^^^^^^^
 input: |
   # No comments
   [args] > app
