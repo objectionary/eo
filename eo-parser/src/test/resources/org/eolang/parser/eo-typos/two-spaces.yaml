@@ -5,7 +5,7 @@ line: 5
 # @todo #3744:60min Error Message Duplicates.
 #  As you can see, we have multiple error messages that are the
 #  same. We should remove duplicates and keep only meaningful error messages.
-message: >-
+message: |-
   [5:2] error: 'Invalid object declaration'
      *
     ^
@@ -15,9 +15,9 @@ message: >-
   [5:2] error: 'Invalid bound object declaration'
      *
     ^
-  [5:-1] error: 'We expected the program to end here but encountered something unexpected'
-     *
-  ^^^^
+  [4:-1] error: 'We expected the program to end here but encountered something unexpected'
+    seq > @
+  ^^^^^^^^^
 input: |
   # This is a code snippet from the following issue:
   # https://github.com/objectionary/eo/issues/3332

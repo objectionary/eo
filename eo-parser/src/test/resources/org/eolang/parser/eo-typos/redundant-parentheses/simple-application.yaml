@@ -1,15 +1,16 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-line: 3
+line: 2
 # @todo #3706:30min Unreadable error message if program declaration is invalid.
 #  Improve error message for the case when a program declaration is invalid.
 #  The error message should be more informative and should point to the exact
 #  place in the input where the error occurred. Moreover xml should be clear
 #  what to do to fix the error. 'simple-application-named.yaml' has the same issue.
-message: |+
-  [3:-1] error: 'We expected the program to end here but encountered something unexpected'
-
+message: |-
+  [2:-1] error: 'We expected the program to end here but encountered something unexpected'
+    (1.add 1)
+  ^^^^^^^^^^^
 input: |
   1.add 1 > x
     (1.add 1)
