@@ -33,6 +33,12 @@ import org.xembly.Directive;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
+     * Temporary hash value.
+     * @todo Use relevant hash instead of it
+     */
+    static final String FAKE_HASH = "qwerty123";
+
+    /**
      * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -65,36 +71,45 @@ public final class UnphiMojo extends SafeMojo {
     @Override
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
-        final Path home = this.unphiOutputDir.toPath();
+        final Path input = this.unphiInputDir.toPath();
+        final Path output = this.unphiOutputDir.toPath();
         final Iterable<Directive> metas = new Phi.Metas(this.unphiMetas);
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(
-            new Walk(this.unphiInputDir.toPath()),
+            new Walk(input),
             phi -> {
-                final Path relative = this.unphiInputDir.toPath().relativize(phi);
                 final Path xmir = Paths.get(
-                    relative.toString().replace(
+                    input.relativize(phi).toString().replace(
                         String.format(".%s", PhiMojo.EXT),
                         String.format(".%s", AssembleMojo.XMIR)
                     )
                 );
-                final XML result = new Phi(phi, metas).unphi();
-                new Saved(result.toString(), home.resolve(xmir)).value();
-                Logger.debug(
-                    this,
-                    "Parsed to xmir: %[file]s -> %[file]s",
-                    phi, this.unphiOutputDir.toPath().resolve(xmir)
-                );
-                final List<String> here = UnphiMojo.errors(result);
-                if (!here.isEmpty()) {
-                    errors.add(
-                        Logger.format(
-                            "%[file]s:\n\t%s\n",
-                            xmir,
-                            String.join("\n\t", here)
-                        )
-                    );
-                }
+                final Path target = output.resolve(xmir);
+                new FpDefault(
+                    source -> {
+                        final XML result = new Phi(source, metas).unphi();
+                        Logger.debug(
+                            this,
+                            "Parsed to xmir: %[file]s -> %[file]s",
+                            source, target
+                        );
+                        final List<String> here = UnphiMojo.errors(result);
+                        if (!here.isEmpty()) {
+                            errors.add(
+                                Logger.format(
+                                    "%[file]s:\n\t%s\n",
+                                    xmir,
+                                    String.join("\n\t", here)
+                                )
+                            );
+                        }
+                        return result.toString();
+                    },
+                    this.cache.toPath().resolve("unphied"),
+                    this.plugin.getVersion(),
+                    UnphiMojo.FAKE_HASH,
+                    xmir
+                ).apply(phi, target);
                 return 1;
             }
         ).total();
