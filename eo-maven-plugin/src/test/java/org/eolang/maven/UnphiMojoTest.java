@@ -329,6 +329,11 @@ final class UnphiMojoTest {
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
         ).value();
+        MatcherAssert.assertThat(
+            "The cached file's last modified timestamp should be successfully reset",
+            cached.setLastModified(0L),
+            Matchers.is(true)
+        );
         final long old = cached.lastModified();
         new FakeMaven(temp)
             .with("cache", cache.toFile())
