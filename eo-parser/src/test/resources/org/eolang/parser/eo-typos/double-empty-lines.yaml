@@ -2,10 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 line: 4
-# @todo #3706:30min Cryptic error message is returned
-#  Cryptic error message is returned when there are two empty lines between metas.
-#  The error message should be more informative and should highlight the exact location
-#  of the error.
 message: |+
   [4:0] error: 'We expected the program to end here but encountered something unexpected'
 
