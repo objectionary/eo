@@ -70,20 +70,25 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         final String result;
         final String underlined;
         if (error instanceof NoViableAltException) {
-            result = getDetailedNoViableAlt((Parser) recognizer);
-            underlined = this.getMsgUnderlined(symbol, line, position);
+            result = impasse((Parser) recognizer);
+            underlined = this.underlined(symbol, line, position);
         } else if (error instanceof InputMismatchException) {
-            result = getDetailedInputMismatch((Parser) recognizer, msg);
-            underlined = this.getMsgUnderlined(symbol, line, position);
+            result = mismatch((Parser) recognizer, msg);
+            underlined = this.underlined(symbol, line, position);
         } else {
             result = msg;
             underlined = this.lines.line(line);
         }
-        final List<String> msgs = List.of(
-            new MsgLocated(line, position, result).formatted(),
-            underlined
+        this.errors.add(
+            new ParsingException(
+                error,
+                line,
+                List.of(
+                    new MsgLocated(line, position, result).formatted(),
+                    underlined
+                )
+            )
         );
-        this.errors.add(new ParsingException(error, line, msgs));
     }
 
     @Override
@@ -91,7 +96,12 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         return this.errors.iterator();
     }
 
-    private static String getDetailedNoViableAlt(final Parser parser) {
+    /**
+     * Get a detailed message for {@link NoViableAltException}.
+     * @param parser The source of the error context
+     * @return The detailed message
+     */
+    private static String impasse(final Parser parser) {
         final String rule = parser.getRuleInvocationStack().get(0);
         final String[] names = parser.getRuleNames();
         final String detailed;
@@ -111,7 +121,13 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         return detailed;
     }
 
-    private static String getDetailedInputMismatch(final Parser parser, final String msg) {
+    /**
+     * Get a detailed message for {@link InputMismatchException}.
+     * @param parser The source of the error context
+     * @param msg The default message
+     * @return The detailed message
+     */
+    private static String mismatch(final Parser parser, final String msg) {
         final String rule = parser.getRuleInvocationStack().get(0);
         final String[] names = parser.getRuleNames();
         final String detailed;
@@ -127,7 +143,14 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         return detailed;
     }
 
-    private String getMsgUnderlined(
+    /**
+     * Create a message from {@link MsgUnderlined}.
+     * @param symbol The offending token
+     * @param line The line number with the error
+     * @param position The character position with the error
+     * @return The formatted message of {@link MsgUnderlined}
+     */
+    private String underlined(
         final Object symbol,
         final int line,
         final int position
