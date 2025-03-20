@@ -143,7 +143,7 @@ final class EoIndentLexer extends EoLexer {
      */
     private void emitToken(final int type) {
         final CommonToken tkn = new CommonToken(type, EoParser.VOCABULARY.getSymbolicName(type));
-        tkn.setLine(this.getLine() + 1);
+        tkn.setLine(this.getLine());
         this.tokens.offer(tkn);
     }
 }
