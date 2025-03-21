@@ -33,8 +33,7 @@ import org.xembly.Directive;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
-     * Temporary hash value.
-     * @todo Use relevant hash instead of it
+     * Temporary hash value. Should use relevant hash instead of it.
      */
     static final String FAKE_HASH = "qwerty123";
 
