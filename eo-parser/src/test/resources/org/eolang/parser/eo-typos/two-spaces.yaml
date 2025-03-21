@@ -15,7 +15,7 @@ message: |-
   [5:2] error: 'Invalid bound object declaration'
      *
     ^
-  [4:-1] error: 'We expected the program to end here but encountered something unexpected'
+  [4:-1] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
     seq > @
   ^^^^^^^^^
 input: |

@@ -3,7 +3,7 @@
 ---
 line: 4
 message: |+
-  [4:0] error: 'We expected the program to end here but encountered something unexpected'
+  [4:0] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
 
 input: |
   # No comments.
