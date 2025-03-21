@@ -133,7 +133,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         final String detailed;
         if (names[EoParser.RULE_program].equals(rule)) {
             detailed =
-                "We expected the program to end here but encountered something unexpected";
+                "Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct";
         } else if (names[EoParser.RULE_objects].equals(rule)) {
             detailed =
                 "We expected a list of objects here but encountered something unexpected";
