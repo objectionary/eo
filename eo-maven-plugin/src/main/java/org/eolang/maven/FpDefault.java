@@ -13,11 +13,11 @@ import org.cactoos.io.InputOf;
  * Default footprint that covers all the scenarios of updating target
  * from source using cache.
  * <p>General statements:
- * 1) if target is actual toward source - target is not updated
- * 2) if target is expired toward source or does not exist - it will be created and filled up.
+ * 1) if target older than source - target is not updated
+ * 2) if target younger than source or does not exist - it will be created and filled up.
  *    It can be created from source, or from global cache if it exists and cacheable and
  *    older than source.
- * 3) the cache is updated if it's cacheable (it does not exist or if it's expired toward source)
+ * 3) the cache is updated if it's cacheable (it does not exist or if it's younger than source)
  * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the target is always
  *    regenerated and cache is not touched at all.
  * </p>
@@ -116,9 +116,9 @@ final class FpDefault extends FpEnvelope {
                 new FpIfReleased(
                     semver,
                     hash,
-                    new FpIfActual(
+                    new FpIfOlder(
                         new FpIgnore(),
-                        new FpIfActual(
+                        new FpIfOlder(
                             target -> cache.get(),
                             new FpUpdateFromCache(cache),
                             new FpUpdateBoth(generated, cache)
