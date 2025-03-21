@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# @todo #3807:60m XMIR format for bytes with data should be fixed.
+#  Current representation of org.eolang.bytes with data in XMIR is wrong,
+#  we miss one anonymous abstract object.
+#  When we add the missing anonymous abstract object, we should remove
+#  the `skip` property from this test.
+#  The same should be done for the test `bytes-in-number-with-anonymous-object.yaml`
+#  and `bytes-in-string-with-anonymous-object.yaml`.
+skip: true
+sheets: [ ]
+asserts:
+  - /program[not(errors)]
+  - /program/objects/o[@base='Q.org.eolang.bytes' and @name='app']/o[@base='Q.org.eolang.bytes']/o[text()='00-00-00-00']
+input: |
+  # No comments.
+  bytes > app
+    00-00-00-00

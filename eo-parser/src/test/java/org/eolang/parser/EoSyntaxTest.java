@@ -384,45 +384,4 @@ final class EoSyntaxTest {
             Matchers.equalTo(expected)
         );
     }
-
-    /**
-     * Compiles XMIR bytes with an anonymous abstract object.
-     * @throws IOException If something goes wrong.
-     * @todo #3807:60m XMIR format for bytes with data should be fixed.
-     *  Current representation of org.eolang.bytes with data in XMIR is wrong,
-     *  we miss one anonymous abstract object.
-     *  When we add the missing anonymous abstract object, we should remove
-     *  the @Disabled annotation from this test.
-     */
-    @Test
-    @Disabled
-    void compilesXmirBytesWithAnonymousAbstractObject() throws IOException {
-        final XML xmir = new EoSyntax(
-            "bytes-with-anonymous-abstract-object",
-            new InputOf(
-                String.join(
-                    "\n",
-                    "# No comments.",
-                    "bytes > app",
-                    "  00-00-00-00"
-                )
-            )
-        ).parsed();
-        MatcherAssert.assertThat(
-            String.join(
-                "\n",
-                "XMIR should contain the anonymous abstract object for bytes. Expected: ",
-                "<o base='bytes' name='app'>",
-                "  <o base='bytes'>",
-                "    <o>00-00-00-00</o> <!-- Anonymous object -->",
-                "  </o>",
-                "</o>",
-                String.format("Actual XMIR is:\n%s", xmir)
-            ),
-            xmir,
-            XhtmlMatchers.hasXPath(
-                "/program/objects/o[@base='Q.org.eolang.bytes' and @name='app']/o[@base='Q.org.eolang.bytes']/o[text()='00-00-00-00']"
-            )
-        );
-    }
 }
