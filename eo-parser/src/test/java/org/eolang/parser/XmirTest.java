@@ -22,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.5
  */
 final class XmirTest {
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {
