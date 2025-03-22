@@ -49,7 +49,7 @@ final class CleanMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("includeSources", new SetOf<>("**.eo"))
-            .with("outputDir", temp.resolve("out").toFile())
+            .with("classesDir", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
             .with("skipZeroVersions", true)

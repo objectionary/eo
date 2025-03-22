@@ -11,17 +11,20 @@ List<String> expected = [
   'eo/5-lint/org/eolang/go.xmir',
   'eo/8-transpile/org/eolang/malloc.xmir',
   'eo/phi/org/eolang/number.phi',
-  'eo/unphi/org/eolang/number.xmir',
   'eo-test/1-parse/org/eolang/bool-tests.xmir',
   'eo-test/2-shake/org/eolang/go-tests.xmir',
   'eo-test/5-lint/org/eolang/dataized-tests.xmir',
   'eo-test/8-transpile/org/eolang/runtime-tests.xmir',
   'eo-test/phi/org/eolang/number-tests.phi',
-  'eo-test/unphi/org/eolang/number-tests.xmir',
   'generated-sources/EOorg/EOeolang/EOdataized.java',
   'generated-sources/EOorg/EOeolang/EOnet/EOsocket.java',
   'generated-test-sources/EOorg/EOeolang/EOtests_and_with_zeroTest.java',
-  'classes/EO-SOURCES/org/eolang/false.eo',
+  'classes/EOorg/package-info.class',
+  'classes/EOorg/EOeolang/package-info.class',
+  'classes/EOorg/EOeolang/EOsys/package-info.class',
+  'classes/EOorg/EOeolang/EOmath/package-info.class',
+  'classes/EOorg/EOeolang/EOfs/package-info.class',
+  'classes/EOorg/EOeolang/EOtxt/package-info.class',
 ]
 
 for (path in expected) {

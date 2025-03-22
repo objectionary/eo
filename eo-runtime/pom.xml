@@ -220,15 +220,20 @@
               <goal>compile</goal>
               <goal>transpile</goal>
               <goal>xmir-to-phi</goal>
-              <goal>phi-to-xmir</goal>
-              <goal>copy</goal>
               <goal>unplace</goal>
               <goal>unspile</goal>
             </goals>
             <configuration>
               <ignoreRuntime>true</ignoreRuntime>
-              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
               <lintAsPackage>false</lintAsPackage>
+              <keepBinaries>
+                <glob>EOorg/package-info.class</glob>
+                <glob>EOorg/EOeolang/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOfs/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOmath/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOsys/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOtxt/package-info.class</glob>
+              </keepBinaries>
             </configuration>
           </execution>
           <execution>
@@ -238,7 +243,6 @@
               <goal>register</goal>
               <goal>compile</goal>
               <goal>xmir-to-phi</goal>
-              <goal>phi-to-xmir</goal>
               <goal>transpile</goal>
             </goals>
             <configuration>
@@ -247,14 +251,11 @@
               <targetDir>${project.build.directory}/eo-test</targetDir>
               <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
               <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
-              <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
-              <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
               <failOnWarning>true</failOnWarning>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <ignoreRuntime>true</ignoreRuntime>
-              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
         </executions>

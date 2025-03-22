@@ -31,14 +31,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ResolveMojoTest {
 
     /**
-     * The message that the JAR file must exist.
+     * The message that the .class file must exist.
      */
-    private static final String JAR_MUST_EXIST = "The jar file must exist, but it doesn't";
+    private static final String CLASS_MUST_EXIST = "The class file must exist, but it doesn't";
 
     /**
-     * The message that the JAR file must not exist.
+     * The message that the .class file must not exist.
      */
-    private static final String JAR_NOT_EXIST = "The jar file must not exist, but it doesn't";
+    private static final String CLASS_NOT_EXIST = "The class file must not exist, but it doesn't";
 
     @Test
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
@@ -59,8 +59,8 @@ final class ResolveMojoTest {
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
-            path.resolve("eo-runtime-0.7.0.jar").toFile(),
+            ResolveMojoTest.CLASS_MUST_EXIST,
+            path.resolve("eo-runtime-0.7.0.class").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -98,9 +98,9 @@ final class ResolveMojoTest {
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             path,
-            new ContainsFiles("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.class")
         );
     }
 
@@ -109,9 +109,9 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             maven.targetPath(),
-            new ContainsFiles("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.class")
         );
     }
 
@@ -122,9 +122,9 @@ final class ResolveMojoTest {
             .with("ignoreRuntime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_NOT_EXIST,
+            ResolveMojoTest.CLASS_NOT_EXIST,
             maven.targetPath(),
-            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
 
@@ -140,9 +140,9 @@ final class ResolveMojoTest {
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             maven.targetPath(),
-            new ContainsFiles("**/eo-runtime-0.22.1.jar")
+            new ContainsFiles("**/eo-runtime-0.22.1.class")
         );
     }
 
@@ -155,9 +155,9 @@ final class ResolveMojoTest {
             .with("ignoreRuntime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_NOT_EXIST,
+            ResolveMojoTest.CLASS_NOT_EXIST,
             maven.targetPath(),
-            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
 
@@ -174,9 +174,9 @@ final class ResolveMojoTest {
             .with("project", project)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             maven.targetPath(),
-            new ContainsFiles("**/eo-runtime-0.7.0.jar")
+            new ContainsFiles("**/eo-runtime-0.7.0.class")
         );
     }
 
@@ -191,9 +191,9 @@ final class ResolveMojoTest {
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             maven.targetPath(),
-            new ContainsFiles("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.class")
         );
     }
 
@@ -275,9 +275,9 @@ final class ResolveMojoTest {
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            ResolveMojoTest.JAR_MUST_EXIST,
+            ResolveMojoTest.CLASS_MUST_EXIST,
             maven.targetPath(),
-            new ContainsFiles("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.class")
         );
     }
 }

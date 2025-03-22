@@ -69,7 +69,8 @@ final class TjsPlaced implements Closeable {
      * @return All classes.
      */
     Collection<TjPlaced> classes() {
-        return this.allBinaries().stream()
+        return this.allBinaries()
+            .stream()
             .filter(TjPlaced::isClass)
             .collect(Collectors.toList());
     }
@@ -79,7 +80,8 @@ final class TjsPlaced implements Closeable {
      * @return All jars.
      */
     Collection<TjPlaced> jars() {
-        return this.allBinaries().stream()
+        return this.allBinaries()
+            .stream()
             .filter(TjPlaced::isJar)
             .collect(Collectors.toList());
     }
@@ -124,31 +126,18 @@ final class TjsPlaced implements Closeable {
      * @param target Path to the class.
      * @param related Related.
      * @param dep Dependency.
-     * @return Placed class.
      */
-    TjPlaced placeClass(
+    void placeClass(
         final Path target,
         final String related,
         final String dep
     ) {
-        return new TjPlaced(
-            this.all.value().add(target.toString())
-                .set(Attribute.KIND.getKey(), "class")
-                .set(Attribute.HASH.getKey(), new FileHash(target))
-                .set(Attribute.RELATED.getKey(), related)
-                .set(Attribute.DEPENDENCY.getKey(), dep)
-                .set(Attribute.UNPLACED.getKey(), "false")
-        );
-    }
-
-    /**
-     * Place jar into placed tojos file.
-     * @param name Name of the jar.
-     */
-    void placeJar(final String name) {
-        this.all.value().add(name)
-            .set(Attribute.KIND.getKey(), "jar")
-            .set(Attribute.DEPENDENCY.getKey(), String.format("%s.jar", name))
+        this.all.value()
+            .add(target.toString())
+            .set(Attribute.KIND.getKey(), "class")
+            .set(Attribute.HASH.getKey(), new FileHash(target))
+            .set(Attribute.RELATED.getKey(), related)
+            .set(Attribute.DEPENDENCY.getKey(), dep)
             .set(Attribute.UNPLACED.getKey(), "false");
     }
 

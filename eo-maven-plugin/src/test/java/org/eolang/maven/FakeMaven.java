@@ -48,7 +48,7 @@ import org.cactoos.text.UncheckedText;
     "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
-public final class FakeMaven {
+final class FakeMaven {
 
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
@@ -77,7 +77,7 @@ public final class FakeMaven {
      *
      * @param workspace Test temporary directory.
      */
-    public FakeMaven(final Path workspace) {
+    FakeMaven(final Path workspace) {
         this(workspace, true);
     }
 
@@ -123,7 +123,7 @@ public final class FakeMaven {
      * @param value Parameter value
      * @return The same maven instance.
      */
-    public FakeMaven with(final String param, final Object value) {
+    FakeMaven with(final String param, final Object value) {
         this.params.put(param, value);
         return this;
     }
@@ -137,7 +137,7 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      * @throws IOException If some problem with filesystem is happened.
      */
-    public FakeMaven execute(final Iterable<Class<? extends AbstractMojo>> mojo)
+    FakeMaven execute(final Iterable<Class<? extends AbstractMojo>> mojo)
         throws IOException {
         for (final Class<? extends AbstractMojo> clazz : mojo) {
             this.execute(clazz);
@@ -150,7 +150,7 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current eo-foreign.file.
      */
-    public TjSmart foreign() {
+    TjSmart foreign() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.foreignPath())
         );
@@ -166,15 +166,14 @@ public final class FakeMaven {
      * @checkstyle ExecutableStatementCountCheck (100 lines)
      * @checkstyle JavaNCSSCheck (100 lines)
      */
-    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
+    <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
             final Path transpiled = this.workspace.resolve("transpiled");
             final Path placed = Paths.get("placed.json");
             new Saved(new TextOf(""), transpiled).value();
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures",
-                this.targetPath().resolve("measures.csv").toFile()
+                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
@@ -189,16 +188,10 @@ public final class FakeMaven {
             this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
-                "sourcesDir",
-                this.workspace.resolve(".").toFile()
+                "sourcesDir", this.workspace.resolve(".").toFile()
             );
             this.params.putIfAbsent(
-                "outputDir",
-                this.workspace.resolve("target/classes").toFile()
-            );
-            this.params.putIfAbsent(
-                "cache",
-                this.workspace.resolve("eo/cache/parsed").toFile()
+                "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
             this.params.putIfAbsent("generateSodgXmlFiles", true);
             this.params.putIfAbsent("generateXemblyFiles", true);
@@ -221,12 +214,10 @@ public final class FakeMaven {
                 ).toFile()
             );
             this.params.putIfAbsent(
-                "phiOutputDir",
-                this.workspace.resolve("target/phi").toFile()
+                "phiOutputDir", this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
-                "unphiInputDir",
-                this.workspace.resolve("target/phi").toFile()
+                "unphiInputDir", this.workspace.resolve("target/phi").toFile()
             );
             this.params.putIfAbsent(
                 "unphiOutputDir",
@@ -235,8 +226,7 @@ public final class FakeMaven {
                 ).toFile()
             );
             this.params.putIfAbsent(
-                "classesDir",
-                this.workspace.resolve("target/classes").toFile()
+                "classesDir", this.classesPath().toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);
@@ -253,7 +243,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    public FakeMaven withProgram(final Input input) throws IOException {
+    FakeMaven withProgram(final Input input) throws IOException {
         return this.withProgram(new UncheckedText(new TextOf(input)).asString());
     }
 
@@ -261,7 +251,7 @@ public final class FakeMaven {
      * Path to compilation target directory.
      * @return Path to target dir.
      */
-    public Path targetPath() {
+    Path targetPath() {
         return this.workspace.resolve("target");
     }
 
@@ -269,8 +259,16 @@ public final class FakeMaven {
      * Path to generated directory.
      * @return Path to generated dir.
      */
-    public Path generatedPath() {
+    Path generatedPath() {
         return this.targetPath().resolve("generated");
+    }
+
+    /**
+     * Path to classes directory.
+     * @return Path to classes directory
+     */
+    Path classesPath() {
+        return this.targetPath().resolve("classes");
     }
 
     /**
@@ -451,18 +449,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Plugin descriptor with test version.
-     * @return Plugin descriptor.
-     */
-    static PluginDescriptor pluginDescriptor() {
-        final PluginDescriptor descriptor = new PluginDescriptor();
-        descriptor.setGroupId("org.eolang");
-        descriptor.setArtifactId("eo-maven-plugin");
-        descriptor.setVersion(FakeMaven.pluginVersion());
-        return descriptor;
-    }
-
-    /**
      * Ensures the map of allowed params for the Mojo.
      *
      * @param mojo Mojo
@@ -494,6 +480,18 @@ public final class FakeMaven {
      */
     private static String tojoId(final int id) {
         return String.format("foo.x.main%s", FakeMaven.suffix(id));
+    }
+
+    /**
+     * Plugin descriptor with test version.
+     * @return Plugin descriptor.
+     */
+    private static PluginDescriptor pluginDescriptor() {
+        final PluginDescriptor descriptor = new PluginDescriptor();
+        descriptor.setGroupId("org.eolang");
+        descriptor.setArtifactId("eo-maven-plugin");
+        descriptor.setVersion(FakeMaven.pluginVersion());
+        return descriptor;
     }
 
     /**
@@ -733,13 +731,10 @@ public final class FakeMaven {
     private static final class DummyCentral implements BiConsumer<Dependency, Path> {
 
         @Override
-        public void accept(
-            final Dependency dependency,
-            final Path path
-        ) {
+        public void accept(final Dependency dependency, final Path path) {
             try {
                 Files.createDirectories(path);
-                final String other = DummyCentral.jarName(dependency);
+                final String other = DummyCentral.className(dependency);
                 Files.createFile(path.resolve(other));
             } catch (final IOException ex) {
                 throw new IllegalStateException(
@@ -750,12 +745,12 @@ public final class FakeMaven {
         }
 
         /**
-         * Dependency jar name.
+         * Dependency class name.
          *
          * @param dependency Dependency
-         * @return Jar file name
+         * @return Class file name
          */
-        private static String jarName(final Dependency dependency) {
+        private static String className(final Dependency dependency) {
             final List<String> parts = new ArrayList<>(3);
             if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {
                 parts.add(dependency.getArtifactId());
@@ -766,7 +761,7 @@ public final class FakeMaven {
             if (dependency.getClassifier() != null && !dependency.getClassifier().isEmpty()) {
                 parts.add(dependency.getClassifier());
             }
-            return String.format("%s.jar", String.join("-", parts));
+            return String.format("%s.class", String.join("-", parts));
         }
     }
 }
