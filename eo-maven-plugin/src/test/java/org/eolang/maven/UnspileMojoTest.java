@@ -76,7 +76,7 @@ final class UnspileMojoTest {
             "clss", maven.classesPath().resolve("EOorg/EOnumber$EOΦorgeolanginner.class")
         ).value();
         MatcherAssert.assertThat(
-            "UnspileMojo must delete inner auto genreated classes",
+            "UnspileMojo must delete inner auto generated classes",
             maven.execute(UnspileMojo.class).result(),
             Matchers.allOf(
                 Matchers.not(Matchers.hasValue(clazz)),
