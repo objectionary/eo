@@ -86,8 +86,16 @@ public final class UnplaceMojo extends SafeMojo {
         final boolean inside = classes.stream().anyMatch(path::equals);
         if (tojo.sameHash(hash)) {
             if (inside) {
+                Logger.debug(
+                    this, "The binary %s of %s looks the same, so it's unplaced",
+                    related, tojo.dependency()
+                );
                 unplaced = UnplaceMojo.unplaced(tojo, path);
             } else {
+                Logger.debug(
+                    this, "The binary %s of %s looks the same, but can't be unplaced",
+                    related, tojo.dependency()
+                );
                 unplaced = 0;
             }
         } else {
