@@ -63,44 +63,6 @@ final class UnplaceMojoTest {
     }
 
     @Test
-    void removesClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).with("removeBinaries", Set.of("**/*.class"));
-        final Path clazz = UnplaceMojoTest.placed(temp, maven, "class");
-        final Path text = UnplaceMojoTest.placed(clazz, maven, "txt");
-        MatcherAssert.assertThat(
-            "UnplaceMojo must keep .class files and remove .txt file",
-            maven.execute(UnplaceMojo.class).result(),
-            Matchers.allOf(
-                Matchers.hasValue(text),
-                Matchers.not(Matchers.hasValue(clazz))
-            )
-        );
-    }
-
-    @Test
-    void keepsAndRemovesSpecifiedFiles(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("removeBinaries", Set.of("**/*.sh"))
-            .with("keepBinaries", Set.of("org/eolang/**"));
-        final Path sh1 = UnplaceMojoTest.placed(temp, maven, "sh");
-        final Path sh2 = UnplaceMojoTest.placed(
-            temp, maven, Paths.get("org/other.sh")
-        );
-        final Path remained = UnplaceMojoTest.placed(
-            temp, maven, Paths.get("org/eolang/my.sh")
-        );
-        MatcherAssert.assertThat(
-            "UnplaceMojo must keep files org/eolang/ directory but remove all .sh files",
-            maven.execute(UnplaceMojo.class).result(),
-            Matchers.allOf(
-                Matchers.not(Matchers.hasValue(sh1)),
-                Matchers.not(Matchers.hasValue(sh2)),
-                Matchers.hasValue(remained)
-            )
-        );
-    }
-
-    @Test
     void updatesPlacedTojosFile(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Path file = UnplaceMojoTest.placed(temp, maven, "bat");

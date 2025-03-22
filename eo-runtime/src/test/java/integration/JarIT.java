@@ -4,7 +4,6 @@
  */
 package integration;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.Jaxec;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;

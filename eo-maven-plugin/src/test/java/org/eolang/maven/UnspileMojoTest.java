@@ -47,10 +47,10 @@ final class UnspileMojoTest {
             "gen2", maven.generatedPath().resolve("EOorg/EOeolang/package-info.java")
         ).value();
         final Path org = new Saved(
-            "cls", maven.classesPath().resolve("EOorg/package-info.class")
+            "clz", maven.classesPath().resolve("EOorg/package-info.class")
         ).value();
         final Path eolang = new Saved(
-            "cls", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
+            "pgk", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
         ).value();
         MatcherAssert.assertThat(
             "UnspileMojo must keep files matching to keepBinaries globs",
@@ -67,15 +67,16 @@ final class UnspileMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("outer", maven.generatedPath().resolve("EOorg/EOnumber.java")).value();
         final Path clazz = new Saved(
-            "cls", maven.classesPath().resolve("EOorg/EOnumber.class")
+            "clz", maven.classesPath().resolve("EOorg/EOnumber.class")
         ).value();
         final Path inner = new Saved(
             "inner", maven.classesPath().resolve("EOorg/EOnumber$1$2$3.class")
         ).value();
         final Path located = new Saved(
-            "cls", maven.classesPath().resolve("EOorg/EOnumber$EOΦorgeolanginner.class")
+            "clss", maven.classesPath().resolve("EOorg/EOnumber$EOΦorgeolanginner.class")
         ).value();
         MatcherAssert.assertThat(
+            "UnspileMojo must delete inner auto genreated classes",
             maven.execute(UnspileMojo.class).result(),
             Matchers.allOf(
                 Matchers.not(Matchers.hasValue(clazz)),
@@ -89,7 +90,7 @@ final class UnspileMojoTest {
     void deletesEmptyDirectories(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("src", maven.generatedPath().resolve("org/eolang/number.java")).value();
-        new Saved("cls", maven.classesPath().resolve("org/eolang/number.class")).value();
+        new Saved("cnt", maven.classesPath().resolve("org/eolang/number.class")).value();
         MatcherAssert.assertThat(
             "UnspileMojo must remove all empty directories recursively",
             maven.execute(UnspileMojo.class).result(),
