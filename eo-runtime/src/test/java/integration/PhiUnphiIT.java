@@ -111,7 +111,7 @@ final class PhiUnphiIT {
                         )
                     )
                     .execution("compile")
-                    .goals("register", "compile", "transpile", "unplace", "unspile")
+                    .goals("register", "compile", "transpile")
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.json")
                     .set("foreignFormat", "csv")
