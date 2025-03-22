@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+skip: true
+sheets: [ ]
+asserts:
+  - /program[not(errors)]
+  - /program/objects/o[@base='Q.org.eolang.number' and @name='zero']/o[@base='Q.org.eolang.bytes']/o[text()='00-00-00-00-00-00-00-00']
+input: |
+  # No comments.
+  0 > zero
