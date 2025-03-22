@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,12 +25,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class UnspileMojoTest {
 
     @Test
-    void cleans(@Mktmp final Path temp) throws IOException {
+    void deletesClassIfCompiledFromGeneratedSources(@Mktmp final Path temp) throws IOException {
         final Path foo = Paths.get("a/b/c/foo.class");
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("abc", temp.resolve(foo)).value();
         new Saved("xxx", maven.generatedPath().resolve("a/b/c/foo.java")).value();
-        new Saved("cde", maven.targetPath().resolve("classes/foo.txt")).value();
         maven.execute(UnspileMojo.class);
         MatcherAssert.assertThat(
             String.format("UnspileMojo unable to remove %s class", foo),
@@ -40,26 +39,64 @@ final class UnspileMojoTest {
     }
 
     @Test
-    void doesNotDeleteClassIfPresentInSources(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        new Saved("src", temp.resolve("src/main/java/EOorg/package-info.java")).value();
+    void keepsSpecifiedClasses(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("keepBinaries", Set.of("EOorg/package-info.class"));
         new Saved("gen1", maven.generatedPath().resolve("EOorg/package-info.java")).value();
         new Saved(
             "gen2", maven.generatedPath().resolve("EOorg/EOeolang/package-info.java")
         ).value();
         final Path org = new Saved(
-            "cls", temp.resolve("target/classes/EOorg/package-info.class")
+            "cls", maven.classesPath().resolve("EOorg/package-info.class")
         ).value();
         final Path eolang = new Saved(
-            "cls", temp.resolve("target/classes/EOorg/EOeolang/package-info.class")
+            "cls", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
         ).value();
-        maven.execute(UnspileMojo.class);
         MatcherAssert.assertThat(
-            "UnspileMojo must not delete classes if corresponding .java files exist in java sources directory",
-            new Walk(temp.resolve("target/classes")),
+            "UnspileMojo must keep files matching to keepBinaries globs",
+            maven.execute(UnspileMojo.class).result(),
             Matchers.allOf(
-                Matchers.hasItem(org),
-                Matchers.not(Matchers.hasItem(eolang))
+                Matchers.hasValue(org),
+                Matchers.not(Matchers.hasValue(eolang))
+            )
+        );
+    }
+
+    @Test
+    void deletesInnerGeneratedClasses(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        new Saved("outer", maven.generatedPath().resolve("EOorg/EOnumber.java")).value();
+        final Path clazz = new Saved(
+            "cls", maven.classesPath().resolve("EOorg/EOnumber.class")
+        ).value();
+        final Path inner = new Saved(
+            "inner", maven.classesPath().resolve("EOorg/EOnumber$1$2$3.class")
+        ).value();
+        final Path located = new Saved(
+            "cls", maven.classesPath().resolve("EOorg/EOnumber$EOΦorgeolanginner.class")
+        ).value();
+        MatcherAssert.assertThat(
+            maven.execute(UnspileMojo.class).result(),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasValue(clazz)),
+                Matchers.not(Matchers.hasValue(inner)),
+                Matchers.not(Matchers.hasValue(located))
+            )
+        );
+    }
+
+    @Test
+    void deletesEmptyDirectories(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        new Saved("src", maven.generatedPath().resolve("org/eolang/number.java")).value();
+        new Saved("cls", maven.classesPath().resolve("org/eolang/number.class")).value();
+        MatcherAssert.assertThat(
+            "UnspileMojo must remove all empty directories recursively",
+            maven.execute(UnspileMojo.class).result(),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasKey("target/classes/org/eolang")),
+                Matchers.not(Matchers.hasKey("target/classes/org")),
+                Matchers.hasKey("target/classes")
             )
         );
     }

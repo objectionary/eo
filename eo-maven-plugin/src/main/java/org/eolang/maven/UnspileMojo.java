@@ -5,19 +5,18 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.set.SetOf;
 
 /**
  * Goes through all .class files and deletes those that
@@ -35,44 +34,20 @@ public final class UnspileMojo extends SafeMojo {
     /**
      * Pattern for matching paths ended with .class.
      */
-    private static final Pattern CLASS = Pattern.compile("\\.class$");
+    private static final Pattern JAVA = Pattern.compile("\\.java$");
 
     /**
-     * Directory with Java classes.
-     * @checkstyle MemberNameCheck (7 lines)
+     * Inner auto generated classes.
      */
-    @Parameter(
-        property = "eo.classesDir",
-        required = true,
-        defaultValue = "${project.build.directory}/classes"
-    )
-    private File classesDir;
-
-    /**
-     * Directory with generated sources.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        property = "eo.generatedDir",
-        required = true,
-        defaultValue = "${project.build.directory}/generated-sources"
-    )
-    private File generatedDir;
-
-    /**
-     * List of inclusion GLOB filters for finding .class files.
-     */
-    @Parameter
-    private Set<String> includes = new SetOf<>("**/*.class");
+    private static final Collection<String> INNER = List.of(
+        "**/EO*$[1-9]*.class", "**/*$EOΦ*.class"
+    );
 
     @Override
     public void exec() throws IOException {
-        final Collection<Path> classes = new Walk(this.classesDir.toPath());
+        final Walk classes = new Walk(this.classesDir.toPath());
         if (classes.isEmpty()) {
-            Logger.warn(
-                this, "No .class files in %[file]s including %s, nothing to unspile",
-                this.classesDir, this.includes
-            );
+            Logger.warn(this, "No .class files in %[file]s, nothing to unspile", this.classesDir);
         } else {
             this.unspile(classes);
         }
@@ -82,87 +57,49 @@ public final class UnspileMojo extends SafeMojo {
      * Unspile classes.
      * @param classes Collection of compiled classes
      */
-    private void unspile(final Collection<Path> classes) {
-        final int unspiled = new Threaded<>(
-            classes,
-            path -> {
-                final int deleted;
-                if (UnspileMojo.matchesPattern(path, this.includes)
-                    && this.wasGenerated(path)
-                    && this.notFromSources(path)
-                ) {
-                    Files.delete(path);
-                    Logger.debug(
-                        this,
-                        "Deleted %[file]s since was compiled only from %[file]s",
-                        path, this.generatedDir
-                    );
-                    deleted = 1;
-                } else {
-                    Logger.debug(
-                        this,
-                        "Not deleted %[file]s since either compiled from %[file]s or wasn't compiled from %[file]s",
-                        path, this.javaSourcesDir, this.generatedDir
-                    );
-                    deleted = 0;
-                }
-                return deleted;
-            }
-        ).total();
-        if (unspiled == 0) {
+    private void unspile(final Walk classes) {
+        final Path generated = this.generatedDir.toPath();
+        final Set<String> included = new Walk(generated)
+            .stream()
+            .map(
+                path -> UnspileMojo.JAVA.matcher(
+                    generated.relativize(path).toString()
+                ).replaceAll(".class")
+            )
+            .collect(Collectors.toSet());
+        included.addAll(UnspileMojo.INNER);
+        final Collection<Path> filtered = new ArrayList<>(
+            classes.excludes(this.keepBinaries).includes(included)
+        );
+        if (filtered.isEmpty()) {
             Logger.info(
-                this, "No .class files out of %d deleted in %[file]s including %s",
-                classes.size(), this.classesDir, this.includes
+                this, "No .class files out of %d deleted in %[file]s",
+                classes.size(), this.classesDir
             );
         } else {
+            final int unspiled = new Threaded<>(
+                filtered,
+                path -> {
+                    final int deleted;
+                    if (Files.deleteIfExists(path)) {
+                        Logger.debug(
+                            this,
+                            "Deleted %[file]s since was compiled only from %[file]s",
+                            path, generated
+                        );
+                        deleted = 1;
+                    } else {
+                        deleted = 0;
+                    }
+                    return deleted;
+                }
+            ).total();
+            new EmptyDirectoriesIn(this.classesDir.toPath()).clear();
             Logger.info(
-                this, "Deleted %d .class files out of %d in %[file]s",
-                unspiled, classes.size(), this.classesDir
+                this,
+                "Deleted %d .class files in %[file]s",
+                unspiled, this.classesDir.toPath()
             );
         }
-    }
-
-    /**
-     * Returns true if given path matches to any of provided globs.
-     * @param path Path to file
-     * @param includes Stream of globs
-     * @return True if matches to any glob
-     */
-    private static boolean matchesPattern(final Path path, final Collection<String> includes) {
-        return includes.stream().anyMatch(
-            glob -> FileSystems.getDefault().getPathMatcher(
-                String.format("glob:%s", glob)
-            ).matches(path)
-        );
-    }
-
-    /**
-     * Returns true class file by given path was compiled from generated sources directory.
-     * @param path Path to class file
-     * @return True if compiled from generated sources.
-     */
-    private boolean wasGenerated(final Path path) {
-        return Files.exists(
-            this.generatedDir.toPath().resolve(
-                UnspileMojo.CLASS.matcher(
-                    path.toString().substring(this.classesDir.toString().length() + 1)
-                ).replaceAll(".java")
-            )
-        );
-    }
-
-    /**
-     * Returns true if class by given path was not compiled from java sources directory.
-     * @param path Path to class file
-     * @return True if not compiled from java sources.
-     */
-    private boolean notFromSources(final Path path) {
-        return !Files.exists(
-            this.javaSourcesDir.toPath().resolve(
-                UnspileMojo.CLASS.matcher(
-                    path.toString().substring(this.classesDir.toString().length() + 1)
-                ).replaceAll(".java")
-            )
-        );
     }
 }

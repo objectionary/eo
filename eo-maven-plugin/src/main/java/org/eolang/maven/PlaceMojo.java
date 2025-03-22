@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.InputOf;
@@ -67,17 +68,16 @@ public final class PlaceMojo extends SafeMojo {
             Logger.debug(this, "Found placed binaries from %s", dep);
         }
         final Path dir = home.resolve(dep);
-        final long copied = new BinariesDependency(dir, dep, this.rewriteBinaries).place();
-        this.placedTojos.placeJar(dep);
+        final long copied = new PlaceMojo.PlacedDependency(dir, dep, this.rewriteBinaries).get();
         if (copied > 0) {
             Logger.debug(
                 this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new Walk(dir).size(), dep, this.outputDir
+                copied, new Walk(dir).size(), dep, this.classesDir
             );
         } else {
             Logger.debug(
                 this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new Walk(dir).size(), dep, this.outputDir
+                new Walk(dir).size(), dep, this.classesDir
             );
         }
         return copied;
@@ -88,7 +88,7 @@ public final class PlaceMojo extends SafeMojo {
      *
      * @since 0.30
      */
-    private final class BinariesDependency {
+    private final class PlacedDependency implements Supplier<Long> {
 
         /**
          * Directory to read from.
@@ -111,7 +111,7 @@ public final class PlaceMojo extends SafeMojo {
          * @param dependency The name of dependency
          * @param rwte Rewrite binaries in output directory or not
          */
-        private BinariesDependency(
+        private PlacedDependency(
             final Path directory,
             final String dependency,
             final boolean rwte
@@ -121,14 +121,11 @@ public final class PlaceMojo extends SafeMojo {
             this.rewrite = rwte;
         }
 
-        /**
-         * Place all binaries from this dependency.
-         * @return How many binaries placed
-         */
-        private long place() {
+        @Override
+        public Long get() {
             return new Walk(this.dir)
-                .includes(PlaceMojo.this.includeBinaries)
-                .excludes(PlaceMojo.this.excludeBinaries)
+                .includes(PlaceMojo.this.placeBinaries)
+                .excludes(PlaceMojo.this.skipBinaries)
                 .stream()
                 .filter(this::isNotAlreadyPlaced)
                 .peek(this::printLogInfoAboutBinary)
@@ -142,7 +139,7 @@ public final class PlaceMojo extends SafeMojo {
          * @return True if the file is not already placed.
          */
         private boolean isNotAlreadyPlaced(final Path file) {
-            final Path target = PlaceMojo.this.outputDir.toPath().resolve(
+            final Path target = PlaceMojo.this.classesDir.toPath().resolve(
                 this.dir.relativize(file)
             );
             final Optional<TjPlaced> tojo = PlaceMojo.this.placedTojos.find(target);
@@ -168,7 +165,7 @@ public final class PlaceMojo extends SafeMojo {
          * @param file The file to place.
          */
         private void printLogInfoAboutBinary(final Path file) {
-            final Path target = PlaceMojo.this.outputDir.toPath().resolve(
+            final Path target = PlaceMojo.this.classesDir.toPath().resolve(
                 this.dir.relativize(file)
             );
             final Optional<TjPlaced> tojo = PlaceMojo.this.placedTojos.find(target);
@@ -203,17 +200,17 @@ public final class PlaceMojo extends SafeMojo {
                 final Path target = new FpIfTargetExists(
                     new FpFork(this.rewrite, generated, new FpIgnore()),
                     generated
-                ).apply(file, PlaceMojo.this.outputDir.toPath().resolve(path));
+                ).apply(file, PlaceMojo.this.classesDir.toPath().resolve(path));
                 PlaceMojo.this.placedTojos.placeClass(
                     target,
-                    PlaceMojo.this.outputDir.toPath().relativize(target).toString(),
+                    PlaceMojo.this.classesDir.toPath().relativize(target).toString(),
                     this.dep
                 );
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to place %[file]s to home %[file]s with path %s",
-                        file, PlaceMojo.this.outputDir, path
+                        file, PlaceMojo.this.classesDir, path
                     ),
                     ex
                 );

@@ -60,6 +60,7 @@ final class JarIT {
                     .phase("generate-sources")
                     .goals("register", "compile", "transpile")
                     .configuration()
+                    .set("offline", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("skipLinting", Boolean.TRUE.toString());
                 f.exec("clean", "compile", "jar:jar");

@@ -6,19 +6,12 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.list.ListOf;
-import org.cactoos.set.SetOf;
 
 /**
  * It deletes binary files, which were previously copied by "place" mojo.
@@ -33,241 +26,107 @@ import org.cactoos.set.SetOf;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class UnplaceMojo extends SafeMojo {
-
-    /**
-     * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
-     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
-     * @since 0.24
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    private Set<String> removeBinaries = new SetOf<>();
-
-    /**
-     * List of inclusion GLOB filters for placing (ONLY these files will stay).
-     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
-     * @since 0.24
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    private Set<String> keepBinaries = new SetOf<>();
-
     @Override
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public void exec() throws IOException {
         if (this.placedTojos.isEmpty()) {
-            Logger.info(
-                this,
-                "The list of placed binaries is absent: %[file]s",
-                this.placed
-            );
+            Logger.info(this, "The list of placed binaries is absent: %[file]s", this.placed);
         } else {
-            this.unplaceClasses();
-            this.unplaceJars();
+            this.unplace();
         }
     }
 
     /**
-     * Mark dependencies as unplaced if all related binaries are unplaced.
-     */
-    private void unplaceJars() {
-        final Set<String> used = this.placedTojos.classes()
-            .stream()
-            .map(TjPlaced::dependency)
-            .collect(Collectors.toSet());
-        this.placedTojos.jars().stream()
-            .filter(dep -> used.contains(dep.identifier()))
-            .forEach(TjPlaced::unplace);
-    }
-
-    /**
-     * Place what's necessary.
-     * @throws IOException If fails
+     * Unplace what's necessary.
      */
     @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    private void unplaceClasses() throws IOException {
-        final Collection<TjPlaced> classes = this.placedTojos.classes();
-        int deleted = 0;
-        if (!this.keepBinaries.isEmpty()) {
-            deleted += this.keepThem(classes);
-        }
-        deleted += this.killThem(classes);
-        if (classes.isEmpty()) {
-            Logger.info(
-                this, "No binaries were placed into %[file]s, nothing to uplace",
-                this.placed
-            );
-        } else if (deleted == 0) {
-            Logger.info(
-                this, "No binaries out of %d deleted in %[file]s",
-                classes.size(), this.placed
-            );
-        } else if (deleted == classes.size()) {
-            Logger.info(
-                this, "All %d binari(es) deleted, which were found in %[file]s",
-                classes.size(), this.placed
-            );
+    private void unplace() {
+        final Path classes = this.classesDir.toPath();
+        final Walk binaries = new Walk(classes);
+        if (binaries.isEmpty()) {
+            Logger.warn(this, "No classes found in %[file]s", classes);
         } else {
-            Logger.info(
-                this, "Just %d binari(es) out of %d deleted in %[file]s",
-                deleted, classes.size(), this.placed
-            );
+            final Collection<Path> available = binaries.excludes(this.keepBinaries);
+            final int unplaced = new Threaded<>(
+                this.placedTojos.classes(),
+                tojo -> this.unplace(tojo, available)
+            ).total();
+            new EmptyDirectoriesIn(classes).clear();
+            if (unplaced == 0) {
+                Logger.info(
+                    this, "No binaries out of %d deleted in %[file]s",
+                    binaries.size(), this.placed
+                );
+            } else if (unplaced == available.size()) {
+                Logger.info(
+                    this, "All %d binari(es) deleted, which were found in %[file]s",
+                    binaries.size(), this.placed
+                );
+            } else {
+                Logger.info(
+                    this, "Just %d binari(es) out of %d deleted in %[file]s",
+                    unplaced, binaries.size(), this.placed
+                );
+            }
         }
     }
 
     /**
-     * Keep those we must keep selectively.
-     * @param all All binaries found
-     * @return Number of files deleted
-     * @throws IOException If fails
+     * Unplace provided tojo.
+     * @param tojo Placed tojo
+     * @param classes All available classes
+     * @return Amount of unplaced binaries
+     * @throws IOException If fails to unplace
      */
-    @SuppressWarnings("PMD.CognitiveComplexity")
-    private int killThem(final Iterable<TjPlaced> all) throws IOException {
-        int unplaced = 0;
-        for (final TjPlaced tojo : all) {
-            final String related = tojo.related();
-            final Path path = Paths.get(tojo.identifier());
-            final String hash = new FileHash(path).toString();
-            if (!tojo.sameHash(hash)) {
-                if (hash.isEmpty()) {
-                    Logger.debug(
-                        this, "The binary %s of %s is gone, won't unplace",
-                        related, tojo.dependency()
-                    );
-                    continue;
-                }
-                if (!UnplaceMojo.inside(related, this.removeBinaries)) {
-                    Logger.warn(
-                        this, "The binary %s of %s looks different, won't unplace",
-                        related, tojo.dependency()
-                    );
-                    continue;
-                }
-                Logger.info(
-                    this,
-                    "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
+    private int unplace(final TjPlaced tojo, final Collection<Path> classes) throws IOException {
+        final String related = tojo.related();
+        final Path path = Paths.get(tojo.identifier());
+        final String hash = new FileHash(path).toString();
+        final int unplaced;
+        final boolean inside = classes.stream().anyMatch(path::equals);
+        if (tojo.sameHash(hash)) {
+            if (inside) {
+                unplaced = UnplaceMojo.unplaced(tojo, path);
+            } else {
+                unplaced = 0;
+            }
+        } else {
+            if (hash.isEmpty()) {
+                Logger.debug(
+                    this, "The binary %s of %s is gone, won't unplace",
                     related, tojo.dependency()
                 );
-            }
-            if (UnplaceMojo.inside(related, this.keepBinaries)
-                && !UnplaceMojo.inside(related, this.removeBinaries)) {
-                continue;
-            }
-            if (UnplaceMojo.delete(path)) {
-                unplaced += 1;
-                tojo.unplace();
+                unplaced = 0;
+            } else if (inside) {
                 Logger.debug(
-                    this, "Binary %[file]s of %s deleted",
-                    path, tojo.dependency()
+                    this,
+                    "The binary %s of %s looks different, but its unplacing is mandatory",
+                    related, tojo.dependency()
                 );
+                unplaced = UnplaceMojo.unplaced(tojo, path);
             } else {
                 Logger.debug(
-                    this, "Binary %[file]s of %s already deleted",
-                    path, tojo.dependency()
+                    this,
+                    "The binary %s of %s looks different, but can't be unplaced",
+                    related, tojo.dependency()
                 );
+                unplaced = 0;
             }
         }
         return unplaced;
     }
 
     /**
-     * Keep those we must keep selectively.
-     * @param tojos All binaries found
-     * @return Number of files deleted
-     * @throws IOException If fails
+     * Unplaced and deleted binary.
+     * @param tojo Placed tojo
+     * @param path Path to binary
+     * @return Amount of unplaced binaries
+     * @throws IOException If fails to delete binary
      */
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
-    private int keepThem(final Iterable<? extends TjPlaced> tojos) throws IOException {
-        int deleted = 0;
-        int remained = 0;
-        for (final TjPlaced tojo : tojos) {
-            final String related = tojo.related();
-            final Path path = Paths.get(tojo.identifier());
-            if (!this.keepBinaries.isEmpty() && UnplaceMojo.inside(related, this.keepBinaries)) {
-                remained += 1;
-                continue;
-            }
-            if (UnplaceMojo.delete(path)) {
-                deleted += 1;
-                Logger.debug(
-                    this,
-                    "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related, tojo.dependency()
-                );
-            } else {
-                Logger.debug(
-                    this, "Binary %[file]s of %s already deleted",
-                    path, tojo.dependency()
-                );
-            }
+    private static int unplaced(final TjPlaced tojo, final Path path) throws IOException {
+        tojo.unplace();
+        if (Files.deleteIfExists(path)) {
+            Logger.debug(UnplaceMojo.class, "Deleted binary %s", path);
         }
-        Logger.info(
-            this,
-            "Because of 'selectivelyPlace' list of globs: %d files remained and %d deleted",
-            remained, deleted
-        );
-        return deleted;
-    }
-
-    /**
-     * This file is matched by one of the globs?
-     * @param related The related name of the file
-     * @param globs The globs
-     * @return TRUE if inside this list of globx
-     */
-    private static boolean inside(final String related, final Iterable<String> globs) {
-        return new ListOf<>(globs).stream().anyMatch(
-            glob -> UnplaceMojo.matches(related, glob)
-        );
-    }
-
-    /**
-     * The file matches the glob?
-     * @param related The related name of the file
-     * @param glob The glob
-     * @return TRUE if matches
-     */
-    private static boolean matches(final String related, final String glob) {
-        return FileSystems.getDefault().getPathMatcher(
-            String.format("glob:%s", glob)
-        ).matches(Paths.get(related));
-    }
-
-    /**
-     * Delete file and its parent if it's empty.
-     * @param file The file
-     * @return TRUE if deleted
-     * @throws IOException If fails
-     */
-    private static boolean delete(final Path file) throws IOException {
-        Path dir = file.getParent();
-        boolean deleted = false;
-        if (Files.exists(file)) {
-            Files.delete(file);
-            deleted = true;
-        }
-        while (UnplaceMojo.isEmpty(dir)) {
-            final Path curdir = dir;
-            dir = curdir.getParent();
-            Files.delete(curdir);
-            Logger.debug(UnplaceMojo.class, "Empty directory deleted too: %[file]s", dir);
-        }
-        return deleted;
-    }
-
-    /**
-     * Check if folder is empty.
-     * @param path Folder to be checked
-     * @return True if folder is empty and False otherwise
-     * @throws IOException In case of I/O issues
-     */
-    private static boolean isEmpty(final Path path) throws IOException {
-        boolean empty = false;
-        if (Files.isDirectory(path)) {
-            try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
-                empty = !directory.iterator().hasNext();
-            }
-        }
-        return empty;
+        return 1;
     }
 }

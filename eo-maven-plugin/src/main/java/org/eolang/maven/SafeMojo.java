@@ -110,15 +110,6 @@ abstract class SafeMojo extends AbstractMojo {
     protected File sourcesDir;
 
     /**
-     * Directory where java sources are located.
-     *
-     * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (8 lines)
-     */
-    @Parameter(required = true, defaultValue = "${project.build.sourceDirectory}", readonly = true)
-    protected File javaSourcesDir;
-
-    /**
      * Target directory.
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
@@ -129,18 +120,6 @@ abstract class SafeMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/eo"
     )
     protected File targetDir;
-
-    /**
-     * Output.
-     * @checkstyle MemberNameCheck (10 lines)
-     * @checkstyle VisibilityModifierCheck (10 lines)
-     */
-    @Parameter(
-        property = "eo.outputDir",
-        required = true,
-        defaultValue = "${project.build.outputDirectory}"
-    )
-    protected File outputDir;
 
     /**
      * Current scope (either "compile" or "test").
@@ -182,6 +161,18 @@ abstract class SafeMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/eo-transpiled.json"
     )
     protected File transpiled;
+
+    /**
+     * Generated sourced directory.
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.generatedDir",
+        required = true,
+        defaultValue = "${project.build.directory}/generated-sources"
+    )
+    protected File generatedDir;
 
     /**
      * The path of the file where XSL measurements (time of execution
@@ -291,16 +282,6 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean skipZeroVersions;
 
     /**
-     * Place only binaries that have EO sources inside jar.
-     * @since 0.31
-     * @checkstyle MemberNameCheck (10 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
-     */
-    @Parameter
-    @SuppressWarnings("PMD.LongVariable")
-    protected boolean placeBinariesThatHaveSources;
-
-    /**
      * Fail resolution process on conflicting dependencies.
      *
      * @since 0.1.0
@@ -322,22 +303,34 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean discoverSelf;
 
     /**
-     * List of inclusion GLOB filters for finding class files.
+     * List of inclusion GLOB filters for finding class files while placing them from where
+     * they were resolved to classes directory.
      * @since 0.15
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter
-    protected Set<String> includeBinaries = new SetOf<>("**");
+    protected Set<String> placeBinaries = new SetOf<>("**");
 
     /**
-     * List of exclusion GLOB filters for finding class files.
+     * List of exclusion GLOB filters for finding class files while placing them from where
+     * they were resolved to classed directory.
      * @since 0.15
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter
-    protected Set<String> excludeBinaries = new SetOf<>();
+    protected Set<String> skipBinaries = new SetOf<>();
+
+    /**
+     * List of inclusion GLOB filters for unplacing and unspiling (ONLY these files will stay).
+     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
+     * @since 0.24
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    protected Set<String> keepBinaries = new SetOf<>();
 
     /**
      * Add eo-runtime dependency to the classpath.

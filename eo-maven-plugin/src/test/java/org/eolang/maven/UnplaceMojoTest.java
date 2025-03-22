@@ -10,21 +10,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link UnplaceMojo}.
@@ -35,253 +26,146 @@ import org.junit.jupiter.params.provider.MethodSource;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 final class UnplaceMojoTest {
-
-    /**
-     * Binary glob pattern.
-     */
-    private static final Set<String> GLOB_PATTERN = Collections.singleton("**.class");
-
-    /**
-     * Default jar name.
-     */
-    private static final String DEFAULT_JAR = "eo-lib";
-
     @Test
-    void cleansClasses(@Mktmp final Path temp) throws IOException {
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
+    void cleansAllTheFiles(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Path clazz = UnplaceMojoTest.placed(temp, maven, "class");
+        final Path text = UnplaceMojoTest.placed(temp, maven, "txt");
+        final Path bin = UnplaceMojoTest.placed(temp, maven, "so");
         MatcherAssert.assertThat(
-            "After executing UnplaceMojo, all class files should be removed",
-            new FakeMaven(temp)
-                .with("placed", placed.toFile())
+            "After executing UnplaceMojo, all the placed files must be removed",
+            maven
                 .execute(UnplaceMojo.class)
-                .result()
-                .values()
-                .stream()
-                .noneMatch(UnplaceMojoTest::isClass),
-            Matchers.is(true)
+                .result(),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasValue(clazz)),
+                Matchers.not(Matchers.hasValue(text)),
+                Matchers.not(Matchers.hasValue(bin))
+            )
         );
     }
 
     @Test
-    void cleansBinariesWithJar(@Mktmp final Path temp) throws IOException {
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeJar(temp, UnplaceMojoTest.DEFAULT_JAR);
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<TjPlaced> tojos = new TjsPlaced(placed).allBinaries();
-        new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .execute(UnplaceMojo.class);
-        final int expected = 5;
+    void keepsClasses(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).with("keepBinaries", Set.of("**/*.class"));
+        final Path clazz = UnplaceMojoTest.placed(temp, maven, "class");
+        final Path text = UnplaceMojoTest.placed(clazz, maven, "txt");
         MatcherAssert.assertThat(
-            String.format(
-                "Expected %d binaries, but it's not",
-                expected
-            ),
-            tojos.size(),
-            Matchers.equalTo(expected)
-        );
-        MatcherAssert.assertThat(
-            "All binaries should be marked as unplaced after cleanup",
-            tojos.stream().allMatch(TjPlaced::unplaced),
-            Matchers.is(true)
+            "UnplaceMojo must keep .class files and remove .txt file",
+            maven
+                .execute(UnplaceMojo.class)
+                .result(),
+            Matchers.allOf(
+                Matchers.hasValue(clazz),
+                Matchers.not(Matchers.hasValue(text))
+            )
         );
     }
 
     @Test
-    void keepsJarBecauseItIsStillInUse(@Mktmp final Path temp) throws IOException {
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final String other = "other-jar";
-        UnplaceMojoTest.placeJar(temp, other);
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<TjPlaced> tojos = new TjsPlaced(placed).allBinaries();
-        new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .execute(UnplaceMojo.class);
-        final int expected = 5;
+    void removesClasses(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).with("removeBinaries", Set.of("**/*.class"));
+        final Path clazz = UnplaceMojoTest.placed(temp, maven, "class");
+        final Path text = UnplaceMojoTest.placed(clazz, maven, "txt");
         MatcherAssert.assertThat(
-            String.format(
-                "Expected %d binaries, but got a different number",
-                expected
-            ),
-            tojos.size(),
-            Matchers.equalTo(expected)
-        );
-        MatcherAssert.assertThat(
-            String.format("JAR file %s should still be placed as it is in use", other),
-            tojos.stream()
-                .filter(tojo -> tojo.identifier().equals(other))
-                .allMatch(TjPlaced::placed),
-            Matchers.is(true)
+            "UnplaceMojo must keep .class files and remove .txt file",
+            maven.execute(UnplaceMojo.class).result(),
+            Matchers.allOf(
+                Matchers.hasValue(text),
+                Matchers.not(Matchers.hasValue(clazz))
+            )
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("testArgsProvider")
-    void unplacesWithKeepOrRemoveBinariesParam(final String[] params, @Mktmp final Path temp)
-        throws Exception {
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
+    @Test
+    void keepsAndRemovesSpecifiedFiles(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("placed", placed.toFile());
-        for (final String param : params) {
-            maven.with(param, UnplaceMojoTest.GLOB_PATTERN);
-        }
-        final Map<String, Path> res = maven.execute(UnplaceMojo.class).result();
-        if (params.length == 1 && "keepBinaries".equals(params[0])) {
-            MatcherAssert.assertThat(
-                "Class files must be kept, but they were removed",
-                res.values().stream().anyMatch(UnplaceMojoTest::isClass),
-                Matchers.is(true)
-            );
-            MatcherAssert.assertThat(
-                "Output must contain false, but it doesn't",
-                new TextOf(res.get(placed.getFileName().toString())).asString(),
-                Matchers.allOf(
-                    Matchers.containsString("false"),
-                    Matchers.not(Matchers.containsString("true"))
-                )
-            );
-        } else {
-            MatcherAssert.assertThat(
-                "Class files must be removed, but some were kept",
-                res.values().stream().noneMatch(UnplaceMojoTest::isClass),
-                Matchers.is(true)
-            );
-            MatcherAssert.assertThat(
-                "Output must contain false, but it doesn't",
-                new TextOf(res.get(placed.getFileName().toString())).asString(),
-                Matchers.allOf(
-                    Matchers.not(Matchers.containsString("false")),
-                    Matchers.containsString("true")
-                )
-            );
-        }
+            .with("removeBinaries", Set.of("**/*.sh"))
+            .with("keepBinaries", Set.of("org/eolang/**"));
+        final Path sh1 = UnplaceMojoTest.placed(temp, maven, "sh");
+        final Path sh2 = UnplaceMojoTest.placed(
+            temp, maven, Paths.get("org/other.sh")
+        );
+        final Path remained = UnplaceMojoTest.placed(
+            temp, maven, Paths.get("org/eolang/my.sh")
+        );
+        MatcherAssert.assertThat(
+            "UnplaceMojo must keep files org/eolang/ directory but remove all .sh files",
+            maven.execute(UnplaceMojo.class).result(),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasValue(sh1)),
+                Matchers.not(Matchers.hasValue(sh2)),
+                Matchers.hasValue(remained)
+            )
+        );
     }
 
     @Test
-    void unplacesWithRemoveBinaries(@Mktmp final Path temp) throws Exception {
-        final Path target = Paths.get("target");
-        final Path source = target
-            .resolve("classes")
-            .resolve("EOorg")
-            .resolve("EOeolang")
-            .resolve("EOtxt")
-            .resolve("EOregexp.class");
-        final Path test = target
-            .resolve("test-classes")
-            .resolve("EOorg")
-            .resolve("EOeolang")
-            .resolve("EOtxt")
-            .resolve("EOregexp.class");
-        final Path remaining = target
-            .resolve("test-classes")
-            .resolve("EOorg")
-            .resolve("EOeolang")
-            .resolve("EOharmcrest")
-            .resolve("EOassert.class");
-        new Saved(UUID.randomUUID().toString(), temp.resolve(source)).value();
-        new Saved(UUID.randomUUID().toString(), temp.resolve(test)).value();
-        new Saved(UUID.randomUUID().toString(), temp.resolve(remaining)).value();
-        UnplaceMojoTest.placeClass(temp, temp.resolve(source));
-        final Path placed = UnplaceMojoTest.placeClass(temp, temp.resolve(test));
-        new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("removeBinaries", Collections.singleton("EOorg/EOeolang/EOtxt/**"))
-            .execute(UnplaceMojo.class)
-            .result();
+    void updatesPlacedTojosFile(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Path file = UnplaceMojoTest.placed(temp, maven, "bat");
         MatcherAssert.assertThat(
-            String.format("Source class %s has not to be present", source),
-            temp.resolve(source).toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
+            "Tojo must be marked as unplaced",
+            maven.execute(UnplaceMojo.class).placed().find(file).get().unplaced(),
+            Matchers.is(true)
         );
+    }
+
+    @Test
+    void deletesAllEmptyDirectories(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        UnplaceMojoTest.placed(temp, maven, Paths.get("org/eolang/index.html"));
+        UnplaceMojoTest.placed(temp, maven, Paths.get("org/styles.css"));
         MatcherAssert.assertThat(
-            String.format("Test class %s has not to be present", test),
-            temp.resolve(test).toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
+            "UnplaceMojo must delete all empty directories",
+            maven.execute(UnplaceMojo.class).result(),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasKey("target/classes/org/eolang")),
+                Matchers.not(Matchers.hasKey("target/classes/org")),
+                Matchers.hasKey("target/classes")
+            )
         );
-        MatcherAssert.assertThat(
-            String.format("Test class %s has to be present", remaining),
-            temp.resolve(remaining).toFile(),
-            FileMatchers.anExistingFile()
+    }
+
+    /**
+     * Place file to the placed tojos file.
+     * @param temp Temporary directory
+     * @param maven Maven instance
+     * @param ext File extension
+     * @return Path to placed file
+     */
+    private static Path placed(
+        final Path temp, final FakeMaven maven, final String ext
+    ) throws IOException {
+        return UnplaceMojoTest.placed(
+            temp,
+            maven,
+            Paths.get(
+                String.format("a/b/c/%d_foo.%s", new SecureRandom().nextInt(), ext)
+            )
         );
     }
 
     /**
-     * Saves a class file into the placed tojos file.
-     * @param temp Temporary directory.
-     * @param clazz Class file.
-     * @return Path to the placed tojos file.
+     * Place file into the placed tojos file.
+     * @param temp Temporary directory
+     * @param maven Maven instance
+     * @param relative Relative path to file
+     * @return Path to placed file
+     * @throws IOException If Fails to place
      */
-    private static Path placeClass(final Path temp, final Path clazz) {
-        final Path placed = UnplaceMojoTest.placedFile(temp);
-        new TjsPlaced(placed).placeClass(
-            clazz,
-            temp.relativize(clazz).toString(),
-            UnplaceMojoTest.DEFAULT_JAR
-        );
-        return placed;
-    }
-
-    /**
-     * Saves a jar into the placed tojos file.
-     * @param temp Temporary directory.
-     * @param name Name of the jar.
-     * @return Path to the placed tojos file.
-     */
-    private static void placeJar(final Path temp, final String name) {
-        new TjsPlaced(UnplaceMojoTest.placedFile(temp)).placeJar(name);
-    }
-
-    /**
-     * Creates a path to the placed tojos file.
-     * @param temp Temporary directory.
-     * @return Path to the placed tojos file.
-     */
-    private static Path placedFile(final Path temp) {
-        return temp.resolve("placed.csv");
-    }
-
-    /**
-     * Creates and saves a class file.
-     * @param temp Where to save the file.
-     * @return The path to the file.
-     * @throws IOException If fails.
-     */
-    private static Path clazz(final Path temp) throws IOException {
-        final Path path =
-            Paths.get(String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt()));
-        return new Saved(
-            () -> UUID.randomUUID().toString(),
-            temp.resolve(path)
+    private static Path placed(
+        final Path temp, final FakeMaven maven, final Path relative
+    ) throws IOException {
+        final Path file = new Saved(
+            UUID.randomUUID().toString(),
+            maven.classesPath().resolve(relative)
         ).value();
-    }
-
-    /**
-     * Checks if the path is a class file.
-     * @param path The path to check.
-     * @return True if it is a class file.
-     */
-    private static boolean isClass(final Path path) {
-        return path.toString().endsWith(".class");
-    }
-
-    /**
-     * Input arguments for unit tests.
-     *
-     * @return Stream of arguments.
-     */
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Stream<Arguments> testArgsProvider() {
-        return Stream.of(
-            Arguments.of((Object) new String[]{"keepBinaries"}),
-            Arguments.of((Object) new String[]{"removeBinaries"}),
-            Arguments.of((Object) new String[]{"keepBinaries", "removeBinaries"})
+        maven.placed().placeClass(
+            file,
+            temp.relativize(file).toString(),
+            "eo-lib"
         );
+        return file;
     }
 }
