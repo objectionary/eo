@@ -59,7 +59,7 @@ public final class FpIfTargetOlder extends FpEnvelope {
      * @throws IOException If fails to compare files
      */
     private static boolean isAfter(final Path first, final Path second) throws IOException {
-        return Files.getLastModifiedTime(first).toInstant().isAfter(
+        return !Files.getLastModifiedTime(first).toInstant().isBefore(
             Files.getLastModifiedTime(second).toInstant()
         );
     }
