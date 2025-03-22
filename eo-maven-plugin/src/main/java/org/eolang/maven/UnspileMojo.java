@@ -83,7 +83,7 @@ public final class UnspileMojo extends SafeMojo {
                     if (Files.deleteIfExists(path)) {
                         Logger.debug(
                             this,
-                            "Deleted %[file]s since was compiled only from %[file]s",
+                            "Deleted %[file]s since was compiled from %[file]s",
                             path, generated
                         );
                         deleted = 1;
