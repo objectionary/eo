@@ -45,21 +45,12 @@ final class JarIT {
                     .write(
                         "QQ.io.stdout \"Hello, world!\" > simple\n".getBytes(StandardCharsets.UTF_8)
                     );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    );
                 new EoMavenPlugin(f)
                     .appended()
                     .execution("compile")
-                    .phase("generate-sources")
                     .goals("register", "compile", "transpile")
                     .configuration()
+                    .set("ignoreRuntime", Boolean.TRUE.toString())
                     .set("offline", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("skipLinting", Boolean.TRUE.toString());
