@@ -50,7 +50,7 @@ final class UnspileMojoTest {
             "clz", maven.classesPath().resolve("EOorg/package-info.class")
         ).value();
         final Path eolang = new Saved(
-            "pgk", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
+            "pkg", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
         ).value();
         MatcherAssert.assertThat(
             "UnspileMojo must keep files matching to keepBinaries globs",

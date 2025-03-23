@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,7 +68,7 @@ public final class UnspileMojo extends SafeMojo {
             .map(
                 path -> UnspileMojo.JAVA.matcher(
                     generated.relativize(path).toString()
-                ).replaceAll(".class")
+                ).replaceAll(".class").replace(File.separatorChar, '/')
             )
             .collect(Collectors.toSet());
         included.addAll(UnspileMojo.INNER);

@@ -16,6 +16,7 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -299,7 +300,8 @@ public final class TranspileMojo extends SafeMojo {
                 .filter(file -> Files.isDirectory(file) && !file.equals(generated))
                 .collect(Collectors.toList());
             for (final Path dir : dirs) {
-                final String pkg = generated.relativize(dir).toString().replace("/", ".");
+                final String pkg = generated.relativize(dir).toString()
+                    .replace(File.separator, ".");
                 new Saved(
                     String.join(
                         "\n",
