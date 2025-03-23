@@ -78,7 +78,7 @@ public final class UnspileMojo extends SafeMojo {
         if (filtered.isEmpty()) {
             Logger.info(
                 this, "No .class files out of %d deleted in %[file]s",
-                classes.size(), this.classesDir
+                classes.size(), this.classesDir.toPath()
             );
         } else {
             final int unspiled = new Threaded<>(
@@ -98,7 +98,7 @@ public final class UnspileMojo extends SafeMojo {
                     return deleted;
                 }
             ).total();
-            new EmptyDirectoriesIn(this.classesDir.toPath()).clear();
+            new EmptyDirectoriesIn(this.classesDir).clear();
             Logger.info(
                 this,
                 "Deleted %d .class files in %[file]s",
