@@ -7,6 +7,8 @@ package org.eolang.maven;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +24,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.TrFull;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtStrict;
@@ -54,7 +57,10 @@ final class ShakeMojoTest {
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed(),
-                        new TrFull()
+                        new TrJoined<>(
+                            new TrDefault<>(new StFlatBytes()),
+                            new TrFull()
+                        )
                     )
                 )
             ),
