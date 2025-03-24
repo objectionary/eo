@@ -280,14 +280,14 @@ final class UnphiMojoTest {
 
     @Test
     void usesCache(@Mktmp final Path temp) throws Exception {
-        new Saved(
+        final File phi = new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
-        ).value();
+        ).value().toFile();
         final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
         final String expected = "some valid XMIR from cache";
-        new Saved(
+        final File cached = new Saved(
             expected,
             new CachePath(
                 cache.resolve("unphied"),
@@ -295,7 +295,12 @@ final class UnphiMojoTest {
                 hash,
                 Path.of("std.xmir")
             ).get()
-        ).value();
+        ).value().toFile();
+        MatcherAssert.assertThat(
+            "The cached file's last modified timestamp should be after the source one",
+            cached.lastModified() > phi.lastModified(),
+            Matchers.is(true)
+        );
         MatcherAssert.assertThat(
             "XMIR file is not loaded from cache",
             new TextOf(
@@ -329,11 +334,6 @@ final class UnphiMojoTest {
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
         ).value();
-        MatcherAssert.assertThat(
-            "The cached file's last modified timestamp should be successfully reset",
-            cached.setLastModified(0L),
-            Matchers.is(true)
-        );
         final long old = cached.lastModified();
         new FakeMaven(temp)
             .with("cache", cache.toFile())
