@@ -123,7 +123,7 @@ final class PhiMojoTest {
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@name='bytes']",
                 "/program/objects/o/o[@base='$.eq']",
-                "/program/objects/o/o/o[@base='Q.org.eolang.bytes' and text()='01-02-03']"
+                "/program/objects/o/o/o[@base='Q.org.eolang.bytes']/o[text()='01-02-03']"
             )
         );
         MatcherAssert.assertThat(

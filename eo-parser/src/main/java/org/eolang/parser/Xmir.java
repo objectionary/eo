@@ -48,7 +48,7 @@ public final class Xmir implements XML {
     private static final Xsline FOR_EO = new Xsline(
         new TrFull(
             new TrJoined<>(
-                new TrDefault<>(Xmir.UNHEX),
+                new TrDefault<>(new StFlatBytes(), Xmir.UNHEX),
                 new TrClasspath<>(
                     "/org/eolang/parser/print/tuples-to-stars.xsl",
                     "/org/eolang/parser/print/inline-cactoos.xsl",
@@ -164,6 +164,7 @@ public final class Xmir implements XML {
             new Xsline(
                 new TrFull(
                     new TrDefault<>(
+                        new StFlatBytes(),
                         Xmir.UNHEX,
                         new StClasspath(
                             "/org/eolang/parser/phi/to-phi.xsl",
@@ -184,7 +185,10 @@ public final class Xmir implements XML {
         return this.converted(
             new Xsline(
                 new TrFull(
-                    new TrClasspath<>("/org/eolang/parser/phi/to-salty-phi.xsl").back()
+                    new TrJoined<>(
+                        new TrDefault<>(new StFlatBytes()),
+                        new TrClasspath<>("/org/eolang/parser/phi/to-salty-phi.xsl").back()
+                    )
                 )
             ),
             "phi"

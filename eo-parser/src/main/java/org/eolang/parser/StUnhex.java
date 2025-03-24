@@ -175,13 +175,13 @@ final class StUnhex extends StEnvelope {
     }
 
     /**
-     * Find elements by XPath for given type.
+     * Find elements by XPath for the given type.
      * @param type The type to match
      * @return XPath
      */
     private static String elements(final String type) {
         return String.format(
-            "//o[@base='Q.org.eolang.%1$s' and(not(@skip)) and o[1][@base='Q.org.eolang.bytes' and not(o) and string-length(normalize-space(text()))>0]]",
+            "//o[@base='Q.org.eolang.%s' and(not(@skip)) and o[1][@base='Q.org.eolang.bytes' and not(o) and string-length(normalize-space(text()))>0]]",
             type
         );
     }

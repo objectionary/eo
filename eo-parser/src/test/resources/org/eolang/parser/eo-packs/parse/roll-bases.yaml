@@ -24,11 +24,11 @@ asserts:
   - //o[@base='Q.org.eolang.tuple']/o[@base='Q.org.eolang.tuple' and o[@base='Q.org.eolang.tuple.empty'] and o[@base='Q.org.eolang.number']]
   - //o[@base='Q.org.eolang.true.if' and count(o)=2]
   - //o[@base='.if' and count(o)=3]/o[1][@base='$.x']/o[1][@base='Q.org.eolang.y']
-  - //o[@base='.and']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes' and text()!='']
+  - //o[@base='.and']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes']/o[text()!='']
   - //o[@base='.and']/o[1][@base='.eq']/o[2][@base='Q.org.eolang.true']
-  - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes' and text()!='']
+  - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Q.org.eolang.bytes']/o[text()!='']
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Q.org.eolang.false']
-  - //o[@name='bts']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Q.org.eolang.bytes' and text()!='']
+  - //o[@name='bts']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Q.org.eolang.bytes']/o[text()!='']
 input: |
   # No comment.
   [x] > foo
