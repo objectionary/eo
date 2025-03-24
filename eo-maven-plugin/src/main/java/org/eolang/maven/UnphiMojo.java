@@ -35,6 +35,7 @@ public final class UnphiMojo extends SafeMojo {
     /**
      * Hash directory for unphied files.
      */
+    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.hash")
     private String hash = "";
 
