@@ -280,10 +280,10 @@ final class UnphiMojoTest {
 
     @Test
     void usesCache(@Mktmp final Path temp) throws Exception {
-        final File phi = new Saved(
+        new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
-        ).value().toFile();
+        ).value();
         final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
         final String expected = "some valid XMIR from cache";
@@ -297,8 +297,8 @@ final class UnphiMojoTest {
             ).get()
         ).value().toFile();
         MatcherAssert.assertThat(
-            "The cached file's last modified timestamp should be after the source one",
-            cached.lastModified() > phi.lastModified(),
+            "The cached file's last modified timestamp should be strictly after the source one",
+            cached.setLastModified(cached.lastModified() + 1),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
