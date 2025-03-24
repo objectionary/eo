@@ -284,7 +284,7 @@ final class UnphiMojoTest {
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             temp.resolve("target/eo/phi/std.phi")
         ).value();
-        final String hash = UnphiMojo.FAKE_HASH;
+        final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
         final String expected = "some valid XMIR from cache";
         new Saved(
@@ -303,7 +303,7 @@ final class UnphiMojoTest {
                     .with("cache", cache.toFile())
                     .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
                     .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-                    .allTojosWithHash(() -> hash)
+                    .with("hash", hash)
                     .execute(UnphiMojo.class)
                     .result()
                     .get("target/eo/1-parse/std.xmir")
@@ -314,7 +314,7 @@ final class UnphiMojoTest {
 
     @Test
     void invalidatesCache(@Mktmp final Path temp) throws Exception {
-        final String hash = UnphiMojo.FAKE_HASH;
+        final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
         final File cached = new Saved(
             "some invalid (old) XMIR from cache",
@@ -339,7 +339,7 @@ final class UnphiMojoTest {
             .with("cache", cache.toFile())
             .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
             .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-            .allTojosWithHash(() -> hash)
+            .with("hash", hash)
             .execute(UnphiMojo.class);
         MatcherAssert.assertThat(
             "XMIR cache not invalidated",

@@ -33,9 +33,10 @@ import org.xembly.Directive;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
-     * Temporary hash value. Should use relevant hash instead of it.
+     * Hash directory for unphied files.
      */
-    static final String FAKE_HASH = "qwerty123";
+    @Parameter(property = "eo.hash")
+    private String hash = "";
 
     /**
      * The directory where to take phi files for parsing from.
@@ -106,7 +107,7 @@ public final class UnphiMojo extends SafeMojo {
                     },
                     this.cache.toPath().resolve("unphied"),
                     this.plugin.getVersion(),
-                    UnphiMojo.FAKE_HASH,
+                    this.hash,
                     xmir
                 ).apply(phi, target);
                 return 1;
