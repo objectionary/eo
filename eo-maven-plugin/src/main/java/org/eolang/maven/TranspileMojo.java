@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
-import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.TrFull;
 
 /**
@@ -83,7 +82,6 @@ public final class TranspileMojo extends SafeMojo {
      */
     private static final Train<Shift> TRAIN = new TrFull(
         new TrJoined<>(
-            new TrDefault<>(new StFlatBytes()),
             new TrClasspath<>(
                 "/org/eolang/maven/transpile/classes.xsl",
                 "/org/eolang/maven/transpile/tests.xsl",

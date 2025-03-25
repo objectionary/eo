@@ -124,8 +124,10 @@ public final class LintMojo extends SafeMojo {
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
      */
-    private int lintOne(final TjForeign tojo,
-        final ConcurrentHashMap<Severity, Integer> counts) throws Exception {
+    private int lintOne(
+        final TjForeign tojo,
+        final ConcurrentHashMap<Severity, Integer> counts
+    ) throws Exception {
         final Path source = tojo.shaken();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(LintMojo.DIR);
@@ -263,11 +265,17 @@ public final class LintMojo extends SafeMojo {
      *  Currently its disabled because of <a href="https://github.com/objectionary/lints/issues/385">this</a>
      *  bug. Once issue will be resolved, we should enable this lint. Don't forget to enable
      *  this lint in WPA scope too.
+     * @todo #4036:30min Ebable `object-has-data` lint.
+     *  This lint doesn't work properly with the current implementation of bytes representation.
+     *  We need to fix this lint and enable it.
+     *  Check the progress of the issue
+     *  <a href="https://github.com/objectionary/lints/issues/432">here</a>
      */
     private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).without(
-            "unlint-non-existing-defect"
+            "unlint-non-existing-defect",
+            "object-has-data"
         ).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);
