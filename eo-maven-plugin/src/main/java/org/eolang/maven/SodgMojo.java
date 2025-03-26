@@ -47,7 +47,6 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -177,7 +176,6 @@ public final class SodgMojo extends SafeMojo {
         new TrWith(
             new TrFast(
                 new TrJoined<>(
-                    new TrDefault<>(new StFlatBytes()),
                     new TrClasspath<>(
                         "/org/eolang/maven/sodg/pre-clean.xsl"
                     ).back(),

@@ -277,7 +277,7 @@
         <xsl:variable name="start">
           <xsl:choose>
             <xsl:when test="eo:has-data(.) and (@base='Q.org.eolang.number' or @base='Q.org.eolang.string')">
-              <xsl:value-of select="text()"/>
+              <xsl:value-of select="eo:read-data(.)"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="eo:specials(@base)"/>
