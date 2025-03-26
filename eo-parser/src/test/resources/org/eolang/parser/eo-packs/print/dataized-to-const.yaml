@@ -23,8 +23,8 @@ asserts:
   - //o[@base='Q.org.eolang.a' and @const and @name='third']/o[@base='Q.org.eolang.b']
   - //o[@name='fourth-1' and not(@base)]
   - //o[@base='$.fourth-1' and @name='fourth' and @const]
-  - //o[@base='Q.org.eolang.number' and @name='fifths' and @const]/o[@base='Q.org.eolang.bytes' and text()!='']
-  - //o[@base='Q.org.eolang.bytes' and @name='sixth' and @const and text()='2A-']
+  - //o[@base='Q.org.eolang.number' and @name='fifths' and @const]/o[@base='Q.org.eolang.bytes']/o[text()!='']
+  - //o[@base='Q.org.eolang.bytes' and @name='sixth' and @const]/o[text()='2A-']
   - //o[@base='$.third' and @const and not(@as)]
 input: |
   # No comments.

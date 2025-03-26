@@ -3,9 +3,9 @@
 ---
 sheets: [ ]
 asserts:
-  - //o[@name='x' and o[text()='20-20-20-20']]
-  - //o[@name='y' and o[text()='20-66-6F-6F']]
-  - //o[@name='z' and o[text()='66-6F-6F-20']]
+  - //o[@name='x' and o/o[text()='20-20-20-20']]
+  - //o[@name='y' and o/o[text()='20-66-6F-6F']]
+  - //o[@name='z' and o/o[text()='66-6F-6F-20']]
 input: |
   # No comments.
   [] > foo

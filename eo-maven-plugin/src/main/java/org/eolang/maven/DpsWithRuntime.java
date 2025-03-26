@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Sticky;
@@ -95,21 +96,23 @@ final class DpsWithRuntime implements Dependencies {
             "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",
             "org/eolang/eo-runtime"
         );
-        try {
-            return DpsWithRuntime.dependency(
-                new Xnav(new XMLDocument(new URL(url)).inner())
-                    .element("metadata")
-                    .element("versioning")
-                    .element("latest")
-                    .text()
-                    .get()
-            );
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format("Can't get eo-runtime dependency by the URL: %s", url),
-                ex
-            );
-        }
+        return DpsWithRuntime.dependency(
+            () -> {
+                try {
+                    return new Xnav(new XMLDocument(new URL(url)).inner())
+                        .element("metadata")
+                        .element("versioning")
+                        .element("latest")
+                        .text()
+                        .get();
+                } catch (final IOException ex) {
+                    throw new IllegalStateException(
+                        String.format("Can't get eo-runtime dependency by the URL: %s", url),
+                        ex
+                    );
+                }
+            }
+        );
     }
 
     /**
@@ -128,14 +131,14 @@ final class DpsWithRuntime implements Dependencies {
      * @param version Version of eo-runtime
      * @return Maven Dependency.
      */
-    private static Unchecked<Dep> dependency(final String version) {
+    private static Unchecked<Dep> dependency(final Supplier<String> version) {
         return new Unchecked<>(
             new Synced<>(
                 new Sticky<>(
                     () -> new Dep()
                         .withGroupId("org.eolang")
                         .withArtifactId("eo-runtime")
-                        .withVersion(version)
+                        .withVersion(version.get())
                         .withClassifier("")
                 )
             )

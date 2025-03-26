@@ -111,31 +111,19 @@ final class PhiUnphiIT {
                         )
                     )
                     .execution("compile")
-                    .goals(
-                        "register",
-                        "compile",
-                        "transpile",
-                        "copy",
-                        "unplace",
-                        "unspile"
-                    )
+                    .goals("register", "compile", "transpile")
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.json")
                     .set("foreignFormat", "csv")
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("offline", Boolean.TRUE.toString())
                     .set("skipLinting", Boolean.TRUE.toString())
-                    .set("ignoreRuntime", Boolean.TRUE.toString())
-                    .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
+                    .set("ignoreRuntime", Boolean.TRUE.toString());
                 new EoMavenPlugin(f)
                     .appended()
                     .execution("tests")
                     .phase("generate-test-sources")
-                    .goals(
-                        "register",
-                        "compile",
-                        "transpile"
-                    )
+                    .goals("register", "compile", "transpile")
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.json")
                     .set("foreignFormat", "csv")
@@ -148,8 +136,7 @@ final class PhiUnphiIT {
                     .set("addTestSourcesRoot", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("ignoreRuntime", Boolean.TRUE.toString())
-                    .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
+                    .set("ignoreRuntime", Boolean.TRUE.toString());
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     "Some tests weren't passed after converting to phi and back",

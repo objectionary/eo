@@ -100,6 +100,48 @@ final class TranspileMojoTest {
     }
 
     @Test
+    void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "TranspileMojo must generate package-info.java files for all of the packages",
+            new FakeMaven(temp)
+                .withProgram(
+                    "+package com.example.custom\n",
+                    "# Simple.",
+                    "[] > simple"
+                )
+                .execute(new FakeMaven.Transpile())
+                .result(),
+            Matchers.allOf(
+                Matchers.hasKey("target/generated/EOcom/package-info.java"),
+                Matchers.hasKey("target/generated/EOcom/EOexample/package-info.java"),
+                Matchers.hasKey("target/generated/EOcom/EOexample/EOcustom/package-info.java")
+            )
+        );
+    }
+
+    @Test
+    void savesValidContentToPackageInfoFile(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "TranspileMojo must save valid content to package-info.java file",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(
+                        "+package com.example\n",
+                        "# Simple.",
+                        "[] > simple"
+                    )
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get("target/generated/EOcom/EOexample/package-info.java")
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("// @org.eolang.XmirPackage(\"com.example\")"),
+                Matchers.containsString("package EOcom.EOexample;")
+            )
+        );
+    }
+
+    @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven

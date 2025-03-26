@@ -30,7 +30,7 @@
         <xsl:apply-templates select="."/>
       </xsl:for-each>
       <xsl:if test="eo:has-data(.)">
-        <xsl:value-of select="normalize-space(string-join(text(), ''))"/>
+        <xsl:value-of select="eo:read-data(.)"/>
       </xsl:if>
     </xsl:element>
   </xsl:template>

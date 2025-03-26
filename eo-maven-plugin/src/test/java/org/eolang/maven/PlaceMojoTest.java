@@ -125,7 +125,7 @@ final class PlaceMojoTest {
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
-            new ContainsFiles("**/jna-*.jar")
+            new ContainsFiles("**/jna-*.class")
         );
     }
 
@@ -169,7 +169,7 @@ final class PlaceMojoTest {
     /**
      * Test case for {@link PlaceMojo#execute()}.
      * Since for tests we are using dummy maven central, then instead of unpacking
-     * of classes from jar it just copies the jar itself to target/classes folder.
+     * of classes from jar it just copies the just simple .class files to target/classes folder.
      *
      * @param temp Temporary directory
      * @throws IOException If fails
@@ -185,11 +185,11 @@ final class PlaceMojoTest {
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
-            new ContainsFiles("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
-            "PlaceMojo have to place jar file, but doesn't",
-            maven.placed().jars().size(),
+            "PlaceMojo have to place class file, but doesn't",
+            maven.placed().classes().size(),
             Matchers.is(1)
         );
     }
@@ -205,12 +205,7 @@ final class PlaceMojoTest {
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
-            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
-        );
-        MatcherAssert.assertThat(
-            "PlaceMojo have not to place jar file, but doesn't",
-            maven.placed().jars().isEmpty(),
-            Matchers.is(true)
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
 

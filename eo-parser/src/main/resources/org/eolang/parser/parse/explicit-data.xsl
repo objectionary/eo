@@ -52,7 +52,9 @@
     <xsl:choose>
       <xsl:when test="parent::*[$literal-objects/text()=@base or ($reversed/text()=@base and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]])]">
         <o base="Q.org.eolang.bytes">
-          <xsl:value-of select="."/>
+          <o>
+            <xsl:value-of select="."/>
+          </o>
         </o>
       </xsl:when>
       <xsl:when test="parent::*[not(@base) or ($literal-objects/text()!=@base and $reversed/text()!=@base)]">
@@ -63,7 +65,9 @@
             </xsl:attribute>
           </xsl:for-each>
           <o base="Q.org.eolang.bytes">
-            <xsl:value-of select="."/>
+            <o>
+              <xsl:value-of select="."/>
+            </o>
           </o>
         </o>
       </xsl:when>
@@ -79,7 +83,9 @@
           <xsl:value-of select="."/>
         </xsl:attribute>
       </xsl:for-each>
-      <xsl:value-of select="text()"/>
+      <o>
+        <xsl:value-of select="text()"/>
+      </o>
     </o>
   </xsl:template>
   <xsl:template match="o[((@base='.bytes' and o[1][@base='.eolang' and o[1][@base='.org' and o[1][@base='Q']]]) or @base='org.eolang.bytes') and o[last() and not(o) and string-length(normalize-space(text())) &gt; 0]]">
@@ -89,7 +95,9 @@
           <xsl:value-of select="."/>
         </xsl:attribute>
       </xsl:for-each>
-      <xsl:value-of select="o[last()]/text()"/>
+      <o>
+        <xsl:value-of select="o[last()]/text()"/>
+      </o>
     </o>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">

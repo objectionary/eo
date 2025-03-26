@@ -9,6 +9,10 @@
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="normalize-space(string-join($o/text(), '')) != ''"/>
   </xsl:function>
+  <xsl:function name="eo:read-data" as="xs:string">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="replace(string-join($o/text(),''), '^\s+|\s+$', '')"/>
+  </xsl:function>
   <xsl:function name="eo:abstract" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="not(exists($o/@base))"/>

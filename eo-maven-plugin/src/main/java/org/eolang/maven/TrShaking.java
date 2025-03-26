@@ -5,7 +5,10 @@
 package org.eolang.maven;
 
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
+import com.yegor256.xsline.TrJoined;
+import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.TrFull;
 
 /**
@@ -19,13 +22,16 @@ final class TrShaking extends TrEnvelope {
      */
     TrShaking() {
         super(
-            new TrFull(
-                new TrClasspath<>(
-                    "/org/eolang/maven/shake/cti-adds-errors.xsl",
-                    "/org/eolang/maven/shake/add-probes.xsl",
-                    "/org/eolang/maven/shake/set-locators.xsl",
-                    "/org/eolang/maven/shake/set-original-names.xsl"
-                ).back()
+            new TrJoined<>(
+                new TrDefault<>(new StFlatBytes()),
+                new TrFull(
+                    new TrClasspath<>(
+                        "/org/eolang/maven/shake/cti-adds-errors.xsl",
+                        "/org/eolang/maven/shake/add-probes.xsl",
+                        "/org/eolang/maven/shake/set-locators.xsl",
+                        "/org/eolang/maven/shake/set-original-names.xsl"
+                    ).back()
+                )
             )
         );
     }
