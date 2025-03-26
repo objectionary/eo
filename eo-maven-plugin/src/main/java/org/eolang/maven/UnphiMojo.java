@@ -33,13 +33,6 @@ import org.xembly.Directive;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
-     * Hash directory for unphied files.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash")
-    private String hash = "";
-
-    /**
      * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -108,7 +101,7 @@ public final class UnphiMojo extends SafeMojo {
                     },
                     this.cache.toPath().resolve("unphied"),
                     this.plugin.getVersion(),
-                    this.hash,
+                    this.hash.value(),
                     xmir
                 ).apply(phi, target);
                 return 1;

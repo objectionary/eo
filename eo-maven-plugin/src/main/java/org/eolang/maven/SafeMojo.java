@@ -428,6 +428,15 @@ abstract class SafeMojo extends AbstractMojo {
     protected BiConsumer<Dependency, Path> central;
 
     /**
+     * The Git hash to pull objects from.
+     * If not set, will be computed from {@code tag} field.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected CommitHash hash = new CommitHash.ChConstant(
+        new ChNarrow(new ChRemote(this.tag)).value()
+    );
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */

@@ -308,7 +308,7 @@ final class UnphiMojoTest {
                     .with("cache", cache.toFile())
                     .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
                     .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-                    .with("hash", hash)
+                    .with("hash", new CommitHash.ChConstant(hash))
                     .execute(UnphiMojo.class)
                     .result()
                     .get("target/eo/1-parse/std.xmir")
@@ -339,7 +339,7 @@ final class UnphiMojoTest {
             .with("cache", cache.toFile())
             .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
             .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-            .with("hash", hash)
+            .with("hash", new CommitHash.ChConstant(hash))
             .execute(UnphiMojo.class);
         MatcherAssert.assertThat(
             "XMIR cache not invalidated",

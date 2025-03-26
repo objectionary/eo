@@ -35,16 +35,6 @@ public final class PullMojo extends SafeMojo {
     static final String CACHE = "pulled";
 
     /**
-     * The Git hash to pull objects from, in objectionary.
-     * If not set, will be computed from {@code tag} field.
-     * @since 0.29.6
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private CommitHash hash = new ChCached(
-        new ChRemote(this.tag)
-    );
-
-    /**
      * Objectionary.
      * @since 0.50
      * @checkstyle MemberNameCheck (5 lines)
