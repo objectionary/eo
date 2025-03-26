@@ -77,6 +77,12 @@ import org.xembly.Xembler;
 public final class EoSyntax implements Syntax {
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
+     * @todo #3807:90min Refactor EoSyntax transformations to make them less coupled.
+     *  Currently most of these transformations are strongly coupled.
+     *  For example, `stars-to-tuples`, `StHex` and `explicit-data` are
+     *  dependent on each other. Moreover, the order of transformations
+     *  matters. We need to refactor these transformations to make them
+     *  more independent and order-agnostic if possible.
      */
     private static final Function<XML, XML> CANONICAL = new Xsline(
         new TrFull(
@@ -93,11 +99,13 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/expand-qqs.xsl",
                     "/org/eolang/parser/parse/expand-aliases.xsl",
                     "/org/eolang/parser/parse/resolve-aliases.xsl",
-                    "/org/eolang/parser/parse/add-default-package.xsl",
+                    "/org/eolang/parser/parse/add-default-package.xsl"
+                ).back(),
+                new TrDefault<>(new StHex()),
+                new TrClasspath<>(
                     "/org/eolang/parser/parse/explicit-data.xsl",
                     "/org/eolang/parser/parse/roll-bases.xsl"
-                ).back(),
-                new TrDefault<>(new StHex())
+                ).back()
             )
         )
     )::pass;
