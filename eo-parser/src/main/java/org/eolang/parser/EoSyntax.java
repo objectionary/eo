@@ -83,7 +83,7 @@ public final class EoSyntax implements Syntax {
      *  dependent on each other. Moreover, the order of transformations
      *  matters. We need to refactor these transformations to make them
      *  more independent and order-agnostic if possible.
-     * @todo #3807:90min Remove `explicit-data` transfomation.
+     * @todo #3807:90min Remove `explicit-data` transformation.
      *  we can try to remove explicit-data.xsl because we can generate the proper structure
      *  with data (with inner 'o' element) everywhere right away,
      *  without relaying on future transformations.
