@@ -432,8 +432,8 @@ abstract class SafeMojo extends AbstractMojo {
      * If not set, will be computed from {@code tag} field.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected CommitHash hash = new CommitHash.ChConstant(
-        new ChNarrow(new ChRemote(this.tag)).value()
+    protected CommitHash hash = new ChCached(
+        new ChNarrow(new ChRemote(this.tag))
     );
 
     /**
