@@ -304,7 +304,7 @@ final class TjsForeign implements Closeable {
          *  - "org.eolang.txt"
          *  - "org.eolang.io.stdout"
          *  - "org.eolang.txt.sprintf"
-         * <p>For more info see {@link org.eolang.maven.ProbeMojo}. </p>
+         * <p>For more info see {@link MjProbe}. </p>
          */
         PROBED("probed"),
 

@@ -21,10 +21,10 @@ final class PlaceTest {
         MatcherAssert.assertThat(
             "Place must make the path by full name of the object",
             new Place("hello.foo.bar")
-                .make(Paths.get("/tmp/test"), AssembleMojo.XMIR)
+                .make(Paths.get("/tmp/test"), MjAssemble.XMIR)
                 .toString()
                 .replace("\\", "/"),
-            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", AssembleMojo.XMIR))
+            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", MjAssemble.XMIR))
         );
     }
 
