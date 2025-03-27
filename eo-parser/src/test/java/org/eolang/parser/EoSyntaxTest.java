@@ -211,6 +211,19 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesCanonicalEoProgram() throws Exception {
+        MatcherAssert.assertThat(
+            "We expect that all of the bytes contain a formation with data",
+            new EoSyntax(
+                new TextOf(
+                    new ResourceOf("org/eolang/parser/canonical.eo")
+                ).asString()
+            ).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Q.org.eolang.bytes' and not(o)]"))
+        );
+    }
+
+    @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
             EoIndentLexerTest.TO_ADD_MESSAGE,
