@@ -1,0 +1,28 @@
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Times table, which is a canonical example of EO program.
+# This file was originally copied from:
+# https://github.com/objectionary/lints/blob/101d9a18a956f688d1b0ac9cc554fa5acbc345d4/src/test/resources/org/eolang/lints/canonical.eo
+[args] > canonical
+  malloc.for > @
+    0
+    [x] >>
+      seq > @
+        *
+          x.put 2
+          while
+            x.as-number.lt 6 > [i] >>
+            [i] >>
+              seq > @
+                *
+                  QQ.io.stdout
+                    QQ.txt.sprintf
+                      "%d x %d = %d\n"
+                      *
+                        ^.x
+                        ^.x
+                        ^.x.as-number.times ^.x
+                  ^.x.put
+                    ^.x.as-number.plus 1
+          true
