@@ -122,12 +122,12 @@ final class TjsForeignTest {
         final TjForeign tojo = this.tojos.add("string");
         final AttributeNotFoundException thrown = Assertions.assertThrows(
             AttributeNotFoundException.class,
-            tojo::shaken
+            tojo::xmir
         );
         Assertions.assertEquals(
-            "There is no 'SHAKEN' attribute in the tojo",
+            "There is no 'XMIR' attribute in the tojo",
             thrown.getMessage(),
-            "Should throw an exception if key 'SHAKEN' was not found in Tojo"
+            "Should throw an exception if key 'XMIR' was not found in Tojo"
         );
     }
 
@@ -154,7 +154,6 @@ final class TjsForeignTest {
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<TjForeign, Object>) TjForeign::xmir),
-            Arguments.of("SHAKEN", (Func<TjForeign, Object>) TjForeign::shaken),
             Arguments.of("EO", (Func<TjForeign, Object>) TjForeign::source),
             Arguments.of("VERSION", (Func<TjForeign, Object>) TjForeign::version),
             Arguments.of("ID", (Func<TjForeign, Object>) TjForeign::description),

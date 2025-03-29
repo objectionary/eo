@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.StFlatBytes;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
@@ -68,7 +70,7 @@ final class MjTranspileTest {
                         "scenario",
                         new InputOf(String.format("%s\n", eo))
                     ).parsed(),
-                    new TrShaking()
+                    new TrDefault<>(new StFlatBytes())
                 )
             ),
             new XtoryMatcher()

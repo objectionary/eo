@@ -6,8 +6,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -27,6 +25,11 @@ import org.cactoos.set.SetOf;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class MjRegister extends MjSafe {
+    /**
+     * Pattern for .eo files.
+     */
+    private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
+
     /**
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
@@ -69,37 +72,40 @@ public final class MjRegister extends MjSafe {
             );
         }
         this.removeOldFiles();
-        final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
         }
-        final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
-            .includes(this.includeSources)
-            .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
-        for (final Path file : sources) {
-            if (this.strictFileNames && !pattern.matcher(file.getFileName().toString()).matches()) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Incorrect name found: '%s'. EO name must match '%s'",
-                        file.getFileName().toString(),
-                        pattern
-                    )
-                );
+        final int registered = new Threaded<>(
+            new Walk(this.sourcesDir.toPath())
+                .includes(this.includeSources)
+                .excludes(this.excludeSources),
+            file -> {
+                if (this.strictFileNames
+                    && !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Incorrect name found: '%s'. EO name must match '%s'",
+                            file.getFileName().toString(),
+                            MjRegister.PATTERN
+                        )
+                    );
+                }
+                final String name = unplace.make(file);
+                if (this.scopedTojos().contains(name)) {
+                    Logger.debug(this, "EO source %s already registered", name);
+                } else {
+                    this.scopedTojos().add(name).withSource(file.toAbsolutePath());
+                    Logger.debug(this, "EO source %s registered", name);
+                }
+                return 1;
             }
-            final String name = unplace.make(file);
-            if (this.scopedTojos().contains(name)) {
-                Logger.debug(this, "EO source %s already registered", name);
-                continue;
-            }
-            this.scopedTojos().add(name).withSource(file.toAbsolutePath());
-            Logger.debug(this, "EO source %s registered", name);
-        }
+        ).total();
         Logger.info(
             this,
             "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
-            sources.size(), this.sourcesDir, this.foreign, this.includeSources, this.excludeSources
+            registered, this.sourcesDir, this.foreign, this.includeSources, this.excludeSources
         );
     }
 

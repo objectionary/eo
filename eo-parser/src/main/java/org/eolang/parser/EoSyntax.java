@@ -110,7 +110,8 @@ public final class EoSyntax implements Syntax {
                 new TrDefault<>(new StHex()),
                 new TrClasspath<>(
                     "/org/eolang/parser/parse/explicit-data.xsl",
-                    "/org/eolang/parser/parse/roll-bases.xsl"
+                    "/org/eolang/parser/parse/roll-bases.xsl",
+                    "/org/eolang/parser/parse/cti-adds-errors.xsl"
                 ).back()
             )
         )

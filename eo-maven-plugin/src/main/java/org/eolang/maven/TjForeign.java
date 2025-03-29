@@ -72,22 +72,6 @@ final class TjForeign {
     }
 
     /**
-     * The tojo shaken xmir.
-     * @return The shaken xmir.
-     */
-    Path shaken() {
-        return Paths.get(this.attribute(TjsForeign.Attribute.SHAKEN));
-    }
-
-    /**
-     * The tojo linted xmir.
-     * @return The shaken xmir.
-     */
-    Path linted() {
-        return Paths.get(this.attribute(TjsForeign.Attribute.LINTED));
-    }
-
-    /**
      * The tojo eo object.
      * @return The eo object.
      */
@@ -137,23 +121,6 @@ final class TjForeign {
      */
     String discoveredAt() {
         return this.attribute(TjsForeign.Attribute.DISCOVERED_AT);
-    }
-
-    /**
-     * Checks if tojo was not already shaken.
-     * @return True if shake is required, false otherwise.
-     */
-    boolean notShaken() {
-        final Path src = this.xmir();
-        boolean res = true;
-        if (this.delegate.exists(TjsForeign.Attribute.SHAKEN.getKey())) {
-            final Path tgt = this.shaken();
-            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(this, "Already shaken %[file]s to %[file]s", src, tgt);
-                res = false;
-            }
-        }
-        return res;
     }
 
     /**
@@ -214,16 +181,6 @@ final class TjForeign {
      */
     TjForeign withSodg(final Path sodg) {
         this.delegate.set(TjsForeign.Attribute.SODG.getKey(), sodg.toString());
-        return this;
-    }
-
-    /**
-     * Set the shaken xmir.
-     * @param xmir The shaken xmir.
-     * @return The tojo itself.
-     */
-    TjForeign withShaken(final Path xmir) {
-        this.delegate.set(TjsForeign.Attribute.SHAKEN.getKey(), xmir.toString());
         return this;
     }
 

@@ -60,8 +60,8 @@ public final class MjLatex extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        for (final TjForeign tojo : this.scopedTojos().withShaken()) {
-            final Path file = tojo.shaken();
+        for (final TjForeign tojo : this.scopedTojos().withXmir()) {
+            final Path file = tojo.xmir();
             final Path dir = this.targetDir.toPath();
             final Path target = new Place(
                 MjLatex.last(new ProgramName(new XMLDocument(file)).get())

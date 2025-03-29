@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -56,15 +57,13 @@ public final class MjParse extends MjSafe {
     @Override
     public void exec() {
         final long start = System.currentTimeMillis();
+        final Collection<TjForeign> tojos = this.scopedTojos().withSources();
         final int total = new Threaded<>(
-            new Filtered<>(
-                TjForeign::notParsed,
-                this.scopedTojos().withSources()
-            ),
+            new Filtered<>(TjForeign::notParsed, tojos),
             this::parsed
         ).total();
         if (0 == total) {
-            if (this.scopedTojos().withSources().isEmpty()) {
+            if (tojos.isEmpty()) {
                 Logger.info(
                     this,
                     "No .eo sources registered, nothing to be parsed to XMIRs (maybe you forgot to execute the \"register\" goal?)"
@@ -73,14 +72,13 @@ public final class MjParse extends MjSafe {
                 Logger.info(
                     this,
                     "No new .eo sources out of %d parsed to XMIRs",
-                    this.scopedTojos().withSources().size()
+                    tojos.size()
                 );
             }
         } else {
             Logger.info(
                 this, "Parsed %d new .eo sources out of %d to XMIRs in %[ms]s",
-                total, this.scopedTojos().withSources().size(),
-                System.currentTimeMillis() - start
+                total, tojos.size(), System.currentTimeMillis() - start
             );
         }
     }
@@ -92,7 +90,6 @@ public final class MjParse extends MjSafe {
      * @return Amount of parsed tojos
      * @throws IOException If fails
      */
-    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private int parsed(final TjForeign tojo) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
@@ -125,8 +122,8 @@ public final class MjParse extends MjSafe {
                     this,
                     "Failed to parse '%[file]s:%s': %s",
                     source,
-                    error.attribute("line").text().get(),
-                    error.text().get()
+                    error.attribute("line").text().orElse("0"),
+                    error.text().orElse("")
                 );
             }
         }
@@ -165,8 +162,7 @@ public final class MjParse extends MjSafe {
      * @throws FileNotFoundException If XML document file does not exist
      */
     private static String version(
-        final Path target,
-        final List<Node> parsed
+        final Path target, final List<Node> parsed
     ) throws FileNotFoundException {
         final Node node;
         if (parsed.isEmpty()) {
@@ -192,7 +188,7 @@ public final class MjParse extends MjSafe {
                 )
             )
             .findFirst()
-            .map(meta -> meta.element("tail").text().get())
+            .map(meta -> meta.element("tail").text().orElse(MjParse.ZERO))
             .orElse(MjParse.ZERO);
     }
 }

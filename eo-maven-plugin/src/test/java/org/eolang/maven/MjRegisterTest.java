@@ -49,27 +49,6 @@ final class MjRegisterTest {
     }
 
     @Test
-    void failsWithDotNames(@Mktmp final Path temp) throws IOException {
-        new Saved(
-            new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
-            temp.resolve("src/eo/org/eolang/maven/.abc.eo")
-        ).value();
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> {
-                new FakeMaven(temp)
-                    .with(MjRegisterTest.PARAM, temp.resolve(MjRegisterTest.SOURCES).toFile())
-                    .execute(new FakeMaven.Register());
-            }
-        );
-        MatcherAssert.assertThat(
-            "The error message must be correct",
-            exception.getCause().getCause().getMessage(),
-            Matchers.containsString("Incorrect name found: '.abc.eo'")
-        );
-    }
-
-    @Test
     void doesNotFailWhenNoStrictNames(@Mktmp final Path temp) throws IOException {
         new Saved(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),

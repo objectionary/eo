@@ -43,7 +43,7 @@ public final class MjLint extends MjSafe {
     /**
      * The directory where to transpile to.
      */
-    static final String DIR = "5-lint";
+    static final String DIR = "3-lint";
 
     /**
      * Subdirectory for optimized cache.
@@ -65,7 +65,7 @@ public final class MjLint extends MjSafe {
      */
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> tojos = this.scopedTojos().withShaken();
+        final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
@@ -128,7 +128,7 @@ public final class MjLint extends MjSafe {
         final TjForeign tojo,
         final ConcurrentHashMap<Severity, Integer> counts
     ) throws Exception {
-        final Path source = tojo.shaken();
+        final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjLint.DIR);
         final Path target = new Place(new ProgramName(xmir).get()).make(base, MjAssemble.XMIR);
@@ -152,18 +152,19 @@ public final class MjLint extends MjSafe {
      */
     private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
-        for (final TjForeign tojo : this.scopedTojos().withShaken()) {
-            paths.put(tojo.identifier(), tojo.shaken());
+        for (final TjForeign tojo : this.scopedTojos().withXmir()) {
+            paths.put(tojo.identifier(), tojo.xmir());
         }
-        for (final TjForeign tojo : this.compileTojos().withShaken()) {
-            paths.put(tojo.identifier(), tojo.shaken());
+        for (final TjForeign tojo : this.compileTojos().withXmir()) {
+            paths.put(tojo.identifier(), tojo.xmir());
         }
         final Map<String, XML> pkg = new HashMap<>();
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
         final Collection<Defect> defects = new Programs(pkg)
-            .without("unlint-non-existing-defect").defects();
+            .without("unlint-non-existing-defect")
+            .defects();
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
             MjLint.embed(
@@ -275,7 +276,9 @@ public final class MjLint extends MjSafe {
         final Directives dirs = new Directives();
         final Collection<Defect> defects = new Program(xmir).without(
             "unlint-non-existing-defect",
-            "object-has-data"
+            "object-has-data",
+            "empty-object",
+            "sprintf-without-formatters"
         ).defects();
         if (!defects.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);

@@ -2,12 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 sheets:
-  - /org/eolang/maven/shake/cti-adds-errors.xsl
-  - /org/eolang/maven/shake/add-probes.xsl
-  - /org/eolang/maven/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/probe/add-probes.xsl
 asserts:
   - /program[not(errors)]
-  - /program/sheets[sheet='add-probes']
   - /program/metas[count(meta[head='probe'])=3]
   - /program/metas/meta[head='probe' and tail='Q.org']
   - /program/metas/meta[head='probe' and tail='Q.org.eolang']

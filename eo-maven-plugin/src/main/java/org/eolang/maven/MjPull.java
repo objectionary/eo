@@ -27,7 +27,7 @@ public final class MjPull extends MjSafe {
     /**
      * The directory where to process to.
      */
-    static final String DIR = "4-pull";
+    static final String DIR = "2-pull";
 
     /**
      * Cache directory.
@@ -59,7 +59,7 @@ public final class MjPull extends MjSafe {
         if (this.offline) {
             Logger.info(
                 this,
-                "No programs were pulled because eo.offline flag is set to TRUE"
+                "No programs were pulled because eo.offline flag is TRUE"
             );
         } else {
             this.pull();

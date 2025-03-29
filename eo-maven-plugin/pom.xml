@@ -72,14 +72,6 @@
       <version>1.9.23</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <!-- version from parent POM -->
-      <!-- We need Saxon library in compile time
-      in order to use XPath 2.0 specific features -->
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->

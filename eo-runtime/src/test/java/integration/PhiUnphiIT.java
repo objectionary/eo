@@ -67,7 +67,7 @@ final class PhiUnphiIT {
                     .set("phiOutputDir", "${project.basedir}/src/phi")
                     .set("unphiInputDir", "${project.basedir}/src/phi")
                     .set("unphiOutputDir", "${project.basedir}/src/unphi")
-                    .set("unphiMetas", new String[]{"+tests", "+unlint decorated-formation"})
+                    .set("unphiMetas", new String[]{"+tests"})
                     .set("printSourcesDir", "${project.basedir}/src/unphi")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo");
                 f.exec("clean", "process-sources");
@@ -105,10 +105,7 @@ final class PhiUnphiIT {
                     .append(
                         "org.eolang",
                         "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
+                        System.getProperty("eo.version", Manifests.read("EO-Version"))
                     )
                     .execution("compile")
                     .goals("register", "compile", "transpile")
@@ -134,6 +131,7 @@ final class PhiUnphiIT {
                     .set("targetDir", "${project.basedir}/target/eo-test")
                     .set("addSourcesRoot", Boolean.FALSE.toString())
                     .set("addTestSourcesRoot", Boolean.TRUE.toString())
+                    .set("skipLinting", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
                     .set("ignoreRuntime", Boolean.TRUE.toString());

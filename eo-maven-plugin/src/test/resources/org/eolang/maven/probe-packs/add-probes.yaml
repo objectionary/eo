@@ -2,11 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 sheets:
-  - /org/eolang/maven/shake/add-probes.xsl
-  - /org/eolang/maven/shake/blank-xsd-schema.xsl
+  - /org/eolang/maven/probe/add-probes.xsl
 asserts:
   - /program[not(errors)]
-  - /program/sheets/sheet[contains(text(),'add-probes')]
   - //metas[count(.//meta[head/text()='probe'])=19]
   - //meta[head/text()='probe' and tail/text()='Q.org' and part/text()='Q.org']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']

@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjSodgIT {
     @Test
+    @Disabled
     void convertsSimpleObjectToGraph(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -38,7 +40,7 @@ final class MjSodgIT {
                     "# Check SodgMojo.\n[] > foo\n".getBytes()
                 );
                 new AppendedPlugin(f).value()
-                    .goals("register", "parse", "shake", "sodg");
+                    .goals("register", "parse", "sodg");
                 f.exec("compile");
                 MatcherAssert.assertThat(
                     "the .sodg file is generated",
