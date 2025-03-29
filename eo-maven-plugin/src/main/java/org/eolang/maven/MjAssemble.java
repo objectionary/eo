@@ -34,7 +34,6 @@ public final class MjAssemble extends MjSafe {
      */
     private static final Moja<?>[] MOJAS = {
         new Moja<>(MjParse.class),
-        new Moja<>(MjShake.class),
         new Moja<>(MjProbe.class),
         new Moja<>(MjPull.class),
     };

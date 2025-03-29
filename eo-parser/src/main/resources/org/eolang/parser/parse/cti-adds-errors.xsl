@@ -34,9 +34,9 @@
         <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:attribute name="severity">
-        <xsl:value-of select="eo:bytes-to-string(o[last() - 1]/o[1]/text())"/>
+        <xsl:value-of select="eo:bytes-to-string(o[last() - 1]/o[1]/o[1]/text())"/>
       </xsl:attribute>
-      <xsl:value-of select="eo:bytes-to-string(o[last()]/o[1]/text())"/>
+      <xsl:value-of select="eo:bytes-to-string(o[last()]/o[1]/o[1]/text())"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">

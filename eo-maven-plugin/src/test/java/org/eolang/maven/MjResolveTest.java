@@ -74,7 +74,7 @@ final class MjResolveTest {
                 .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Resolve())
                 .result(),
-            Matchers.hasKey("target/6-resolve/net.java.dev.jna/jna/-/5.14.0")
+            Matchers.hasKey(String.format("target/%s/net.java.dev.jna/jna/-/5.14.0", MjResolve.DIR))
         );
     }
 

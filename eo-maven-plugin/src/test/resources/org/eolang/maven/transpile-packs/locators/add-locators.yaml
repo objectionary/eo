@@ -2,11 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 sheets:
-  - /org/eolang/maven/shake/cti-adds-errors.xsl
-  - /org/eolang/maven/shake/add-probes.xsl
-  - /org/eolang/maven/shake/set-locators.xsl
-  - /org/eolang/maven/shake/blank-xsd-schema.xsl
-  - /org/eolang/maven/shake/set-original-names.xsl
+  - /org/eolang/maven/transpile/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
 asserts:
   - /program[not(errors)]
   - //o[@name='a' and @loc='Φ.org.abc.a' and @original-name='a']

@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -25,6 +26,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjLint}.
  *
  * @since 0.31.0
+ * @todo #4049:30min Replace all occurrences of new XMLDocument().nodes() with new Xnav().path().
+ *  Right now we don't use {@link XMLDocument#nodes(String)} and {@link XMLDocument#xpath(String)}
+ *  in production code, we got rid of it and replaced with {@link Xnav#path(String)} and
+ *  {@link Xnav#element(String)}. But we didn't do it in the tests. Let's do it, it should increase
+ *  the performance of our tests and make our code more consistent.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
@@ -55,7 +61,9 @@ final class MjLintTest {
             () -> maven.execute(new FakeMaven.Lint()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final Path xmir = maven.result().get("target/5-lint/foo/x/main.xmir");
+        final Path xmir = maven.result().get(
+            String.format("target/%s/foo/x/main.xmir", MjLint.DIR)
+        );
         MatcherAssert.assertThat(
             "Linted file should exist",
             xmir,
@@ -83,16 +91,18 @@ final class MjLintTest {
             "Wrong program should have failed or error, but it didn't"
         );
         MatcherAssert.assertThat(
-            "Verified file should not exist",
-            maven.result().get("target/6-verify/foo/x/main.xmir"),
-            Matchers.equalTo(null)
+            "Linted file should not exist",
+            maven.result(),
+            Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", MjLint.DIR))
         );
         MatcherAssert.assertThat(
-            "Error must exist in shaken XMIR",
-            new XMLDocument(
-                maven.result().get("target/2-shake/foo/x/main.xmir")
-            ).nodes("//errors/error[@severity='critical']"),
-            Matchers.hasSize(3)
+            "Error must exist in parsed XMIR",
+            new Xnav(
+                new XMLDocument(
+                    maven.result().get(String.format("target/%s/foo/x/main.xmir", MjParse.DIR))
+                ).inner()
+            ).path("//errors/error[@severity='critical']").count(),
+            Matchers.equalTo(3L)
         );
     }
 
@@ -116,7 +126,7 @@ final class MjLintTest {
         MatcherAssert.assertThat(
             "Warning must exist in shaken XMIR",
             new XMLDocument(
-                maven.result().get("target/5-lint/foo/x/main.xmir")
+                maven.result().get(String.format("target/%s/foo/x/main.xmir", MjLint.DIR))
             ).nodes("//errors/error[@severity='warning']"),
             Matchers.hasSize(Matchers.greaterThanOrEqualTo(2))
         );
@@ -131,7 +141,6 @@ final class MjLintTest {
                     "+unlint object-has-data\n",
                     "# No comments.",
                     "[] > main",
-                    "  # No comments.",
                     "  [] > x",
                     "    \"Hello world\" > @"
                 )

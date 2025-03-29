@@ -43,7 +43,7 @@ final class MjRegisterIT {
                     ).getBytes()
                 );
                 new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -83,7 +83,7 @@ final class MjRegisterIT {
                     ).getBytes()
                 );
                 new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull", "eo:resolve");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -124,7 +124,7 @@ final class MjRegisterIT {
                     ).getBytes()
                 );
                 new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull", "eo:resolve");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -135,7 +135,7 @@ final class MjRegisterIT {
                         "  42 > @"
                     ).getBytes()
                 );
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 final TjSmart foreign = MjRegisterIT.foreign(
                     temp.resolve("target/eo-foreign.json")
                 );
@@ -186,7 +186,7 @@ final class MjRegisterIT {
                     ).getBytes()
                 );
                 new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -197,7 +197,7 @@ final class MjRegisterIT {
                         "  42 > @"
                     ).getBytes()
                 );
-                f.exec("eo:register", "eo:parse", "eo:shake", "eo:probe", "eo:pull");
+                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
                     temp.resolve(

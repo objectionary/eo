@@ -9,11 +9,18 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link MjProbe}.
@@ -38,6 +45,24 @@ final class MjProbeTest {
                 .programTojo()
                 .probed(),
             Matchers.equalTo(expected)
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/probe-packs/", glob = "**.yaml")
+    void checksProbePacks(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtYaml(
+                    yaml,
+                    eo -> new EoSyntax(
+                        "scenario",
+                        new InputOf(String.format("%s\n", eo))
+                    ).parsed()
+                )
+            ),
+            new XtoryMatcher()
         );
     }
 

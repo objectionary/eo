@@ -42,7 +42,7 @@ final class MjTranspileIT {
                     ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value()
-                    .goals("register", "parse", "shake", "transpile");
+                    .goals("register", "parse", "transpile");
                 f.exec("process-sources");
                 final String java = "EOfoo.java";
                 final String pname = "EOone";
@@ -91,7 +91,7 @@ final class MjTranspileIT {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(prog.getBytes());
                 new AppendedPlugin(f).value()
-                    .goals("register", "parse", "shake", "transpile");
+                    .goals("register", "parse", "transpile");
                 f.exec("process-sources");
                 final String java = "EOfoo.java";
                 final String pinfo = "package-info.java";

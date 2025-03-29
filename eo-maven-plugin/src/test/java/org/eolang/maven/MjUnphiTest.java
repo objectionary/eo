@@ -230,7 +230,6 @@ final class MjUnphiTest {
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .with("conservative", xtory.map().get("conservative") != null)
-            .execute(MjShake.class)
             .execute(MjPhi.class)
             .result()
             .get(main);
@@ -261,7 +260,6 @@ final class MjUnphiTest {
             .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
             .execute(MjParse.class)
-            .execute(MjShake.class)
             .execute(MjPhi.class)
             .execute(MjUnphi.class)
             .execute(MjPrint.class)

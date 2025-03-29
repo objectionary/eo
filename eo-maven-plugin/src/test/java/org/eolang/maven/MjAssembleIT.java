@@ -31,7 +31,6 @@ final class MjAssembleIT {
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/org/eolang/io/stdout.%s";
         final String parsed = String.format(stdout, MjParse.DIR, MjAssemble.XMIR);
-        final String optimized = String.format(stdout, MjShake.DIR, MjAssemble.XMIR);
         final String pulled = String.format(stdout, MjPull.DIR, MjAssemble.EO);
         new Farea(temp).together(
             f -> {
@@ -47,14 +46,6 @@ final class MjAssembleIT {
                         parsed
                     ),
                     f.files().file(parsed).exists(),
-                    Matchers.is(true)
-                );
-                MatcherAssert.assertThat(
-                    String.format(
-                        "AssembleMojo should have optimized stdout object %s, but didn't",
-                        optimized
-                    ),
-                    f.files().file(optimized).exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
@@ -93,42 +84,6 @@ final class MjAssembleIT {
                     "Even if the eo program invalid we still have to parse it, but we didn't",
                     temp.resolve(String.format("target/eo/%s", MjParse.DIR)).toAbsolutePath(),
                     new ContainsFiles(String.format("**/main.%s", MjAssemble.XMIR))
-                );
-                MatcherAssert.assertThat(
-                    "Even if the eo program invalid we still have to optimize it, but we didn't",
-                    temp.resolve(String.format("target/eo/%s", MjShake.DIR)).toAbsolutePath(),
-                    new ContainsFiles(String.format("**/main.%s", MjAssemble.XMIR))
-                );
-            }
-        );
-    }
-
-    @Test
-    void configuresChildParameters(@Mktmp final Path temp) throws IOException {
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files()
-                    .file("src/main/eo/one/main.eo")
-                    .write(MjAssembleIT.helloWorld().getBytes(StandardCharsets.UTF_8));
-                MjAssembleIT.appendItself(f)
-                    .configuration()
-                    .set("trackTransformationSteps", Boolean.TRUE.toString());
-                f.exec("test");
-                MatcherAssert.assertThat(
-                    String.join(
-                        "\n",
-                        "AssembleMojo should have configured parameters",
-                        "within the Mojos that it uses, but it didn't"
-                    ),
-                    f.files().file(
-                        String.format(
-                            "target/eo/%s/one/main.%s",
-                            MjShake.DIR,
-                            MjAssemble.XMIR
-                        )
-                    ).exists(),
-                    Matchers.is(true)
                 );
             }
         );

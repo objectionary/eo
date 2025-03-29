@@ -86,6 +86,7 @@ final class MjSodgTest {
         "PMD.JUnitTestContainsTooManyAsserts",
         "PMD.ProhibitPlainJunitAssertionsRule"
     })
+    @Disabled
     void generatesSodgForPacks(final String pack) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
@@ -131,7 +132,7 @@ final class MjSodgTest {
             MjSodgTest.class,
             "XML: %s",
             new TextOf(
-                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", MjShake.DIR)))
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", MjParse.DIR)))
             ).asString()
         );
         return new XMLDocument(

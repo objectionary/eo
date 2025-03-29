@@ -83,6 +83,6 @@ final class MjLintIT {
 
     private static Execution appendItself(final Farea farea) throws IOException {
         return new AppendedPlugin(farea).value()
-            .goals("register", "parse", "shake", "lint");
+            .goals("register", "parse", "lint");
     }
 }

@@ -43,7 +43,7 @@ public final class MjResolve extends MjSafe {
     /**
      * The directory where to resolve to.
      */
-    static final String DIR = "6-resolve";
+    static final String DIR = "4-resolve";
 
     /**
      * Transitive dependency extractor. It's a strategy pattern for extracting transitive

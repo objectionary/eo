@@ -328,7 +328,7 @@ public final class MjSodg extends MjSafe {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<TjForeign> tojos = this.scopedTojos().withShaken();
+        final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
         final Path home = this.targetDir.toPath().resolve(MjSodg.DIR);
         int total = 0;
         int instructions = 0;
@@ -344,7 +344,7 @@ public final class MjSodg extends MjSafe {
                 continue;
             }
             final Path sodg = new Place(name).make(home, "sodg");
-            final Path xmir = tojo.shaken();
+            final Path xmir = tojo.xmir();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %[file]s (it's newer than the source)",

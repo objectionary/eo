@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
+import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.TrFull;
 
 /**
@@ -50,12 +51,16 @@ import org.eolang.parser.TrFull;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-@SuppressWarnings("PMD.LongVariable")
 public final class MjTranspile extends MjSafe {
     /**
      * The directory where to transpile to.
      */
-    static final String DIR = "8-transpile";
+    static final String DIR = "5-transpile";
+
+    /**
+     * The directory where to put pre-transpile files.
+     */
+    static final String PRE = "5-pre-transpile";
 
     /**
      * Cache directory for transpiled sources.
@@ -68,11 +73,6 @@ public final class MjTranspile extends MjSafe {
     private static final String JAVA = "java";
 
     /**
-     * The directory where to put pre-transpile files.
-     */
-    private static final String PRE = "7-pre";
-
-    /**
      * Pattern for replacing EO in package.
      */
     private static final Pattern PACKAGE = Pattern.compile("EO");
@@ -82,7 +82,10 @@ public final class MjTranspile extends MjSafe {
      */
     private static final Train<Shift> TRAIN = new TrFull(
         new TrJoined<>(
+            new TrDefault<>(new StFlatBytes()),
             new TrClasspath<>(
+                "/org/eolang/maven/transpile/set-locators.xsl",
+                "/org/eolang/maven/transpile/set-original-names.xsl",
                 "/org/eolang/maven/transpile/classes.xsl",
                 "/org/eolang/maven/transpile/tests.xsl",
                 "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
@@ -114,11 +117,12 @@ public final class MjTranspile extends MjSafe {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.addTestSourcesRoot")
+    @SuppressWarnings("PMD.LongVariable")
     private boolean addTestSourcesRoot;
 
     @Override
     public void exec() throws IOException {
-        final Collection<TjForeign> sources = this.scopedTojos().withShaken();
+        final Collection<TjForeign> sources = this.scopedTojos().withXmir();
         final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
@@ -155,7 +159,7 @@ public final class MjTranspile extends MjSafe {
         final TjForeign tojo,
         final Function<XML, XML> transform
     ) throws IOException {
-        final Path source = tojo.shaken();
+        final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjTranspile.DIR);
         final Path target = new Place(new ProgramName(xmir).get()).make(base, MjAssemble.XMIR);
