@@ -19,7 +19,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.Func;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.Joined;
 
 /**
@@ -71,43 +71,14 @@ public final class MjResolve extends MjSafe {
     @Override
     public void exec() throws IOException {
         final Collection<Dep> deps = this.deps();
-        final Path target = this.targetDir.toPath().resolve(MjResolve.DIR);
-        for (final Dep dep : deps) {
-            final String classifier;
-            final Dependency dependency = dep.get();
-            if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
-                classifier = "-";
-            } else {
-                classifier = dependency.getClassifier();
-            }
-            final Path dest = this.cleanPlace(
-                target
-                    .resolve(dependency.getGroupId())
-                    .resolve(dependency.getArtifactId())
-                    .resolve(classifier),
-                dependency.getVersion()
-            );
-            if (Files.exists(dest)) {
-                Logger.debug(
-                    this, "Dependency %s already resolved and exists in %[file]s",
-                    dep, dest
-                );
-            } else {
-                this.central.accept(dependency, dest);
-                final int files = new Walk(dest).size();
-                if (files == 0) {
-                    Logger.warn(this, "No new files after unpacking of %s!", dep);
-                } else {
-                    Logger.info(
-                        this, "Found %d new file(s) after unpacking of %s",
-                        files, dep
-                    );
-                }
-            }
-        }
         if (deps.isEmpty()) {
             Logger.info(this, "No new dependencies unpacked");
         } else {
+            final Path target = this.targetDir.toPath().resolve(MjResolve.DIR);
+            new Threaded<>(
+                deps,
+                dep -> this.resolved(dep, target)
+            ).total();
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
@@ -126,6 +97,53 @@ public final class MjResolve extends MjSafe {
     public static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
+     * Resolved dependency.
+     * @param dep Dependency
+     * @param target Target path
+     * @return Amount of resolved dependencies
+     * @throws IOException If fails to resolve
+     */
+    private int resolved(final Dep dep, final Path target) throws IOException {
+        final String classifier;
+        final Dependency dependency = dep.get();
+        if (dependency.getClassifier() == null
+            || dependency.getClassifier().isEmpty()) {
+            classifier = "-";
+        } else {
+            classifier = dependency.getClassifier();
+        }
+        final Path dest = this.cleanPlace(
+            target
+                .resolve(dependency.getGroupId())
+                .resolve(dependency.getArtifactId())
+                .resolve(classifier),
+            dependency.getVersion()
+        );
+        final int total;
+        if (Files.exists(dest)) {
+            Logger.debug(
+                this,
+                "Dependency %s already resolved and exists in %[file]s",
+                dep, dest
+            );
+            total = 0;
+        } else {
+            this.central.accept(dependency, dest);
+            final int files = new Walk(dest).size();
+            if (files == 0) {
+                Logger.warn(this, "No new files after unpacking of %s!", dep);
+            } else {
+                Logger.info(
+                    this, "Found %d new file(s) after unpacking of %s",
+                    files, dep
+                );
+            }
+            total = 1;
+        }
+        return total;
     }
 
     /**
@@ -203,7 +221,7 @@ public final class MjResolve extends MjSafe {
         if (!this.ignoreTransitive) {
             deps = new DpsEachWithoutTransitive(deps, this.transitiveStrategy);
         }
-        return new ListOf<>(deps)
+        return new SetOf<>(deps)
             .stream()
             .sorted()
             .distinct()

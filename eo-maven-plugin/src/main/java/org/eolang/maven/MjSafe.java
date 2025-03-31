@@ -151,18 +151,6 @@ abstract class MjSafe extends AbstractMojo {
     protected String placedFormat = "json";
 
     /**
-     * The path to a text file where paths of generated java files per EO program.
-     * @since 0.11.0
-     * @checkstyle VisibilityModifierCheck (10 lines)
-     */
-    @Parameter(
-        property = "eo.transpiled",
-        required = true,
-        defaultValue = "${project.build.directory}/eo-transpiled.json"
-    )
-    protected File transpiled;
-
-    /**
      * Generated sourced directory.
      * @checkstyle VisibilityModifierCheck (10 lines)
      * @checkstyle MemberNameCheck (7 lines)
@@ -197,14 +185,6 @@ abstract class MjSafe extends AbstractMojo {
     protected Integer timeout = Integer.MAX_VALUE;
 
     /**
-     * Format of "transpiled" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Parameter(property = "eo.transpiledFormat", required = true, defaultValue = "csv")
-    protected String transpiledFormat = "csv";
-
-    /**
      * Track optimization steps into intermediate XMIR files?
      *
      * @since 0.24.0
@@ -232,6 +212,16 @@ abstract class MjSafe extends AbstractMojo {
      */
     @Parameter(property = "eo.cache")
     protected File cache = Paths.get(System.getProperty("user.home")).resolve(".eo").toFile();
+
+    /**
+     * Use global caching or not.
+     * @since 0.55.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
+    @SuppressWarnings("PMD.ImmutableField")
+    protected boolean cacheEnabled = true;
 
     /**
      * Rewrite binaries in output directory or not.
@@ -410,15 +400,6 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
-     * Cached transpiled tojos.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    protected final TjsTranspiled transpiledTojos = new TjsTranspiled(
-        new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
-    );
-
-    /**
      * The central.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -498,9 +479,6 @@ abstract class MjSafe extends AbstractMojo {
                 }
                 if (this.placed != null) {
                     MjSafe.closeTojos(this.placedTojos);
-                }
-                if (this.transpiled != null) {
-                    MjSafe.closeTojos(this.transpiledTojos);
                 }
             }
         }

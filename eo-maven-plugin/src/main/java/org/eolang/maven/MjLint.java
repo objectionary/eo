@@ -138,7 +138,8 @@ public final class MjLint extends MjSafe {
                 this.cache.toPath().resolve(MjLint.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
-                base.relativize(target)
+                base.relativize(target),
+                this.cacheEnabled
             ).apply(source, target)
         );
         return 1;

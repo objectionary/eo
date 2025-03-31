@@ -46,7 +46,7 @@ final class FpDefault extends FpEnvelope {
         final String hash,
         final Path tail
     ) {
-        this(content, base, semver, () -> hash, tail);
+        this(content, base, semver, () -> hash, tail, true);
     }
 
     /**
@@ -56,13 +56,15 @@ final class FpDefault extends FpEnvelope {
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
      * @param tail The last part of absolute cache path
+     * @param global Is global cache enabled or not
      */
     FpDefault(
         final Func<Path, String> content,
         final Path base,
         final String semver,
         final Supplier<String> hash,
-        final Path tail
+        final Path tail,
+        final boolean global
     ) {
         this(
             new FpGenerated(
@@ -71,7 +73,8 @@ final class FpDefault extends FpEnvelope {
             base,
             semver,
             hash,
-            tail
+            tail,
+            global
         );
     }
 
@@ -82,34 +85,35 @@ final class FpDefault extends FpEnvelope {
      * @param semver Cache version
      * @param hash Cache hash
      * @param tail Cache tail path
+     * @param global Is global cache enabled or not
      */
     FpDefault(
         final Footprint generated,
         final Path base,
         final String semver,
         final Supplier<String> hash,
-        final Path tail
+        final Path tail,
+        final boolean global
     ) {
-        this(
-            generated,
-            semver,
-            hash,
-            new CachePath(base, semver, hash, tail)
-        );
+        this(generated, semver, hash, new CachePath(base, semver, hash, tail), global);
     }
 
     /**
      * Ctor.
+     * <p>Here {@link FpIfReleased} is on the first place because we don't want to work with any
+     * type of cache (local or global) if we work with SNAPSHOT version of the plugin</p>
      * @param generated Footprint that generates content
      * @param semver Cache version
      * @param hash Cache hash
      * @param cache Lazy cache path
+     * @param global Is global cache enabled or not
      */
     private FpDefault(
         final Footprint generated,
         final String semver,
         final Supplier<String> hash,
-        final Supplier<Path> cache
+        final Supplier<Path> cache,
+        final boolean global
     ) {
         super(
             new FpExistedSource(
@@ -118,10 +122,14 @@ final class FpDefault extends FpEnvelope {
                     hash,
                     new FpIfOlder(
                         new FpIgnore(),
-                        new FpIfOlder(
-                            target -> cache.get(),
-                            new FpUpdateFromCache(cache),
-                            new FpUpdateBoth(generated, cache)
+                        new FpFork(
+                            global,
+                            new FpIfOlder(
+                                target -> cache.get(),
+                                new FpUpdateFromCache(cache),
+                                new FpUpdateBoth(generated, cache)
+                            ),
+                            generated
                         )
                     ),
                     generated
