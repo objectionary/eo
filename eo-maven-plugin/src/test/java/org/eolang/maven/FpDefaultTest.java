@@ -229,7 +229,7 @@ final class FpDefaultTest {
         final Path target = FpDefaultTest.existedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
-        FpDefaultTest.makeOlder(cache.path(), 100_000);
+        FpDefaultTest.makeOlder(cache.path(), 80_000);
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
