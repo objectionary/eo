@@ -429,14 +429,15 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         }
+        final int line = ctx.getStart().getLine();
+        final int pos = ctx.getStart().getCharPositionInLine() + base.length() + 1;
         this.objects()
             .prop("base", base)
-            .start(
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine() + base.length() + 1
-            )
+            .start(line, pos)
             .prop("base", "Q.org.eolang.bytes")
+            .start(line, pos)
             .data(data.get())
+            .leave()
             .leave();
     }
 

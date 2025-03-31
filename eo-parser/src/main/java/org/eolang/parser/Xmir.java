@@ -65,6 +65,7 @@ public final class Xmir implements XML {
     private static final Xsline FOR_PHI = new Xsline(
         new TrFull(
             new TrDefault<>(
+                new StFlatBytes(),
                 Xmir.UNHEX,
                 new StClasspath(
                     "/org/eolang/parser/phi/to-phi.xsl",
