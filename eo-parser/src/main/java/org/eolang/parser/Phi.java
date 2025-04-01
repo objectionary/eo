@@ -56,6 +56,14 @@ public class Phi {
 
     /**
      * Ctor.
+     * @param source PHI source code.
+     */
+    public Phi(final String source) {
+        this(new TextOf(source));
+    }
+
+    /**
+     * Ctor.
      * @param source PHI source code
      */
     public Phi(final Text source) {

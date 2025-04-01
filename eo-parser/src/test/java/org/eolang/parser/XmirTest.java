@@ -14,6 +14,7 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -66,6 +67,16 @@ final class XmirTest {
             ),
             xmir.toSaltyPhi(),
             Matchers.equalTo(xtory.map().get("salty"))
+        );
+    }
+
+    @Test
+    void preservesNumbersInPhiRepresentation() throws IOException {
+        final String phi = this.asXmir("1 > foo\n").toPhi();
+        MatcherAssert.assertThat(
+            String.format("Phi expression should contain the data, but it doesn't: %n%s", phi),
+            phi,
+            Matchers.containsString("foo ↦ 1")
         );
     }
 
