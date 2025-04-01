@@ -311,9 +311,7 @@ final class EoSyntaxTest {
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax(
-                            "scenario",
-                            String.format("%s\n", eo),
-                            new TrDefault<>()
+                            "scenario", String.format("%s\n", eo), new TrDefault<>()
                         ).parsed(),
                         new TrFull()
                     )
