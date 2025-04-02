@@ -114,6 +114,7 @@ void: NAME
 application
     : happlicationExtended oname? EOL
     | vapplication
+    | (happlicationHead | happlicationReversedHead) happlicationTailScoped
     ;
 
 // Horizontal application
@@ -122,6 +123,10 @@ application
 happlication
     : happlicationHead happlicationTail
     | happlicationReversed
+    ;
+
+happlicationReversedHead
+    : reversed SPACE happlicationReversedFirst
     ;
 
 // Extended horizontal application
@@ -133,7 +138,7 @@ happlicationExtended
 
 // Reversed horizontal application
 happlicationReversed
-    : reversed SPACE happlicationTailReversedFirst happlicationTail?
+    : happlicationReversedHead happlicationTail?
     ;
 
 // Head of horizontal application
@@ -157,15 +162,25 @@ applicable
     | PHI
     ;
 
+// Horizontal application argument without binding
+happlicationArgUnbound
+    : SPACE happlicationArg
+    ;
+
+// Tail for horizontal application with scoped object as the last agument
+happlicationTailScoped
+    : happlicationArgUnbound* happlicationArgScoped
+    ;
+
 // Horizontal application tail
 happlicationTail
-    : (SPACE happlicationArg as)+
-    | (SPACE happlicationArg)+
+    : (happlicationArgUnbound as)+
+    | happlicationArgUnbound+
     ;
 
 // The rule is separated because we should enter to the last object
 // here, but don't do it on happlicationTail rule
-happlicationTailReversedFirst
+happlicationReversedFirst
     : happlicationArg
     ;
 
@@ -175,6 +190,10 @@ happlicationArg
     : just
     | hmethod
     | scope
+    ;
+
+happlicationArgScoped
+    : voids aname innersOrEol
     ;
 
 // Vertical application
@@ -295,7 +314,7 @@ onlyphi
 
 // Tail of the unnamed abstract object with only @-bound attribute
 onlyphiTail
-    : spacedArrow voids
+    : arrow voids
     ;
 
 // Inner object of horizontal anonym object
@@ -384,10 +403,15 @@ reversed
     : (finisher | TILDE INT) DOT
     ;
 
+// Auto object name
+aname
+    : ARROW ARROW CONST?
+    ;
+
 // Formation name
 fname
     : oname
-    | SPACE ARROW ARROW CONST?
+    | SPACE aname
     ;
 
 // Object name
@@ -397,10 +421,10 @@ oname
 
 // Suffix
 suffix
-    : spacedArrow (PHI | NAME)
+    : arrow (PHI | NAME)
     ;
 
-spacedArrow
+arrow
     : SPACE ARROW SPACE
     ;
 

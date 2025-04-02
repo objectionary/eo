@@ -4,9 +4,9 @@
 sheets: [ ]
 asserts:
   - /program[not(errors)]
-  - //o[not(@base) and @name='a🌵24' and o[@name='five']]
-  - //o[not(@base) and @name='a🌵42' and o[@name='ten']]
-  - //o[not(@base) and @name='a🌵810' and not(@as) and o[@name='eleven']]
+  - //o[not(@base) and @name='a🌵25' and o[@name='five']]
+  - //o[not(@base) and @name='a🌵43' and o[@name='ten']]
+  - //o[not(@base) and @name='a🌵811' and not(@as) and o[@name='eleven']]
 input: |
   x > first
     [] >>
