@@ -6,11 +6,14 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrictAfter;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -102,6 +105,26 @@ final class PhiSyntaxTest {
                 new PhiSyntax((String) xtory.map().get("sweet")).parsed()
             ).toSaltyPhi(),
             Matchers.equalTo(xtory.map().get("salty"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/unphi-packs/", glob = "**.yaml")
+    void checksUnphiPacks(final String yaml) {
+        MatcherAssert.assertThat(
+            "passed without exceptions",
+            new XtSticky(
+                new XtStrictAfter(
+                    new XtYaml(
+                        yaml,
+                        phi -> new PhiSyntax(
+                            String.format("%s\n", phi), new TrDefault<>()
+                        ).parsed(),
+                        new TrFull()
+                    )
+                )
+            ),
+            new XtoryMatcher()
         );
     }
 

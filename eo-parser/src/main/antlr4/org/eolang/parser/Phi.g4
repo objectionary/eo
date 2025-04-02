@@ -26,6 +26,7 @@ scoped
     : XI
     | HOME
     | DEF_PACKAGE
+    | fullAttribute
     ;
 
 bindings

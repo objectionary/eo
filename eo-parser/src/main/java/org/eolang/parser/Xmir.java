@@ -7,7 +7,6 @@ package org.eolang.parser;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
@@ -38,17 +37,12 @@ import org.xml.sax.SAXParseException;
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Xmir implements XML {
     /**
-     * Unhex transformation.
-     */
-    private static final Shift UNHEX = new StUnhex();
-
-    /**
      * Train of transformations that prepare XMIR for conversion to EO.
      */
     private static final Xsline FOR_EO = new Xsline(
         new TrFull(
             new TrJoined<>(
-                new TrDefault<>(new StFlatBytes(), Xmir.UNHEX),
+                new TrDefault<>(new StFlatBytes(), new StUnhex()),
                 new TrClasspath<>(
                     "/org/eolang/parser/print/tuples-to-stars.xsl",
                     "/org/eolang/parser/print/inline-cactoos.xsl",
@@ -66,7 +60,8 @@ public final class Xmir implements XML {
         new TrFull(
             new TrDefault<>(
                 new StFlatBytes(),
-                Xmir.UNHEX,
+                new StUnhex(),
+                new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
                 new StClasspath(
                     "/org/eolang/parser/phi/to-phi.xsl",
                     String.format("conservative %b", false)
@@ -166,7 +161,8 @@ public final class Xmir implements XML {
                 new TrFull(
                     new TrDefault<>(
                         new StFlatBytes(),
-                        Xmir.UNHEX,
+                        new StUnhex(),
+                        new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
                         new StClasspath(
                             "/org/eolang/parser/phi/to-phi.xsl",
                             String.format("conservative %b", conservative)

@@ -130,7 +130,7 @@ final class MjPhiTest {
             "the .phi file is generated",
             Files.readString(temp.resolve("target/eo/phi/org/eolang/bytes.phi")),
             Matchers.allOf(
-                Matchers.containsString("yes ↦ ξ.eq("),
+                Matchers.containsString("yes ↦ eq("),
                 Matchers.containsString("Φ̇.bytes(⟦ Δ ⤍ 01-02-03 ⟧)")
             )
         );

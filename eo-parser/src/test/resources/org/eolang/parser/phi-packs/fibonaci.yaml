@@ -21,10 +21,10 @@ sweet: |-
     eo ↦ ⟦
       example ↦ ⟦
         fibonacci(n) ↦ ⟦
-          φ ↦ ξ.n.lt(2).if(
-            ξ.n,
-            Φ.eo.example.fibonacci(ξ.n.minus(1)).plus(
-              Φ.eo.example.fibonacci(ξ.n.minus(2))
+          φ ↦ n.lt(2).if(
+            n,
+            Φ.eo.example.fibonacci(n.minus(1)).plus(
+              Φ.eo.example.fibonacci(n.minus(2))
             )
           )
         ⟧,
