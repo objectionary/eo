@@ -29,15 +29,15 @@
     malloc.of
       5
       [m]
+        seq > @
+          *
+            i2.read 1
+            m
         tee-input > tee
           bytes-as-input 01-02-03-04-05
           malloc-as-output m
         tee.read 2 > i1
         i1.read 2 > i2
-        seq > @
-          *
-            i2.read 1
-            m
     01-02-03-04-05
 
 # This unit test is supposed to check the functionality of the corresponding object.

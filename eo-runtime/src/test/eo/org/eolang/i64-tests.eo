@@ -149,10 +149,10 @@
 
 # Checks that division by one returns the dividend.
 [] > tests-i64-div-by-i64-one
-  -235.as-i64 > dividend
   eq. > @
     dividend.div 1.as-i64
     dividend
+  -235.as-i64 > dividend
 
 # Checks div with remainder
 # This unit test is supposed to check the functionality of the corresponding object.

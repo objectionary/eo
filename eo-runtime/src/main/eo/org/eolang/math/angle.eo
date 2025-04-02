@@ -37,17 +37,17 @@
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.
   [] > tan
-    cos > cosine!
     if. > @
       cosine.eq 0
       nan
       sin.div cosine
+    cos > cosine!
 
   # Cotangent of current angle.
   # Please note, that `ctan` is calculated from the angle in radians.
   [] > ctan
-    sin > sine!
     if. > @
       sine.eq 0
       nan
       cos.div sine
+    sin > sine!

@@ -11,10 +11,10 @@
 # Here `input` must be an object that can be converted to bytes
 # via `as-bytes` object.
 [input] > hash-code-of
+  rec-hash-code 0 0 > @
   input.as-bytes > input-as-bytes!
   input-as-bytes.size > size!
   31.as-i64 > magic-number
-  rec-hash-code 0 0 > @
 
   [acc index] > rec-hash-code
     if. > @

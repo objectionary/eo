@@ -29,7 +29,6 @@
   # The `org.eolang.error` is returned if the `org.eolang.i32` number is more than
   # max `org.eolang.i16` value `32767`.
   [] > as-i16
-    (as-bytes.slice 0 2).as-bytes > left
     if. > @
       or.
         left.eq 00-00
@@ -39,6 +38,7 @@
         sprintf
           "Can't convert i32 number %d to i16 because it's out of i16 bounds"
           * as-i64.as-number
+    (as-bytes.slice 0 2).as-bytes > left
 
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i32` object.
@@ -59,9 +59,6 @@
   # Multiplication of `$` and `x`.
   # Here `x` must be an `org.eolang.i32` object.
   [x] > times
-    (as-i64.times x.as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
     if. > @
       or.
         left.eq 00-00-00-00
@@ -70,13 +67,13 @@
       plus.
         i32 left
         i32 right
+    (as-i64.times x.as-i32.as-i64).as-bytes > bts
+    bts.slice 0 4 > left
+    bts.slice 4 4 > right
 
   # Sum of `$` and `x`.
   # Here `x` must be an `org.eolang.i32` object.
   [x] > plus
-    (as-i64.plus x.as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
     if. > @
       or.
         left.eq 00-00-00-00
@@ -85,6 +82,9 @@
       plus.
         i32 left
         i32 right
+    (as-i64.plus x.as-i32.as-i64).as-bytes > bts
+    bts.slice 0 4 > left
+    bts.slice 4 4 > right
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `org.eolang.i32` object.
@@ -94,11 +94,6 @@
   # Here `x` must be an `org.eolang.i32` object.
   # An `error` is returned if or `x` is equal to 0.
   [x] > div
-    x.as-i32 > x-as-i32
-    (as-i64.div x-as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
-    00-00-00-00 > zero
     if. > @
       x-as-i32.eq zero
       error
@@ -113,3 +108,8 @@
         plus.
           i32 left
           i32 right
+    x.as-i32 > x-as-i32
+    (as-i64.div x-as-i32.as-i64).as-bytes > bts
+    bts.slice 0 4 > left
+    bts.slice 4 4 > right
+    00-00-00-00 > zero

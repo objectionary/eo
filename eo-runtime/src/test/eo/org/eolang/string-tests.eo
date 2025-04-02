@@ -33,31 +33,31 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-the-length-with-n2-byte-characters
-  "Hello, друг!" > str
   and. > @
     str.length.eq 12
     str.as-bytes.size.eq 16
+  "Hello, друг!" > str
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-the-length-with-n3-byte-characters
-  "The अ devanagari" > str
   and. > @
     str.length.eq 16
     str.as-bytes.size.eq 18
+  "The अ devanagari" > str
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-the-length-with-n4-byte-characters
-  "The 😀 smile" > str
   and. > @
     str.length.eq 11
     str.as-bytes.size.eq 14
+  "The 😀 smile" > str
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
 # incomplete 4 byte character.
 [] > throws-on-taking-length-of-incomplete-n4-byte-character
-  string F0-9F-98 > should-be-smile
   should-be-smile.length > @
+  string F0-9F-98 > should-be-smile
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-compares-two-different-string-types

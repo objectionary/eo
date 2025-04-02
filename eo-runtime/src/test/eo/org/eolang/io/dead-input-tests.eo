@@ -9,8 +9,8 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-empty-bytes
-  dead-input.read 10 > i1
-  i1.read 10 > i2
   and. > @
     i1.eq --
     i2.eq --
+  dead-input.read 10 > i1
+  i1.read 10 > i2
