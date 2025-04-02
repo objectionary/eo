@@ -98,8 +98,7 @@ public final class MjProbe extends MjSafe {
         } else {
             final long start = System.currentTimeMillis();
             final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
-            final int total = this.probed(tojos, probed);
-            if (total == 0) {
+            if (this.probed(tojos, probed) == 0) {
                 Logger.info(this, "No probes found in %d programs", tojos.size());
             } else {
                 Logger.info(

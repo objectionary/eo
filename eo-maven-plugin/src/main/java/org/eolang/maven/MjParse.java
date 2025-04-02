@@ -106,7 +106,8 @@ public final class MjParse extends MjSafe {
                 this.cache.toPath().resolve(MjParse.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
-                base.relativize(target)
+                base.relativize(target),
+                this.cacheEnabled
             ).apply(source, target)
         ).withVersion(MjParse.version(target, refs));
         final List<Xnav> errors = new Xnav(target)

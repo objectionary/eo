@@ -168,9 +168,7 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            final Path transpiled = this.workspace.resolve("transpiled");
             final Path placed = Paths.get("placed.json");
-            new Saved(new TextOf(""), transpiled).value();
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
                 "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
@@ -178,9 +176,9 @@ final class FakeMaven {
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
-            this.params.putIfAbsent("transpiled", transpiled.toFile());
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);

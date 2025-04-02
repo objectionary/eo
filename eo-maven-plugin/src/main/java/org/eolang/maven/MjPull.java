@@ -152,13 +152,13 @@ public final class MjPull extends MjSafe {
                     }
                     return this.overWrite;
                 },
-                both,
+                new FpFork(this.cacheEnabled, both, generated),
                 new FpIfTargetExists(
                     new FpIgnore(),
-                    new FpIfTargetExists(
-                        tgt -> che.get(),
-                        new FpUpdateFromCache(che),
-                        both
+                    new FpFork(
+                        this.cacheEnabled,
+                        new FpIfTargetExists(tgt -> che.get(), new FpUpdateFromCache(che), both),
+                        generated
                     )
                 )
             ),

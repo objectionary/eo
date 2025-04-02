@@ -178,7 +178,8 @@ public final class MjTranspile extends MjSafe {
                 this.cache.toPath().resolve(MjTranspile.CACHE),
                 this.plugin.getVersion(),
                 hsh,
-                base.relativize(target)
+                base.relativize(target),
+                this.cacheEnabled
             ),
             new FpIgnore()
         ).apply(source, target);
@@ -267,19 +268,22 @@ public final class MjTranspile extends MjSafe {
                                 Logger.debug(
                                     this,
                                     "Rewriting %[file]s because XMIR %[file]s was changed",
-                                    trgt,
-                                    target
+                                    trgt, target
                                 );
                             }
                             return rewrite;
                         },
-                        both,
+                        new FpFork(this.cacheEnabled, both, generated),
                         new FpIfTargetExists(
                             new FpIgnore(),
-                            new FpIfTargetExists(
-                                trgt -> che.get(),
-                                new FpUpdateFromCache(che),
-                                both
+                            new FpFork(
+                                this.cacheEnabled,
+                                new FpIfTargetExists(
+                                    trgt -> che.get(),
+                                    new FpUpdateFromCache(che),
+                                    both
+                                ),
+                                generated
                             )
                         )
                     ),

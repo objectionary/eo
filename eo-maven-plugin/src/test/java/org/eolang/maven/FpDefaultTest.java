@@ -46,7 +46,7 @@ final class FpDefaultTest {
     private static final String SNAPSHOT = "SNAPSHOT";
 
     @Test
-    void failsIfSourcePathNotExists(@Mktmp final Path temp) {
+    void failsIfSourcePathNotExists() {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FpDefault(
@@ -85,8 +85,9 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesOnlyTargetFromSourceIfNoTargetAndCacheIsNotCacheable(@Mktmp final Path temp)
-        throws Exception {
+    void updatesOnlyTargetFromSourceIfNoTargetAndCacheIsNotCacheable(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         assert Files.notExists(target);
@@ -110,8 +111,9 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesOnlyTargetFromSourceIfYoungerTargetAndCacheIsNotCacheable(@Mktmp final Path temp)
-        throws Exception {
+    void updatesOnlyTargetFromSourceIfYoungerTargetAndCacheIsNotCacheable(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(source);
@@ -135,8 +137,9 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfTargetYoungerAndNotExistedCacheableCache(@Mktmp final Path temp)
-        throws Exception {
+    void updatesBothIfTargetYoungerAndNotExistedCacheableCache(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(source);
@@ -175,8 +178,9 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfTargetYoungerAndExistedCacheableCacheIsYounger(@Mktmp final Path temp)
-        throws Exception {
+    void updatesBothIfTargetYoungerAndExistedCacheableCacheIsYounger(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
@@ -196,8 +200,9 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfNoTargetAndExistedCacheableCacheIsYounger(@Mktmp final Path temp)
-        throws Exception {
+    void updatesBothIfNoTargetAndExistedCacheableCacheIsYounger(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
@@ -217,13 +222,14 @@ final class FpDefaultTest {
     }
 
     @Test
-    void copiesFromCacheIfTargetYoungerAndExistedCacheableCacheOlder(@Mktmp final Path temp)
-        throws Exception {
+    void copiesFromCacheIfTargetYoungerAndExistedCacheableCacheOlder(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
-        FpDefaultTest.makeOlder(cache.path(), 100_000);
+        FpDefaultTest.makeOlder(cache.path(), 80_000);
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
@@ -232,14 +238,15 @@ final class FpDefaultTest {
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
-            new TextOf(target).asString(),
+            new TextOf(cache.path()).asString(),
             Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
     }
 
     @Test
-    void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(@Mktmp final Path temp)
-        throws Exception {
+    void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(
+        @Mktmp final Path temp
+    ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         assert Files.notExists(target);
@@ -254,8 +261,34 @@ final class FpDefaultTest {
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
-            new TextOf(target).asString(),
+            new TextOf(cache.path()).asString(),
             Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
+        );
+    }
+
+    @Test
+    void skipsCacheIfItIsNotEnabled(@Mktmp final Path temp) throws Exception {
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        assert Files.notExists(target);
+        final Cache cache = FpDefaultTest.existedCache(temp);
+        FpDefaultTest.makeOlder(source);
+        FpDefaultTest.makeOlder(cache.path(), 100_000);
+        new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            cache.base,
+            cache.semver,
+            () -> cache.hash,
+            cache.tail,
+            false
+        ).apply(source, target);
+        MatcherAssert.assertThat(
+            "Global cache must be skipped because of the boolean flag",
+            new TextOf(target).asString(),
+            Matchers.allOf(
+                Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT),
+                Matchers.not(Matchers.equalTo(FpDefaultTest.CACHE_CONTENT))
+            )
         );
     }
 
@@ -266,8 +299,9 @@ final class FpDefaultTest {
      * @param target Target
      * @throws Exception If fails
      */
-    private static void defaultFootprint(final Cache cache, final Path source, final Path target)
-        throws Exception {
+    private static void defaultFootprint(
+        final Cache cache, final Path source, final Path target
+    ) throws Exception {
         new FpDefault(
             src -> FpDefaultTest.LAMBDA_CONTENT,
             cache.base,
