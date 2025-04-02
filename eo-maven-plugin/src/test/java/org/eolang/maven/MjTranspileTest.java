@@ -82,6 +82,7 @@ final class MjTranspileTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package com.example",
+                "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "",
                 "# Atom.",
                 "[x y z] > foo ?"
