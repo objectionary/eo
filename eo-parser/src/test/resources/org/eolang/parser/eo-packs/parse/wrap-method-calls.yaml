@@ -13,15 +13,15 @@ asserts:
   - //o[@base='.trim']/o[1][@base='.get']
   - //o[@base='.trim']/o[2][@base='Q.org.eolang.number']
   - //o[@base='a' and @name='xxx']
-  - //o[@base='.f2' and not(@name)]
+  - //o[@base='.f2' and @name='last']
 input: |
   # No comments.
   [args] > app
-    stdout
+    stdout > @
       sprintf
         "%dth Fibonacci number is %d"
         (args.get.trim 1).foo.tohex > n!
         fibo n
     a > xxx
     .f1
-    .f2
+    .f2 > last

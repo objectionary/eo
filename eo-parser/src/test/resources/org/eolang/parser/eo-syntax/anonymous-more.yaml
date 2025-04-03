@@ -5,13 +5,13 @@ sheets: [ ]
 asserts:
   - //objects[count(o)=3]
 input: |
-  (dir "/tmp").walk
+  (dir "/tmp").walk > f
     *
       [f] (f.is-dir > @)
 
-  (dir "/tmp").walk
+  (dir "/tmp").walk > s
     *
       [f] (f.is-dir > @)
 
-  (dir "/tmp").walk
+  (dir "/tmp").walk > t
     * ([f] (f.is-dir > @))

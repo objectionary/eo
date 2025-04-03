@@ -48,7 +48,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | (methodNamed | justNamed) EOL)
+    : commentOptional (application | ((method | just) oname) EOL)
     ;
 
 subMaster
@@ -63,11 +63,6 @@ masterBody
 // Just an object reference without name
 just: beginner
     | finisher
-    ;
-
-// Just object reference with optional name
-justNamed
-    : just oname?
     ;
 
 // Atom - abstract object with mandatory name
@@ -112,9 +107,8 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended oname? EOL
+    : happlicationExtended oname EOL
     | vapplication
-    | (happlicationHead | happlicationReversedHead) happlicationTailScoped
     ;
 
 // Horizontal application
@@ -169,7 +163,7 @@ happlicationArgUnbound
 
 // Tail for horizontal application with scoped object as the last agument
 happlicationTailScoped
-    : happlicationArgUnbound* happlicationArgScoped
+    : happlicationArgUnbound* SPACE happlicationArgScoped
     ;
 
 // Horizontal application tail
@@ -199,8 +193,8 @@ happlicationArgScoped
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHeadNamed vapplicationArgs
-    | reversed oname? vapplicationArgsReversed
+    : vapplicationHead oname vapplicationArgs
+    | reversed oname vapplicationArgsReversed
     ;
 
 // Vertical application head
@@ -214,11 +208,6 @@ vapplicationHead
 // Compact arrays
 compactArray
     : NAME SPACE STAR INT?
-    ;
-
-// Vertical application head with optional name
-vapplicationHeadNamed
-    : vapplicationHead oname?
     ;
 
 // Vertical application arguments
@@ -274,16 +263,16 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : happlicationExtended oname? // horizontal application
     | commentOptional hanonym fname? // horizontal anonym object
-    | justNamed // just an object reference
-    | methodNamed // method
+    | (just | method) oname? // just an object reference or method
     ;
 
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
     : formationNamed // vertical abstract object
-    | vapplicationHeadNamed vapplicationArgs // vertical application
+    | vapplicationHead oname? vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
+    | (happlicationHead | happlicationReversedHead) happlicationTailScoped // scoped horizontal application
     ;
 
 formationNamed
@@ -329,11 +318,6 @@ method
     | vmethod
     ;
 
-// Method with optional name
-methodNamed
-    : method oname?
-    ;
-
 // Horizontal method
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
@@ -359,7 +343,7 @@ vmethod
 vmethodHead
     : vmethodHead methodTail vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | hanonym oname?) EOL
+    | ((just | hanonym) oname?) EOL
     | formationNamed
     ;
 

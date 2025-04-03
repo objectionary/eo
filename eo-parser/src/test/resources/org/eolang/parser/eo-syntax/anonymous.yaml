@@ -15,5 +15,5 @@ input: |
 
   foo
   .o1 ([t] (t.hello 1 > hello))
-  .o2
+  .o2 > bar
     [z] (((z.a 1).end 5).again 7 > again)

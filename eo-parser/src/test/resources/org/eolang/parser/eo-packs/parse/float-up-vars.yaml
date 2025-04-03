@@ -22,30 +22,30 @@ asserts:
 input: |
   # no comments.
   [] > app
-    foo.
+    foo. > baz
       bar > @
         x
 
   # No comments.
   [] > x
     first > ff
-    one
+    one > tt
       # No comments.
       [] > y
-        two
+        two > @
           input > t!
             "Hello, world!"
             # No comments.
             [] > oops
-              50
-    three t
+              50 > @
+    three t > zz
     # No comments.
     [] > last
-      three 1
+      three 1 > @
 
   # No comments.
   [ppp] > pp
-    one
+    one > @
       # No comments.
       [aaa] > kkk
         1 > ooo

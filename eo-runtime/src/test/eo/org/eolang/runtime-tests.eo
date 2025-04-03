@@ -99,10 +99,8 @@ true > global-test
           ^.func n
       n
   eq. > @
-    malloc.for
-      4
-      [m] >>
-        ^.func m > @
+    malloc.for 4 [m]>>
+      func m > @
     0
 
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -202,15 +200,13 @@ true > global-test
           x.as-number.plus 1
         x.as-number
   eq. > @
-    malloc.for
-      7
-      [m] >>
-        number > num
-          ^.inc m > n!
-        m.put > @
-          times.
-            num
-            num
+    malloc.for 7 [m]>>
+      number > num
+        ^.inc m > n!
+      m.put > @
+        times.
+          num
+          num
     64
 
 # This unit test is supposed to check the functionality of the corresponding object.

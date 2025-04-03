@@ -61,18 +61,12 @@ final class MjLintTest {
             () -> maven.execute(new FakeMaven.Lint()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final Path xmir = maven.result().get(
-            String.format("target/%s/foo/x/main.xmir", MjLint.DIR)
-        );
         MatcherAssert.assertThat(
-            "Linted file should exist",
-            xmir,
-            Matchers.not(Matchers.equalTo(null))
-        );
-        MatcherAssert.assertThat(
-            "Critical error must exist in linted XMIR",
-            new XMLDocument(xmir).nodes("/program/errors/error[@severity='error']"),
-            Matchers.hasSize(1)
+            "Critical errors must exist in linted XMIR",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/program/errors/error[@severity='error']").count(),
+            Matchers.greaterThan(0L)
         );
     }
 
@@ -125,10 +119,10 @@ final class MjLintTest {
         );
         MatcherAssert.assertThat(
             "Warning must exist in shaken XMIR",
-            new XMLDocument(
-                maven.result().get(String.format("target/%s/foo/x/main.xmir", MjLint.DIR))
-            ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(Matchers.greaterThanOrEqualTo(2))
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/program/errors/error[@severity='warning']").count(),
+            Matchers.greaterThanOrEqualTo(2L)
         );
     }
 
@@ -186,13 +180,20 @@ final class MjLintTest {
     }
 
     @Test
-    void failsParsingOnError(@Mktmp final Path temp) {
+    void failsParsingOnError(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram("something > is wrong here");
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("something > is wrong here")
-                .execute(new FakeMaven.Lint()),
+            () -> maven.execute(new FakeMaven.Lint()),
             "Program with invalid syntax should have failed, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "Parsing errors must exist in linted XMIR",
+            new Xnav(maven.programTojo().linted()).path(
+                "/program/errors/error[@severity='critical' and @check='eo-parser']"
+            ).count(),
+            Matchers.greaterThan(0L)
         );
     }
 

@@ -221,16 +221,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
         this.startObject(ctx).leave();
     }
@@ -521,16 +511,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterVapplicationArgs(final EoParser.VapplicationArgsContext ctx) {
         // Nothing here
     }
@@ -701,16 +681,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitMethod(final EoParser.MethodContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
         // Nothing here
     }
 

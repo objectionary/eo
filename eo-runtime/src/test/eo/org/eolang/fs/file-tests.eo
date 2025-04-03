@@ -277,25 +277,21 @@
   temp.path > src
   seq > @
     *
-      temp
-      .open
+      temp.open
         "w"
         f.write "Shrek is love" > [f]
-      malloc
-      .of
-        13
-        [m] >>
-          seq > @
-            *
-              file
-                ^.src
-              .open
-                "r"
-                [f] >>
-                  ^.m.put > @
-                    f.read 13
-              m
-      .eq "Shrek is love"
+      eq.
+        "Shrek is love"
+        malloc.of 13 [m]>>
+          seq * > @
+            file
+              ^.src
+            .open
+              "r"
+              [f] >>
+                ^.m.put > @
+                  f.read 13
+            m
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-writes-to-file-from-different-instances

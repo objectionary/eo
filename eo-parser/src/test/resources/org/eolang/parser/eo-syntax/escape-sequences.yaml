@@ -5,10 +5,10 @@ sheets: [ ]
 asserts:
   - //objects[count(.//o[@base='Q.org.eolang.string'])=7]
 input: |
-  "\n"
-  "\r"
-  "\f"
-  "\b"
-  "\t"
-  "\000"
-  "\uFFFF"
+  "\n" > n
+  "\r" > r
+  "\f" > f
+  "\b" > b
+  "\t" > t
+  "\000" > zero
+  "\uFFFF" > f

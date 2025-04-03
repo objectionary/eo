@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
@@ -13,10 +14,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.list.ListOf;
@@ -134,7 +137,7 @@ public final class MjLint extends MjSafe {
         final Path target = new Place(new ProgramName(xmir).get()).make(base, MjAssemble.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> MjLint.linted(xmir, counts).toString(),
+                src -> MjLint.linted(tojo.identifier(), xmir, counts).toString(),
                 this.cache.toPath().resolve(MjLint.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -169,7 +172,7 @@ public final class MjLint extends MjSafe {
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
             MjLint.embed(
-                pkg.get(defect.program()),
+                pkg.get(defect.program()).inner(),
                 new ListOf<>(defect)
             );
             MjLint.logOne(defect);
@@ -260,6 +263,7 @@ public final class MjLint extends MjSafe {
 
     /**
      * Find all possible linting defects and add them to the XMIR.
+     * @param program Program identifier
      * @param xmir The XML before linting
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
@@ -273,36 +277,80 @@ public final class MjLint extends MjSafe {
      *  Check the progress of the issue
      *  <a href="https://github.com/objectionary/lints/issues/432">here</a>
      */
-    private static XML linted(final XML xmir, final ConcurrentHashMap<Severity, Integer> counts) {
-        final Directives dirs = new Directives();
-        final Collection<Defect> defects = new Program(xmir).without(
+    private static XML linted(
+        final String program, final XML xmir, final ConcurrentHashMap<Severity, Integer> counts
+    ) {
+        final Node node = xmir.inner();
+        final Collection<Defect> defects = MjLint.existing(program, node);
+        final Collection<Defect> found = new Program(xmir).without(
             "unlint-non-existing-defect",
             "object-has-data",
             "empty-object",
             "sprintf-without-formatters"
         ).defects();
-        if (!defects.isEmpty()) {
-            dirs.xpath("/program").addIf("errors").strict(1);
-            MjLint.embed(xmir, defects);
+        if (!found.isEmpty()) {
+            MjLint.embed(node, found);
         }
+        defects.addAll(found);
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
             MjLint.logOne(defect);
         }
-        final Node node = xmir.inner();
-        new Xembler(dirs).applyQuietly(node);
         return new XMLDocument(node);
     }
 
     /**
+     * Collection of defects existing in XMIR before linting.
+     * @param program Program name
+     * @param node XML node
+     * @return Collection of defects
+     */
+    private static Collection<Defect> existing(final String program, final Node node) {
+        return new Xnav(node)
+            .element("program")
+            .elements(Filter.withName("errors"))
+            .findFirst()
+            .map(
+                errors -> errors
+                    .elements(Filter.withName("error"))
+                    .map(
+                        error -> (Defect) new Defect.Default(
+                            error.attribute("check").text().orElseThrow(
+                                () -> new IllegalArgumentException(
+                                    "The <error> element in XMIR must contain 'check' attribute"
+                                )
+                            ),
+                            Severity.parsed(
+                                error.attribute("severity").text().orElseThrow(
+                                    () -> new IllegalArgumentException(
+                                        "The <error> element in XMIR must contain 'severity' attribute"
+                                    )
+                                )
+                            ),
+                            program,
+                            Integer.parseInt(
+                                error.attribute("line").text().orElse("0")
+                            ),
+                            error.text().orElseThrow(
+                                () -> new IllegalStateException(
+                                    "The <error> element in XMIR must contain text message"
+                                )
+                            )
+                        )
+                    )
+                    .collect(Collectors.toList())
+            )
+            .orElse(new ListOf<>());
+    }
+
+    /**
      * Inject defect into XMIR.
-     * @param xmir The XML before linting
+     * @param node The XML node
      * @param defects The defects to inject
      */
-    private static void embed(final XML xmir, final Collection<Defect> defects) {
+    private static void embed(final Node node, final Collection<Defect> defects) {
         final Directives dirs = new Directives();
         dirs.xpath("/program").addIf("errors").strict(1);
-        final Node node = xmir.inner();
         final Xnav xnav = new Xnav(node);
         for (final Defect defect : defects) {
             if (MjLint.suppressed(xnav, defect)) {

@@ -72,6 +72,14 @@ final class TjForeign {
     }
 
     /**
+     * Path to linted xmir.
+     * @return Linted xmir.
+     */
+    Path linted() {
+        return Paths.get(this.attribute(TjsForeign.Attribute.LINTED));
+    }
+
+    /**
      * The tojo eo object.
      * @return The eo object.
      */
