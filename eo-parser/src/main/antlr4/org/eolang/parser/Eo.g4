@@ -161,7 +161,7 @@ happlicationArgUnbound
     : SPACE happlicationArg
     ;
 
-// Tail for horizontal application with scoped object as the last agument
+// Tail for horizontal application with scoped object as the last argument
 happlicationTailScoped
     : happlicationArgUnbound* SPACE happlicationArgScoped
     ;

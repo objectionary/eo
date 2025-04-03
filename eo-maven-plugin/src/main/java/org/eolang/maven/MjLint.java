@@ -176,7 +176,7 @@ public final class MjLint extends MjSafe {
                 defect -> {
                     final Node node = pkg.get(defect.program()).inner();
                     new Xembler(
-                        MjLint.embeded(
+                        MjLint.embedded(
                             new Directives().xpath("/program").addIf("errors").strict(1),
                             defect
                         )
@@ -311,7 +311,7 @@ public final class MjLint extends MjSafe {
         }
         for (final Defect defect : defects) {
             if (found.contains(defect)) {
-                MjLint.embeded(dirs, defect);
+                MjLint.embedded(dirs, defect);
             }
             if (!MjLint.suppressed(xnav, defect)) {
                 counts.compute(defect.severity(), (sev, before) -> before + 1);
@@ -389,7 +389,7 @@ public final class MjLint extends MjSafe {
      * @param defect The defect to inject
      * @return Directives
      */
-    private static Directives embeded(final Directives dirs, final Defect defect) {
+    private static Directives embedded(final Directives dirs, final Defect defect) {
         dirs.add("error")
             .attr("check", defect.rule())
             .attr("severity", defect.severity().mnemo())
