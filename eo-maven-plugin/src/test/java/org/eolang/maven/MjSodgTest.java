@@ -43,9 +43,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @todo #3529:30min Enable the Sodg packs. The next Sodg packs were disabled when we got rid of
  *  "abstract" attribute in XMIR: copy-of-abstract, copy-of-argument, dot-on-ref, nested-anonymous,
  *  rho, vars. We need to enable them and make sure they pass.
- * @todo #3529:30min Enable the test {@link MjSodgTest#transformsThroughSheets}. The test was
- *  disabled when we got rid of "abstract" attribute in XMIR. We need to enable the test and make
- *  sure it works correctly.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(MktmpResolver.class)
