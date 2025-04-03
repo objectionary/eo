@@ -38,8 +38,8 @@
     #
     # Here `offset` is the offset to write to allocated block in memory with.
     [offset] > output-block
-      $ > self
       true > @
+      $ > self
 
       # Writes bytes contained in `buffer` to operation system console.
       # Returns new instance of `output-block` ready to write again.

@@ -176,7 +176,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-float-equal-to-nan-and-infinites-is-false-highload
-  negative-infinity > neg-inf
   eq. > @
     and.
       and.
@@ -202,6 +201,7 @@
         (42.5.eq positive-infinity).eq false
       (42.5.eq neg-inf).eq false
     true
+  negative-infinity > neg-inf
 
 # Times.
 # This unit test is supposed to check the functionality of the corresponding object.
@@ -234,10 +234,10 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-times-negative-infinity
-  negative-infinity > neg-inf
   eq. > @
     positive-infinity.times neg-inf
     neg-inf
+  negative-infinity > neg-inf
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-positive-infinity-times-positive-infinity

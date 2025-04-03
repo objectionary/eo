@@ -9,6 +9,7 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-writes-into-memory-of
+  mem.eq 10 > @
   malloc.of > mem
     8
     [m]
@@ -16,14 +17,13 @@
         *
           m.write 0 10
           m
-  mem.eq 10 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-puts-into-memory-for
+  mem.eq 10 > @
   malloc.for > mem
     0
     m.put 10 > [m]
-  mem.eq 10 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-returns-size-from-scope
@@ -40,13 +40,13 @@
     malloc.for
       0
       [f]
-        malloc.of > second
-          1
-          f.put (f.as-number.plus 1) > [s] >>
         seq > @
           *
             second
             second
+        malloc.of > second
+          1
+          f.put (f.as-number.plus 1) > [s] >>
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-malloc-for-writes-first-init-value
@@ -58,6 +58,10 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-malloc-puts-over-the-previous-data
+  eq. > @
+    42.as-bytes.concat
+      "orld!".as-bytes
+    mem
   malloc.of > mem
     13
     [m]
@@ -65,13 +69,10 @@
         *
           m.put "Hello, world!"
           m.put 42
-  eq. > @
-    42.as-bytes.concat
-      "orld!".as-bytes
-    mem
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-malloc-rewrites-and-increments-itself
+  mem.eq 6 > @
   malloc.of > mem
     8
     [m]
@@ -79,19 +80,18 @@
         *
           m.write 0 1
           m.put (m.as-number.plus 5)
-  mem.eq 6 > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-writes-into-two-malloc-objects
+  and. > @
+    a.eq 10
+    b.eq 20
   malloc.of > a
     8
     m.put 10 > [m]
   malloc.of > b
     8
     m.put 20 > [m]
-  and. > @
-    a.eq 10
-    b.eq 20
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-overflow-boolean-malloc

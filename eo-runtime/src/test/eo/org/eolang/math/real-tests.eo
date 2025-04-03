@@ -74,10 +74,6 @@
 # Checks mathematical equality
 # A = ((A div B) * B) + (A mod B).
 [] > tests-div-mod-compatibility
-  -13 > dividend
-  5 > divisor
-  (real dividend).mod divisor > remainder
-  (dividend.div divisor).floor > quotient
   eq. > @
     plus.
       remainder
@@ -85,6 +81,10 @@
         divisor
         quotient
     dividend
+  -13 > dividend
+  5 > divisor
+  (real dividend).mod divisor > remainder
+  (dividend.div divisor).floor > quotient
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # Checks modulo: dividend < divisor.

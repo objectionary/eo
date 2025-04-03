@@ -11,10 +11,10 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-makes-new-directory
-  (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
   and. > @
     d.exists
     d.is-directory
+  (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-deletes-empty-directory
@@ -38,9 +38,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-deletes-directory-with-files-recursively
-  (dir tmpdir.tmpfile.deleted).made > d
-  d.tmpfile > first
-  d.tmpfile > second
   and. > @
     and.
       and.
@@ -50,12 +47,12 @@
         d.deleted.exists.not
       first.exists.not
     second.exists.not
+  (dir tmpdir.tmpfile.deleted).made > d
+  d.tmpfile > first
+  d.tmpfile > second
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-deletes-directory-with-file-and-dir
-  (dir tmpdir.tmpfile.deleted).made > d
-  (dir d.tmpfile.deleted).made > inner
-  d.tmpfile > f
   and. > @
     and.
       and.
@@ -67,10 +64,12 @@
         d.deleted.exists.not
       inner.exists.not
     f.exists.not
+  (dir tmpdir.tmpfile.deleted).made > d
+  (dir d.tmpfile.deleted).made > inner
+  d.tmpfile > f
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-walks-recursively
-  (dir tmpdir.tmpfile.deleted).made.as-path > d
   seq > @
     *
       (d.resolved "foo/bar").as-dir.made
@@ -78,3 +77,4 @@
       (d.resolved "x/y/z").as-dir.made
       (d.resolved "x/y/z/a.txt").as-file.touched
       (d.as-dir.walk "**/*.txt").length.eq 2
+  (dir tmpdir.tmpfile.deleted).made.as-path > d

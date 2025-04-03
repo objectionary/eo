@@ -20,8 +20,8 @@
 
   # Initialized set with rebuilt unique sequence.
   [mp] > initialized
-    $ > this
     mp.keys > @
+    $ > this
     mp.size > size
 
     # Append new `item` to set. It must be possible to get

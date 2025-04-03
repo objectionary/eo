@@ -23,13 +23,13 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-returns-self-after-deleting
-  tmpdir.tmpfile > temp
   temp.deleted.path.eq temp.path > @
+  tmpdir.tmpfile > temp
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-returns-self-after-touching
-  tmpdir.tmpfile > temp
   temp.deleted.touched.path.eq temp.path > @
+  tmpdir.tmpfile > temp
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-checks-file-does-not-exist-after-deleting
@@ -57,8 +57,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-resolves-and-touches
-  (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
-  resolved.tmpfile > f
   seq > @
     *
       resolved.deleted.made
@@ -69,16 +67,18 @@
           joined.
             text path.separator
             * "foo" "bar"
+  (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
+  resolved.tmpfile > f
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-moves-a-file
+  and. > @
+    (temp.moved dest).exists
+    temp.exists.not
   tmpdir.tmpfile > temp
   sprintf > dest
     "%s.dest"
     * temp.path
-  and. > @
-    (temp.moved dest).exists
-    temp.exists.not
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-opening-with-wrong-mode
@@ -273,30 +273,27 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-from-file-from-different-instances
+  seq * > @
+    temp.open
+      "w"
+      f.write "Shrek is love" > [f]
+    eq.
+      "Shrek is love"
+      malloc.of 13 [m]>>
+        seq * > @
+          file
+            ^.src
+          .open
+            "r"
+            [f] >>
+              ^.m.put > @
+                f.read 13
+          m
   tmpdir.tmpfile > temp
   temp.path > src
-  seq > @
-    *
-      temp.open
-        "w"
-        f.write "Shrek is love" > [f]
-      eq.
-        "Shrek is love"
-        malloc.of 13 [m]>>
-          seq * > @
-            file
-              ^.src
-            .open
-              "r"
-              [f] >>
-                ^.m.put > @
-                  f.read 13
-            m
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-writes-to-file-from-different-instances
-  tmpdir.tmpfile > temp
-  temp.path > src
   seq > @
     *
       temp
@@ -321,6 +318,8 @@
                         f.read 14
               m
       .eq "Shrek is love!"
+  tmpdir.tmpfile > temp
+  temp.path > src
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-from-file-sequentially

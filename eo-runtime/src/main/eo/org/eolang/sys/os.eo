@@ -16,10 +16,10 @@
 
   # Returns `org.eolang.true` if current OS belongs to `Windows` OS family.
   [] > is-windows
-    name > os-name!
     and. > @
       os-name.size.gt 6
       (os-name.slice 0 7).eq "Windows"
+    name > os-name!
   ((regex "/linux/i").matches name).as-bool > is-linux
   ((regex "/mac/i").matches name).as-bool > is-macos
 

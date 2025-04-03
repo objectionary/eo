@@ -18,12 +18,12 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-matched-sequence-has-right-border-indexes
-  ((regex "/[a-z]+/").match "!hello!").next > n
   and. > @
     0.eq n.start
     and.
       1.eq n.from
       6.eq n.to
+  ((regex "/[a-z]+/").match "!hello!").next > n
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-regex-returns-valid-matched-string-sequence
@@ -31,7 +31,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-regex-returns-valid-second-matched-block
-  ((regex "/[a-z]+/").match "!hello!world!").next.next > second
   and. > @
     and.
       and.
@@ -41,6 +40,7 @@
         second.start.eq 6
       second.from.eq 7
     second.to.eq 12
+  ((regex "/[a-z]+/").match "!hello!world!").next.next > second
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > throws-on-getting-next-on-not-matched-block
@@ -140,8 +140,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-regex-contains-valid-groups-on-each-matched-block
-  ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
-  first.next > second
   and. > @
     and.
       and.
@@ -153,3 +151,5 @@
         second.groups-count.eq 3
         (second.group 1).eq "world"
       (second.group 2).eq "2"
+  ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
+  first.next > second
