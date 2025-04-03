@@ -73,13 +73,13 @@
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data are written into memory.
   [object scope] > for
-    (dataized object).as-bytes > bts
     malloc.of > @
       bts.size
       [m] >>
         seq * > @
           m.write 0 bts
           scope m
+    (dataized object).as-bytes > bts
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.

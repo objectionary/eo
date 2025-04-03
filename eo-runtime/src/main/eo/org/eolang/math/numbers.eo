@@ -13,7 +13,6 @@
 
   # Find max element in the numbers sequence.
   [] > max
-    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get max number from empty sequence"
@@ -25,10 +24,10 @@
             item.as-number.gt max
             item
             max
+    list sequence > lst
 
   # Find min element in the numbers sequence.
   [] > min
-    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get min number from empty sequence"
@@ -40,3 +39,4 @@
             min.gt item.as-number
             item
             min
+    list sequence > lst

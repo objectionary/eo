@@ -13,19 +13,28 @@
     malloc.for
       0
       [m]
-        [] > func
-          ^.m.put (^.m.as-number.plus 1) > @
-        (dataized func).as-bytes > cached
         seq > @
           *
             cached.as-number
             cached.as-bytes
             cached.as-bool
             m
+        [] > func
+          ^.m.put (^.m.as-number.plus 1) > @
+        (dataized func).as-bytes > cached
     1
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-dataizes-as-bytes-behaves-as-exclamationed
+  seq > @
+    *
+      cached1
+      cached2
+      cached1
+      cached2
+      and.
+        cached1.eq cached2
+        1.eq cached1
   [] > func
     malloc.for > @
       0
@@ -36,12 +45,3 @@
             m.put (m.as-number.plus 1)
   (dataized func).as-bytes > cached1
   func > cached2!
-  seq > @
-    *
-      cached1
-      cached2
-      cached1
-      cached2
-      and.
-        cached1.eq cached2
-        1.eq cached1

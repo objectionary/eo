@@ -22,7 +22,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-switch-strings-case
-  "swordfish" > password
   eq. > @
     switch
       *
@@ -36,6 +35,7 @@
           false
           "password is wrong"
     "password is correct!"
+  "swordfish" > password
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-switch-with-several-true-cases
@@ -70,12 +70,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-switch-complex-case
-  [] > c1
-    false > @
-  [] > c2
-    "1".eq "2" > @
-  [] > c3
-    true > @
   eq. > @
     switch
       *
@@ -93,3 +87,9 @@
           []
             "true case" > @
     "true case"
+  [] > c1
+    false > @
+  [] > c2
+    "1".eq "2" > @
+  [] > c3
+    true > @

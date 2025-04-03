@@ -10,11 +10,11 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-random-with-seed
-  random 51 > r
   not. > @
     eq.
       r.next
       r.next.next
+  random 51 > r
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-seeded-randoms-are-equal
@@ -24,7 +24,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-random-is-in-range
-  (random 123).fixed > r
   and. > @
     and.
       and.
@@ -36,6 +35,7 @@
     and.
       r.next.next.lt 1
       (r.next.next.lt 0).not
+  (random 123).fixed > r
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-two-random-numbers-not-equal

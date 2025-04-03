@@ -176,6 +176,9 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-calculates-fibonacci-number-with-recursion
+  eq. > @
+    fibo 4
+    3
   [n] > fibo
     if. > @
       n.lt 3
@@ -183,9 +186,6 @@
       plus.
         fibo (n.minus 1)
         fibo (n.minus 2)
-  eq. > @
-    fibo 4
-    3
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-calculates-fibonacci-number-with-tail
@@ -223,10 +223,10 @@
 
 # Checks that division by one returns the dividend.
 [] > tests-division-by-one
-  -235 > dividend
   eq. > @
     dividend.div 1
     dividend
+  -235 > dividend
 
 # Checks that div works properly with dividends greater than zero
 # This unit test is supposed to check the functionality of the corresponding object.

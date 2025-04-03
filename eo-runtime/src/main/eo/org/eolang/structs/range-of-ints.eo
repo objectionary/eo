@@ -20,9 +20,9 @@
         1.eq (end.div end)
     range
       [] >>
+        build ^.start > @
         [num] > build
           num > @
           ^.build (1.plus @) > next
-        build ^.start > @
       end
     error "Some of the arguments are not integers"

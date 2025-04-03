@@ -40,10 +40,10 @@
   # Attention! The object is for internal usage only. Please don't use
   # the object programmatically outside of `while` object.
   [index] > loop
-    body index > current
     if. > @
       (condition (index.plus 1)).as-bool
       seq *
         current
         loop (index.plus 1)
       current
+    body index > current

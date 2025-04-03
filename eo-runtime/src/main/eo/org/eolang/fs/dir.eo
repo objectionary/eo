@@ -14,8 +14,8 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 [file] > dir
-  $ > as-dir
   $.file > @
+  $ > as-dir
   true > is-directory
 
   # Makes a directory together with all required

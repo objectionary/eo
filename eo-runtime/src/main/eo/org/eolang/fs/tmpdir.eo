@@ -23,12 +23,6 @@
       file
         string
           [] >>!
-            getenv "TMPDIR" > tmpdir!
-            getenv "TMP" > tmp!
-            getenv "TEMP" > temp!
-            getenv "TEMPDIR" > tempdir!
-            getenv "USERPROFILE" > userprofile!
-            -- > empty
             if. > @
               os.is-windows
               if.
@@ -54,3 +48,9 @@
                     temp
                   tmp
                 tmpdir
+            getenv "TMPDIR" > tmpdir!
+            getenv "TMP" > tmp!
+            getenv "TEMP" > temp!
+            getenv "TEMPDIR" > tempdir!
+            getenv "USERPROFILE" > userprofile!
+            -- > empty
