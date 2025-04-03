@@ -1,0 +1,51 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/probe/add-probes.xsl
+asserts:
+  - /program[not(errors)]
+  - //metas[count(.//meta[head/text()='probe'])=19]
+  - //meta[head/text()='probe' and tail/text()='Q.org' and part/text()='Q.org']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt' and part/text()='Q.org.eolang.txt']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.sprintf' and part/text()='Q.org.eolang.txt.sprintf']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.text' and part/text()='Q.org.eolang.txt.text']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car' and part/text()='Q.org.eolang.car']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine' and part/text()='Q.org.eolang.car.engine']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.stdout.and' and part/text()='Q.org.eolang.stdout.and']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.stdout.and.or' and part/text()='Q.org.eolang.stdout.and.or']
+input: |
+  +home https://github.com/objectionary/eo
+  +package org.eolang.custom
+  +version 0.0.0
+
+  # No comments.
+  [] > app
+    QQ.txt.text.^.q > s
+    QQ.txt.sprintf > @
+      "Hello, world!\n"
+    start. > a
+      engine.
+        QQ.car
+    or. > fib
+      and.
+        stdout
+          sprintf
+            "%dth Fibonacci number is %d\n"
+            n
+            fibonacci n > f
+        true
+
+    # No comments.
+    [i] > other
+      stdout > @
+        sprintf
+          "%i"
+    $.other 1 > one
+    memory 0 > price
+
+    # No comments.
+    [p] > set-price
+      ^.price.write p > @

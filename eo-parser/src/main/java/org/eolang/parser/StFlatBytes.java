@@ -34,6 +34,7 @@ public final class StFlatBytes extends StEnvelope {
     public StFlatBytes() {
         super(
             new StXnav(
+                "st-flat-bytes",
                 "//o[@base='Q.org.eolang.bytes']",
                 xnav -> {
                     final Xnav element = xnav.element("o");

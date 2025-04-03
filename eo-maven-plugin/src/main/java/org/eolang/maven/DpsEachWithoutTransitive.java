@@ -50,7 +50,7 @@ final class DpsEachWithoutTransitive implements Dependencies {
                         final Dependency dpndncy = dep.get();
                         return !DpsEachWithoutTransitive.eqTo(dpndncy, dependency.get())
                             && DpsEachWithoutTransitive.isRuntimeRequired(dpndncy)
-                            && !ResolveMojo.isRuntime(dpndncy);
+                            && !MjResolve.isRuntime(dpndncy);
                     },
                     this.transitive.apply(dependency)
                 );

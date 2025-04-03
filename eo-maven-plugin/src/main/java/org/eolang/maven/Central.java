@@ -24,7 +24,7 @@ final class Central implements BiConsumer<Dependency, Path> {
     /**
      * Do nothing.
      */
-    static final BiConsumer<Dependency, Path> EMPTY = new BiConsumer<Dependency, Path>() {
+    static final BiConsumer<Dependency, Path> EMPTY = new BiConsumer<>() {
         @Override
         public void accept(final Dependency dependency, final Path path) {
             assert dependency != null;
@@ -32,7 +32,8 @@ final class Central implements BiConsumer<Dependency, Path> {
 
         @Override
         public BiConsumer<Dependency, Path> andThen(
-            final BiConsumer<? super Dependency, ? super Path> after) {
+            final BiConsumer<? super Dependency, ? super Path> after
+        ) {
             throw new UnsupportedOperationException("#andThen()");
         }
     };
@@ -58,8 +59,7 @@ final class Central implements BiConsumer<Dependency, Path> {
      * @param sess Session
      * @param mgr Manager
      */
-    Central(final MavenProject prj, final MavenSession sess,
-        final BuildPluginManager mgr) {
+    Central(final MavenProject prj, final MavenSession sess, final BuildPluginManager mgr) {
         this.project = prj;
         this.session = sess;
         this.manager = mgr;
@@ -105,7 +105,8 @@ final class Central implements BiConsumer<Dependency, Path> {
 
     @Override
     public BiConsumer<Dependency, Path> andThen(
-        final BiConsumer<? super Dependency, ? super Path> after) {
+        final BiConsumer<? super Dependency, ? super Path> after
+    ) {
         throw new UnsupportedOperationException("not implemented #andThen()");
     }
 }

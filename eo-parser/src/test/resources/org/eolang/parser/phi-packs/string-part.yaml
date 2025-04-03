@@ -26,16 +26,12 @@ sweet: |-
         string(as-bytes) ↦ ⟦
           length ↦ ⟦
             increase-length(index, char-size, len) ↦ ⟦
-              φ ↦ ξ.index.plus(ξ.char-size).gt(ξ.ρ.size).if(
+              φ ↦ index.plus(char-size).gt(ρ.size).if(
                 Φ̇.error(
                   Φ̇.txt.sprintf(
                     "Expected %d byte character at %d index, but there are not enough bytes for it: %x",
                     Φ̇.tuple(
-                      Φ̇.tuple(
-                        Φ̇.tuple(Φ̇.tuple.empty, ξ.char-size, 1), ξ.index, 2
-                      ),
-                      ξ.ρ.ρ.as-bytes,
-                      3
+                      Φ̇.tuple(Φ̇.tuple(Φ̇.tuple.empty, char-size, 1), index, 2), ρ.ρ.as-bytes, 3
                     )
                   )
                 )

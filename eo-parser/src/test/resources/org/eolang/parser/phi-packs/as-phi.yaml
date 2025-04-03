@@ -11,7 +11,7 @@ input: |
 sweet: |-
   {⟦
     prints-itself ↦ ⟦
-      φ ↦ Φ̇.assert-that(Φ̇.as-phi(ξ).length, ξ.greater-than(0))
+      φ ↦ Φ̇.assert-that(Φ̇.as-phi(ξ).length, greater-than(0))
     ⟧
   ⟧}
 salty: |-

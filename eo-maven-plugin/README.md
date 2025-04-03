@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.55.0</version>
+        <version>0.55.2</version>
         <executions>
           <execution>
             <goals>
@@ -100,7 +100,7 @@ one after another:
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
 * **Compilation**.
-    The class `org.eolang.maven.TranspileMojo` in the `eo-maven-plugin` module is responsible
+    The class `org.eolang.maven.MjTranspile` in the `eo-maven-plugin` module is responsible
     for taking parsed and optimized XMIRs and then transforming
     the XML document into a collection of `.java` files. There are a number
     of transformations that do this, they all exist in `.xsl` files.
@@ -142,7 +142,7 @@ To transform your XMIR files, you need to add the following plugin configuration
 <plugin>
   <groupId>org.eolang</groupId>
   <artifactId>eo-maven-plugin</artifactId>
-  <version>0.55.0</version>
+  <version>0.55.2</version>
   <executions>
     <execution>
       <id>xmir-to-phi</id>

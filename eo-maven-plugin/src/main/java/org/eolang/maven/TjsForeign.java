@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -45,7 +46,7 @@ final class TjsForeign implements Closeable {
      * @param scope Scope
      */
     TjsForeign(final Scalar<Tojos> scalar, final Supplier<String> scope) {
-        this(new Unchecked<>(new Sticky<>(scalar)), scope);
+        this(new Unchecked<>(new Synced<>(new Sticky<>(scalar))), scope);
     }
 
     /**
@@ -123,14 +124,6 @@ final class TjsForeign implements Closeable {
     }
 
     /**
-     * Get the tojos that have corresponding shaken XMIR.
-     * @return The tojos.
-     */
-    Collection<TjForeign> withShaken() {
-        return this.select(row -> row.exists(Attribute.SHAKEN.getKey()));
-    }
-
-    /**
      * Get the tojos that doesn't have dependency.
      * @return The tojos.
      */
@@ -167,8 +160,7 @@ final class TjsForeign implements Closeable {
      */
     Collection<TjForeign> unprobed() {
         return this.select(
-            row -> row.exists(Attribute.SHAKEN.getKey())
-                && !row.exists(Attribute.PROBED.getKey())
+            row -> row.exists(Attribute.XMIR.getKey()) && !row.exists(Attribute.PROBED.getKey())
         );
     }
 
@@ -205,7 +197,6 @@ final class TjsForeign implements Closeable {
         final Attribute[] attrs = {
             Attribute.EO,
             Attribute.XMIR,
-            Attribute.SHAKEN,
             Attribute.PROBED,
         };
         final Collection<String> parts = new LinkedList<>();
@@ -260,11 +251,6 @@ final class TjsForeign implements Closeable {
         XMIR("xmir"),
 
         /**
-         * Absolute path of the shaken {@code .xmir} file.
-         */
-        SHAKEN("shaken"),
-
-        /**
          * Absolute path of the verified {@code .xmir} file.
          */
         LINTED("linted"),
@@ -304,7 +290,7 @@ final class TjsForeign implements Closeable {
          *  - "org.eolang.txt"
          *  - "org.eolang.io.stdout"
          *  - "org.eolang.txt.sprintf"
-         * <p>For more info see {@link org.eolang.maven.ProbeMojo}. </p>
+         * <p>For more info see {@link MjProbe}. </p>
          */
         PROBED("probed"),
 

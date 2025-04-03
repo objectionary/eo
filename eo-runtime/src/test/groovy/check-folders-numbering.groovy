@@ -10,12 +10,11 @@ Path target = basedir.toPath().resolve('target/eo')
 List<File> directories = target.toFile().listFiles((FileFilter) { File file -> file.directory })
 List<String> allowed = [
     '1-parse',
-    '2-shake',
-    '4-pull',
-    '5-lint',
-    '6-resolve',
-    '7-pre',
-    '8-transpile',
+    '2-pull',
+    '3-lint',
+    '4-resolve',
+    '5-pre-transpile',
+    '5-transpile',
     'phi',
     'unphi',
 ]

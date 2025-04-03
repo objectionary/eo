@@ -165,13 +165,21 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             this.objects().prop("base", "Q").leave()
                 .start(line, pos + 1).prop("base", ".org").prop("method").leave()
                 .start(line, pos + 5).prop("base", ".eolang").prop("method");
-        } else {
+        } else if (ctx.XI() != null) {
             this.objects().prop("base", "$");
+        } else {
+            this.objects().prop("base", "$")
+                .leave()
+                .start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine() + 1)
+                .prop("method");
         }
     }
 
     @Override
     public void exitScoped(final PhiParser.ScopedContext ctx) {
+        if (ctx.fullAttribute() != null) {
+            this.objects().prop("base", String.format(".%s", this.attributes.pop()));
+        }
         this.objects().leave();
     }
 
@@ -429,14 +437,15 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         }
+        final int line = ctx.getStart().getLine();
+        final int pos = ctx.getStart().getCharPositionInLine() + base.length() + 1;
         this.objects()
             .prop("base", base)
-            .start(
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine() + base.length() + 1
-            )
+            .start(line, pos)
             .prop("base", "Q.org.eolang.bytes")
+            .start(line, pos)
             .data(data.get())
+            .leave()
             .leave();
     }
 

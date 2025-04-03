@@ -11,10 +11,10 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-returns-valid-win32-inet-addr-for-localhost
+  or. > @
+    os.is-windows.not
+    addr.eq 16777343
   code. > addr
     win32
       "inet_addr"
       * "127.0.0.1"
-  or. > @
-    os.is-windows.not
-    addr.eq 16777343

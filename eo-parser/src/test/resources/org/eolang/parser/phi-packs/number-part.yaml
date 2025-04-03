@@ -13,7 +13,7 @@ sweet: |-
     org ↦ ⟦
       eolang ↦ ⟦
         number(as-bytes) ↦ ⟦
-          neg ↦ ξ.times(-1)
+          neg ↦ times(-1)
         ⟧,
         λ ⤍ Package
       ⟧,

@@ -22,17 +22,17 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-should-not-be-empty-with-three-objects
+  (list xs).is-empty.not > @
   * > xs
     [x]
     [y]
     [z]
-  (list xs).is-empty.not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-should-not-be-empty-with-one-anon-object
+  (list xs).is-empty.not > @
   * > xs
     [f]
-  (list xs).is-empty.not > @
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-simple-with
@@ -65,7 +65,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reduce-list-with-index
-  * 2 2 > src
   eq. > @
     6
     reducedi.
@@ -77,6 +76,7 @@
           x
           a.plus
             ^.src.at i
+  * 2 2 > src
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-reducedi-long-int-array
@@ -209,24 +209,24 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-withouti-complex-case
-  [a] > foo
-    withouti. > @
-      list a
-      0
   eq. > @
     foo
       * 1 "text" "f"
     * "text" "f"
+  [a] > foo
+    withouti. > @
+      list a
+      0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-withouti-nested-array
-  * 3 2 1 > nested
   eq. > @
     withouti.
       list
         * "smthg" 27 nested
       2
     * "smthg" 27
+  * 3 2 1 > nested
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-list-without
@@ -254,13 +254,6 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concatenates-lists
-  list (* 0 1) > list1
-  list (* 2 3) > list2
-  withouti. > list3
-    concat.
-      list1
-      list2
-    0
   and. > @
     eq.
       1
@@ -268,6 +261,13 @@
     eq.
       list3
       * 1 2 3
+  list (* 0 1) > list1
+  list (* 2 3) > list2
+  withouti. > list3
+    concat.
+      list1
+      list2
+    0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concatenates-with-tuple

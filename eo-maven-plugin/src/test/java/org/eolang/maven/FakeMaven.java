@@ -168,9 +168,7 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            final Path transpiled = this.workspace.resolve("transpiled");
             final Path placed = Paths.get("placed.json");
-            new Saved(new TextOf(""), transpiled).value();
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
                 "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
@@ -178,9 +176,9 @@ final class FakeMaven {
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
-            this.params.putIfAbsent("transpiled", transpiled.toFile());
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
@@ -210,7 +208,7 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "phiInputDir",
                 this.workspace.resolve(
-                    String.format("target/%s", ParseMojo.DIR)
+                    String.format("target/%s", MjParse.DIR)
                 ).toFile()
             );
             this.params.putIfAbsent(
@@ -222,7 +220,7 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "unphiOutputDir",
                 this.workspace.resolve(
-                    String.format("target/%s", ParseMojo.DIR)
+                    String.format("target/%s", MjParse.DIR)
                 ).toFile()
             );
             this.params.putIfAbsent(
@@ -522,7 +520,7 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Collections.<Class<? extends AbstractMojo>>singletonList(
-                ParseMojo.class
+                MjParse.class
             ).iterator();
         }
     }
@@ -536,24 +534,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LintMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Shake full pipeline.
-     *
-     * @since 0.35.0
-     */
-    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class
+                MjParse.class,
+                MjLint.class
             ).iterator();
         }
     }
@@ -568,9 +550,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LatexMojo.class
+                MjParse.class,
+                MjLatex.class
             ).iterator();
         }
     }
@@ -585,10 +566,9 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LintMojo.class,
-                TranspileMojo.class
+                MjParse.class,
+                MjLint.class,
+                MjTranspile.class
             ).iterator();
         }
     }
@@ -603,9 +583,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ResolveMojo.class
+                MjParse.class,
+                MjResolve.class
             ).iterator();
         }
     }
@@ -619,8 +598,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                PhiMojo.class
+                MjParse.class,
+                MjPhi.class
             ).iterator();
         }
     }
@@ -635,10 +614,9 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ResolveMojo.class,
-                PlaceMojo.class
+                MjParse.class,
+                MjResolve.class,
+                MjPlace.class
             ).iterator();
         }
     }
@@ -653,9 +631,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                SodgMojo.class
+                MjParse.class,
+                MjSodg.class
             ).iterator();
         }
     }
@@ -668,7 +645,7 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                RegisterMojo.class
+                MjRegister.class
             ).iterator();
         }
     }
@@ -683,9 +660,8 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ProbeMojo.class
+                MjParse.class,
+                MjProbe.class
             ).iterator();
         }
     }
@@ -700,10 +676,9 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ProbeMojo.class,
-                PullMojo.class
+                MjParse.class,
+                MjProbe.class,
+                MjPull.class
             ).iterator();
         }
     }
@@ -717,7 +692,7 @@ final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                PrintMojo.class
+                MjPrint.class
             ).iterator();
         }
     }

@@ -155,7 +155,6 @@
       rec-index-of origin
 
     [tup] > rec-index-of
-      rec-index-of tup.prev > next!
       if. > @
         tup.length.eq 0
         -1
@@ -166,6 +165,7 @@
             tup.prev.length
             -1
           next
+      rec-index-of tup.prev > next!
 
   # Returns index of the last particular item in list.
   # If the list has no this item, returns -1.
@@ -200,7 +200,6 @@
       rec-filteredi origin
 
     [tup] > rec-filteredi
-      rec-filteredi tup.prev > next
       if. > @
         tup.length.eq 0
         *
@@ -208,6 +207,7 @@
           func tup.value tup.prev.length
           next.with tup.value
           next
+      rec-filteredi tup.prev > next
 
   # Filter list without index with the function `func`.
   # Here `func` must be an abstract object
@@ -220,7 +220,6 @@
 
   # Get the first `index` elements from the start of the list.
   [index] > head
-    index > idx!
     if. > @
       idx.eq 0
       list *
@@ -232,6 +231,7 @@
           ^
           list
             rec-head origin
+    index > idx!
 
     [tup] > rec-head
       if. > @
@@ -241,8 +241,6 @@
 
   # Get the last `index` elements from the end of the list.
   [index] > tail
-    index > idx!
-    origin.length.minus idx > start!
     if. > @
       0.gt start
       ^
@@ -254,3 +252,5 @@
               idx.gte start
               accum.with item
               accum
+    index > idx!
+    origin.length.minus idx > start!

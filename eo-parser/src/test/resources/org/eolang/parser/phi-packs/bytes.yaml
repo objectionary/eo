@@ -99,16 +99,16 @@ sweet: |-
             λ ⤍ Lorg_eolang_bytes_not
           ⟧,
           left(x) ↦ ⟦
-            φ ↦ ξ.ρ.right(ξ.x.neg)
+            φ ↦ ρ.right(x.neg)
           ⟧,
           right(x) ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_right
           ⟧,
           as-bool ↦ ⟦
-            φ ↦ ξ.ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
+            φ ↦ ρ.eq(Φ̇.bytes(⟦ Δ ⤍ 01- ⟧))
           ⟧,
           as-bytes ↦ ⟦
-            φ ↦ ξ.ρ
+            φ ↦ ρ
           ⟧,
           concat(b) ↦ ⟦
             λ ⤍ Lorg_eolang_bytes_concat

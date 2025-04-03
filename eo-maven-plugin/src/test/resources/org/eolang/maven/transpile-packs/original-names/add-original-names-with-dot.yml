@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/transpile/set-original-names.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o base=".a" name="a">
+        <o base="b"/>
+        <o base="c"/>
+        <o base="d"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /program/objects/o[@original-name='a' and @base='.a']
+  - /program/objects/o/o[1][@original-name='a.ρ' and @base='b']
+  - /program/objects/o/o[2][@original-name='a.α0' and @base='c']
+  - /program/objects/o/o[3][@original-name='a.α1' and @base='d']

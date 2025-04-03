@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/probe/add-probes.xsl
+asserts:
+  - /program[not(errors)]
+  - /program/metas[count(meta[head='probe'])=3]
+  - /program/metas/meta[head='probe' and tail='Q.org']
+  - /program/metas/meta[head='probe' and tail='Q.org.eolang']
+  - /program/metas/meta[head='probe' and tail='Q.org.eolang.int']
+input: |
+  # No comments.
+  [] > test
+    ([] (^ > x)).plus.minus > s
+      int

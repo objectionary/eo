@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/transpile/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+asserts:
+  - /program[not(errors)]
+  - //o[@name='a' and @loc='Φ.org.abc.a' and @original-name='a']
+  - //o[@base='Q.x' and @loc='Φ.org.abc.a.φ.α0' and @original-name='a.φ.α0']
+  - //o[@base='Q.org.eolang.string' and @loc='Φ.org.abc.a.φ.α0.α0' and @original-name='a.φ.α0.α0']
+  - //o[@base='Q.x' and @name='tt' and @loc='Φ.org.abc.tt' and @original-name='tt']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α0' and @original-name='tt.α0']
+  - //o[@base='Q.org.eolang.tuple.empty' and @loc='Φ.org.abc.tt.α1.α0.α0' and @original-name='tt.α1.α0.α0']
+  - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.tt.α1.α0.α1' and @original-name='tt.α1.α0.α1']
+  - //o[not(@base) and @loc='Φ.org.abc.tt.α2' and @original-name='tt.α2']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.tt.α2.e' and @original-name='tt.α2.e']
+  - //o[@base='$.e.hello' and @loc='Φ.org.abc.tt.α2.φ' and @original-name='tt.α2.φ']
+  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.q' and @original-name='q']
+input: |
+  +alias org.abc.foo.b
+  +alias x
+  +package org.abc
+  +home www.abc.com
+  +version 0.0.0
+
+  # No comments.
+  [] > a
+    b > @
+      x
+        "Hello"
+
+  x > tt
+    10
+    *
+      5.1
+      6.2
+    [e]
+      e.hello > @
+
+  $.^.^.p > q

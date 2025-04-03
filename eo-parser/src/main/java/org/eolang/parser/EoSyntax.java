@@ -77,6 +77,18 @@ import org.xembly.Xembler;
 public final class EoSyntax implements Syntax {
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
+     * @todo #3807:90min Refactor EoSyntax transformations to make them less coupled.
+     *  Currently most of these transformations are strongly coupled.
+     *  For example, `stars-to-tuples`, `StHex` and `explicit-data` are
+     *  dependent on each other. Moreover, the order of transformations
+     *  matters. We need to refactor these transformations to make them
+     *  more independent and order-agnostic if possible.
+     * @todo #3807:90min Remove `explicit-data` transformation.
+     *  we can try to remove explicit-data.xsl because we can generate the proper structure
+     *  with data (with inner 'o' element) everywhere right away,
+     *  without relaying on future transformations.
+     *  This issue comes from this comment:
+     *  https://github.com/objectionary/eo/pull/4041/files#r2014131951
      */
     private static final Function<XML, XML> CANONICAL = new Xsline(
         new TrFull(
@@ -93,11 +105,14 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/expand-qqs.xsl",
                     "/org/eolang/parser/parse/expand-aliases.xsl",
                     "/org/eolang/parser/parse/resolve-aliases.xsl",
-                    "/org/eolang/parser/parse/add-default-package.xsl",
-                    "/org/eolang/parser/parse/explicit-data.xsl",
-                    "/org/eolang/parser/parse/roll-bases.xsl"
+                    "/org/eolang/parser/parse/add-default-package.xsl"
                 ).back(),
-                new TrDefault<>(new StHex())
+                new TrDefault<>(new StHex()),
+                new TrClasspath<>(
+                    "/org/eolang/parser/parse/explicit-data.xsl",
+                    "/org/eolang/parser/parse/roll-bases.xsl",
+                    "/org/eolang/parser/parse/cti-adds-errors.xsl"
+                ).back()
             )
         )
     )::pass;

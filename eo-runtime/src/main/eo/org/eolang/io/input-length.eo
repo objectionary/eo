@@ -7,14 +7,14 @@
 
 # Reads all the bytes from provided `input` and returns its length.
 [input] > input-length
-  4096 > chunk
   rec-read input 0 > @
+  4096 > chunk
 
   [input length] > rec-read
-    (input.read chunk).read.^ > read-bytes
     if. > @
       read-bytes.size.eq 0
       length
       rec-read
         read-bytes
         length.plus read-bytes.size
+    (input.read chunk).read.^ > read-bytes

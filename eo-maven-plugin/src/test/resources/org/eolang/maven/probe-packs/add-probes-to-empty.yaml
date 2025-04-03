@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/probe/add-probes.xsl
+asserts:
+  - /program[not(errors)]
+  - //metas[count(.//meta[head/text()='probe'])=2]
+input: |
+  # No comments.
+  [] > app
+    Q.foo.boom > @

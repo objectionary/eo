@@ -244,11 +244,11 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-conjunction-of-bytes
-  02-EF-D4-05-5E-78-3A > a
-  12-33-C1-B5-5E-71-55 > b
   eq. > @
     a.and b
     02-23-C0-05-5E-70-10
+  02-EF-D4-05-5E-78-3A > a
+  12-33-C1-B5-5E-71-55 > b
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-written-in-several-lines
@@ -286,21 +286,21 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concatenation-of-bytes
-  02-EF-D4-05-5E-78-3A > a
-  12-33-C1-B5-5E-71-55 > b
   eq. > @
     a.concat b
     02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
+  02-EF-D4-05-5E-78-3A > a
+  12-33-C1-B5-5E-71-55 > b
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concat-bools-as-bytes
-  true.as-bytes > b1
-  false.as-bytes > b2
   eq. > @
     concat.
       b1
       b2
     01-00
+  true.as-bytes > b1
+  false.as-bytes > b2
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concat-with-empty
@@ -328,12 +328,12 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-concat-strings
-  concat. > s-bytes
-    "hello ".as-bytes
-    "world".as-bytes
   eq. > @
     string s-bytes
     "hello world"
+  concat. > s-bytes
+    "hello ".as-bytes
+    "world".as-bytes
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # (2397719729.xor 4294967295).eq 1897247566.

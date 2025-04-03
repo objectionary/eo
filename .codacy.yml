@@ -8,3 +8,4 @@
 exclude_paths:
   - "eo-runtime/src/test/java/integration/JarIT.java"
   - "eo-runtime/src/test/java/integration/EoMavenPlugin.java"
+  - "**/*IT.java"

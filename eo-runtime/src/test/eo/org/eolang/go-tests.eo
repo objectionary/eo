@@ -30,6 +30,13 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-goto-jumps-forward
+  and. > @
+    eq.
+      div 7
+      6
+    eq.
+      div 0
+      0
   [x] > div
     malloc.for > @
       0
@@ -43,16 +50,12 @@
                   g.forward r
                   true
                 r.put (42.div x)
-  and. > @
-    eq.
-      div 7
-      6
-    eq.
-      div 0
-      0
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-returns-from-method-body
+  eq. > @
+    max 7 42
+    42
   [a b] > max
     go.to > @
       [g] >>
@@ -63,9 +66,6 @@
               g.forward a
               true
             b
-  eq. > @
-    max 7 42
-    42
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-nested-goto

@@ -32,11 +32,7 @@ public final class TrFull extends TrEnvelope {
         super(
             new TrStepped(
                 new TrFast(
-                    new TrLogged(
-                        train,
-                        TrFull.class,
-                        Level.FINEST
-                    ),
+                    new TrLogged(train, TrFull.class, Level.FINEST),
                     TrFull.class,
                     500L
                 )

@@ -18,6 +18,9 @@
 # Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
 # WriteFile, etc.
 [name args] > win32
+  # Makes an actual function call to operating system
+  # Returns `org.eolang.sys.win32.return` object.
+  [] > @ ?
   -10 > std-input-handle
   -11 > std-output-handle
   2 > af-inet
@@ -28,13 +31,9 @@
   -1 > inaddr-none
   02-02 > winsock-version-2-2
 
-  # Makes an actual function call to operating system
-  # Returns `org.eolang.sys.win32.return` object.
-  [] > @ ?
-
   [code output] > return
-    $ > called
     output > @
+    $ > called
 
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time

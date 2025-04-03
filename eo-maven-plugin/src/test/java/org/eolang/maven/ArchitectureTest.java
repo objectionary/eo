@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
+import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.junit.jupiter.api.Test;
 
@@ -14,14 +15,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.51.0
  */
-@SuppressWarnings({ "JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleAssertionMessage" })
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleAssertionMessage"})
 final class ArchitectureTest {
 
     @Test
     void mojosAreInPlace() {
-        ArchRuleDefinition.classes()
-            .that().haveSimpleNameEndingWith("Mojo")
-            .and().doNotHaveSimpleName("SafeMojo")
+        ArchitectureTest.mojos()
             .should().resideInAPackage("org.eolang.maven")
             .andShould().bePublic()
             .andShould().beTopLevelClasses()
@@ -30,22 +29,29 @@ final class ArchitectureTest {
 
     @Test
     void mojosHaveOneParent() {
-        ArchRuleDefinition.classes()
-            .that().haveSimpleNameEndingWith("Mojo")
-            .and().doNotHaveSimpleName("SafeMojo")
+        ArchitectureTest.mojos()
             .should()
-            .beAssignableTo(SafeMojo.class)
+            .beAssignableTo(MjSafe.class)
             .check(new ClassFileImporter().importPackages("org.eolang.maven"));
     }
 
     @Test
     void mojosHaveAnnotation() {
-        ArchRuleDefinition.classes()
-            .that().haveSimpleNameEndingWith("Mojo")
-            .and().doNotHaveSimpleName("SafeMojo")
+        ArchitectureTest.mojos()
             .should()
             .beAnnotatedWith(Mojo.class)
             .check(new ClassFileImporter().importPackages("org.eolang.maven"));
     }
 
+    /**
+     * All the project Mojos.
+     * @return Mojos classes conjunction.
+     */
+    private static GivenClassesConjunction mojos() {
+        return ArchRuleDefinition.classes()
+            .that().haveSimpleNameStartingWith("Mj")
+            .and().doNotHaveSimpleName("MjSafe")
+            .and().haveSimpleNameNotEndingWith("Test")
+            .and().haveSimpleNameNotEndingWith("IT");
+    }
 }
