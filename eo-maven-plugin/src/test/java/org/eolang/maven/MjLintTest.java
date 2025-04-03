@@ -26,11 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjLint}.
  *
  * @since 0.31.0
- * @todo #4049:30min Replace all occurrences of new XMLDocument().nodes() with new Xnav().path().
- *  Right now we don't use {@link XMLDocument#nodes(String)} and {@link XMLDocument#xpath(String)}
- *  in production code, we got rid of it and replaced with {@link Xnav#path(String)} and
- *  {@link Xnav#element(String)}. But we didn't do it in the tests. Let's do it, it should increase
- *  the performance of our tests and make our code more consistent.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
@@ -71,8 +66,8 @@ final class MjLintTest {
         );
         MatcherAssert.assertThat(
             "Critical error must exist in linted XMIR",
-            new XMLDocument(xmir).nodes("/program/errors/error[@severity='error']"),
-            Matchers.hasSize(1)
+            new Xnav(xmir).path("/program/errors/error[@severity='error']").count(),
+            Matchers.equalTo(1L)
         );
     }
 
@@ -125,10 +120,10 @@ final class MjLintTest {
         );
         MatcherAssert.assertThat(
             "Warning must exist in shaken XMIR",
-            new XMLDocument(
+            new Xnav(
                 maven.result().get(String.format("target/%s/foo/x/main.xmir", MjLint.DIR))
-            ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(Matchers.greaterThanOrEqualTo(2))
+            ).path("//errors/error[@severity='warning']").count(),
+            Matchers.greaterThanOrEqualTo(2L)
         );
     }
 
