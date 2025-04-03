@@ -195,12 +195,12 @@ true > global-test
 [] > tests-constant-defends-against-side-effects
   eq. > @
     malloc.for 7 [m]>>
-      number > num
-        ^.inc m > n!
       m.put > @
         times.
           num
           num
+      number > num
+        ^.inc m > n!
     64
   [x] > inc
     seq > @

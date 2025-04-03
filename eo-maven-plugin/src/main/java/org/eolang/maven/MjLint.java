@@ -44,6 +44,7 @@ import org.xembly.Xembler;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
+@SuppressWarnings("PMD.TooManyMethods")
 public final class MjLint extends MjSafe {
     /**
      * The directory where to transpile to.
@@ -168,18 +169,24 @@ public final class MjLint extends MjSafe {
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
-        final Collection<Defect> defects = new Programs(pkg)
-            .without("unlint-non-existing-defect")
-            .without("inconsistent-args")
-            .defects();
-        for (final Defect defect : defects) {
-            counts.compute(defect.severity(), (sev, before) -> before + 1);
-            MjLint.embed(
-                pkg.get(defect.program()).inner(),
-                new ListOf<>(defect)
+        new Programs(pkg)
+            .without("unlint-non-existing-defect", "inconsistent-args")
+            .defects()
+            .forEach(
+                defect -> {
+                    final Node node = pkg.get(defect.program()).inner();
+                    new Xembler(
+                        MjLint.embeded(
+                            new Directives().xpath("/program").addIf("errors").strict(1),
+                            defect
+                        )
+                    ).applyQuietly(node);
+                    if (!MjLint.suppressed(new Xnav(node), defect)) {
+                        counts.compute(defect.severity(), (sev, before) -> before + 1);
+                        MjLint.logOne(defect);
+                    }
+                }
             );
-            MjLint.logOne(defect);
-        }
         return pkg.size();
     }
 
@@ -284,7 +291,8 @@ public final class MjLint extends MjSafe {
         final String program, final XML xmir, final ConcurrentHashMap<Severity, Integer> counts
     ) {
         final Node node = xmir.inner();
-        final Collection<Defect> defects = MjLint.existing(program, node);
+        final Xnav xnav = new Xnav(node);
+        final Collection<Defect> defects = MjLint.existing(program, xnav);
         final Collection<Defect> found = new Program(xmir)
             .without(
                 "unlint-non-existing-defect",
@@ -296,14 +304,21 @@ public final class MjLint extends MjSafe {
             .stream()
             .filter(MjLint.distinctByKey(Defect::text))
             .collect(Collectors.toList());
-        if (!found.isEmpty()) {
-            MjLint.embed(node, found);
-        }
         defects.addAll(found);
-        for (final Defect defect : defects) {
-            counts.compute(defect.severity(), (sev, before) -> before + 1);
-            MjLint.logOne(defect);
+        final Directives dirs = new Directives();
+        if (!found.isEmpty()) {
+            dirs.xpath("/program").addIf("errors").strict(1);
         }
+        for (final Defect defect : defects) {
+            if (found.contains(defect)) {
+                MjLint.embeded(dirs, defect);
+            }
+            if (!MjLint.suppressed(xnav, defect)) {
+                counts.compute(defect.severity(), (sev, before) -> before + 1);
+                MjLint.logOne(defect);
+            }
+        }
+        new Xembler(dirs).applyQuietly(node);
         return new XMLDocument(node);
     }
 
@@ -327,11 +342,11 @@ public final class MjLint extends MjSafe {
     /**
      * Collection of defects existing in XMIR before linting.
      * @param program Program name
-     * @param node XML node
+     * @param xnav XML node as Xnav
      * @return Collection of defects
      */
-    private static Collection<Defect> existing(final String program, final Node node) {
-        return new Xnav(node)
+    private static Collection<Defect> existing(final String program, final Xnav xnav) {
+        return xnav
             .element("program")
             .elements(Filter.withName("errors"))
             .findFirst()
@@ -370,27 +385,19 @@ public final class MjLint extends MjSafe {
 
     /**
      * Inject defect into XMIR.
-     * @param node The XML node
-     * @param defects The defects to inject
+     * @param dirs Directives
+     * @param defect The defect to inject
+     * @return Directives
      */
-    private static void embed(final Node node, final Collection<Defect> defects) {
-        final Directives dirs = new Directives();
-        dirs.xpath("/program").addIf("errors").strict(1);
-        final Xnav xnav = new Xnav(node);
-        for (final Defect defect : defects) {
-            if (MjLint.suppressed(xnav, defect)) {
-                continue;
-            }
-            dirs.add("error")
-                .attr("check", defect.rule())
-                .attr("severity", defect.severity().mnemo())
-                .set(defect.text());
-            if (defect.line() > 0) {
-                dirs.attr("line", defect.line());
-            }
-            dirs.up();
+    private static Directives embeded(final Directives dirs, final Defect defect) {
+        dirs.add("error")
+            .attr("check", defect.rule())
+            .attr("severity", defect.severity().mnemo())
+            .set(defect.text());
+        if (defect.line() > 0) {
+            dirs.attr("line", defect.line());
         }
-        new Xembler(dirs).applyQuietly(node);
+        return dirs.up();
     }
 
     /**

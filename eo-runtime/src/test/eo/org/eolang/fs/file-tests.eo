@@ -334,12 +334,12 @@
           .open
             "w+"
             [f] >>
-              f.read 7 > i1
-              i1.read 5 > i2
               seq > @
                 *
                   f.write "Hello, world"
                   ^.m.put i2
+              f.read 7 > i1
+              i1.read 5 > i2
           m
   .eq "world" > @
 
@@ -350,7 +350,7 @@
   .open
     "a+"
     [f]
-      f.write "Hello, world" > o1
       o1.write "!" > @
+      f.write "Hello, world" > o1
   .size
   .eq 13 > @
