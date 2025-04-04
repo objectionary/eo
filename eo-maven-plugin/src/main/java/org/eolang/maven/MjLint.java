@@ -167,7 +167,7 @@ public final class MjLint extends MjSafe {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
         new Programs(pkg)
-            .without("unlint-non-existing-defect", "inconsistent-args")
+            .without("inconsistent-args")
             .defects()
             .forEach(
                 defect -> {
@@ -274,10 +274,6 @@ public final class MjLint extends MjSafe {
      * @param xmir The XML before linting
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
-     * @todo #3977:25min Enable `unlint-non-existing-defect` lint.
-     *  Currently its disabled because of <a href="https://github.com/objectionary/lints/issues/385">this</a>
-     *  bug. Once issue will be resolved, we should enable this lint. Don't forget to enable
-     *  this lint in WPA scope too.
      * @todo #4039:30min Enable `inconsistent-args` lint.
      *  This lint generates many errors during the compilation of eo-runtime.
      *  We need to fix the errors in eo-runtime and enable this lint.
@@ -292,7 +288,6 @@ public final class MjLint extends MjSafe {
         final Collection<Defect> defects = MjLint.existing(program, xnav);
         final Collection<Defect> found = new Program(xmir)
             .without(
-                "unlint-non-existing-defect",
                 "empty-object",
                 "sprintf-without-formatters",
                 "inconsistent-args"
