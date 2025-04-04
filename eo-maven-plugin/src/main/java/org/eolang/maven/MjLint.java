@@ -299,7 +299,7 @@ public final class MjLint extends MjSafe {
             ).defects();
         defects.addAll(found);
         final Directives dirs = new Directives();
-        if (!defects.isEmpty()) {
+        if (!found.isEmpty()) {
             dirs.xpath("/program").addIf("errors").strict(1);
         }
         for (final Defect defect : defects) {
