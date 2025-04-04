@@ -7,6 +7,6 @@ asserts:
   - //o[@base='Q.org.eolang.bar' and @line='2' and @pos='2']
   - //o[@base='Q.org.eolang.number' and @line='3' and @pos='4']
 input: |
-  foo
+  foo > baz
     bar
       42

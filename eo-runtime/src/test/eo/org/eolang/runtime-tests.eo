@@ -91,10 +91,8 @@ true > global-test
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-recursion-without-arguments
   eq. > @
-    malloc.for
-      4
-      [m] >>
-        ^.func m > @
+    malloc.for 4 [m]>>
+      func m > @
     0
   [n] > func
     if. > @
@@ -196,15 +194,13 @@ true > global-test
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-constant-defends-against-side-effects
   eq. > @
-    malloc.for
-      7
-      [m] >>
-        m.put > @
-          times.
-            num
-            num
-        number > num
-          ^.inc m > n!
+    malloc.for 7 [m]>>
+      m.put > @
+        times.
+          num
+          num
+      number > num
+        ^.inc m > n!
     64
   [x] > inc
     seq > @

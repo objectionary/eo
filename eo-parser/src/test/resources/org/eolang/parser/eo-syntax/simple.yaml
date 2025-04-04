@@ -8,12 +8,12 @@ asserts:
   - /program[@version != '']
   - /program[@time != '']
   - /program/objects
-  - //o[@base='Q.org.eolang.a' and not(@name) and @line='3']
+  - //o[@base='Q.org.eolang.a' and @line='3']
   - //o[@base='Q.org.eolang.b-друг' and @line='4']
   - //o[@base='Q.org.eolang.c4-5' and @line='5']
 input: |
   +package test
 
-  a
+  a > abc
     b-друг
       c4-5

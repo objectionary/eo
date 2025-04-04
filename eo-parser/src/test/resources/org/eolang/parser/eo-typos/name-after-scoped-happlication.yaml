@@ -3,11 +3,12 @@
 ---
 line: 4
 message: |-
-  [4:6] error: 'Object binding can't be negative'
-      42:-1
-        ^^^
+  [4:20] error: 'Invalid bound object declaration'
+      malloc 100 [m]>> > @
+                      ^
 input: |
   # No comments
   [] > foo
     bar > @
-      42:-1
+      malloc 100 [m]>> > @
+        true > @

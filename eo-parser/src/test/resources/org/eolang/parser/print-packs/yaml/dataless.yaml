@@ -10,7 +10,7 @@ origin: |
       args.at
         args.length.neg
     nan.plus negative-infinity > not-a-number
-    text-of
+    text-of > txt
       input-of
         args.at not-a-number
 
@@ -24,7 +24,7 @@ printed: |
         args.length.neg
     nan.plus > not-a-number
       negative-infinity
-    text-of
+    text-of > txt
       input-of
         args.at
           not-a-number

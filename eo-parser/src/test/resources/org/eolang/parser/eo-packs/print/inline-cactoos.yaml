@@ -19,8 +19,8 @@ sheets:
   - /org/eolang/parser/print/inline-cactoos.xsl
 asserts:
   - /program/objects[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=0]
-  - /program/objects/o[@name='foo']/o[@name='y']/o[not(@base) and @name='a🌵46']
-  - /program/objects/o[@name='foo']/o[@name='bar']/o/o/o/o[not(@base) and @name='a🌵914']
+  - /program/objects/o[@name='foo']/o[@name='y']/o[not(@base) and @name='a🌵47']
+  - /program/objects/o[@name='foo']/o[@name='bar']/o/o/o/o[not(@base) and @name='a🌵915']
   - /program/objects/o[@name='foo']/o[@name='z']/o[@as and starts-with(@name, 'a🌵')]
 input: |
   # No comments.

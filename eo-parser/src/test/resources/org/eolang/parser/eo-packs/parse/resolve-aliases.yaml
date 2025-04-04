@@ -29,7 +29,7 @@ input: |
 
   # No comments.
   [args] > main
-    and
+    and > @
       (scanner stdin).next-line > line!
       (stdout "You entered" line).print
       ^.x

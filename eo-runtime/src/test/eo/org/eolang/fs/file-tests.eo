@@ -273,27 +273,22 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > tests-reads-from-file-from-different-instances
-  seq > @
-    *
-      temp
-      .open
-        "w"
-        f.write "Shrek is love" > [f]
-      malloc
-      .of
-        13
-        [m] >>
-          seq > @
-            *
-              file
-                ^.src
-              .open
-                "r"
-                [f] >>
-                  ^.m.put > @
-                    f.read 13
-              m
-      .eq "Shrek is love"
+  seq * > @
+    temp.open
+      "w"
+      f.write "Shrek is love" > [f]
+    eq.
+      "Shrek is love"
+      malloc.of 13 [m]>>
+        seq * > @
+          file
+            ^.src
+          .open
+            "r"
+            [f] >>
+              ^.m.put > @
+                f.read 13
+          m
   tmpdir.tmpfile > temp
   temp.path > src
 

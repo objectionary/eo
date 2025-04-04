@@ -24,7 +24,7 @@ input: |
 
   # No comments.
   [] > foo
-    tuple
+    tuple > @
       tuple
         tuple
           tuple.empty

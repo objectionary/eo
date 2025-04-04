@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-line: 2
+line: 1
 message: |-
-  [2:0] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
-  .z
-  ^
+  [1:3] error: 'Invalid bound object declaration'
+  x y
 input: |
   x y
-  .z
+  .z > w

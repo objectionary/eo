@@ -48,7 +48,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | (methodNamed | justNamed) EOL)
+    : commentOptional (application | ((method | just) oname) EOL)
     ;
 
 subMaster
@@ -63,11 +63,6 @@ masterBody
 // Just an object reference without name
 just: beginner
     | finisher
-    ;
-
-// Just object reference with optional name
-justNamed
-    : just oname?
     ;
 
 // Atom - abstract object with mandatory name
@@ -112,7 +107,7 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended oname? EOL
+    : happlicationExtended oname EOL
     | vapplication
     ;
 
@@ -124,6 +119,10 @@ happlication
     | happlicationReversed
     ;
 
+happlicationReversedHead
+    : reversed SPACE happlicationReversedFirst
+    ;
+
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
@@ -133,7 +132,7 @@ happlicationExtended
 
 // Reversed horizontal application
 happlicationReversed
-    : reversed SPACE happlicationTailReversedFirst happlicationTail?
+    : happlicationReversedHead happlicationTail?
     ;
 
 // Head of horizontal application
@@ -157,15 +156,25 @@ applicable
     | PHI
     ;
 
+// Horizontal application argument without binding
+happlicationArgUnbound
+    : SPACE happlicationArg
+    ;
+
+// Tail for horizontal application with scoped object as the last argument
+happlicationTailScoped
+    : happlicationArgUnbound* SPACE happlicationArgScoped
+    ;
+
 // Horizontal application tail
 happlicationTail
-    : (SPACE happlicationArg as)+
-    | (SPACE happlicationArg)+
+    : (happlicationArgUnbound as)+
+    | happlicationArgUnbound+
     ;
 
 // The rule is separated because we should enter to the last object
 // here, but don't do it on happlicationTail rule
-happlicationTailReversedFirst
+happlicationReversedFirst
     : happlicationArg
     ;
 
@@ -177,11 +186,15 @@ happlicationArg
     | scope
     ;
 
+happlicationArgScoped
+    : voids aname innersOrEol
+    ;
+
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHeadNamed vapplicationArgs
-    | reversed oname? vapplicationArgsReversed
+    : vapplicationHead oname vapplicationArgs
+    | reversed oname vapplicationArgsReversed
     ;
 
 // Vertical application head
@@ -195,11 +208,6 @@ vapplicationHead
 // Compact arrays
 compactArray
     : NAME SPACE STAR INT?
-    ;
-
-// Vertical application head with optional name
-vapplicationHeadNamed
-    : vapplicationHead oname?
     ;
 
 // Vertical application arguments
@@ -255,16 +263,16 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : happlicationExtended oname? // horizontal application
     | commentOptional hanonym fname? // horizontal anonym object
-    | justNamed // just an object reference
-    | methodNamed // method
+    | (just | method) oname? // just an object reference or method
     ;
 
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
     : formationNamed // vertical abstract object
-    | vapplicationHeadNamed vapplicationArgs // vertical application
+    | vapplicationHead oname? vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
+    | (happlicationHead | happlicationReversedHead) happlicationTailScoped // scoped horizontal application
     ;
 
 formationNamed
@@ -295,7 +303,7 @@ onlyphi
 
 // Tail of the unnamed abstract object with only @-bound attribute
 onlyphiTail
-    : spacedArrow voids
+    : arrow voids
     ;
 
 // Inner object of horizontal anonym object
@@ -308,11 +316,6 @@ hanonymInner
 method
     : hmethod
     | vmethod
-    ;
-
-// Method with optional name
-methodNamed
-    : method oname?
     ;
 
 // Horizontal method
@@ -340,7 +343,7 @@ vmethod
 vmethodHead
     : vmethodHead methodTail vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | hanonym oname?) EOL
+    | ((just | hanonym) oname?) EOL
     | formationNamed
     ;
 
@@ -384,10 +387,15 @@ reversed
     : (finisher | TILDE INT) DOT
     ;
 
+// Auto object name
+aname
+    : ARROW ARROW CONST?
+    ;
+
 // Formation name
 fname
     : oname
-    | SPACE ARROW ARROW CONST?
+    | SPACE aname
     ;
 
 // Object name
@@ -397,10 +405,10 @@ oname
 
 // Suffix
 suffix
-    : spacedArrow (PHI | NAME)
+    : arrow (PHI | NAME)
     ;
 
-spacedArrow
+arrow
     : SPACE ARROW SPACE
     ;
 

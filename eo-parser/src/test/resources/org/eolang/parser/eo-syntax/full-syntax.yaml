@@ -58,12 +58,12 @@ input: |
           true:vtx
           false:fle > a!
             []
-              Q.x.f.d Q Q
-              QQ.y QQ
+              Q.x.f.d Q Q > f
+              QQ.y QQ > s
             [] >>
               ^.@.hey > you
-              Q
-              QQ
+              Q > qq
+              QQ > qqq
             kid.^.^
             "家"
           q
@@ -88,7 +88,7 @@ input: |
           $
       @.
         b
-    oops
+    oops > spoo
 
   # No comments.
   [] > obj
@@ -106,7 +106,7 @@ input: |
     .four (a b c) > a2
     .five > a3
 
-  test
+  test > tst
     me
       (now (f (f (f (f 1)))).f):i
 

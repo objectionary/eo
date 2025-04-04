@@ -38,13 +38,13 @@ asserts:
 input: |
   * > xs
   * 1 > xl
-  * 1 2
+  * 1 2 > xxl
   *.empty > empty
-  *
+  * > tup
     a.b.c
     d.e.f
     g.h.i
-  (arr *).elements
+  (arr *).elements > elm
   list
   .reduced > y
     *

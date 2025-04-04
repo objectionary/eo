@@ -221,16 +221,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
         this.startObject(ctx).leave();
     }
@@ -342,7 +332,17 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitHapplication(final EoParser.HapplicationContext ctx) {
+        public void exitHapplication(final EoParser.HapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationReversedHead(final EoParser.HapplicationReversedHeadContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationReversedHead(final EoParser.HapplicationReversedHeadContext ctx) {
         // Nothing here
     }
 
@@ -397,6 +397,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHapplicationArgUnbound(final EoParser.HapplicationArgUnboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationArgUnbound(final EoParser.HapplicationArgUnboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationTailScoped(final EoParser.HapplicationTailScopedContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHapplicationTailScoped(final EoParser.HapplicationTailScopedContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
     public void enterHapplicationTail(final EoParser.HapplicationTailContext ctx) {
         this.objects.enter();
     }
@@ -407,16 +427,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationTailReversedFirst(
-        final EoParser.HapplicationTailReversedFirstContext ctx
+    public void enterHapplicationReversedFirst(
+        final EoParser.HapplicationReversedFirstContext ctx
     ) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTailReversedFirst(
-        final EoParser.HapplicationTailReversedFirstContext ctx
-    ) {
+    public void exitHapplicationReversedFirst(final EoParser.HapplicationReversedFirstContext ctx) {
         this.objects.leave();
     }
 
@@ -427,6 +445,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationArg(final EoParser.HapplicationArgContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationArgScoped(final EoParser.HapplicationArgScopedContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitHapplicationArgScoped(final EoParser.HapplicationArgScopedContext ctx) {
         // Nothing here
     }
 
@@ -480,16 +508,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -667,16 +685,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterHmethod(final EoParser.HmethodContext ctx) {
         // Nothing here
     }
@@ -817,21 +825,29 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterFname(final EoParser.FnameContext ctx) {
-        if (ctx.oname() == null) {
-            this.objects.enter().prop(
-                "name",
-                String.format(
-                    "a\uD83C\uDF35%d%d",
-                    ctx.getStart().getLine(),
-                    ctx.getStart().getCharPositionInLine()
-                )
-            );
-            if (ctx.CONST() != null) {
-                this.objects.prop("const");
-            }
-            this.objects.leave();
+    public void enterAname(final EoParser.AnameContext ctx) {
+        this.objects.enter().prop(
+            "name",
+            String.format(
+                "a\uD83C\uDF35%d%d",
+                ctx.getStart().getLine(),
+                ctx.getStart().getCharPositionInLine()
+            )
+        );
+        if (ctx.CONST() != null) {
+            this.objects.prop("const");
         }
+        this.objects.leave();
+    }
+
+    @Override
+    public void exitAname(final EoParser.AnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFname(final EoParser.FnameContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -868,12 +884,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+    public void enterArrow(final EoParser.ArrowContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+    public void exitArrow(final EoParser.ArrowContext ctx) {
         // Nothing here
     }
 

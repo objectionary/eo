@@ -15,19 +15,19 @@ input: |
   """ > txt
 
   # Preserve margin
-  stdout
+  stdout > marg
     """
     first
      second
     """
 
   # Preserve margin
-  stdout
+  stdout > mrg
     """
        third
     """
   # Negative margin
-  stdout
+  stdout > neg
     """
   forth
     """

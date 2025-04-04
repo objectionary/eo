@@ -229,7 +229,7 @@ final class EoSyntaxTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
                 "test-xml-1",
-                new InputOf("add.\n  0\n  true")
+                new InputOf("add. > foo\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-xml-1']",
@@ -285,8 +285,8 @@ final class EoSyntaxTest {
         );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(story.after()).toString(),
-            Integer.parseInt(story.after().xpath("/program/errors/error[1]/@line").get(0)),
-            Matchers.equalTo(Integer.parseInt(story.map().get("line").toString()))
+            story.after().xpath("/program/errors/error/@line"),
+            Matchers.hasItem(story.map().get("line").toString())
         );
         final String msg = "message";
         if (story.map().containsKey(msg)) {
@@ -296,7 +296,7 @@ final class EoSyntaxTest {
                     "\n",
                     story.after().xpath("/program/errors/error/text()")
                 ).replaceAll("\r", ""),
-                Matchers.equalTo(story.map().get(msg).toString())
+                Matchers.containsString(story.map().get(msg).toString())
             );
         }
     }
