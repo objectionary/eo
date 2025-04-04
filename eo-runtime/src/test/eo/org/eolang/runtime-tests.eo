@@ -129,6 +129,8 @@ true > global-test
 [] > tests-named-inner-abstract-object
   seq > @
     *
+      [] > b
+        false > @
       [] > a
         true > @
 
