@@ -82,11 +82,6 @@ public final class MjUnphi extends MjSafe {
                 new FpDefault(
                     source -> {
                         final XML result = new Phi(source, metas).unphi();
-                        Logger.debug(
-                            this,
-                            "Parsed to xmir: %[file]s -> %[file]s",
-                            source, target
-                        );
                         final List<String> here = MjUnphi.errors(result);
                         if (!here.isEmpty()) {
                             errors.add(
@@ -104,6 +99,11 @@ public final class MjUnphi extends MjSafe {
                     this.hash.value(),
                     xmir
                 ).apply(phi, target);
+                Logger.debug(
+                    this,
+                    "Parsed to xmir: %[file]s -> %[file]s",
+                    phi, target
+                );
                 return 1;
             }
         ).total();
