@@ -65,36 +65,45 @@ public final class MjUnphi extends MjSafe {
     @Override
     public void exec() {
         final List<String> errors = new CopyOnWriteArrayList<>();
-        final Path home = this.unphiOutputDir.toPath();
+        final Path input = this.unphiInputDir.toPath();
+        final Path output = this.unphiOutputDir.toPath();
         final Iterable<Directive> metas = new Phi.Metas(this.unphiMetas);
         final long start = System.currentTimeMillis();
         final int count = new Threaded<>(
-            new Walk(this.unphiInputDir.toPath()),
+            new Walk(input),
             phi -> {
-                final Path relative = this.unphiInputDir.toPath().relativize(phi);
                 final Path xmir = Paths.get(
-                    relative.toString().replace(
+                    input.relativize(phi).toString().replace(
                         String.format(".%s", MjPhi.EXT),
                         String.format(".%s", MjAssemble.XMIR)
                     )
                 );
-                final XML result = new Phi(phi, metas).unphi();
-                new Saved(result.toString(), home.resolve(xmir)).value();
+                final Path target = output.resolve(xmir);
+                new FpDefault(
+                    source -> {
+                        final XML result = new Phi(source, metas).unphi();
+                        final List<String> here = MjUnphi.errors(result);
+                        if (!here.isEmpty()) {
+                            errors.add(
+                                Logger.format(
+                                    "%[file]s:\n\t%s\n",
+                                    xmir,
+                                    String.join("\n\t", here)
+                                )
+                            );
+                        }
+                        return result.toString();
+                    },
+                    this.cache.toPath().resolve("unphied"),
+                    this.plugin.getVersion(),
+                    this.hash.value(),
+                    xmir
+                ).apply(phi, target);
                 Logger.debug(
                     this,
                     "Parsed to xmir: %[file]s -> %[file]s",
-                    phi, this.unphiOutputDir.toPath().resolve(xmir)
+                    phi, target
                 );
-                final List<String> here = MjUnphi.errors(result);
-                if (!here.isEmpty()) {
-                    errors.add(
-                        Logger.format(
-                            "%[file]s:\n\t%s\n",
-                            xmir,
-                            String.join("\n\t", here)
-                        )
-                    );
-                }
                 return 1;
             }
         ).total();
