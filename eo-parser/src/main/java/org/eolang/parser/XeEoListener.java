@@ -490,10 +490,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 || number < 0
             ) {
                 this.errors.add(
-                    XeEoListener.error(
+                    new ParsingError(
                         ctx,
                         "Index after '*' must be a positive integer without leading zero or arithmetic signs"
-                    )
+                    ).cause()
                 );
             }
             count = Math.max(number, 0);
@@ -1047,7 +1047,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     private String alphaAttr(final ParserRuleContext ctx, final String msg) {
         final int index = Integer.parseInt(ctx.getToken(EoParser.INT, 0).getText());
         if (index < 0) {
-            this.errors.add(XeEoListener.error(ctx, msg));
+            this.errors.add(new ParsingError(ctx, msg).cause());
         }
         return String.format("α%d", index);
     }
@@ -1075,49 +1075,5 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
-    }
-
-    /**
-     * Create parsing exception from given context.
-     * @param ctx Context
-     * @param msg Error message
-     * @return Parsing exception from the current context
-     */
-    private static ParsingException error(final ParserRuleContext ctx, final String msg) {
-        return new ParsingException(
-            ctx.getStart().getLine(),
-            new MsgLocated(
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine(),
-                msg
-            ).formatted(),
-            new MsgUnderlined(
-                XeEoListener.line(ctx),
-                ctx.getStart().getCharPositionInLine(),
-                ctx.getText().length()
-            ).formatted()
-        );
-    }
-
-    /**
-     * Get line from context.
-     * @param ctx Context
-     * @return Line
-     */
-    private static String line(final ParserRuleContext ctx) {
-        final Token token = ctx.start;
-        final int number = token.getLine();
-        final String[] lines = token.getInputStream().toString().split("\n");
-        if (number > 0 && number <= lines.length) {
-            return lines[number - 1];
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Line number '%s' out of bounds, total lines: %d",
-                    number,
-                    lines.length
-                )
-            );
-        }
     }
 }

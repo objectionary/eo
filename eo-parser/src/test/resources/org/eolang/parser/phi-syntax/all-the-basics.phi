@@ -18,7 +18,7 @@
   triple ↦ Φ () () (),
   sss ↦ Φ.r,
   alpha-dispatch ↦ ξ.x.α0.α1.y,
-  k ↦ ⟦ λ ⤍ Function_Name_i64, first ↦ ⟦ λ ⤍ FunctionName, Δ ⤍ 42- ⟧ ⟧,
+  k ↦ ⟦ λ ⤍ Function_name_i64, first ↦ ⟦ λ ⤍ Function_name, Δ ⤍ 42- ⟧ ⟧,
   terminator-application ↦ ⊥ (t ↦ ξ.t),
   terminator-dispatch ↦ ⊥.t,
   string ↦ "Hello",
@@ -36,7 +36,7 @@
     "Hello", 42, Φ.y("world", 11.plus(12)), 42.5
   ),
   default-package ↦ Φ̇.number(42),
-  inline-voids(text, α0, φ) ↦ ⟦ ⟧,
+  inline-voids(text, φ) ↦ ⟦ ⟧,
   empty-inline-voids() ↦ ⟦
     num ↦ 42
   ⟧,

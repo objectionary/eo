@@ -56,7 +56,6 @@ voids
     ;
 
 void: LABEL
-    | ALPHA
     | PHI
     ;
 
@@ -76,15 +75,15 @@ emptyBinding
     ;
 
 deltaBinding
-    : DELTA DASHED_ARROW (BYTES | EMPTY)
+    : (DELTA DASHED_ARROW | 'D' RIGHT) (BYTES | EMPTY)
     ;
 
 lambdaBinding
-    : LAMBDA DASHED_ARROW FUNCTION
+    : (LAMBDA DASHED_ARROW | 'L' RIGHT) FUNCTION
     ;
 
 FUNCTION
-    : [A-Z][A-Z0-9a-z_φ]*
+    : [A-Z][0-9a-z_φ]+
     ;
 
 application
@@ -121,8 +120,10 @@ LCB : '{'
 RCB : '}'
     ;
 LSB : '⟦'
+    | '[['
     ;
 RSB : '⟧'
+    | ']]'
     ;
 LB  : '('
     ;
@@ -135,35 +136,46 @@ COMMA
     ;
 ARROW
     : '↦'
+    | MINUS RIGHT
     ;
 DASHED_ARROW
     : '⤍'
     ;
 EMPTY
     : '∅'
+    | '?'
     ;
 PHI : 'φ'
+    | '@'
     ;
 RHO : 'ρ'
+    | '^'
     ;
 DELTA
     : 'Δ'
     ;
 XI  : 'ξ'
+    | '$'
     ;
 LAMBDA
     : 'λ'
     ;
 HOME: 'Φ'
+    | 'Q'
     ;
 DEF_PACKAGE
     : 'Φ̇'
+    | 'QQ'
     ;
 ERROR
     : '⊥'
+    | 'T'
     ;
 MINUS
     : '-'
+    ;
+RIGHT
+    : '>'
     ;
 
 data: STRING
@@ -200,7 +212,7 @@ LABEL
     ;
 
 ALPHA
-    : 'α' ([0-9] | [1-9][0-9]*)
+    : ('α' | '~') ([0-9] | [1-9][0-9]*)
     ;
 
 fragment BYTE

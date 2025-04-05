@@ -41,7 +41,9 @@ final class DrErrors implements Iterable<Directive> {
                     .attr("check", "eo-parser")
                     .attr("line", error.line())
                     .attr("severity", "critical")
-                    .set(error.getMessage()),
+                    .set(error.getMessage())
+                    .up()
+                    .up(),
                 this.errors
             )
         ).iterator();

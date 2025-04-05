@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+asserts:
+  - //objects/o[@name='foo']/o[@name='void' and @base='∅']
+  - //objects/o[@name='foo']/o[@name='atom']/o[@name='λ']
+  - //objects/o[@name='foo']/o[@name='x' and @base='Q.org.eolang.bytes' and text()='01-']
+  - //objects/o[@name='foo']/o[@name='y' and @base='Q.org.eolang.nan']
+  - //objects/o[@name='foo']/o[@name='err' and @base='Q.org.eolang.error']
+  - //objects/o[@name='foo']/o[@name='app' and @base='.^']/o[@base='.@']/o[@base='.α0']/o[@base='$.x']/o[1][@base='Q.org.eolang.number' and @as='α0']
+  - //objects/o[@name='foo']/o[@name='app' and @base='.^']/o[@base='.@']/o[@base='.α0']/o[@base='$.x']/o[2][@base='Q.org.eolang.string' and @as='α1']
+phi: |
+  {
+    [[
+      foo -> [[
+        void -> ?,
+        atom -> [[
+          L> Lambda
+        ]],
+        x -> QQ.bytes([[D> 01-]]),
+        y -> Q.org.eolang.nan,
+        err -> T,
+        app -> $.x(
+          ~0 -> 1,
+          ~1 -> "XYZ"
+        ).~0.@.^
+      ]]
+    ]]
+  }

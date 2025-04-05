@@ -7,9 +7,11 @@ package org.eolang.parser;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -41,6 +43,11 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
      * Package lambda.
      */
     private static final String LAMBDA_PACKAGE = "Package";
+
+    /**
+     * Alpha.
+     */
+    private static final String ALPHA = "α";
 
     /**
      * Xembly directives we are building (mutable).
@@ -83,6 +90,11 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     private final String name;
 
     /**
+     * Errors.
+     */
+    private final List<ParsingException> errors;
+
+    /**
      * Ctor.
      * @param nme The name of it
      */
@@ -94,6 +106,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.properties = new Stack<>();
         this.alphas = new Stack<>();
         this.packages = new ListOf<>();
+        this.errors = new ArrayList<>(0);
         this.start = System.nanoTime();
     }
 
@@ -124,6 +137,9 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         }
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().leave();
+        }
+        if (!this.errors.isEmpty()) {
+            this.dirs.append(new DrErrors(this.errors));
         }
         this.dirs.add("objects")
             .append(this.objs.pollLast())
@@ -245,7 +261,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         final String nme;
         if (ctx.PHI() != null) {
             nme = "@";
-        } else if (ctx.LABEL() != null || ctx.ALPHA() != null) {
+        } else if (ctx.LABEL() != null) {
             nme = ctx.getText();
         } else  {
             nme = "";
@@ -282,7 +298,9 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterFullAttribute(final PhiParser.FullAttributeContext ctx) {
         if (ctx.attribute() == null) {
-            this.attributes.push(ctx.getText());
+            this.attributes.push(
+                String.format("%s%s", XePhiListener.ALPHA, ctx.getText().substring(1))
+            );
         }
     }
 
@@ -308,9 +326,10 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             if (!"org.eolang".equals(String.join(".", this.packages))
                 && !"bytes".equals(this.attributes.peek())
             ) {
-                throw new ParsingException(
-                    new IllegalStateException(), ctx.getStart().getLine(),
-                    "It's impossible to represent Δ ⤍ ∅ binding in EO"
+                this.errors.add(
+                    new ParsingError(
+                        ctx, "It's impossible to represent Δ ⤍ ∅ binding in EO"
+                    ).cause()
                 );
             }
         } else {
@@ -326,7 +345,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
-            this.startObject(ctx).prop("name", ctx.LAMBDA().getText()).leave();
+            this.startObject(ctx).prop("name", "λ").leave();
         }
     }
 
@@ -373,7 +392,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         final int index = this.alphas.peek();
         this.alphas.pop();
         this.alphas.push(index + 1);
-        this.attributes.push(String.format("α%d", index));
+        this.attributes.push(String.format("%s%d", XePhiListener.ALPHA, index));
     }
 
     @Override

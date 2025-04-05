@@ -16,7 +16,6 @@ import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -39,15 +38,6 @@ final class PhiSyntaxTest {
             String.format("Result XML must contain errors because %s", message),
             new PhiSyntax(program).parsed(),
             XhtmlMatchers.hasXPath("//errors[count(error)>0]")
-        );
-    }
-
-    @Test
-    void catchesDeltaToNothingBinding() {
-        Assertions.assertThrows(
-            ParsingException.class,
-            new PhiSyntax("{ ⟦ x ↦ ⟦ Δ ⤍ ∅ ⟧ ⟧ }")::parsed,
-            "Impossible binding with Δ should be caught"
         );
     }
 
