@@ -21,9 +21,9 @@ phi: |
         y -> Q.org.eolang.nan,
         err -> T,
         app -> $.x(
-          0a -> 1,
-          1a -> "XYZ"
-        ).0a.@.^
+          ~0 -> 1,
+          ~1 -> "XYZ"
+        ).~0.@.^
       ]]
     ]]
   }

@@ -298,28 +298,9 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterFullAttribute(final PhiParser.FullAttributeContext ctx) {
         if (ctx.attribute() == null) {
-            final String text = ctx.getText();
-            final String attr;
-            if (text.startsWith(XePhiListener.ALPHA)) {
-                attr = text;
-            } else {
-                int index = -1;
-                try {
-                    index = Integer.parseInt(text.substring(0, text.length() - 1));
-                } catch (final NumberFormatException err) {
-                    this.errors.add(
-                        new ParsingError(
-                            ctx,
-                            String.format(
-                                "The integer index is expected in full attribute %s, but didn't found any",
-                                text
-                            )
-                        ).cause()
-                    );
-                }
-                attr = String.format("%s%d", XePhiListener.ALPHA, index);
-            }
-            this.attributes.push(attr);
+            this.attributes.push(
+                String.format("%s%s", XePhiListener.ALPHA, ctx.getText().substring(1))
+            );
         }
     }
 
