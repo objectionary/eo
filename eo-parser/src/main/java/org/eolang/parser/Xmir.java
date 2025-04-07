@@ -182,9 +182,9 @@ public final class Xmir implements XML {
         return this.converted(
             new Xsline(
                 new TrFull(
-                    new TrJoined<>(
-                        new TrDefault<>(new StFlatBytes()),
-                        new TrClasspath<>("/org/eolang/parser/phi/to-salty-phi.xsl").back()
+                    new TrDefault<>(
+                        new StFlatBytes(),
+                        new StClasspath("/org/eolang/parser/phi/to-salty-phi.xsl")
                     )
                 )
             ),

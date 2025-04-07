@@ -26,13 +26,24 @@
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="/program/metas/meta[head/text()='also']/(tail|part)">
-    <xsl:apply-templates select="." mode="also"/>
+  <xsl:template match="/program/metas/meta[head='also' or head='decorate']/(tail|part)">
+    <xsl:apply-templates select="." mode="meta"/>
   </xsl:template>
-  <xsl:template match="*[starts-with(text(), 'org.eolang')]" mode="also">
+  <xsl:template match="*[not(contains(text(), ' '))]" mode="meta">
     <xsl:copy>
-      <xsl:text>Q.</xsl:text>
-      <xsl:value-of select="text()"/>
+      <xsl:choose>
+        <xsl:when test="starts-with(text(), 'org.eolang')">
+          <xsl:text>Q.</xsl:text>
+          <xsl:value-of select="text()"/>
+        </xsl:when>
+        <xsl:when test="not(starts-with(text(), 'Q.org.eolang'))">
+          <xsl:value-of select="'Q.org.eolang.'"/>
+          <xsl:value-of select="text()"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="text()"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, 'org.eolang')]" mode="with-base">
@@ -42,12 +53,6 @@
         <xsl:value-of select="@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="*[not(contains(text(), '.'))]" mode="also">
-    <xsl:copy>
-      <xsl:text>Q.org.eolang.</xsl:text>
-      <xsl:value-of select="text()"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
