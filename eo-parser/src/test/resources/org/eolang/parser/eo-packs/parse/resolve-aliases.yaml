@@ -11,7 +11,9 @@ asserts:
   - /program[not(errors)]
   - /program/objects[count(o)=1]
   - /program/metas/meta[head='foo']
-  - /program/metas[count(meta)=6]
+  - /program/metas[count(meta)=9]
+  - /program/metas/meta[head/text()='also' and tail='Q.org.eolang.xyz' and part='Q.org.eolang.xyz']
+  - /program/metas/meta[head/text()='decorate' and tail='string my foo' and part='Q.org.eolang.xyz']
   - //o[@base='Q.org.eolang.txt.scanner']
   - //o[@base='Q.org.eolang.io.stdout']
   - //o[@base='and']
@@ -24,7 +26,10 @@ input: |
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
   +alias custom org.eolang.txt.regex
+  +alias my org.eolang.xyz
   +alias a b c org.d
+  +also my
+  +decorate string my foo
   +foo Some other meta
 
   # No comments.

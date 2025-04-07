@@ -51,8 +51,7 @@ public class XslBench {
             "/org/eolang/parser/parse/const-to-dataized.xsl",
             "/org/eolang/parser/parse/stars-to-tuples.xsl",
             "/org/eolang/parser/shake/add-default-package.xsl",
-            "/org/eolang/parser/shake/build-fqns.xsl",
-            "/org/eolang/parser/shake/explicit-data.xsl"
+            "/org/eolang/parser/shake/build-fqns.xsl"
         ).back()
     );
 

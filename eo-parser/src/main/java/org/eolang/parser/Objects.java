@@ -5,6 +5,7 @@
 package org.eolang.parser;
 
 import java.util.Iterator;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -22,6 +23,15 @@ final class Objects implements Iterable<Directive> {
     @Override
     public Iterator<Directive> iterator() {
         return this.dirs.iterator();
+    }
+
+    /**
+     * Start new object
+     * @param ctx Context
+     * @return Self.
+     */
+    Objects start(final ParserRuleContext ctx) {
+        return this.start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
     }
 
     /**

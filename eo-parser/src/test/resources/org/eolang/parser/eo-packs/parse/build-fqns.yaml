@@ -14,7 +14,7 @@ asserts:
   - /program/objects/o[@name='first']/o[@base='stdout' and @name='std']/o[@base='.x']/o[@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[1][@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@base='.std']/o[2][@base='.x']/o[1][@base='.^']/o[1][@base='$']
-  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='Q.org.eolang.number' and @name='x' and text()!='']
+  - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='Q.org.eolang.number' and @name='x']/o[@base='Q.org.eolang.bytes']/o[text()!='']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[1][@base='.x']/o[1][@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[2][@base='.y']/o[1][@base='.^']/o[1][@base='.^']/o[1][@base='$']
   - /program/objects/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[1][@base='.^']/o[1][@base='$']
