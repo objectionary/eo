@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 175.331318978
+  seconds: 165.858096546
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-07 22:11:12.889793122 Z
+  when: 2025-04-07 23:10:49.199111838 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -119432,121 +119432,6 @@
   when: 2025-04-07 14:50:01.000000000 Z
   where: github
   who: 526301
-- _id: 193776
-  _job: 17068
-  _time: 2025-04-07 20:14:38.321512074 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: 302fc6bc6945de165dd2579e5b7122675972eddc
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/phie, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-759](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/phie/commit/302fc6bc6945de165dd2579e5b7122675972eddc/#commitcomment-154973590
-  is_human: 1
-  repository: 447446664
-  what: push-to-master-was-punished
-  when: 2025-04-07 20:14:38.337763257 Z
-  where: github
-  who: 526301
-  why: Pushed 302fc6bc6 to the default branch 'master' in objectionary/phie
-- _id: 193777
-  _job: 17068
-  _time: 2025-04-07 20:14:38.637741395 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: b82cb61f39edea60005fdae83f29a436dd146d7e
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/reo, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-759](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/reo/commit/b82cb61f39edea60005fdae83f29a436dd146d7e/#commitcomment-154973592
-  is_human: 1
-  repository: 519299365
-  what: push-to-master-was-punished
-  when: 2025-04-07 20:14:38.666649747 Z
-  where: github
-  who: 526301
-  why: Pushed b82cb61f3 to the default branch 'master' in objectionary/reo
-- _id: 193778
-  _job: 17068
-  _time: 2025-04-07 20:14:38.986808841 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: 0bce2ecb4cd06acfd5de38c43975abcb093f5198
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/jucs, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-759](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/jucs/commit/0bce2ecb4cd06acfd5de38c43975abcb093f5198/#commitcomment-154973593
-  is_human: 1
-  repository: 574459304
-  what: push-to-master-was-punished
-  when: 2025-04-07 20:14:39.005438238 Z
-  where: github
-  who: 526301
-  why: Pushed 0bce2ecb4 to the default branch 'master' in objectionary/jucs
-- _id: 193779
-  _job: 17068
-  _time: 2025-04-07 20:14:39.284259690 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: cdd1e7d37e9f8abd205dab83f881a2cb137d78e8
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/jeo-maven-plugin, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-759](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/jeo-maven-plugin/commit/cdd1e7d37e9f8abd205dab83f881a2cb137d78e8/#commitcomment-154973594
-  is_human: 1
-  repository: 671896902
-  what: push-to-master-was-punished
-  when: 2025-04-07 20:14:39.297765651 Z
-  where: github
-  who: 526301
-  why: Pushed cdd1e7d37 to the default branch 'master' in objectionary/jeo-maven-plugin
-- _id: 193780
-  _job: 17068
-  _time: 2025-04-07 20:14:39.609789443 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: 3f49905a5c696e5f1a63df2c4741b1f9223aa9c4
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/lints, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-759](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/lints/commit/3f49905a5c696e5f1a63df2c4741b1f9223aa9c4/#commitcomment-154973596
-  is_human: 1
-  repository: 889819508
-  what: push-to-master-was-punished
-  when: 2025-04-07 20:14:39.629547264 Z
-  where: github
-  who: 526301
-  why: Pushed 3f49905a5 to the default branch 'master' in objectionary/lints
 - _id: 193828
   _time: 2025-04-07 21:08:00.458781753 Z
   _version: 0.9.10/0.39.2/
@@ -119717,52 +119602,6 @@
   where: github
   who: 526301
   why: Pushed e9ca74f25 to the default branch 'master' in objectionary/dejump
-- _id: 194091
-  _job: 17071
-  _time: 2025-04-07 21:11:07.083710129 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: 2d4f18b4f078da62c1618558785e2d6956b1caf5
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/speco, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-839](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/speco/commit/2d4f18b4f078da62c1618558785e2d6956b1caf5/#commitcomment-154973598
-  is_human: 1
-  repository: 558766137
-  what: push-to-master-was-punished
-  when: 2025-04-07 21:11:07.100368360 Z
-  where: github
-  who: 526301
-  why: Pushed 2d4f18b4f to the default branch 'master' in objectionary/speco
-- _id: 194092
-  _job: 17071
-  _time: 2025-04-07 21:11:07.526409306 Z
-  _version: 0.9.10/0.39.2/0.2.2!0.3.0
-  award: -16
-  commit: 4644130f58e89448ef4704ce0a2081229dd249d2
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/sodg, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-839](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/sodg/commit/4644130f58e89448ef4704ce0a2081229dd249d2/#commitcomment-154973599
-  is_human: 1
-  repository: 543969974
-  what: push-to-master-was-punished
-  when: 2025-04-07 21:11:07.538495118 Z
-  where: github
-  who: 526301
-  why: Pushed 4644130f5 to the default branch 'master' in objectionary/sodg
 - _id: 194093
   _job: 17071
   _time: 2025-04-07 21:11:21.997870446 Z
@@ -119781,307 +119620,6 @@
   when: *611
   where: github
   who: 37025995
-- _id: 194094
-  _time: 2025-04-07 22:08:27.595080282 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 492899189
-  what: min-issue-was-found
-  where: github
-- _id: 194095
-  _time: 2025-04-07 22:08:27.739877804 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 493235807
-  what: min-issue-was-found
-  where: github
-- _id: 194096
-  _time: 2025-04-07 22:08:28.403456362 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 731438612
-  what: min-issue-was-found
-  where: github
-- _id: 194097
-  _time: 2025-04-07 22:08:28.551761840 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 733919301
-  what: min-issue-was-found
-  where: github
-- _id: 194098
-  _time: 2025-04-07 22:08:29.189893829 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 396732517
-  what: min-issue-was-found
-  where: github
-- _id: 194099
-  _time: 2025-04-07 22:08:29.338303472 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 559427983
-  what: min-issue-was-found
-  where: github
-- _id: 194100
-  _time: 2025-04-07 22:08:29.484598367 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 501942888
-  what: min-issue-was-found
-  where: github
-- _id: 194101
-  _time: 2025-04-07 22:08:29.633562706 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 499536612
-  what: min-issue-was-found
-  where: github
-- _id: 194102
-  _time: 2025-04-07 22:08:30.211434795 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 840332960
-  what: min-issue-was-found
-  where: github
-- _id: 194103
-  _time: 2025-04-07 22:08:30.836968258 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 955159947
-  what: min-issue-was-found
-  where: github
-- _id: 194104
-  _time: 2025-04-07 22:08:31.498764713 Z
-  _version: 0.9.10/0.39.2/
-  latest: 3
-  repository: 889819508
-  what: min-issue-was-found
-  where: github
-- _id: 194105
-  _time: 2025-04-07 22:08:31.645417810 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 568705267
-  what: min-issue-was-found
-  where: github
-- _id: 194106
-  _time: 2025-04-07 22:08:32.217268082 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 798766850
-  what: min-issue-was-found
-  where: github
-- _id: 194107
-  _time: 2025-04-07 22:08:32.364943975 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490258619
-  what: min-issue-was-found
-  where: github
-- _id: 194108
-  _time: 2025-04-07 22:08:33.229075228 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 73056727
-  what: min-issue-was-found
-  where: github
-- _id: 194109
-  _time: 2025-04-07 22:08:33.405082656 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 731516758
-  what: min-issue-was-found
-  where: github
-- _id: 194110
-  _time: 2025-04-07 22:08:33.546245345 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 519246071
-  what: min-issue-was-found
-  where: github
-- _id: 194111
-  _time: 2025-04-07 22:08:33.691930337 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 483303722
-  what: min-issue-was-found
-  where: github
-- _id: 194112
-  _time: 2025-04-07 22:08:33.842985445 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510102039
-  what: min-issue-was-found
-  where: github
-- _id: 194113
-  _time: 2025-04-07 22:08:33.985749241 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 784310467
-  what: min-issue-was-found
-  where: github
-- _id: 194114
-  _time: 2025-04-07 22:08:34.126247136 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 519299365
-  what: min-issue-was-found
-  where: github
-- _id: 194115
-  _time: 2025-04-07 22:08:34.271366709 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 624420387
-  what: min-issue-was-found
-  where: github
-- _id: 194116
-  _time: 2025-04-07 22:08:34.414636662 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 531151981
-  what: min-issue-was-found
-  where: github
-- _id: 194117
-  _time: 2025-04-07 22:08:34.556883891 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 403396472
-  what: min-issue-was-found
-  where: github
-- _id: 194118
-  _time: 2025-04-07 22:08:35.226559117 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 501259435
-  what: min-issue-was-found
-  where: github
-- _id: 194119
-  _time: 2025-04-07 22:08:35.368960855 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 574534248
-  what: min-issue-was-found
-  where: github
-- _id: 194120
-  _time: 2025-04-07 22:08:35.516747889 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 721146770
-  what: min-issue-was-found
-  where: github
-- _id: 194121
-  _time: 2025-04-07 22:08:35.662219301 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 574459304
-  what: min-issue-was-found
-  where: github
-- _id: 194122
-  _time: 2025-04-07 22:08:35.804753126 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510082372
-  what: min-issue-was-found
-  where: github
-- _id: 194123
-  _time: 2025-04-07 22:08:35.947275719 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 558766137
-  what: min-issue-was-found
-  where: github
-- _id: 194124
-  _time: 2025-04-07 22:08:36.093494079 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 482612876
-  what: min-issue-was-found
-  where: github
-- _id: 194125
-  _time: 2025-04-07 22:08:36.235279283 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490157985
-  what: min-issue-was-found
-  where: github
-- _id: 194126
-  _time: 2025-04-07 22:08:36.934999139 Z
-  _version: 0.9.10/0.39.2/
-  latest: 6
-  repository: 13623548
-  what: min-issue-was-found
-  where: github
-- _id: 194127
-  _time: 2025-04-07 22:08:37.727140716 Z
-  _version: 0.9.10/0.39.2/
-  latest: 3
-  repository: 671896902
-  what: min-issue-was-found
-  where: github
-- _id: 194128
-  _time: 2025-04-07 22:08:37.870647311 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 447446664
-  what: min-issue-was-found
-  where: github
-- _id: 194129
-  _time: 2025-04-07 22:08:38.019887805 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 565789755
-  what: min-issue-was-found
-  where: github
-- _id: 194130
-  _time: 2025-04-07 22:08:38.169567511 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 386420319
-  what: min-issue-was-found
-  where: github
-- _id: 194131
-  _time: 2025-04-07 22:08:38.801985672 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 546194972
-  what: min-issue-was-found
-  where: github
-- _id: 194132
-  _time: 2025-04-07 22:08:38.951031588 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 570457023
-  what: min-issue-was-found
-  where: github
-- _id: 194133
-  _time: 2025-04-07 22:08:39.101365004 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490221501
-  what: min-issue-was-found
-  where: github
-- _id: 194134
-  _time: 2025-04-07 22:08:39.786425870 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 489321585
-  what: min-issue-was-found
-  where: github
-- _id: 194135
-  _time: 2025-04-07 22:08:40.491731245 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 543969974
-  what: min-issue-was-found
-  where: github
-- _id: 194136
-  _time: 2025-04-07 22:08:40.643243057 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 551486781
-  what: min-issue-was-found
-  where: github
 - _id: 194137
   _time: 2025-04-07 22:08:43.295452252 Z
   _version: 0.9.10/0.39.2/
@@ -120096,605 +119634,1067 @@
   when: 2025-04-07 15:59:29.000000000 Z
   where: github
   who: 29139614
-- _id: 194138
-  _time: 2025-04-07 22:08:43.548274096 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48410168025
-  repository: 889819508
-  what: events-were-scanned
+- _id:
+  - 194417
+  - 193776
+  _job:
+  - 17074
+  - 17068
+  _time:
+  - 2025-04-07 22:11:30.461591578 Z
+  - 2025-04-07 20:14:38.321512074 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: 302fc6bc6945de165dd2579e5b7122675972eddc
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/phie, the penalty amount is -16.
+  href: https://github.com/objectionary/phie/commit/302fc6bc6945de165dd2579e5b7122675972eddc/#commitcomment-154973590
+  is_human: 1
+  repository: 447446664
+  what: push-to-master-was-punished
+  when: 2025-04-07 20:14:38.337763257 Z
   where: github
-- _id: 194139
-  _time: 2025-04-07 22:08:43.883208601 Z
+  who: 526301
+  why: Pushed 302fc6bc6 to the default branch 'master' in objectionary/phie
+- _id:
+  - 194418
+  - 193777
+  _job:
+  - 17074
+  - 17068
+  _time:
+  - 2025-04-07 22:11:30.512438768 Z
+  - 2025-04-07 20:14:38.637741395 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: b82cb61f39edea60005fdae83f29a436dd146d7e
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/reo, the penalty amount is -16.
+  href: https://github.com/objectionary/reo/commit/b82cb61f39edea60005fdae83f29a436dd146d7e/#commitcomment-154973592
+  is_human: 1
+  repository: 519299365
+  what: push-to-master-was-punished
+  when: 2025-04-07 20:14:38.666649747 Z
+  where: github
+  who: 526301
+  why: Pushed b82cb61f3 to the default branch 'master' in objectionary/reo
+- _id:
+  - 194419
+  - 193778
+  _job:
+  - 17074
+  - 17068
+  _time:
+  - 2025-04-07 22:11:30.567204029 Z
+  - 2025-04-07 20:14:38.986808841 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: 0bce2ecb4cd06acfd5de38c43975abcb093f5198
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/jucs, the penalty amount is -16.
+  href: https://github.com/objectionary/jucs/commit/0bce2ecb4cd06acfd5de38c43975abcb093f5198/#commitcomment-154973593
+  is_human: 1
+  repository: 574459304
+  what: push-to-master-was-punished
+  when: 2025-04-07 20:14:39.005438238 Z
+  where: github
+  who: 526301
+  why: Pushed 0bce2ecb4 to the default branch 'master' in objectionary/jucs
+- _id:
+  - 194420
+  - 193779
+  _job:
+  - 17074
+  - 17068
+  _time:
+  - 2025-04-07 22:11:30.621158979 Z
+  - 2025-04-07 20:14:39.284259690 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: cdd1e7d37e9f8abd205dab83f881a2cb137d78e8
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/jeo-maven-plugin, the penalty amount is -16.
+  href: https://github.com/objectionary/jeo-maven-plugin/commit/cdd1e7d37e9f8abd205dab83f881a2cb137d78e8/#commitcomment-154973594
+  is_human: 1
+  repository: 671896902
+  what: push-to-master-was-punished
+  when: 2025-04-07 20:14:39.297765651 Z
+  where: github
+  who: 526301
+  why: Pushed cdd1e7d37 to the default branch 'master' in objectionary/jeo-maven-plugin
+- _id:
+  - 194421
+  - 193780
+  _job:
+  - 17074
+  - 17068
+  _time:
+  - 2025-04-07 22:11:30.675138018 Z
+  - 2025-04-07 20:14:39.609789443 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: 3f49905a5c696e5f1a63df2c4741b1f9223aa9c4
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/lints, the penalty amount is -16.
+  href: https://github.com/objectionary/lints/commit/3f49905a5c696e5f1a63df2c4741b1f9223aa9c4/#commitcomment-154973596
+  is_human: 1
+  repository: 889819508
+  what: push-to-master-was-punished
+  when: 2025-04-07 20:14:39.629547264 Z
+  where: github
+  who: 526301
+  why: Pushed 3f49905a5 to the default branch 'master' in objectionary/lints
+- _id:
+  - 194422
+  - 194091
+  _job:
+  - 17074
+  - 17071
+  _time:
+  - 2025-04-07 22:11:30.729002790 Z
+  - 2025-04-07 21:11:07.083710129 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: 2d4f18b4f078da62c1618558785e2d6956b1caf5
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/speco, the penalty amount is -16.
+  href: https://github.com/objectionary/speco/commit/2d4f18b4f078da62c1618558785e2d6956b1caf5/#commitcomment-154973598
+  is_human: 1
+  repository: 558766137
+  what: push-to-master-was-punished
+  when: 2025-04-07 21:11:07.100368360 Z
+  where: github
+  who: 526301
+  why: Pushed 2d4f18b4f to the default branch 'master' in objectionary/speco
+- _id:
+  - 194423
+  - 194092
+  _job:
+  - 17074
+  - 17071
+  _time:
+  - 2025-04-07 22:11:30.783210862 Z
+  - 2025-04-07 21:11:07.526409306 Z
+  _version: 0.9.10/0.39.2/0.2.2!0.3.0
+  award: -16
+  commit: 4644130f58e89448ef4704ce0a2081229dd249d2
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/sodg, the penalty amount is -16.
+  href: https://github.com/objectionary/sodg/commit/4644130f58e89448ef4704ce0a2081229dd249d2/#commitcomment-154973599
+  is_human: 1
+  repository: 543969974
+  what: push-to-master-was-punished
+  when: 2025-04-07 21:11:07.538495118 Z
+  where: github
+  who: 526301
+  why: Pushed 4644130f5 to the default branch 'master' in objectionary/sodg
+- _id: 194424
+  _time: 2025-04-07 23:08:13.902576412 Z
   _version: 0.9.10/0.39.2/
   latest: 0
-  repository: 559427983
-  what: events-were-scanned
+  repository: 784310467
+  what: min-issue-was-found
   where: github
-- _id: 194140
-  _time: 2025-04-07 22:08:44.229918026 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48345152876
-  repository: 551486781
-  what: events-were-scanned
-  where: github
-- _id: 194141
-  _time: 2025-04-07 22:08:44.582180550 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48031291916
-  repository: 501259435
-  what: events-were-scanned
-  where: github
-- _id: 194142
-  _time: 2025-04-07 22:08:44.798264764 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48406674800
-  repository: 543969974
-  what: events-were-scanned
-  where: github
-- _id: 194143
-  _time: 2025-04-07 22:08:44.997786762 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48404852204
-  repository: 798766850
-  what: events-were-scanned
-  where: github
-- _id: 194144
-  _time: 2025-04-07 22:08:45.406898190 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48406696035
-  repository: 558766137
-  what: events-were-scanned
-  where: github
-- _id: 194145
-  _time: 2025-04-07 22:08:45.768658340 Z
+- _id: 194425
+  _time: 2025-04-07 23:08:14.040691480 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 403396472
-  what: events-were-scanned
+  what: min-issue-was-found
   where: github
-- _id: 194146
-  _time: 2025-04-07 22:08:46.153948484 Z
+- _id: 194426
+  _time: 2025-04-07 23:08:14.177738958 Z
   _version: 0.9.10/0.39.2/
-  latest: 44193479639
+  latest: 0
+  repository: 510082372
+  what: min-issue-was-found
+  where: github
+- _id: 194427
+  _time: 2025-04-07 23:08:14.852859236 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 798766850
+  what: min-issue-was-found
+  where: github
+- _id: 194428
+  _time: 2025-04-07 23:08:15.510264589 Z
+  _version: 0.9.10/0.39.2/
+  latest: 3
+  repository: 671896902
+  what: min-issue-was-found
+  where: github
+- _id: 194429
+  _time: 2025-04-07 23:08:16.204496094 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 955159947
+  what: min-issue-was-found
+  where: github
+- _id: 194430
+  _time: 2025-04-07 23:08:16.346525792 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 570457023
+  what: min-issue-was-found
+  where: github
+- _id: 194431
+  _time: 2025-04-07 23:08:17.058023656 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 501259435
+  what: min-issue-was-found
+  where: github
+- _id: 194432
+  _time: 2025-04-07 23:08:17.711776492 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 543969974
+  what: min-issue-was-found
+  where: github
+- _id: 194433
+  _time: 2025-04-07 23:08:17.853251286 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 499536612
+  what: min-issue-was-found
+  where: github
+- _id: 194434
+  _time: 2025-04-07 23:08:18.635711831 Z
+  _version: 0.9.10/0.39.2/
+  latest: 6
+  repository: 13623548
+  what: min-issue-was-found
+  where: github
+- _id: 194435
+  _time: 2025-04-07 23:08:18.777638307 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 624420387
+  what: min-issue-was-found
+  where: github
+- _id: 194436
+  _time: 2025-04-07 23:08:19.484355078 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 840332960
+  what: min-issue-was-found
+  where: github
+- _id: 194437
+  _time: 2025-04-07 23:08:19.628614201 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
   repository: 519246071
-  what: events-were-scanned
+  what: min-issue-was-found
   where: github
-- _id: 194147
-  _time: 2025-04-07 22:08:46.563832964 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48406493699
-  repository: 519299365
-  what: events-were-scanned
-  where: github
-- _id: 194148
-  _time: 2025-04-07 22:08:46.976086558 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48408507688
-  repository: 574534248
-  what: events-were-scanned
-  where: github
-- _id: 194149
-  _time: 2025-04-07 22:08:47.308573815 Z
+- _id: 194438
+  _time: 2025-04-07 23:08:19.769464050 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 568705267
-  what: events-were-scanned
+  what: min-issue-was-found
   where: github
-- _id: 194150
-  _time: 2025-04-07 22:08:47.595453559 Z
+- _id: 194439
+  _time: 2025-04-07 23:08:19.908912457 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 721146770
+  what: min-issue-was-found
+  where: github
+- _id: 194440
+  _time: 2025-04-07 23:08:20.055997907 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 531151981
+  what: min-issue-was-found
+  where: github
+- _id: 194441
+  _time: 2025-04-07 23:08:20.198582038 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 559427983
+  what: min-issue-was-found
+  where: github
+- _id: 194442
+  _time: 2025-04-07 23:08:20.341264402 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 731516758
+  what: min-issue-was-found
+  where: github
+- _id: 194443
+  _time: 2025-04-07 23:08:20.508044908 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 565789755
+  what: min-issue-was-found
+  where: github
+- _id: 194444
+  _time: 2025-04-07 23:08:20.642447130 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 447446664
+  what: min-issue-was-found
+  where: github
+- _id: 194445
+  _time: 2025-04-07 23:08:21.309632314 Z
+  _version: 0.9.10/0.39.2/
+  latest: 3
+  repository: 889819508
+  what: min-issue-was-found
+  where: github
+- _id: 194446
+  _time: 2025-04-07 23:08:21.446502684 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490221501
+  what: min-issue-was-found
+  where: github
+- _id: 194447
+  _time: 2025-04-07 23:08:21.582099661 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 510102039
+  what: min-issue-was-found
+  where: github
+- _id: 194448
+  _time: 2025-04-07 23:08:21.718015341 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 493235807
+  what: min-issue-was-found
+  where: github
+- _id: 194449
+  _time: 2025-04-07 23:08:21.853038989 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 574459304
+  what: min-issue-was-found
+  where: github
+- _id: 194450
+  _time: 2025-04-07 23:08:22.568490468 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 546194972
+  what: min-issue-was-found
+  where: github
+- _id: 194451
+  _time: 2025-04-07 23:08:22.708566667 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 558766137
+  what: min-issue-was-found
+  where: github
+- _id: 194452
+  _time: 2025-04-07 23:08:22.843331149 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490258619
+  what: min-issue-was-found
+  where: github
+- _id: 194453
+  _time: 2025-04-07 23:08:22.982526362 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 574534248
+  what: min-issue-was-found
+  where: github
+- _id: 194454
+  _time: 2025-04-07 23:08:23.120386716 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 386420319
+  what: min-issue-was-found
+  where: github
+- _id: 194455
+  _time: 2025-04-07 23:08:23.775527487 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 396732517
+  what: min-issue-was-found
+  where: github
+- _id: 194456
+  _time: 2025-04-07 23:08:23.913207082 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490157985
+  what: min-issue-was-found
+  where: github
+- _id: 194457
+  _time: 2025-04-07 23:08:24.054124837 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 482612876
+  what: min-issue-was-found
+  where: github
+- _id: 194458
+  _time: 2025-04-07 23:08:24.786285315 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 731438612
+  what: min-issue-was-found
+  where: github
+- _id: 194459
+  _time: 2025-04-07 23:08:24.925054303 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 551486781
+  what: min-issue-was-found
+  where: github
+- _id: 194460
+  _time: 2025-04-07 23:08:25.667774237 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 489321585
+  what: min-issue-was-found
+  where: github
+- _id: 194461
+  _time: 2025-04-07 23:08:25.805830196 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 483303722
+  what: min-issue-was-found
+  where: github
+- _id: 194462
+  _time: 2025-04-07 23:08:26.584643918 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 73056727
+  what: min-issue-was-found
+  where: github
+- _id: 194463
+  _time: 2025-04-07 23:08:26.724553754 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 492899189
+  what: min-issue-was-found
+  where: github
+- _id: 194464
+  _time: 2025-04-07 23:08:26.862334349 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 519299365
+  what: min-issue-was-found
+  where: github
+- _id: 194465
+  _time: 2025-04-07 23:08:26.999721862 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 501942888
+  what: min-issue-was-found
+  where: github
+- _id: 194466
+  _time: 2025-04-07 23:08:27.139859532 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 733919301
+  what: min-issue-was-found
+  where: github
+- _id: 194467
+  _time: 2025-04-07 23:08:27.923793755 Z
   _version: 0.9.10/0.39.2/
   latest: 48271041896
   repository: 955159947
   what: events-were-scanned
   where: github
-- _id: 194151
-  _time: 2025-04-07 22:08:48.023043652 Z
+- _id: 194468
+  _time: 2025-04-07 23:08:28.291495312 Z
   _version: 0.9.10/0.39.2/
-  latest: 48345143202
-  repository: 492899189
+  latest: 48406696035
+  repository: 558766137
   what: events-were-scanned
   where: github
-- _id: 194152
-  _time: 2025-04-07 22:08:48.323836812 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48105122892
-  repository: 546194972
-  what: events-were-scanned
-  where: github
-- _id: 194153
-  _time: 2025-04-07 22:08:48.674278595 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48196127764
-  repository: 721146770
-  what: events-were-scanned
-  where: github
-- _id: 194154
-  _time: 2025-04-07 22:08:49.031993030 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490157985
-  what: events-were-scanned
-  where: github
-- _id: 194155
-  _time: 2025-04-07 22:08:49.378548403 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48192692765
-  repository: 482612876
-  what: events-were-scanned
-  where: github
-- _id: 194156
-  _time: 2025-04-07 22:08:49.729026350 Z
-  _version: 0.9.10/0.39.2/
-  latest: 45572867640
-  repository: 490221501
-  what: events-were-scanned
-  where: github
-- _id: 194157
-  _time: 2025-04-07 22:08:50.058481947 Z
-  _version: 0.9.10/0.39.2/
-  latest: 47775441619
-  repository: 565789755
-  what: events-were-scanned
-  where: github
-- _id: 194158
-  _time: 2025-04-07 22:08:50.370427218 Z
-  _version: 0.9.10/0.39.2/
-  latest: 43208171256
-  repository: 531151981
-  what: events-were-scanned
-  where: github
-- _id: 194159
-  _time: 2025-04-07 22:08:50.742511162 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48195719111
-  repository: 570457023
-  what: events-were-scanned
-  where: github
-- _id: 194160
-  _time: 2025-04-07 22:08:51.311279957 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48345139760
-  repository: 13623548
-  what: events-were-scanned
-  where: github
-- _id: 194161
-  _time: 2025-04-07 22:08:51.629403748 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48374933096
-  repository: 731438612
-  what: events-were-scanned
-  where: github
-- _id: 194162
-  _time: 2025-04-07 22:08:52.040624402 Z
-  _version: 0.9.10/0.39.2/
-  latest: 47775444855
-  repository: 731516758
-  what: events-were-scanned
-  where: github
-- _id: 194163
-  _time: 2025-04-07 22:08:53.227158428 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48409766675
-  repository: 73056727
-  what: events-were-scanned
-  where: github
-- _id: 194164
-  _time: 2025-04-07 22:08:54.641883787 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48404995851
-  repository: 489321585
-  what: events-were-scanned
-  where: github
-- _id: 194165
-  _time: 2025-04-07 22:08:54.993652220 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48405178947
-  repository: 840332960
-  what: events-were-scanned
-  where: github
-- _id: 194166
-  _time: 2025-04-07 22:08:56.135137076 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48405858299
-  repository: 671896902
-  what: events-were-scanned
-  where: github
-- _id: 194167
-  _time: 2025-04-07 22:08:56.557345284 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48403828025
-  repository: 483303722
-  what: events-were-scanned
-  where: github
-- _id: 194168
-  _time: 2025-04-07 22:08:56.905638578 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48345161140
-  repository: 490258619
-  what: events-were-scanned
-  where: github
-- _id: 194169
-  _time: 2025-04-07 22:08:57.481506092 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48368802587
-  repository: 396732517
-  what: events-were-scanned
-  where: github
-- _id: 194170
-  _time: 2025-04-07 22:08:57.843720879 Z
-  _version: 0.9.10/0.39.2/
-  latest: 47775469486
-  repository: 499536612
-  what: events-were-scanned
-  where: github
-- _id: 194171
-  _time: 2025-04-07 22:08:58.186650097 Z
-  _version: 0.9.10/0.39.2/
-  latest: 47775457345
-  repository: 493235807
-  what: events-were-scanned
-  where: github
-- _id: 194172
-  _time: 2025-04-07 22:08:58.603612148 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48190196933
-  repository: 510102039
-  what: events-were-scanned
-  where: github
-- _id: 194173
-  _time: 2025-04-07 22:08:58.994097111 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48345150722
-  repository: 386420319
-  what: events-were-scanned
-  where: github
-- _id: 194174
-  _time: 2025-04-07 22:08:59.324603440 Z
-  _version: 0.9.10/0.39.2/
-  latest: 47570222600
-  repository: 624420387
-  what: events-were-scanned
-  where: github
-- _id: 194175
-  _time: 2025-04-07 22:08:59.725851511 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48406376775
-  repository: 447446664
-  what: events-were-scanned
-  where: github
-- _id: 194176
-  _time: 2025-04-07 22:09:00.129052676 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48399969522
-  repository: 733919301
-  what: events-were-scanned
-  where: github
-- _id: 194177
-  _time: 2025-04-07 22:09:00.525889855 Z
+- _id: 194469
+  _time: 2025-04-07 23:08:28.595726970 Z
   _version: 0.9.10/0.39.2/
   latest: 45742056962
   repository: 501942888
   what: events-were-scanned
   where: github
-- _id: 194178
-  _time: 2025-04-07 22:09:00.858744858 Z
+- _id: 194470
+  _time: 2025-04-07 23:08:28.975300432 Z
   _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510082372
+  latest: 48192692765
+  repository: 482612876
   what: events-were-scanned
   where: github
-- _id: 194179
-  _time: 2025-04-07 22:09:01.244124342 Z
+- _id: 194471
+  _time: 2025-04-07 23:08:29.378665856 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48403828025
+  repository: 483303722
+  what: events-were-scanned
+  where: github
+- _id: 194472
+  _time: 2025-04-07 23:08:31.552868201 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48410654982
+  repository: 889819508
+  what: events-were-scanned
+  where: github
+- _id: 194473
+  _time: 2025-04-07 23:08:31.959531139 Z
   _version: 0.9.10/0.39.2/
   latest: 47775454877
   repository: 784310467
   what: events-were-scanned
   where: github
-- _id: 194180
-  _time: 2025-04-07 22:09:01.629583016 Z
+- _id: 194474
+  _time: 2025-04-07 23:08:32.244969684 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48374933096
+  repository: 731438612
+  what: events-were-scanned
+  where: github
+- _id: 194475
+  _time: 2025-04-07 23:08:32.652280434 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48399969522
+  repository: 733919301
+  what: events-were-scanned
+  where: github
+- _id: 194476
+  _time: 2025-04-07 23:08:33.009630922 Z
+  _version: 0.9.10/0.39.2/
+  latest: 47775441619
+  repository: 565789755
+  what: events-were-scanned
+  where: github
+- _id: 194477
+  _time: 2025-04-07 23:08:33.403928158 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48345152876
+  repository: 551486781
+  what: events-were-scanned
+  where: github
+- _id: 194478
+  _time: 2025-04-07 23:08:33.719029132 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490157985
+  what: events-were-scanned
+  where: github
+- _id: 194479
+  _time: 2025-04-07 23:08:34.083528261 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48345150722
+  repository: 386420319
+  what: events-were-scanned
+  where: github
+- _id: 194480
+  _time: 2025-04-07 23:08:34.308277501 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48031291916
+  repository: 501259435
+  what: events-were-scanned
+  where: github
+- _id: 194481
+  _time: 2025-04-07 23:08:34.634378105 Z
+  _version: 0.9.10/0.39.2/
+  latest: 43208171256
+  repository: 531151981
+  what: events-were-scanned
+  where: github
+- _id: 194482
+  _time: 2025-04-07 23:08:34.986653672 Z
+  _version: 0.9.10/0.39.2/
+  latest: 45572867640
+  repository: 490221501
+  what: events-were-scanned
+  where: github
+- _id: 194483
+  _time: 2025-04-07 23:08:35.397136909 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48406493699
+  repository: 519299365
+  what: events-were-scanned
+  where: github
+- _id: 194484
+  _time: 2025-04-07 23:08:35.707587924 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 559427983
+  what: events-were-scanned
+  where: github
+- _id: 194485
+  _time: 2025-04-07 23:08:36.059279819 Z
+  _version: 0.9.10/0.39.2/
+  latest: 47775469486
+  repository: 499536612
+  what: events-were-scanned
+  where: github
+- _id: 194486
+  _time: 2025-04-07 23:08:36.394125170 Z
+  _version: 0.9.10/0.39.2/
+  latest: 47775457345
+  repository: 493235807
+  what: events-were-scanned
+  where: github
+- _id: 194487
+  _time: 2025-04-07 23:08:36.630171632 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48405178947
+  repository: 840332960
+  what: events-were-scanned
+  where: github
+- _id: 194488
+  _time: 2025-04-07 23:08:36.990821248 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48195719111
+  repository: 570457023
+  what: events-were-scanned
+  where: github
+- _id: 194489
+  _time: 2025-04-07 23:08:37.337563900 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 403396472
+  what: events-were-scanned
+  where: github
+- _id: 194490
+  _time: 2025-04-07 23:08:37.685554106 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48190196933
+  repository: 510102039
+  what: events-were-scanned
+  where: github
+- _id: 194491
+  _time: 2025-04-07 23:08:38.068166304 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48408507688
+  repository: 574534248
+  what: events-were-scanned
+  where: github
+- _id: 194492
+  _time: 2025-04-07 23:08:39.369104654 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48404995851
+  repository: 489321585
+  what: events-were-scanned
+  where: github
+- _id: 194493
+  _time: 2025-04-07 23:08:39.750826711 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48345161140
+  repository: 490258619
+  what: events-were-scanned
+  where: github
+- _id: 194494
+  _time: 2025-04-07 23:08:40.479403119 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48345139760
+  repository: 13623548
+  what: events-were-scanned
+  where: github
+- _id: 194495
+  _time: 2025-04-07 23:08:40.933121080 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48345143202
+  repository: 492899189
+  what: events-were-scanned
+  where: github
+- _id: 194496
+  _time: 2025-04-07 23:08:41.253411832 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 568705267
+  what: events-were-scanned
+  where: github
+- _id: 194497
+  _time: 2025-04-07 23:08:41.649659263 Z
+  _version: 0.9.10/0.39.2/
+  latest: 47570222600
+  repository: 624420387
+  what: events-were-scanned
+  where: github
+- _id: 194498
+  _time: 2025-04-07 23:08:42.813570231 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48409766675
+  repository: 73056727
+  what: events-were-scanned
+  where: github
+- _id: 194499
+  _time: 2025-04-07 23:08:43.048367278 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48406674800
+  repository: 543969974
+  what: events-were-scanned
+  where: github
+- _id: 194500
+  _time: 2025-04-07 23:08:43.472075015 Z
+  _version: 0.9.10/0.39.2/
+  latest: 47775444855
+  repository: 731516758
+  what: events-were-scanned
+  where: github
+- _id: 194501
+  _time: 2025-04-07 23:08:43.884434049 Z
   _version: 0.9.10/0.39.2/
   latest: 48405974810
   repository: 574459304
   what: events-were-scanned
   where: github
-- _id: 194181
-  _time: 2025-04-07 22:09:02.354391108 Z
+- _id: 194502
+  _time: 2025-04-07 23:08:44.291765905 Z
   _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 574534248
-  what: labels-were-scanned
-  where: github
-- _id: 194183
-  _time: 2025-04-07 22:09:03.001684939 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 574459304
-  what: labels-were-scanned
-  where: github
-- _id: 194185
-  _time: 2025-04-07 22:09:03.772261427 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 447446664
-  what: labels-were-scanned
-  where: github
-- _id: 194186
-  _time: 2025-04-07 22:09:03.909979704 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490157985
-  what: labels-were-scanned
-  where: github
-- _id: 194187
-  _time: 2025-04-07 22:09:04.045061598 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 386420319
-  what: labels-were-scanned
-  where: github
-- _id: 194189
-  _time: 2025-04-07 22:09:04.691563708 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490221501
-  what: labels-were-scanned
-  where: github
-- _id: 194190
-  _time: 2025-04-07 22:09:04.828221380 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 731516758
-  what: labels-were-scanned
-  where: github
-- _id: 194191
-  _time: 2025-04-07 22:09:04.972187168 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
+  latest: 48196127764
   repository: 721146770
-  what: labels-were-scanned
+  what: events-were-scanned
   where: github
-- _id: 194192
-  _time: 2025-04-07 22:09:05.108522738 Z
+- _id: 194503
+  _time: 2025-04-07 23:08:44.650056154 Z
   _version: 0.9.10/0.39.2/
   latest: 0
-  repository: 733919301
-  what: labels-were-scanned
+  repository: 510082372
+  what: events-were-scanned
   where: github
-- _id: 194193
-  _time: 2025-04-07 22:09:05.249073546 Z
+- _id: 194504
+  _time: 2025-04-07 23:08:44.899803016 Z
   _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 568705267
-  what: labels-were-scanned
+  latest: 48404852204
+  repository: 798766850
+  what: events-were-scanned
   where: github
-- _id: 194195
-  _time: 2025-04-07 22:09:05.810258667 Z
+- _id: 194505
+  _time: 2025-04-07 23:08:45.284901945 Z
   _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 493235807
-  what: labels-were-scanned
+  latest: 48368802587
+  repository: 396732517
+  what: events-were-scanned
   where: github
-- _id: 194196
-  _time: 2025-04-07 22:09:05.951339897 Z
+- _id: 194506
+  _time: 2025-04-07 23:08:46.637473043 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48405858299
+  repository: 671896902
+  what: events-were-scanned
+  where: github
+- _id: 194507
+  _time: 2025-04-07 23:08:47.153992083 Z
+  _version: 0.9.10/0.39.2/
+  latest: 44193479639
+  repository: 519246071
+  what: events-were-scanned
+  where: github
+- _id: 194508
+  _time: 2025-04-07 23:08:47.429964760 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48105122892
+  repository: 546194972
+  what: events-were-scanned
+  where: github
+- _id: 194509
+  _time: 2025-04-07 23:08:47.800851383 Z
+  _version: 0.9.10/0.39.2/
+  latest: 48406376775
+  repository: 447446664
+  what: events-were-scanned
+  where: github
+- _id: 194511
+  _time: 2025-04-07 23:08:48.841414350 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 624420387
   what: labels-were-scanned
   where: github
-- _id: 194197
-  _time: 2025-04-07 22:09:06.092987437 Z
+- _id: 194513
+  _time: 2025-04-07 23:08:49.583904058 Z
   _version: 0.9.10/0.39.2/
   latest: 0
-  repository: 784310467
+  repository: 490221501
   what: labels-were-scanned
   where: github
-- _id: 194198
-  _time: 2025-04-07 22:09:06.234604550 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 559427983
-  what: labels-were-scanned
-  where: github
-- _id: 194199
-  _time: 2025-04-07 22:09:06.372976792 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 519246071
-  what: labels-were-scanned
-  where: github
-- _id: 194201
-  _time: 2025-04-07 22:09:07.166503881 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 570457023
-  what: labels-were-scanned
-  where: github
-- _id: 194202
-  _time: 2025-04-07 22:09:07.309575746 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 492899189
-  what: labels-were-scanned
-  where: github
-- _id: 194204
-  _time: 2025-04-07 22:09:08.210490156 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 499536612
-  what: labels-were-scanned
-  where: github
-- _id: 194205
-  _time: 2025-04-07 22:09:08.352736327 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 482612876
-  what: labels-were-scanned
-  where: github
-- _id: 194207
-  _time: 2025-04-07 22:09:09.045347377 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 565789755
-  what: labels-were-scanned
-  where: github
-- _id: 194209
-  _time: 2025-04-07 22:09:09.811372749 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 519299365
-  what: labels-were-scanned
-  where: github
-- _id: 194210
-  _time: 2025-04-07 22:09:09.955625604 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 501942888
-  what: labels-were-scanned
-  where: github
-- _id: 194211
-  _time: 2025-04-07 22:09:10.103648404 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510102039
-  what: labels-were-scanned
-  where: github
-- _id: 194212
-  _time: 2025-04-07 22:09:10.244790989 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 531151981
-  what: labels-were-scanned
-  where: github
-- _id: 194213
-  _time: 2025-04-07 22:09:10.386796529 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 483303722
-  what: labels-were-scanned
-  where: github
-- _id: 194214
-  _time: 2025-04-07 22:09:10.525763539 Z
+- _id: 194514
+  _time: 2025-04-07 23:08:49.724657326 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 403396472
   what: labels-were-scanned
   where: github
-- _id: 194216
-  _time: 2025-04-07 22:09:11.152535323 Z
+- _id: 194516
+  _time: 2025-04-07 23:08:50.265136934 Z
   _version: 0.9.10/0.39.2/
   latest: 0
-  repository: 558766137
+  repository: 559427983
   what: labels-were-scanned
   where: github
-- _id: 194218
-  _time: 2025-04-07 22:09:11.660314885 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 551486781
-  what: labels-were-scanned
-  where: github
-- _id: 194221
-  _time: 2025-04-07 22:09:12.938089780 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510082372
-  what: labels-were-scanned
-  where: github
-- _id: 194222
-  _time: 2025-04-07 22:09:13.078247373 Z
+- _id: 194517
+  _time: 2025-04-07 23:08:50.398709716 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 490258619
   what: labels-were-scanned
   where: github
-- _id: 194305
-  _time: 2025-04-07 22:10:00.922528343 Z
+- _id: 194518
+  _time: 2025-04-07 23:08:50.534968706 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 731516758
+  what: labels-were-scanned
+  where: github
+- _id: 194520
+  _time: 2025-04-07 23:08:51.057631149 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 565789755
+  what: labels-were-scanned
+  where: github
+- _id: 194521
+  _time: 2025-04-07 23:08:51.189959592 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 733919301
+  what: labels-were-scanned
+  where: github
+- _id: 194523
+  _time: 2025-04-07 23:08:51.895733128 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 551486781
+  what: labels-were-scanned
+  where: github
+- _id: 194524
+  _time: 2025-04-07 23:08:52.030495768 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 574534248
+  what: labels-were-scanned
+  where: github
+- _id: 194525
+  _time: 2025-04-07 23:08:52.166807577 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 721146770
+  what: labels-were-scanned
+  where: github
+- _id: 194526
+  _time: 2025-04-07 23:08:52.298703934 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 501942888
+  what: labels-were-scanned
+  where: github
+- _id: 194527
+  _time: 2025-04-07 23:08:52.434084046 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 531151981
+  what: labels-were-scanned
+  where: github
+- _id: 194528
+  _time: 2025-04-07 23:08:52.565657190 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 570457023
+  what: labels-were-scanned
+  where: github
+- _id: 194529
+  _time: 2025-04-07 23:08:52.693739437 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 519246071
+  what: labels-were-scanned
+  where: github
+- _id: 194530
+  _time: 2025-04-07 23:08:52.830803398 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 483303722
+  what: labels-were-scanned
+  where: github
+- _id: 194532
+  _time: 2025-04-07 23:08:53.484982446 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 510102039
+  what: labels-were-scanned
+  where: github
+- _id: 194534
+  _time: 2025-04-07 23:08:54.202552820 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 510082372
+  what: labels-were-scanned
+  where: github
+- _id: 194535
+  _time: 2025-04-07 23:08:54.341793886 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 558766137
+  what: labels-were-scanned
+  where: github
+- _id: 194541
+  _time: 2025-04-07 23:08:57.701159079 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 492899189
+  what: labels-were-scanned
+  where: github
+- _id: 194542
+  _time: 2025-04-07 23:08:57.835623784 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 519299365
+  what: labels-were-scanned
+  where: github
+- _id: 194544
+  _time: 2025-04-07 23:08:58.524024995 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 499536612
+  what: labels-were-scanned
+  where: github
+- _id: 194545
+  _time: 2025-04-07 23:08:58.658537557 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490157985
+  what: labels-were-scanned
+  where: github
+- _id: 194546
+  _time: 2025-04-07 23:08:58.791095277 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 482612876
+  what: labels-were-scanned
+  where: github
+- _id: 194547
+  _time: 2025-04-07 23:08:58.929516837 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 493235807
+  what: labels-were-scanned
+  where: github
+- _id: 194548
+  _time: 2025-04-07 23:08:59.062147182 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 447446664
+  what: labels-were-scanned
+  where: github
+- _id: 194549
+  _time: 2025-04-07 23:08:59.195316982 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 574459304
+  what: labels-were-scanned
+  where: github
+- _id: 194550
+  _time: 2025-04-07 23:08:59.325087928 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 386420319
+  what: labels-were-scanned
+  where: github
+- _id: 194551
+  _time: 2025-04-07 23:08:59.464187291 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 784310467
+  what: labels-were-scanned
+  where: github
+- _id: 194552
+  _time: 2025-04-07 23:08:59.599385723 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 568705267
+  what: labels-were-scanned
+  where: github
+- _id: 194571
+  _time: 2025-04-07 23:09:10.128228971 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 489321585
+  what: labels-were-scanned
+  where: github
+- _id: 194574
+  _time: 2025-04-07 23:09:11.661215194 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 543969974
+  what: labels-were-scanned
+  where: github
+- _id: 194606
+  _time: 2025-04-07 23:09:31.452227259 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 13623548
+  what: labels-were-scanned
+  where: github
+- _id: 194624
+  _time: 2025-04-07 23:09:41.166895763 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 396732517
   what: labels-were-scanned
   where: github
-- _id: 194325
-  _time: 2025-04-07 22:10:11.457900516 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 840332960
-  what: labels-were-scanned
-  where: github
-- _id: 194328
-  _time: 2025-04-07 22:10:12.771483376 Z
+- _id: 194642
+  _time: 2025-04-07 23:09:49.977176292 Z
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 955159947
   what: labels-were-scanned
   where: github
-- _id: 194375
-  _time: 2025-04-07 22:10:39.137190831 Z
+- _id: 194663
+  _time: 2025-04-07 23:10:01.305069726 Z
   _version: 0.9.10/0.39.2/
   latest: 0
-  repository: 501259435
+  repository: 671896902
   what: labels-were-scanned
   where: github
-- _id: 194408
-  _time: 2025-04-07 22:10:57.912204794 Z
+- _id: 194715
+  _time: 2025-04-07 23:10:34.523975430 Z
   _version: 0.9.10/0.39.2/
-  latest: 133
-  repository: 889819508
-  what: labels-were-scanned
-  where: github
-- _id: 194409
-  _time: 2025-04-07 22:10:58.654874947 Z
-  _version: 0.9.10/0.39.2/
-  latest: 3461
-  repository: 73056727
-  what: labels-were-scanned
-  where: github
-- _id: 194410
-  _time: 2025-04-07 22:10:59.561279734 Z
-  _version: 0.9.10/0.39.2/
-  latest: 254
-  repository: 13623548
-  what: labels-were-scanned
-  where: github
-- _id: 194411
-  _time: 2025-04-07 22:11:00.031068340 Z
-  _version: 0.9.10/0.39.2/
-  latest: 53
-  repository: 546194972
-  what: labels-were-scanned
-  where: github
-- _id: 194412
-  _time: 2025-04-07 22:11:00.477231897 Z
-  _version: 0.9.10/0.39.2/
-  latest: 318
+  latest: 346
   repository: 731438612
   what: labels-were-scanned
   where: github
-- _id: 194413
-  _time: 2025-04-07 22:11:00.986009853 Z
+- _id: 194716
+  _time: 2025-04-07 23:10:35.021454391 Z
   _version: 0.9.10/0.39.2/
-  latest: 111
-  repository: 543969974
+  latest: 57
+  repository: 501259435
   what: labels-were-scanned
   where: github
-- _id: 194414
-  _time: 2025-04-07 22:11:01.490664309 Z
+- _id: 194717
+  _time: 2025-04-07 23:10:35.477478834 Z
   _version: 0.9.10/0.39.2/
-  latest: 40
+  latest: 63
+  repository: 840332960
+  what: labels-were-scanned
+  where: github
+- _id: 194718
+  _time: 2025-04-07 23:10:35.969206125 Z
+  _version: 0.9.10/0.39.2/
+  latest: 84
+  repository: 546194972
+  what: labels-were-scanned
+  where: github
+- _id: 194719
+  _time: 2025-04-07 23:10:36.525705303 Z
+  _version: 0.9.10/0.39.2/
+  latest: 234
+  repository: 889819508
+  what: labels-were-scanned
+  where: github
+- _id: 194720
+  _time: 2025-04-07 23:10:37.195663756 Z
+  _version: 0.9.10/0.39.2/
+  latest: 3513
+  repository: 73056727
+  what: labels-were-scanned
+  where: github
+- _id: 194721
+  _time: 2025-04-07 23:10:37.737139274 Z
+  _version: 0.9.10/0.39.2/
+  latest: 62
   repository: 798766850
-  what: labels-were-scanned
-  where: github
-- _id: 194415
-  _time: 2025-04-07 22:11:01.966919900 Z
-  _version: 0.9.10/0.39.2/
-  latest: 471
-  repository: 489321585
-  what: labels-were-scanned
-  where: github
-- _id: 194416
-  _time: 2025-04-07 22:11:02.599396812 Z
-  _version: 0.9.10/0.39.2/
-  latest: 979
-  repository: 671896902
   what: labels-were-scanned
   where: github
