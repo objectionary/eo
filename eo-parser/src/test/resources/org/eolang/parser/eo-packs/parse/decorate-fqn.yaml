@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+# @todo #3731:30min Implement decorating for methods. Right now +decorate meta works only with
+#  objects which @base contains FQN, like `Q.org.eolang.string`. We get such @base when we write
+#  just `string` in EO and `add-default-package.xsl` appends `Q.org.eolang.` prefix to the @base.
+#  When we write `Q.org.eolang.string` in EO, it will look like sequence of applications of methods
+#  in XSL: `.string (.eolang (.org Q))`. In such case `decorate.xsl` does not work but it must.
+---
+skip: true
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/decorate.xsl
+asserts:
+  - /program[not(errors)]
+  - //objects/o[@name='main']/o[@base='.joined' and @name='@']/o[@base='Q.org.eolang.foo']/o[@base='.string']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+input: |
+  +decorate string foo
+
+  # No comments.
+  [] > main
+    Q.org.eolang.string.joined > @

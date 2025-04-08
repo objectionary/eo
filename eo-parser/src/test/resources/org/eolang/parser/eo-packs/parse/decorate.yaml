@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/decorate.xsl
+asserts:
+  - /program[not(errors)]
+  - //objects/o[@name='main']/o[@name='@' and @base='Q.org.eolang.foo']/o[@base='Q.org.eolang.txt.text']/o[@base='Q.org.eolang.string' and not(@name)]
+  - //objects/o[@name='main']/o[@name='num' and @base='Q.org.eolang.number']
+  - //objects/o[@name='main']/o[@name='x' and @base='Q.org.eolang.bar']/o[@base='Q.org.eolang.bool' and @as='f']/o[@base='Q.org.eolang.true' and not(@as)]
+  - //objects/o[@name='main']/o[@name='tt' and @base='Q.org.eolang.xyz']/o[@base='Q.org.eolang.first']/o[@base='Q.org.eolang.abc' and @as='y']/o[@base='Q.org.eolang.second' and not(@as)]
+input: |
+  +decorate string txt.text foo
+  +decorate number
+  +decorate true bool
+  +decorate first xyz
+  +decorate second abc
+
+  # No comments.
+  [] > main
+    "Hello" > @
+    5 > num
+    bar > x
+      true:f
+    first > tt
+      second:y
