@@ -118,7 +118,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             .append(new DrListing(ctx))
             .xpath("/program").strict(1);
         if (ctx.object() == null || ctx.object().formation() == null) {
-            this.startObject(ctx);
+            this.objects().start(ctx);
         }
     }
 
@@ -228,7 +228,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
-        this.startObject(ctx);
+        this.objects().start(ctx);
     }
 
     @Override
@@ -238,7 +238,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterApplicationTauBinding(final PhiParser.ApplicationTauBindingContext ctx) {
-        this.startObject(ctx);
+        this.objects().start(ctx);
     }
 
     @Override
@@ -345,7 +345,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
-            this.startObject(ctx).prop("name", "λ").leave();
+            this.objects().start(ctx).prop("name", "λ").leave();
         }
     }
 
@@ -388,7 +388,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterJustObject(final PhiParser.JustObjectContext ctx) {
-        this.startObject(ctx);
+        this.objects().start(ctx);
         final int index = this.alphas.peek();
         this.alphas.pop();
         this.alphas.push(index + 1);
@@ -403,7 +403,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterDispatch(final PhiParser.DispatchContext ctx) {
-        this.startObject(ctx).prop("method");
+        this.objects().start(ctx).prop("method");
     }
 
     @Override
@@ -512,18 +512,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
      * @return Objects
      */
     private Objects addVoidAttribute(final ParserRuleContext ctx) {
-        return this.startObject(ctx).prop("base", "∅");
-    }
-
-    /**
-     * Start object.
-     * @param ctx Parser rule context.
-     * @return Objects
-     */
-    private Objects startObject(final ParserRuleContext ctx) {
-        return this.objects().start(
-            ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()
-        );
+        return this.objects().start(ctx).prop("base", "∅");
     }
 
     /**

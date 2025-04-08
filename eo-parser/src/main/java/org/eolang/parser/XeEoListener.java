@@ -222,7 +222,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
-        this.startObject(ctx).leave();
+        this.startAbstract(ctx);
     }
 
     @Override
@@ -276,7 +276,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVoid(final EoParser.VoidContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String name;
         if (ctx.NAME() != null) {
             name = ctx.NAME().getText();
@@ -373,7 +373,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterApplicable(final EoParser.ApplicableContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String base;
         if (ctx.STAR() != null) {
             base = "Q.org.eolang.tuple";
@@ -500,7 +500,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             count = 0;
         }
-        this.startObject(ctx)
+        this.objects.start(ctx)
             .prop("base", ctx.NAME().getText())
             .prop("before-star", count);
     }
@@ -741,7 +741,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterMethodTail(final EoParser.MethodTailContext ctx) {
         if (ctx.INT() != null) {
-            this.startObject(ctx)
+            this.objects.start(ctx)
                 .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
                 .leave();
         }
@@ -760,7 +760,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBeginner(final EoParser.BeginnerContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         if (ctx.data() == null) {
             final String base;
             if (ctx.XI() != null) {
@@ -789,7 +789,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterFinisher(final EoParser.FinisherContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
@@ -813,7 +813,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterReversed(final EoParser.ReversedContext ctx) {
         if (ctx.INT() != null) {
-            this.startObject(ctx)
+            this.objects.start(ctx)
                 .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
                 .leave();
         }
@@ -924,45 +924,57 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
-        final Supplier<String> data;
-        final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
-            base = "Q.org.eolang.bytes";
-            data = () -> text.replaceAll("\\s+", "").trim();
-        } else if (ctx.FLOAT() != null || ctx.INT() != null) {
-            base = "Q.org.eolang.number";
-            data = new BytesToHex(
-                ByteBuffer
-                    .allocate(Double.BYTES)
-                    .putDouble(Double.parseDouble(text))
-                    .array()
-            );
-        } else if (ctx.HEX() != null) {
-            base = "Q.org.eolang.number";
-            data = new BytesToHex(
-                ByteBuffer
-                    .allocate(Double.BYTES)
-                    .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
-                    .array()
-            );
-        } else if (ctx.STRING() != null) {
-            base = "Q.org.eolang.string";
-            data = new BytesToHex(
-                StringEscapeUtils.unescapeJava(
-                    text.substring(1, text.length() - 1)
-                ).getBytes(StandardCharsets.UTF_8)
-            );
+            this.objects
+                .prop("base", "Q.org.eolang.bytes")
+                .start(ctx)
+                .data(text.replaceAll("\\s+", "").trim())
+                .leave();
         } else {
-            base = "Q.org.eolang.string";
-            final int indent = ctx.getStart().getCharPositionInLine();
-            data = new BytesToHex(
-                StringEscapeUtils.unescapeJava(
-                    XeEoListener.trimMargin(text, indent)
-                ).getBytes(StandardCharsets.UTF_8)
-            );
+            final Supplier<String> data;
+            final String base;
+            if (ctx.FLOAT() != null || ctx.INT() != null) {
+                base = "Q.org.eolang.number";
+                data = new BytesToHex(
+                    ByteBuffer
+                        .allocate(Double.BYTES)
+                        .putDouble(Double.parseDouble(text))
+                        .array()
+                );
+            } else if (ctx.HEX() != null) {
+                base = "Q.org.eolang.number";
+                data = new BytesToHex(
+                    ByteBuffer
+                        .allocate(Double.BYTES)
+                        .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
+                        .array()
+                );
+            } else if (ctx.STRING() != null) {
+                base = "Q.org.eolang.string";
+                data = new BytesToHex(
+                    StringEscapeUtils.unescapeJava(
+                        text.substring(1, text.length() - 1)
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+            } else {
+                base = "Q.org.eolang.string";
+                final int indent = ctx.getStart().getCharPositionInLine();
+                data = new BytesToHex(
+                    StringEscapeUtils.unescapeJava(
+                        XeEoListener.trimMargin(text, indent)
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+            }
+            this.objects
+                .prop("base", base)
+                .start(ctx)
+                .prop("base", "Q.org.eolang.bytes")
+                .start(ctx)
+                .data(data.get())
+                .leave()
+                .leave();
         }
-        this.objects.prop("base", base).data(data.get());
     }
 
     @Override
@@ -1001,26 +1013,13 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Start object.
-     *
-     * @param ctx Context.
-     * @return Started object.
-     */
-    private Objects startObject(final ParserRuleContext ctx) {
-        return this.objects.start(
-            ctx.getStart().getLine(),
-            ctx.getStart().getCharPositionInLine()
-        );
-    }
-
-    /**
      * Start abstract object.
      *
      * @param ctx Context
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.startObject(ctx).leave();
+        return this.objects.start(ctx).leave();
     }
 
     /**

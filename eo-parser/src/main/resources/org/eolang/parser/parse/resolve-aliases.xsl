@@ -12,18 +12,14 @@
   the @base attribute.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base]">
-    <xsl:apply-templates select="." mode="with-base"/>
-  </xsl:template>
-  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
+  <xsl:template match="o[@base and not(contains(@base, '.'))]">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:variable name="meta" select="/program/metas/meta[head='alias' and part[1] = $o/@base]"/>
         <xsl:choose>
           <xsl:when test="$meta">
-            <xsl:variable name="tail" select="$meta/part[last()]"/>
-            <xsl:value-of select="$tail[1]"/>
+            <xsl:value-of select="$meta/part[last()]"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$o/@base"/>
@@ -33,7 +29,20 @@
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*" mode="#all">
+  <xsl:template match="/program/metas/meta[head='also' or head='decorate']/(tail|part)">
+    <xsl:variable name="meta" select="/program/metas/meta[head='alias' and part[1] = current()/text()]"/>
+    <xsl:copy>
+      <xsl:choose>
+        <xsl:when test="$meta">
+          <xsl:value-of select="$meta/part[last()]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="text()"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

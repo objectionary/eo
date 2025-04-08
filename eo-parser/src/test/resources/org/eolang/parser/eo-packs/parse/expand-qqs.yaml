@@ -7,13 +7,15 @@ sheets:
 asserts:
   - /program[not(errors)]
   - /program/objects[count(.//o[starts-with(@base, 'QQ')])=0]
-  - /program/objects[count(.//o[starts-with(@base, 'Q')])=3]
+  - /program/objects[count(.//o[starts-with(@base, 'Q')])=5]
   - /program/metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'QQ')]])=0]
   - /program/metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
   - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.txt.text']
+  - /program/metas/meta[head/text()='decorate' and part/text()='Q.org.eolang.txt.text']
 input: |
   +alias QQ.txt.sprintfQQ
   +also QQ.txt.text
+  +decorate string QQ.txt.text
 
   # No comments.
   [] > app

@@ -16,8 +16,9 @@ asserts:
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
-  - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.number' and part/text()='Q.org.eolang.number']
-  - /program/metas/meta[head/text()='also' and tail/text()='Q.org.eolang.string' and part/text()='Q.org.eolang.string']
+  - /program/metas/meta[head='also' and tail='Q.org.eolang.number' and part='Q.org.eolang.number']
+  - /program/metas/meta[head='also' and tail='Q.org.eolang.string' and part='Q.org.eolang.string']
+  - /program/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Q.org.eolang.string' and part='Q.org.eolang.number' and part='Q.org.eolang.foo.bar']
 input: |
   +alias foo
   +alias scanner org.eolang.txt.scanner
@@ -26,9 +27,11 @@ input: |
   +foo Some other meta
   +also org.eolang.number
   +also string
+  +decorate string QQ.number foo.bar
 
   # No comments.
   [args] > main
+    stdin.x > w
     and > @
       (scanner stdin).next-line > line!
       (stdout "You entered" line).print

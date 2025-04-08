@@ -53,8 +53,12 @@
           <xsl:element name="o">
             <xsl:attribute name="base" select="'Q.org.eolang.number'"/>
             <xsl:element name="o">
-              <xsl:attribute name="hex"/>
-              <xsl:value-of select="count(o)"/>
+              <xsl:attribute name="base" select="'Q.org.eolang.bytes'">
+              </xsl:attribute>
+              <xsl:element name="o">
+                <xsl:attribute name="hex"/>
+                <xsl:value-of select="count(o)"/>
+              </xsl:element>
             </xsl:element>
           </xsl:element>
         </xsl:element>
