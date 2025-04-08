@@ -5,6 +5,7 @@
 #  just `string` in EO and `add-default-package.xsl` appends `Q.org.eolang.` prefix to the @base.
 #  When we write `Q.org.eolang.string` in EO, it will look like sequence of applications of methods
 #  in XSL: `.string (.eolang (.org Q))`. In such case `decorate.xsl` does not work but it must.
+#  Don't forget to enable this pack and make sure it works
 ---
 skip: true
 sheets:
