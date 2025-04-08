@@ -51,7 +51,7 @@
             self-as-bytes.eq neg-zero-as-bytes
         self-as-bytes.eq x-as-bytes
     x > x-as-bytes!
-    as-bytes > self-as-bytes
+    as-bytes > self-as-bytes!
     0.as-bytes > pos-zero-as-bytes
     -0.as-bytes > neg-zero-as-bytes
 
