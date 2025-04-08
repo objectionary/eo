@@ -35,7 +35,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,9 +42,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test cases for {@link MjUnphi}.
  * @since 0.34.0
- * @todo #3708:30min Remove @Disabled annotation on
- *  {@code UnphiMojoTest.usesCache()} and {@code UnphiMojoTest.invalidatesCache()}
- *  when cache is implemented, check that tests is valid otherwise fix them if needed.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
@@ -281,7 +277,6 @@ final class MjUnphiTest {
     }
 
     @Test
-    @Disabled
     void usesCache(@Mktmp final Path temp) throws Exception {
         new Saved(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
@@ -290,7 +285,7 @@ final class MjUnphiTest {
         final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
         final String expected = "some valid XMIR from cache";
-        new Saved(
+        final File cached = new Saved(
             expected,
             new CachePath(
                 cache.resolve("unphied"),
@@ -298,7 +293,12 @@ final class MjUnphiTest {
                 hash,
                 Path.of("std.xmir")
             ).get()
-        ).value();
+        ).value().toFile();
+        MatcherAssert.assertThat(
+            "The cached file's last modified timestamp should be strictly after the source one",
+            cached.setLastModified(cached.lastModified() + 1),
+            Matchers.is(true)
+        );
         MatcherAssert.assertThat(
             "XMIR file is not loaded from cache",
             new TextOf(
@@ -306,7 +306,7 @@ final class MjUnphiTest {
                     .with("cache", cache.toFile())
                     .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
                     .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-                    .allTojosWithHash(() -> hash)
+                    .with("hash", new CommitHash.ChConstant(hash))
                     .execute(MjUnphi.class)
                     .result()
                     .get("target/eo/1-parse/std.xmir")
@@ -316,7 +316,6 @@ final class MjUnphiTest {
     }
 
     @Test
-    @Disabled
     void invalidatesCache(@Mktmp final Path temp) throws Exception {
         final String hash = "123ZaRiFcHiK321";
         final Path cache = temp.resolve("cache");
@@ -338,7 +337,7 @@ final class MjUnphiTest {
             .with("cache", cache.toFile())
             .with("unphiInputDir", temp.resolve("target/eo/phi/").toFile())
             .with("unphiOutputDir", temp.resolve("target/eo/1-parse").toFile())
-            .allTojosWithHash(() -> hash)
+            .with("hash", new CommitHash.ChConstant(hash))
             .execute(MjUnphi.class);
         MatcherAssert.assertThat(
             "XMIR cache not invalidated",
