@@ -26,7 +26,7 @@ final class Objects implements Iterable<Directive> {
     }
 
     /**
-     * Start new object
+     * Start new object.
      * @param ctx Context
      * @return Self.
      */
