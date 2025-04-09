@@ -323,15 +323,11 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterDeltaBinding(final PhiParser.DeltaBindingContext ctx) {
         if (ctx.EMPTY() != null) {
-            if (!"org.eolang".equals(String.join(".", this.packages))
-                && !"bytes".equals(this.attributes.peek())
-            ) {
-                this.errors.add(
-                    new ParsingError(
-                        ctx, "It's impossible to represent Δ ⤍ ∅ binding in EO"
-                    ).cause()
-                );
-            }
+            this.errors.add(
+                new ParsingError(
+                    ctx, "It's impossible to represent Δ ⤍ ∅ binding in EO"
+                ).cause()
+            );
         } else {
             this.objects().data(ctx.BYTES().getText().trim());
         }
