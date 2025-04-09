@@ -24,10 +24,22 @@ import org.xembly.Directives;
  */
 final class StUnhex extends StEnvelope {
     /**
+     * Xpath for finding bytes.
+     */
+    private static final String BYTES =
+        "//o[@base='Q.org.eolang.bytes' and o[1][string-length(normalize-space(text()))>0]]";
+
+    /**
      * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
      */
     static final Shift XNAV = new StSequence(
         StUnhex.class.getSimpleName(),
+        new StXnav(
+            StUnhex.BYTES,
+            xnav -> xnav.node().setTextContent(
+                xnav.element("o").text().orElse("")
+            )
+        ),
         new StXnav(
             StUnhex.elements("number"),
             xnav -> {
@@ -35,9 +47,7 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
                 final Node node = xnav.node();
-                if (Double.isNaN(number) || Double.isInfinite(number)) {
-                    ((Element) node).setAttribute("skip", "");
-                } else {
+                if (!Double.isNaN(number) && !Double.isInfinite(number)) {
                     node.setTextContent(StUnhex.number(number));
                 }
             }
@@ -66,16 +76,18 @@ final class StUnhex extends StEnvelope {
     static final Shift XPATH = new StSequence(
         StUnhex.class.getSimpleName(),
         new StXPath(
+            StUnhex.BYTES,
+            xml -> new Directives().set(xml.xpath("./o[1]/text()").get(0))
+        ),
+        new StXPath(
             StUnhex.elements("number"),
             xml -> {
                 final double number = StUnhex.buffer(
-                    StUnhex.undash(xml.xpath("./o/text()").get(0))
+                    StUnhex.undash(xml.xpath("./o[1]/text()").get(0))
                 ).getDouble();
-                final Iterable<Directive> dirs;
-                if (Double.isNaN(number) || Double.isInfinite(number)) {
-                    dirs = new Directives().attr("skip", "");
-                } else {
-                    dirs = new Directives().set(StUnhex.number(number));
+                final Directives dirs = new Directives();
+                if (!Double.isNaN(number) && !Double.isInfinite(number)) {
+                    dirs.set(StUnhex.number(number));
                 }
                 return dirs;
             }
@@ -88,7 +100,7 @@ final class StUnhex extends StEnvelope {
                     StringEscapeUtils.escapeJava(
                         new String(
                             StUnhex.buffer(
-                                StUnhex.undash(xml.xpath("./o/text()").get(0))
+                                StUnhex.undash(xml.xpath("./o[1]/text()").get(0))
                             ).array(),
                             StandardCharsets.UTF_8
                         )
@@ -97,11 +109,6 @@ final class StUnhex extends StEnvelope {
             )
         )
     );
-
-    /**
-     * Unhexing via XSL.
-     */
-    static final Shift XSL = new StClasspath("/org/eolang/parser/print/unhex-data.xsl");
 
     /**
      * Ctor.
@@ -181,7 +188,7 @@ final class StUnhex extends StEnvelope {
      */
     private static String elements(final String type) {
         return String.format(
-            "//o[@base='Q.org.eolang.%s' and(not(@skip)) and o[1][@base='Q.org.eolang.bytes' and not(o) and string-length(normalize-space(text()))>0]]",
+            "//o[@base='Q.org.eolang.%s' and o[1][@base='Q.org.eolang.bytes' and string-length(normalize-space(text()))>0]]",
             type
         );
     }

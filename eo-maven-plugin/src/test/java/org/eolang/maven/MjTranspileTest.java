@@ -20,7 +20,6 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
-import org.eolang.parser.StFlatBytes;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
@@ -70,7 +69,7 @@ final class MjTranspileTest {
                         "scenario",
                         new InputOf(String.format("%s\n", eo))
                     ).parsed(),
-                    new TrDefault<>(new StFlatBytes())
+                    new TrDefault<>()
                 )
             ),
             new XtoryMatcher()

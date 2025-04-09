@@ -8,9 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
 import java.util.Collection;
 import java.util.List;
@@ -41,14 +39,12 @@ public final class Xmir implements XML {
      */
     private static final Xsline FOR_EO = new Xsline(
         new TrFull(
-            new TrJoined<>(
-                new TrDefault<>(new StFlatBytes(), new StUnhex()),
-                new TrClasspath<>(
-                    "/org/eolang/parser/print/tuples-to-stars.xsl",
-                    "/org/eolang/parser/print/inline-cactoos.xsl",
-                    "/org/eolang/parser/print/dataized-to-const.xsl",
-                    "/org/eolang/parser/print/to-eo.xsl"
-                ).back()
+            new TrDefault<>(
+                new StUnhex(),
+                new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl"),
+                new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
+                new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
+                new StClasspath("/org/eolang/parser/print/to-eo.xsl")
             )
         )
     );
@@ -59,7 +55,6 @@ public final class Xmir implements XML {
     private static final Xsline FOR_PHI = new Xsline(
         new TrFull(
             new TrDefault<>(
-                new StFlatBytes(),
                 new StUnhex(),
                 new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
                 new StClasspath(
@@ -160,7 +155,6 @@ public final class Xmir implements XML {
             new Xsline(
                 new TrFull(
                     new TrDefault<>(
-                        new StFlatBytes(),
                         new StUnhex(),
                         new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
                         new StClasspath(
@@ -183,7 +177,6 @@ public final class Xmir implements XML {
             new Xsline(
                 new TrFull(
                     new TrDefault<>(
-                        new StFlatBytes(),
                         new StClasspath("/org/eolang/parser/phi/to-salty-phi.xsl")
                     )
                 )
@@ -201,6 +194,7 @@ public final class Xmir implements XML {
     private String converted(final Xsline train, final String node) {
         final XML xmir = train.pass(this.xml);
         Logger.debug(this, "XMIR after converting to %s:\n%s", node, xmir);
+        System.out.println(xmir);
         return new Xnav(xmir.inner())
             .element("program")
             .element(node)

@@ -24,12 +24,12 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsIntFromHexToEo(final Shift shift) {
+    void convertsNumberFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must successfully unhex number", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>43-70-2E-4F-30-46-73-2E</o></o></o></p>"
                 )
             ),
             Matchers.anyOf(
@@ -41,31 +41,34 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsMaxIntFromHexToEo(final Shift shift) {
+    void convertsMaxIntFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must skip unhexing max integer number", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>FF-FF-FF-FF-FF-FF-FF-FF</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>FF-FF-FF-FF-FF-FF-FF-FF</o></o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPath(
-                "//o[@base='Q.org.eolang.number' and o[@base='Q.org.eolang.bytes' and text()!='']]"
+                "//o[@base='Q.org.eolang.number' and o[@base='Q.org.eolang.bytes' and not(o) and text()!='']]"
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsStringFromHexToEo(final Shift shift) {
+    void convertsStringFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            "String bytes must be converted to human readable string, but they didn't",
+            String.format(
+                "StUnhex with %s must unhex bytes to human readable string, but they didn't",
+                type
+            ),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42-0A-09</o></o>",
-                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'>41-42</o></o></p>"
+                        "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'><o>41-42-0A-09</o></o></o>",
+                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'><o>41-42</o></o></o></p>"
                     )
                 )
             ),
@@ -78,12 +81,12 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsEmptyStringFromHexToEo(final Shift shift) {
+    void convertsEmptyStringFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must convert empty string", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'/></o></p>"
+                    "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'/><o/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[empty(text())]")
@@ -92,12 +95,12 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsStringWithDoubleSpacesFromHexToEo(final Shift shift) {
+    void convertsStringWithDoubleSpacesFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must convert string with double spaces", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<o base=\"Q.org.eolang.string\"><o base=\"Q.org.eolang.bytes\">7A-0A-20-20-79-0A-20-78</o></o>"
+                    "<o base=\"Q.org.eolang.string\"><o base=\"Q.org.eolang.bytes\"><o>7A-0A-20-20-79-0A-20-78</o></o></o>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[text()='\"z\\n  y\\n x\"']")
@@ -106,12 +109,12 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsNegativeZeroFromHexToEo(final Shift shift) {
+    void convertsNegativeZeroFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must convert negative zero", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>80-00-00-00-00-00-00-00</o></o>"
+                    "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>80-00-00-00-00-00-00-00</o></o></o>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[text()='-0']")
@@ -120,12 +123,12 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
-    void convertsFloatFromHexToEo(final Shift shift) {
+    void convertsFloatFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            String.format("StUnhex by %s must convert float", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'>41-42-43-67-AE-CD-3E-FD</o></o></p>"
+                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>41-42-43-67-AE-CD-3E-FD</o></o></o></p>"
                 )
             ),
             Matchers.anyOf(
@@ -138,9 +141,8 @@ final class StUnhexTest {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> shifts() {
         return Stream.of(
-            Arguments.of(StUnhex.XNAV),
-            Arguments.of(StUnhex.XPATH),
-            Arguments.of(StUnhex.XSL)
+            Arguments.of(StUnhex.XNAV, "xnav"),
+            Arguments.of(StUnhex.XPATH, "xpath")
         );
     }
 }
