@@ -89,9 +89,6 @@ final class PhiSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
     void printsSweetToSalty(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
-        System.out.println(
-            new PhiSyntax((String) xtory.map().get("sweet")).parsed()
-        );
         MatcherAssert.assertThat(
             "Sweet XMIR should be equivalent to salty one",
             new Xmir(
