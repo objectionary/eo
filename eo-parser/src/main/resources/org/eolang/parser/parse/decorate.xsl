@@ -108,7 +108,6 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
   <xsl:template match="o" mode="equal">
     <xsl:param name="meta"/>
     <xsl:choose>
