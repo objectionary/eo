@@ -24,6 +24,28 @@
         text
           "Hello"
     ```
+
+    If only part of FQN is required to be decorated like:
+    ```
+    +decorate string text
+
+    # Main.
+    [] > main
+      Q.org.eolang.string.joined.with.some > @
+    ```
+
+    It'll be transformed to:
+    ```
+    +decorate string text
+
+    # Main.
+    [] > main
+      some. > @
+        with.
+          joined.
+            Q.org.eolang.text
+              Q.org.eolang.string
+    ```
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="metas" select="/program/metas/meta[head='decorate']"/>
