@@ -5,15 +5,12 @@
 package org.eolang.parser;
 
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
