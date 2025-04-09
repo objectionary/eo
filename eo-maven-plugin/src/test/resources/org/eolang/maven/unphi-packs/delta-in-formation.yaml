@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - //o[@name='x' and @base='Q.org.eolang.bytes' and text()='01-']
+  - //o[@name='x' and @base='Q.org.eolang.bytes' and o[1][text()='01-']]
 phi: |
   {
     ⟦
