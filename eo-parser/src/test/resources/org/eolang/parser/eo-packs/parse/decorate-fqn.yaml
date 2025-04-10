@@ -1,13 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
-# @todo #3731:30min Implement decorating for methods. Right now +decorate meta works only with
-#  objects which @base contains FQN, like `Q.org.eolang.string`. We get such @base when we write
-#  just `string` in EO and `add-default-package.xsl` appends `Q.org.eolang.` prefix to the @base.
-#  When we write `Q.org.eolang.string` in EO, it will look like sequence of applications of methods
-#  in XSL: `.string (.eolang (.org Q))`. In such case `decorate.xsl` does not work but it must.
-#  Don't forget to enable this pack and make sure it works
 ---
-skip: true
 sheets:
   - /org/eolang/parser/parse/move-voids-up.xsl
   - /org/eolang/parser/parse/wrap-method-calls.xsl
@@ -17,13 +10,22 @@ sheets:
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/parse/decorate.xsl
 asserts:
   - /program[not(errors)]
-  - //objects/o[@name='main']/o[@base='.joined' and @name='@']/o[@base='Q.org.eolang.foo']/o[@base='.string']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //objects/o[@name='main']/o[@base='.with' and @name='@' and o[1][@base='.joined']/o[@base='Q.org.eolang.foo']/o[@base='Q.org.eolang.string' and not(@name)] and o[2][@base='Q.org.eolang.bytes']]
+  - //objects/o[@name='main']/o[@base='.unsafe' and @name='num' and o[1][@base='Q.org.eolang.bar']/o[@base='Q.org.eolang.number'] and o[2][@base='Q.org.eolang.bytes']]
+  - //objects/o[@name='main']/o[@base='.string' and @name='str']/o[@base='Q.org.eolang']/o[@base='Q.org.eolang.bytes']
+  - //objects/o[@name='main']/o[@base='Q.org.eolang.baz' and @name='abc']/o[@base='Q.org.eolang.bar' and @as='α0']/o[@base='Q.org.eolang.number' and not(@as)]
 input: |
   +decorate string foo
+  +decorate number bar
 
   # No comments.
   [] > main
-    Q.org.eolang.string.joined > @
+    Q.org.eolang.string.joined.with 11- > @
+    5.unsafe FF- > num
+    (Q.org.eolang 00-).string > str
+    baz > abc
+      5:0
