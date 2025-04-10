@@ -3,11 +3,10 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program[@name != '']
-  - /program[@version != '']
-  - /program[@time != '']
-  - /program/objects
+  - /object[not(errors)]
+  - /object[@name != '']
+  - /object[@version != '']
+  - /object[@time != '']
   - //o[@base='Q.org.eolang.a' and @line='3']
   - //o[@base='Q.org.eolang.b-друг' and @line='4']
   - //o[@base='Q.org.eolang.c4-5' and @line='5']

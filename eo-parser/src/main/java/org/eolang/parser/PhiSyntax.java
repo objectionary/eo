@@ -85,11 +85,6 @@ public final class PhiSyntax implements Syntax {
     )::pass;
 
     /**
-     * Name of the program.
-     */
-    private final String name;
-
-    /**
      * Input.
      */
     private final Text input;
@@ -118,7 +113,7 @@ public final class PhiSyntax implements Syntax {
      * @param train Train of transformations to apply
      */
     PhiSyntax(final String input, final Train<Shift> train) {
-        this("test", () -> input, new Directives(), new Xsline(train)::pass);
+        this(() -> input, new Directives(), new Xsline(train)::pass);
     }
 
     /**
@@ -126,34 +121,29 @@ public final class PhiSyntax implements Syntax {
      * @param input Input
      */
     public PhiSyntax(final Text input) {
-        this("test", input, new Directives());
+        this(input, new Directives());
     }
 
     /**
      * Ctor.
-     * @param nme Name of the program
      * @param inpt Input
      * @param extra Extra directives to append
      */
-    public PhiSyntax(final String nme, final Text inpt, final Iterable<Directive> extra) {
-        this(nme, inpt, extra, PhiSyntax.CANONICAL);
+    public PhiSyntax(final Text inpt, final Iterable<Directive> extra) {
+        this(inpt, extra, PhiSyntax.CANONICAL);
     }
 
     /**
      * Base ctor.
-     * @param nme Name of the program
      * @param inpt Input
      * @param extra Extra directives to append
      * @param transform Functions that transforms XMIR after parsing
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private PhiSyntax(
-        final String nme,
         final Text inpt,
         final Iterable<Directive> extra,
         final Function<XML, XML> transform
     ) {
-        this.name = nme;
         this.input = inpt;
         this.extra = extra;
         this.transform = transform;
@@ -161,7 +151,7 @@ public final class PhiSyntax implements Syntax {
 
     @Override
     public XML parsed() throws IOException {
-        final XePhiListener xel = new XePhiListener(this.name);
+        final XePhiListener xel = new XePhiListener();
         final GeneralErrors spy = new GeneralErrors(this.input);
         final PhiLexer lexer = new PhiLexer(
             CharStreams.fromStream(

@@ -15,7 +15,7 @@
   +alias foo org.example.foo
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/metas/meta[head='alias']">
+  <xsl:template match="/object/metas/meta[head='alias']">
     <xsl:variable name="composite" select="contains(tail, ' ')"/>
     <xsl:variable name="split" select="tokenize(tail/text(), ' ')"/>
     <xsl:variable name="last">

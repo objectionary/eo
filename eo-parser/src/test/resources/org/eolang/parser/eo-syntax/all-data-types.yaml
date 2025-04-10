@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@base='Q.org.eolang.bytes' and @name='bytesX']
   - //o[@base='Q.org.eolang.bytes' and @name='ml']
   - //o[@base='Q.org.eolang.true' and @name='boolX']

@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@name='f' and @line='8']
   - //o[@base='$.^.f']
 input: |

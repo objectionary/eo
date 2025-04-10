@@ -5,8 +5,8 @@ sheets:
   - /org/eolang/parser/parse/const-to-dataized.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
-  - /program/objects[not(o[o[@name='λ'] and @base])]
-  - /program/objects[not(o[o[@name='λ'] and o[@base]])]
+  - /object[not(o[o[@name='λ'] and @base])]
+  - /object[not(o[o[@name='λ'] and o[@base]])]
   - //o[o[@name='λ'] and o[@base='∅']]
 input: |
   # No comments.

@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=2]
   - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=10]
   - //o[@base='.times']/o[@base='.plus']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']

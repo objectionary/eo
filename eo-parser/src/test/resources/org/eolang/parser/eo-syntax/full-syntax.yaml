@@ -3,9 +3,9 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/metas[count(meta)=4]
-  - /program/metas/meta[head='foo' and tail='']
+  - /object[not(errors)]
+  - /object/metas[count(meta)=4]
+  - /object/metas/meta[head='foo' and tail='']
   - //o[@base='Q.org.eolang.true']
   - //o[@base='Q.org.eolang.string']
   - //o[@name='hello' and @base='.as-bytes' and o[@base='Q.org.eolang.dataized']]

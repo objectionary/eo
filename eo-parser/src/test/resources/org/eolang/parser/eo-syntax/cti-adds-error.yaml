@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program/errors[count(*)=1]
+  - /object/errors[count(*)=1]
   - /program/errors/error[@check='cti']
   - /program/errors/error[@severity='error']
   - /program/errors/error[text()='This method is deprecated!']

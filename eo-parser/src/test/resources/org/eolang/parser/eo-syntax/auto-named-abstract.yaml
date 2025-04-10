@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[not(@base) and @name='a🌵25' and o[@name='five']]
   - //o[not(@base) and @name='a🌵43' and o[@name='ten']]
   - //o[not(@base) and @name='a🌵811' and not(@as) and o[@name='eleven']]

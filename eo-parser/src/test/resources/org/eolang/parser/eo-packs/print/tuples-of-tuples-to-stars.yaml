@@ -17,8 +17,8 @@ sheets:
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/tuples-to-stars.xsl
 asserts:
-  - /program/objects/o[@name='foo']/o[@name='xs' and @star and count(o[@star])=3]
-  - /program/objects/o[@name='foo']/o[@name='yx' and @star and count(o[@star])=3]
+  - /object/o[@name='foo']/o[@name='xs' and @star and count(o[@star])=3]
+  - /object/o[@name='foo']/o[@name='yx' and @star and count(o[@star])=3]
 input: |
   +package test
 

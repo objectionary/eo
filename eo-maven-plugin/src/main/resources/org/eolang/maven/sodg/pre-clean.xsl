@@ -9,13 +9,13 @@
   during the further processing.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/listing">
+  <xsl:template match="/object/listing">
     <!-- remove it -->
   </xsl:template>
-  <xsl:template match="/program/sheets">
+  <xsl:template match="/object/sheets">
     <!-- remove it -->
   </xsl:template>
-  <xsl:template match="/program/errors">
+  <xsl:template match="/object/errors">
     <!-- remove it -->
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">

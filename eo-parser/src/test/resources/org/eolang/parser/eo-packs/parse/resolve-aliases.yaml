@@ -8,12 +8,12 @@ sheets:
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
-  - /program/metas/meta[head='foo']
-  - /program/metas[count(meta)=9]
-  - /program/metas/meta[head/text()='also' and tail='Q.org.eolang.xyz' and part='Q.org.eolang.xyz']
-  - /program/metas/meta[head/text()='decorate' and tail='string my foo' and part='Q.org.eolang.xyz']
+  - /object[not(errors)]
+  - /object[count(o)=1]
+  - /object/metas/meta[head='foo']
+  - /object/metas[count(meta)=9]
+  - /object/metas/meta[head/text()='also' and tail='Q.org.eolang.xyz' and part='Q.org.eolang.xyz']
+  - /object/metas/meta[head/text()='decorate' and tail='string my foo' and part='Q.org.eolang.xyz']
   - //o[@base='Q.org.eolang.txt.scanner']
   - //o[@base='Q.org.eolang.io.stdout']
   - //o[@base='and']

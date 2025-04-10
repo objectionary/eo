@@ -29,11 +29,10 @@ final class DrProgramTest {
         MatcherAssert.assertThat(
             "XMIR program element is built",
             XhtmlMatchers.xhtml(
-                new Xembler(new DrProgram("foo")).xml()
+                new Xembler(new DrProgram()).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                "/program[@name='foo']",
-                "/program[@dob and @time and @version and @revision]"
+                "/object[@dob and @time and @version and @revision]"
             )
         );
     }
@@ -43,7 +42,7 @@ final class DrProgramTest {
     void setsSchemaLocation() throws Exception {
         MatcherAssert.assertThat(
             "XSD location is set",
-            new XMLDocument(new Xembler(new DrProgram("xxx")).xml()).toString(),
+            new XMLDocument(new Xembler(new DrProgram()).xml()).toString(),
             Matchers.containsString(
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             )
@@ -55,8 +54,8 @@ final class DrProgramTest {
     void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
-            new XMLDocument(new Xembler(new DrProgram("bar")).xml()).xpath(
-                "/program/@xsi:noNamespaceSchemaLocation"
+            new XMLDocument(new Xembler(new DrProgram()).xml()).xpath(
+                "/object/@xsi:noNamespaceSchemaLocation"
             ).get(0),
             Matchers.startsWith("file:///")
         );
@@ -68,8 +67,8 @@ final class DrProgramTest {
         MatcherAssert.assertThat(
             "XSD file exists",
             Paths.get(
-                new XMLDocument(new Xembler(new DrProgram("boom")).xml()).xpath(
-                    "/program/@xsi:noNamespaceSchemaLocation"
+                new XMLDocument(new Xembler(new DrProgram()).xml()).xpath(
+                    "/object/@xsi:noNamespaceSchemaLocation"
                 ).get(0).substring("file:///".length())
             ).toFile().exists(),
             Matchers.is(true)
@@ -82,9 +81,9 @@ final class DrProgramTest {
             new StrictXML(
                 new XMLDocument(
                     new Xembler(
-                        new Directives().append(new DrProgram("foo"))
+                        new Directives().append(new DrProgram())
                             .add("listing").set("hello, world!").up()
-                            .add("objects").add("o").attr("name", "bar")
+                            .add("o").attr("name", "bar")
                     ).domQuietly()
                 )
             )::inner,

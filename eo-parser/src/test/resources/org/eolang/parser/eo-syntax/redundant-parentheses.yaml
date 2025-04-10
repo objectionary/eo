@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
 input: |
   1.add (a.add 5) 4 > x
   add. 1 (a.add 5) > x

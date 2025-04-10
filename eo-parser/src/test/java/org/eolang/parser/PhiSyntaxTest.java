@@ -46,7 +46,6 @@ final class PhiSyntaxTest {
         MatcherAssert.assertThat(
             "Result XML must contain extra object",
             new PhiSyntax(
-                "test",
                 () -> "{⟦obj ↦ ⟦⟧⟧}",
                 new Directives().xpath("/program/objects").add("o").attr("base", "x")
             ).parsed(),

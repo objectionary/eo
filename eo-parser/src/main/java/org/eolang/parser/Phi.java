@@ -8,7 +8,6 @@ import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.Supplier;
 import org.cactoos.Text;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
@@ -22,11 +21,6 @@ import org.xembly.Directives;
  * @since 0.51.0
  */
 public class Phi {
-    /**
-     * Program name.
-     */
-    private final Supplier<String> name;
-
     /**
      * Phi source code.
      */
@@ -85,11 +79,7 @@ public class Phi {
      * @param metas Extra metas to add after parsing
      */
     public Phi(final Path file, final Iterable<Directive> metas) {
-        this(
-            () -> file.getFileName().toString().replace(".phi", ""),
-            file,
-            metas
-        );
+        this(new TextOf(file), metas);
     }
 
     /**
@@ -98,27 +88,6 @@ public class Phi {
      * @param metas Extra metas to add after parsing
      */
     public Phi(final Text source, final Iterable<Directive> metas) {
-        this(() -> "unknown", source, metas);
-    }
-
-    /**
-     * Ctor.
-     * @param name Program name
-     * @param file Source file
-     * @param metas Extra metas to add after parsing
-     */
-    public Phi(final Supplier<String> name, final Path file, final Iterable<Directive> metas) {
-        this(name, new TextOf(file), metas);
-    }
-
-    /**
-     * Ctor.
-     * @param name Program name
-     * @param source PHI source code
-     * @param metas Extra metas to add after parsing
-     */
-    public Phi(final Supplier<String> name, final Text source, final Iterable<Directive> metas) {
-        this.name = name;
         this.source = source;
         this.metas = metas;
     }
@@ -129,7 +98,7 @@ public class Phi {
      * @throws IOException If fails to parse
      */
     public XML unphi() throws IOException {
-        return new PhiSyntax(this.name.get(), this.source, this.metas).parsed();
+        return new PhiSyntax(this.source, this.metas).parsed();
     }
 
     /**

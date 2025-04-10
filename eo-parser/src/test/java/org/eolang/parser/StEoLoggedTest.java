@@ -94,10 +94,8 @@ final class StEoLoggedTest {
     private static XML example() throws ImpossibleModificationException {
         return new XMLDocument(
             new Xembler(
-                new Directives().append(new DrProgram("foo"))
-                    .add("objects")
+                new Directives().append(new DrProgram())
                     .add("o")
-                    .attr("abstract", "")
                     .attr("name", "bar")
             ).xml()
         );

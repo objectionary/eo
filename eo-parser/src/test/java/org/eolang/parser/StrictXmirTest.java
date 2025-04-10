@@ -185,13 +185,13 @@ final class StrictXmirTest {
         return new XMLDocument(
             new Xembler(
                 new Directives()
-                    .append(new DrProgram("foo"))
-                    .xpath("/program")
+                    .append(new DrProgram())
+                    .xpath("/object")
                     .attr(
                         "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                         schema
                     )
-                    .add("objects")
+                    .add("o")
             ).xmlQuietly()
         );
     }

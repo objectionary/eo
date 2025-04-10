@@ -16,7 +16,7 @@ sheets:
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
 asserts:
-  - /program/objects[count(o)=3]
+  - /object[count(o)=1]
   - //o[@base='$.two.a' and @name='one']
   - //o[@base='$.three.b' and @name='two']
   - //o[@base='Q.org.eolang.c' and @name='three']
@@ -29,31 +29,33 @@ asserts:
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Q.org.eolang.false']
   - //o[@name='bts']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Q.org.eolang.bytes']/o[1][@base='Q.org.eolang.bytes']/o[text()!='']
 input: |
-  # No comment.
-  [x] > foo
-    a. > one
-      b. > two
-        c > three
-    * 1 2 > tup
-    if. true 1 2 > cond
-    if. > rev
-      x
-        y
-      2
-      1
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > compares-bool-to-bytes-reverse
-    and. > @
-      01-.as-bytes.eq true
-      00-.as-bytes.eq false
-
-  # No comments.
-  [] > bts
-    eq. > @
-      as-bytes.
-        bytes.
-          eolang.
-            org.
-              Q
-          01-
+  # Main.
+  [] > main
+    # No comment.
+    [x] > foo
+      a. > one
+        b. > two
+          c > three
+      * 1 2 > tup
+      if. true 1 2 > cond
+      if. > rev
+        x
+          y
+        2
+        1
+  
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] > compares-bool-to-bytes-reverse
+      and. > @
+        01-.as-bytes.eq true
+        00-.as-bytes.eq false
+  
+    # No comments.
+    [] > bts
+      eq. > @
+        as-bytes.
+          bytes.
+            eolang.
+              org.
+                Q
+            01-

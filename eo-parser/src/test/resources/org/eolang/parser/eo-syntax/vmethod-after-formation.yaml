@@ -3,9 +3,9 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/objects/o[@base='Q.x.first']
-  - /program/objects/o[@name='x']/o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]
+  - /object[not(errors)]
+  - /object/o[@base='Q.x.first']
+  - /object/o[@name='x']/o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]
 input: |
   # No comments.
   [] > x

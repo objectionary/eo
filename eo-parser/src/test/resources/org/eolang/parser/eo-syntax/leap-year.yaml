@@ -3,8 +3,8 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
+  - /object[not(errors)]
+  - /object[count(o)=1]
   - //o[@base='.and']
 input: |
   +alias org.eolang.io.stdin

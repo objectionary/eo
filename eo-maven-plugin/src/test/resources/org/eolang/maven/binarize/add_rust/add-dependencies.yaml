@@ -56,6 +56,6 @@ document:
      </objects>
   </program>
 asserts:
-  - /program/rusts/rust[@code_loc='Φ.org.eolang.creates-object.r.α0']
-  - /program/rusts/rust/dependencies/dependency[@name='72 65 6F 3A 20 30 2E 30 2E 32']
-  - /program/rusts/rust/dependencies/dependency[@name='72 61 6E 64 3A 20 30 2E 35 2E 35']
+  - /object/rusts/rust[@code_loc='Φ.org.eolang.creates-object.r.α0']
+  - /object/rusts/rust/dependencies/dependency[@name='72 65 6F 3A 20 30 2E 30 2E 32']
+  - /object/rusts/rust/dependencies/dependency[@name='72 61 6E 64 3A 20 30 2E 35 2E 35']

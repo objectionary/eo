@@ -20,31 +20,9 @@ import org.xembly.Directives;
  * @since 0.44.0
  */
 final class DrProgram implements Iterable<Directive> {
-
-    /**
-     * Name of the program.
-     */
-    private final String name;
-
-    /**
-     * Ctor.
-     * @param nme Name of the program
-     */
-    DrProgram(final String nme) {
-        this.name = nme;
-    }
-
     @Override
     public Iterator<Directive> iterator() {
-        final String when = ZonedDateTime.now(ZoneOffset.UTC).format(
-            DateTimeFormatter.ISO_INSTANT
-        );
-        final String nme;
-        if (this.name.startsWith("Q.")) {
-            nme = this.name.substring(2);
-        } else {
-            nme = this.name;
-        }
+        final String when = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
         return new Directives()
             .comment(
                 String.join(
@@ -72,12 +50,11 @@ final class DrProgram implements Iterable<Directive> {
                     ""
                 )
             )
-            .add("program")
+            .add("object")
             .attr(
                 "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                 DrProgram.schema()
             )
-            .attr("name", nme)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
             .attr("dob", Manifests.read("EO-Dob"))

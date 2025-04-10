@@ -17,10 +17,10 @@ sheets:
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/inline-cactoos.xsl
 asserts:
-  - /program/objects[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=0]
-  - /program/objects/o[@name='foo']/o[@name='y']/o[not(@base) and @name='a🌵47']
-  - /program/objects/o[@name='foo']/o[@name='bar']/o/o/o/o[not(@base) and @name='a🌵915']
-  - /program/objects/o[@name='foo']/o[@name='z']/o[@as and starts-with(@name, 'a🌵')]
+  - /object[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=0]
+  - /object/o[@name='foo']/o[@name='y']/o[not(@base) and @name='a🌵47']
+  - /object/o[@name='foo']/o[@name='bar']/o/o/o/o[not(@base) and @name='a🌵915']
+  - /object/o[@name='foo']/o[@name='z']/o[@as and starts-with(@name, 'a🌵')]
 input: |
   # No comments.
   [] > foo

@@ -9,13 +9,13 @@
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/errors">
+  <xsl:template match="/object/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:apply-templates select="//o[@base='Q.org.eolang.cti']" mode="create"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program[not(errors)]">
+  <xsl:template match="/object[not(errors)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:if test="//o[@base='Q.org.eolang.cti']">
