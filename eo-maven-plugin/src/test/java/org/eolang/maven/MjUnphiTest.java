@@ -76,7 +76,7 @@ final class MjUnphiTest {
                     )
                 )
             ),
-            XhtmlMatchers.hasXPaths("/program/objects/o[text()='00-']")
+            XhtmlMatchers.hasXPaths("/program/objects/o[1]/o[1][text()='00-']")
         );
     }
 

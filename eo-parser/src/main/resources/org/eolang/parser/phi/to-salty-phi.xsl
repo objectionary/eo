@@ -170,14 +170,7 @@
     <xsl:choose>
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
-        <xsl:choose>
-          <xsl:when test="eo:has-data(.) and (@base='org.eolang.number' or @base='org.eolang.string')">
-            <xsl:value-of select="text()"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="eo:specials(@base)"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of select="eo:specials(@base)"/>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;0">
           <xsl:text>(</xsl:text>
@@ -214,23 +207,6 @@
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
-    <!-- Data -->
-    <xsl:if test="eo:has-data(.) and @base!='org.eolang.number' and @base!='org.eolang.string'">
-      <xsl:text>(</xsl:text>
-      <xsl:value-of select="eo:eol($tabs+1)"/>
-      <xsl:value-of select="$eo:alpha"/>
-      <xsl:text>0</xsl:text>
-      <xsl:value-of select="$eo:arrow"/>
-      <xsl:value-of select="$eo:lb"/>
-      <xsl:value-of select="$eo:space"/>
-      <xsl:value-of select="$eo:delta"/>
-      <xsl:value-of select="$eo:dashed-arrow"/>
-      <xsl:value-of select="text()[last()]"/>
-      <xsl:value-of select="$eo:space"/>
-      <xsl:value-of select="$eo:rb"/>
-      <xsl:value-of select="eo:eol($tabs)"/>
-      <xsl:text>)</xsl:text>
-    </xsl:if>
   </xsl:template>
   <!-- Formation -->
   <xsl:template match="o[eo:abstract(.)]">
@@ -267,6 +243,13 @@
           </xsl:apply-templates>
         </xsl:for-each>
         <xsl:value-of select="eo:eol($tabs)"/>
+      </xsl:if>
+      <xsl:if test="eo:has-data(.)">
+        <xsl:value-of select="$eo:space"/>
+        <xsl:value-of select="$eo:delta"/>
+        <xsl:value-of select="$eo:dashed-arrow"/>
+        <xsl:value-of select="text()[last()]"/>
+        <xsl:value-of select="$eo:space"/>
       </xsl:if>
       <xsl:value-of select="$eo:rb"/>
     </xsl:if>

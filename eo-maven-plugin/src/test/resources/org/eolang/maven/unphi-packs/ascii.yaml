@@ -4,7 +4,7 @@
 asserts:
   - //objects/o[@name='foo']/o[@name='void' and @base='∅']
   - //objects/o[@name='foo']/o[@name='atom']/o[@name='λ']
-  - //objects/o[@name='foo']/o[@name='x' and @base='Q.org.eolang.bytes' and text()='01-']
+  - //objects/o[@name='foo']/o[@name='x' and @base='Q.org.eolang.bytes' and o[1][text()='01-']]
   - //objects/o[@name='foo']/o[@name='y' and @base='Q.org.eolang.nan']
   - //objects/o[@name='foo']/o[@name='err' and @base='Q.org.eolang.error']
   - //objects/o[@name='foo']/o[@name='app' and @base='.^']/o[@base='.@']/o[@base='.α0']/o[@base='$.x']/o[1][@base='Q.org.eolang.number' and @as='α0']

@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
-import org.eolang.parser.StFlatBytes;
 import org.eolang.parser.TrFull;
 
 /**
@@ -82,7 +81,6 @@ public final class MjTranspile extends MjSafe {
      */
     private static final Train<Shift> TRAIN = new TrFull(
         new TrJoined<>(
-            new TrDefault<>(new StFlatBytes()),
             new TrClasspath<>(
                 "/org/eolang/maven/transpile/set-locators.xsl",
                 "/org/eolang/maven/transpile/set-original-names.xsl",
