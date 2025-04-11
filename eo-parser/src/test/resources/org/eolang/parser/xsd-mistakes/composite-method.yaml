@@ -3,10 +3,8 @@
 ---
 errors: 2
 document: |
-  <program name='foo'>
-    <objects>
-      <o base=".org.eolang">
-        <o base="Q.com"/>
-      </o>
-    </objects>
+  <object>
+    <o base=".org.eolang">
+      <o base="Q.com"/>
+    </o>
   </object>

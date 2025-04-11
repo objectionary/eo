@@ -4,16 +4,18 @@
 sheets: [ ]
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='a🌵25' and o[@name='five']]
-  - //o[not(@base) and @name='a🌵43' and o[@name='ten']]
-  - //o[not(@base) and @name='a🌵811' and not(@as) and o[@name='eleven']]
+  - //o[not(@base) and @name='a🌵47' and o[@name='five']]
+  - //o[not(@base) and @name='a🌵65' and o[@name='ten']]
+  - //o[not(@base) and @name='a🌵1013' and not(@as) and o[@name='eleven']]
 input: |
-  x > first
+  # Main.
+  [] > main
+    x > first
+      [] >>
+        5 > five
     [] >>
-      5 > five
-  [] >>
-    10 > ten
-  .ten > second
-  y > z
-    []:hello >>
-      11 > eleven
+      10 > ten
+    .ten > second
+    y > z
+      []:hello >>
+        11 > eleven

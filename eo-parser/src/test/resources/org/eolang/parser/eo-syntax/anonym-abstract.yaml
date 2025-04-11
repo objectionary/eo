@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(o)=1]
+  - /object[count(o)=1]
   - //o[@base='.plus' and @name='s' and o[1][not(@name) and not(@base)]/o[@base='$.^']]/o[2][@base='Q.org.eolang.int']
 input: |
   # No comments.

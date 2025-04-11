@@ -13,7 +13,7 @@ asserts:
   - //o[@as='α1']
   - //o[@as='α0']
   - //o[@base='$.five.plus']
-  - //objects[not(.//o[@name=''])]
+  - /object[not(.//o[@name=''])]
   - //o[o[@name='λ'] and @name='atom' and count(o)=3 and o[@name='a']]
 input: |
   +alias org.example.foo
@@ -21,101 +21,98 @@ input: |
   +bar Some text
   +foo
 
-  500.43.@ > one
-
-  # No comments.
-  "Hello, друг!" > hello!
-
-  # No comments.
-  [tt a] > atom ?
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > with-void-phi
-    [@] > x
-      "Hello" > hello
-    x 5 > five
-    five.~1.y.~2 > hey
-    and. > @
-      (five.plus 5).eq 10
-      five.hello.eq "Hello"
-
-  # This is very good object
-  # No comments.
-  [x] > first
-    sprintf *1 > xyz
-      "Hello, %s"
-      "Jeff"
-    x > @
-    second > hello
-      $.plus.@ 5 > i
-      third > x!
-        $
-        z.
-          z
-        f
-          12:foo
-          ((t r 8.54 "yes" "\t").print 88 0x1f):hey
-          true:vtx
-          false:fle > a!
-            []
-              Q.x.f.d Q Q > f
-              QQ.y QQ > s
-            [] >>
-              ^.@.hey > you
-              Q > qq
-              QQ > qqq
-            kid.^.^
-            "家"
-          q
-          .w
-          .e:qwerty > qwe
-      f
-        z
-          (z 5):0
-          z:1
-      a.
-        b.
-          c.
-            42
-          d
-        e.
-          f
-      ^.
-        ^.
-          c
-      a.
-        b.
+  # Main.
+  [] > main
+    500.43.@ > one
+    # No comments.
+    "Hello, друг!" > hello!
+    # No comments.
+    [tt a] > atom ?
+  
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] > with-void-phi
+      [@] > x
+        "Hello" > hello
+      x 5 > five
+      five.~1.y.~2 > hey
+      and. > @
+        (five.plus 5).eq 10
+        five.hello.eq "Hello"
+  
+    # This is very good object
+    # No comments.
+    [x] > first
+      sprintf *1 > xyz
+        "Hello, %s"
+        "Jeff"
+      x > @
+      second > hello
+        $.plus.@ 5 > i
+        third > x!
           $
-      @.
-        b
-    oops > spoo
-
-  # No comments.
-  [] > obj
-    "some" > @
-    [] > foo
-      ^.@ > @
-
-  # Comments are allowed only in front of top-level objects
-  # No comments.
-  [] > named
-    one.two.three.four.five
-      t.o
-    .two "hello!"
-    .three > a1
-    .four (a b c) > a2
-    .five > a3
-
-  test > tst
-    me
-      (now (f (f (f (f 1)))).f):i
-
-  # No comments.
-  [] > ooo
-    [] > o-1 ?
-
-    [] > o2
-
-  -2.4E3 > x
-
-  7.33e-10 > y
+          z.
+            z
+          f
+            12:foo
+            ((t r 8.54 "yes" "\t").print 88 0x1f):hey
+            true:vtx
+            false:fle > a!
+              []
+                Q.x.f.d Q Q > f
+                QQ.y QQ > s
+              [] >>
+                ^.@.hey > you
+                Q > qq
+                QQ > qqq
+              kid.^.^
+              "家"
+            q
+            .w
+            .e:qwerty > qwe
+        f
+          z
+            (z 5):0
+            z:1
+        a.
+          b.
+            c.
+              42
+            d
+          e.
+            f
+        ^.
+          ^.
+            c
+        a.
+          b.
+            $
+        @.
+          b
+      oops > spoo
+  
+    # No comments.
+    [] > obj
+      "some" > @
+      [] > foo
+        ^.@ > @
+  
+    # Comments are allowed only in front of top-level objects
+    # No comments.
+    [] > named
+      one.two.three.four.five
+        t.o
+      .two "hello!"
+      .three > a1
+      .four (a b c) > a2
+      .five > a3
+    test > tst
+      me
+        (now (f (f (f (f 1)))).f):i
+  
+    # No comments.
+    [] > ooo
+      [] > o-1 ?
+  
+      [] > o2
+    -2.4E3 > x
+    7.33e-10 > y

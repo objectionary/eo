@@ -5,26 +5,28 @@ sheets: [ ]
 asserts:
   - /object[not(errors)]
 input: |
-  x > first
-    a
-    .b
-  y > second
-    a
-    .b:0
-    c
-    .d
-    .e:1
-  Q
-  .org
-  .eolang
-  .io
-  .stdout > third
+  # Main.
+  [] > main
+    x > first
+      a
+      .b
+    y > second
+      a
+      .b:0
+      c
+      .d
+      .e:1
     Q
     .org
     .eolang
-    .string:0
+    .io
+    .stdout > third
       Q
       .org
       .eolang
-      .bytes
-        00-42-23
+      .string:0
+        Q
+        .org
+        .eolang
+        .bytes
+          00-42-23

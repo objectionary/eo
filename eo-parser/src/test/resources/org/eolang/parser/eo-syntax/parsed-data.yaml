@@ -12,13 +12,15 @@ asserts:
   - //o[@name='s2' and o/o[text()='42-79-65-2C-20-E5-A4-A7-E5-AE-B6-21']]
   - //o[@name='s3' and o/o[text()='41-00-01-09-0A']]
 input: |
-  42 > i1
-  0x12f > i2
-  3.1415 > f1
-  true > b1
-  false > b2
-  "Hi, 大家!" > s1
-  """
-  Bye, 大家!
-  """ > s2
-  "A\u0000\u0001\t\n" > s3
+  # Main.
+  [] > main
+    42 > i1
+    0x12f > i2
+    3.1415 > f1
+    true > b1
+    false > b2
+    "Hi, 大家!" > s1
+    """
+    Bye, 大家!
+    """ > s2
+    "A\u0000\u0001\t\n" > s3

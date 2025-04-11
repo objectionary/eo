@@ -4,21 +4,23 @@
 sheets: [ ]
 asserts:
   - /object/errors[count(*)=1]
-  - /program/errors/error[@check='cti']
-  - /program/errors/error[@severity='error']
-  - /program/errors/error[text()='This method is deprecated!']
+  - /object/errors/error[@check='cti']
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[text()='This method is deprecated!']
 
 input: |
-  # No comments.
-  [] > foo
-    cti > @
-      2.times 2
-      "error"
-      "This method is deprecated!"
-
-  # No comments.
-  [] > app
-    QQ.io.stdout > @
-      QQ.txt.sprintf
-        "The result is %d\n"
-        foo
+  # Main.
+  [] > main
+    # No comments.
+    [] > foo
+      cti > @
+        2.times 2
+        "error"
+        "This method is deprecated!"
+  
+    # No comments.
+    [] > app
+      QQ.io.stdout > @
+        QQ.txt.sprintf
+          "The result is %d\n"
+          foo

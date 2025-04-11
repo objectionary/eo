@@ -3,17 +3,18 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(o)=3]
+  - //object/o[count(o)=3]
   - //o[@base='$.x.plus' and @name='a']
   - //o[@base='Q.org.eolang.number' and @name='@' and o[@base="Q.org.eolang.bytes"]/o[starts-with(text(), '40-14')]]
 input: |
-  # No comments.
-  [x] (x.plus 1 > a) (5 > @) > first
-
-  # No comments.
-  [a b] ((a.plus 6).plus b > inner) > second
-
-  foo
-  .o1 ([t] (t.hello 1 > hello))
-  .o2 > bar
-    [z] (((z.a 1).end 5).again 7 > again)
+  # Main.
+  [] > main
+    # No comments.
+    [x] (x.plus 1 > a) (5 > @) > first
+  
+    # No comments.
+    [a b] ((a.plus 6).plus b > inner) > second
+    foo
+    .o1 ([t] (t.hello 1 > hello))
+    .o2 > bar
+      [z] (((z.a 1).end 5).again 7 > again)

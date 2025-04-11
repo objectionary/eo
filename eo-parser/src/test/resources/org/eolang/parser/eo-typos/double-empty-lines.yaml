@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-line: 4
+line: 3
 message: |+
-  [4:0] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
+  [3:0] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
 
 input: |
   # No comments.

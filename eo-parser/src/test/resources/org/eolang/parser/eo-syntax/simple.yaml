@@ -4,7 +4,6 @@
 sheets: [ ]
 asserts:
   - /object[not(errors)]
-  - /object[@name != '']
   - /object[@version != '']
   - /object[@time != '']
   - //o[@base='Q.org.eolang.a' and @line='3']
