@@ -7,27 +7,29 @@ origin: |
   +alias sprintf org.eolang.txt.sprintf
   +architect yegor256@gmail.com
 
-  # No comments.
-  [] > base
-    memory 0 > x
+  # Main.
+  [] > main
     # No comments.
-    [self v] > f
-      x.write > @
-        v
+    [] > base
+      memory 0 > x
+      # No comments.
+      [self v] > f
+        x.write > @
+          v
+      # No comments.
+      [self v] > g
+        self.f > @
+          self
+          v
+  
     # No comments.
-    [self v] > g
-      self.f > @
-        self
-        v
-
-  # No comments.
-  [] > derived
-    base > @
-    # No comments.
-    [self v] > f
-      self.g > @
-        self
-        v
+    [] > derived
+      base > @
+      # No comments.
+      [self v] > f
+        self.g > @
+          self
+          v
 
 printed: |
   +package sandbox
@@ -36,24 +38,25 @@ printed: |
   +architect yegor256@gmail.com
 
   # No comments.
-  [] > base
-    memory > x
-      0
+  [] > main
     # No comments.
-    [self v] > f
-      ^.x.write > @
-        v
+    [] > base
+      memory > x
+        0
+      # No comments.
+      [self v] > f
+        ^.x.write > @
+          v
+      # No comments.
+      [self v] > g
+        self.f > @
+          self
+          v
     # No comments.
-    [self v] > g
-      self.f > @
-        self
-        v
-
-  # No comments.
-  [] > derived
-    Q.sandbox.base > @
-    # No comments.
-    [self v] > f
-      self.g > @
-        self
-        v
+    [] > derived
+      ^.base > @
+      # No comments.
+      [self v] > f
+        self.g > @
+          self
+          v

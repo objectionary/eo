@@ -2,33 +2,39 @@
 # SPDX-License-Identifier: MIT
 ---
 input: |
-  # No comments.
-  [] > main ?
-  # No comments.
-  [x] > outer
+  # Main.
+  [] > atoms
     # No comments.
-    [] > inner ?
+    [] > main ?
+    # No comments.
+    [x] > outer
+      # No comments.
+      [] > inner ?
 sweet: |-
   {⟦
-    main ↦ ⟦
-      λ ⤍ Lmain
-    ⟧,
-    outer(x) ↦ ⟦
-      inner ↦ ⟦
-        λ ⤍ Louter_inner
+    atoms ↦ ⟦
+      main ↦ ⟦
+        λ ⤍ Latoms_main
+      ⟧,
+      outer(x) ↦ ⟦
+        inner ↦ ⟦
+          λ ⤍ Latoms_outer_inner
+        ⟧
       ⟧
     ⟧
   ⟧}
 salty: |-
   {
     ⟦
-      main ↦ ⟦
-        λ ⤍ Lmain
-      ⟧,
-      outer ↦ ⟦
-        x ↦ ∅,
-        inner ↦ ⟦
-          λ ⤍ Louter_inner
+      atoms ↦ ⟦
+        main ↦ ⟦
+          λ ⤍ Latoms_main
+        ⟧,
+        outer ↦ ⟦
+          x ↦ ∅,
+          inner ↦ ⟦
+            λ ⤍ Latoms_outer_inner
+          ⟧
         ⟧
       ⟧
     ⟧

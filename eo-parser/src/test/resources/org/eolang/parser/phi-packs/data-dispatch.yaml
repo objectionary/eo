@@ -2,37 +2,43 @@
 # SPDX-License-Identifier: MIT
 ---
 input: |
-  5.plus 5 > ten
-  "Hello".concat "world" > greetings
+  # Main.
+  [] > dispatch
+    5.plus 5 > ten
+    "Hello".concat "world" > greetings
 sweet: |-
   {⟦
-    ten ↦ 5.plus(5),
-    greetings ↦ "Hello".concat("world")
+    dispatch ↦ ⟦
+      ten ↦ 5.plus(5),
+      greetings ↦ "Hello".concat("world")
+    ⟧
   ⟧}
 salty: |-
   {
     ⟦
-      ten ↦ Φ.org.eolang.number(
-        α0 ↦ Φ.org.eolang.bytes(
-          α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
-        )
-      ).plus(
-        α0 ↦ Φ.org.eolang.number(
+      dispatch ↦ ⟦
+        ten ↦ Φ.org.eolang.number(
           α0 ↦ Φ.org.eolang.bytes(
             α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
           )
-        )
-      ),
-      greetings ↦ Φ.org.eolang.string(
-        α0 ↦ Φ.org.eolang.bytes(
-          α0 ↦ ⟦ Δ ⤍ 48-65-6C-6C-6F ⟧
-        )
-      ).concat(
-        α0 ↦ Φ.org.eolang.string(
+        ).plus(
+          α0 ↦ Φ.org.eolang.number(
+            α0 ↦ Φ.org.eolang.bytes(
+              α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
+            )
+          )
+        ),
+        greetings ↦ Φ.org.eolang.string(
           α0 ↦ Φ.org.eolang.bytes(
-            α0 ↦ ⟦ Δ ⤍ 77-6F-72-6C-64 ⟧
+            α0 ↦ ⟦ Δ ⤍ 48-65-6C-6C-6F ⟧
+          )
+        ).concat(
+          α0 ↦ Φ.org.eolang.string(
+            α0 ↦ Φ.org.eolang.bytes(
+              α0 ↦ ⟦ Δ ⤍ 77-6F-72-6C-64 ⟧
+            )
           )
         )
-      )
+      ⟧
     ⟧
   }

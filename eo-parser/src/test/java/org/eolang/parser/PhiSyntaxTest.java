@@ -47,10 +47,10 @@ final class PhiSyntaxTest {
             "Result XML must contain extra object",
             new PhiSyntax(
                 () -> "{⟦obj ↦ ⟦⟧⟧}",
-                new Directives().xpath("/program/objects").add("o").attr("base", "x")
+                new Directives().xpath("/object/o").add("o").attr("base", "x")
             ).parsed(),
             XhtmlMatchers.hasXPath(
-                "//objects/o[@base='x']"
+                "/object/o/o[@base='x']"
             )
         );
     }
@@ -63,10 +63,10 @@ final class PhiSyntaxTest {
                 "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(α0 ↦ ⟦ Δ ⤍ 42- ⟧), λ ⤍ Package⟧⟧}"
             ).parsed(),
             XhtmlMatchers.hasXPath(
-                "/program/metas/meta[@line='1' and head='package' and tail='foo']",
-                "/program/objects/o[@base='Q']",
-                "/program/objects/o[@base='.org' and @method]",
-                "/program/objects/o[@base='.eolang' and @method]"
+                "/object/metas/meta[@line='1' and head='package' and tail='foo']",
+                "/object/objects/o[@base='Q']",
+                "/object/o[@base='.org' and @method]",
+                "/object/o[@base='.eolang' and @method]"
             )
         );
     }
@@ -124,7 +124,7 @@ final class PhiSyntaxTest {
         MatcherAssert.assertThat(
             "syntax is valid, can be parsed without errors",
             XhtmlMatchers.xhtml(xml.toString()),
-            XhtmlMatchers.hasXPaths("/program[not(errors)]")
+            XhtmlMatchers.hasXPaths("/object[not(errors)]")
         );
     }
 
@@ -135,7 +135,7 @@ final class PhiSyntaxTest {
         MatcherAssert.assertThat(
             "syntax is broken, can't be parsed without errors",
             XhtmlMatchers.xhtml(xml.toString()),
-            XhtmlMatchers.hasXPaths("/program/errors/error/@line")
+            XhtmlMatchers.hasXPaths("/object/errors/error/@line")
         );
     }
 }

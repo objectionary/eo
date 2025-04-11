@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +27,14 @@ import org.xembly.Xembler;
  * Test case for {@link StrictXmir}.
  *
  * @since 0.5
+ * @todo #3919:30min Enable the tests for {@link StrictXmir}. The tests were disabled because
+ *  XMIR.xsd was significantly changed and new version is not uploaded. When the new release of EO
+ *  is made and new XMIR.xsd is uploaded - the tests should pass.
  */
 final class StrictXmirTest {
 
     @Test
+    @Disabled
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
     void validatesXmir(@Mktmp final Path tmp) {
@@ -48,6 +53,7 @@ final class StrictXmirTest {
     }
 
     @RepeatedTest(20)
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MktmpResolver.class)
     void doesNotFailWithDifferentXmlInMultipleThreads(@Mktmp final Path tmp) {
@@ -62,6 +68,7 @@ final class StrictXmirTest {
         );
     }
 
+    @Disabled
     @RepeatedTest(20)
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MktmpResolver.class)
@@ -78,6 +85,7 @@ final class StrictXmirTest {
     }
 
     @Test
+    @Disabled
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
     void refersToAbsoluteFileName(@Mktmp final Path tmp) {
@@ -85,7 +93,7 @@ final class StrictXmirTest {
             "XSD location must be absolute",
             Paths.get(
                 new StrictXmir(StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp)
-                    .xpath("/program/@xsi:noNamespaceSchemaLocation")
+                    .xpath("/object/@xsi:noNamespaceSchemaLocation")
                     .get(0)
                     .substring("file:///".length())
             ).isAbsolute(),
@@ -192,6 +200,7 @@ final class StrictXmirTest {
                         schema
                     )
                     .add("o")
+                    .up()
             ).xmlQuietly()
         );
     }

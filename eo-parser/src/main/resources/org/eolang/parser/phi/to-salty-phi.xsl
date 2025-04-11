@@ -7,7 +7,7 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
-  <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
+  <xsl:variable name="aliases" select="/object/metas/meta/part[last()]"/>
   <!-- Functions -->
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:lambda-name">
@@ -87,11 +87,10 @@
     </xsl:for-each>
   </xsl:function>
   <!-- Program -->
-  <xsl:template match="program">
-    <program>
-      <xsl:copy-of select="./sheets"/>
-      <xsl:copy-of select="./errors"/>
-      <xsl:copy-of select="./objects"/>
+  <xsl:template match="object">
+    <xsl:copy>
+      <xsl:apply-templates select="sheets|errors"/>
+      <xsl:copy-of select="o[1]"/>
       <phi>
         <xsl:text>{</xsl:text>
         <xsl:variable name="tabs" select="2"/>
@@ -110,7 +109,7 @@
               <xsl:value-of select="$eo:lb"/>
               <xsl:value-of select="eo:eol($tabs+position())"/>
             </xsl:for-each>
-            <xsl:apply-templates select="objects">
+            <xsl:apply-templates select="o[1]">
               <xsl:with-param name="tabs" select="$tabs + $length + 1"/>
               <xsl:with-param name="package">
                 <xsl:value-of select="$eo:program"/>
@@ -128,7 +127,7 @@
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:apply-templates select="objects">
+            <xsl:apply-templates select="o[1]">
               <xsl:with-param name="tabs" select="$tabs"/>
               <xsl:with-param name="package" select="$eo:program"/>
             </xsl:apply-templates>
@@ -139,19 +138,7 @@
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>}</xsl:text>
       </phi>
-    </program>
-  </xsl:template>
-  <!-- Objects  -->
-  <xsl:template match="objects">
-    <xsl:param name="tabs"/>
-    <xsl:param name="package"/>
-    <xsl:for-each select="o">
-      <xsl:value-of select="eo:comma(position(), $tabs)"/>
-      <xsl:apply-templates select=".">
-        <xsl:with-param name="tabs" select="$tabs"/>
-        <xsl:with-param name="package" select="$package"/>
-      </xsl:apply-templates>
-    </xsl:for-each>
+    </xsl:copy>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="o[eo:void(.)]">

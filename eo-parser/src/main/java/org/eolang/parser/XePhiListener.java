@@ -91,7 +91,6 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     /**
      * Ctor.
-     * @param nme The name of it
      */
     XePhiListener() {
         this.dirs = new Directives();
@@ -110,7 +109,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.dirs
             .append(new DrProgram())
             .append(new DrListing(ctx))
-            .xpath("/program").strict(1);
+            .xpath("/object").strict(1);
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().start(ctx);
         }
@@ -135,9 +134,8 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (!this.errors.isEmpty()) {
             this.dirs.append(new DrErrors(this.errors));
         }
-        this.dirs.add("objects")
+        this.dirs
             .append(this.objs.pollLast())
-            .up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L));
     }
 

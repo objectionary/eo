@@ -2,25 +2,31 @@
 # SPDX-License-Identifier: MIT
 ---
 input: |-
-  5 > five
-  -0 > minus
+  # Data.
+  [] > data
+    5 > five
+    -0 > minus
 sweet: |-
   {⟦
-    five ↦ 5,
-    minus ↦ -0
+    data ↦ ⟦
+      five ↦ 5,
+      minus ↦ -0
+    ⟧
   ⟧}
 salty: |-
   {
     ⟦
-      five ↦ Φ.org.eolang.number(
-        α0 ↦ Φ.org.eolang.bytes(
-          α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
+      data ↦ ⟦
+        five ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
+          )
+        ),
+        minus ↦ Φ.org.eolang.number(
+          α0 ↦ Φ.org.eolang.bytes(
+            α0 ↦ ⟦ Δ ⤍ 80-00-00-00-00-00-00-00 ⟧
+          )
         )
-      ),
-      minus ↦ Φ.org.eolang.number(
-        α0 ↦ Φ.org.eolang.bytes(
-          α0 ↦ ⟦ Δ ⤍ 80-00-00-00-00-00-00-00 ⟧
-        )
-      )
+      ⟧
     ⟧
   }

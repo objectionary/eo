@@ -149,7 +149,7 @@ public final class StrictXmir implements XML {
      */
     private static XML reset(final XML xml, final Path tmp) {
         final Optional<String> location = new Xnav(xml.inner())
-            .element("program")
+            .element("object")
             .attribute("xsi:noNamespaceSchemaLocation")
             .text();
         if (location.isPresent()) {
@@ -171,7 +171,7 @@ public final class StrictXmir implements XML {
             }
             if (!after.equals(before)) {
                 new Xembler(
-                    new Directives().xpath("/program").attr(
+                    new Directives().xpath("/object").attr(
                         "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                         after
                     )

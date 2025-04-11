@@ -343,7 +343,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="o" type="o" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="o" type="o" minOccurs="0" maxOccurs="1"/>
     </xs:all>
     <xs:attribute name="ms" type="whole">
       <xs:annotation>
