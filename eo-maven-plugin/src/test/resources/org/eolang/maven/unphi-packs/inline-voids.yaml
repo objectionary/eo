@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program/objects/o[@name='main' and not(@base) and o[@name='x'] and o[@name='a' and @base='∅']]
+  - /object/o[@name='main' and not(@base) and o[@name='x'] and o[@name='a' and @base='∅']]
 phi: |-
   {
     ⟦

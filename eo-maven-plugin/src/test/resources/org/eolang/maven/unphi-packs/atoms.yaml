@@ -2,19 +2,20 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program/objects/o[@name='main' and o[@name='λ']]
-  - /program/objects/o[@name='outer']
-  - /program/objects/o[@name='outer']/o[@name='inner' and o[@name='λ']]
+  - /object/o[@name='lambdas']/o[@name='main' and o[@name='λ']]
+  - /object/o[@name='lambdas']/o[@name='outer']/o[@name='inner' and o[@name='λ']]
 phi: |
   {
     ⟦
-      main ↦ ⟦
-        λ ⤍ Lambda
-      ⟧,
-      outer ↦ ⟦
-        inner ↦ ⟦
+      lambdas -> [[
+        main ↦ ⟦
           λ ⤍ Lambda
+        ⟧,
+        outer ↦ ⟦
+          inner ↦ ⟦
+            λ ⤍ Lambda
+          ⟧
         ⟧
-      ⟧
+      ]]
     ⟧
   }

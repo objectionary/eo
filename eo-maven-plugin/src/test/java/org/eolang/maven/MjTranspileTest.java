@@ -173,8 +173,8 @@ final class MjTranspileTest {
             .execute(new FakeMaven.Transpile())
             .result();
         final Path java = res.get(this.compiled);
-        final Path xmir = res.get(
-            String.format("target/%s/foo/x/main.xmir", MjTranspile.DIR)
+        final Path xmir = maven.targetPath().resolve(
+            String.format("%s/org/eolang/examples/mess.xmir", MjTranspile.DIR)
         );
         MatcherAssert.assertThat(
             "The Java file should exist after transpile",
@@ -264,21 +264,22 @@ final class MjTranspileTest {
 
     @Test
     void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
+        final int total = 30;
         final FakeMaven maven = new FakeMaven(temp);
-        final int programs = 30;
-        for (int prog = 0; prog < programs; ++prog) {
-            maven.withProgram(this.program);
+        for (int prog = 1; prog < total; ++prog) {
+            maven.withProgram(this.program.replace("mess", String.format("mess-%d", prog)));
         }
-        maven.execute(new FakeMaven.Transpile()).result();
         MatcherAssert.assertThat(
             "All programs must be transpiled",
             Files.list(
-                maven.generatedPath()
+                maven
+                    .execute(new FakeMaven.Transpile())
+                    .generatedPath()
                     .resolve("EOorg")
                     .resolve("EOeolang")
                     .resolve("EOexamples")
             ).count(),
-            Matchers.equalTo(5L)
+            Matchers.equalTo((long) total)
         );
     }
 

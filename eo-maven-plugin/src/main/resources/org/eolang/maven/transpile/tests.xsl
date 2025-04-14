@@ -28,7 +28,7 @@
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:choose>
-        <xsl:when test="/program/metas/meta[head='tests']">
+        <xsl:when test="/object/metas/meta[head='tests']">
           <xsl:value-of select="eo:test-name(.)"/>
         </xsl:when>
         <xsl:otherwise>

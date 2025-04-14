@@ -50,7 +50,7 @@ import org.xembly.Xembler;
  * XML xmir = new PhiSyntax(
  *     "factorial",
  *     () -> "{⟦fact ↦ ⟦n ↦ Φ.org.eolang.int⟧⟧}",
- *     new Directives().xpath("/program").attr("version", "1.0")
+ *     new Directives().xpath("/object").attr("version", "1.0")
  * ).parsed();
  * </pre>
  *
@@ -64,7 +64,7 @@ import org.xembly.Xembler;
  * ).parsed();
  * </pre>
  *
- * <p>After parsing, any syntax errors can be found in the XML at the "/program/errors" XPath.
+ * <p>After parsing, any syntax errors can be found in the XML at the "/object/errors" XPath.
  * If no errors are present, the parsed program is valid Phi-calculus notation.</p>
  *
  * @since 0.34.0

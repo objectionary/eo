@@ -194,12 +194,12 @@ final class MjParseTest {
             .text()
             .get();
         MatcherAssert.assertThat(
-            "The /program/@source attribute must be a relative path",
+            "The /object/@source attribute must be a relative path",
             Paths.get(path).isAbsolute(),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            "The /program/@source attribute must be a relative path to EO source",
+            "The /object/@source attribute must be a relative path to EO source",
             path,
             Matchers.equalTo(Paths.get("foo/x/main.eo").toString())
         );

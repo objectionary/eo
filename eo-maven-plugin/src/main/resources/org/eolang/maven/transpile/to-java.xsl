@@ -171,18 +171,32 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <xsl:variable name="object-name">
+    <xsl:variable name="pckg" select="/object/class/@package"/>
+    <xsl:variable name="obj" select="/object/class/@name"/>
+    <xsl:choose>
+      <xsl:when test="$pckg">
+        <xsl:value-of select="$pckg"/>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$obj"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$obj"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <!-- Class. Entry point  -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:element name="java">
-        <xsl:apply-templates select="/program" mode="license"/>
-        <xsl:apply-templates select="/program/metas/meta[head='package']" mode="head"/>
+        <xsl:apply-templates select="/object" mode="license"/>
+        <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
         <xsl:text>import java.util.function.Function;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="/program/metas/meta[head='tests']" mode="head"/>
+        <xsl:apply-templates select="/object/metas/meta[head='tests']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
@@ -193,7 +207,7 @@
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
-      <xsl:variable name="pkg" select="/program/metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
         <xsl:text>.</xsl:text>
@@ -217,7 +231,7 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>", source = "</xsl:text>
-    <xsl:value-of select="replace(/program/@source, '\\', '\\\\')"/>
+    <xsl:value-of select="replace(/object/@source, '\\', '\\\\')"/>
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
@@ -232,7 +246,7 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
-    <xsl:if test="/program/metas/meta[head='tests'] and not(@parent)">
+    <xsl:if test="/object/metas/meta[head='tests']">
       <xsl:apply-templates select="." mode="tests"/>
     </xsl:if>
     <xsl:apply-templates select="nested"/>
@@ -599,7 +613,7 @@
       <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="/program/@name"/>
+      <xsl:value-of select="$object-name"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
@@ -679,44 +693,47 @@
   <!-- Class for tests -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>@Test</xsl:text>
-    <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>public void works() throws java.lang.Exception {</xsl:text>
-    <xsl:value-of select="eo:eol(2)"/>
-    <xsl:choose>
-      <xsl:when test="starts-with(@name, 'throws')">
-        <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
-        <xsl:apply-templates select="." mode="dataized">
-          <xsl:with-param name="indent" select="3"/>
-        </xsl:apply-templates>
-        <xsl:text>;</xsl:text>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>});</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>Assertions.assertTrue(</xsl:text>
-        <xsl:apply-templates select="." mode="dataized">
-          <xsl:with-param name="indent" select="3"/>
-        </xsl:apply-templates>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>);</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>}</xsl:text>
+    <xsl:for-each select="attr">
+      <xsl:if test="position()&gt;1">
+        <xsl:value-of select="eo:eol(1)"/>
+      </xsl:if>
+      <xsl:text>@Test</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>void </xsl:text>
+      <xsl:value-of select="replace(@name, '-', '_')"/>
+      <xsl:text>() throws java.lang.Exception {</xsl:text>
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:choose>
+        <xsl:when test="starts-with(@name, 'throws')">
+          <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
+          <xsl:apply-templates select="." mode="dataized">
+            <xsl:with-param name="indent" select="3"/>
+          </xsl:apply-templates>
+          <xsl:text>;</xsl:text>
+          <xsl:value-of select="eo:eol(2)"/>
+          <xsl:text>});</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>Assertions.assertTrue(</xsl:text>
+          <xsl:apply-templates select="." mode="dataized">
+            <xsl:with-param name="indent" select="3"/>
+          </xsl:apply-templates>
+          <xsl:value-of select="eo:eol(2)"/>
+          <xsl:text>);</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    </xsl:for-each>
   </xsl:template>
   <!-- Dataize test -->
-  <xsl:template match="class" mode="dataized">
+  <xsl:template match="attr" mode="dataized">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>new Dataized(</xsl:text>
-    <xsl:value-of select="eo:eol($indent + 1)"/>
-    <xsl:text>new </xsl:text>
-    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()</xsl:text>
-    <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>).asBool()</xsl:text>
+    <xsl:text>new Dataized(this.take(</xsl:text>
+    <xsl:value-of select="eo:attr-name(@name, true())"/>
+    <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">
@@ -735,7 +752,7 @@
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- License with disclaimer  -->
-  <xsl:template match="/program" mode="license">
+  <xsl:template match="/object" mode="license">
     <xsl:text>/* </xsl:text>
     <xsl:value-of select="$disclaimer"/>
     <xsl:text> */</xsl:text>

@@ -12,7 +12,7 @@
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="package">
-        <xsl:value-of select="//meta[head='package'][1]/tail"/>
+        <xsl:value-of select="/object/metas/meta[head='package'][1]/tail"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

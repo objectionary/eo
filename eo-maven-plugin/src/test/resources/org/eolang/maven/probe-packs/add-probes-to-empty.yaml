@@ -4,7 +4,7 @@
 sheets:
   - /org/eolang/maven/probe/add-probes.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //metas[count(.//meta[head/text()='probe'])=2]
 input: |
   # No comments.

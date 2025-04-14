@@ -9,7 +9,7 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //java[contains(text(), 'public final class EOfoo__underscore extends PhDefault')]
 input: |
   # No comments.

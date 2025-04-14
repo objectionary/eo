@@ -69,11 +69,11 @@ final class MjPhiTest {
                 f.files().file("target/eo/1-parse/foo.xmir").write(
                     String.join(
                         " ",
-                        "<program name='foo'><objects>",
+                        "<object>",
                         "<o name='foo'>",
                         "<o name='bar' base='xxx'>",
                         "<o base='org.eolang.bytes'>01-02-03</o>",
-                        "</o></o></objects></program>"
+                        "</o></o></object>"
                     ).getBytes()
                 );
                 f.build()
@@ -121,9 +121,9 @@ final class MjPhiTest {
                 Files.readString(temp.resolve("target/eo/1-parse/org/eolang/bytes.xmir"))
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@name='bytes']",
-                "/program/objects/o/o[@base='$.eq']",
-                "/program/objects/o/o/o[@base='Q.org.eolang.bytes']/o[text()='01-02-03']"
+                "/object/o[@name='bytes']",
+                "/object/o/o[@base='$.eq']",
+                "/object/o/o/o[@base='Q.org.eolang.bytes']/o[text()='01-02-03']"
             )
         );
         MatcherAssert.assertThat(
@@ -213,10 +213,7 @@ final class MjPhiTest {
 
     @Test
     @Disabled
-    void usesCache(
-        @Mktmp final Path temp,
-        @RandomProgram final String program
-    ) throws Exception {
+    void usesCache(@Mktmp final Path temp, @RandomProgram final String program) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "123ZaRiFcHiK321";
         final Path cached = new Saved(

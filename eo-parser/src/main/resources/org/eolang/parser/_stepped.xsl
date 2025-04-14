@@ -7,7 +7,7 @@
   <xsl:param name="step"/>
   <xsl:param name="sheet"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/sheets">
+  <xsl:template match="/object/sheets">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:element name="sheet">
@@ -15,7 +15,7 @@
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program[not(sheets)]">
+  <xsl:template match="/object[not(sheets)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <sheets>

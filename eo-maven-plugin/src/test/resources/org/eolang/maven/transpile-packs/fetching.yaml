@@ -10,7 +10,7 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //java[contains(text(), 'Phi rb = new PhMethod(h, "x");')]
   - //java[contains(text(), 'rb = rb.take("ρ");')]
   - //java[contains(text(), 'rb = new PhMethod(rb, "or");')]

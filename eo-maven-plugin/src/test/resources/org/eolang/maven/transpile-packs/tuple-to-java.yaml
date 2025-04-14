@@ -9,26 +9,28 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - //java[contains(text(), 'Phi r11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), 'r11 = new PhCopy(r11);')]
-  - //java[contains(text(), '  Phi r111 = Phi.Φ.take("org").take("eolang").take("tuple").take("empty");')]
-  - //java[contains(text(), '  Phi r112 = Phi.Φ.take("org").take("eolang").take("number");')]
-  - //java[contains(text(), '  Phi r113 = Phi.Φ.take("org").take("eolang").take("number");')]
-  - //java[contains(text(), 'r11 = new PhWith(r11, 0, r111);')]
-  - //java[contains(text(), 'r11 = new PhWith(r11, 1, r112);')]
-  - //java[contains(text(), 'r11 = new PhWith(r11, 2, r113);')]
+  - /object[not(errors)]
+  - //java[contains(text(), 'Phi rr11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), 'rr11 = new PhCopy(rr11);')]
+  - //java[contains(text(), '  Phi rr111 = Phi.Φ.take("org").take("eolang").take("tuple").take("empty");')]
+  - //java[contains(text(), '  Phi rr112 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), '  Phi rr113 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 0, rr111);')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 1, rr112);')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 2, rr113);')]
 input: |
   # No comments.
-  [] > foo
-    * 1 2 (* 3 4) > @
-
-  # No comments.
-  [] > bar
-    zz 42 * > tt
-
-  # No comments.
-  [] > baz
-    """
-    абвгд
-    """ > @
+  [] > tuples
+    # No comments.
+    [] > foo
+      * 1 2 (* 3 4) > @
+  
+    # No comments.
+    [] > bar
+      zz 42 * > tt
+  
+    # No comments.
+    [] > baz
+      """
+      абвгд
+      """ > @

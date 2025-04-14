@@ -2,5 +2,5 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program/objects/o[@base='Q.org.eolang.bytes' and @name='bts' and o[1][text()='A2-']]
+  - /object/o[@base='Q.org.eolang.bytes' and @name='bts' and o[1][text()='A2-']]
 phi: "{⟦bts ↦ Φ.org.eolang.bytes(α0 ↦ ⟦Δ ⤍ A2-⟧)⟧}"

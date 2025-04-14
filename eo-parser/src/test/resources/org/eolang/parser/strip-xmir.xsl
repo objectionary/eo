@@ -11,16 +11,16 @@
   -->
   <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
-  <xsl:template match="/program/@*">
+  <xsl:template match="/object/@*">
     <!-- Program attributes are not important -->
   </xsl:template>
-  <xsl:template match="/program/listing">
+  <xsl:template match="/object/listing">
     <!-- Not important -->
   </xsl:template>
-  <xsl:template match="/program/errors">
+  <xsl:template match="/object/errors">
     <!-- Not important -->
   </xsl:template>
-  <xsl:template match="/program/sheets">
+  <xsl:template match="/object/sheets">
     <!-- Not important -->
   </xsl:template>
   <xsl:template match="@line">

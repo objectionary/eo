@@ -4,4 +4,4 @@
 asserts:
   - //o[@name='five' and @base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[text()='40-14-00-00-00-00-00-00']
   - //o[@name='hello' and @base='Q.org.eolang.string']/o[@base='Q.org.eolang.bytes']/o[text()='48-65-6C-6C-6F']
-phi: "{⟦five ↦ 5, hello ↦ \"Hello\"⟧}"
+phi: "{⟦app -> [[five ↦ 5, hello ↦ \"Hello\"]]⟧}"

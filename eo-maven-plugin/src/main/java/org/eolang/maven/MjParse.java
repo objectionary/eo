@@ -111,7 +111,7 @@ public final class MjParse extends MjSafe {
             ).apply(source, target)
         ).withVersion(MjParse.version(target, refs));
         final List<Xnav> errors = new Xnav(target)
-            .element("program")
+            .element("object")
             .element("errors")
             .elements(Filter.withName("error"))
             .collect(Collectors.toList());
@@ -142,7 +142,7 @@ public final class MjParse extends MjSafe {
         final XML xmir = new EoSyntax(name, new InputOf(source)).parsed();
         final Path src = this.sourcesDir.toPath().relativize(source.toAbsolutePath());
         final Node node = new Xembler(
-            new Directives().xpath("/program").attr("source",  src)
+            new Directives().xpath("/object").attr("source",  src)
         ).applyQuietly(xmir.inner());
         Logger.debug(
             MjParse.class,
@@ -172,7 +172,7 @@ public final class MjParse extends MjSafe {
             node = parsed.get(0);
         }
         return new Xnav(node)
-            .element("program")
+            .element("object")
             .element("metas")
             .elements(
                 Filter.all(

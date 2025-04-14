@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program/objects/o[@name='main']
-  - /program/objects/o[not(@base) and @name='main']/o[@base='$.^.x' and @name='x']
-  - /program/objects/o[not(@base) and @name='main']/o[@base='$.^.a' and @name='a']
-  - /program/objects/o[not(@base) and @name='main']/o[@base='$.@.@' and @name='phi']
+  - /object/o[@name='main']
+  - /object/o[not(@base) and @name='main']/o[@base='$.^.x' and @name='x']
+  - /object/o[not(@base) and @name='main']/o[@base='$.^.a' and @name='a']
+  - /object/o[not(@base) and @name='main']/o[@base='$.@.@' and @name='phi']
 input: |
   [] > main
     ^.x > x

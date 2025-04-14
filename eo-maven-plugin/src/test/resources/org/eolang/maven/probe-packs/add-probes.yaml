@@ -4,7 +4,7 @@
 sheets:
   - /org/eolang/maven/probe/add-probes.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //metas[count(.//meta[head/text()='probe'])=19]
   - //meta[head/text()='probe' and tail/text()='Q.org' and part/text()='Q.org']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']

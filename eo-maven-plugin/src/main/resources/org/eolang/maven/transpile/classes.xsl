@@ -43,10 +43,10 @@
       <xsl:text>&gt;</xsl:text>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="objects/o[eo:abstract(.) and not(eo:atom(.))]">
+  <xsl:template match="object/o[eo:abstract(.) and not(eo:atom(.))]">
     <xsl:apply-templates select="." mode="class"/>
   </xsl:template>
-  <xsl:template match="objects/o[@base and @name]">
+  <xsl:template match="object/o[@base and @name]">
     <xsl:apply-templates select="." mode="class">
       <xsl:with-param name="bound" select="true()"/>
     </xsl:apply-templates>

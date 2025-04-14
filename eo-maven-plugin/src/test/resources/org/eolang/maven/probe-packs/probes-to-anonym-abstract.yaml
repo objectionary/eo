@@ -4,11 +4,11 @@
 sheets:
   - /org/eolang/maven/probe/add-probes.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/metas[count(meta[head='probe'])=3]
-  - /program/metas/meta[head='probe' and tail='Q.org']
-  - /program/metas/meta[head='probe' and tail='Q.org.eolang']
-  - /program/metas/meta[head='probe' and tail='Q.org.eolang.int']
+  - /object[not(errors)]
+  - /object/metas[count(meta[head='probe'])=3]
+  - /object/metas/meta[head='probe' and tail='Q.org']
+  - /object/metas/meta[head='probe' and tail='Q.org.eolang']
+  - /object/metas/meta[head='probe' and tail='Q.org.eolang.int']
 input: |
   # No comments.
   [] > test

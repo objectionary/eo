@@ -130,7 +130,7 @@ public class Phi {
                                 );
                             }
                             final Directives dirs = new Directives()
-                                .xpath("/program")
+                                .xpath("/object")
                                 .addIf("metas")
                                 .add("meta")
                                 .add("head").set(head).up()

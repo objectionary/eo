@@ -4,8 +4,8 @@
 sheets:
   - /org/eolang/maven/probe/add-probes.xsl
 asserts:
-  - /program[not(errors)]
-  - /program[not(metas)]
+  - /object[not(errors)]
+  - /object[not(metas)]
 input: |
   # No comments.
   [] > app

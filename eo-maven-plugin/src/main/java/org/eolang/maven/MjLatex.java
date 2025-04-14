@@ -64,7 +64,7 @@ public final class MjLatex extends MjSafe {
             final Path file = tojo.xmir();
             final Path dir = this.targetDir.toPath();
             final Path target = new Place(
-                MjLatex.last(new ProgramName(new XMLDocument(file)).get())
+                MjLatex.last(new ObjectName(new XMLDocument(file)).get())
             ).make(dir.resolve(MjLatex.DIR), MjLatex.EXT);
             new Saved(
                 new LatexTemplate(

@@ -10,9 +10,9 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects/class/java[contains(text(), 'Phi atom = new EOobject$EOatom();')]
-  - /program/objects/class/java[contains(text(), 'Phi ratom = new EOobject$EOabstract_object$EOinner_atom();')]
+  - /object[not(errors)]
+  - /object/class/java[contains(text(), 'Phi atom = new EOobject$EOatom();')]
+  - /object/class/java[contains(text(), 'Phi ratom = new EOobject$EOabstract_object$EOinner_atom();')]
 input: |
   # No comments.
   [void-attr] > object
@@ -32,6 +32,6 @@ input: |
             [] > arg
             []
 
-  # No comments.
-  [] > more-object
-    10 > num
+    # No comments.
+    [] > more-object
+      10 > num
