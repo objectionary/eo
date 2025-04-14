@@ -67,7 +67,7 @@ First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
 Then, you install [eoc](https://github.com/objectionary/eoc):
 
 ```bash
-npm install -g eolang@0.28.0
+npm install -g eolang@0.29.0
 ```
 
 Then, start with a simple EO program in the `app.eo` file:
