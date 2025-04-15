@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 49.366645165
+  seconds: 46.679873793
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-15 15:09:27.019538980 Z
+  when: 2025-04-15 16:09:53.775078723 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126012,36 +126012,6 @@
   when: *689
   where: github
   who: 526301
-- _id: 244656
-  _job: 17683
-  _time: 2025-04-15 13:24:41.420398281 Z
-  _version: 0.9.10/0.39.2/0.3.4!0.3.5
-  award: 8
-  details: It's time to reward @h1alexbel for the bug reported in objectionary/lints#488,
-    the reward amount is 8.
-  greeting: "Hey there, bug hunter! \U0001F41B Awesome job spotting that new bug –
-    you've just bagged yourself 8 points! Nice work helping us keep our project in
-    top shape. Got an eye for anything else that [doesn't quite fit](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
-    in our code? [Don't hold back](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html),
-    [let us know](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)!
-    Your sharp eyes are making a real difference. By the way, your current score is
-    sitting pretty at [+161](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Keep those reports coming!\n\n<!-- Thanks for reporting a new bug! You've earned
-    +8 points. By reporting bugs, you help our project improve its quality. If you
-    find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
-    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
-    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
-    it. Your running balance is [+161](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/488/#issuecomment-2805310631
-  is_human: 1
-  issue: 488
-  repository: 889819508
-  what: bug-report-was-rewarded
-  when: 2025-04-15 13:24:41.434654957 Z
-  where: github
-  who: 83453843
-  why: Reported bug in objectionary/lints#488
 - _id: 244657
   _time: 2025-04-15 14:09:39.518452782 Z
   _version: 0.9.10/0.39.2/
@@ -126217,20 +126187,6 @@
   repository: 565789755
   what: min-issue-was-found
   where: github
-- _id: 244683
-  _time: 2025-04-15 14:09:49.182764913 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 784310467
-  what: min-issue-was-found
-  where: github
-- _id: 244684
-  _time: 2025-04-15 14:09:50.312178979 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 396732517
-  what: min-issue-was-found
-  where: github
 - _id: 244685
   _time: 2025-04-15 14:09:50.457258686 Z
   _version: 0.9.10/0.39.2/
@@ -126264,13 +126220,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 493235807
-  what: min-issue-was-found
-  where: github
-- _id: 244690
-  _time: 2025-04-15 14:09:52.180984181 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 499536612
   what: min-issue-was-found
   where: github
 - _id: 244691
@@ -126472,7 +126421,7 @@
   review_comments: 0
   succeeded_builds: 10
   what: pull-was-merged
-  when: 2025-04-15 10:47:03.000000000 Z
+  when: &691 2025-04-15 10:47:03.000000000 Z
   where: github
   who: 51804353
 - _id: 244712
@@ -126510,7 +126459,7 @@
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 10:42:03.000000000 Z
+  when: &692 2025-04-15 10:42:03.000000000 Z
   where: github
   who: 51804353
 - _id: 244714
@@ -127119,6 +127068,7 @@
     and merge it. Even if you are flying solo, contributing via pull requests is a
     [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
     Your running balance is [+123](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
+  href: https://github.com/objectionary/sodg-maven-plugin/commit/8925c822fc353961954176a10b3ab126fd44fffc/#commitcomment-155411200
   repository: 955159947
   what: push-to-master-was-punished
   when: 2025-04-15 14:14:34.805147221 Z
@@ -127137,5 +127087,94 @@
   _version: 0.9.10/0.39.2/
   latest: 1
   repository: 546194972
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 244934
+  - 244656
+  _job:
+  - 17691
+  - 17683
+  _time:
+  - 2025-04-15 15:09:47.837218053 Z
+  - 2025-04-15 13:24:41.420398281 Z
+  _version:
+  - 0.9.10/0.39.2/0.3.5
+  - 0.9.10/0.39.2/0.3.4!0.3.5
+  award: 8
+  details: It's time to reward @h1alexbel for the bug reported in objectionary/lints#488,
+    the reward amount is 8.
+  href: https://github.com/objectionary/lints/issues/488/#issuecomment-2805310631
+  is_human: 1
+  issue: 488
+  repository: 889819508
+  what: bug-report-was-rewarded
+  when: 2025-04-15 13:24:41.434654957 Z
+  where: github
+  who: 83453843
+  why: Reported bug in objectionary/lints#488
+- _id: 244935
+  _job: 17691
+  _time: 2025-04-15 15:10:03.815480740 Z
+  _version: 0.9.10/0.39.2/0.3.5
+  comments: 0
+  details: The pull request objectionary/sodg-maven-plugin#7 with 6 HoC created by
+    @renovate[bot] was merged by @volodya-lombrozo after 2w4d of being in review and
+    0 comments.
+  hoc: 6
+  issue: 7
+  merger: 51804353
+  repository: 955159947
+  review_comments: 0
+  seconds: 1557394
+  what: code-was-contributed
+  when: *691
+  where: github
+  who: 29139614
+- _id: 244936
+  _job: 17691
+  _time: 2025-04-15 15:10:03.924210294 Z
+  _version: 0.9.10/0.39.2/0.3.5
+  comments: 0
+  details: The pull request objectionary/sodg-maven-plugin#16 with 7 HoC created by
+    @volodya-lombrozo was merged by @volodya-lombrozo after 3m15s of being in review
+    and 0 comments.
+  hoc: 7
+  issue: 16
+  merger: 51804353
+  repository: 955159947
+  review_comments: 0
+  seconds: 196
+  what: code-was-contributed
+  when: *692
+  where: github
+  who: 51804353
+- _id: 244937
+  _time: 2025-04-15 16:09:40.732049442 Z
+  _version: 0.9.10/0.39.2/
+  total_files: 4770
+  total_issues: 4068
+  total_pulls: 5755
+  what: dimensions-of-terrain
+  when: 2025-04-15 16:09:07.921779003 Z
+- _id: 244938
+  _time: 2025-04-15 16:09:41.169650710 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 784310467
+  what: min-issue-was-found
+  where: github
+- _id: 244939
+  _time: 2025-04-15 16:09:41.336018547 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 499536612
+  what: min-issue-was-found
+  where: github
+- _id: 244940
+  _time: 2025-04-15 16:09:42.040250614 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 396732517
   what: min-issue-was-found
   where: github
