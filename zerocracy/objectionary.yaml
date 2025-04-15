@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 46.679873793
+  seconds: 71.145345617
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-15 16:09:53.775078723 Z
+  when: 2025-04-15 17:09:17.637346328 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126054,20 +126054,6 @@
   repository: 490258619
   what: min-issue-was-found
   where: github
-- _id: 244663
-  _time: 2025-04-15 14:09:42.465338102 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 955159947
-  what: min-issue-was-found
-  where: github
-- _id: 244664
-  _time: 2025-04-15 14:09:42.615107936 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 624420387
-  what: min-issue-was-found
-  where: github
 - _id: 244665
   _time: 2025-04-15 14:09:42.762050071 Z
   _version: 0.9.10/0.39.2/
@@ -126087,13 +126073,6 @@
   _version: 0.9.10/0.39.2/
   latest: 1
   repository: 840332960
-  what: min-issue-was-found
-  where: github
-- _id: 244668
-  _time: 2025-04-15 14:09:44.185802923 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 531151981
   what: min-issue-was-found
   where: github
 - _id: 244669
@@ -126152,13 +126131,6 @@
   repository: 492899189
   what: min-issue-was-found
   where: github
-- _id: 244677
-  _time: 2025-04-15 14:09:48.298334862 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 558766137
-  what: min-issue-was-found
-  where: github
 - _id: 244678
   _time: 2025-04-15 14:09:48.443344348 Z
   _version: 0.9.10/0.39.2/
@@ -126178,13 +126150,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 482612876
-  what: min-issue-was-found
-  where: github
-- _id: 244682
-  _time: 2025-04-15 14:09:49.033057213 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 565789755
   what: min-issue-was-found
   where: github
 - _id: 244685
@@ -126213,13 +126178,6 @@
   _version: 0.9.10/0.39.2/
   latest: 1
   repository: 73056727
-  what: min-issue-was-found
-  where: github
-- _id: 244689
-  _time: 2025-04-15 14:09:52.032342306 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 493235807
   what: min-issue-was-found
   where: github
 - _id: 244691
@@ -127053,28 +127011,6 @@
   when: *690
   where: github
   who: 83453843
-- _id: 244931
-  _job: 17688
-  _time: 2025-04-15 14:14:34.783750434 Z
-  _version: 0.9.10/0.39.2/0.3.4!0.3.5
-  award: -16
-  commit: 8925c822fc353961954176a10b3ab126fd44fffc
-  default_branch: master
-  details: It's time to punish @volodya-lombrozo for pushing to the default branch
-    'master' in objectionary/sodg-maven-plugin, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [+123](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/sodg-maven-plugin/commit/8925c822fc353961954176a10b3ab126fd44fffc/#commitcomment-155411200
-  repository: 955159947
-  what: push-to-master-was-punished
-  when: 2025-04-15 14:14:34.805147221 Z
-  where: github
-  who: 51804353
-  why: Pushed 8925c822f to the default branch 'master' in objectionary/sodg-maven-plugin
 - _id: 244932
   _time: 2025-04-15 15:08:57.327951774 Z
   _version: 0.9.10/0.39.2/
@@ -127149,14 +127085,6 @@
   when: *692
   where: github
   who: 51804353
-- _id: 244937
-  _time: 2025-04-15 16:09:40.732049442 Z
-  _version: 0.9.10/0.39.2/
-  total_files: 4770
-  total_issues: 4068
-  total_pulls: 5755
-  what: dimensions-of-terrain
-  when: 2025-04-15 16:09:07.921779003 Z
 - _id: 244938
   _time: 2025-04-15 16:09:41.169650710 Z
   _version: 0.9.10/0.39.2/
@@ -127164,17 +127092,94 @@
   repository: 784310467
   what: min-issue-was-found
   where: github
-- _id: 244939
-  _time: 2025-04-15 16:09:41.336018547 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 499536612
-  what: min-issue-was-found
-  where: github
 - _id: 244940
   _time: 2025-04-15 16:09:42.040250614 Z
   _version: 0.9.10/0.39.2/
   latest: 2
   repository: 396732517
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 244941
+  - 244931
+  _job:
+  - 17694
+  - 17688
+  _time:
+  - 2025-04-15 16:10:16.919107422 Z
+  - 2025-04-15 14:14:34.783750434 Z
+  _version:
+  - 0.9.10/0.39.2/0.3.5
+  - 0.9.10/0.39.2/0.3.4!0.3.5
+  award: -16
+  commit: 8925c822fc353961954176a10b3ab126fd44fffc
+  default_branch: master
+  details: It's time to punish @volodya-lombrozo for pushing to the default branch
+    'master' in objectionary/sodg-maven-plugin, the penalty amount is -16.
+  href: https://github.com/objectionary/sodg-maven-plugin/commit/8925c822fc353961954176a10b3ab126fd44fffc/#commitcomment-155411200
+  repository: 955159947
+  what: push-to-master-was-punished
+  when: 2025-04-15 14:14:34.805147221 Z
+  where: github
+  who: 51804353
+  why: Pushed 8925c822f to the default branch 'master' in objectionary/sodg-maven-plugin
+- _id: 244942
+  _time: 2025-04-15 17:08:40.874320634 Z
+  _version: 0.9.10/0.39.2/
+  total_contributors: 88
+  total_files: 4770
+  total_forks: 316
+  total_issues: 4068
+  total_pulls: 5755
+  total_stars: 1554
+  what: dimensions-of-terrain
+  when: 2025-04-15 16:09:07.921779003 Z
+- _id: 244943
+  _time: 2025-04-15 17:08:41.174488448 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 558766137
+  what: min-issue-was-found
+  where: github
+- _id: 244944
+  _time: 2025-04-15 17:08:41.329265552 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 531151981
+  what: min-issue-was-found
+  where: github
+- _id: 244945
+  _time: 2025-04-15 17:08:41.477009840 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 499536612
+  what: min-issue-was-found
+  where: github
+- _id: 244946
+  _time: 2025-04-15 17:08:41.621120616 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 565789755
+  what: min-issue-was-found
+  where: github
+- _id: 244947
+  _time: 2025-04-15 17:08:41.767541351 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 624420387
+  what: min-issue-was-found
+  where: github
+- _id: 244948
+  _time: 2025-04-15 17:08:41.911760088 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 493235807
+  what: min-issue-was-found
+  where: github
+- _id: 244949
+  _time: 2025-04-15 17:08:43.053679474 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 955159947
   what: min-issue-was-found
   where: github
