@@ -165,7 +165,7 @@ public final class MjTranspile extends MjSafe {
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpFork(
             (src, tgt) -> new Xnav(xmir.inner())
-                .path("/object/o[1]/o[@name='λ']")
+                .path("/object/o/o[@name='λ']")
                 .findAny()
                 .isEmpty(),
             new FpDefault(
