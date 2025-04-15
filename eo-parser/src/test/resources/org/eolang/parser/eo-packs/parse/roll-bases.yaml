@@ -43,13 +43,13 @@ input: |
           y
         2
         1
-  
+
     # This unit test is supposed to check the functionality of the corresponding object.
     [] > compares-bool-to-bytes-reverse
       and. > @
         01-.as-bytes.eq true
         00-.as-bytes.eq false
-  
+
     # No comments.
     [] > bts
       eq. > @

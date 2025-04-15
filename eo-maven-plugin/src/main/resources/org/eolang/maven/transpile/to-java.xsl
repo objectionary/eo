@@ -724,7 +724,7 @@
       </xsl:choose>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
+      <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
   </xsl:template>
   <!-- Dataize test -->

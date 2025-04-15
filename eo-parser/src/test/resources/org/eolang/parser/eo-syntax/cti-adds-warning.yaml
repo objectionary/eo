@@ -22,14 +22,14 @@ input: |
           "warning"
           "This method is deprecated!"
         4
-  
+
     # No comments.
     [] > foo
       cti > @
         2.times 2
         "warning"
         "This method is deprecated!"
-  
+
     # No comments.
     [] > app
       QQ.io.stdout > @

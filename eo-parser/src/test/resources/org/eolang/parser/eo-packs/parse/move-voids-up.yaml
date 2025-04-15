@@ -13,9 +13,9 @@ input: |
     # No comments.
     [x] > app
       5 > y
-  
+
     # Foo.
     "Hello" > [x] > foo
-  
+
     # Bar.
     z > [y] > [x] > bar

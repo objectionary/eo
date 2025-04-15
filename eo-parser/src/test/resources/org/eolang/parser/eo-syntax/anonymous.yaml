@@ -11,7 +11,7 @@ input: |
   [] > main
     # No comments.
     [x] (x.plus 1 > a) (5 > @) > first
-  
+
     # No comments.
     [a b] ((a.plus 6).plus b > inner) > second
     foo

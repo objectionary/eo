@@ -28,7 +28,7 @@ input: |
     "Hello, друг!" > hello!
     # No comments.
     [tt a] > atom ?
-  
+
     # This unit test is supposed to check the functionality of the corresponding object.
     [] > with-void-phi
       [@] > x
@@ -38,7 +38,7 @@ input: |
       and. > @
         (five.plus 5).eq 10
         five.hello.eq "Hello"
-  
+
     # This is very good object
     # No comments.
     [x] > first
@@ -89,13 +89,13 @@ input: |
         @.
           b
       oops > spoo
-  
+
     # No comments.
     [] > obj
       "some" > @
       [] > foo
         ^.@ > @
-  
+
     # Comments are allowed only in front of top-level objects
     # No comments.
     [] > named
@@ -108,7 +108,7 @@ input: |
     test > tst
       me
         (now (f (f (f (f 1)))).f):i
-  
+
     # No comments.
     [] > ooo
       [] > o-1 ?

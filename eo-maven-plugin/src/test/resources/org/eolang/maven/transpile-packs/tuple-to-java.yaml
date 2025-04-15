@@ -24,11 +24,11 @@ input: |
     # No comments.
     [] > foo
       * 1 2 (* 3 4) > @
-  
+
     # No comments.
     [] > bar
       zz 42 * > tt
-  
+
     # No comments.
     [] > baz
       """

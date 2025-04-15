@@ -17,7 +17,7 @@ input: |
         2.times 2
         "error"
         "This method is deprecated!"
-  
+
     # No comments.
     [] > app
       QQ.io.stdout > @
