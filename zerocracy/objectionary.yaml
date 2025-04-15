@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 263.303861937
+  seconds: 49.366645165
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-15 14:13:43.928839399 Z
+  when: 2025-04-15 15:09:27.019538980 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126033,6 +126033,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running balance is [+161](https://www.eolang.org/zerocracy/objectionary-vitals.html).
     \ -->"
+  href: https://github.com/objectionary/lints/issues/488/#issuecomment-2805310631
   is_human: 1
   issue: 488
   repository: 889819508
@@ -126209,13 +126210,6 @@
   repository: 482612876
   what: min-issue-was-found
   where: github
-- _id: 244681
-  _time: 2025-04-15 14:09:48.885803816 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 386420319
-  what: min-issue-was-found
-  where: github
 - _id: 244682
   _time: 2025-04-15 14:09:49.033057213 Z
   _version: 0.9.10/0.39.2/
@@ -126293,13 +126287,6 @@
   repository: 519246071
   what: min-issue-was-found
   where: github
-- _id: 244693
-  _time: 2025-04-15 14:09:54.343632321 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 546194972
-  what: min-issue-was-found
-  where: github
 - _id: 244694
   _time: 2025-04-15 14:09:55.608843690 Z
   _version: 0.9.10/0.39.2/
@@ -126365,7 +126352,7 @@
   repository: 889819508
   review_comments: 10
   what: pull-was-reviewed
-  when: 2025-04-15 11:12:48.000000000 Z
+  when: &690 2025-04-15 11:12:48.000000000 Z
   where: github
   who: 83453843
 - _id: 244702
@@ -126482,6 +126469,7 @@
   is_human: 1
   issue: 7
   repository: 955159947
+  review_comments: 0
   succeeded_builds: 10
   what: pull-was-merged
   when: 2025-04-15 10:47:03.000000000 Z
@@ -126519,6 +126507,7 @@
   is_human: 1
   issue: 16
   repository: 955159947
+  review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
   when: 2025-04-15 10:42:03.000000000 Z
@@ -127097,4 +127086,56 @@
   latest: 19
   repository: 955159947
   what: labels-were-scanned
+  where: github
+- _id: 244930
+  _job: 17688
+  _time: 2025-04-15 14:14:10.684043346 Z
+  _version: 0.9.10/0.39.2/0.3.4!0.3.5
+  author: 108345628
+  comments: 15
+  details: The pull request objectionary/lints#415 with 30 HoC created by @Marat-Tim
+    was reviewed by @h1alexbel after 4w1d and 15 comments.
+  hoc: 30
+  issue: 415
+  repository: 889819508
+  review_comments: 10
+  seconds: 2574468
+  what: code-was-reviewed
+  when: *690
+  where: github
+  who: 83453843
+- _id: 244931
+  _job: 17688
+  _time: 2025-04-15 14:14:34.783750434 Z
+  _version: 0.9.10/0.39.2/0.3.4!0.3.5
+  award: -16
+  commit: 8925c822fc353961954176a10b3ab126fd44fffc
+  default_branch: master
+  details: It's time to punish @volodya-lombrozo for pushing to the default branch
+    'master' in objectionary/sodg-maven-plugin, the penalty amount is -16.
+  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
+    to push directly to the default branch `master`. You''ve earned -16 points. Next
+    time, create a new branch, push your changes over there, then make a pull request
+    and merge it. Even if you are flying solo, contributing via pull requests is a
+    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
+    Your running balance is [+123](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
+  repository: 955159947
+  what: push-to-master-was-punished
+  when: 2025-04-15 14:14:34.805147221 Z
+  where: github
+  who: 51804353
+  why: Pushed 8925c822f to the default branch 'master' in objectionary/sodg-maven-plugin
+- _id: 244932
+  _time: 2025-04-15 15:08:57.327951774 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 386420319
+  what: min-issue-was-found
+  where: github
+- _id: 244933
+  _time: 2025-04-15 15:08:58.398785953 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 546194972
+  what: min-issue-was-found
   where: github
