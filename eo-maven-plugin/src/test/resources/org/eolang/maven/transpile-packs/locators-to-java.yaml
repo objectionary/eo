@@ -9,24 +9,26 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 3, 2, "Φ.foo.φ", "foo.φ")')]
-  - //java[contains(text(), 'new PhSafe(rrb, "scenario", 6, 4, "Φ.foo.other.φ.ρ", "foo.other.φ.ρ")')]
-  - //java[contains(text(), 'new PhSafe(rr, "scenario", 6, 6, "Φ.foo.other.φ", "foo.other.φ")')]
-  - //java[contains(text(), 'new PhSafe(rr1, "scenario", 6, 12, "Φ.foo.other.φ.α0", "foo.other.φ.α0")')]
-  - //java[contains(text(), 'new PhSafe(rb, "scenario", 10, 2, "Φ.bar.φ.ρ", "bar.φ.ρ")')]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 10, 4, "Φ.bar.φ", "bar.φ")')]
-  - //java[contains(text(), 'new PhSafe(r1, "scenario", 10, 10, "Φ.bar.φ.α0", "bar.φ.α0")')]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 11, 2, "Φ.bar.five", "bar.five")')]
+  - /object[not(errors)]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 5, 4, "Φ.main.foo.φ", "main.foo.φ")')]
+  - //java[contains(text(), 'new PhSafe(rrrb, "main", 8, 6, "Φ.main.foo.other.φ.ρ", "main.foo.other.φ.ρ")')]
+  - //java[contains(text(), 'new PhSafe(rrr, "main", 8, 8, "Φ.main.foo.other.φ", "main.foo.other.φ")')]
+  - //java[contains(text(), 'new PhSafe(rrr1, "main", 8, 14, "Φ.main.foo.other.φ.α0", "main.foo.other.φ.α0")')]
+  - //java[contains(text(), 'new PhSafe(rrb, "main", 12, 4, "Φ.main.bar.φ.ρ", "main.bar.φ.ρ")')]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 12, 6, "Φ.main.bar.φ", "main.bar.φ")')]
+  - //java[contains(text(), 'new PhSafe(rr1, "main", 12, 12, "Φ.main.bar.φ.α0", "main.bar.φ.α0")')]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 13, 4, "Φ.main.bar.five", "main.bar.five")')]
 input: |
-  # No comments.
-  [] > foo
-    42 > @
+  # Main.
+  [] > main
     # No comments.
-    [y] > other
-      43.plus y > @
+    [] > foo
+      42 > @
+      # No comments.
+      [y] > other
+        43.plus y > @
 
-  # No comments.
-  [] > bar
-    42.plus 43 > @
-    int 5 > five
+    # No comments.
+    [] > bar
+      42.plus 43 > @
+      int 5 > five

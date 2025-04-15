@@ -33,7 +33,7 @@ final class DrErrors implements Iterable<Directive> {
         return new org.cactoos.iterable.Joined<>(
             new Mapped<Iterable<Directive>>(
                 error -> new Directives()
-                    .xpath("/program")
+                    .xpath("/object")
                     .strict(1)
                     .addIf("errors")
                     .strict(1)

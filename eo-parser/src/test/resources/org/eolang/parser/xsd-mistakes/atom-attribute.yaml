@@ -3,8 +3,6 @@
 ---
 errors: 1
 document: |
-  <program name='foo'>
-    <objects>
-      <o name="foo" atom=""/>
-    </objects>
-  </program>
+  <object>
+    <o name="foo" atom=""/>
+  </object>

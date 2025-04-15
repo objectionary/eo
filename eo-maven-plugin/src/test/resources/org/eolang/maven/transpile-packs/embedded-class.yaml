@@ -9,7 +9,7 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //java[contains(text(), 'this.add("xyz",')]
   - //java[contains(text(), '((PhDefault) r).add("bar",')]
   - //java[contains(text(), '((PhDefault) rr).add("φ",')]

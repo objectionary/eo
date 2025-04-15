@@ -130,7 +130,7 @@ public final class MjUnphi extends MjSafe {
      */
     private static List<String> errors(final XML xml) {
         return new Xnav(xml.inner())
-            .element("program")
+            .element("object")
             .elements(Filter.withName("errors"))
             .findFirst()
             .map(

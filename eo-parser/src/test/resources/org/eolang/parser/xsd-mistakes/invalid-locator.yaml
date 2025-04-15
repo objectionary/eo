@@ -3,8 +3,6 @@
 ---
 errors: 2
 document: |
-  <program name='foo'>
-    <objects>
-      <o name="foo" loc="wrong-line-number"/>
-    </objects>
-  </program>
+  <object>
+    <o name="foo" loc="wrong-loc"/>
+  </object>

@@ -3,12 +3,11 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/objects/o[@base='Q.x.first']
-  - /program/objects/o[@name='x']/o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]
+  - /object[not(errors)]
+  - //o[@base='.first' and @name='m']/o[1][not(@base) and not(@name) and o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]]
 input: |
   # No comments.
-  [] > x
+  []
     y > @
       []
       .second

@@ -10,17 +10,18 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //java[contains(text(), '@Test')]
-  - //java[contains(text(), 'EOworksTest')]
-  - //java[contains(text(), 'EOthrows_onTest')]
+  - //java[contains(text(), 'void works() throws java.lang.Exception')]
+  - //java[contains(text(), 'void throws_on() throws java.lang.Exception')]
   - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
+  - //java[contains(text(), 'new Dataized(this.take("works")).asBool()')]
+  - //java[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
 input: |
   +tests
 
   # No comments.
-  [] > works
-    1.eq 1 > @
-
-  # No comments.
-  false > [] > throws-on
+  [] > some-tests
+    [] > works
+      1.eq 1 > @
+    false > [] > throws-on

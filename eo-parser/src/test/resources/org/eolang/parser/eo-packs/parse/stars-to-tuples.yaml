@@ -5,30 +5,30 @@ sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/stars-to-tuples.xsl
 asserts:
-  - //objects[count(o)=8]
-  - //objects[count(//o[@star])=0]
+  - /object/o[count(o)=8]
+  - /object/o[count(//o[@star])=0]
   # first
-  - //o[@base='Q.org.eolang.tuple.empty' and @line=1 and @name='xs']
+  - //o[@base='Q.org.eolang.tuple.empty' and @line=3 and @name='xs']
   # second
-  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[1][@base='Q.org.eolang.tuple.empty']
-  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[2][@base='Q.org.eolang.number']
-  - //o[@base='Q.org.eolang.tuple' and @line=2 and @name='xl']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Q.org.eolang.tuple' and @line=4 and @name='xl']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=4 and @name='xl']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=4 and @name='xl']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='1']
   # third
-  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
-  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='Q.org.eolang.number']
-  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='1']
-  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[2][@base='Q.org.eolang.number']
-  - //o[@base='Q.org.eolang.tuple' and @line=3]/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='2']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[2][@base='Q.org.eolang.number']
+  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[1][@hex and text()='2']
   # fourth
-  - //o[@base='.empty' and @line=4]/o[@base='Q.org.eolang.tuple.empty']
+  - //o[@base='.empty' and @line=6]/o[@base='Q.org.eolang.tuple.empty']
   # fifth
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.c']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='1']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.f']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='2']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[2][@base='.i']
-  - //o[@base='Q.org.eolang.tuple' and @line=5]/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='3']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple.empty']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.c']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[1][@base='Q.org.eolang.tuple']/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='1']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[1][@base='Q.org.eolang.tuple']/o[2][@base='.f']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[1][@base='Q.org.eolang.tuple']/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='2']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[2][@base='.i']
+  - //o[@base='Q.org.eolang.tuple' and @line=7]/o[3][@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[@hex and text()='3']
   # sixth
   - //o[@base='.elements']/o[@base='arr']/o[@base='Q.org.eolang.tuple.empty']
   # seventh
@@ -36,17 +36,19 @@ asserts:
   - //o[@base='.reduced']/o[@base='Q.org.eolang.tuple.empty']
   - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
-  * > xs
-  * 1 > xl
-  * 1 2 > xxl
-  *.empty > empty
-  * > tup
-    a.b.c
-    d.e.f
-    g.h.i
-  (arr *).elements > elm
-  list
-  .reduced > y
-    *
-    [x]
-  * (* 1 2) (* 3 4) (* 5 6) > last
+  # Main.
+  [] > main
+    * > xs
+    * 1 > xl
+    * 1 2 > xxl
+    *.empty > empty
+    * > tup
+      a.b.c
+      d.e.f
+      g.h.i
+    (arr *).elements > elm
+    list
+    .reduced > y
+      *
+      [x]
+    * (* 1 2) (* 3 4) (* 5 6) > last

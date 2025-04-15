@@ -8,7 +8,7 @@
   Here we add @loc attribute to the "objects" element in XML.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/objects">
+  <xsl:template match="/object/objects">
     <xsl:copy>
       <xsl:attribute name="loc">
         <xsl:text>Φ</xsl:text>

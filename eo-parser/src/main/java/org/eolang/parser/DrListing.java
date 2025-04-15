@@ -39,7 +39,7 @@ final class DrListing implements Iterable<Directive> {
             )
         );
         return new Directives()
-            .xpath("/program")
+            .xpath("/object")
             .strict(1).add("listing")
             .set(text)
             .iterator();

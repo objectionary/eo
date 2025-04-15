@@ -160,12 +160,12 @@ public final class MjTranspile extends MjSafe {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjTranspile.DIR);
-        final Path target = new Place(new ProgramName(xmir).get()).make(base, MjAssemble.XMIR);
+        final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpFork(
             (src, tgt) -> new Xnav(xmir.inner())
-                .path("/program/objects/o[1]/o[@name='λ']")
+                .path("/object/o/o[@name='λ']")
                 .findAny()
                 .isEmpty(),
             new FpDefault(
@@ -198,7 +198,8 @@ public final class MjTranspile extends MjSafe {
                 new TrSpy(
                     measured,
                     new StickyFunc<>(
-                        new ProgramPlace(this.targetDir.toPath().resolve(MjTranspile.PRE))
+                        doc -> new Place(new ObjectName(doc).get())
+                            .make(this.targetDir.toPath().resolve(MjTranspile.PRE), "")
                     )
                 )
             ).pass(xml);
@@ -224,8 +225,7 @@ public final class MjTranspile extends MjSafe {
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
             final Collection<Xnav> classes = new Xnav(target)
-                .element("program")
-                .element("objects")
+                .element("object")
                 .elements(Filter.withName("class"))
                 .collect(Collectors.toList());
             for (final Xnav clazz : classes) {

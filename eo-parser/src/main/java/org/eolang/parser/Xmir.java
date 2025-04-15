@@ -195,13 +195,13 @@ public final class Xmir implements XML {
         final XML xmir = train.pass(this.xml);
         Logger.debug(this, "XMIR after converting to %s:\n%s", node, xmir);
         return new Xnav(xmir.inner())
-            .element("program")
+            .element("object")
             .element(node)
             .text()
             .orElseThrow(
                 () -> new IllegalStateException(
                     String.format(
-                        "Couldn't find element '/program/%s' after converting to %s",
+                        "Couldn't find element '/object/%s' after converting to %s",
                         node, node
                     )
                 )

@@ -11,10 +11,10 @@
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/sodg">
+  <xsl:template match="/object/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
+      <xsl:apply-templates select="/object/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
   <!-- remove this "!=tuple" after the fix: https://github.com/objectionary/eo/issues/1060 -->

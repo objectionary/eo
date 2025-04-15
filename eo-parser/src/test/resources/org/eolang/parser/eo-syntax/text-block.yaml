@@ -8,26 +8,26 @@ asserts:
   - //o[@base='Q.org.eolang.string' and o/o[text()='74-68-69-72-64']]
   - //o[@base='Q.org.eolang.string' and o/o[text()='66-6F-72-74-68']]
 input: |
-  # Two lines
-  """
-  Hi, there
-  Adiós
-  """ > txt
-
-  # Preserve margin
-  stdout > marg
+  # Main.
+  [] > main
+    # Two lines
     """
-    first
-     second
-    """
-
-  # Preserve margin
-  stdout > mrg
-    """
-       third
-    """
-  # Negative margin
-  stdout > neg
-    """
-  forth
-    """
+    Hi, there
+    Adiós
+    """ > txt
+    # Preserve margin
+    stdout > marg
+      """
+      first
+       second
+      """
+    # Preserve margin
+    stdout > mrg
+      """
+         third
+      """
+    # Negative margin
+    stdout > neg
+      """
+    forth
+      """

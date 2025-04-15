@@ -9,25 +9,6 @@
 +version 0.0.0
 +unlint rt-without-atoms
 
-3.14 > pi
-
-# No comments.
-[n] > alpha
-  # No comments.
-  [] > x
-    a > pi
-      pi
-      666
-      two.f1.f2 x
-  stdout > @
-    sprintf > f
-      "Hello, ".trim
-      x 0x1fff n
-
-alpha > beta
-  alpha
-    "Z"
-
 # No comments.
 [n x] > mess
   # No comments.

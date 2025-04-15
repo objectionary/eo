@@ -10,10 +10,10 @@
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/sodg">
+  <xsl:template match="/object/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
+      <xsl:apply-templates select="/object/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@base and not(@level) and starts-with(@base, '.')]" mode="sodg" priority="1">

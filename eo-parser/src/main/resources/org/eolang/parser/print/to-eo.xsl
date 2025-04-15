@@ -17,17 +17,16 @@
   </xsl:variable>
   <xsl:output method="text" encoding="UTF-8"/>
   <!-- PROGRAM -->
-  <xsl:template match="program">
-    <program>
-      <xsl:copy-of select="sheets"/>
-      <xsl:copy-of select="metas"/>
-      <xsl:copy-of select="objects"/>
+  <xsl:template match="object">
+    <xsl:copy>
+      <xsl:apply-templates select="sheets|metas"/>
+      <xsl:copy-of select="o[1]"/>
       <eo>
         <xsl:apply-templates select="license"/>
         <xsl:apply-templates select="metas"/>
-        <xsl:apply-templates select="objects"/>
+        <xsl:apply-templates select="o[1]"/>
       </eo>
-    </program>
+    </xsl:copy>
   </xsl:template>
   <!-- LICENCE -->
   <xsl:template match="license">
@@ -54,10 +53,6 @@
       <xsl:value-of select="tail"/>
     </xsl:if>
     <xsl:value-of select="$eol"/>
-  </xsl:template>
-  <!-- OBJECTS -->
-  <xsl:template match="objects">
-    <xsl:apply-templates select="o"/>
   </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]">

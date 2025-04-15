@@ -9,15 +9,6 @@ message: |-
   [5:2] error: 'Invalid object declaration'
      *
     ^
-  [5:2] error: 'Invalid object declaration'
-     *
-    ^
-  [5:2] error: 'Invalid bound object declaration'
-     *
-    ^
-  [4:-1] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
-    seq > @
-  ^^^^^^^^^
 input: |
   # This is a code snippet from the following issue:
   # https://github.com/objectionary/eo/issues/3332

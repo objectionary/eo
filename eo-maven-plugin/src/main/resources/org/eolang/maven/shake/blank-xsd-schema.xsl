@@ -8,7 +8,7 @@
   This stylesheet removes reference to the XSD schema from the XML document.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/@xsi:noNamespaceSchemaLocation">
+  <xsl:template match="/object/@xsi:noNamespaceSchemaLocation">
     <xsl:attribute name="xsi:noNamespaceSchemaLocation">
       <xsl:text>https://www.eolang.org/xsd/XMIR-anything.xsd</xsl:text>
     </xsl:attribute>

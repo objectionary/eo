@@ -2,17 +2,23 @@
 # SPDX-License-Identifier: MIT
 ---
 input: |
-  QQ.io.stdout > std
-  Q.org.eolang.x > y
+  # Main.
+  [] > main
+    QQ.io.stdout > std
+    Q.org.eolang.x > y
 sweet: |-
   {⟦
-    std ↦ Φ̇.io.stdout,
-    y ↦ Φ̇.x
+    main ↦ ⟦
+      std ↦ Φ̇.io.stdout,
+      y ↦ Φ̇.x
+    ⟧
   ⟧}
 salty: |-
   {
     ⟦
-      std ↦ Φ.org.eolang.io.stdout,
-      y ↦ Φ.org.eolang.x
+      main ↦ ⟦
+        std ↦ Φ.org.eolang.io.stdout,
+        y ↦ Φ.org.eolang.x
+      ⟧
     ⟧
   }

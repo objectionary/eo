@@ -3,15 +3,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<program
-    ms="18"
-    name="a"
-    time="2023-10-19T09:27:28.852003Z"
-    dob="2024-01-15T16:58:03"
-    revision="6058559"
-    source="/Users/maxonfjvipon/code/java/eo/eo-runtime/src/main/eo/org/eolang/inner/a.eo"
-    version="1.0-SNAPSHOT"
->
+<object ms="18" time="2023-10-19T09:27:28.852003Z" dob="2024-01-15T16:58:03" revision="6058559" version="1.0-SNAPSHOT">
   <listing>[d] &gt; a
     cage d &gt; this-d
     [] &gt; new
@@ -19,21 +11,19 @@
     [] &gt; foo
       this-d.plus 1 &gt; @
   </listing>
-  <objects>
-    <o abstract="" line="6" name="a" pos="0">
-      <o line="6" name="d" pos="1"/>
-      <o base="cage" line="7" name="this-d" pos="2">
-        <o base="d" line="7" pos="7"/>
-      </o>
-      <o abstract="" line="8" name="new" pos="2">
-        <o base="^" line="9" name="@" pos="4"/>
-      </o>
-      <o abstract="" line="10" name="foo" pos="2">
-        <o base=".plus" line="11" name="@" pos="10">
-          <o base="this-d" line="11" pos="4"/>
-          <o base="int" data="bytes" line="11" pos="16">00-00-00-00-00-00-00-02</o>
-        </o>
+  <o abstract="" line="6" name="a" pos="0">
+    <o line="6" name="d" pos="1"/>
+    <o base="cage" line="7" name="this-d" pos="2">
+      <o base="d" line="7" pos="7"/>
+    </o>
+    <o abstract="" line="8" name="new" pos="2">
+      <o base="^" line="9" name="@" pos="4"/>
+    </o>
+    <o abstract="" line="10" name="foo" pos="2">
+      <o base=".plus" line="11" name="@" pos="10">
+        <o base="this-d" line="11" pos="4"/>
+        <o base="int" data="bytes" line="11" pos="16">00-00-00-00-00-00-00-02</o>
       </o>
     </o>
-  </objects>
-</program>
+  </o>
+</object>

@@ -54,7 +54,7 @@
   <xsl:template match="o[not(@original-name)]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:attribute name="original-name" select="eo:original-name(/program, .)"/>
+      <xsl:attribute name="original-name" select="eo:original-name(/object, .)"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>

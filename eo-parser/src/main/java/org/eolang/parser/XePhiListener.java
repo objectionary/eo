@@ -85,21 +85,14 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     private final long start;
 
     /**
-     * The name of it.
-     */
-    private final String name;
-
-    /**
      * Errors.
      */
     private final List<ParsingException> errors;
 
     /**
      * Ctor.
-     * @param nme The name of it
      */
-    XePhiListener(final String nme) {
-        this.name = nme;
+    XePhiListener() {
         this.dirs = new Directives();
         this.objs = new ArrayDeque<>();
         this.attributes = new Stack<>();
@@ -114,9 +107,9 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterProgram(final PhiParser.ProgramContext ctx) {
         this.objs.add(new Objects());
         this.dirs
-            .append(new DrProgram(this.name))
+            .append(new DrProgram())
             .append(new DrListing(ctx))
-            .xpath("/program").strict(1);
+            .xpath("/object").strict(1);
         if (ctx.object() == null || ctx.object().formation() == null) {
             this.objects().start(ctx);
         }
@@ -141,9 +134,8 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (!this.errors.isEmpty()) {
             this.dirs.append(new DrErrors(this.errors));
         }
-        this.dirs.add("objects")
+        this.dirs
             .append(this.objs.pollLast())
-            .up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L));
     }
 

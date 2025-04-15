@@ -3,8 +3,8 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/objects/o[@base='Q.org.eolang.string' and @name='string-bytes']/o[@base='Q.org.eolang.bytes']/o[text()='62-79-74-65-73']
+  - /object[not(errors)]
+  - /object/o[@base='Q.org.eolang.string' and @name='string-bytes']/o[@base='Q.org.eolang.bytes']/o[text()='62-79-74-65-73']
 input: |
   # No comments.
   "bytes" > string-bytes

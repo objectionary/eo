@@ -74,7 +74,7 @@
         <xsl:apply-templates select="." mode="to-method">
           <xsl:with-param name="of">
             <xsl:apply-templates select="$start" mode="recursive-package">
-              <xsl:with-param name="pkg" select="/program/metas/meta[head='package']/part[1]/text()"/>
+              <xsl:with-param name="pkg" select="/object/metas/meta[head='package']/part[1]/text()"/>
             </xsl:apply-templates>
           </xsl:with-param>
         </xsl:apply-templates>
@@ -145,7 +145,7 @@
     <xsl:variable name="parent" select="parent::*"/>
     <xsl:choose>
       <!-- last frontier -->
-      <xsl:when test="$parent[name()='objects']">
+      <xsl:when test="$parent[name()='object']">
         <xsl:apply-templates select="$self" mode="with-package">
           <xsl:with-param name="find" select="$find"/>
           <xsl:with-param name="parent" select="$parent"/>

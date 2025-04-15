@@ -141,13 +141,13 @@ final class DpsDefault implements Dependencies {
 
     /**
      * Return collection of +rt metas.
-     * The equivalent xpath is "/program/metas/meta[head='rt' and part[1]='jvm']/part[2]/text()"
+     * The equivalent xpath is "/object/metas/meta[head='rt' and part[1]='jvm']/part[2]/text()"
      * @param file XML file
      * @return Collection of runtime metas
      */
     private static Collection<String> jvms(final Path file) {
         return new Xnav(file)
-            .element("program")
+            .element("object")
             .elements(Filter.withName("metas"))
             .findFirst()
             .map(

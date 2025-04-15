@@ -51,8 +51,8 @@ sheets:
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
+  - /object[not(errors)]
+  - /object[count(o)=1]
   - //o[@base='org.eolang.and' and @line='8']
   - //o[@base='foo']
   - //o[@base='$']
@@ -98,8 +98,8 @@ the program.
 This section is used for defining the tests that will be run on the program. The following tests are
 defined in this section:
 
-- `/program[not(errors)]`: This test checks that there are no errors in the program.
-- `/program/objects[count(o)=1]`: This test checks that there is only one object in the program.
+- `/object[not(errors)]`: This test checks that there are no errors in the program.
+- `/object[count(o)=1]`: This test checks that there is only one object in the program.
 - `//o[@base='org.eolang.and' and @line='8']`: This test checks that there is an object with the
 base `org.eolang.and` and the line number `8`.
 - `//o[@base='foo']`: This test checks that there is an object with the base `foo`.

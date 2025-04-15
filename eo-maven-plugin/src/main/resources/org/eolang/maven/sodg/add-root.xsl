@@ -9,7 +9,7 @@
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/sodg">
+  <xsl:template match="/object/sodg">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:call-template name="i">

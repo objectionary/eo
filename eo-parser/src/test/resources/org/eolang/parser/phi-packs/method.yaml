@@ -2,17 +2,23 @@
 # SPDX-License-Identifier: MIT
 ---
 input: |-
-  x.y.z > xyz
-  x.~1.y.~2 > abc
+  # Main.
+  [] > main
+    x.y.z > xyz
+    x.~1.y.~2 > abc
 sweet: |-
   {⟦
-    xyz ↦ Φ̇.x.y.z,
-    abc ↦ Φ̇.x.α1.y.α2
+    main ↦ ⟦
+      xyz ↦ Φ̇.x.y.z,
+      abc ↦ Φ̇.x.α1.y.α2
+    ⟧
   ⟧}
 salty: |-
   {
     ⟦
-      xyz ↦ Φ.org.eolang.x.y.z,
-      abc ↦ Φ.org.eolang.x.α1.y.α2
+      main ↦ ⟦
+        xyz ↦ Φ.org.eolang.x.y.z,
+        abc ↦ Φ.org.eolang.x.α1.y.α2
+      ⟧
     ⟧
   }

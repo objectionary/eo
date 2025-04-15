@@ -76,7 +76,7 @@ final class MjUnphiTest {
                     )
                 )
             ),
-            XhtmlMatchers.hasXPaths("/program/objects/o[1]/o[1][text()='00-']")
+            XhtmlMatchers.hasXPaths("/object/o[1]/o[1][text()='00-']")
         );
     }
 
@@ -154,8 +154,8 @@ final class MjUnphiTest {
                     .get(String.format("target/%s/std.xmir", MjParse.DIR))
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/metas/meta[head/text()='tests' and not(tail/text())]",
-                "/program/metas/meta[head/text()='home' and tail/text()='https://github.com/objectionary/eo']"
+                "/object/metas/meta[head/text()='tests' and not(tail/text())]",
+                "/object/metas/meta[head/text()='home' and tail/text()='https://github.com/objectionary/eo']"
             )
         );
     }
@@ -272,7 +272,7 @@ final class MjUnphiTest {
                     )
                 )
             ).parsed(),
-            XhtmlMatchers.hasXPath("/program[not(errors)]")
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
     }
 

@@ -3,6 +3,7 @@
 ---
 errors: 1
 document: |
-  <program>
-    <objects/>
-  </program>
+  <object>
+    <o name="foo"/>
+    <o name="bar"/>
+  </object>

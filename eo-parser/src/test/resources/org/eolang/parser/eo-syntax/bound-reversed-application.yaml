@@ -3,14 +3,16 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@base='Q.org.eolang.true.if' and o[@base='Q.org.eolang.string' and @as='α0']]
   - //o[@base='Q.org.eolang.true.if' and o[@base='Q.org.eolang.string' and @as='α1']]
   - //o[@base='Q.org.eolang.false.if' and o[@base='Q.org.eolang.number' and @as='a']]
   - //o[@base='Q.org.eolang.false.if' and o[@base='Q.org.eolang.number' and @as='b']]
 input: |
-  if. > first
-    true
-    "TRUE":0
-    "FALSE":1
-  if. false 1:a 2:b > second
+  # Main.
+  [] > main
+    if. > first
+      true
+      "TRUE":0
+      "FALSE":1
+    if. false 1:a 2:b > second

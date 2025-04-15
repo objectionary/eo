@@ -3,8 +3,8 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
+  - /object[not(errors)]
+  - /object[count(o)=1]
   - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='4']
 input: |
   +package test

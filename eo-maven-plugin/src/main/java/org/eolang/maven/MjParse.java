@@ -23,8 +23,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
 import org.w3c.dom.Node;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -111,7 +109,7 @@ public final class MjParse extends MjSafe {
             ).apply(source, target)
         ).withVersion(MjParse.version(target, refs));
         final List<Xnav> errors = new Xnav(target)
-            .element("program")
+            .element("object")
             .element("errors")
             .elements(Filter.withName("error"))
             .collect(Collectors.toList());
@@ -140,16 +138,12 @@ public final class MjParse extends MjSafe {
      */
     private Node parsed(final Path source, final String name) throws IOException {
         final XML xmir = new EoSyntax(name, new InputOf(source)).parsed();
-        final Path src = this.sourcesDir.toPath().relativize(source.toAbsolutePath());
-        final Node node = new Xembler(
-            new Directives().xpath("/program").attr("source",  src)
-        ).applyQuietly(xmir.inner());
         Logger.debug(
             MjParse.class,
             "Parsed program '%s' from %[file]s:\n %s",
-            name, src, xmir
+            name, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
-        return node;
+        return xmir.inner();
     }
 
     /**
@@ -172,7 +166,7 @@ public final class MjParse extends MjSafe {
             node = parsed.get(0);
         }
         return new Xnav(node)
-            .element("program")
+            .element("object")
             .element("metas")
             .elements(
                 Filter.all(

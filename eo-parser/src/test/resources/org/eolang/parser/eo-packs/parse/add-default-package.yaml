@@ -9,16 +9,16 @@ sheets:
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
+  - /object[not(errors)]
+  - /object[count(o)=1]
   - //o[@base='Q.org.eolang.and']
   - //o[@base='Q.foo']
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
-  - /program/metas/meta[head='also' and tail='Q.org.eolang.number' and part='Q.org.eolang.number']
-  - /program/metas/meta[head='also' and tail='Q.org.eolang.string' and part='Q.org.eolang.string']
-  - /program/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Q.org.eolang.string' and part='Q.org.eolang.number' and part='Q.org.eolang.foo.bar']
+  - /object/metas/meta[head='also' and tail='Q.org.eolang.number' and part='Q.org.eolang.number']
+  - /object/metas/meta[head='also' and tail='Q.org.eolang.string' and part='Q.org.eolang.string']
+  - /object/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Q.org.eolang.string' and part='Q.org.eolang.number' and part='Q.org.eolang.foo.bar']
 input: |
   +alias foo
   +alias scanner org.eolang.txt.scanner

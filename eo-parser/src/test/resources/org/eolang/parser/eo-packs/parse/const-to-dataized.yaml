@@ -11,7 +11,7 @@ asserts:
   - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[text()!='']
   - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.bytes']/o[text()='2A-']
   - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='Q.org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
-  - //objects[count(//o[@const])=0]
+  - /object[count(//o[@const])=0]
 input: |
   # No comments.
   [] > foo

@@ -7,7 +7,7 @@ sheets:
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/package.xsl
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //class[@name='bar' and @package='foo.long-name']
 input: |
   +package foo.long-name

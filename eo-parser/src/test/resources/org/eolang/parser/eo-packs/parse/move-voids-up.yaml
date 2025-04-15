@@ -4,16 +4,18 @@
 sheets:
   - /org/eolang/parser/parse/move-voids-up.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects/o[@name='foo' and o[@name='x']/following-sibling::o[@name='@']]
-  - /program/objects/o[@name='bar' and o[@name='x']/following-sibling::o[@name='@']/o[@name='y']/following-sibling::o[@name='@']]
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='@']]
+  - /object/o[@name='main']/o[@name='bar' and o[@name='x']/following-sibling::o[@name='@']/o[@name='y']/following-sibling::o[@name='@']]
 input: |
-  # No comments.
-  [x] > app
-    5 > y
+  # Main.
+  [] > main
+    # No comments.
+    [x] > app
+      5 > y
 
-  # Foo.
-  "Hello" > [x] > foo
+    # Foo.
+    "Hello" > [x] > foo
 
-  # Bar.
-  z > [y] > [x] > bar
+    # Bar.
+    z > [y] > [x] > bar

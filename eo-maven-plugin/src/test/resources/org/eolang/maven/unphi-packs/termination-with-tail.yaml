@@ -2,15 +2,17 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program/objects/o[@base='Q.org.eolang.error.m' and @name='x']
-  - /program/objects/o[@base='Q.org.eolang.error' and @name='y']/o[@as='α0' and @base='$.x']
+  - //o[@base='Q.org.eolang.error.m' and @name='x']
+  - //o[@base='Q.org.eolang.error' and @name='y']/o[@as='α0' and @base='$.x']
 phi: |
   {
   	⟦
       org ↦ ⟦
         eolang ↦ ⟦
-          x ↦ ⊥.m,
-          y ↦ ⊥(α0 ↦ ξ.x),
+          err -> [[
+            x ↦ ⊥.m,
+            y ↦ ⊥(α0 ↦ ξ.x)
+          ]],
           λ ⤍ Package
         ⟧,
         λ ⤍ Package

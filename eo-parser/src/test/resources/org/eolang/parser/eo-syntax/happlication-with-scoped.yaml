@@ -3,8 +3,8 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects//o[@base='Q.org.eolang.malloc.of']/o[2][starts-with(@base, '$.a🌵')]
-  - //objects//o[starts-with(@name, 'a🌵') and o[@base='∅' and @name='m'] and o[@base='Q.org.eolang.true' and @name='@']]
+  - /object//o[@base='Q.org.eolang.malloc.of']/o[2][starts-with(@base, '$.a🌵')]
+  - /object//o[starts-with(@name, 'a🌵') and o[@base='∅' and @name='m'] and o[@base='Q.org.eolang.true' and @name='@']]
 input: |
   # No comments.
   [] > foo

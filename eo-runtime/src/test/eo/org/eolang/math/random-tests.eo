@@ -9,35 +9,37 @@
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-random-with-seed
-  not. > @
-    eq.
-      r.next
-      r.next.next
-  random 51 > r
+[] > random-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-random-with-seed
+    not. > @
+      eq.
+        r.next
+        r.next.next
+    random 51 > r
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seeded-randoms-are-equal
-  eq. > @
-    (random 1654).next.next.next
-    (random 1654).next.next.next
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seeded-randoms-are-equal
+    eq. > @
+      (random 1654).next.next.next
+      (random 1654).next.next.next
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-random-is-in-range
-  and. > @
-    and.
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-random-is-in-range
+    and. > @
       and.
-        r.lt 1
-        (r.lt 0).not
+        and.
+          r.lt 1
+          (r.lt 0).not
+        and.
+          r.next.lt 1
+          (r.next.lt 0).not
       and.
-        r.next.lt 1
-        (r.next.lt 0).not
-    and.
-      r.next.next.lt 1
-      (r.next.next.lt 0).not
-  (random 123).fixed > r
+        r.next.next.lt 1
+        (r.next.next.lt 0).not
+    (random 123).fixed > r
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-two-random-numbers-not-equal
-  not. > @
-    random.pseudo.eq random.pseudo
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-two-random-numbers-not-equal
+    not. > @
+      random.pseudo.eq random.pseudo

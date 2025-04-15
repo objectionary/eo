@@ -4,7 +4,7 @@
 sheets:
   - /org/eolang/maven/shake/blank-xsd-schema.xsl
 asserts:
-  - /program[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']
+  - /object[@xsi:noNamespaceSchemaLocation='https://www.eolang.org/xsd/XMIR-anything.xsd']
 input: |
   # No comments.
   [] > foo

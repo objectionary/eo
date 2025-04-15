@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@base='$.^.a.plus' and @name='@']/o[@base='$.^.b']
 input: |
   +home https://github.com/objectionary/eo

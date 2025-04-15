@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
 phi: |-
   {
     ⟦

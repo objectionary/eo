@@ -48,11 +48,11 @@
     ```
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="metas" select="/program/metas/meta[head='decorate']"/>
+  <xsl:variable name="metas" select="/object/metas/meta[head='decorate']"/>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[some $p in /program/metas/meta[head='decorate']/part[1] satisfies starts-with(@base, $p)]" mode="with-base">
+  <xsl:template match="o[some $p in $metas/part[1] satisfies starts-with(@base, $p)]" mode="with-base">
     <xsl:variable name="meta" select="$metas[part[1]=current()/@base][1]"/>
     <xsl:choose>
       <xsl:when test="exists($meta)">

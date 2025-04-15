@@ -68,7 +68,7 @@ import org.xembly.Xembler;
  * ).parsed();
  * </pre>
  *
- * <p>After parsing, errors can be found in the XML at the "/program/errors" XPath.
+ * <p>After parsing, errors can be found in the XML at the "/object/errors" XPath.
  * If no errors are present, the parsed program is valid EO code.</p>
  *
  * @since 0.1
@@ -95,6 +95,7 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/const-to-dataized.xsl",
                     "/org/eolang/parser/parse/stars-to-tuples.xsl",
                     "/org/eolang/parser/parse/vars-float-up.xsl",
+                    "/org/eolang/parser/parse/validate-objects-count.xsl",
                     "/org/eolang/parser/parse/build-fqns.xsl",
                     "/org/eolang/parser/parse/expand-qqs.xsl",
                     "/org/eolang/parser/parse/expand-aliases.xsl",
@@ -203,7 +204,7 @@ public final class EoSyntax implements Syntax {
      *
      * <p>No exception will be thrown if the syntax is invalid. In any case, XMIR will
      * be generated and saved. Read it in order to find the errors,
-     * at <tt>/program/errors</tt> XPath.</p>
+     * at <tt>/object/errors</tt> XPath.</p>
      *
      * @return Parsed XML
      * @throws IOException If fails
@@ -220,7 +221,7 @@ public final class EoSyntax implements Syntax {
         parser.removeErrorListeners();
         final EoParserErrors eospy = new EoParserErrors(lines);
         parser.addErrorListener(eospy);
-        final XeEoListener xel = new XeEoListener(this.name);
+        final XeEoListener xel = new XeEoListener();
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = this.transform.apply(
             new XMLDocument(

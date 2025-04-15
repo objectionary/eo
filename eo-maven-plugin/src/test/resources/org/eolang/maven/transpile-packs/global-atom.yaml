@@ -10,8 +10,8 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects[not(class) and not(//attr)]
+  - /object[not(errors)]
+  - /object[not(class) and not(//attr)]
 input: |
   # No comments.
   [x y z] > global-atom ?

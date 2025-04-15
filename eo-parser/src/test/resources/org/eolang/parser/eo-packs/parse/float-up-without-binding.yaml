@@ -5,17 +5,19 @@ sheets:
   - /org/eolang/parser/parse/const-to-dataized.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects/o[@base='x' and @name='y']/o[@base='o' and @as='α0']
-  - /program/objects/o[not(@base) and @name='o' and not(@as)]
-  - /program/objects/o[@name='foo']/o[@base='a' and @name='b']/o[@base='c' and @as='hey']
-  - /program/objects/o[@name='foo']/o[not(@base) and @name='c' and not(@as)]
-  - /program/objects/o[@name='foo']/o[@base='a' and @name='b']/o[not(@base) and not(@name) and @as='abs']
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@base='x' and @name='y']/o[@base='o' and @as='α0']
+  - /object/o[@name='main']/o[not(@base) and @name='o' and not(@as)]
+  - /object/o[@name='main']/o[@name='foo']/o[@base='a' and @name='b']/o[@base='c' and @as='hey']
+  - /object/o[@name='main']/o[@name='foo']/o[not(@base) and @name='c' and not(@as)]
+  - /object/o[@name='main']/o[@name='foo']/o[@base='a' and @name='b']/o[not(@base) and not(@name) and @as='abs']
 input: |
-  x > y
-    []:0 > o
-  # Foo.
-  [] > foo
-    a > b
-      []:hey > c
-      [z]:abs
+  # Main.
+  [] > main
+    x > y
+      []:0 > o
+    # Foo.
+    [] > foo
+      a > b
+        []:hey > c
+        [z]:abs

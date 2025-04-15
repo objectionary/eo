@@ -26,7 +26,7 @@
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="/program/metas/meta[head='also' or head='decorate']/(tail|part)">
+  <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>
   </xsl:template>
   <xsl:template match="*[not(contains(text(), ' '))]" mode="meta">
@@ -61,7 +61,7 @@
   <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='∅' and @base!='$']" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
-  <xsl:template match="o[not(@base=/program/metas/meta[head='alias']/part[1])]" mode="no-specials">
+  <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:text>Q.org.eolang.</xsl:text>

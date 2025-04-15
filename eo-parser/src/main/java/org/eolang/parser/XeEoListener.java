@@ -36,11 +36,6 @@ import org.xembly.Directives;
 })
 final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
-     * The name of it.
-     */
-    private final String name;
-
-    /**
      * Xembly directives we are building (mutable).
      */
     private final Directives dirs;
@@ -62,11 +57,8 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     /**
      * Ctor.
-     *
-     * @param name The name of it
      */
-    XeEoListener(final String name) {
-        this.name = name;
+    XeEoListener() {
         this.dirs = new Directives();
         this.errors = new ArrayList<>(0);
         this.objects = new Objects();
@@ -76,14 +68,17 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .append(new DrProgram(this.name))
+            .append(new DrProgram())
             .append(new DrListing(ctx))
-            .xpath("/program").strict(1);
+            .xpath("/object")
+            .strict(1);
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
-        this.dirs.xpath("/program").strict(1);
+        this.dirs.xpath("/object")
+            .strict(1)
+            .append(this.objects);
         if (!this.errors.isEmpty()) {
             this.dirs.append(new DrErrors(this.errors));
         }
@@ -128,16 +123,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitMetas(final EoParser.MetasContext ctx) {
         // Nothing here
-    }
-
-    @Override
-    public void enterObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.add("objects");
-    }
-
-    @Override
-    public void exitObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.append(this.objects).up();
     }
 
     @Override
@@ -1029,7 +1014,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
         if (!comment.isEmpty()) {
-            this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
+            this.dirs.push().xpath("/object").addIf("comments").add("comment").set(
                 comment.stream().map(
                     context -> context.COMMENTARY().getText().substring(1).trim()
                 ).collect(Collectors.joining("\\n"))

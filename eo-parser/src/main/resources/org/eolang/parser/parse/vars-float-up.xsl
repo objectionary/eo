@@ -24,7 +24,7 @@
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="objects">
+  <xsl:template match="object">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()" mode="full"/>
       <xsl:for-each select="o/descendant::o[@name]">
@@ -34,7 +34,7 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[eo:abstract(.) and not(../objects)]" priority="0">
+  <xsl:template match="o[eo:abstract(.) and not(../object)]" priority="0">
     <xsl:apply-templates select="." mode="full"/>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]" mode="full" priority="1">

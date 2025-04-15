@@ -11,7 +11,7 @@
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="sorted">
-    <xsl:perform-sort select="/program/sodg/i/a[starts-with(text(), '$Φ.')]">
+    <xsl:perform-sort select="/object/sodg/i/a[starts-with(text(), '$Φ.')]">
       <xsl:sort select="."/>
     </xsl:perform-sort>
   </xsl:variable>
@@ -20,12 +20,12 @@
     <xsl:text>$v</xsl:text>
     <xsl:value-of select="index-of(distinct-values($sorted/a), $v)"/>
   </xsl:function>
-  <xsl:template match="/program/sodg/i/a[starts-with(text(), '$Φ.')]" priority="1">
+  <xsl:template match="/object/sodg/i/a[starts-with(text(), '$Φ.')]" priority="1">
     <xsl:copy>
       <xsl:value-of select="eo:renamed(.)"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/program/sodg/i/a[text() = 'ν0']" priority="1">
+  <xsl:template match="/object/sodg/i/a[text() = 'ν0']" priority="1">
     <xsl:copy>
       <xsl:text>v0</xsl:text>
     </xsl:copy>

@@ -2,23 +2,19 @@
 # SPDX-License-Identifier: MIT
 ---
 origin: |
-  EA-EA-EA-EA > xs
-
-  01- > one
-
-  "hello" > ys
-
-  true > b1
-
-  false > b2
+  # Main.
+  [] > main
+    EA-EA-EA-EA > xs
+    01- > one
+    "hello" > ys
+    true > b1
+    false > b2
 
 printed: |
-  EA-EA-EA-EA > xs
-
-  01- > one
-
-  "hello" > ys
-
-  true > b1
-
-  false > b2
+  # No comments.
+  [] > main
+    EA-EA-EA-EA > xs
+    01- > one
+    "hello" > ys
+    true > b1
+    false > b2

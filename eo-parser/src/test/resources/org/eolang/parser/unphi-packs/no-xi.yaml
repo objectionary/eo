@@ -3,13 +3,15 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects/o[@base='$']/following-sibling::o[@base='.a' and o[@base='$'] and o[@base='.c' and @as="b" and @method]]
-  - //objects/o[@name='z' and o[@base='$'] and o[@base='.^' and @name='@'] and o[@base='.@' and @name='t']]
+  - /object/o/o[@base='$']/following-sibling::o[@base='.a' and o[@base='$'] and o[@base='.c' and @as="b" and @method]]
+  - /object/o/o[@name='z' and o[@base='$'] and o[@base='.^' and @name='@'] and o[@base='.@' and @name='t']]
 input: |
   {⟦
-    k ↦ a(b ↦ c),
-    z ↦ ⟦
-      φ ↦ ρ,
-      t ↦ φ
-    ⟧
+    main -> [[
+      k ↦ a(b ↦ c),
+      z ↦ ⟦
+        φ ↦ ρ,
+        t ↦ φ
+      ⟧
+    ]]
   ⟧}

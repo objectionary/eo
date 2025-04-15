@@ -38,14 +38,14 @@ final class TrSteppedTest {
                         new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
                     )
                 )
-            ).pass(new XMLDocument("<program><concurrency>no</concurrency></program>")).toString(),
-            XhtmlMatchers.hasXPath("/program/sheets/sheet[text()='wrap-data']")
+            ).pass(new XMLDocument("<object><concurrency>no</concurrency></object>")).toString(),
+            XhtmlMatchers.hasXPath("/object/sheets/sheet[text()='wrap-data']")
         );
     }
 
     @RepeatedTest(10)
     void addsSheetNameConcurrently() {
-        final XML doc = new XMLDocument("<program><concurrency>yes</concurrency></program>");
+        final XML doc = new XMLDocument("<object><concurrency>yes</concurrency></object>");
         final Sticky<XSL> loading = new Sticky<>(
             new TrStepped.Once<XSL>(
                 () -> new XSLDocument(
@@ -67,7 +67,7 @@ final class TrSteppedTest {
                     )
                 ).pass(doc).toString()
             ).iterator().next(),
-            XhtmlMatchers.hasXPath("/program/sheets/sheet[text()='wrap-data']")
+            XhtmlMatchers.hasXPath("/object/sheets/sheet[text()='wrap-data']")
         );
     }
 }

@@ -3,7 +3,7 @@
 ---
 sheets: [ ]
 asserts:
-  - /program[not(errors)]
+  - /object[not(errors)]
   - //o[@base='.as-bytes' and @name='a🌵47']/o[@base='Q.org.eolang.dataized']/o[@base='$.a🌵47-1']
   - //o[@name='a🌵47-1']
 input: |

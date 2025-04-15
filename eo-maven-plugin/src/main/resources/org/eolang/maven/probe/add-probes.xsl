@@ -58,7 +58,7 @@
     </xsl:element>
   </xsl:function>
   <!-- ENTRY POINT 1 - no metas -->
-  <xsl:template match="/program[not(metas)]">
+  <xsl:template match="/object[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
@@ -75,7 +75,7 @@
     </xsl:copy>
   </xsl:template>
   <!-- ENTRY POINT 2 - metas exists -->
-  <xsl:template match="/program/metas">
+  <xsl:template match="/object/metas">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>

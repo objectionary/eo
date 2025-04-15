@@ -10,10 +10,10 @@
   objects will stay with the information relevant to processing of them.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/listing">
+  <xsl:template match="/object/listing">
     <!-- delete it -->
   </xsl:template>
-  <xsl:template match="/program/sheets">
+  <xsl:template match="/object/sheets">
     <!-- delete it -->
   </xsl:template>
   <xsl:template match="xmir">

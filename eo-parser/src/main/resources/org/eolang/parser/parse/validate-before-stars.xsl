@@ -22,7 +22,7 @@
     ```
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program">
+  <xsl:template match="/object">
     <xsl:copy>
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:variable name="errors" as="element()*">
@@ -39,9 +39,9 @@
           </xsl:element>
         </xsl:for-each>
       </xsl:variable>
-      <xsl:if test="not(empty($errors)) or exists(/program/errors)">
+      <xsl:if test="not(empty($errors)) or exists(/object/errors)">
         <errors>
-          <xsl:apply-templates select="/program/errors/error"/>
+          <xsl:apply-templates select="/object/errors/error"/>
           <xsl:copy-of select="$errors"/>
         </errors>
       </xsl:if>

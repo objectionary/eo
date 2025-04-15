@@ -61,7 +61,7 @@
   </xsl:function>
   <xsl:template match="o">
     <xsl:copy>
-      <xsl:attribute name="loc" select="eo:locator(/program, .)"/>
+      <xsl:attribute name="loc" select="eo:locator(/object, .)"/>
       <xsl:apply-templates select="node()|@* except @loc"/>
     </xsl:copy>
   </xsl:template>

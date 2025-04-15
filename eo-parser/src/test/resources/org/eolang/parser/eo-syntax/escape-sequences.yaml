@@ -3,12 +3,14 @@
 ---
 sheets: [ ]
 asserts:
-  - //objects[count(.//o[@base='Q.org.eolang.string'])=7]
+  - /object[count(//o[@base='Q.org.eolang.string'])=7]
 input: |
-  "\n" > n
-  "\r" > r
-  "\f" > f
-  "\b" > b
-  "\t" > t
-  "\000" > zero
-  "\uFFFF" > f
+  # Main.
+  [] > main
+    "\n" > n
+    "\r" > r
+    "\f" > f
+    "\b" > b
+    "\t" > t
+    "\000" > zero
+    "\uFFFF" > f

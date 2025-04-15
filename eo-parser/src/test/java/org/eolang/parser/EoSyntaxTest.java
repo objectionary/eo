@@ -44,7 +44,7 @@ final class EoSyntaxTest {
     @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "EoSyntax must generate valid XMIR from simple code",
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -55,11 +55,10 @@ final class EoSyntaxTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/program[@name='test-1']",
-                "/program[@ms and @time and @version]",
-                "/program/listing",
-                "/program/metas/meta[head='meta2']",
-                "/program/objects/o[@name='fibo']"
+                "/object[@ms and @time and @version]",
+                "/object/listing",
+                "/object/metas/meta[head='meta2']",
+                "/object/o[@name='fibo']"
             )
         );
     }
@@ -77,7 +76,7 @@ final class EoSyntaxTest {
                     StandardCharsets.UTF_8
                 )
             ),
-            XhtmlMatchers.hasXPaths("/program/errors/error")
+            XhtmlMatchers.hasXPaths("/object/errors/error")
         );
     }
 
@@ -100,8 +99,8 @@ final class EoSyntaxTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/errors[count(error)=2]",
-                String.format("/program[listing='%s']", src)
+                "/object/errors[count(error)=2]",
+                String.format("/object[listing='%s']", src)
             )
         );
     }
@@ -121,8 +120,8 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            xml.xpath("/program/listing/text()"),
+            "EoSyntax must copy listing to XMIR",
+            xml.xpath("/object/listing/text()"),
             Matchers.contains(src)
         );
     }
@@ -135,7 +134,6 @@ final class EoSyntaxTest {
         "1 > x\n2 > y\n",
         "1 > x\n\n2 > y",
         "# No comments.\n[] > x",
-        "a b c > x\n  x ^ > @",
         "# No comments.\n[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
@@ -145,20 +143,20 @@ final class EoSyntaxTest {
         );
         Assertions.assertDoesNotThrow(
             syntax::parsed,
-            EoIndentLexerTest.TO_ADD_MESSAGE
+            "EO syntax must be parsed successfully without exceptions (even with errors)"
         );
     }
 
     @Test
     void parsesArrow() throws IOException {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "EO object with name must be parsed successfully",
             new EoSyntax(
                 "test-xml-3",
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@base='Q.org.eolang.number' and @name='x' and o[text()]]"
+                "/object/o[@base='Q.org.eolang.number' and @name='x' and o[text()]]"
             )
         );
     }
@@ -176,36 +174,14 @@ final class EoSyntaxTest {
             "      v\n"
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "EO object with nested objects must be parsed successfully",
             new EoSyntax(
                 "test-xml-4",
                 new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects[count(o)=1]",
-                "/program/objects/o[count(o)=2]"
-            )
-        );
-    }
-
-    @Test
-    void parsesDefinition() throws IOException {
-        MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            new EoSyntax(
-                "test-xml-5",
-                new InputOf(
-                    String.join(
-                        "\n",
-                        "# No comments.",
-                        "[v] > p",
-                        "  f.write > @\n"
-                    )
-                )
-            ).parsed(),
-            XhtmlMatchers.hasXPaths(
-                "/program/objects[count(o)=1]",
-                "/program/objects/o[count(o)=2]"
+                "/object[count(o)=1]",
+                "/object/o[count(o)=2]"
             )
         );
     }
@@ -226,16 +202,15 @@ final class EoSyntaxTest {
     @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "We expect EO object as method call is parsed successfully",
             new EoSyntax(
                 "test-xml-1",
                 new InputOf("add. > foo\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program[@name='test-xml-1']",
-                "/program/objects/o[@base='.add']",
-                "/program/objects/o/o[@base='Q.org.eolang.number']",
-                "/program/objects/o/o[@base='Q.org.eolang.true']"
+                "/object/o[@base='.add']",
+                "/object/o/o[@base='Q.org.eolang.number']",
+                "/object/o/o[@base='Q.org.eolang.true']"
             )
         );
     }
@@ -246,21 +221,12 @@ final class EoSyntaxTest {
         "\"Hello\" > str"
     })
     void storesAsBytes(final String code) throws IOException {
-        final XML xml = new XMLDocument(
-            new String(
-                new EoSyntax(
-                    "test-3",
-                    new InputOf(code)
-                ).parsed().toString().getBytes(),
-                StandardCharsets.UTF_8
-            )
-        );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            xml,
+            "We data is parsed successfully as bytes",
+            new EoSyntax("test-3", new InputOf(code)).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects[count(o)=1]",
-                "/program/objects/o[text()]"
+                "/object[count(o)=1]",
+                "/object/o[text()]"
             )
         );
     }
@@ -271,21 +237,18 @@ final class EoSyntaxTest {
         final Xtory story = new XtSticky(
             new XtYaml(
                 yaml,
-                eo -> new EoSyntax(
-                    "typo",
-                    new InputOf(String.format("%s\n", eo))
-                ).parsed()
+                eo -> new EoSyntax("typo", new InputOf(String.format("%s\n", eo))).parsed()
             )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
             "We expect the error with correct line number was found",
             XhtmlMatchers.xhtml(story.after().toString()),
-            XhtmlMatchers.hasXPaths("/program/errors/error/@line")
+            XhtmlMatchers.hasXPaths("/object/errors/error/@line")
         );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(story.after()).toString(),
-            story.after().xpath("/program/errors/error/@line"),
+            story.after().xpath("/object/errors/error/@line"),
             Matchers.hasItem(story.map().get("line").toString())
         );
         final String msg = "message";
@@ -294,7 +257,7 @@ final class EoSyntaxTest {
                 XhtmlMatchers.xhtml(story.after()).toString(),
                 String.join(
                     "\n",
-                    story.after().xpath("/program/errors/error/text()")
+                    story.after().xpath("/object/errors/error/text()")
                 ).replaceAll("\r", ""),
                 Matchers.containsString(story.map().get(msg).toString())
             );
@@ -384,7 +347,7 @@ final class EoSyntaxTest {
                 )
             )
         ).parsed();
-        final String comments = xml.xpath("/program/comments/comment/text()").get(0);
+        final String comments = xml.xpath("/object/comments/comment/text()").get(0);
         final String expected = "Foo.\\nBar.\\nXyz.";
         MatcherAssert.assertThat(
             String.format(

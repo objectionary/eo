@@ -13,11 +13,11 @@ sheets:
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/parse/decorate.xsl
 asserts:
-  - /program[not(errors)]
-  - //objects/o[@name='main']/o[@name='@' and @base='Q.org.eolang.foo']/o[@base='Q.org.eolang.txt.text']/o[@base='Q.org.eolang.string' and not(@name)]
-  - //objects/o[@name='main']/o[@name='num' and @base='Q.org.eolang.number']
-  - //objects/o[@name='main']/o[@name='x' and @base='Q.org.eolang.bar']/o[@base='Q.org.eolang.bool' and @as='f']/o[@base='Q.org.eolang.true' and not(@as)]
-  - //objects/o[@name='main']/o[@name='tt' and @base='Q.org.eolang.xyz']/o[@base='Q.org.eolang.first']/o[@base='Q.org.eolang.abc' and @as='y']/o[@base='Q.org.eolang.second' and not(@as)]
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='@' and @base='Q.org.eolang.foo']/o[@base='Q.org.eolang.txt.text']/o[@base='Q.org.eolang.string' and not(@name)]
+  - /object/o[@name='main']/o[@name='num' and @base='Q.org.eolang.number']
+  - /object/o[@name='main']/o[@name='x' and @base='Q.org.eolang.bar']/o[@base='Q.org.eolang.bool' and @as='f']/o[@base='Q.org.eolang.true' and not(@as)]
+  - /object/o[@name='main']/o[@name='tt' and @base='Q.org.eolang.xyz']/o[@base='Q.org.eolang.first']/o[@base='Q.org.eolang.abc' and @as='y']/o[@base='Q.org.eolang.second' and not(@as)]
 input: |
   +decorate string txt.text foo
   +decorate number

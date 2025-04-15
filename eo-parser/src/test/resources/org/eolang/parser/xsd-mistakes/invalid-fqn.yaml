@@ -3,8 +3,6 @@
 ---
 errors: 2
 document: |
-  <program name='foo'>
-    <objects>
-      <o base="invalid FQN is here"/>
-    </objects>
-  </program>
+  <object>
+    <o base="invalid FQN is here"/>
+  </object>

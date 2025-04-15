@@ -3,35 +3,36 @@
 ---
 sheets: [ ]
 asserts:
-  - /program/errors[count(*)=2]
-  - /program/errors/error[@check='cti']
-  - /program/errors/error[@severity='warning']
-  - /program/errors/error[text()='This method is deprecated!']
+  - /object/errors[count(*)=2]
+  - /object/errors/error[@check='cti']
+  - /object/errors/error[@severity='warning']
+  - /object/errors/error[text()='This method is deprecated!']
 
 input: |
   +package org.eolang
   +version 0.0.0
-  +unlint object-has-data
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > just-prints-warning
-    eq. > @
-      cti
+  # Main.
+  [] > main
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] > just-prints-warning
+      eq. > @
+        cti
+          2.times 2
+          "warning"
+          "This method is deprecated!"
+        4
+
+    # No comments.
+    [] > foo
+      cti > @
         2.times 2
         "warning"
         "This method is deprecated!"
-      4
 
-  # No comments.
-  [] > foo
-    cti > @
-      2.times 2
-      "warning"
-      "This method is deprecated!"
-
-  # No comments.
-  [] > app
-    QQ.io.stdout > @
-      QQ.txt.sprintf
-        "The result is %d\n"
-        foo
+    # No comments.
+    [] > app
+      QQ.io.stdout > @
+        QQ.txt.sprintf
+          "The result is %d\n"
+          foo

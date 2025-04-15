@@ -10,25 +10,27 @@
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-converts-bytes-to-array
-  eq. > @
-    list
-      bytes-as-array
-        20-1F-EE-B5-FF
-    * 20- 1F- EE- B5- FF-
+[] > bytes-as-array-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-converts-bytes-to-array
+    eq. > @
+      list
+        bytes-as-array
+          20-1F-EE-B5-FF
+      * 20- 1F- EE- B5- FF-
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-single-byte-to-array
-  eq. > @
-    list
-      bytes-as-array
-        1F-
-    * 1F-
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-single-byte-to-array
+    eq. > @
+      list
+        bytes-as-array
+          1F-
+      * 1F-
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-zero-bytes-to-array
-  eq. > @
-    list
-      bytes-as-array
-        --
-    *
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-zero-bytes-to-array
+    eq. > @
+      list
+        bytes-as-array
+          --
+      *

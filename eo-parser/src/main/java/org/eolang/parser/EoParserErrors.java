@@ -105,9 +105,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         final String rule = parser.getRuleInvocationStack().get(0);
         final String[] names = parser.getRuleNames();
         final String detailed;
-        if (names[EoParser.RULE_objects].equals(rule)) {
-            detailed = "Invalid object list declaration";
-        } else if (names[EoParser.RULE_metas].equals(rule)) {
+        if (names[EoParser.RULE_metas].equals(rule)) {
             detailed = "Invalid meta declaration";
         } else if (names[EoParser.RULE_program].equals(rule)) {
             detailed = "Invalid program declaration";
@@ -134,9 +132,9 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         if (names[EoParser.RULE_program].equals(rule)) {
             detailed =
                 "Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct";
-        } else if (names[EoParser.RULE_objects].equals(rule)) {
+        } else if (names[EoParser.RULE_object].equals(rule)) {
             detailed =
-                "We expected a list of objects here but encountered something unexpected";
+                "We expected a object here but encountered something unexpected";
         } else {
             detailed = msg;
         }

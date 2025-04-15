@@ -134,7 +134,7 @@ public final class MjLint extends MjSafe {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjLint.DIR);
-        final Path target = new Place(new ProgramName(xmir).get()).make(base, MjAssemble.XMIR);
+        final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
         tojo.withLinted(
             new FpDefault(
                 src -> MjLint.linted(tojo.identifier(), xmir, counts).toString(),
@@ -174,7 +174,7 @@ public final class MjLint extends MjSafe {
                     final Node node = pkg.get(defect.program()).inner();
                     new Xembler(
                         MjLint.embedded(
-                            new Directives().xpath("/program").addIf("errors").strict(1),
+                            new Directives().xpath("/object").addIf("errors").strict(1),
                             defect
                         )
                     ).applyQuietly(node);
@@ -295,7 +295,7 @@ public final class MjLint extends MjSafe {
         defects.addAll(found);
         final Directives dirs = new Directives();
         if (!found.isEmpty()) {
-            dirs.xpath("/program").addIf("errors").strict(1);
+            dirs.xpath("/object").addIf("errors").strict(1);
         }
         for (final Defect defect : defects) {
             if (found.contains(defect)) {
@@ -318,7 +318,7 @@ public final class MjLint extends MjSafe {
      */
     private static Collection<Defect> existing(final String program, final Xnav xnav) {
         return xnav
-            .element("program")
+            .element("object")
             .elements(Filter.withName("errors"))
             .findFirst()
             .map(
@@ -380,7 +380,7 @@ public final class MjLint extends MjSafe {
     private static boolean suppressed(final Xnav xnav, final Defect defect) {
         return xnav.path(
             String.format(
-                "/program/metas/meta[head='unlint' and tail='%s']",
+                "/object/metas/meta[head='unlint' and tail='%s']",
                 defect.rule()
             )
         ).findAny().isPresent();
