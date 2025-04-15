@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 22.449273243
+  seconds: 31.0119086
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-15 21:08:26.386720790 Z
+  when: 2025-04-15 22:08:28.298650272 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126019,13 +126019,6 @@
   repository: 447446664
   what: min-issue-was-found
   where: github
-- _id: 244658
-  _time: 2025-04-15 14:09:40.878306212 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 543969974
-  what: min-issue-was-found
-  where: github
 - _id: 244659
   _time: 2025-04-15 14:09:41.024665287 Z
   _version: 0.9.10/0.39.2/
@@ -126962,13 +126955,6 @@
   when: *690
   where: github
   who: 83453843
-- _id: 244932
-  _time: 2025-04-15 15:08:57.327951774 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 386420319
-  what: min-issue-was-found
-  where: github
 - _id:
   - 244934
   - 244656
@@ -127185,5 +127171,19 @@
   _version: 0.9.10/0.39.2/
   latest: 1
   repository: 546194972
+  what: min-issue-was-found
+  where: github
+- _id: 244961
+  _time: 2025-04-15 22:08:14.571742658 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 386420319
+  what: min-issue-was-found
+  where: github
+- _id: 244962
+  _time: 2025-04-15 22:08:15.311198648 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 543969974
   what: min-issue-was-found
   where: github
