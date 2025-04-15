@@ -32,11 +32,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  in production code, we got rid of it and replaced with {@link Xnav#path(String)} and
  *  {@link Xnav#element(String)}. But we didn't do it in the tests. Let's do it, it should increase
  *  the performance of our tests and make our code more consistent.
- * @todo #3919:30min Enable {@link MjLintTest}. The tests were disabled because we've significantly
- *  changed the structure of XMIR. That's why all the lint cases in objectionary/lints don't catch
- *  defects properly anymore. We need to fix them first, then release a new version, then update it
- *  here, enable {@link MjLintTest} and set {@code skipLinting} flag in eo-runtime/pom.xml in
- *  qulice profile configuration to {@code false}.
+ * @todo #3919:30min Enable {@link MjLintTest} and {@link MjLintIT}. The tests were disabled
+ *  because we've significantly changed the structure of XMIR. That's why all the lint cases in
+ *  objectionary/lints don't catch defects properly anymore. We need to fix them first, then
+ *  release a new version, then update it here, enable {@link MjLintTest} and set
+ *  {@code skipLinting} flag in eo-runtime/pom.xml in qulice profile configuration to {@code false}.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)

@@ -9,4 +9,6 @@
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-dead-output.write 01-02-03 > [] > writes-bytes-to-nowhere
+[] > dead-output-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  dead-output.write 01-02-03 > [] > writes-bytes-to-nowhere

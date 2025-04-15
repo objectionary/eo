@@ -11,10 +11,12 @@
 +unlint unlint-non-existing-defect
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-tests-just-prints-warning
-  eq. > @
-    cti
-      2.times 2
-      "warning"
-      "This method is deprecated!"
-    4
+[] > cti-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-tests-just-prints-warning
+    eq. > @
+      cti
+        2.times 2
+        "warning"
+        "This method is deprecated!"
+      4

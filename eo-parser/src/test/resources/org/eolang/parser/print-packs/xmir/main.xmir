@@ -3,36 +3,32 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<program
+<object
     ms="18"
-    name="main"
     time="2023-10-19T09:27:28.852003Z"
     dob="2024-01-15T16:58:03"
     revision="6058559"
-    source="/Users/maxonfjvipon/code/java/eo/eo-runtime/src/main/eo/org/eolang/main.eo"
     version="1.0-SNAPSHOT"
 >
   <listing>[] &gt; main
     [args...] &gt; main
     b.new (a.new 42) 21
   </listing>
-  <objects>
-    <o abstract="" line="1" name="main" pos="0">
-      <o abstract="" line="2" name="main" pos="2">
-        <o line="2" name="args" pos="3" vararg=""/>
-        <o base=".bar" line="3" name="@" pos="25">
-          <o base=".new" line="3" pos="21">
-            <o base="b" line="3" pos="5">
-              <o base=".new" line="3" pos="13">
-                <o base="a" line="3" pos="8">
-                  <o base="int" data="bytes" line="3" pos="10">00-00-00-00-00-00-00-2A</o>
-                </o>
+  <o abstract="" line="1" name="main" pos="0">
+    <o abstract="" line="2" name="main" pos="2">
+      <o line="2" name="args" pos="3" vararg=""/>
+      <o base=".bar" line="3" name="@" pos="25">
+        <o base=".new" line="3" pos="21">
+          <o base="b" line="3" pos="5">
+            <o base=".new" line="3" pos="13">
+              <o base="a" line="3" pos="8">
+                <o base="int" data="bytes" line="3" pos="10">00-00-00-00-00-00-00-2A</o>
               </o>
-              <o base="org.eolang.int" data="bytes" line="3" pos="18">00-00-00-00-00-00-00-0C</o>
             </o>
+            <o base="org.eolang.int" data="bytes" line="3" pos="18">00-00-00-00-00-00-00-0C</o>
           </o>
         </o>
       </o>
     </o>
-  </objects>
-</program>
+  </o>
+</object>

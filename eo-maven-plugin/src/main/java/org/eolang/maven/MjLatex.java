@@ -68,7 +68,7 @@ public final class MjLatex extends MjSafe {
             ).make(dir.resolve(MjLatex.DIR), MjLatex.EXT);
             new Saved(
                 new LatexTemplate(
-                    new Xnav(file).element("program").element("listing").text().get()
+                    new Xnav(file).element("object").element("listing").text().get()
                 ).asString(),
                 target
             ).value();

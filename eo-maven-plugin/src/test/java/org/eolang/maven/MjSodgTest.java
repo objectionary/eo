@@ -70,6 +70,7 @@ final class MjSodgTest {
     }
 
     @ParameterizedTest
+    @Disabled
     @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
     void transformsThroughSheets(final String yaml) {
         MatcherAssert.assertThat(

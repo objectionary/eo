@@ -4,11 +4,10 @@
 sheets: [ ]
 asserts:
   - /object[not(errors)]
-  - /object/o[@base='Q.x.first']
-  - /object/o[@name='x']/o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]
+  - //o[@base='.first' and @name='m']/o[1][not(@base) and not(@name) and o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]]
 input: |
   # No comments.
-  [] > x
+  []
     y > @
       []
       .second

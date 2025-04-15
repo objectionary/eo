@@ -201,7 +201,7 @@ public final class Xmir implements XML {
             .orElseThrow(
                 () -> new IllegalStateException(
                     String.format(
-                        "Couldn't find element '/program/%s' after converting to %s",
+                        "Couldn't find element '/object/%s' after converting to %s",
                         node, node
                     )
                 )

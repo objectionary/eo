@@ -400,16 +400,6 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="source" type="non-empty">
-      <xs:annotation>
-        <xs:appinfo>The absolute path of the source file that was parsed</xs:appinfo>
-        <xs:documentation>
-          The element contains the absolute file path of the source EO file
-          that was parsed in order to generate the XMIR document. This information
-          is valuable for debugging purposes and may be omitted in production systems.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
   </xs:complexType>
   <xs:element name="object" type="object"/>
 </xs:schema>

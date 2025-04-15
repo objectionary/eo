@@ -14,7 +14,7 @@ asserts:
   - /object/class/java[contains(text(), 'this.add("b"')]
   - /object/class/java[contains(text(), '((PhDefault) r).add("c",')]
   - /object/class/java[contains(text(), '((PhDefault) rr).add("φ",')]
-  - /object/class/java[contains(text(), 'public void works() throws java.lang.Exception')]
+  - /object/class/java[contains(text(), 'void b() throws java.lang.Exception')]
   - /object/class/java[contains(text(), 'private static class EOΦabcφα0')]
   - /object/class/java[contains(text(), 'PhDefault r1 = new EOΦabcφα0boundα0();')]
   - /object/class/java[contains(text(), 'private static class EOΦabcφα0boundα0 extends PhDefault')]
