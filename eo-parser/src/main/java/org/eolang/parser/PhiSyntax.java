@@ -78,6 +78,7 @@ public final class PhiSyntax implements Syntax {
             new TrClasspath<>(
                 "/org/eolang/parser/parse/move-voids-up.xsl",
                 "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                "/org/eolang/parser/parse/validate-objects-count.xsl",
                 "/org/eolang/parser/unphi/wrap-bytes.xsl",
                 "/org/eolang/parser/parse/roll-bases.xsl"
             ).back()

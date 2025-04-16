@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 /**
  * Make program name from a path.
@@ -13,6 +14,10 @@ import java.nio.file.Path;
  * @since 0.1
  */
 final class Unplace {
+    /**
+     * Pattern to catch .eo files.
+     */
+    private static final Pattern EO = Pattern.compile(".eo$");
 
     /**
      * The parent dir.
@@ -41,8 +46,8 @@ final class Unplace {
      * @return The name of the program
      */
     String make(final Path file) {
-        return file.toString().substring(
-            this.parent.toString().length() + 1
-        ).replaceAll(".eo$", "").replace(File.separator, ".");
+        return Unplace.EO.matcher(
+            file.toString().substring(this.parent.toString().length() + 1)
+        ).replaceAll("").replace(File.separator, ".");
     }
 }

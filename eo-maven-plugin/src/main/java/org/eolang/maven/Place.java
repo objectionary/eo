@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Make the place for the object.
@@ -28,6 +29,15 @@ final class Place {
 
     /**
      * Make a full path.
+     * @param ext Extension
+     * @return Full path
+     */
+    Path make(final String ext) {
+        return this.make(Paths.get(""), ext);
+    }
+
+    /**
+     * Make a full path.
      * @param dir The dir
      * @param ext The ext
      * @return Full path
@@ -40,4 +50,5 @@ final class Place {
         }
         return dir.resolve(out.toString());
     }
+
 }

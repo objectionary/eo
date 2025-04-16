@@ -36,8 +36,7 @@ final class MjRegisterIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
+                        "# Foo.",
                         "[] > foo",
                         "  \"Pull\" > @"
                     ).getBytes()
@@ -47,8 +46,7 @@ final class MjRegisterIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
+                        "# Foo.",
                         "[] > foo",
                         "  41 > @"
                     ).getBytes()
@@ -76,8 +74,7 @@ final class MjRegisterIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
+                        "# Foo.",
                         "[] > foo",
                         "  \"Resolve\" > @"
                     ).getBytes()
@@ -87,8 +84,7 @@ final class MjRegisterIT {
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
+                        "# Foo.",
                         "[] > foo",
                         "  42 > @"
                     ).getBytes()
@@ -113,7 +109,7 @@ final class MjRegisterIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
+                f.files().file("src/main/eo/org/eolang/foo.eo").write(
                     String.join(
                         "\n",
                         "+package org.eolang",
@@ -125,7 +121,7 @@ final class MjRegisterIT {
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
-                f.files().file("src/main/eo/foo.eo").write(
+                f.files().file("src/main/eo/org/eolang/foo.eo").write(
                     String.join(
                         "\n",
                         "+package org.eolang",
@@ -156,7 +152,7 @@ final class MjRegisterIT {
                 );
                 MatcherAssert.assertThat(
                     "Foreign must contain reference to the current object, but it doesn't",
-                    foreign.getById("foo").exists("id"),
+                    foreign.getById("org.eolang.foo").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
@@ -175,7 +171,7 @@ final class MjRegisterIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
+                f.files().file("src/main/eo/org/eolang/foo.eo").write(
                     String.join(
                         "\n",
                         "+package org.eolang",
@@ -187,7 +183,7 @@ final class MjRegisterIT {
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
-                f.files().file("src/main/eo/foo.eo").write(
+                f.files().file("src/main/eo/org/eolang/foo.eo").write(
                     String.join(
                         "\n",
                         "+package org.eolang",

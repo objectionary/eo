@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
+import org.eolang.parser.ObjectName;
 import org.eolang.parser.TrFull;
 
 /**

@@ -5,6 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" id="validate-objects-count" version="2.0">
   <!--
+    Here we add error with severity 'critical' is there's not exactly 1 object
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/object">

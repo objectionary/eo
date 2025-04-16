@@ -26,6 +26,7 @@ import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
 import org.eolang.lints.Programs;
 import org.eolang.lints.Severity;
+import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
