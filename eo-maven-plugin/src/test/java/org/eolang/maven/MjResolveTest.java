@@ -152,10 +152,12 @@ final class MjResolveTest {
     void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.withHelloWorld()
-            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
-            .with("ignoreRuntime", true)
-            .execute(new FakeMaven.Resolve());
+        maven.withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.22.1\n",
+            "# Main.",
+            "[] > main"
+        ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             MjResolveTest.CLASS_NOT_EXIST,
             maven.targetPath(),
