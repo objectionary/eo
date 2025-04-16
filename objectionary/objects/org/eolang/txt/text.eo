@@ -6,10 +6,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint wrong-sprintf-arguments
 
 # Text.
 # A sequence of characters representing words, sentences, or data.
@@ -38,10 +37,6 @@
 
   # Returns `text` trimmed from left side.
   [] > trimmed-left
-    origin > bts!
-    bts.size > len!
-    first-non-space-index 0 > idx!
-    20- > space
     if. > @
       0.eq len
       ^
@@ -50,9 +45,12 @@
           bts.slice
             idx
             (number len).minus idx
+    origin > bts!
+    bts.size > len!
+    first-non-space-index 0 > idx!
+    20- > space
 
     [index] > first-non-space-index
-      bts.slice index 1 > char!
       if. > @
         len.eq index
         index
@@ -60,12 +58,10 @@
           char.eq space
           first-non-space-index (index.plus 1).as-number
           index
+      bts.slice index 1 > char!
 
   # Returns `text` trimmed from right side.
   [] > trimmed-right
-    origin > bts!
-    bts.size > len!
-    20- > space
     if. > @
       0.eq len
       ^
@@ -75,9 +71,11 @@
             0
             first-non-space-index
               (number len).plus -1
+    origin > bts!
+    bts.size > len!
+    20- > space
 
     [index] > first-non-space-index
-      bts.slice index 1 > char!
       if. > @
         -1.eq index
         0
@@ -85,17 +83,18 @@
           char.eq space
           first-non-space-index (index.plus -1).as-number
           index.plus 1
+      bts.slice index 1 > char!
 
   # Joins `items`, which is a `tuple` of strings, using current `string`
   # as a delimiter.
   [items] > joined
+    text > @
+      string joined-bts
     origin > delimiter!
     if. > joined-bts!
       items.length.eq 0
       --
       with-delimiter items.value items.prev
-    text > @
-      string joined-bts
 
     [acc tup] > with-delimiter
       if. > @
@@ -113,12 +112,6 @@
   # If `times` < 0 - an error is returned.
   # If `times` == 0 - an original text is returned.
   [times] > repeated
-    origin > bts!
-    times > amount!
-    if. > repeated-bytes!
-      0.eq amount
-      --
-      rec-repeated bts 1
     if. > @
       0.gt amount
       error
@@ -127,6 +120,12 @@
           * amount
       text
         string repeated-bytes
+    origin > bts!
+    times > amount!
+    if. > repeated-bytes!
+      0.eq amount
+      --
+      rec-repeated bts 1
 
     [accum index] > rec-repeated
       if. > @
@@ -138,11 +137,6 @@
 
   # Checks if current `text` contains given `substring`.
   [substring] > contains
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-    (number origin-size).minus substring-size > end!
     and. > @
       (number origin-size).gte substring-size
       or.
@@ -150,24 +144,25 @@
           origin-size.eq substring-size
           origin-bts.eq substring-bts
         rec-contains 0
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    (number origin-size).minus substring-size > end!
 
     [idx] > rec-contains
-      eq. > includes
-        origin-bts.slice idx substring-size
-        substring-bts
       if. > @
         end.eq idx
         includes
         or.
           includes
           rec-contains (idx.plus 1).as-number
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
 
   # Checks that current `text` ends with given `substring`.
   [substring] > ends-with
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
     and. > @
       (number substring-size).lte origin-size
       eq.
@@ -175,26 +170,24 @@
           (number origin-size).minus substring-size
           substring-size
         substring-bts
-
-  # Checks that current `text` starts with given `substring`.
-  [substring] > starts-with
     origin > origin-bts!
     substring > substring-bts!
     origin-bts.size > origin-size!
     substring-bts.size > substring-size!
+
+  # Checks that current `text` starts with given `substring`.
+  [substring] > starts-with
     and. > @
       (number substring-size).lte origin-size
       (origin-bts.slice 0 substring-size).eq substring-bts
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
 
   # Returns index of `substring` in current `text`.
   # If no `substring` was found, it returns -1.
   [substring] > index-of
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-    (number origin-size).minus substring-size > end!
-    rec-index-of 0 > found!
     if. > @
       or.
         or.
@@ -207,11 +200,14 @@
       length.
         string
           origin-bts.slice 0 found
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    (number origin-size).minus substring-size > end!
+    rec-index-of 0 > found!
 
     [idx] > rec-index-of
-      eq. > includes
-        origin-bts.slice idx substring-size
-        substring-bts
       if. > @
         end.eq idx
         if.
@@ -222,16 +218,13 @@
           includes
           idx
           rec-index-of (idx.plus 1).as-number
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
 
   # Returns last index of `substring` in current `text`.
   # If no element was found, it returns -1.
   [substring] > last-index-of
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-    rec-index-of > found!
-      (number origin-size).minus substring-size
     if. > @
       or.
         or.
@@ -244,11 +237,14 @@
       length.
         string
           origin-bts.slice 0 found
+    origin > origin-bts!
+    substring > substring-bts!
+    origin-bts.size > origin-size!
+    substring-bts.size > substring-size!
+    rec-index-of > found!
+      (number origin-size).minus substring-size
 
     [idx] > rec-index-of
-      eq. > includes
-        origin-bts.slice idx substring-size
-        substring-bts
       if. > @
         0.eq idx
         if.
@@ -259,14 +255,12 @@
           includes
           idx
           rec-index-of (idx.plus -1).as-number
+      eq. > includes
+        origin-bts.slice idx substring-size
+        substring-bts
 
   # Returns the `text` in upper case.
   [] > up-cased
-    ascii "z" > ascii-z!
-    ascii "a" > ascii-a!
-    minus. > distance
-      number ascii-a
-      ascii "A"
     text > @
       string
         reduced.
@@ -275,7 +269,6 @@
               origin.as-bytes
           --
           [accum byte] >>
-            ascii byte > ascii-bte
             accum.concat > @
               if.
                 and.
@@ -288,6 +281,12 @@
                   7
                   1
                 byte
+            ascii byte > ascii-bte
+    ascii "z" > ascii-z!
+    ascii "a" > ascii-a!
+    minus. > distance
+      number ascii-a
+      ascii "A"
 
     [char] > ascii
       as-number. > @
@@ -298,8 +297,6 @@
 
   # Returns the `text` in lower case.
   [] > low-cased
-    up-cased.ascii "Z" > ascii-z
-    up-cased.ascii "A" > ascii-a
     text > @
       string
         reduced.
@@ -308,7 +305,6 @@
               origin.as-bytes
           --
           [accum byte] >>
-            up-cased.ascii byte > ascii-bte
             accum.concat > @
               if.
                 and.
@@ -321,16 +317,13 @@
                   7
                   1
                 byte
+            up-cased.ascii byte > ascii-bte
+    up-cased.ascii "Z" > ascii-z
+    up-cased.ascii "A" > ascii-a
 
   # Retrieve symbol by given index as `text`.
   # If 0 > index >= ^.length - the error will be returned.
   [i] > at
-    ^.length > len!
-    i > idx!
-    if. > index!
-      0.gt idx
-      (number len).plus idx
-      idx
     if. > @
       or.
         0.gt index
@@ -340,20 +333,26 @@
           "Given index %d is out of text bounds"
           * index
       slice index 1
+    ^.length > len!
+    i > idx!
+    if. > index!
+      0.gt idx
+      (number len).plus idx
+      idx
 
   # Returns `text` where all regex target changed to replacement.
   # Here `target` must be a `org.eolang.txt.regex` object.
   # The `replacement` here is a `string` that would be pasted instead of
   # matched text in original one.
   [target replacement] > replaced
-    origin > self-as-bytes!
-    string self-as-bytes > reinit
-    (target.match reinit).next > matched
     if. > @
       matched.exists.not
       QQ.txt.text reinit
       QQ.txt.text
         rec-replaced matched "" matched.start
+    origin > self-as-bytes!
+    string self-as-bytes > reinit
+    (target.match reinit).next > matched
 
     [block accum start] > rec-replaced
       if. > @
@@ -376,7 +375,6 @@
 
   # Returns the original `text` as `number`.
   [] > as-number
-    (sscanf "%f" origin).as-tuple > scanned
     if. > @
       scanned.length.eq 0
       error
@@ -384,16 +382,17 @@
           "Can't convert text %s to number"
           * origin
       scanned.value
+    (sscanf "%f" origin).as-tuple > scanned
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
-    delimiter > delim!
-    origin > self-as-bytes!
-    self-as-bytes.size > len!
     if. > @
       len.eq 0
       *
       rec-split * 0 0
+    delimiter > delim!
+    origin > self-as-bytes!
+    self-as-bytes.size > len!
 
     [accum start current] > rec-split
       if. > @

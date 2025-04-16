@@ -2,7 +2,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
@@ -10,425 +10,425 @@
 +unlint decorated-formation
 
 # This unit test is supposed to check the globals bound objects work as tests.
-true > global-test
+[] > runtime-tests
+  # This unit test is supposed to check the globals bound objects work as tests.
+  true > global-test
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-understands-this-correctly
-  [x] > a
-    $.x > @
-  eq. > @
-    a 42
-    42
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-understands-this-correctly
+    eq. > @
+      a 42
+      42
+    [x] > a
+      $.x > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-takes-parent-object
-  [x] > a
-    [] > take
-      ^.x > @
-    take > @
-  eq. > @
-    a 42
-    42
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-takes-parent-object
+    eq. > @
+      a 42
+      42
+    [x] > a
+      take > @
+      [] > take
+        ^.x > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-makes-object-a-constant
-  [] > foo
-    times. > @
-      50
-      50
-  foo.@ > f!
-  eq. > @
-    f
-    f
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-makes-object-a-constant
+    eq. > @
+      f
+      f
+    [] > foo
+      times. > @
+        50
+        50
+    foo.@ > f!
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-takes-parent-through-attribute
-  42 > x
-  $ > this
-  [] > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-takes-parent-through-attribute
     [] > @
       [] > @
-        eq. > @
-          this.x
-          42
+        [] > @
+          eq. > @
+            this.x
+            42
+    42 > x
+    $ > this
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-when-applies-to-closed-object
-  [x] > a
-    x > @
-  a false > closed
-  closed true > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-when-applies-to-closed-object
+    closed true > @
+    [x] > a
+      x > @
+    a false > closed
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-makes-deep-object-recursively
-  eq. > @
-    x 5
-    0
-  [i] > x
-    if. > @
-      i.lt 0
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-makes-deep-object-recursively
+    eq. > @
+      x 5
       0
-      x
-        i.minus 1
+    [i] > x
+      if. > @
+        i.lt 0
+        0
+        x
+          i.minus 1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-calculates-only-once
-  eq. > @
-    malloc.for
-      0
-      [m] > x
-        [] > a
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-calculates-only-once
+    eq. > @
+      malloc.for
+        0
+        [m] > x
           seq > @
             *
-              ^.m.put (^.m.as-number.plus 1)
-              42
-        seq > @
+              a.neg.neg.neg.neg.eq 42
+              m
+          [] > a
+            seq > @
+              *
+                ^.m.put (^.m.as-number.plus 1)
+                42
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-recursion-without-arguments
+    eq. > @
+      malloc.for 4 [m]>>
+        func m > @
+      0
+    [n] > func
+      if. > @
+        n.as-number.gt 0
+        seq
           *
-            a.neg.neg.neg.neg.eq 42
-            m
-    1
+            n.put (n.as-number.minus 1)
+            ^.func n
+        n
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-recursion-without-arguments
-  [n] > func
-    if. > @
-      n.as-number.gt 0
-      seq
-        *
-          n.put (n.as-number.minus 1)
-          ^.func n
-      n
-  eq. > @
-    malloc.for
-      4
-      [m] >>
-        ^.func m > @
-    0
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-unescapes-slashes
+    eq. > @
+      "x\\b\\f\\u\\r\\t\\n\\'"
+      78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-unescapes-slashes
-  eq. > @
-    "x\\b\\f\\u\\r\\t\\n\\'"
-    78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-unescapes-symbols
+    eq. > @
+      "\b\f\n\r\t\u27E6"
+      08-0C-0A-0D-09-E2-9F-A6
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-unescapes-symbols
-  eq. > @
-    "\b\f\n\r\t\u27E6"
-    08-0C-0A-0D-09-E2-9F-A6
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compiles-correctly-with-long-duplicate-names
-  [] > long-object-name
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compiles-correctly-with-long-duplicate-names
+    true > @
     [] > long-object-name
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
-            42 > x
-  true > @
+            [] > long-object-name
+              42 > x
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-named-inner-abstract-object
-  seq > @
-    *
-      [] > a
-        true > @
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-app-that-calls-func
-  [] > app
-    [args] > f
-      1 > a
-      2 > @
-    f > @
-      * 1 2 3
-  app > output
-  eq. > @
-    output
-    2
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-directly-accesses-objects-from-root
-  eq. > @
-    Q.org.eolang.malloc.of
-      8
-      [m]
-        seq > @
-          *
-            m.put 42
-            m.put
-              m.as-number.minus 2
-    40
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-directly-accesses-objects-from-standard-root
-  eq. > @
-    QQ.malloc.of
-      8
-      [m]
-        seq > @
-          *
-            m.put 42
-            m.put
-              m.as-number.minus 2
-    40
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-standard-root-and-root
-  QQ.sys.os > stand-root
-  Q.org.eolang.sys.os > root
-  eq. > @
-    root
-    stand-root
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-extract-attribute-from-decoratee
-  [foo] > return
-  [] > a
-    ^.return > @
-      plus.
-        42
-        1
-  eq. > @
-    a.foo
-    43
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-constant-defends-against-side-effects
-  [x] > inc
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-named-inner-abstract-object
     seq > @
       *
-        x.put
-          x.as-number.plus 1
-        x.as-number
-  eq. > @
-    malloc.for
-      7
-      [m] >>
-        number > num
-          ^.inc m > n!
+        [] > b
+          false > @
+        [] > a
+          true > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-app-that-calls-func
+    eq. > @
+      output
+      2
+    [] > app
+      f > @
+        * 1 2 3
+      [args] > f
+        2 > @
+        1 > a
+    app > output
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-directly-accesses-objects-from-root
+    eq. > @
+      Q.org.eolang.malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 42
+              m.put
+                m.as-number.minus 2
+      40
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-directly-accesses-objects-from-standard-root
+    eq. > @
+      QQ.malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 42
+              m.put
+                m.as-number.minus 2
+      40
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-standard-root-and-root
+    eq. > @
+      root
+      stand-root
+    QQ.sys.os > stand-root
+    Q.org.eolang.sys.os > root
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-extract-attribute-from-decoratee
+    eq. > @
+      a.foo
+      43
+    [foo] > return
+    [] > a
+      ^.return > @
+        plus.
+          42
+          1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-constant-defends-against-side-effects
+    eq. > @
+      malloc.for 7 [m]>>
         m.put > @
           times.
             num
             num
-    64
+        number > num
+          ^.inc m > n!
+      64
+    [x] > inc
+      seq > @
+        *
+          x.put
+            x.as-number.plus 1
+          x.as-number
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-parent-in-vertical-notation
-  5 > m
-  [] > value
-    [] > @
-      m. > @
-        ^.
-          ^
-  eq. > @
-    value
-    5
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-parent-in-horizontal-notation
-  5 > m
-  [] > value
-    [] > @
-      ^.^.m > @
-  eq. > @
-    value
-    5
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-phi-in-vertical-notation
-  [] > value
-    [] > @
-      100 > @
-  eq. > @
-    @.
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-parent-in-vertical-notation
+    eq. > @
       value
-    100
+      5
+    5 > m
+    [] > value
+      [] > @
+        m. > @
+          ^.
+            ^
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-phi-in-horizontal-notation
-  [] > value
-    [] > @
-      100 > @
-  eq. > @
-    value.@
-    100
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-parent-in-horizontal-notation
+    eq. > @
+      value
+      5
+    5 > m
+    [] > value
+      [] > @
+        ^.^.m > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-right-way-to-use-hierarchy
-  [value] > pybool
-    value > @
-  [value] > pyint
-    [x] > eq
-      ^.^.pybool (^.value.eq x.value) > @
-    [x] > add
-      ^.^.pyint (^.value.plus x.value) > @
-  ((pyint 1).add (pyint 3)).eq (pyint 4) > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-phi-in-vertical-notation
+    eq. > @
+      @.
+        value
+      100
+    [] > value
+      [] > @
+        100 > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-check-triple-quotes
-  eq. > @
-    """
-    Hello
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-phi-in-horizontal-notation
+    eq. > @
+      value.@
+      100
+    [] > value
+      [] > @
+        100 > @
 
-    Hello
-    """
-    "Hello\n\nHello"
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-right-way-to-use-hierarchy
+    ((pyint 1).add (pyint 3)).eq (pyint 4) > @
+    [value] > pybool
+      value > @
+    [value] > pyint
+      [x] > eq
+        ^.^.pybool (^.value.eq x.value) > @
+      [x] > add
+        ^.^.pyint (^.value.plus x.value) > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-correctly-handles-same-name-attrs-simplified
-  [first second] > calc
-    plus. > @
-      first
-      second
-  eq. > @
-    calc
-      []
-        build 1 > @
-        [x] > build
-          x > @
-      []
-        build 2 > @
-        [y] > build
-          y > @
-    3
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-check-triple-quotes
+    eq. > @
+      """
+      Hello
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-correctly-handles-same-name-attrs
-  [f s] > calc
-    plus. > @
-      f.next
-      s.next
-  eq. > @
-    calc
-      []
-        [x] > build
-          x.plus 1 > @
-          ^.build > next
-            plus.
-              x
-              1
-        build 1 > @
-      []
-        [y] > build
-          y.plus 2 > @
-          ^.build > next
-            plus.
-              y
-              2
-        build 2 > @
-    9
+      Hello
+      """
+      "Hello\n\nHello"
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-with-void-phi
-  [@] > x
-    "Hello" > hello
-  x 5 > five
-  and. > @
-    (five.plus 5).eq 10
-    five.hello.eq "Hello"
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-correctly-handles-same-name-attrs-simplified
+    eq. > @
+      calc
+        []
+          build 1 > @
+          [x] > build
+            x > @
+        []
+          build 2 > @
+          [y] > build
+            y > @
+      3
+    [first second] > calc
+      plus. > @
+        first
+        second
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-correctly-handles-same-name-attrs
+    eq. > @
+      calc
+        []
+          build 1 > @
+          [x] > build
+            x.plus 1 > @
+            ^.build > next
+              plus.
+                x
+                1
+        []
+          build 2 > @
+          [y] > build
+            y.plus 2 > @
+            ^.build > next
+              plus.
+                y
+                2
+      9
+    [f s] > calc
+      plus. > @
+        f.next
+        s.next
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-vertical-bound-method
-  eq. > @
-    if.
-      true
-      "second":1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-with-void-phi
+    and. > @
+      (five.plus 5).eq 10
+      five.hello.eq "Hello"
+    [@] > x
+      "Hello" > hello
+    x 5 > five
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-vertical-bound-method
+    eq. > @
+      if.
+        true
+        "second":1
+        "first"
+        .as-bytes:0
       "first"
-      .as-bytes:0
-    "first"
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-methods-by-position
-  [first second] > obj
-  obj 1 "Hey" > bound
-  and. > @
-    bound.~0.eq 1
-    bound.~1.eq "Hey"
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-methods-by-position
+    and. > @
+      bound.~0.eq 1
+      bound.~1.eq "Hey"
+    [first second] > obj
+    obj 1 "Hey" > bound
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-nesting-blah-test
-  blah0 > @
-  [] > blah0
-    blah1 > @
-    [] > blah1
-      blah2 > @
-      [] > blah2
-        blah3 > @
-        [] > blah3
-          blah4 > @
-          [] > blah4
-            blah5 > @
-            [] > blah5
-              blah6 > @
-              [] > blah6
-                blah7 > @
-                [] > blah7
-                  blah8 > @
-                  [] > blah8
-                    blah9 > @
-                    [] > blah9
-                      blah10 > @
-                      [] > blah10
-                        blah11 > @
-                        [] > blah11
-                          blah12 > @
-                          [] > blah12
-                            blah13 > @
-                            [] > blah13
-                              blah14 > @
-                              [] > blah14
-                                blah15 > @
-                                [] > blah15
-                                  blah16 > @
-                                  [] > blah16
-                                    blah17 > @
-                                    [] > blah17
-                                      blah18 > @
-                                      [] > blah18
-                                        blah19 > @
-                                        [] > blah19
-                                          blah20 > @
-                                          [] > blah20
-                                            blah21 > @
-                                            [] > blah21
-                                              blah22 > @
-                                              [] > blah22
-                                                blah23 > @
-                                                [] > blah23
-                                                  blah24 > @
-                                                  [] > blah24
-                                                    blah25 > @
-                                                    [] > blah25
-                                                      blah26 > @
-                                                      [] > blah26
-                                                        blah27 > @
-                                                        [] > blah27
-                                                          blah28 > @
-                                                          [] > blah28
-                                                            blah29 > @
-                                                            [] > blah29
-                                                              blah30 > @
-                                                              [] > blah30
-                                                                blah31 > @
-                                                                [] > blah31
-                                                                  blah32 > @
-                                                                  [] > blah32
-                                                                    blah33 > @
-                                                                    [] > blah33
-                                                                      blah34 > @
-                                                                      [] > blah34
-                                                                        blah35 > @
-                                                                        [] > blah35
-                                                                          blah36 > @
-                                                                          [] > blah36
-                                                                            blah37 > @
-                                                                            [] > blah37
-                                                                              blah38 > @
-                                                                              [] > blah38
-                                                                                blah39 > @
-                                                                                [] > blah39
-                                                                                  true > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-nesting-blah-test
+    blah0 > @
+    [] > blah0
+      blah1 > @
+      [] > blah1
+        blah2 > @
+        [] > blah2
+          blah3 > @
+          [] > blah3
+            blah4 > @
+            [] > blah4
+              blah5 > @
+              [] > blah5
+                blah6 > @
+                [] > blah6
+                  blah7 > @
+                  [] > blah7
+                    blah8 > @
+                    [] > blah8
+                      blah9 > @
+                      [] > blah9
+                        blah10 > @
+                        [] > blah10
+                          blah11 > @
+                          [] > blah11
+                            blah12 > @
+                            [] > blah12
+                              blah13 > @
+                              [] > blah13
+                                blah14 > @
+                                [] > blah14
+                                  blah15 > @
+                                  [] > blah15
+                                    blah16 > @
+                                    [] > blah16
+                                      blah17 > @
+                                      [] > blah17
+                                        blah18 > @
+                                        [] > blah18
+                                          blah19 > @
+                                          [] > blah19
+                                            blah20 > @
+                                            [] > blah20
+                                              blah21 > @
+                                              [] > blah21
+                                                blah22 > @
+                                                [] > blah22
+                                                  blah23 > @
+                                                  [] > blah23
+                                                    blah24 > @
+                                                    [] > blah24
+                                                      blah25 > @
+                                                      [] > blah25
+                                                        blah26 > @
+                                                        [] > blah26
+                                                          blah27 > @
+                                                          [] > blah27
+                                                            blah28 > @
+                                                            [] > blah28
+                                                              blah29 > @
+                                                              [] > blah29
+                                                                blah30 > @
+                                                                [] > blah30
+                                                                  blah31 > @
+                                                                  [] > blah31
+                                                                    blah32 > @
+                                                                    [] > blah32
+                                                                      blah33 > @
+                                                                      [] > blah33
+                                                                        blah34 > @
+                                                                        [] > blah34
+                                                                          blah35 > @
+                                                                          [] > blah35
+                                                                            blah36 > @
+                                                                            [] > blah36
+                                                                              blah37 > @
+                                                                              [] > blah37
+                                                                                blah38 > @
+                                                                                [] > blah38
+                                                                                  blah39 > @
+                                                                                  [] > blah39
+                                                                                    true > @

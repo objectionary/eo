@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -20,8 +20,8 @@
 
   # Initialized set with rebuilt unique sequence.
   [mp] > initialized
-    $ > this
     mp.keys > @
+    $ > this
     mp.size > size
 
     # Append new `item` to set. It must be possible to get

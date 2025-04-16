@@ -3,41 +3,43 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-simple-range-of-ints-from-one-to-ten
-  eq. > @
-    range-of-ints 1 10
-    * 1 2 3 4 5 6 7 8 9
+[] > range-of-ints-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-simple-range-of-ints-from-one-to-ten
+    eq. > @
+      range-of-ints 1 10
+      * 1 2 3 4 5 6 7 8 9
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-range-of-ints-from-ten-to-ten-is-empty
-  is-empty. > @
-    range-of-ints 10 10
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-range-of-ints-from-ten-to-ten-is-empty
+    is-empty. > @
+      range-of-ints 10 10
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-range-of-descending-ints-is-empty
-  is-empty. > @
-    range-of-ints 10 1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-range-of-descending-ints-is-empty
+    is-empty. > @
+      range-of-ints 10 1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-range-of-negative-ints-works-as-well
-  eq. > @
-    range-of-ints -5 0
-    * -5 -4 -3 -2 -1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-range-of-negative-ints-works-as-well
+    eq. > @
+      range-of-ints -5 0
+      * -5 -4 -3 -2 -1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-range-of-ints-with-non-int-start
-  range-of-ints 1.2 3 > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-range-of-ints-with-non-int-start
+    range-of-ints 1.2 3 > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-range-of-ints-with-not-int-end
-  range-of-ints 1 2.5 > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-range-of-ints-with-not-int-end
+    range-of-ints 1 2.5 > @
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-range-of-not-ints
-  range-of-ints 1.5 5.2 > @
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-range-of-not-ints
+    range-of-ints 1.5 5.2 > @

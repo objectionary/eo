@@ -4,18 +4,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 # Generates a pseudo-random number.
 [seed] > random
-  $ > fixed
   # Get float value for current `seed`.
   # Divide `seed` to maximum possible value of the `seed` which is 1 << 53.
   div. > @
     seed.as-number
     00-20-00-00-00-00-00-00.as-i64.as-number
+  $ > fixed
   # Next random.
   # Formula is based on linear congruential pseudorandom number generator, as defined by
   # D. H. Lehmer and described by Donald E. Knuth in The Art of Computer Programming, Volume 2,
@@ -36,10 +36,6 @@
 
   # New random with pseudo-random seed.
   [] > pseudo
-    35 > const-1
-    53 > const-2
-    17 > const-3
-    00-00-00-00-00-00-00-01 > one
     random time-seed > @
     (posix "gettimeofday" *).output > timeval
     as-number. > time-seed
@@ -66,3 +62,7 @@
             timeval.tv-sec.times 1000
             as-number.
               timeval.tv-usec.as-i64.div 1000.as-i64
+    35 > const-1
+    53 > const-2
+    17 > const-3
+    00-00-00-00-00-00-00-01 > one

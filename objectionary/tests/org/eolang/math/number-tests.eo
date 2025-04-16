@@ -1,76 +1,65 @@
++alias org.eolang.math.numbers
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
-+package org.eolang
++package org.eolang.math
 +version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > bool-tests
+[] > number-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-two-bools
+  (numbers *).max > [] > throws-on-taking-max-from-empty-sequence-of-numbers
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  (numbers *).min > [] > throws-on-taking-min-from-empty-sequence-of-numbers
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-max-of-one-item-array
     eq. > @
-      true
-      true
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-as-bool
-    true.as-bool > @
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-two-different-bool-types
-    not. > @
-      eq.
-        true
-        42
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-bytes
-    and. > @
-      true.eq 01-
-      false.eq 00-
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-string
-    and. > @
-      true.eq "\001"
-      false.eq "\000"
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-bytes-reverse
-    and. > @
-      01-.as-bytes.eq true
-      00-.as-bytes.eq false
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-not-is-false
-    eq. > @
-      true.not
-      false
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-and-false-is-false
-    not. > @
-      and.
-        true
-        false
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-forks-on-true-condition
-    eq. > @
-      if.
-        5.eq 5
-        123
-        42
-      123
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-forks-on-false-condition
-    eq. > @
-      if.
-        5.eq 8
-        123
-        42
+      (numbers (* 42)).max
       42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-min-of-one-item-array
+    eq. > @
+      (numbers (* 42)).min
+      42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-max-of-array-is-first
+    eq. > @
+      (numbers (* 25 12 -2)).max
+      25
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-max-of-array-is-in-the-center
+    eq. > @
+      (numbers (* 12 25 -2)).max
+      25
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-max-of-array-is-last
+    eq. > @
+      (numbers (* 12 -2 25)).max
+      25
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-min-of-array-is-first
+    eq. > @
+      (numbers (* -2 25 12)).min
+      -2
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-min-of-array-is-in-the-center
+    eq. > @
+      (numbers (* 12 -2 25)).min
+      -2
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-min-of-array-is-last
+    eq. > @
+      (numbers (* 12 25 -2)).min
+      -2

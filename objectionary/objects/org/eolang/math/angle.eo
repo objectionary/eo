@@ -2,10 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
-+unlint rt-without-atoms
++version 0.56.0
 +unlint empty-object
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -37,17 +36,17 @@
   # Tangent of current angle.
   # Please note, that `tan` is calculated from the angle in radians.
   [] > tan
-    cos > cosine!
     if. > @
       cosine.eq 0
       nan
       sin.div cosine
+    cos > cosine!
 
   # Cotangent of current angle.
   # Please note, that `ctan` is calculated from the angle in radians.
   [] > ctan
-    sin > sine!
     if. > @
       sine.eq 0
       nan
       cos.div sine
+    sin > sine!

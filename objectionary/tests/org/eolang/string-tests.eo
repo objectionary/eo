@@ -2,264 +2,266 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-calculates-length-of-spaces-only
-  eq. > @
-    " ".length
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-turns-string-into-bytes
-  eq. > @
-    "€ друг".as-bytes
-    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-bytes-equal-to-string
-  eq. > @
-    D0-B4-D1-80-D1-83-D0-B3
-    "друг"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-string-equals-to-bytes
-  eq. > @
-    "друг"
-    D0-B4-D1-80-D1-83-D0-B3
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-n2-byte-characters
-  "Hello, друг!" > str
-  and. > @
-    str.length.eq 12
-    str.as-bytes.size.eq 16
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-n3-byte-characters
-  "The अ devanagari" > str
-  and. > @
-    str.length.eq 16
-    str.as-bytes.size.eq 18
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-the-length-with-n4-byte-characters
-  "The 😀 smile" > str
-  and. > @
-    str.length.eq 11
-    str.as-bytes.size.eq 14
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
-# incomplete 4 byte character.
-[] > throws-on-taking-length-of-incomplete-n4-byte-character
-  string F0-9F-98 > should-be-smile
-  should-be-smile.length > @
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-two-different-string-types
-  not. > @
-    eq.
-      "Hello"
-      42
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-string-with-nan
-  not. > @
-    eq.
-      nan
-      "друг"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-string-with-positive-infinity
-  eq. > @
-    positive-infinity.eq "друг"
-    false
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-string-with-negative-infinity
-  not. > @
-    eq.
-      negative-infinity
-      "друг"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-text-block-one-line
-  eq. > @
-    """
-    Abc
-    """
-    "Abc"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-text-block-tree-lines
-  eq. > @
-    """
-    e
-    e
-    e
-    """.as-bytes
-    65-0A-65-0A-65
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-text-block-with-margin
-  eq. > @
-    """
-     z
-      y
-     x
-    """.as-bytes
-    7A-0A-20-20-79-0A-20-78
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-two-different-strings
-  not. > @
-    eq.
-      "Hello"
-      "Good bye"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-supports-escape-sequences
-  eq. > @
-    "Hello, \u0434\u0440\u0443\u0433!\n"
-    "Hello, друг!\n"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-supports-escape-sequences-in-text
-  eq. > @
-    """
-    Hello, \u0434\u0440\u0443\u0433!\n
-    """
-    "Hello, друг!\n"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-preserves-indentation-in-text
-  eq. > @
-    """
-    a
-     b
-      c
-    """
-    "a\n b\n  c"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-compares-two-strings
-  eq. > @
-    eq.
-      "x"
-      "x"
-    true
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-one-symbol-string-compares
-  eq. > @
-    "Ф"
-    "Ф"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-supports-escape-sequences-line-break
-  eq. > @
-    "\n"
-    "\012"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-supports-escape-sequences-unicode
-  eq. > @
-    "\u0424"
-    "Ф"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-from-start
-  eq. > @
-    "hello".slice 0 1
-    "h"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-in-the-middle
-  eq. > @
-    "hello".slice 2 3
-    "llo"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-from-the-end
-  eq. > @
-    "hello".slice 4 1
-    "o"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-empty-string
-  eq. > @
-    "".slice 0 0
-    ""
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-no-slice-string
-  eq. > @
-    "no slice".slice 0 0
-    ""
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-escape-sequences-line-break
-  eq. > @
-    "\n".slice
-      0
-      "\n".length
-    "\012"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-escape-sequences-unicode
-  eq. > @
-    "\u0424".slice
-      0
-      "\u0424".length
-    "Ф"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-n2-byte-characters
-  eq. > @
-    "привет".slice 1 2
-    "ри"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-n3-byte-characters
-  eq. > @
-    "The अ is अ".slice 1 6
-    "he अ i"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-with-n4-byte-characters
-  eq. > @
-    "One 😀 and 😀 another".slice 3 8
-    " 😀 and 😀"
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-slice-foreign-literals
-  eq. > @
-    "hello, 大家!".slice
-      7
+[] > string-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-calculates-length-of-spaces-only
+    eq. > @
+      " ".length
       1
-    "大"
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-slicing-start-below-zero
-  slice. > @
-    "some string"
-    -1
-    1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-turns-string-into-bytes
+    eq. > @
+      "€ друг".as-bytes
+      E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-slicing-end-below-start
-  slice. > @
-    "some string"
-    2
-    -1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-bytes-equal-to-string
+    eq. > @
+      D0-B4-D1-80-D1-83-D0-B3
+      "друг"
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-slicing-end-greater-actual
-  slice. > @
-    "some string"
-    7
-    5
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-string-equals-to-bytes
+    eq. > @
+      "друг"
+      D0-B4-D1-80-D1-83-D0-B3
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-the-length-with-n2-byte-characters
+    and. > @
+      str.length.eq 12
+      str.as-bytes.size.eq 16
+    "Hello, друг!" > str
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-the-length-with-n3-byte-characters
+    and. > @
+      str.length.eq 16
+      str.as-bytes.size.eq 18
+    "The अ devanagari" > str
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-the-length-with-n4-byte-characters
+    and. > @
+      str.length.eq 11
+      str.as-bytes.size.eq 14
+    "The 😀 smile" > str
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
+  # incomplete 4 byte character.
+  [] > throws-on-taking-length-of-incomplete-n4-byte-character
+    should-be-smile.length > @
+    string F0-9F-98 > should-be-smile
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-two-different-string-types
+    not. > @
+      eq.
+        "Hello"
+        42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-string-with-nan
+    not. > @
+      eq.
+        nan
+        "друг"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-string-with-positive-infinity
+    eq. > @
+      positive-infinity.eq "друг"
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-string-with-negative-infinity
+    not. > @
+      eq.
+        negative-infinity
+        "друг"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-text-block-one-line
+    eq. > @
+      """
+      Abc
+      """
+      "Abc"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-text-block-tree-lines
+    eq. > @
+      """
+      e
+      e
+      e
+      """.as-bytes
+      65-0A-65-0A-65
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-text-block-with-margin
+    eq. > @
+      """
+       z
+        y
+       x
+      """.as-bytes
+      7A-0A-20-20-79-0A-20-78
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-two-different-strings
+    not. > @
+      eq.
+        "Hello"
+        "Good bye"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-supports-escape-sequences
+    eq. > @
+      "Hello, \u0434\u0440\u0443\u0433!\n"
+      "Hello, друг!\n"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-supports-escape-sequences-in-text
+    eq. > @
+      """
+      Hello, \u0434\u0440\u0443\u0433!\n
+      """
+      "Hello, друг!\n"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-preserves-indentation-in-text
+    eq. > @
+      """
+      a
+       b
+        c
+      """
+      "a\n b\n  c"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-compares-two-strings
+    eq. > @
+      eq.
+        "x"
+        "x"
+      true
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-one-symbol-string-compares
+    eq. > @
+      "Ф"
+      "Ф"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-supports-escape-sequences-line-break
+    eq. > @
+      "\n"
+      "\012"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-supports-escape-sequences-unicode
+    eq. > @
+      "\u0424"
+      "Ф"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-from-start
+    eq. > @
+      "hello".slice 0 1
+      "h"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-in-the-middle
+    eq. > @
+      "hello".slice 2 3
+      "llo"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-from-the-end
+    eq. > @
+      "hello".slice 4 1
+      "o"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-empty-string
+    eq. > @
+      "".slice 0 0
+      ""
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-no-slice-string
+    eq. > @
+      "no slice".slice 0 0
+      ""
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-escape-sequences-line-break
+    eq. > @
+      "\n".slice
+        0
+        "\n".length
+      "\012"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-escape-sequences-unicode
+    eq. > @
+      "\u0424".slice
+        0
+        "\u0424".length
+      "Ф"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-with-n2-byte-characters
+    eq. > @
+      "привет".slice 1 2
+      "ри"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-with-n3-byte-characters
+    eq. > @
+      "The अ is अ".slice 1 6
+      "he अ i"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-with-n4-byte-characters
+    eq. > @
+      "One 😀 and 😀 another".slice 3 8
+      " 😀 and 😀"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-slice-foreign-literals
+    eq. > @
+      "hello, 大家!".slice
+        7
+        1
+      "大"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-slicing-start-below-zero
+    slice. > @
+      "some string"
+      -1
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-slicing-end-below-start
+    slice. > @
+      "some string"
+      2
+      -1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-slicing-end-greater-actual
+    slice. > @
+      "some string"
+      7
+      5

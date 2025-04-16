@@ -1,15 +1,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint many-free-attributes
-+unlint rt-without-atoms
 +unlint empty-object
-+unlint decorated-formation
 
 # Makes a kernel32.dll function call by name.
 #
@@ -18,6 +16,9 @@
 # Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
 # WriteFile, etc.
 [name args] > win32
+  # Makes an actual function call to operating system
+  # Returns `org.eolang.sys.win32.return` object.
+  [] > @ ?
   -10 > std-input-handle
   -11 > std-output-handle
   2 > af-inet
@@ -28,13 +29,9 @@
   -1 > inaddr-none
   02-02 > winsock-version-2-2
 
-  # Makes an actual function call to operating system
-  # Returns `org.eolang.sys.win32.return` object.
-  [] > @ ?
-
   [code output] > return
-    $ > called
     output > @
+    $ > called
 
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time

@@ -3,88 +3,89 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.math
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-calculates-lineal-integral
-  as-number. > lineal
-    integral
-      x > [x]
-      1
-      10
-      15
-  close-to > @
-    lineal
-    49.5
-    0.0000001
+[] > integral-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-calculates-lineal-integral
+    close-to > @
+      lineal
+      49.5
+      0.0000001
+    as-number. > lineal
+      integral
+        x > [x]
+        1
+        10
+        15
 
-  # Checks where given `value` is close to `operand` with given precision `err`.
-  [value operand err] > close-to
-    lte. > @
-      minus.
-        abs
-          value.minus operand
-        err
-      0
-    [value] > abs
-      if. > @
-        value.gte 0
-        value
-        value.neg
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-calculates-quadratic-integral
-  as-number. > quadratic
-    integral
-      x.times x > [x]
-      1
-      10
-      100
-  close-to > @
-    quadratic
-    333
-    0.0000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-calculates-quadratic-integral
+    close-to > @
+      quadratic
+      333
+      0.0000001
+    as-number. > quadratic
+      integral
+        x.times x > [x]
+        1
+        10
+        100
 
-  # Checks where given `value` is close to `operand` with given precision `err`.
-  [value operand err] > close-to
-    lte. > @
-      minus.
-        abs
-          value.minus operand
-        err
-      0
-    [value] > abs
-      if. > @
-        value.gte 0
-        value
-        value.neg
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-calculates-cube-integral
-  as-number. > cube
-    integral
-      (x.times x).times x > [x]
-      1
-      10
-      100
-  close-to > @
-    cube
-    2499.75
-    0.0000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-calculates-cube-integral
+    close-to > @
+      cube
+      2499.75
+      0.0000001
+    as-number. > cube
+      integral
+        (x.times x).times x > [x]
+        1
+        10
+        100
 
-  # Checks where given `value` is close to `operand` with given precision `err`.
-  [value operand err] > close-to
-    lte. > @
-      minus.
-        abs
-          value.minus operand
-        err
-      0
-    [value] > abs
-      if. > @
-        value.gte 0
-        value
-        value.neg
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg

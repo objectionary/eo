@@ -2,7 +2,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -13,7 +13,6 @@
 
   # Find max element in the numbers sequence.
   [] > max
-    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get max number from empty sequence"
@@ -25,10 +24,10 @@
             item.as-number.gt max
             item
             max
+    list sequence > lst
 
   # Find min element in the numbers sequence.
   [] > min
-    list sequence > lst
     if. > @
       lst.is-empty
       error "Can't get min number from empty sequence"
@@ -40,3 +39,4 @@
             min.gt item.as-number
             item
             min
+    list sequence > lst

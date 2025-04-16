@@ -1,12 +1,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint rt-without-atoms
 +unlint empty-object
 
 # The `number` object is an abstraction of a 64-bit floating-point
@@ -36,10 +35,6 @@
   # can be converted to `bytes` via `as-bytes` object.
   # According to IEEE 754 float -0.0 and 0.0 are equal.
   [x] > eq
-    x > x-as-bytes!
-    as-bytes > self-as-bytes
-    0.as-bytes > pos-zero-as-bytes
-    -0.as-bytes > neg-zero-as-bytes
     if. > @
       or.
         is-nan
@@ -54,24 +49,28 @@
             self-as-bytes.eq pos-zero-as-bytes
             self-as-bytes.eq neg-zero-as-bytes
         self-as-bytes.eq x-as-bytes
+    x > x-as-bytes!
+    as-bytes > self-as-bytes!
+    0.as-bytes > pos-zero-as-bytes
+    -0.as-bytes > neg-zero-as-bytes
 
   # Returns `true` if `$` < `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lt
-    x > value!
     0.gt > @
       minus
         number value
+    x > value!
 
   # Returns `true` if `$` <= `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lte
-    x > value!
     or. > @
       lt value
       eq value
+    x > value!
 
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
@@ -82,10 +81,10 @@
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gte
-    x > value!
     or. > @
       gt value
       eq value
+    x > value!
 
   # Multiplication of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
@@ -101,9 +100,9 @@
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > minus
-    x > value!
     plus > @
       (number value).neg
+    x > value!
 
   # Quotient of the division of `$` by `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which

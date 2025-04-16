@@ -5,7 +5,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -23,12 +23,6 @@
       file
         string
           [] >>!
-            getenv "TMPDIR" > tmpdir!
-            getenv "TMP" > tmp!
-            getenv "TEMP" > temp!
-            getenv "TEMPDIR" > tempdir!
-            getenv "USERPROFILE" > userprofile!
-            -- > empty
             if. > @
               os.is-windows
               if.
@@ -54,3 +48,9 @@
                     temp
                   tmp
                 tmpdir
+            getenv "TMPDIR" > tmpdir!
+            getenv "TMP" > tmp!
+            getenv "TEMP" > temp!
+            getenv "TEMPDIR" > tempdir!
+            getenv "USERPROFILE" > userprofile!
+            -- > empty

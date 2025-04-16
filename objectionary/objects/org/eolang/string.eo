@@ -2,10 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint wrong-sprintf-arguments
 
 # The `string` object is an abstraction of a text string, which
 # internally is a chain of bytes.
@@ -14,6 +13,10 @@
 
   # Calculates the length of the string.
   [] > length
+    if. > @
+      size.eq 0
+      0
+      rec-length 0 0
     as-bytes.size > size
     80- > pattern-one
     E0- > pattern-two
@@ -23,10 +26,6 @@
     C0- > result-two
     pattern-two > result-three
     pattern-three > result-four
-    if. > @
-      size.eq 0
-      0
-      rec-length 0 0
 
     # The object checks if `index` + `char-size` is out of string bounds.
     # If not - the new recursion iteration is started with `index` increased by `char-size` and
@@ -45,7 +44,6 @@
     # The object recursively calculates the length of current string considering how many bytes
     # the character on each iteration must consist of.
     [index accum] > rec-length
-      as-bytes.slice index 1 > byte
       if. > @
         index.eq size
         accum
@@ -65,9 +63,27 @@
                   sprintf
                     "Unknown byte format (%x), can't recognize character"
                     * byte
+      as-bytes.slice index 1 > byte
 
   # Takes a piece of a string as another string.
   [start len] > slice
+    if. > @
+      num-start.lt 0
+      error
+        sprintf
+          "Start index must be >= 0, but was %d"
+          * num-start
+      if.
+        num-len.lt 0
+        error
+          sprintf
+            "Length to slice must be >= 0, but was %d"
+            * num-len
+        if.
+          num-len.eq 0
+          ""
+          string
+            as-bytes.slice bts-start bts-length
     start > start-bytes!
     len > len-bytes!
     number start-bytes > num-start
@@ -98,23 +114,6 @@
           "Start index + length to slice (%d) is out of string bounds"
           * (num-start.plus num-len)
       bts-start
-    if. > @
-      num-start.lt 0
-      error
-        sprintf
-          "Start index must be >= 0, but was %d"
-          * num-start
-      if.
-        num-len.lt 0
-        error
-          sprintf
-            "Length to slice must be >= 0, but was %d"
-            * num-len
-        if.
-          num-len.eq 0
-          ""
-          string
-            as-bytes.slice bts-start bts-length
 
     # The object checks if `index` + provided `char-size` is not out of the string bounds.
     # If not -  the new recursion circle is started with `index` is increased by `char-size` and
@@ -139,7 +138,6 @@
     # Also it checks how many bytes (B) must contain character on the current step and tries to
     # increase index by B.
     [index accum result cause] > rec-index
-      as-bytes.slice index 1 > byte
       if. > @
         accum.eq result
         index
@@ -162,3 +160,4 @@
                     sprintf
                       "Unknown byte format (%x), can't recognize character"
                       * byte
+      as-bytes.slice index 1 > byte

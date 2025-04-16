@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -32,17 +32,17 @@
 
   # Take one element from the tuple, at the given position.
   [i] > at
-    i > idx!
-    if. > index!
-      0.gt idx
-      length.plus idx
-      idx
     if. > @
       or.
         0.gt index
         length.lte index
       error "Given index is out of tuple bounds"
       at-fast ^
+    i > idx!
+    if. > index!
+      0.gt idx
+      length.plus idx
+      idx
 
     [tup] > at-fast
       if. > @

@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -9,21 +9,6 @@
 # Here `func` is integration function, `a` is an upper limit,
 # `b` is bottom limit, `n` is the number of partitions of the integration interval.
 [fun a b n] > integral
-  [a b] > subsection
-    times. > @
-      div.
-        b.minus a
-        6.0
-      plus.
-        fun a
-        plus.
-          times.
-            4.0
-            fun
-              times.
-                0.5
-                a.plus b
-          fun b
   as-number. > @
     malloc.of
       8
@@ -31,8 +16,6 @@
         malloc.for > @
           a
           [left] >>
-            b > right
-            ((right.minus left).div n).as-number > step
             seq * > @
               while
                 [i] >>
@@ -50,3 +33,20 @@
                     false
                 true > [i]
               sum
+            b > right
+            ((right.minus left).div n).as-number > step
+  [a b] > subsection
+    times. > @
+      div.
+        b.minus a
+        6.0
+      plus.
+        fun a
+        plus.
+          times.
+            4.0
+            fun
+              times.
+                0.5
+                a.plus b
+          fun b

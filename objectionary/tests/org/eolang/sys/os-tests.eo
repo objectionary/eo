@@ -3,15 +3,17 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-checks-os-family
-  or. > @
-    or.
-      os.is-windows
-      os.is-macos
-    os.is-linux
+[] > os-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-checks-os-family
+    or. > @
+      or.
+        os.is-windows
+        os.is-macos
+      os.is-linux

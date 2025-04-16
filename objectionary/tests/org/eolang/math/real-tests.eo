@@ -5,579 +5,581 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.math
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-abs-int-positive
-  eq. > @
-    (real 3).abs
-    3
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-abs-int-negative
-  eq. > @
-    (real -3).abs
-    3
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-abs-zero
-  eq. > @
-    (real 0).abs
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-abs-float-positive
-  eq. > @
-    (real 13.5).abs
-    13.5
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-abs-float-negative
-  eq. > @
-    (real -17.9).abs
-    17.9
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-n1-n2
-  eq. > @
-    (real 1).mod 2
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-n0-n5
-  eq. > @
-    (real 0).mod 5
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-n0-n15-neg
-  eq. > @
-    (real 0).mod -15
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-n1-neg-n7
-  eq. > @
-    (real -1).mod 7
-    -1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-mod-n16-n200-neg
-  eq. > @
-    (real 16).mod -200
-    16
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Checks mathematical equality
-# A = ((A div B) * B) + (A mod B).
-[] > tests-div-mod-compatibility
-  -13 > dividend
-  5 > divisor
-  (real dividend).mod divisor > remainder
-  (dividend.div divisor).floor > quotient
-  eq. > @
-    plus.
-      remainder
-      times.
-        divisor
-        quotient
-    dividend
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Checks modulo: dividend < divisor.
-[] > tests-mod-dividend-less-than-divisor
-  eq. > @
-    (real -1).mod 5
-    -1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Checks modulo by 1.
-[] > tests-mod-dividend-by-one
-  eq. > @
-    (real 133).mod 1
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-pow-test
-  eq. > @
-    (real 2).pow 4
-    16
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-pow-is-zero
-  eq. > @
-    (real 2).pow 0
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-pow-is-negative
-  eq. > @
-    (real 984782).pow -12341
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-pow-of-two
-  eq. > @
-    (real 3).pow 2
-    9
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-pow-of-zero
-  eq. > @
-    (real 0).pow 145
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > throws-on-negative-pow-of-zero
-  (real 0).pow -567 > @
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Check pow works with NaNs.
-[] > tests-nan-to-the-pow-of-nan-is-nan
-  is-nan. > @
-    (real nan).pow nan
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-nan-to-the-pow-of-any-is-nan
-  is-nan. > @
-    (real nan).pow 42
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-any-to-the-pow-of-nan-is-nan
-  is-nan. > @
-    (real 52).pow nan
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Check if pow is zero.
-[] > tests-any-int-to-the-pow-of-zero-is-one
-  eq. > @
-    (real 42).pow 0
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-any-float-to-the-pow-of-zero-is-one
-  eq. > @
-    (real 42.5).pow 0
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Check if pow is less than zero.
-[] > tests-zero-to-the-negative-pow-is-positive-infinity
-  eq. > @
-    (real 0).pow -52
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-zero-to-the-negative-infinity-pow-is-positive-infinity
-  eq. > @
-    (real 0).pow negative-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-int-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real 42).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-float-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real 42.5).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-int-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real -42).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-float-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real -42.5).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real positive-infinity).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-infinity-to-the-pow-of-negative-infinity-is-zero
-  eq. > @
-    (real negative-infinity).pow negative-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-finite-negative-int-pow-is-zero
-  eq. > @
-    (real positive-infinity).pow -42
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-finite-negative-float-pow-is-zero
-  eq. > @
-    (real positive-infinity).pow -42.2
-    0.0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-two-to-the-pow-of-minus-one
-  eq. > @
-    (real 2).pow -1
-    0.5
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-two-to-the-pow-of-int-minus-two
-  eq. > @
-    (real 2).pow -2
-    0.25
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-two-to-the-pow-of-minus-three
-  eq. > @
-    (real 2).pow -3
-    0.125
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-four-to-the-pow-of-minus-three
-  eq. > @
-    (real 4).pow -3.0
-    0.015625
-
-# This unit test is supposed to check the functionality of the corresponding object.
-# Check if pow more than zero.
-[] > tests-zero-to-the-pow-of-positive-int-is-zero
-  eq. > @
-    (real 0).pow 4
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-zero-to-the-pow-of-positive-float-is-zero
-  eq. > @
-    (real 0).pow 4.2
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-zero-to-the-pow-of-positive-infinity-is-zero
-  eq. > @
-    (real 0).pow positive-infinity
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
-  eq. > @
-    (real -10).pow positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-float-to-the-pow-of-positive-infinity-is-infinity
-  eq. > @
-    (real -4.2).pow positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
-  eq. > @
-    (real 42).pow positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
-  eq. > @
-    (real 42.5).pow positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-pow-of-positive-int-is-positive-infinity
-  eq. > @
-    (real positive-infinity).pow 42
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-pow-of-positive-float-is-positive-infinity
-  eq. > @
-    (real positive-infinity).pow 10.8
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-infinity-to-the-pow-of-positive-infinity-is-positive-infinity
-  eq. > @
-    (real positive-infinity).pow positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-infinity-to-the-pow-of-positive-float-is-positive-infinity
-  eq. > @
-    (real negative-infinity).pow 9.9
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-infinity-to-the-pow-of-even-positive-int-is-positive-infinity
-  eq. > @
-    (real negative-infinity).pow 10
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-infinity-to-the-pow-of-odd-positive-int-is-positive-infinity
-  eq. > @
-    (real negative-infinity).pow 9
-    negative-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-int-to-the-pow-of-positive-int-is-int
-  eq. > @
-    (real 2).pow 3
-    8
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-float-to-the-pow-of-positive-int-is-float
-  eq. > @
-    (real 3.5).pow 4
-    150.0625
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-positive-int-to-the-pow-of-positive-float-is-float
-  eq. > @
-    (real 4).pow 5
-    1024
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-zero-input
-  lt. > @
-    abs.
-      real
-        minus.
-          0
-          sqrt.
-            real 0
-    0.00000000001
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-negative-input
-  is-nan. > @
-    sqrt.
-      real -0.1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-float-input
-  lt. > @
-    abs.
-      real
-        minus.
-          2
-          sqrt.
-            real
-              4
-    0.00000000001
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-int-input
-  lt. > @
-    abs.
-      real
-        minus.
-          9
-          sqrt.
-            real
-              81
-    0.00000000001
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-nan-input
-  is-nan. > @
-    sqrt.
-      real nan
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-infinity-n1
-  eq. > @
-    sqrt.
-      real positive-infinity
-    positive-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-sqrt-check-infinity-n2
-  is-nan. > @
-    sqrt.
-      real negative-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-negative-float-is-nan
-  is-nan. > @
-    ln.
-      real -2.2
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-zero-is-negative-infinity
-  eq. > @
-    ln.
-      real 0
-    negative-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-one-is-zero
-  eq. > @
-    ln.
-      real 1
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-e-one-is-one
-  eq. > @
-    ln.
-      real e
-    1
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-negative-int-is-nan
-  is-nan. > @
-    ln.
-      real -42
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-int-zero-is-negative-infinity
-  eq. > @
-    ln.
-      real 0
-    negative-infinity
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-int-one-is-zero
-  eq. > @
-    ln.
-      real 1
-    0
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-ln-of-twenty
-  eq. > @
-    ln.
-      real 20
-    2.995732273553991
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-negative-one-test
-  eq. > @
-    acos.
-      real -1.0
-    pi
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-zero-test
-  eq. > @
-    acos.
-      real 0
-    div.
+[] > real-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-abs-int-positive
+    eq. > @
+      (real 3).abs
+      3
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-abs-int-negative
+    eq. > @
+      (real -3).abs
+      3
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-abs-zero
+    eq. > @
+      (real 0).abs
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-abs-float-positive
+    eq. > @
+      (real 13.5).abs
+      13.5
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-abs-float-negative
+    eq. > @
+      (real -17.9).abs
+      17.9
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-mod-n1-n2
+    eq. > @
+      (real 1).mod 2
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-mod-n0-n5
+    eq. > @
+      (real 0).mod 5
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-mod-n0-n15-neg
+    eq. > @
+      (real 0).mod -15
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-mod-n1-neg-n7
+    eq. > @
+      (real -1).mod 7
+      -1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-mod-n16-n200-neg
+    eq. > @
+      (real 16).mod -200
+      16
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Checks mathematical equality
+  # A = ((A div B) * B) + (A mod B).
+  [] > tests-div-mod-compatibility
+    eq. > @
+      plus.
+        remainder
+        times.
+          divisor
+          quotient
+      dividend
+    -13 > dividend
+    5 > divisor
+    (real dividend).mod divisor > remainder
+    (dividend.div divisor).floor > quotient
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Checks modulo: dividend < divisor.
+  [] > tests-mod-dividend-less-than-divisor
+    eq. > @
+      (real -1).mod 5
+      -1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Checks modulo by 1.
+  [] > tests-mod-dividend-by-one
+    eq. > @
+      (real 133).mod 1
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-pow-test
+    eq. > @
+      (real 2).pow 4
+      16
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-pow-is-zero
+    eq. > @
+      (real 2).pow 0
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-pow-is-negative
+    eq. > @
+      (real 984782).pow -12341
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-pow-of-two
+    eq. > @
+      (real 3).pow 2
+      9
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-pow-of-zero
+    eq. > @
+      (real 0).pow 145
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > throws-on-negative-pow-of-zero
+    (real 0).pow -567 > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Check pow works with NaNs.
+  [] > tests-nan-to-the-pow-of-nan-is-nan
+    is-nan. > @
+      (real nan).pow nan
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-nan-to-the-pow-of-any-is-nan
+    is-nan. > @
+      (real nan).pow 42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-any-to-the-pow-of-nan-is-nan
+    is-nan. > @
+      (real 52).pow nan
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Check if pow is zero.
+  [] > tests-any-int-to-the-pow-of-zero-is-one
+    eq. > @
+      (real 42).pow 0
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-any-float-to-the-pow-of-zero-is-one
+    eq. > @
+      (real 42.5).pow 0
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Check if pow is less than zero.
+  [] > tests-zero-to-the-negative-pow-is-positive-infinity
+    eq. > @
+      (real 0).pow -52
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-zero-to-the-negative-infinity-pow-is-positive-infinity
+    eq. > @
+      (real 0).pow negative-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-int-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real 42).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-float-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real 42.5).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-int-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real -42).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-float-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real -42.5).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real positive-infinity).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. > @
+      (real negative-infinity).pow negative-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-finite-negative-int-pow-is-zero
+    eq. > @
+      (real positive-infinity).pow -42
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-finite-negative-float-pow-is-zero
+    eq. > @
+      (real positive-infinity).pow -42.2
+      0.0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-two-to-the-pow-of-minus-one
+    eq. > @
+      (real 2).pow -1
+      0.5
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-two-to-the-pow-of-int-minus-two
+    eq. > @
+      (real 2).pow -2
+      0.25
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-two-to-the-pow-of-minus-three
+    eq. > @
+      (real 2).pow -3
+      0.125
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-four-to-the-pow-of-minus-three
+    eq. > @
+      (real 4).pow -3.0
+      0.015625
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  # Check if pow more than zero.
+  [] > tests-zero-to-the-pow-of-positive-int-is-zero
+    eq. > @
+      (real 0).pow 4
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-zero-to-the-pow-of-positive-float-is-zero
+    eq. > @
+      (real 0).pow 4.2
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-zero-to-the-pow-of-positive-infinity-is-zero
+    eq. > @
+      (real 0).pow positive-infinity
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      (real -10).pow positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-float-to-the-pow-of-positive-infinity-is-infinity
+    eq. > @
+      (real -4.2).pow positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      (real 42).pow positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      (real 42.5).pow positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-pow-of-positive-int-is-positive-infinity
+    eq. > @
+      (real positive-infinity).pow 42
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-pow-of-positive-float-is-positive-infinity
+    eq. > @
+      (real positive-infinity).pow 10.8
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-infinity-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      (real positive-infinity).pow positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-infinity-to-the-pow-of-positive-float-is-positive-infinity
+    eq. > @
+      (real negative-infinity).pow 9.9
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-infinity-to-the-pow-of-even-positive-int-is-positive-infinity
+    eq. > @
+      (real negative-infinity).pow 10
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-infinity-to-the-pow-of-odd-positive-int-is-positive-infinity
+    eq. > @
+      (real negative-infinity).pow 9
+      negative-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-int-to-the-pow-of-positive-int-is-int
+    eq. > @
+      (real 2).pow 3
+      8
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-float-to-the-pow-of-positive-int-is-float
+    eq. > @
+      (real 3.5).pow 4
+      150.0625
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-positive-int-to-the-pow-of-positive-float-is-float
+    eq. > @
+      (real 4).pow 5
+      1024
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-zero-input
+    lt. > @
+      abs.
+        real
+          minus.
+            0
+            sqrt.
+              real 0
+      0.00000000001
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-negative-input
+    is-nan. > @
+      sqrt.
+        real -0.1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-float-input
+    lt. > @
+      abs.
+        real
+          minus.
+            2
+            sqrt.
+              real
+                4
+      0.00000000001
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-int-input
+    lt. > @
+      abs.
+        real
+          minus.
+            9
+            sqrt.
+              real
+                81
+      0.00000000001
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-nan-input
+    is-nan. > @
+      sqrt.
+        real nan
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-infinity-n1
+    eq. > @
+      sqrt.
+        real positive-infinity
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-sqrt-check-infinity-n2
+    is-nan. > @
+      sqrt.
+        real negative-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-negative-float-is-nan
+    is-nan. > @
+      ln.
+        real -2.2
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-zero-is-negative-infinity
+    eq. > @
+      ln.
+        real 0
+      negative-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-one-is-zero
+    eq. > @
+      ln.
+        real 1
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-e-one-is-one
+    eq. > @
+      ln.
+        real e
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-negative-int-is-nan
+    is-nan. > @
+      ln.
+        real -42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-int-zero-is-negative-infinity
+    eq. > @
+      ln.
+        real 0
+      negative-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-int-one-is-zero
+    eq. > @
+      ln.
+        real 1
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-ln-of-twenty
+    eq. > @
+      ln.
+        real 20
+      2.995732273553991
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-negative-one-test
+    eq. > @
+      acos.
+        real -1.0
       pi
-      2
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-one-test
-  eq. > @
-    acos.
-      real 1.0
-    0
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-zero-test
+    eq. > @
+      acos.
+        real 0
+      div.
+        pi
+        2
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-positive-calculated-test
-  lt. > @
-    abs.
-      real
-        minus.
-          acos.
-            real 0.6
-          0.927295
-    0.000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-one-test
+    eq. > @
+      acos.
+        real 1.0
+      0
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-negative-calculated-test
-  lt. > @
-    abs.
-      real
-        minus.
-          acos.
-            real -0.6
-          2.214297
-    0.000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-positive-calculated-test
+    lt. > @
+      abs.
+        real
+          minus.
+            acos.
+              real 0.6
+            0.927295
+      0.000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-nan-positive-value-test
-  is-nan. > @
-    acos.
-      real 2.0
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-negative-calculated-test
+    lt. > @
+      abs.
+        real
+          minus.
+            acos.
+              real -0.6
+            2.214297
+      0.000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-arccos-nan-negative-value-test
-  is-nan. > @
-    (real -2.0).acos
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-nan-positive-value-test
+    is-nan. > @
+      acos.
+        real 2.0
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-n0
-  lt. > @
-    abs.
-      real
-        minus.
-          e
-          (real 1).exp
-    0.00000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-arccos-nan-negative-value-test
+    is-nan. > @
+      (real -2.0).acos
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-n1
-  lt. > @
-    abs.
-      real
-        minus.
-          e
-          (real 1).exp
-    0.00000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-n0
+    lt. > @
+      abs.
+        real
+          minus.
+            e
+            (real 1).exp
+      0.00000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-n2
-  lt. > @
-    abs.
-      real
-        minus.
-          1.div e
-          (real -1).exp
-    0.00000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-n1
+    lt. > @
+      abs.
+        real
+          minus.
+            e
+            (real 1).exp
+      0.00000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-n3
-  lt. > @
-    abs.
-      real
-        minus.
-          (real e).pow 5
-          (real 5).exp
-    0.0000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-n2
+    lt. > @
+      abs.
+        real
+          minus.
+            1.div e
+            (real -1).exp
+      0.00000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-n4
-  lt. > @
-    abs.
-      real
-        minus.
-          (real e).pow -10
-          (real -10).exp
-    0.000000000001
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-n3
+    lt. > @
+      abs.
+        real
+          minus.
+            (real e).pow 5
+            (real 5).exp
+      0.0000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-nan
-  is-nan. > @
-    (real nan).exp
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-n4
+    lt. > @
+      abs.
+        real
+          minus.
+            (real e).pow -10
+            (real -10).exp
+      0.000000000001
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-infinity-n1
-  eq. > @
-    (real positive-infinity).exp
-    positive-infinity
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-nan
+    is-nan. > @
+      (real nan).exp
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-exp-check-infinity-n2
-  eq. > @
-    (real negative-infinity).exp
-    0
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-infinity-n1
+    eq. > @
+      (real positive-infinity).exp
+      positive-infinity
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-exp-check-infinity-n2
+    eq. > @
+      (real negative-infinity).exp
+      0

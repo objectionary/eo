@@ -2,12 +2,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint rt-without-atoms
 +unlint empty-object
 
 # Represents the current operating system.
@@ -16,10 +15,10 @@
 
   # Returns `org.eolang.true` if current OS belongs to `Windows` OS family.
   [] > is-windows
-    name > os-name!
     and. > @
       os-name.size.gt 6
       (os-name.slice 0 7).eq "Windows"
+    name > os-name!
   ((regex "/linux/i").matches name).as-bool > is-linux
   ((regex "/mac/i").matches name).as-bool > is-macos
 

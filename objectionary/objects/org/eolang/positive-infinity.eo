@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -31,22 +31,20 @@
 
   # Tests that the value $ greater than x.
   [x] > gt
-    x > value!
     not. > @
       or.
         (number value).is-nan
         eq value
+    x > value!
 
   # Tests that the value $ greater or equal than x.
   [x] > gte
-    x > value!
     not. > @
       (number value).is-nan
+    x > value!
 
   # Returns the result of the multiplication of $ and x.
   [x] > times
-    x > value!
-    number value > num
     if. > @
       or.
         num.is-nan
@@ -56,31 +54,31 @@
         num.gt 0
         ^
         negative-infinity
+    x > value!
+    number value > num
 
   # Returns the result of the sum of $ and x.
   [x] > plus
-    x > value!
     if. > @
       or.
         (number value).is-nan
         value.eq negative-infinity
       nan
       ^
+    x > value!
 
   # Difference between the values of $ and x.
   [x] > minus
-    x > value!
     if. > @
       or.
         (number value).is-nan
         value.eq ^
       nan
       ^
+    x > value!
 
   # Quotient of the division of $ by x.
   [x] > div
-    x > value!
-    number value > num
     if. > @
       or.
         num.is-nan
@@ -92,3 +90,5 @@
           0.gt value
         negative-infinity
         ^
+    x > value!
+    number value > num

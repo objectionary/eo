@@ -2,174 +2,176 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-float-less
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0.0
-        [m] >>
-          b.put > @
-            lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
-              1.1
+[] > seq-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-float-less
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0.0
+          [m] >>
+            b.put > @
+              lt.
+                seq
+                  *
+                    m.put (m.as-number.plus 1.0)
+                    m.as-number
+                1.1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-float-greater
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0.0
-        [m] >>
-          b.put > @
-            gt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
-              0.9
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-float-greater
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0.0
+          [m] >>
+            b.put > @
+              gt.
+                seq
+                  *
+                    m.put (m.as-number.plus 1.0)
+                    m.as-number
+                0.9
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-int-less
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0
-        [m] >>
-          b.put > @
-            lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              2
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-int-less
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0
+          [m] >>
+            b.put > @
+              lt.
+                seq
+                  *
+                    m.put (m.as-number.plus 1)
+                    m.as-number
+                2
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-int-less-or-equal
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0
-        [m] >>
-          b.put > @
-            lte.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-int-less-or-equal
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0
+          [m] >>
+            b.put > @
+              lte.
+                seq
+                  *
+                    m.put (m.as-number.plus 1)
+                    m.as-number
+                1
 
-# This test should have acceptable time to pass.
-[] > tests-very-long-seq
-  eq. > @
-    true
-    seq
-      *
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
+  # This test should have acceptable time to pass.
+  [] > tests-very-long-seq
+    eq. > @
+      true
+      seq
+        *
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-int-equal-to-test
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0
-        [m] >>
-          b.put > @
-            eq.
-              seq
-                *
-                  m.put 0
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-int-equal-to-test
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0
+          [m] >>
+            b.put > @
+              eq.
+                seq
+                  *
+                    m.put 0
+                    m.put (m.as-number.plus 1)
+                    m.as-number
+                1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-single-dataization-int-equal-to-cache-problem-test
-  malloc.of > @
-    1
-    [b]
-      malloc.for > @
-        0
-        [m] >>
-          b.put > @
-            eq.
-              seq
-                *
-                  at.
-                    * 0 1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-single-dataization-int-equal-to-cache-problem-test
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0
+          [m] >>
+            b.put > @
+              eq.
+                seq
+                  *
+                    at.
+                      * 0 1
+                      m
+                    m.put (m.as-number.plus 1)
                     m
-                  m.put (m.as-number.plus 1)
-                  m
-              1
+                1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-calculates-and-returns
-  eq. > @
-    1
-    seq
-      *
-        0
-        1
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-calculates-and-returns
+    eq. > @
+      1
+      seq
+        *
+          0
+          1
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-seq-calculates-and-returns-object
-  eq. > @
-    "Hello!"
-    seq
-      *
-        0
-        "Hello!"
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-seq-calculates-and-returns-object
+    eq. > @
+      "Hello!"
+      seq
+        *
+          0
+          "Hello!"

@@ -4,7 +4,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -85,20 +85,20 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `console` object.
       [buffer] > input-block
-        $ > self
         buffer > @
+        $ > self
 
         # Read `size` amount of bytes from operation system console.
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
-          output. > read-bytes!
-            posix
-              "read"
-              * posix.stdin-fileno size
           self. > @
             seq *
               read-bytes
               input-block read-bytes
+          output. > read-bytes!
+            posix
+              "read"
+              * posix.stdin-fileno size
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -112,8 +112,8 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `console` object.
       [] > output-block
-        $ > self
         true > @
+        $ > self
 
         # Writes bytes contained in `buffer` to operation system console.
         # Returns new instance of `output-block` ready to write again.
@@ -141,20 +141,20 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `console` object.
       [buffer] > input-block
-        $ > self
         buffer > @
+        $ > self
 
         # Read `size` amount of bytes from operation system console.
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
-          output. > read-bytes!
-            win32
-              "ReadFile"
-              * win32.std-input-handle size
           self. > @
             seq *
               read-bytes
               input-block read-bytes
+          output. > read-bytes!
+            win32
+              "ReadFile"
+              * win32.std-input-handle size
 
     # Write given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
@@ -168,8 +168,8 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `console` object.
       [] > output-block
-        $ > self
         true > @
+        $ > self
 
         # Writes bytes contained in `buffer` to operation system console.
         # Returns new instance of `output-block` ready to write again.

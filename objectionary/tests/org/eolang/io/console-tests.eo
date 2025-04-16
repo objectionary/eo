@@ -3,13 +3,15 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
-# Prints a simple message to the console. We can't validate
-# the output, so we just run it and see if it crashes.
-[] > tests-writes-to-console
-  console.write > @
-    "Hello, console-test!\n"
+# This unit test is supposed to check the functionality of the corresponding object.
+[] > console-tests
+  # Prints a simple message to the console. We can't validate
+  # the output, so we just run it and see if it crashes.
+  [] > tests-writes-to-console
+    console.write > @
+      "Hello, console-test!\n"

@@ -2,19 +2,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint rt-without-atoms
 +unlint empty-object
-+unlint wrong-sprintf-arguments
 
 # The file object in the filesystem.
 [path] > file
-  $ > as-file
   $.path > @
+  $ > as-file
   # Convert the `file` to the `path`.
   (QQ.fs.path path).determined > as-path
 
@@ -107,27 +105,6 @@
   # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
   # closes the file stream and returns an original file object.
   [mode scope] > open
-    mode > access!
-    (access.eq "r").as-bool > read
-    (access.eq "w").as-bool > write
-    (access.eq "a").as-bool > append
-    (access.eq "r+").as-bool > read-write
-    (access.eq "w+").as-bool > write-read
-    (access.eq "a+").as-bool > read-append
-    as-bool. > can-read
-      or.
-        read.or read-write
-        write-read.or read-append
-    as-bool. > can-write
-      or.
-        or.
-          write.or read-write
-          write-read.or read-append
-        append
-    as-bool. > must-exists
-      read.or read-write
-    as-bool. > truncate
-      write.or write-read
     as-file. > @
       if.
         can-read.not.and can-write.not
@@ -154,6 +131,27 @@
             seq *
               process-file
               ^
+    mode > access!
+    (access.eq "r").as-bool > read
+    (access.eq "w").as-bool > write
+    (access.eq "a").as-bool > append
+    (access.eq "r+").as-bool > read-write
+    (access.eq "w+").as-bool > write-read
+    (access.eq "a+").as-bool > read-append
+    as-bool. > can-read
+      or.
+        read.or read-write
+        write-read.or read-append
+    as-bool. > can-write
+      or.
+        or.
+          write.or read-write
+          write-read.or read-append
+        append
+    as-bool. > must-exists
+      read.or read-write
+    as-bool. > truncate
+      write.or write-read
 
     # Process current file in the provided scope.
     #
@@ -183,26 +181,26 @@
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
         [buffer] > input-block
-          $ > this
           buffer > @
+          $ > this
 
           # Read `size` amount of bytes from file input stream.
           # Returns new instance of `input-block` with `buffer` read from file, or
           # returns `org.eolang.error` if provided access mode does not allow reading operations.
           [size] > read
-            ^.^.read-bytes size > read-bytes!
             this. > @
               if.
                 can-read.not
                 [] >>
-                  $ > this
                   error > @
                     sprintf
                       "Can't read from file with provided access mode '%s'"
                       * access
+                  $ > this
                 seq *
                   read-bytes
                   input-block read-bytes
+            ^.^.read-bytes size > read-bytes!
 
         # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
@@ -223,8 +221,8 @@
         # Attention! The object is for internal usage only, please
         # don't use the object programmatically outside of `file` object.
         [] > output-block
-          $ > this
           true > @
+          $ > this
 
           # Write given `buffer` to file output stream.
           # Here `buffer` is either sequence of bytes or and object that can be
@@ -236,11 +234,11 @@
               if.
                 can-write.not
                 [] >>
-                  $ > this
                   error > @
                     sprintf
                       "Can't write to file with provided access mode '%s'"
                       * access
+                  $ > this
                 seq *
                   written-bytes buffer
                   output-block

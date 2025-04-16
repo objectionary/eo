@@ -2,173 +2,175 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-has-valid-bytes
-  eq. > @
-    42.as-i64.as-bytes
-    00-00-00-00-00-00-00-2A
+[] > i64-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-has-valid-bytes
+    eq. > @
+      42.as-i64.as-bytes
+      00-00-00-00-00-00-00-2A
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-as-bytes-is-not-equal-to-number-bytes
-  not. > @
-    eq.
-      i64 234.as-bytes
-      234.as-i64.as-bytes
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-as-bytes-is-not-equal-to-number-bytes
+    not. > @
+      eq.
+        i64 234.as-bytes
+        234.as-i64.as-bytes
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-to-i32-and-back
-  eq. > @
-    234.as-i64
-    234.as-i64.as-i32.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-to-i32-and-back
+    eq. > @
+      234.as-i64
+      234.as-i64.as-i32.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-negative-i64-to-i32-and-back
-  eq. > @
-    -234.as-i64
-    -234.as-i64.as-i32.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-negative-i64-to-i32-and-back
+    eq. > @
+      -234.as-i64
+      -234.as-i64.as-i32.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-3147483647.as-i64.as-i32 > [] > throws-on-converting-to-i32-if-out-of-bounds
+  # This unit test is supposed to check the functionality of the corresponding object.
+  3147483647.as-i64.as-i32 > [] > throws-on-converting-to-i32-if-out-of-bounds
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-less-true
-  lt. > @
-    10.as-i64
-    50.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-less-equal
-  not. > @
-    lt.
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-less-true
+    lt. > @
       10.as-i64
-      10.as-i64
+      50.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-less-false
-  not. > @
-    lt.
-      10.as-i64
-      -5.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-less-equal
+    not. > @
+      lt.
+        10.as-i64
+        10.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-greater-true
-  gt. > @
-    -200.as-i64
-    -1000.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-less-false
+    not. > @
+      lt.
+        10.as-i64
+        -5.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-greater-false
-  not. > @
-    gt.
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-greater-true
+    gt. > @
+      -200.as-i64
+      -1000.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-greater-false
+    not. > @
+      gt.
+        0.as-i64
+        100.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-greater-equal
+    not. > @
+      gt.
+        0.as-i64
+        0.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-lte-true
+    lte. > @
+      -200.as-i64
+      -100.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-lte-equal
+    lte. > @
+      50.as-i64
+      50.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-lte-false
+    not. > @
+      lte.
+        0.as-i64
+        -10.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-gte-true
+    gte. > @
+      -1000.as-i64
+      -1100.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-gte-equal
+    gte. > @
+      113.as-i64
+      113.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-gte-false
+    not. > @
+      gte.
+        0.as-i64
+        10.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-zero-eq-to-i64-zero
+    eq. > @
       0.as-i64
-      100.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-greater-equal
-  not. > @
-    gt.
-      0.as-i64
       0.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-lte-true
-  lte. > @
-    -200.as-i64
-    -100.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-lte-equal
-  lte. > @
-    50.as-i64
-    50.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-lte-false
-  not. > @
-    lte.
-      0.as-i64
-      -10.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-gte-true
-  gte. > @
-    -1000.as-i64
-    -1100.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-gte-equal
-  gte. > @
-    113.as-i64
-    113.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-gte-false
-  not. > @
-    gte.
-      0.as-i64
-      10.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-zero-eq-to-i64-zero
-  eq. > @
-    0.as-i64
-    0.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-eq-true
-  eq. > @
-    123.as-i64
-    123.as-i64
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-eq-false
-  not. > @
-    eq.
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-eq-true
+    eq. > @
       123.as-i64
-      42.as-i64
+      123.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-one-plus-i64-one
-  eq. > @
-    1.as-i64.plus 1.as-i64
-    2.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-eq-false
+    not. > @
+      eq.
+        123.as-i64
+        42.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-one-minus-i64-one
-  eq. > @
-    1.as-i64.minus 1.as-i64
-    0.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-one-plus-i64-one
+    eq. > @
+      1.as-i64.plus 1.as-i64
+      2.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-2.as-i64.div 0.as-i64 > [] > throws-on-division-i64-by-i64-zero
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-one-minus-i64-one
+    eq. > @
+      1.as-i64.minus 1.as-i64
+      0.as-i64
 
-# Checks that division by one returns the dividend.
-[] > tests-i64-div-by-i64-one
-  -235.as-i64 > dividend
-  eq. > @
-    dividend.div 1.as-i64
-    dividend
+  # This unit test is supposed to check the functionality of the corresponding object.
+  2.as-i64.div 0.as-i64 > [] > throws-on-division-i64-by-i64-zero
 
-# Checks div with remainder
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-div-with-remainder
-  eq. > @
-    13.as-i64.div -5.as-i64
-    -2.as-i64
+  # Checks that division by one returns the dividend.
+  [] > tests-i64-div-by-i64-one
+    eq. > @
+      dividend.div 1.as-i64
+      dividend
+    -235.as-i64 > dividend
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-div-less-than-i64-one
-  lt. > @
-    1.as-i64.div 5.as-i64
-    1.as-i64
+  # Checks div with remainder
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-div-with-remainder
+    eq. > @
+      13.as-i64.div -5.as-i64
+      -2.as-i64
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-i64-multiply-by-zero
-  eq. > @
-    1000.as-i64.times 0.as-i64
-    0.as-i64
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-div-less-than-i64-one
+    lt. > @
+      1.as-i64.div 5.as-i64
+      1.as-i64
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-i64-multiply-by-zero
+    eq. > @
+      1000.as-i64.times 0.as-i64
+      0.as-i64

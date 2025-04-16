@@ -2,14 +2,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint rt-without-atoms
 +unlint empty-object
-+unlint wrong-sprintf-arguments
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -45,9 +43,6 @@
   # Multiplication of `$` and `x`.
   # Here `x` must be an `org.eolang.i16` object.
   [x] > times
-    (as-i32.times x.as-i16.as-i32).as-bytes > bts
-    bts.slice 0 2 > left
-    bts.slice 2 2 > right
     if. > @
       or.
         left.eq 00-00
@@ -56,13 +51,13 @@
       plus.
         i16 left
         i16 right
+    (as-i32.times x.as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
 
   # Sum of `$` and `x`.
   # Here `x` must be an `org.eolang.i16` object.
   [x] > plus
-    (as-i32.plus x.as-i16.as-i32).as-bytes > bts
-    bts.slice 0 2 > left
-    bts.slice 2 2 > right
     if. > @
       or.
         left.eq 00-00
@@ -71,6 +66,9 @@
       plus.
         i16 left
         i16 right
+    (as-i32.plus x.as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `org.eolang.i16` object.
@@ -80,11 +78,6 @@
   # Here `x` must be an `org.eolang.i16` object.
   # An `org.eolang.error` is returned if or `x` is equal to `0`.
   [x] > div
-    x.as-i16 > x-as-i16
-    (as-i32.div x-as-i16.as-i32).as-bytes > bts
-    bts.slice 0 2 > left
-    bts.slice 2 2 > right
-    00-00 > zero
     if. > @
       x-as-i16.eq zero
       error
@@ -99,3 +92,8 @@
         plus.
           i16 left
           i16 right
+    x.as-i16 > x-as-i16
+    (as-i32.div x-as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
+    00-00 > zero

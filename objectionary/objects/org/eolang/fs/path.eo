@@ -7,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -32,20 +32,21 @@
   # Utility object that joins given `tuple` of paths with current OS separator
   # and normalizes result path.
   [paths] > joined
-    string > joined-path
-      as-bytes.
-        joined.
-          text separator
-          paths
     normalized. > @
       if.
         os.is-windows
         win32 joined-path
         posix joined-path
+    string > joined-path
+      as-bytes.
+        joined.
+          text separator
+          paths
 
   # POSIX specified path.
   # A standardized way to represent file or directory locations in a Unix-like system.
   [uri] > posix
+    uri > @
     $ > determined
     "/" > separator
     (file uri).as-file > as-file
@@ -54,13 +55,18 @@
     and. > is-absolute
       uri.length.gt 0
       (uri.as-bytes.slice 0 1).eq separator
-    uri > @
 
     # Return new `path` with normalized uri.
     # Normalization includes:
     # - converting multiple slashes into a single slash.
     # - resolving "." (current directory) and ".."  (parent directory) segments.
     [] > normalized
+      determined. > @
+        posix
+          if.
+            normalized.eq "//"
+            "/"
+            string normalized
       uri > uri-as-bytes!
       ^.is-absolute.as-bool > is-absolute
       and. > has-trailing-slash
@@ -109,12 +115,6 @@
               has-trailing-slash
               separator
               --
-      determined. > @
-        posix
-          if.
-            normalized.eq "//"
-            "/"
-            string normalized
 
     # Resolves `other` path against `^.uri` and returns as new `path` from it.
     # The original `uri` and resolving `other` may be:
@@ -132,7 +132,6 @@
     # |----------|----------|-------------|
     # URI Resolution Rules.
     [other] > resolved
-      other.as-bytes > other-as-bytes
       normalized. > @
         posix
           string
@@ -144,6 +143,7 @@
                   uri
                   separator
                 other-as-bytes
+      other.as-bytes > other-as-bytes
 
     # Takes the base name from the provided `path`, for example:
     # |------------------------------|---------------|
@@ -161,12 +161,6 @@
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
     [] > basename
-      uri > pth!
-      text > txt
-        string pth
-      plus. > slice-start-idx!
-        txt.last-index-of separator
-        1
       string > @
         if.
           or.
@@ -178,6 +172,12 @@
               slice-start-idx
               txt.length.minus
                 number slice-start-idx
+      uri > pth!
+      text > txt
+        string pth
+      plus. > slice-start-idx!
+        txt.last-index-of separator
+        1
 
     # Takes the extension part from the provided `path`, for example:
     # |------------------------------|--------|
@@ -194,10 +194,6 @@
     # and returns substring after "." if it's found.
     # If it's not - empty string is returned.
     [] > extname
-      basename > base!
-      text > txt
-        string base
-      txt.last-index-of "." > slice-start-idx!
       if. > @
         or.
           base.size.eq 0
@@ -209,6 +205,10 @@
               slice-start-idx
               txt.length.minus
                 number slice-start-idx
+      basename > base!
+      text > txt
+        string base
+      txt.last-index-of "." > slice-start-idx!
 
     # Takes the directory name from the provided `path`, for example:
     # |------------------------------|--------------------|
@@ -227,10 +227,6 @@
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/v\a\r/hello" `dir-name` returns `/tmp/v\a\r`.
     [] > dirname
-      uri > pth!
-      text > txt
-        string pth
-      txt.last-index-of separator > len!
       string > @
         if.
           or.
@@ -239,30 +235,34 @@
           pth
           as-bytes.
             txt.slice 0 len
+      uri > pth!
+      text > txt
+        string pth
+      txt.last-index-of separator > len!
 
   # Windows specified path.
   # Here `uri` is file system URI which may contain forward slashes '/'.
   # The object decorates `win32.validated` with forward slashes replaced with
   # back ones.
   [uri] > win32
-    "\\" > separator
     determined. > @
       validated
         string
           as-bytes.
             validated.separated-correctly
               uri
+    "\\" > separator
 
     # Windows validated path with forward slashes replaced with back ones.
     #
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `path` object.
     [uri] > validated
+      uri > @
       $ > determined
       ^.separator > separator
       (file uri).as-file > as-file
       (dir (file uri)).as-dir > as-dir
-      uri > @
 
       # Returns `true` if given `uri` is drive relative which means it
       # starts with "X:" where 'X' - system drive name.
@@ -271,29 +271,28 @@
       # Returns `true` if given `uri` is root relative which means it
       # starts with windows separator '\'.
       [uri] > is-root-relative
-        uri > uri-as-bytes!
         and. > @
           uri-as-bytes.size.gt 0
           (uri-as-bytes.slice 0 1).eq separator
+        uri > uri-as-bytes!
 
       # Replaces slashes '/' with valid windows separator '\'.
       [uri] > separated-correctly
+        if. > @
+          (pth.index-of path.posix.separator).eq -1
+          string uri-as-bytes
+          string replaced
         uri > uri-as-bytes!
         text > pth
           string uri-as-bytes
         pth.replaced > replaced!
           regex "/\\//"
           separator
-        if. > @
-          (pth.index-of path.posix.separator).eq -1
-          string uri-as-bytes
-          string replaced
 
       # Returns `true` if current path is absolute, which means:
       # - either path root is root relative (starts with "\")
       # - or path is drive relative (starts with "X:\", where 'X' - 1 char disk name).
       [] > is-absolute
-        uri > uri-as-bytes!
         if. > @
           uri-as-bytes.size.eq 0
           false
@@ -302,6 +301,7 @@
             and.
               uri-as-bytes.size.gt 1
               is-drive-relative uri-as-bytes
+        uri > uri-as-bytes!
 
       # Return new `path` with normalized uri.
       # Normalization includes:
@@ -309,6 +309,12 @@
       # - resolving "." (current directory) and ".."  (parent directory) segments.
       # - handling of drive letters in Windows.
       [] > normalized
+        determined. > @
+          validated
+            if.
+              normalized.eq "\\\\"
+              separator
+              string normalized
         uri > uri-as-bytes!
         (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative
         (^.is-root-relative uri-as-bytes).as-bool > is-root-relative
@@ -374,12 +380,6 @@
                 has-trailing-slash
                 separator
                 --
-        determined. > @
-          validated
-            if.
-              normalized.eq "\\\\"
-              separator
-              string normalized
 
       # Resolves `other` path against `^.uri` and returns as new `path` from it.
       # Original `uri` and `other` path for resolving may be:
@@ -403,10 +403,6 @@
       # |--------------------|----------------|-------------------|
       # URI Resolution Rules.
       [other] > resolved
-        uri > uri-as-bytes!
-        separated-correctly other > valid-other!
-        (^.is-drive-relative valid-other).as-bool > other-is-drive-relative
-        (^.is-root-relative valid-other).as-bool > other-is-root-relative
         normalized. > @
           validated
             string
@@ -426,6 +422,10 @@
                       uri-as-bytes
                       separator
                     valid-other
+        uri > uri-as-bytes!
+        separated-correctly other > valid-other!
+        (^.is-drive-relative valid-other).as-bool > other-is-drive-relative
+        (^.is-root-relative valid-other).as-bool > other-is-root-relative
 
       # Takes the base name from the provided `path`, for example:
       # |------------------------------|---------------|
@@ -443,12 +443,6 @@
       # is "/" (regular slash) in Unix OS:
       # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
       [] > basename
-        uri > pth!
-        text > txt
-          string pth
-        plus. > slice-start-idx!
-          txt.last-index-of separator
-          1
         string > @
           if.
             or.
@@ -460,6 +454,12 @@
                 slice-start-idx
                 txt.length.minus
                   number slice-start-idx
+        uri > pth!
+        text > txt
+          string pth
+        plus. > slice-start-idx!
+          txt.last-index-of separator
+          1
 
       # Takes the extension part from the provided `path`, for example:
       # |------------------------------|--------|
@@ -476,10 +476,6 @@
       # and returns substring after "." if it's found.
       # If it's not - empty string is returned.
       [] > extname
-        basename > base!
-        text > txt
-          string base
-        txt.last-index-of "." > slice-start-idx!
         if. > @
           or.
             base.size.eq 0
@@ -491,6 +487,10 @@
                 slice-start-idx
                 txt.length.minus
                   number slice-start-idx
+        basename > base!
+        text > txt
+          string base
+        txt.last-index-of "." > slice-start-idx!
 
       # Takes the directory name from the provided `path`, for example:
       # |------------------------------|--------------------|
@@ -505,10 +505,6 @@
       # |------------------------------|--------------------|
       # Extracting Directory Names from File Paths.
       [] > dirname
-        uri > pth!
-        text > txt
-          string pth
-        txt.last-index-of separator > len!
         string > @
           if.
             or.
@@ -517,3 +513,7 @@
             pth
             as-bytes.
               txt.slice 0 len
+        uri > pth!
+        text > txt
+          string pth
+        txt.last-index-of separator > len!

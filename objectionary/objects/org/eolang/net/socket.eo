@@ -5,11 +5,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
-+unlint wrong-sprintf-arguments
 
 # Socket.
 #
@@ -71,11 +70,11 @@
   # Attention! The object is for internal usage only, please don't use
   # the object programmatically outside of `socket` object.
   [port] > htons
-    port.as-i16.as-bytes > bts
     as-i16. > @
       or.
         (bts.and FF-).left 8
         (bts.right 8).and FF-
+    port.as-i16.as-bytes > bts
 
   # Makes an `input` from `socket`.
   # The object allows to use `socket` as input stream and `read` from it sequentially.
@@ -94,17 +93,17 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `socket` object.
       [buffer] > input-block
-        $ > self
         buffer > @
+        $ > self
 
         # Read `size` amount of bytes from socket.
         # Returns new instance of `input-block` with `buffer` read from socket.
         [size] > read
-          (recv size).as-bytes > read-bytes
           self. > @
             seq *
               read-bytes
               input-block read-bytes
+          (recv size).as-bytes > read-bytes
 
   # Makes an `output` from posix socket.
   # The object allows to use `socket` as output stream and `write` to it sequentially.
@@ -125,8 +124,8 @@
       # Attention! The object is for internal usage only, please don't use the object
       # programmatically outside of `console` object.
       [] > output-block
-        $ > self
         true > @
+        $ > self
 
         # Writes bytes contained in `buffer` to the socket.
         # Returns new instance of `output-block` ready to write again.
@@ -179,11 +178,6 @@
       # Here `buffer` must be an object that can be dataized.
       # On success the `number` of sent bytes is returned, otherwise `error` is returned.
       [buffer] > send
-        buffer > buff!
-        code. > sent
-          posix
-            "send"
-            * sockfd buff buff.size 0
         if. > @
           sent.eq -1
           error
@@ -191,15 +185,16 @@
               "Failed to send message through the socket '%d', reason: %s"
               * sockfd strerror.code
           sent
+        buffer > buff!
+        code. > sent
+          posix
+            "send"
+            * sockfd buff buff.size 0
 
       # Receive bytes from the socket.
       # Here `size` must be a `number` of desired bytes to receive.
       # On success the received `bytes` are returned, otherwise `error` is returned.
       [size] > recv
-        called. > received
-          posix
-            "recv"
-            * sockfd size 0
         if. > @
           received.code.eq -1
           error
@@ -207,6 +202,10 @@
               "Failed to receive data from the socket '%d', reason: %s"
               * sockfd strerror.code
           received.output
+        called. > received
+          posix
+            "recv"
+            * sockfd size 0
 
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.
@@ -214,10 +213,6 @@
     # Attention! The object is for internal usage only, please don't use
     # the object programmatically outside of `socket` object.
     [sockfd] > closed-socket
-      code. > closed
-        posix
-          "close"
-          * sockfd
       if. > @
         closed.eq -1
         error
@@ -225,6 +220,10 @@
             "Couldn't close a posix socket '%d', reason: '%s'"
             * sockfd strerror.code
         true
+      code. > closed
+        posix
+          "close"
+          * sockfd
 
     # Safe posix socket that ensures that socket is closed even if error is occurred.
     #
@@ -248,11 +247,6 @@
     [scope] > connect
       safe-socket > @
         [] >>
-          ^.^ > sock
-          code. > connected
-            posix
-              "connect"
-              * sock.sd sock.sockaddr sock.sockaddr.size
           if. > @
             connected.eq -1
             error
@@ -264,6 +258,11 @@
                 scope
                   sock.scoped-socket
                     sock.sd
+          ^.^ > sock
+          code. > connected
+            posix
+              "connect"
+              * sock.sd sock.sockaddr sock.sockaddr.size
 
     # Listen for connections on a socket.
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
@@ -272,15 +271,6 @@
     [scope] > listen
       safe-socket > @
         [] >>
-          ^.^ > sock
-          code. > bound
-            posix
-              "bind"
-              * sock.sd sock.sockaddr sock.sockaddr.size
-          code. > listened
-            posix
-              "listen"
-              * sock.sd 2048
           if. > @
             bound.eq -1
             error
@@ -304,10 +294,6 @@
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        code. > client-sockfd
-                          posix
-                            "accept"
-                            * sock.sd sock.sockaddr sock.sockaddr.size
                         try > @
                           if.
                             client-sockfd.eq -1
@@ -322,6 +308,19 @@
                                     client-sockfd
                           error ex > [ex]
                           sock.closed-socket client-sockfd
+                        code. > client-sockfd
+                          posix
+                            "accept"
+                            * sock.sd sock.sockaddr sock.sockaddr.size
+          ^.^ > sock
+          code. > bound
+            posix
+              "bind"
+              * sock.sd sock.sockaddr sock.sockaddr.size
+          code. > listened
+            posix
+              "listen"
+              * sock.sd 2048
 
   # The win32 platform specified socket.
   #
@@ -364,11 +363,6 @@
       # Here `buffer` must be an object that can be dataized.
       # On success the `number` of sent bytes is returned, otherwise `error` is returned.
       [buffer] > send
-        buffer > buff!
-        code. > sent
-          win32
-            "send"
-            * sockfd buff buff.size 0
         if. > @
           sent.eq -1
           error
@@ -376,15 +370,16 @@
               "Failed to send message through the socket '%d', WSA error code: %d"
               * sockfd last-error.code
           sent
+        buffer > buff!
+        code. > sent
+          win32
+            "send"
+            * sockfd buff buff.size 0
 
       # Receive bytes from the socket.
       # Here `size` must be a `number` of desired bytes to receive.
       # On success the received `bytes` are returned, otherwise `error` is returned.
       [size] > recv
-        called. > received
-          win32
-            "recv"
-            * sockfd size 0
         if. > @
           received.code.eq -1
           error
@@ -392,6 +387,10 @@
               "Failed to receive data from the socket '%d', WSA error code: %d"
               * sockfd last-error.code
           received.output
+        called. > received
+          win32
+            "recv"
+            * sockfd size 0
 
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.
@@ -399,10 +398,6 @@
     # Attention! The object is for internal usage only, please don't use
     # the object programmatically outside of `socket` object.
     [sockfd] > closed-socket
-      code. > closed
-        win32
-          "closesocket"
-          * sockfd
       if. > @
         closed.eq win32.socket-error
         error
@@ -410,6 +405,10 @@
             "Couldn't close a win32 socket '%d', WSA error code: %d"
             * sockfd last-error.code
         true
+      code. > closed
+        win32
+          "closesocket"
+          * sockfd
 
     # Safe win32 socket that ensures that socket is closed and Winsock resources are
     # cleaned even if error is occurred.
@@ -417,11 +416,6 @@
     # Attention! The object is for internal usage only, please don't use
     # the object programmatically outside of `socket` object.
     [scope] > safe-socket
-      code. > started-up
-        win32
-          "WSAStartup"
-          * win32.winsock-version-2-2
-      (win32 "WSACleanup" *).code > cleaned-up
       if. > @
         (started-up.eq 0).not
         error
@@ -444,6 +438,11 @@
             cleaned-up.eq win32.socket-error
             error "Couldn't cleanup Winsock resources"
             true
+      code. > started-up
+        win32
+          "WSAStartup"
+          * win32.winsock-version-2-2
+      (win32 "WSACleanup" *).code > cleaned-up
 
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
@@ -451,11 +450,6 @@
     [scope] > connect
       safe-socket > @
         [] >>
-          ^.^ > sock
-          code. > connected
-            win32
-              "connect"
-              * sock.sd sock.sockaddr sock.sockaddr.size
           if. > @
             connected.eq -1
             error
@@ -467,6 +461,11 @@
                 scope
                   sock.scoped-socket
                     sock.sd
+          ^.^ > sock
+          code. > connected
+            win32
+              "connect"
+              * sock.sd sock.sockaddr sock.sockaddr.size
 
     # Listen for connections on a socket.
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
@@ -475,15 +474,6 @@
     [scope] > listen
       safe-socket > @
         [] >>
-          ^.^ > sock
-          code. > bound
-            win32
-              "bind"
-              * sock.sd sock.sockaddr sock.sockaddr.size
-          code. > listened
-            win32
-              "listen"
-              * sock.sd 2048
           if. > @
             bound.eq -1
             error
@@ -507,10 +497,6 @@
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        code. > client-sockfd
-                          win32
-                            "accept"
-                            * sock.sd sock.sockaddr sock.sockaddr.size
                         try > @
                           if.
                             client-sockfd.eq -1
@@ -525,3 +511,16 @@
                                     client-sockfd
                           error ex > [ex]
                           sock.closed-socket client-sockfd
+                        code. > client-sockfd
+                          win32
+                            "accept"
+                            * sock.sd sock.sockaddr sock.sockaddr.size
+          ^.^ > sock
+          code. > bound
+            win32
+              "bind"
+              * sock.sd sock.sockaddr sock.sockaddr.size
+          code. > listened
+            win32
+              "listen"
+              * sock.sd 2048

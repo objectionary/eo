@@ -5,59 +5,61 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-from-bytes-and-writes-to-memory
-  eq. > @
-    malloc.of
-      5
-      [m]
-        read. > @
-          tee-input
+[] > tee-input-tests
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-from-bytes-and-writes-to-memory
+    eq. > @
+      malloc.of
+        5
+        [m]
+          read. > @
+            tee-input
+              bytes-as-input 01-02-03-04-05
+              malloc-as-output m
+            5
+      01-02-03-04-05
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-from-bytes-and-writes-to-memory-by-portions
+    eq. > @
+      malloc.of
+        5
+        [m]
+          seq > @
+            *
+              i2.read 1
+              m
+          tee-input > tee
             bytes-as-input 01-02-03-04-05
             malloc-as-output m
-          5
-    01-02-03-04-05
+          tee.read 2 > i1
+          i1.read 2 > i2
+      01-02-03-04-05
 
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-from-bytes-and-writes-to-memory-by-portions
-  eq. > @
-    malloc.of
-      5
-      [m]
-        tee-input > tee
-          bytes-as-input 01-02-03-04-05
-          malloc-as-output m
-        tee.read 2 > i1
-        i1.read 2 > i2
-        seq > @
-          *
-            i2.read 1
-            m
-    01-02-03-04-05
-
-# This unit test is supposed to check the functionality of the corresponding object.
-[] > tests-reads-from-bytes-and-writes-to-two-memory-blocks
-  eq. > @
-    malloc.of
-      6
-      [m1]
-        malloc.of > @
-          5
-          [m2] >>
-            seq > @
-              *
-                read.
-                  tee-input
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > tests-reads-from-bytes-and-writes-to-two-memory-blocks
+    eq. > @
+      malloc.of
+        6
+        [m1]
+          malloc.of > @
+            5
+            [m2] >>
+              seq > @
+                *
+                  read.
                     tee-input
-                      bytes-as-input 01-02-03-04-05
-                      malloc-as-output m2
-                    malloc-as-output m1
-                  5
-                m1.write 5 2A-
-                m1
-    01-02-03-04-05-2A
+                      tee-input
+                        bytes-as-input 01-02-03-04-05
+                        malloc-as-output m2
+                      malloc-as-output m1
+                    5
+                  m1.write 5 2A-
+                  m1
+      01-02-03-04-05-2A

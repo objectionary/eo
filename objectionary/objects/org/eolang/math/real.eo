@@ -2,12 +2,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.55.2
++rt jvm org.eolang:eo-runtime:0.56.0
 +rt node eo2js-runtime:0.0.0
-+version 0.55.2
++version 0.56.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint rt-without-atoms
 +unlint empty-object
 
 # Returns a floating point number.
@@ -19,8 +18,6 @@
   # Calculate MOD.
   # An operation that finds the remainder after dividing one number by another.
   [x] > mod
-    number num.as-bytes > dividend
-    number x.as-bytes > divisor
     if. > @
       divisor.eq 0
       error "Can't calculate mod by zero"
@@ -28,23 +25,25 @@
         dividend.gt 0
         abs-mod
         abs-mod.neg
+    number num.as-bytes > dividend
+    number x.as-bytes > divisor
 
     [] > abs-mod
-      (QQ.math.real dividend).abs > dividend-abs
-      (QQ.math.real divisor).abs > divisor-abs
       minus. > @
         dividend-abs
         divisor-abs.times
           floor.
             dividend-abs.div divisor-abs
+      (QQ.math.real dividend).abs > dividend-abs
+      (QQ.math.real divisor).abs > divisor-abs
 
   # Absolute value of `num` (i.e., with no sign).
   [] > abs
-    number num.as-bytes > value
     if. > @
       value.gte 0
       value
       value.neg
+    number num.as-bytes > value
 
   # An operation that raises `^.num` (a number) to the power of `x` and returns the result as
   # `org.eolang.number`.
