@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 48.697642453
+  seconds: 81.817639371
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-16 16:11:48.721457892 Z
+  when: 2025-04-16 17:09:19.927991385 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126990,20 +126990,6 @@
   repository: 731516758
   what: min-issue-was-found
   where: github
-- _id: 244967
-  _time: 2025-04-16 00:41:25.735794943 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 510102039
-  what: min-issue-was-found
-  where: github
-- _id: 244968
-  _time: 2025-04-16 00:41:25.886820944 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 784310467
-  what: min-issue-was-found
-  where: github
 - _id: 244969
   _time: 2025-04-16 00:41:26.034579344 Z
   _version: 0.9.10/0.39.2/
@@ -127018,21 +127004,6 @@
   repository: 546194972
   what: min-issue-was-found
   where: github
-- _id: 244971
-  _job: 17729
-  _time: 2025-04-16 00:43:06.137811303 Z
-  _version: 0.9.10/0.39.2/0.3.5
-  cost_of_qod:
-  - 0.02820118726998407
-  - -0.37252123703659357
-  - -0.6283307346815294
-  qod_per_day:
-  - 20.262571430008
-  - 42.95057143129291
-  - 34.3440000020942
-  - 12.277428572168057
-  what: learn-eva
-  when: 2025-04-16 00:43:06.081193752 Z
 - _id: 244975
   _time: 2025-04-16 07:09:34.614300528 Z
   _version: 0.9.10/0.39.2/
@@ -127066,13 +127037,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 483303722
-  what: min-issue-was-found
-  where: github
-- _id: 244981
-  _time: 2025-04-16 08:12:42.616757662 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 731438612
   what: min-issue-was-found
   where: github
 - _id: 244982
@@ -127173,15 +127137,6 @@
   repository: 543969974
   what: min-issue-was-found
   where: github
-- _id: 244999
-  _time: 2025-04-16 16:11:34.025606873 Z
-  _version: 0.9.10/0.39.2/
-  total_commits: 25794
-  total_files: 4770
-  total_forks: 316
-  total_stars: 1554
-  what: dimensions-of-terrain
-  when: 2025-04-16 16:11:00.812484866 Z
 - _id: 245000
   _time: 2025-04-16 16:11:34.370684976 Z
   _version: 0.9.10/0.39.2/
@@ -127194,5 +127149,72 @@
   _version: 0.9.10/0.39.2/
   latest: 6
   repository: 13623548
+  what: min-issue-was-found
+  where: github
+- _id: 245002
+  _job: 17775
+  _time: 2025-04-16 16:13:09.061615273 Z
+  _version: 0.9.10/0.39.2/0.3.5!0.3.6
+  cost_of_qod:
+  - 0.02820118726998407
+  - -0.37252123703659357
+  - -0.6283307346815294
+  qod_per_day:
+  - 20.262571430008
+  - 42.95057143129291
+  - 34.3440000020942
+  - 12.277428572168057
+  what: learn-eva
+  when: 2025-04-16 16:13:09.008179565 Z
+- _id: 245003
+  _job: 17775
+  _time: 2025-04-16 16:13:12.581475039 Z
+  _version: 0.9.10/0.39.2/0.3.5!0.3.6
+  ac: -689
+  cost_of_qod: -32.395950506186736
+  ev: -118115
+  pv: -17935
+  qod: 3646
+  qod_per_day: 4.960899614404815
+  qod_per_sec: 0.00037815035226539524
+  start: *1
+  what: earned-value
+  when: &693 2025-04-16 16:13:12.581738508 Z
+- _id: 245004
+  _job: 17775
+  _time: 2025-04-16 16:13:12.978441092 Z
+  _version: 0.9.10/0.39.2/0.3.5!0.3.6
+  what: earned-value-prev
+  when: *693
+- _id: 245005
+  _time: 2025-04-16 17:08:43.771269923 Z
+  _version: 0.9.10/0.39.2/
+  total_commits: 25794
+  total_files: 4770
+  total_forks: 316
+  total_issues: 4069
+  total_pulls: 5764
+  total_stars: 1554
+  what: dimensions-of-terrain
+  when: 2025-04-16 16:11:00.812484866 Z
+- _id: 245006
+  _time: 2025-04-16 17:08:44.194873040 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 784310467
+  what: min-issue-was-found
+  where: github
+- _id: 245007
+  _time: 2025-04-16 17:08:44.365725331 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 510102039
+  what: min-issue-was-found
+  where: github
+- _id: 245008
+  _time: 2025-04-16 17:08:45.666497642 Z
+  _version: 0.9.10/0.39.2/
+  latest: 2
+  repository: 731438612
   what: min-issue-was-found
   where: github
