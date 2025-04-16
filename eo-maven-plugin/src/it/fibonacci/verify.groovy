@@ -29,10 +29,6 @@ private static boolean online() {
         'target/eo/2-shake/org/eolang/examples/app.xmir',
         'target/eo/6-pre/org/eolang/examples/app/01-classes.xml',
         'target/eo/7-transpile/org/eolang/examples/app.xmir',
-        'target/eo/sodg/org/eolang/error.sodg',
-        'target/eo/sodg/org/eolang/error.sodg.xe',
-        'target/eo/sodg/org/eolang/error.sodg.graph.xml',
-        'target/eo/sodg/org/eolang/error.sodg.dot',
 ].each { path -> assert new File(basedir, path).exists() }
 
 [

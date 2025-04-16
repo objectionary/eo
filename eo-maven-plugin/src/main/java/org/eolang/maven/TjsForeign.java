@@ -256,11 +256,6 @@ final class TjsForeign implements Closeable {
         LINTED("linted"),
 
         /**
-         * Absolute path of the SODG file.
-         */
-        SODG("sodg"),
-
-        /**
          * Absolute path of the JAR file where the {@code .class} file for this EO program
          * has been found.
          */

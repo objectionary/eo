@@ -38,24 +38,16 @@
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
-              <goal>sodg</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
           <unrollExitError>true</unrollExitError>
-          <sodgIncludes>
-            <o>org.eolang.error</o>
-          </sodgIncludes>
           <foreign>${project.build.directory}/eo/foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <placed>${project.build.directory}/eo/placed.json</placed>
           <placedFormat>json</placedFormat>
           <trackTransformationSteps>true</trackTransformationSteps>
-          <generateSodgXmlFiles>true</generateSodgXmlFiles>
-          <generateGraphFiles>true</generateGraphFiles>
-          <generateXemblyFiles>true</generateXemblyFiles>
-          <generateDotFiles>true</generateDotFiles>
         </configuration>
       </plugin>
       <plugin>

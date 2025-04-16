@@ -621,22 +621,6 @@ final class FakeMaven {
     }
 
     /**
-     * Sodg full pipeline.
-     *
-     * @since 0.29.0
-     */
-    static final class Sodg implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjSodg.class
-            ).iterator();
-        }
-    }
-
-    /**
      * Single register phase.
      * @since 0.1.0
      */
