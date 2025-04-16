@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.parser.ObjectName;
 
 /**
  * Take .xmir files from target/eo/03-optimize directory and

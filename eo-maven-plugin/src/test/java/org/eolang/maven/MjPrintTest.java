@@ -89,7 +89,6 @@ final class MjPrintTest {
         throws Exception {
         new Saved(
             new EoSyntax(
-                "test",
                 new InputOf(xtory.map().get("origin").toString())
             ).parsed().toString(),
             temp.resolve("xmir/foo/x/main.xmir")

@@ -145,8 +145,9 @@ final class MjPhiTest {
             ),
             new FakeMaven(temp)
                 .withProgram(
-                    "No comments.",
-                    "[] > cart",
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
                     "  memory 0 > total",
                     "  [i] > add",
                     "    total.write > @",
@@ -163,9 +164,11 @@ final class MjPhiTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram(
-                    "No comments.",
-                    "[] > without-name",
-                    "  true"
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
+                    "  seq *-1 > @",
+                    "    true"
                 )
                 .execute(new FakeMaven.Phi()),
             "PhiMojo should not fail on errors"
@@ -177,16 +180,23 @@ final class MjPhiTest {
     void checksSweetPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        final String object = xtory.map().get("object").toString();
+        final Place place = new Place(object);
         MatcherAssert.assertThat(
             "must convert to exactly the expression we need with syntax sugar",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(xtory.map().get("input").toString())
+                    .withProgram(
+                        xtory.map().get("input").toString(),
+                        object,
+                        place.make("eo").toString()
+                    )
                     .with("conservative", xtory.map().get("conservative") != null)
                     .with("phiNoSugar", false)
                     .execute(new FakeMaven.Phi())
-                    .result()
-                    .get("target/phi/foo/x/main.phi")
+                    .targetPath()
+                    .resolve("phi")
+                    .resolve(place.make("phi"))
             ).asString(),
             Matchers.equalTo(xtory.map().get("sweet").toString())
         );
@@ -197,15 +207,22 @@ final class MjPhiTest {
     void checksSaltyPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        final String object = xtory.map().get("object").toString();
+        final Place place = new Place(object);
         MatcherAssert.assertThat(
             "must convert to exactly the expression we need without syntax sugar",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(xtory.map().get("input").toString())
+                    .withProgram(
+                        xtory.map().get("input").toString(),
+                        object,
+                        place.make("eo").toString()
+                    )
                     .with("phiNoSugar", true)
                     .execute(new FakeMaven.Phi())
-                    .result()
-                    .get("target/phi/foo/x/main.phi")
+                    .targetPath()
+                    .resolve("phi")
+                    .resolve(place.make("phi"))
             ).asString(),
             Matchers.equalTo(xtory.map().get("salty").toString())
         );

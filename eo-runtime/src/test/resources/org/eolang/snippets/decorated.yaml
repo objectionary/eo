@@ -3,7 +3,7 @@
 ---
 out:
   - ".*Hello, Jeff.*"
-file: foo.eo
+file: org/eolang/snippets/foo.eo
 args: [ "org.eolang.snippets.foo" ]
 eo: |
   +alias org.eolang.io.stdout

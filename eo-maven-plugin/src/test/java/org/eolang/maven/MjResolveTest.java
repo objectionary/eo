@@ -44,10 +44,11 @@ final class MjResolveTest {
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
+                "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:0.7.0",
                 "+version 0.25.0\n",
                 "# No comments.",
-                "[] > foo ?"
+                "[] > main ?"
             ).execute(new FakeMaven.Resolve());
         final Path path = temp
             .resolve("target")
@@ -81,7 +82,9 @@ final class MjResolveTest {
     @Test
     void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "[a b] > sum",
+            "+package foo.x\n",
+            "# No comments.",
+            "[a b] > main",
             "  plus. > @",
             "    a",
             "    b"
@@ -131,14 +134,13 @@ final class MjResolveTest {
     @Test
     void resolvesIfRuntimeDependencyComesFromTojos(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.withHelloWorld()
-            .withProgram(
-                "+rt jvm org.eolang:eo-runtime:0.22.1",
-                "+version 0.25.0\n",
-                "# No comments.",
-                "[] > main"
-            )
-            .execute(new FakeMaven.Resolve());
+        maven.withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.22.1",
+            "+version 0.25.0\n",
+            "# No comments.",
+            "[] > main"
+        ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             MjResolveTest.CLASS_MUST_EXIST,
             maven.targetPath(),
@@ -233,15 +235,17 @@ final class MjResolveTest {
     @Test
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             "+version 0.25.0\n",
             "# No comment.",
-            "[] > foo ?"
+            "[] > main ?"
         ).withProgram(
+            "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.0",
             "+version 0.25.0\n",
             "# No comment.",
-            "[] > foo ?"
+            "[] > main-1 ?"
         );
         final Exception excpt = Assertions.assertThrows(
             IllegalStateException.class,
@@ -260,17 +264,15 @@ final class MjResolveTest {
     void resolvesWithConflictingDependenciesNoFail(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
-                String.format(
-                    "%s\n\n%s",
-                    "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
-                    "[] > foo /int"
-                )
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
+                "# No comment.",
+                "[] > main ?"
             ).withProgram(
-                String.format(
-                    "%s\n\n%s",
-                    "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
-                    "[] > foo /int"
-                )
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
+                "# No comment.",
+                "[] > main-1 ?"
             );
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());

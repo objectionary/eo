@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+object: compiles-correctly-with-long-duplicate-names
 input: |
   # This unit test is supposed to check the functionality of the corresponding object.
   [] > compiles-correctly-with-long-duplicate-names

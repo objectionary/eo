@@ -57,7 +57,6 @@ final class MjProbeTest {
                 new XtYaml(
                     yaml,
                     eo -> new EoSyntax(
-                        "scenario",
                         new InputOf(String.format("%s\n", eo))
                     ).parsed()
                 )
@@ -113,7 +112,7 @@ final class MjProbeTest {
 
     private static String[] program() {
         return new String[]{
-            "+package org.eolang.custom",
+            "+package foo.x",
             "+also while\n",
             "# No comments.",
             "[] > main",

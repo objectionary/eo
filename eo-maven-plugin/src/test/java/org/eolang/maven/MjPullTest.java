@@ -56,7 +56,7 @@ final class MjPullTest {
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
-                "+package org.eolang.custom\n",
+                "+package foo.x\n",
                 "# No comments.",
                 "[] > main",
                 "  QQ.io.stdout > @",
@@ -217,8 +217,9 @@ final class MjPullTest {
         );
         new FakeMaven(temp)
             .withProgram(
+                "+package foo.x",
                 "# No comments.",
-                "[] > app",
+                "[] > main",
                 "  QQ.io.stdout > @"
             )
             .with("hash", new CommitHash.ChConstant(hash))
