@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 25.520352168
+  seconds: 42.221536564
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-17 10:10:06.879361725 Z
+  when: 2025-04-17 11:08:20.702768037 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -127166,13 +127166,6 @@
   repository: 531151981
   what: min-issue-was-found
   where: github
-- _id: 245050
-  _time: 2025-04-17 08:12:31.460236866 Z
-  _version: 0.9.10/0.39.2/
-  latest: 3
-  repository: 889819508
-  what: min-issue-was-found
-  where: github
 - _id: 245051
   _time: 2025-04-17 09:09:40.410854463 Z
   _version: 0.9.10/0.39.2/
@@ -127222,3 +127215,16 @@
   repository: 955159947
   what: min-issue-was-found
   where: github
+- _id: 245058
+  _time: 2025-04-17 11:07:55.896929757 Z
+  _version: 0.9.10/0.39.2/
+  latest: 3
+  repository: 889819508
+  what: min-issue-was-found
+  where: github
+- _id: 245059
+  _time: 2025-04-17 11:07:56.621257403 Z
+  _version: 0.9.10/0.39.2/
+  since: 2025-04-10 11:07:56.621534871 Z
+  what: quality-of-service
+  when: 2025-04-17 11:07:56.621387666 Z
