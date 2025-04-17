@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 46.265228422
+  seconds: 47.866976351
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-17 12:16:06.919438929 Z
+  when: 2025-04-17 13:20:49.331583353 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -126962,21 +126962,6 @@
   repository: 447446664
   what: min-issue-was-found
   where: github
-- _id: 245002
-  _job: 17775
-  _time: 2025-04-16 16:13:09.061615273 Z
-  _version: 0.9.10/0.39.2/0.3.5!0.3.6
-  cost_of_qod:
-  - 0.02820118726998407
-  - -0.37252123703659357
-  - -0.6283307346815294
-  qod_per_day:
-  - 20.262571430008
-  - 42.95057143129291
-  - 34.3440000020942
-  - 12.277428572168057
-  what: learn-eva
-  when: 2025-04-16 16:13:09.008179565 Z
 - _id: 245003
   _job: 17775
   _time: 2025-04-16 16:13:12.581475039 Z
@@ -127018,13 +127003,6 @@
   repository: 733919301
   what: min-issue-was-found
   where: github
-- _id: 245015
-  _time: 2025-04-16 19:07:30.703355023 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 558766137
-  what: min-issue-was-found
-  where: github
 - _id: 245017
   _time: 2025-04-16 20:10:50.169045654 Z
   _version: 0.9.10/0.39.2/
@@ -127054,13 +127032,6 @@
   repository: 403396472
   what: min-issue-was-found
   where: github
-- _id: 245024
-  _time: 2025-04-16 21:08:20.407147576 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 73056727
-  what: min-issue-was-found
-  where: github
 - _id: 245028
   _time: 2025-04-16 23:08:32.749869083 Z
   _version: 0.9.10/0.39.2/
@@ -127073,13 +127044,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 570457023
-  what: min-issue-was-found
-  where: github
-- _id: 245037
-  _time: 2025-04-17 02:21:44.474864475 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 490258619
   what: min-issue-was-found
   where: github
 - _id: 245038
@@ -127234,3 +127198,39 @@
   since: 2025-04-10 12:15:40.940372222 Z
   what: quantity-of-deliverables
   when: 2025-04-17 12:15:40.940328761 Z
+- _id: 245063
+  _job: 17840
+  _time: 2025-04-17 12:17:21.188899415 Z
+  _version: 0.9.10/0.39.2/0.3.5!0.3.7
+  cost_of_qod:
+  - 0.02820118726998407
+  - -0.37252123703659357
+  - -0.6283307346815294
+  qod_per_day:
+  - 20.262571430008
+  - 42.95057143129291
+  - 34.3440000020942
+  - 12.277428572168057
+  what: learn-eva
+  when: 2025-04-17 12:17:21.128554548 Z
+- _id: 245064
+  _time: 2025-04-17 13:20:20.361680298 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 558766137
+  what: min-issue-was-found
+  where: github
+- _id: 245065
+  _time: 2025-04-17 13:20:20.508861929 Z
+  _version: 0.9.10/0.39.2/
+  latest: 0
+  repository: 490258619
+  what: min-issue-was-found
+  where: github
+- _id: 245066
+  _time: 2025-04-17 13:20:21.757864946 Z
+  _version: 0.9.10/0.39.2/
+  latest: 1
+  repository: 73056727
+  what: min-issue-was-found
+  where: github
