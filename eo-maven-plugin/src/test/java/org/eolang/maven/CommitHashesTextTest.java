@@ -30,10 +30,11 @@ final class CommitHashesTextTest {
 
     @Test
     void isThreadSafe() {
+        final CommitHashesText text = new CommitHashesText();
         MatcherAssert.assertThat(
             "Can be used in different threads without NPE",
             new Together<>(
-                thread -> new CommitHashesText().asString() != null
+                thread -> text.asString() != null
             ),
             Matchers.not(Matchers.hasItems(false))
         );
