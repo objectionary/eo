@@ -183,16 +183,6 @@ final class TjForeign {
     }
 
     /**
-     * Set sodg.
-     * @param sodg Sodg.
-     * @return The tojo itself.
-     */
-    TjForeign withSodg(final Path sodg) {
-        this.delegate.set(TjsForeign.Attribute.SODG.getKey(), sodg.toString());
-        return this;
-    }
-
-    /**
      * Set the linted xmir.
      * @param xmir The linted xmir.
      * @return The tojo itself.
