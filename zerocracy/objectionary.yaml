@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 296.384897326
+  seconds: 32.97736446
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-18 17:12:53.285116748 Z
+  when: 2025-04-18 18:11:39.318074938 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -125799,13 +125799,6 @@
   total_stars: 1554
   what: dimensions-of-terrain
   when: 2025-04-15 16:09:07.921779003 Z
-- _id: 244970
-  _time: 2025-04-16 00:41:27.035602835 Z
-  _version: 0.9.10/0.39.2/
-  latest: 1
-  repository: 546194972
-  what: min-issue-was-found
-  where: github
 - _id: 244987
   _time: 2025-04-16 12:15:46.184340364 Z
   _version: 0.9.10/0.39.2/
@@ -128473,33 +128466,6 @@
   repository: 386420319
   what: min-issue-was-found
   where: github
-- _id: 246046
-  _job: 17940
-  _time: 2025-04-18 15:11:19.068891688 Z
-  _version: 0.10.0/0.39.2/0.4.0!0.5.0
-  award: 4
-  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/home#318,
-    the reward amount is 4.
-  greeting: "Thanks for your contribution! While your 14,864 hits-of-code are impressive,
-    our policy aims to encourage more focused submissions. You've earned +4 points:
-    +4 base, -8 for exceeding 200 HOC, -16 for surpassing 800 HOC, +24 to ensure a
-    minimum reward. Remember, [quality over quantity](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    is key. Keep the contributions coming, but consider breaking them into smaller,
-    manageable chunks. Your current balance stands at [+102](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \U0001F680\n\n<!-- Thanks for the contribution! You've earned +4 points for this:
-    +4 as a basis; -8 for too many hits-of-code (14864 >= 200); -16 for way too many
-    hits-of-code (14864 >= 800); +24 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running balance is [+102](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/home/issues/318/#issuecomment-2815738789
-  is_human: 1
-  issue: 318
-  repository: 13623548
-  what: code-contribution-was-rewarded
-  when: 2025-04-18 15:11:19.088137252 Z
-  where: github
-  who: 37025995
-  why: Contributed code in objectionary/home#318
 - _id: 246283
   _time: 2025-04-18 16:12:23.557428352 Z
   _version: 0.10.0/0.39.2/
@@ -129806,6 +129772,7 @@
   is_human: 1
   issue: 4097
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
   when: 2025-04-18 13:46:48.000000000 Z
@@ -130277,3 +130244,34 @@
   total_commits: 25832
   what: dimensions-of-terrain
   when: 2025-04-18 17:12:20.916973035 Z
+- _id:
+  - 246625
+  - 246046
+  _job:
+  - 17950
+  - 17940
+  _time:
+  - 2025-04-18 17:13:17.879516507 Z
+  - 2025-04-18 15:11:19.068891688 Z
+  _version:
+  - 0.10.0/0.39.2/0.5.0
+  - 0.10.0/0.39.2/0.4.0!0.5.0
+  award: 4
+  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/home#318,
+    the reward amount is 4.
+  href: https://github.com/objectionary/home/issues/318/#issuecomment-2815738789
+  is_human: 1
+  issue: 318
+  repository: 13623548
+  what: code-contribution-was-rewarded
+  when: 2025-04-18 15:11:19.088137252 Z
+  where: github
+  who: 37025995
+  why: Contributed code in objectionary/home#318
+- _id: 246626
+  _time: 2025-04-18 18:11:38.284201411 Z
+  _version: 0.10.0/0.39.2/
+  latest: 1
+  repository: 546194972
+  what: min-issue-was-found
+  where: github
