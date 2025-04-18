@@ -36,7 +36,7 @@ final class MjAssembleIT {
             f -> {
                 f.clean();
                 f.files()
-                    .file("src/main/eo/one/main.eo")
+                    .file("src/main/eo/foo/x/main.eo")
                     .write(MjAssembleIT.helloWorld().getBytes(StandardCharsets.UTF_8));
                 MjAssembleIT.appendItself(f);
                 f.exec("package");
@@ -66,11 +66,12 @@ final class MjAssembleIT {
             "\n",
             "+alias stdout org.eolang.io.stdout",
             "+home https://github.com/objectionary/eo",
-            "+package test",
-            "+version 0.0.0",
-            "",
-            "[x] < wrong>",
-            "  (stdout \"Hello!\" x).print"
+            "+package one",
+            "+version 0.0.0\n",
+            "# The seq *-1 leads to error.",
+            "[x] > main",
+            "  seq *-1 > @",
+            "    true"
         );
         new Farea(temp).together(
             f -> {

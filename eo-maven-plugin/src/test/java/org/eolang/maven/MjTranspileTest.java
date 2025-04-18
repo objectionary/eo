@@ -54,7 +54,7 @@ final class MjTranspileTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "target/generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
+        this.compiled = "target/generated/EOfoo/EOx/EOmainTest.java";
     }
 
     @ParameterizedTest
@@ -66,7 +66,6 @@ final class MjTranspileTest {
                 new XtYaml(
                     yaml,
                     eo -> new EoSyntax(
-                        "scenario",
                         new InputOf(String.format("%s\n", eo))
                     ).parsed(),
                     new TrDefault<>()
@@ -80,11 +79,10 @@ final class MjTranspileTest {
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
-                "+package com.example",
-                "+rt jvm org.eolang:eo-runtime:0.0.0",
-                "",
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.0.0\n",
                 "# Atom.",
-                "[x y z] > foo ?"
+                "[x y z] > main ?"
             );
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Transpile())
@@ -107,16 +105,16 @@ final class MjTranspileTest {
             "TranspileMojo must generate package-info.java files for all of the packages",
             new FakeMaven(temp)
                 .withProgram(
-                    "+package com.example.custom\n",
+                    "+custom-meta",
+                    "+package foo.x\n",
                     "# Simple.",
-                    "[] > simple"
+                    "[] > main"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
             Matchers.allOf(
-                Matchers.hasKey("target/generated/EOcom/package-info.java"),
-                Matchers.hasKey("target/generated/EOcom/EOexample/package-info.java"),
-                Matchers.hasKey("target/generated/EOcom/EOexample/EOcustom/package-info.java")
+                Matchers.hasKey("target/generated/EOfoo/package-info.java"),
+                Matchers.hasKey("target/generated/EOfoo/EOx/package-info.java")
             )
         );
     }
@@ -128,17 +126,18 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(
-                        "+package com.example\n",
+                        "+package foo.x\n",
                         "# Simple.",
-                        "[] > simple"
+                        "[] > main",
+                        "  true > @"
                     )
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get("target/generated/EOcom/EOexample/package-info.java")
+                    .get("target/generated/EOfoo/EOx/package-info.java")
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("// @org.eolang.XmirPackage(\"com.example\")"),
-                Matchers.containsString("package EOcom.EOexample;")
+                Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
+                Matchers.containsString("package EOfoo.EOx;")
             )
         );
     }
@@ -174,7 +173,7 @@ final class MjTranspileTest {
             .result();
         final Path java = res.get(this.compiled);
         final Path xmir = maven.targetPath().resolve(
-            String.format("%s/org/eolang/examples/mess.xmir", MjTranspile.DIR)
+            String.format("%s/foo/x/main.xmir", MjTranspile.DIR)
         );
         MatcherAssert.assertThat(
             "The Java file should exist after transpile",
@@ -242,7 +241,11 @@ final class MjTranspileTest {
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
         final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo");
         final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(src)
+            .withProgram(
+                new TextOf(src).asString(),
+                "org.eolang.tuple",
+                "org/eolang/tuple.eo"
+            )
             .execute(new FakeMaven.Transpile())
             .result();
         final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
@@ -267,7 +270,12 @@ final class MjTranspileTest {
         final int total = 30;
         final FakeMaven maven = new FakeMaven(temp);
         for (int prog = 1; prog < total; ++prog) {
-            maven.withProgram(this.program.replace("mess", String.format("mess-%d", prog)));
+            final String main = String.format("main%s", FakeMaven.suffix(prog));
+            maven.withProgram(
+                this.program.replace("main", main),
+                String.format("foo.x.%s", main),
+                String.format("foo/x/%s.eo", main)
+            );
         }
         MatcherAssert.assertThat(
             "All programs must be transpiled",
@@ -275,9 +283,8 @@ final class MjTranspileTest {
                 maven
                     .execute(new FakeMaven.Transpile())
                     .generatedPath()
-                    .resolve("EOorg")
-                    .resolve("EOeolang")
-                    .resolve("EOexamples")
+                    .resolve("EOfoo")
+                    .resolve("EOx")
             ).count(),
             Matchers.equalTo((long) total)
         );
@@ -300,7 +307,9 @@ final class MjTranspileTest {
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
             .with("targetDir", target.resolve("eo-test-sources").toFile())
-            .withProgram(this.program)
+            .withProgram(
+                this.program.replace("main", "main-1")
+            )
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
             "TranspileMojo should have processed exactly 2 files",

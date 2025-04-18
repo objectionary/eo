@@ -8,7 +8,9 @@ import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.Text;
 import org.cactoos.text.Sticky;
+import org.cactoos.text.Synced;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
@@ -31,7 +33,15 @@ final class CommitHashesText extends TextEnvelope {
      * Constructor.
      */
     CommitHashesText() {
-        super(new Sticky(CommitHashesText::asText));
+        this(CommitHashesText::asText);
+    }
+
+    /**
+     * Constructor.
+     * @param source Text source.
+     */
+    private CommitHashesText(final Text source) {
+        super(new Synced(new Sticky(source)));
     }
 
     /**

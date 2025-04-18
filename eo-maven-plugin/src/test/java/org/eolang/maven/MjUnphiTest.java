@@ -106,7 +106,7 @@ final class MjUnphiTest {
     @Test
     void createsFile(@Mktmp final Path temp) throws Exception {
         new Saved(
-            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            "{⟦std ↦ [[@ -> Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x]]⟧}",
             temp.resolve("target/phi/std.phi")
         ).value();
         MatcherAssert.assertThat(
@@ -246,8 +246,9 @@ final class MjUnphiTest {
         throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
+                "+package foo.x\n",
                 "# No comments.",
-                "[args] > app",
+                "[args] > main",
                 "  QQ.io.stdout > @",
                 "    \"Hello, world!\"",
                 "  args.@ > phi!",
@@ -263,7 +264,6 @@ final class MjUnphiTest {
         MatcherAssert.assertThat(
             "Result EO code should be parsable",
             new EoSyntax(
-                "test",
                 new InputOf(
                     new TextOf(
                         temp.resolve(
@@ -329,7 +329,7 @@ final class MjUnphiTest {
             ).get()
         ).value().toFile();
         new Saved(
-            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
+            "{⟦std ↦ [[@ -> Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x]]⟧}",
             temp.resolve("target/eo/phi/std.phi")
         ).value();
         final long old = cached.lastModified();

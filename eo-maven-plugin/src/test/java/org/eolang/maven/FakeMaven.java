@@ -340,19 +340,36 @@ final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final String content, final String object)
-        throws IOException {
-        final Path source = this.workspace.resolve(
+    FakeMaven withProgram(
+        final String content, final String object
+    ) throws IOException {
+        return this.withProgram(
+            content,
+            object,
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
-        new Saved(content, source).value();
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @param object Object name to save in tojos.
+     * @param source Source file name
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(
+        final String content, final String object, final String source
+    ) throws IOException {
+        final Path src = this.workspace.resolve(source);
+        new Saved(content, src).value();
         final String scope = this.scope();
         final String version = "0.25.0";
         this.foreignTojos()
             .add(object)
             .withScope(scope)
             .withVersion(version)
-            .withSource(source);
+            .withSource(src);
         this.current.incrementAndGet();
         return this;
     }
@@ -441,7 +458,7 @@ final class FakeMaven {
         if (index == 0) {
             suffix = "";
         } else {
-            suffix = String.format("_%d", index);
+            suffix = String.format("-%d", index);
         }
         return suffix;
     }

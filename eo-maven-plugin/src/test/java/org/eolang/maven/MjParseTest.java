@@ -121,7 +121,13 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             new FakeMaven(temp)
-                .withProgram("something < is wrong here")
+                .withProgram(
+                    "+package foo.x\n",
+                    "# Error.",
+                    "[] > main",
+                    "  seq *-1 > @",
+                    "    true"
+                )
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(
@@ -161,7 +167,9 @@ final class MjParseTest {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
         for (int program = 0; program < total; ++program) {
-            maven.withHelloWorld();
+            maven.withProgram(
+                String.format("+package foo.x\n\n# Program\n[] > main%s", FakeMaven.suffix(program))
+            );
         }
         final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {

@@ -45,13 +45,12 @@ import org.xembly.Xembler;
  *
  * <p>1. Parse EO code from a string:</p>
  * <pre>
- * XML xmir = new EoSyntax("my-program", "[args] > app\n  42 > @").parsed();
+ * XML xmir = new EoSyntax("[args] > app\n  42 > @").parsed();
  * </pre>
  *
  * <p>2. Parse EO code from a file:</p>
  * <pre>
  * XML xmir = new EoSyntax(
- *     "fibonacci",
  *     new InputOf(new File("src/main/eo/fibonacci.eo"))
  * ).parsed();
  * </pre>
@@ -59,7 +58,6 @@ import org.xembly.Xembler;
  * <p>3. Parse with custom transformations:</p>
  * <pre>
  * XML xmir = new EoSyntax(
- *     "custom-transform",
  *     "[x] > f\n  x > @",
  *     new TrClasspath<>(
  *         "/org/eolang/parser/pack/validation.xsl",
@@ -111,15 +109,6 @@ public final class EoSyntax implements Syntax {
     )::pass;
 
     /**
-     * The name of the EO program being parsed, usually the name of
-     * <tt>.eo</tt> file itself. This name will be present in the
-     * generated XML. This is done for the sake of traceability: it will
-     * always be possible to tell which XMIR file was generated from
-     * which EO program.
-     */
-    private final String name;
-
-    /**
      * Text to parse.
      */
     private final Input input;
@@ -131,70 +120,44 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
-     *
-     * @param ipt The EO program to parse
-     */
-    public EoSyntax(final Input ipt) {
-        this("unknown", ipt);
-    }
-
-    /**
-     * Ctor.
      * @param ipt The EO program to parse
      */
     public EoSyntax(final String ipt) {
-        this("unknown", ipt);
+        this(new InputOf(ipt));
     }
 
     /**
      * Ctor.
-     *
-     * @param nme The name of the EO program being parsed
-     * @param ipt The EO program to parse
-     */
-    public EoSyntax(final String nme, final String ipt) {
-        this(nme, new InputOf(ipt));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing
      */
-    public EoSyntax(final String nme, final String ipt, final Train<Shift> transform) {
-        this(nme, new InputOf(ipt), transform);
+    public EoSyntax(final String ipt, final Train<Shift> transform) {
+        this(new InputOf(ipt), transform);
     }
 
     /**
      * Ctor.
-     *
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      */
-    public EoSyntax(final String nme, final Input ipt) {
-        this(nme, ipt, EoSyntax.CANONICAL);
+    public EoSyntax(final Input ipt) {
+        this(ipt, EoSyntax.CANONICAL);
     }
 
     /**
      * Ctor for testing.
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing train
      */
-    EoSyntax(final String nme, final Input ipt, final Train<Shift> transform) {
-        this(nme, ipt, new Xsline(transform)::pass);
+    EoSyntax(final Input ipt, final Train<Shift> transform) {
+        this(ipt, new Xsline(transform)::pass);
     }
 
     /**
      * Ctor.
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
      */
-    EoSyntax(final String nme, final Input ipt, final Function<XML, XML> transform) {
-        this.name = nme;
+    EoSyntax(final Input ipt, final Function<XML, XML> transform) {
         this.input = ipt;
         this.transform = transform;
     }
@@ -235,13 +198,13 @@ public final class EoSyntax implements Syntax {
         if (errors == 0) {
             Logger.debug(
                 this,
-                "The %s program of %d EO lines compiled, no errors",
-                this.name, lines.size()
+                "The program of %d EO lines compiled, no errors",
+                lines.size()
             );
         } else {
             Logger.debug(
                 this, "The %s program of %d EO lines compiled with %d error(s)",
-                this.name, lines.size(), errors
+                lines.size(), errors
             );
         }
         return dom;

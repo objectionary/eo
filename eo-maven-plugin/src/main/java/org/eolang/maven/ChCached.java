@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -25,7 +26,7 @@ final class ChCached implements CommitHash {
      * @param delegate Delegate
      */
     ChCached(final CommitHash delegate) {
-        this.delegate = new Unchecked<>(new Sticky<>(delegate::value));
+        this.delegate = new Unchecked<>(new Synced<>(new Sticky<>(delegate::value)));
     }
 
     @Override

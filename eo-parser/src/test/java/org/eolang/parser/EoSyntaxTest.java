@@ -48,7 +48,6 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        "test-1",
                         new ResourceOf("org/eolang/parser/fibonacci.eo")
                     ).parsed().toString().getBytes(),
                     StandardCharsets.UTF_8
@@ -92,7 +91,6 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        "test-44",
                         new InputOf(src)
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
@@ -113,7 +111,6 @@ final class EoSyntaxTest {
         final XML xml = new XMLDocument(
             new String(
                 new EoSyntax(
-                    "test-22",
                     new InputOf(src)
                 ).parsed().toString().getBytes(),
                 StandardCharsets.UTF_8
@@ -138,7 +135,6 @@ final class EoSyntaxTest {
     })
     void parsesSuccessfully(final String code) {
         final EoSyntax syntax = new EoSyntax(
-            "test-2",
             new InputOf(code)
         );
         Assertions.assertDoesNotThrow(
@@ -152,7 +148,6 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "EO object with name must be parsed successfully",
             new EoSyntax(
-                "test-xml-3",
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -176,7 +171,6 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "EO object with nested objects must be parsed successfully",
             new EoSyntax(
-                "test-xml-4",
                 new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -204,7 +198,6 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "We expect EO object as method call is parsed successfully",
             new EoSyntax(
-                "test-xml-1",
                 new InputOf("add. > foo\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
@@ -223,7 +216,7 @@ final class EoSyntaxTest {
     void storesAsBytes(final String code) throws IOException {
         MatcherAssert.assertThat(
             "We data is parsed successfully as bytes",
-            new EoSyntax("test-3", new InputOf(code)).parsed(),
+            new EoSyntax(new InputOf(code)).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
                 "/object/o[text()]"
@@ -237,7 +230,7 @@ final class EoSyntaxTest {
         final Xtory story = new XtSticky(
             new XtYaml(
                 yaml,
-                eo -> new EoSyntax("typo", new InputOf(String.format("%s\n", eo))).parsed()
+                eo -> new EoSyntax(new InputOf(String.format("%s\n", eo))).parsed()
             )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
@@ -274,7 +267,7 @@ final class EoSyntaxTest {
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax(
-                            "scenario", String.format("%s\n", eo), new TrDefault<>()
+                            String.format("%s\n", eo), new TrDefault<>()
                         ).parsed(),
                         new TrFull()
                     )
@@ -293,7 +286,7 @@ final class EoSyntaxTest {
                 new XtSticky(
                     new XtYaml(
                         yaml,
-                        eo -> new EoSyntax("scenario", String.format("%s\n", eo)).parsed()
+                        eo -> new EoSyntax(String.format("%s\n", eo)).parsed()
                     )
                 )
             ),
@@ -308,7 +301,6 @@ final class EoSyntaxTest {
             new XtYaml(
                 yaml,
                 eo -> new EoSyntax(
-                    "xsd-mistake",
                     new InputOf(String.format("%s\n", eo))
                 ).parsed()
             )

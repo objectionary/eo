@@ -86,7 +86,7 @@ final class XmirTest {
      * @return XMIR
      */
     private Xmir asXmir(final String program) throws IOException {
-        final XML xml = new EoSyntax("test", new InputOf(program)).parsed();
+        final XML xml = new EoSyntax(new InputOf(program)).parsed();
         MatcherAssert.assertThat(
             "Original EO should be parsed without errors",
             xml,

@@ -22,6 +22,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
 
 /**
@@ -132,17 +133,26 @@ public final class MjParse extends MjSafe {
     /**
      * Source parsed to {@link Node}.
      * @param source Relative source path
-     * @param name Name of the EO object
+     * @param identifier Name of the EO object as tojo identifier
      * @return Parsed EO object as {@link Node}
      * @throws IOException If fails to parse
      */
-    private Node parsed(final Path source, final String name) throws IOException {
-        final XML xmir = new EoSyntax(name, new InputOf(source)).parsed();
+    private Node parsed(final Path source, final String identifier) throws IOException {
+        final XML xmir = new EoSyntax(new InputOf(source)).parsed();
         Logger.debug(
             MjParse.class,
             "Parsed program '%s' from %[file]s:\n %s",
-            name, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
+            identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
+        final String name = new ObjectName(xmir).get();
+        if (!name.equals(identifier)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Tojo identifier '%s' does not match to result object name '%s'",
+                    identifier, name
+                )
+            );
+        }
         return xmir.inner();
     }
 

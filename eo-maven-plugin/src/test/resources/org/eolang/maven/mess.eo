@@ -5,12 +5,12 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +tests
-+package org.eolang.examples
++package foo.x
 +version 0.0.0
 +unlint rt-without-atoms
 
 # No comments.
-[n x] > mess
+[n x] > main
   # No comments.
   [a] > test ?
   n.hello > @
