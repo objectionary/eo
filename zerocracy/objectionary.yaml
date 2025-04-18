@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 287.767004846
+  seconds: 142.245341894
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-18 13:22:35.788510802 Z
+  when: 2025-04-18 14:10:34.596777784 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -79102,7 +79102,7 @@
   issue: 4011
   repository: 73056727
   what: issue-was-opened
-  when: 2025-03-16 12:00:49.000000000 Z
+  when: &699 2025-03-16 12:00:49.000000000 Z
   where: github
   who: 108345628
 - _id: 56295
@@ -85565,7 +85565,7 @@
   issue: 79
   repository: 501259435
   what: issue-was-opened
-  when: 2025-03-16 12:44:42.000000000 Z
+  when: &700 2025-03-16 12:44:42.000000000 Z
   where: github
   who: 37025995
 - _id: 57338
@@ -125939,13 +125939,6 @@
   when: *689
   where: github
   who: 526301
-- _id: 244700
-  _time: 2025-04-15 14:09:59.327028146 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48607027951
-  repository: 490258619
-  what: events-were-scanned
-  where: github
 - _id: 244701
   _time: 2025-04-15 14:10:02.271630627 Z
   _version: 0.9.10/0.39.2/
@@ -126102,48 +126095,6 @@
   when: 2025-04-15 10:38:47.000000000 Z
   where: github
   who: 51804353
-- _id: 244717
-  _time: 2025-04-15 14:10:34.827551226 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48601926066
-  repository: 13623548
-  what: events-were-scanned
-  where: github
-- _id: 244720
-  _time: 2025-04-15 14:10:36.625456139 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48607121280
-  repository: 731438612
-  what: events-were-scanned
-  where: github
-- _id: 244729
-  _time: 2025-04-15 14:10:45.991999793 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48607165443
-  repository: 492899189
-  what: events-were-scanned
-  where: github
-- _id: 244732
-  _time: 2025-04-15 14:10:48.774752200 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48599568353
-  repository: 840332960
-  what: events-were-scanned
-  where: github
-- _id: 244733
-  _time: 2025-04-15 14:10:49.661638663 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48607061385
-  repository: 798766850
-  what: events-were-scanned
-  where: github
-- _id: 244744
-  _time: 2025-04-15 14:10:59.485762153 Z
-  _version: 0.9.10/0.39.2/
-  latest: 48607000771
-  repository: 570457023
-  what: events-were-scanned
-  where: github
 - _id: 244930
   _job: 17688
   _time: 2025-04-15 14:14:10.684043346 Z
@@ -126153,6 +126104,7 @@
   details: The pull request objectionary/lints#415 with 30 HoC created by @Marat-Tim
     was reviewed by @h1alexbel after 4w1d and 15 comments.
   hoc: 30
+  is_human: 1
   issue: 415
   repository: 889819508
   review_comments: 10
@@ -126194,6 +126146,7 @@
     @renovate[bot] was merged by @volodya-lombrozo after 2w4d of being in review and
     0 comments.
   hoc: 6
+  is_human: 0
   issue: 7
   merger: 51804353
   repository: 955159947
@@ -126212,6 +126165,7 @@
     @volodya-lombrozo was merged by @volodya-lombrozo after 3m15s of being in review
     and 0 comments.
   hoc: 7
+  is_human: 1
   issue: 16
   merger: 51804353
   repository: 955159947
@@ -126239,6 +126193,7 @@
   details: It's time to punish @volodya-lombrozo for pushing to the default branch
     'master' in objectionary/sodg-maven-plugin, the penalty amount is -16.
   href: https://github.com/objectionary/sodg-maven-plugin/commit/8925c822fc353961954176a10b3ab126fd44fffc/#commitcomment-155411200
+  is_human: 1
   repository: 955159947
   what: push-to-master-was-punished
   when: 2025-04-15 14:14:34.805147221 Z
@@ -126314,13 +126269,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 403396472
-  what: min-issue-was-found
-  where: github
-- _id: 245038
-  _time: 2025-04-17 02:21:44.612412224 Z
-  _version: 0.9.10/0.39.2/
-  latest: 0
-  repository: 565789755
   what: min-issue-was-found
   where: github
 - _id: 245041
@@ -126503,13 +126451,6 @@
   _version: 0.9.10/0.39.2/
   latest: 0
   repository: 568705267
-  what: min-issue-was-found
-  where: github
-- _id: 245103
-  _time: 2025-04-18 03:26:19.400717986 Z
-  _version: 0.9.10/0.39.2/
-  latest: 2
-  repository: 731438612
   what: min-issue-was-found
   where: github
 - _id: 245105
@@ -126695,6 +126636,7 @@
   details: The issue objectionary/eoc#497 has been opened by @SenjeyB.
   event_id: 48810454659
   event_type: IssuesEvent
+  is_human: 1
   issue: 497
   repository: 489321585
   what: issue-was-opened
@@ -126707,6 +126649,7 @@
   details: The issue objectionary/eoc#458 has been closed by @SenjeyB.
   event_id: 48810364762
   event_type: IssuesEvent
+  is_human: 1
   issue: 458
   repository: 489321585
   what: issue-was-closed
@@ -126729,6 +126672,7 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 251
+  is_human: 1
   issue: 496
   repository: 489321585
   succeeded_builds: 15
@@ -126743,6 +126687,7 @@
   details: The pull request objectionary/eoc#496 has been opened by @Dirakon.
   event_id: 48721946812
   event_type: PullRequestEvent
+  is_human: 1
   issue: 496
   repository: 489321585
   what: pull-was-opened
@@ -126756,6 +126701,7 @@
   details: The pull request objectionary/xax#131 has been opened by @renovate[bot].
   event_id: 48791830505
   event_type: PullRequestEvent
+  is_human: 0
   issue: 131
   repository: 574534248
   what: pull-was-opened
@@ -126778,12 +126724,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 30
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-17 13:01:23.000000000 Z
+  when: &701 2025-04-17 13:01:23.000000000 Z
   where: github
   who: 8086956
 - _id: 245357
@@ -126793,6 +126740,7 @@
   details: The pull request objectionary/sodg-maven-plugin#30 has been opened by @renovate[bot].
   event_id: 48791081623
   event_type: PullRequestEvent
+  is_human: 0
   issue: 30
   repository: 955159947
   what: pull-was-opened
@@ -126815,12 +126763,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 29
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-16 23:38:27.000000000 Z
+  when: &702 2025-04-16 23:38:27.000000000 Z
   where: github
   who: 29139614
 - _id: 245359
@@ -126830,6 +126779,7 @@
   details: The pull request objectionary/sodg-maven-plugin#29 has been opened by @renovate[bot].
   event_id: 48763292593
   event_type: PullRequestEvent
+  is_human: 0
   issue: 29
   repository: 955159947
   what: pull-was-opened
@@ -126843,6 +126793,7 @@
   details: The pull request objectionary/sodg-maven-plugin#28 has been opened by @renovate[bot].
   event_id: 48763290562
   event_type: PullRequestEvent
+  is_human: 0
   issue: 28
   repository: 955159947
   what: pull-was-opened
@@ -126855,6 +126806,7 @@
   details: The issue objectionary/sodg-maven-plugin#10 has been closed by @rultor.
   event_id: 48714390135
   event_type: IssuesEvent
+  is_human: 0
   issue: 10
   repository: 955159947
   what: issue-was-closed
@@ -126877,12 +126829,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 97
+  is_human: 0
   issue: 24
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 17:06:57.000000000 Z
+  when: &703 2025-04-15 17:06:57.000000000 Z
   where: github
   who: 8086956
 - _id: 245363
@@ -126896,6 +126849,7 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 97
+  is_human: 1
   issue: 24
   repository: 955159947
   review_comments: 0
@@ -126919,12 +126873,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 21
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 14:48:17.000000000 Z
+  when: &704 2025-04-15 14:48:17.000000000 Z
   where: github
   who: 8086956
 - _id: 245365
@@ -126943,6 +126898,7 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 22
   repository: 955159947
   succeeded_builds: 24
@@ -126957,6 +126913,7 @@
   details: The pull request objectionary/sodg-maven-plugin#25 has been opened by @renovate[bot].
   event_id: 48708107057
   event_type: PullRequestEvent
+  is_human: 0
   issue: 25
   repository: 955159947
   what: pull-was-opened
@@ -126979,12 +126936,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 23
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 14:37:59.000000000 Z
+  when: &705 2025-04-15 14:37:59.000000000 Z
   where: github
   who: 8086956
 - _id: 245368
@@ -126994,6 +126952,7 @@
   details: The pull request objectionary/sodg-maven-plugin#24 has been opened by @volodya-lombrozo.
   event_id: 48707519519
   event_type: PullRequestEvent
+  is_human: 1
   issue: 24
   repository: 955159947
   what: pull-was-opened
@@ -127007,6 +126966,7 @@
   details: The pull request objectionary/sodg-maven-plugin#23 has been opened by @renovate[bot].
   event_id: 48701559823
   event_type: PullRequestEvent
+  is_human: 0
   issue: 23
   repository: 955159947
   what: pull-was-opened
@@ -127020,6 +126980,7 @@
   details: The pull request objectionary/sodg-maven-plugin#22 has been opened by @renovate[bot].
   event_id: 48701557500
   event_type: PullRequestEvent
+  is_human: 0
   issue: 22
   repository: 955159947
   what: pull-was-opened
@@ -127042,12 +127003,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 17
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 12:18:06.000000000 Z
+  when: &706 2025-04-15 12:18:06.000000000 Z
   where: github
   who: 8086956
 - _id: 245372
@@ -127066,12 +127028,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 18
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 12:11:39.000000000 Z
+  when: &707 2025-04-15 12:11:39.000000000 Z
   where: github
   who: 8086956
 - _id: 245373
@@ -127090,12 +127053,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 0
   issue: 20
   repository: 955159947
   review_comments: 0
   succeeded_builds: 12
   what: pull-was-merged
-  when: 2025-04-15 12:04:34.000000000 Z
+  when: &708 2025-04-15 12:04:34.000000000 Z
   where: github
   who: 8086956
 - _id: 245374
@@ -127108,6 +127072,7 @@
     any pull request.'
   event_id: 48700417482
   event_type: PushEvent
+  is_human: 1
   push_id: 23764453767
   ref: refs/heads/master
   repository: 955159947
@@ -127123,6 +127088,7 @@
   details: The pull request objectionary/sodg-maven-plugin#21 has been opened by @renovate[bot].
   event_id: 48699761736
   event_type: PullRequestEvent
+  is_human: 0
   issue: 21
   repository: 955159947
   what: pull-was-opened
@@ -127136,6 +127102,7 @@
   details: The pull request objectionary/sodg-maven-plugin#20 has been opened by @renovate[bot].
   event_id: 48699759605
   event_type: PullRequestEvent
+  is_human: 0
   issue: 20
   repository: 955159947
   what: pull-was-opened
@@ -127155,6 +127122,7 @@
   event_id: 48699744303
   event_type: ReleaseEvent
   hoc: 5453
+  is_human: 0
   last_commit: dc39d83f9b9e3977fed8112866fd448afdd77a48
   release: 212467409
   repository: 955159947
@@ -127170,6 +127138,7 @@
     @rultor.
   event_id: 48699741624
   event_type: CreateEvent
+  is_human: 0
   repository: 955159947
   tag: 0.0.1
   what: tag-was-created
@@ -127186,6 +127155,7 @@
     any pull request.'
   event_id: 48699334352
   event_type: PushEvent
+  is_human: 1
   push_id: 23763922244
   ref: refs/heads/master
   repository: 955159947
@@ -127199,6 +127169,7 @@
   _version: 0.10.0/0.39.2/
   details: The '#enhancement' label was attached by @volodya-lombrozo to the issue
     objectionary/sodg-maven-plugin#4.
+  is_human: 1
   issue: 4
   label: enhancement
   repository: 955159947
@@ -127210,6 +127181,7 @@
   _time: 2025-04-18 12:19:00.690168628 Z
   _version: 0.10.0/0.39.2/
   details: The '#bug' label was attached by @volodya-lombrozo to the issue objectionary/sodg-maven-plugin#6.
+  is_human: 1
   issue: 6
   label: bug
   repository: 955159947
@@ -127222,6 +127194,7 @@
   _version: 0.10.0/0.39.2/
   details: The '#enhancement' label was attached by @volodya-lombrozo to the issue
     objectionary/sodg-maven-plugin#8.
+  is_human: 1
   issue: 8
   label: enhancement
   repository: 955159947
@@ -127236,6 +127209,7 @@
   details: 'In the repository #955159947, the user #51804353 attached the ''#enhancement''
     label to the issue #4 reported by the user #24456188; this means that a feature
     request was-accepted as valid, by the project team.'
+  is_human: 1
   issue: 4
   reporter: 24456188
   repository: 955159947
@@ -127250,6 +127224,7 @@
   details: 'In the repository #955159947, the user #51804353 attached the ''#enhancement''
     label to the issue #8 reported by the user #24456188; this means that a feature
     request was-accepted as valid, by the project team.'
+  is_human: 1
   issue: 8
   reporter: 24456188
   repository: 955159947
@@ -127265,6 +127240,7 @@
   details: 'In the repository #955159947, the user #51804353 submitted the issue #10
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  is_human: 1
   issue: 10
   repository: 955159947
   what: dud-was-closed
@@ -127278,6 +127254,7 @@
   details: "@volodya-lombrozo attached the '#bug' label to objectionary/sodg-maven-plugin#6
     reported by @0pdd; this means that a bug was-accepted as valid, by the project
     team."
+  is_human: 1
   issue: 6
   reporter: 24456188
   repository: 955159947
@@ -127294,6 +127271,7 @@
   details: The pull request objectionary/sodg-maven-plugin#24 with 97 HoC created
     by @volodya-lombrozo was reviewed by @yegor256 after 41m35s and 4 comments.
   hoc: 97
+  is_human: 1
   issue: 24
   repository: 955159947
   review_comments: 0
@@ -127310,6 +127288,7 @@
     @renovate[bot].
   event_id: 48797357618
   event_type: PullRequestEvent
+  is_human: 0
   issue: 1075
   repository: 671896902
   what: pull-was-opened
@@ -127324,6 +127303,7 @@
     @renovate[bot].
   event_id: 48774307534
   event_type: PullRequestEvent
+  is_human: 0
   issue: 1074
   repository: 671896902
   what: pull-was-opened
@@ -127338,6 +127318,7 @@
     @renovate[bot].
   event_id: 48771189014
   event_type: PullRequestEvent
+  is_human: 0
   issue: 1073
   repository: 671896902
   what: pull-was-opened
@@ -127352,222 +127333,13 @@
     @renovate[bot].
   event_id: 48771187414
   event_type: PullRequestEvent
+  is_human: 0
   issue: 1072
   repository: 671896902
   what: pull-was-opened
   when: 2025-04-16 23:44:56.000000000 Z
   where: github
   who: 29139614
-- _id: 245582
-  _time: 2025-04-18 13:18:02.038685256 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48797430870
-  repository: 671896902
-  what: events-were-scanned
-  where: github
-- _id: 245583
-  _time: 2025-04-18 13:18:02.444669068 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607127754
-  repository: 565789755
-  what: events-were-scanned
-  where: github
-- _id: 245584
-  _time: 2025-04-18 13:18:02.963348673 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48801032290
-  repository: 721146770
-  what: events-were-scanned
-  where: github
-- _id: 245585
-  _time: 2025-04-18 13:18:03.322308354 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607154655
-  repository: 624420387
-  what: events-were-scanned
-  where: github
-- _id: 245586
-  _time: 2025-04-18 13:18:03.728356876 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607072924
-  repository: 731516758
-  what: events-were-scanned
-  where: github
-- _id: 245587
-  _time: 2025-04-18 13:18:04.606430720 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48675831791
-  repository: 396732517
-  what: events-were-scanned
-  where: github
-- _id: 245588
-  _time: 2025-04-18 13:18:05.464869854 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48793327844
-  repository: 955159947
-  what: events-were-scanned
-  where: github
-- _id: 245589
-  _time: 2025-04-18 13:18:06.021668510 Z
-  _version: 0.10.0/0.39.2/
-  latest: 45572867640
-  repository: 490221501
-  what: events-were-scanned
-  where: github
-- _id: 245590
-  _time: 2025-04-18 13:18:06.509993545 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607143869
-  repository: 546194972
-  what: events-were-scanned
-  where: github
-- _id: 245591
-  _time: 2025-04-18 13:18:06.900004138 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607066894
-  repository: 551486781
-  what: events-were-scanned
-  where: github
-- _id: 245592
-  _time: 2025-04-18 13:18:07.312532533 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48612765790
-  repository: 386420319
-  what: events-were-scanned
-  where: github
-- _id: 245593
-  _time: 2025-04-18 13:18:07.846137154 Z
-  _version: 0.10.0/0.39.2/
-  latest: 45742056962
-  repository: 501942888
-  what: events-were-scanned
-  where: github
-- _id: 245594
-  _time: 2025-04-18 13:18:08.324602653 Z
-  _version: 0.10.0/0.39.2/
-  latest: 43208171256
-  repository: 531151981
-  what: events-were-scanned
-  where: github
-- _id: 245595
-  _time: 2025-04-18 13:18:08.851676035 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607095831
-  repository: 499536612
-  what: events-were-scanned
-  where: github
-- _id: 245596
-  _time: 2025-04-18 13:18:09.256385786 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607221186
-  repository: 403396472
-  what: events-were-scanned
-  where: github
-- _id: 245597
-  _time: 2025-04-18 13:18:09.622286932 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48636621583
-  repository: 519299365
-  what: events-were-scanned
-  where: github
-- _id: 245598
-  _time: 2025-04-18 13:18:09.976698763 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48764663336
-  repository: 482612876
-  what: events-were-scanned
-  where: github
-- _id: 245599
-  _time: 2025-04-18 13:18:10.421477944 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607215018
-  repository: 568705267
-  what: events-were-scanned
-  where: github
-- _id: 245600
-  _time: 2025-04-18 13:18:10.777560009 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607229441
-  repository: 510082372
-  what: events-were-scanned
-  where: github
-- _id: 245601
-  _time: 2025-04-18 13:18:11.296682238 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48792353538
-  repository: 558766137
-  what: events-were-scanned
-  where: github
-- _id: 245602
-  _time: 2025-04-18 13:18:11.776213735 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48791830505
-  repository: 574534248
-  what: events-were-scanned
-  where: github
-- _id: 245603
-  _time: 2025-04-18 13:18:12.265518844 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48688916944
-  repository: 543969974
-  what: events-were-scanned
-  where: github
-- _id: 245604
-  _time: 2025-04-18 13:18:12.681809548 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607114416
-  repository: 784310467
-  what: events-were-scanned
-  where: github
-- _id: 245605
-  _time: 2025-04-18 13:18:13.071353410 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607089770
-  repository: 493235807
-  what: events-were-scanned
-  where: github
-- _id: 245606
-  _time: 2025-04-18 13:18:13.489142395 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607106842
-  repository: 574459304
-  what: events-were-scanned
-  where: github
-- _id: 245607
-  _time: 2025-04-18 13:18:15.223332844 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48828637347
-  repository: 489321585
-  what: events-were-scanned
-  where: github
-- _id: 245608
-  _time: 2025-04-18 13:18:15.610569436 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48621186098
-  repository: 490157985
-  what: events-were-scanned
-  where: github
-- _id: 245609
-  _time: 2025-04-18 13:18:15.993864881 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607040571
-  repository: 447446664
-  what: events-were-scanned
-  where: github
-- _id: 245610
-  _time: 2025-04-18 13:18:16.425309781 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607235472
-  repository: 559427983
-  what: events-were-scanned
-  where: github
-- _id: 245611
-  _time: 2025-04-18 13:18:16.785671888 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48770846862
-  repository: 510102039
-  what: events-were-scanned
-  where: github
 - _id: 245612
   _time: 2025-04-18 13:18:17.248064388 Z
   _version: 0.10.0/0.39.2/
@@ -127578,6 +127350,7 @@
     request.'
   event_id: 48795242483
   event_type: PushEvent
+  is_human: 1
   push_id: 23811796326
   ref: refs/heads/master
   repository: 501259435
@@ -127592,6 +127365,7 @@
   details: The issue objectionary/news.eolang.org#79 has been closed by @yegor256.
   event_id: 48795022123
   event_type: IssuesEvent
+  is_human: 1
   issue: 79
   repository: 501259435
   what: issue-was-closed
@@ -127614,12 +127388,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 217
+  is_human: 1
   issue: 80
   repository: 501259435
   review_comments: 0
   succeeded_builds: 8
   what: pull-was-merged
-  when: 2025-04-17 13:41:31.000000000 Z
+  when: &709 2025-04-17 13:41:31.000000000 Z
   where: github
   who: 526301
 - _id: 245615
@@ -127633,11 +127408,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 217
+  is_human: 1
   issue: 80
   repository: 501259435
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-17 13:41:26.000000000 Z
+  when: &718 2025-04-17 13:41:26.000000000 Z
   where: github
   who: 526301
 - _id: 245616
@@ -127647,26 +127423,13 @@
   details: The pull request objectionary/news.eolang.org#80 has been opened by @maxonfjvipon.
   event_id: 48794236803
   event_type: PullRequestEvent
+  is_human: 1
   issue: 80
   repository: 501259435
   what: pull-was-opened
   when: 2025-04-17 13:23:26.000000000 Z
   where: github
   who: 37025995
-- _id: 245617
-  _time: 2025-04-18 13:18:27.654400410 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48795242483
-  repository: 501259435
-  what: events-were-scanned
-  where: github
-- _id: 245618
-  _time: 2025-04-18 13:18:28.247573756 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48797922875
-  repository: 483303722
-  what: events-were-scanned
-  where: github
 - _id: 245619
   _time: 2025-04-18 13:18:30.131659478 Z
   _version: 0.10.0/0.39.2/
@@ -127676,6 +127439,7 @@
     @yegor256 (default branch is ''master''), not associated with any pull request.'
   event_id: 48822390436
   event_type: PushEvent
+  is_human: 1
   push_id: 23825952019
   ref: refs/heads/master
   repository: 889819508
@@ -127693,6 +127457,7 @@
     @yegor256 (default branch is ''master''), not associated with any pull request.'
   event_id: 48822382125
   event_type: PushEvent
+  is_human: 1
   push_id: 23825947823
   ref: refs/heads/master
   repository: 889819508
@@ -127710,6 +127475,7 @@
     @yegor256 (default branch is ''master''), not associated with any pull request.'
   event_id: 48821828620
   event_type: PushEvent
+  is_human: 1
   push_id: 23825670840
   ref: refs/heads/master
   repository: 889819508
@@ -127727,6 +127493,7 @@
     @yegor256 (default branch is ''master''), not associated with any pull request.'
   event_id: 48821749461
   event_type: PushEvent
+  is_human: 1
   push_id: 23825628837
   ref: refs/heads/master
   repository: 889819508
@@ -127744,6 +127511,7 @@
     @yegor256 (default branch is ''master''), not associated with any pull request.'
   event_id: 48821612450
   event_type: PushEvent
+  is_human: 1
   push_id: 23825556297
   ref: refs/heads/master
   repository: 889819508
@@ -127759,6 +127527,7 @@
   details: The pull request objectionary/lints#498 has been opened by @h1alexbel.
   event_id: 48809914125
   event_type: PullRequestEvent
+  is_human: 1
   issue: 498
   repository: 889819508
   what: pull-was-opened
@@ -127771,6 +127540,7 @@
   details: The issue objectionary/lints#486 has been closed by @Marat-Tim.
   event_id: 48801015714
   event_type: IssuesEvent
+  is_human: 1
   issue: 486
   repository: 889819508
   what: issue-was-closed
@@ -127793,12 +127563,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 1
   issue: 489
   repository: 889819508
   review_comments: 0
   succeeded_builds: 18
   what: pull-was-merged
-  when: 2025-04-17 14:45:40.000000000 Z
+  when: &710 2025-04-17 14:45:40.000000000 Z
   where: github
   who: 526301
 - _id: 245627
@@ -127812,11 +127583,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 2
+  is_human: 1
   issue: 489
   repository: 889819508
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-17 14:45:27.000000000 Z
+  when: &719 2025-04-17 14:45:27.000000000 Z
   where: github
   who: 526301
 - _id: 245628
@@ -127835,12 +127607,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 1
   issue: 496
   repository: 889819508
   review_comments: 0
   succeeded_builds: 18
   what: pull-was-merged
-  when: 2025-04-17 13:49:40.000000000 Z
+  when: &711 2025-04-17 13:49:40.000000000 Z
   where: github
   who: 526301
 - _id: 245629
@@ -127849,6 +127622,7 @@
   details: The issue objectionary/lints#488 has been closed by @yegor256.
   event_id: 48795378138
   event_type: IssuesEvent
+  is_human: 1
   issue: 488
   repository: 889819508
   what: issue-was-closed
@@ -127871,12 +127645,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 4
+  is_human: 1
   issue: 497
   repository: 889819508
   review_comments: 0
   succeeded_builds: 18
   what: pull-was-merged
-  when: 2025-04-17 13:49:27.000000000 Z
+  when: &712 2025-04-17 13:49:27.000000000 Z
   where: github
   who: 526301
 - _id: 245631
@@ -127886,6 +127661,7 @@
   details: The pull request objectionary/lints#497 has been opened by @renovate[bot].
   event_id: 48792377853
   event_type: PullRequestEvent
+  is_human: 0
   issue: 497
   repository: 889819508
   what: pull-was-opened
@@ -127899,6 +127675,7 @@
   details: The pull request objectionary/lints#496 has been opened by @h1alexbel.
   event_id: 48790615423
   event_type: PullRequestEvent
+  is_human: 1
   issue: 496
   repository: 889819508
   what: pull-was-opened
@@ -127911,6 +127688,7 @@
   details: The issue objectionary/lints#495 has been opened by @h1alexbel.
   event_id: 48790212407
   event_type: IssuesEvent
+  is_human: 1
   issue: 495
   repository: 889819508
   what: issue-was-opened
@@ -127923,6 +127701,7 @@
   details: The issue objectionary/lints#494 has been opened by @h1alexbel.
   event_id: 48787393095
   event_type: IssuesEvent
+  is_human: 1
   issue: 494
   repository: 889819508
   what: issue-was-opened
@@ -127935,6 +127714,7 @@
   details: The issue objectionary/lints#493 has been opened by @yegor256.
   event_id: 48781628818
   event_type: IssuesEvent
+  is_human: 1
   issue: 493
   repository: 889819508
   what: issue-was-opened
@@ -127948,6 +127728,7 @@
   details: The pull request objectionary/lints#492 has been opened by @renovate[bot].
   event_id: 48780086756
   event_type: PullRequestEvent
+  is_human: 0
   issue: 492
   repository: 889819508
   what: pull-was-opened
@@ -127965,11 +127746,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 2
+  is_human: 1
   issue: 489
   repository: 889819508
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-16 19:21:53.000000000 Z
+  when: &720 2025-04-16 19:21:53.000000000 Z
   where: github
   who: 83453843
 - _id: 245638
@@ -127979,6 +127761,7 @@
   details: The pull request objectionary/lints#491 has been opened by @renovate[bot].
   event_id: 48762099344
   event_type: PullRequestEvent
+  is_human: 0
   issue: 491
   repository: 889819508
   what: pull-was-opened
@@ -127992,39 +127775,20 @@
   details: The pull request objectionary/lints#489 has been opened by @Marat-Tim.
   event_id: 48719446246
   event_type: PullRequestEvent
+  is_human: 1
   issue: 489
   repository: 889819508
   what: pull-was-opened
   when: 2025-04-15 19:35:42.000000000 Z
   where: github
   who: 108345628
-- _id: 245640
-  _time: 2025-04-18 13:18:59.321541404 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48822533396
-  repository: 889819508
-  what: events-were-scanned
-  where: github
-- _id: 245641
-  _time: 2025-04-18 13:19:00.073963174 Z
-  _version: 0.10.0/0.39.2/
-  latest: 44193479639
-  repository: 519246071
-  what: events-were-scanned
-  where: github
-- _id: 245642
-  _time: 2025-04-18 13:19:00.707635877 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48607054419
-  repository: 733919301
-  what: events-were-scanned
-  where: github
 - _id: 245643
   _time: 2025-04-18 13:19:04.631740096 Z
   _version: 0.10.0/0.39.2/
   details: The issue objectionary/eo#4106 has been opened by @h1alexbel.
   event_id: 48797054855
   event_type: IssuesEvent
+  is_human: 1
   issue: 4106
   repository: 73056727
   what: issue-was-opened
@@ -128047,6 +127811,7 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 4
+  is_human: 1
   issue: 4101
   repository: 73056727
   review_comments: 0
@@ -128071,12 +127836,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 1
   issue: 4102
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
-  when: 2025-04-17 14:27:30.000000000 Z
+  when: &713 2025-04-17 14:27:30.000000000 Z
   where: github
   who: 526301
 - _id: 245646
@@ -128095,12 +127861,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 4
+  is_human: 1
   issue: 4105
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
-  when: 2025-04-17 14:27:30.000000000 Z
+  when: &714 2025-04-17 14:27:30.000000000 Z
   where: github
   who: 526301
 - _id: 245647
@@ -128114,6 +127881,7 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 4
+  is_human: 1
   issue: 4101
   repository: 73056727
   review_comments: 0
@@ -128132,11 +127900,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 4
+  is_human: 1
   issue: 4105
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-17 14:27:04.000000000 Z
+  when: &721 2025-04-17 14:27:04.000000000 Z
   where: github
   who: 526301
 - _id: 245649
@@ -128150,11 +127919,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 2
+  is_human: 1
   issue: 4102
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-17 14:27:00.000000000 Z
+  when: &722 2025-04-17 14:27:00.000000000 Z
   where: github
   who: 526301
 - _id: 245650
@@ -128163,6 +127933,7 @@
   details: The issue objectionary/eo#4099 has been closed by @yegor256.
   event_id: 48796988244
   event_type: IssuesEvent
+  is_human: 1
   issue: 4099
   repository: 73056727
   what: issue-was-closed
@@ -128185,12 +127956,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 47
+  is_human: 1
   issue: 4104
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
-  when: 2025-04-17 14:26:55.000000000 Z
+  when: &715 2025-04-17 14:26:55.000000000 Z
   where: github
   who: 526301
 - _id: 245652
@@ -128204,11 +127976,12 @@
   event_type: PullRequestReviewEvent
   files: 5
   hoc: 47
+  is_human: 1
   issue: 4104
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-17 14:26:32.000000000 Z
+  when: &723 2025-04-17 14:26:32.000000000 Z
   where: github
   who: 526301
 - _id: 245653
@@ -128217,6 +127990,7 @@
   details: The issue objectionary/eo#3917 has been closed by @maxonfjvipon.
   event_id: 48795294191
   event_type: IssuesEvent
+  is_human: 1
   issue: 3917
   repository: 73056727
   what: issue-was-closed
@@ -128229,6 +128003,7 @@
   details: The issue objectionary/eo#4011 has been closed by @maxonfjvipon.
   event_id: 48795148816
   event_type: IssuesEvent
+  is_human: 1
   issue: 4011
   repository: 73056727
   what: issue-was-closed
@@ -128242,6 +128017,7 @@
   details: The pull request objectionary/eo#4105 has been opened by @renovate[bot].
   event_id: 48791558617
   event_type: PullRequestEvent
+  is_human: 0
   issue: 4105
   repository: 73056727
   what: pull-was-opened
@@ -128255,6 +128031,7 @@
   details: The pull request objectionary/eo#4104 has been opened by @volodya-lombrozo.
   event_id: 48790072383
   event_type: PullRequestEvent
+  is_human: 1
   issue: 4104
   repository: 73056727
   what: pull-was-opened
@@ -128267,6 +128044,7 @@
   details: The issue objectionary/eo#4103 has been opened by @yegor256.
   event_id: 48781661588
   event_type: IssuesEvent
+  is_human: 1
   issue: 4103
   repository: 73056727
   what: issue-was-opened
@@ -128280,6 +128058,7 @@
   details: The pull request objectionary/eo#4102 has been opened by @renovate[bot].
   event_id: 48780517891
   event_type: PullRequestEvent
+  is_human: 0
   issue: 4102
   repository: 73056727
   what: pull-was-opened
@@ -128302,12 +128081,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 2
+  is_human: 1
   issue: 4092
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
-  when: 2025-04-15 14:41:21.000000000 Z
+  when: &716 2025-04-15 14:41:21.000000000 Z
   where: github
   who: 526301
 - _id: 245660
@@ -128321,11 +128101,12 @@
   event_type: PullRequestReviewEvent
   files: 1
   hoc: 2
+  is_human: 1
   issue: 4092
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-15 14:40:54.000000000 Z
+  when: &724 2025-04-15 14:40:54.000000000 Z
   where: github
   who: 526301
 - _id: 245661
@@ -128334,6 +128115,7 @@
   details: The issue objectionary/eo#4096 has been opened by @yegor256.
   event_id: 48708087153
   event_type: IssuesEvent
+  is_human: 1
   issue: 4096
   repository: 73056727
   what: issue-was-opened
@@ -128346,6 +128128,7 @@
   details: The issue objectionary/eo#4095 has been opened by @0pdd.
   event_id: 48707975207
   event_type: IssuesEvent
+  is_human: 0
   issue: 4095
   repository: 73056727
   what: issue-was-opened
@@ -128358,6 +128141,7 @@
   details: The issue objectionary/eo#4094 has been opened by @0pdd.
   event_id: 48707938672
   event_type: IssuesEvent
+  is_human: 0
   issue: 4094
   repository: 73056727
   what: issue-was-opened
@@ -128370,6 +128154,7 @@
   details: The issue objectionary/eo#3919 has been closed by @yegor256.
   event_id: 48707935989
   event_type: IssuesEvent
+  is_human: 1
   issue: 3919
   repository: 73056727
   what: issue-was-closed
@@ -128392,12 +128177,13 @@
   event_type: PullRequestEvent
   failed_builds: 0
   hoc: 19433
+  is_human: 1
   issue: 4093
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
-  when: 2025-04-15 14:35:08.000000000 Z
+  when: &717 2025-04-15 14:35:08.000000000 Z
   where: github
   who: 526301
 - _id: 245666
@@ -128411,11 +128197,12 @@
   event_type: PullRequestReviewEvent
   files: 257
   hoc: 19433
+  is_human: 1
   issue: 4093
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-04-15 14:34:43.000000000 Z
+  when: &725 2025-04-15 14:34:43.000000000 Z
   where: github
   who: 526301
 - _id: 245667
@@ -128425,6 +128212,7 @@
   details: The pull request objectionary/eo#4093 has been opened by @maxonfjvipon.
   event_id: 48705024720
   event_type: PullRequestEvent
+  is_human: 1
   issue: 4093
   repository: 73056727
   what: pull-was-opened
@@ -128438,19 +128226,13 @@
   details: The pull request objectionary/eo#4092 has been opened by @renovate[bot].
   event_id: 48704565012
   event_type: PullRequestEvent
+  is_human: 0
   issue: 4092
   repository: 73056727
   what: pull-was-opened
   when: 2025-04-15 13:25:25.000000000 Z
   where: github
   who: 29139614
-- _id: 245669
-  _time: 2025-04-18 13:19:59.670932696 Z
-  _version: 0.10.0/0.39.2/
-  latest: 48823318320
-  repository: 73056727
-  what: events-were-scanned
-  where: github
 - _id: 245671
   _time: 2025-04-18 13:20:25.903013491 Z
   _version: 0.10.0/0.39.2/
@@ -128757,5 +128539,937 @@
   _version: 0.10.0/0.39.2/
   latest: 1
   repository: 489321585
+  what: min-issue-was-found
+  where: github
+- _id: 245894
+  _job: 17931
+  _time: 2025-04-18 13:23:22.108733148 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  closer: 37025995
+  details: 'In the repository #73056727, the user #108345628 submitted the issue #4011
+    which was later closed by the user #37025995 not becoming a bug or enhancement;
+    this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  is_human: 1
+  issue: 4011
+  repository: 73056727
+  what: dud-was-closed
+  when: *699
+  where: github
+  who: 108345628
+- _id: 245895
+  _job: 17931
+  _time: 2025-04-18 13:23:22.125981498 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  closer: 526301
+  details: 'In the repository #501259435, the user #37025995 submitted the issue #79
+    which was later closed by the user #526301 not becoming a bug or enhancement;
+    this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  is_human: 1
+  issue: 79
+  repository: 501259435
+  what: dud-was-closed
+  when: *700
+  where: github
+  who: 37025995
+- _id: 245896
+  _job: 17931
+  _time: 2025-04-18 13:23:23.206506640 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/sodg-maven-plugin#30 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 57m9s of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 30
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 3430
+  what: code-was-contributed
+  when: *701
+  where: github
+  who: 29139614
+- _id: 245897
+  _job: 17931
+  _time: 2025-04-18 13:23:23.638950458 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 2
+  details: The pull request objectionary/sodg-maven-plugin#29 with 2 HoC created by
+    @renovate[bot] was merged by @renovate[bot] after 4h49m of being in review and
+    2 comments.
+  hoc: 2
+  is_human: 0
+  issue: 29
+  merger: 29139614
+  repository: 955159947
+  review_comments: 0
+  seconds: 17364
+  what: code-was-contributed
+  when: *702
+  where: github
+  who: 29139614
+- _id: 245898
+  _job: 17931
+  _time: 2025-04-18 13:23:23.664743104 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 3
+  details: The pull request objectionary/sodg-maven-plugin#24 with 97 HoC created
+    by @volodya-lombrozo was merged by @rultor after 2h39m of being in review and
+    3 comments.
+  hoc: 97
+  is_human: 1
+  issue: 24
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 9577
+  what: code-was-contributed
+  when: *703
+  where: github
+  who: 51804353
+- _id: 245899
+  _job: 17931
+  _time: 2025-04-18 13:23:23.742053801 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 6
+  details: The pull request objectionary/sodg-maven-plugin#21 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 3h14m of being in review and 6 comments.
+  hoc: 2
+  is_human: 0
+  issue: 21
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 11680
+  what: code-was-contributed
+  when: *704
+  where: github
+  who: 29139614
+- _id: 245900
+  _job: 17931
+  _time: 2025-04-18 13:23:23.762117498 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/sodg-maven-plugin#23 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 2h19m of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 23
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 8351
+  what: code-was-contributed
+  when: *705
+  where: github
+  who: 29139614
+- _id: 245901
+  _job: 17931
+  _time: 2025-04-18 13:23:23.813444728 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/sodg-maven-plugin#17 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 1h30m of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 17
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 5439
+  what: code-was-contributed
+  when: *706
+  where: github
+  who: 29139614
+- _id: 245902
+  _job: 17931
+  _time: 2025-04-18 13:23:23.835976298 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/sodg-maven-plugin#18 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 1h23m of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 18
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 5039
+  what: code-was-contributed
+  when: *707
+  where: github
+  who: 29139614
+- _id: 245903
+  _job: 17931
+  _time: 2025-04-18 13:23:23.857903478 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/sodg-maven-plugin#20 with 2 HoC created by
+    @renovate[bot] was merged by @rultor after 30m59s of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 20
+  merger: 8086956
+  repository: 955159947
+  review_comments: 0
+  seconds: 1860
+  what: code-was-contributed
+  when: *708
+  where: github
+  who: 29139614
+- _id: 245904
+  _job: 17931
+  _time: 2025-04-18 13:23:23.880114687 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 1
+  details: The pull request objectionary/news.eolang.org#80 with 217 HoC created by
+    @maxonfjvipon was merged by @yegor256 after 18m4s of being in review and 1 comments.
+  hoc: 217
+  is_human: 1
+  issue: 80
+  merger: 526301
+  repository: 501259435
+  review_comments: 0
+  seconds: 1085
+  what: code-was-contributed
+  when: *709
+  where: github
+  who: 37025995
+- _id: 245905
+  _job: 17931
+  _time: 2025-04-18 13:23:24.154903185 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 7
+  details: The pull request objectionary/lints#489 with 2 HoC created by @Marat-Tim
+    was merged by @yegor256 after 1d19h of being in review and 7 comments.
+  hoc: 2
+  is_human: 1
+  issue: 489
+  merger: 526301
+  repository: 889819508
+  review_comments: 0
+  seconds: 155398
+  what: code-was-contributed
+  when: *710
+  where: github
+  who: 108345628
+- _id: 245906
+  _job: 17931
+  _time: 2025-04-18 13:23:24.465368117 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 2
+  details: The pull request objectionary/lints#496 with 2 HoC created by @h1alexbel
+    was merged by @yegor256 after 1h58m of being in review and 2 comments.
+  hoc: 2
+  is_human: 1
+  issue: 496
+  merger: 526301
+  repository: 889819508
+  review_comments: 0
+  seconds: 7114
+  what: code-was-contributed
+  when: *711
+  where: github
+  who: 83453843
+- _id: 245907
+  _job: 17931
+  _time: 2025-04-18 13:23:24.554594196 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 3
+  details: The pull request objectionary/lints#497 with 4 HoC created by @renovate[bot]
+    was merged by @yegor256 after 1h11m of being in review and 3 comments.
+  hoc: 4
+  is_human: 0
+  issue: 497
+  merger: 526301
+  repository: 889819508
+  review_comments: 0
+  seconds: 4279
+  what: code-was-contributed
+  when: *712
+  where: github
+  who: 29139614
+- _id: 245908
+  _job: 17931
+  _time: 2025-04-18 13:23:24.578005068 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/eo#4102 with 2 HoC created by @renovate[bot]
+    was merged by @yegor256 after 7h15m of being in review and 4 comments.
+  hoc: 2
+  is_human: 0
+  issue: 4102
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 26151
+  what: code-was-contributed
+  when: *713
+  where: github
+  who: 29139614
+- _id: 245909
+  _job: 17931
+  _time: 2025-04-18 13:23:24.785991897 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 4
+  details: The pull request objectionary/eo#4105 with 4 HoC created by @renovate[bot]
+    was merged by @yegor256 after 2h10m of being in review and 4 comments.
+  hoc: 4
+  is_human: 0
+  issue: 4105
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 7817
+  what: code-was-contributed
+  when: *714
+  where: github
+  who: 29139614
+- _id: 245910
+  _job: 17931
+  _time: 2025-04-18 13:23:24.815134409 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 2
+  details: The pull request objectionary/eo#4104 with 47 HoC created by @volodya-lombrozo
+    was merged by @yegor256 after 2h51m of being in review and 2 comments.
+  hoc: 47
+  is_human: 1
+  issue: 4104
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 10296
+  what: code-was-contributed
+  when: *715
+  where: github
+  who: 51804353
+- _id: 245911
+  _job: 17931
+  _time: 2025-04-18 13:23:24.836344667 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 1
+  details: The pull request objectionary/eo#4092 with 2 HoC created by @renovate[bot]
+    was merged by @yegor256 after 1h15m of being in review and 1 comments.
+  hoc: 2
+  is_human: 0
+  issue: 4092
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 4556
+  what: code-was-contributed
+  when: *716
+  where: github
+  who: 29139614
+- _id: 245912
+  _job: 17931
+  _time: 2025-04-18 13:23:24.861453092 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  comments: 2
+  details: The pull request objectionary/eo#4093 with 19433 HoC created by @maxonfjvipon
+    was merged by @yegor256 after 59m57s of being in review and 2 comments.
+  hoc: 19433
+  is_human: 1
+  issue: 4093
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 3598
+  what: code-was-contributed
+  when: *717
+  where: github
+  who: 37025995
+- _id: 245913
+  _job: 17931
+  _time: 2025-04-18 13:23:28.215423854 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 37025995
+  comments: 1
+  details: The pull request objectionary/news.eolang.org#80 with 217 HoC created by
+    @maxonfjvipon was reviewed by @yegor256 after 17m59s and 1 comments.
+  hoc: 217
+  is_human: 1
+  issue: 80
+  repository: 501259435
+  review_comments: 0
+  seconds: 1080
+  what: code-was-reviewed
+  when: *718
+  where: github
+  who: 526301
+- _id: 245914
+  _job: 17931
+  _time: 2025-04-18 13:23:28.239987047 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 108345628
+  comments: 8
+  details: The pull request objectionary/lints#489 with 2 HoC created by @Marat-Tim
+    was reviewed by @yegor256 after 1d19h and 8 comments.
+  hoc: 2
+  is_human: 1
+  issue: 489
+  repository: 889819508
+  review_comments: 0
+  seconds: 155385
+  what: code-was-reviewed
+  when: *719
+  where: github
+  who: 526301
+- _id: 245915
+  _job: 17931
+  _time: 2025-04-18 13:23:28.263335438 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 108345628
+  comments: 8
+  details: The pull request objectionary/lints#489 with 2 HoC created by @Marat-Tim
+    was reviewed by @h1alexbel after 23h46m and 8 comments.
+  hoc: 2
+  is_human: 1
+  issue: 489
+  repository: 889819508
+  review_comments: 0
+  seconds: 85571
+  what: code-was-reviewed
+  when: *720
+  where: github
+  who: 83453843
+- _id: 245916
+  _job: 17931
+  _time: 2025-04-18 13:23:28.286477230 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 29139614
+  comments: 4
+  details: The pull request objectionary/eo#4105 with 4 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 2h9m and 4 comments.
+  hoc: 4
+  is_human: 1
+  issue: 4105
+  repository: 73056727
+  review_comments: 0
+  seconds: 7791
+  what: code-was-reviewed
+  when: *721
+  where: github
+  who: 526301
+- _id: 245917
+  _job: 17931
+  _time: 2025-04-18 13:23:28.306808676 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 29139614
+  comments: 4
+  details: The pull request objectionary/eo#4102 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 7h15m and 4 comments.
+  hoc: 2
+  is_human: 1
+  issue: 4102
+  repository: 73056727
+  review_comments: 0
+  seconds: 26121
+  what: code-was-reviewed
+  when: *722
+  where: github
+  who: 526301
+- _id: 245918
+  _job: 17931
+  _time: 2025-04-18 13:23:28.337218080 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 51804353
+  comments: 2
+  details: The pull request objectionary/eo#4104 with 47 HoC created by @volodya-lombrozo
+    was reviewed by @yegor256 after 2h51m and 2 comments.
+  hoc: 47
+  is_human: 1
+  issue: 4104
+  repository: 73056727
+  review_comments: 0
+  seconds: 10273
+  what: code-was-reviewed
+  when: *723
+  where: github
+  who: 526301
+- _id: 245919
+  _job: 17931
+  _time: 2025-04-18 13:23:28.360042460 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 29139614
+  comments: 1
+  details: The pull request objectionary/eo#4092 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 1h15m and 1 comments.
+  hoc: 2
+  is_human: 1
+  issue: 4092
+  repository: 73056727
+  review_comments: 0
+  seconds: 4529
+  what: code-was-reviewed
+  when: *724
+  where: github
+  who: 526301
+- _id: 245920
+  _job: 17931
+  _time: 2025-04-18 13:23:28.395122843 Z
+  _version: 0.10.0/0.39.2/0.4.0
+  author: 37025995
+  comments: 2
+  details: The pull request objectionary/eo#4093 with 19433 HoC created by @maxonfjvipon
+    was reviewed by @yegor256 after 59m32s and 2 comments.
+  hoc: 19433
+  is_human: 1
+  issue: 4093
+  repository: 73056727
+  review_comments: 0
+  seconds: 3573
+  what: code-was-reviewed
+  when: *725
+  where: github
+  who: 526301
+- _id: 245921
+  _time: 2025-04-18 14:08:34.001774696 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48793327844
+  repository: 955159947
+  what: events-were-scanned
+  where: github
+- _id: 245922
+  _time: 2025-04-18 14:08:34.670589615 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607221186
+  repository: 403396472
+  what: events-were-scanned
+  where: github
+- _id: 245923
+  _time: 2025-04-18 14:08:37.404705013 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48828637347
+  repository: 489321585
+  what: events-were-scanned
+  where: github
+- _id: 245924
+  _time: 2025-04-18 14:08:38.182988608 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48636621583
+  repository: 519299365
+  what: events-were-scanned
+  where: github
+- _id: 245925
+  _time: 2025-04-18 14:08:40.813465287 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48822533396
+  repository: 889819508
+  what: events-were-scanned
+  where: github
+- _id: 245926
+  _time: 2025-04-18 14:08:41.521524184 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607072924
+  repository: 731516758
+  what: events-were-scanned
+  where: github
+- _id: 245927
+  _time: 2025-04-18 14:08:42.309306545 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607061385
+  repository: 798766850
+  what: events-were-scanned
+  where: github
+- _id: 245928
+  _time: 2025-04-18 14:08:43.004875428 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48770846862
+  repository: 510102039
+  what: events-were-scanned
+  where: github
+- _id: 245929
+  _time: 2025-04-18 14:08:43.760861590 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48801032290
+  repository: 721146770
+  what: events-were-scanned
+  where: github
+- _id: 245930
+  _time: 2025-04-18 14:08:44.612551913 Z
+  _version: 0.10.0/0.39.2/
+  latest: 44193479639
+  repository: 519246071
+  what: events-were-scanned
+  where: github
+- _id: 245931
+  _time: 2025-04-18 14:08:45.274825580 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607066894
+  repository: 551486781
+  what: events-were-scanned
+  where: github
+- _id: 245932
+  _time: 2025-04-18 14:08:45.940129859 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607095831
+  repository: 499536612
+  what: events-were-scanned
+  where: github
+- _id: 245933
+  _time: 2025-04-18 14:08:46.752826348 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48771086010
+  repository: 570457023
+  what: events-were-scanned
+  where: github
+- _id: 245934
+  _time: 2025-04-18 14:08:47.427328255 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607054419
+  repository: 733919301
+  what: events-were-scanned
+  where: github
+- _id: 245935
+  _time: 2025-04-18 14:08:48.106875821 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607143869
+  repository: 546194972
+  what: events-were-scanned
+  where: github
+- _id: 245936
+  _time: 2025-04-18 14:08:48.892559936 Z
+  _version: 0.10.0/0.39.2/
+  latest: 45572867640
+  repository: 490221501
+  what: events-were-scanned
+  where: github
+- _id: 245937
+  _time: 2025-04-18 14:08:49.600959337 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607235472
+  repository: 559427983
+  what: events-were-scanned
+  where: github
+- _id: 245938
+  _time: 2025-04-18 14:08:50.283718910 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607215018
+  repository: 568705267
+  what: events-were-scanned
+  where: github
+- _id: 245939
+  _time: 2025-04-18 14:08:52.582567749 Z
+  _version: 0.10.0/0.39.2/
+  commits: 3
+  contributors:
+  - 37025995
+  - 526301
+  details: 'A new release ''bug(#316): update EO to `0.56.0`'' has been published
+    in objectionary/home by @rultor.'
+  event_id: 48828905991
+  event_type: ReleaseEvent
+  hoc: 14864
+  is_human: 0
+  last_commit: 442bfd29e5ddfea715d7cb59c6e28a0b19654a47
+  release: 213326235
+  repository: 13623548
+  tag: 0.56.0
+  what: release-published
+  when: 2025-04-18 13:09:47.000000000 Z
+  where: github
+  who: 8086956
+- _id: 245940
+  _time: 2025-04-18 14:08:53.374454453 Z
+  _version: 0.10.0/0.39.2/
+  details: A new tag '0.56.0' has been created in objectionary/home by @rultor.
+  event_id: 48828880556
+  event_type: CreateEvent
+  is_human: 0
+  repository: 13623548
+  tag: 0.56.0
+  what: tag-was-created
+  when: 2025-04-18 13:08:45.000000000 Z
+  where: github
+  who: 8086956
+- _id: 245941
+  _time: 2025-04-18 14:08:53.675525049 Z
+  _version: 0.10.0/0.39.2/
+  branch: renovate/eo.version
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/home#317 has been closed by @renovate[bot],
+    with 2 HoC and 0 comments.
+  event_id: 48828625527
+  event_type: PullRequestEvent
+  failed_builds: 1
+  hoc: 2
+  is_human: 0
+  issue: 317
+  repository: 13623548
+  succeeded_builds: 10
+  what: pull-was-closed
+  when: 2025-04-18 12:58:47.000000000 Z
+  where: github
+  who: 29139614
+- _id: 245942
+  _time: 2025-04-18 14:09:08.315565669 Z
+  _version: 0.10.0/0.39.2/
+  branch: bug/#316/update-eo-to-0.56.0
+  comments: 1
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/home#318 has been closed by @yegor256, with
+    14864 HoC and 1 comments.
+  event_id: 48828610265
+  event_type: PullRequestEvent
+  failed_builds: 0
+  hoc: 14864
+  is_human: 1
+  issue: 318
+  repository: 13623548
+  review_comments: 0
+  succeeded_builds: 11
+  what: pull-was-merged
+  when: 2025-04-18 12:58:11.000000000 Z
+  where: github
+  who: 526301
+- _id: 245943
+  _time: 2025-04-18 14:09:17.632822456 Z
+  _version: 0.10.0/0.39.2/
+  comments: 4
+  commits: 2
+  details: The pull request objectionary/home#318 has been reviewed by @yegor256 with
+    14864 HoC and 4 comments.
+  event_id: 48828607957
+  event_type: PullRequestReviewEvent
+  files: 111
+  hoc: 14864
+  is_human: 1
+  issue: 318
+  repository: 13623548
+  review_comments: 0
+  what: pull-was-reviewed
+  when: 2025-04-18 12:58:05.000000000 Z
+  where: github
+  who: 526301
+- _id: 245944
+  _time: 2025-04-18 14:09:18.743163073 Z
+  _version: 0.10.0/0.39.2/
+  branch: bug/#316/update-eo-to-0.56.0
+  details: The pull request objectionary/home#318 has been opened by @maxonfjvipon.
+  event_id: 48827402880
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 318
+  repository: 13623548
+  what: pull-was-opened
+  when: 2025-04-18 12:08:43.000000000 Z
+  where: github
+  who: 37025995
+- _id: 245945
+  _time: 2025-04-18 14:09:18.829814825 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48829892433
+  repository: 13623548
+  what: events-were-scanned
+  where: github
+- _id: 245946
+  _time: 2025-04-18 14:09:19.542108974 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607089770
+  repository: 493235807
+  what: events-were-scanned
+  where: github
+- _id: 245947
+  _time: 2025-04-18 14:09:20.200372664 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48599568353
+  repository: 840332960
+  what: events-were-scanned
+  where: github
+- _id: 245948
+  _time: 2025-04-18 14:09:20.878523123 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48621186098
+  repository: 490157985
+  what: events-were-scanned
+  where: github
+- _id: 245949
+  _time: 2025-04-18 14:09:21.679986266 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48795242483
+  repository: 501259435
+  what: events-were-scanned
+  where: github
+- _id: 245950
+  _time: 2025-04-18 14:09:22.544339092 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48688916944
+  repository: 543969974
+  what: events-were-scanned
+  where: github
+- _id: 245951
+  _time: 2025-04-18 14:09:23.410187659 Z
+  _version: 0.10.0/0.39.2/
+  latest: 45742056962
+  repository: 501942888
+  what: events-were-scanned
+  where: github
+- _id: 245952
+  _time: 2025-04-18 14:09:24.223868858 Z
+  _version: 0.10.0/0.39.2/
+  latest: 43208171256
+  repository: 531151981
+  what: events-were-scanned
+  where: github
+- _id: 245953
+  _time: 2025-04-18 14:09:25.320743186 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48797922875
+  repository: 483303722
+  what: events-were-scanned
+  where: github
+- _id: 245954
+  _time: 2025-04-18 14:09:26.073207373 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48765299805
+  repository: 490258619
+  what: events-were-scanned
+  where: github
+- _id: 245955
+  _time: 2025-04-18 14:09:27.198473619 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607165443
+  repository: 492899189
+  what: events-were-scanned
+  where: github
+- _id: 245956
+  _time: 2025-04-18 14:09:27.882286467 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48612765790
+  repository: 386420319
+  what: events-were-scanned
+  where: github
+- _id: 245957
+  _time: 2025-04-18 14:09:28.897159908 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607114416
+  repository: 784310467
+  what: events-were-scanned
+  where: github
+- _id: 245958
+  _time: 2025-04-18 14:09:31.398900214 Z
+  _version: 0.10.0/0.39.2/
+  comments: 4
+  commits: 1
+  details: The pull request objectionary/eo#4098 has been reviewed by @yegor256 with
+    2 HoC and 4 comments.
+  event_id: 48824931994
+  event_type: PullRequestReviewEvent
+  files: 1
+  hoc: 2
+  is_human: 1
+  issue: 4098
+  repository: 73056727
+  review_comments: 0
+  what: pull-was-reviewed
+  when: 2025-04-18 10:14:28.000000000 Z
+  where: github
+  who: 526301
+- _id: 245959
+  _time: 2025-04-18 14:09:32.181017839 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48824931994
+  repository: 73056727
+  what: events-were-scanned
+  where: github
+- _id: 245960
+  _time: 2025-04-18 14:09:33.221175952 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48792353538
+  repository: 558766137
+  what: events-were-scanned
+  where: github
+- _id: 245961
+  _time: 2025-04-18 14:09:34.273600549 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607106842
+  repository: 574459304
+  what: events-were-scanned
+  where: github
+- _id: 245962
+  _time: 2025-04-18 14:09:35.220182568 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607040571
+  repository: 447446664
+  what: events-were-scanned
+  where: github
+- _id: 245963
+  _time: 2025-04-18 14:09:36.222725428 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48764663336
+  repository: 482612876
+  what: events-were-scanned
+  where: github
+- _id: 245964
+  _time: 2025-04-18 14:09:37.310935165 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607121280
+  repository: 731438612
+  what: events-were-scanned
+  where: github
+- _id: 245965
+  _time: 2025-04-18 14:09:38.284252070 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607127754
+  repository: 565789755
+  what: events-were-scanned
+  where: github
+- _id: 245966
+  _time: 2025-04-18 14:09:41.136069726 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48797430870
+  repository: 671896902
+  what: events-were-scanned
+  where: github
+- _id: 245967
+  _time: 2025-04-18 14:09:42.088791588 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607154655
+  repository: 624420387
+  what: events-were-scanned
+  where: github
+- _id: 245968
+  _time: 2025-04-18 14:09:43.135128082 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48607229441
+  repository: 510082372
+  what: events-were-scanned
+  where: github
+- _id: 245969
+  _time: 2025-04-18 14:09:44.168939723 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48791830505
+  repository: 574534248
+  what: events-were-scanned
+  where: github
+- _id: 245970
+  _time: 2025-04-18 14:09:45.957995250 Z
+  _version: 0.10.0/0.39.2/
+  latest: 48675831791
+  repository: 396732517
+  what: events-were-scanned
+  where: github
+- _id: 245971
+  _time: 2025-04-18 14:10:00.828015576 Z
+  _version: 0.10.0/0.39.2/
+  latest: 0
+  repository: 565789755
+  what: min-issue-was-found
+  where: github
+- _id: 245972
+  _time: 2025-04-18 14:10:01.780693289 Z
+  _version: 0.10.0/0.39.2/
+  latest: 2
+  repository: 731438612
   what: min-issue-was-found
   where: github
