@@ -12,7 +12,6 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -37,16 +36,8 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
-        final int id = Expect.at(rho, "id")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
-        final int size = Expect.at(this, "new-size")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
+        final int id = new Expect.Natural(Expect.at(rho, "id")).it();
+        final int size = new Expect.Natural(Expect.at(this, "new-size")).it();
         Heaps.INSTANCE.resize(id, size);
         return rho;
     }
