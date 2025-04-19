@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 178.494040576
+  seconds: 45.274386551
   version: 0.39.2
   what: judges-summary
-  when: 2025-04-19 22:10:28.690546558 Z
+  when: 2025-04-19 23:08:38.634090531 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -129534,13 +129534,6 @@
   when: &730 2025-04-18 13:45:53.000000000 Z
   where: github
   who: 526301
-- _id: 247332
-  _time: 2025-04-18 22:11:22.458445068 Z
-  _version: 0.10.0/0.39.2/
-  latest: 0
-  repository: 624420387
-  what: min-issue-was-found
-  where: github
 - _id: 247333
   _time: 2025-04-18 22:11:23.156735191 Z
   _version: 0.10.0/0.39.2/
@@ -129766,13 +129759,6 @@
   repository: 483303722
   what: min-issue-was-found
   where: github
-- _id: 248221
-  _time: 2025-04-19 04:14:29.362477591 Z
-  _version: 0.10.0/0.39.2/
-  latest: 0
-  repository: 574534248
-  what: min-issue-was-found
-  where: github
 - _id: 248683
   _time: 2025-04-19 06:13:17.591288233 Z
   _version: 0.10.0/0.39.2/
@@ -129854,13 +129840,6 @@
   total_hoc_committed: 76851
   what: quantity-of-deliverables
   when: 2025-04-19 12:17:30.685292276 Z
-- _id: 250280
-  _time: 2025-04-19 13:15:12.253054527 Z
-  _version: 0.10.0/0.39.2/
-  latest: 0
-  repository: 733919301
-  what: min-issue-was-found
-  where: github
 - _id: 250281
   _time: 2025-04-19 13:15:12.403197201 Z
   _version: 0.10.0/0.39.2/
@@ -129908,13 +129887,6 @@
   _version: 0.10.0/0.39.2/
   latest: 0
   repository: 447446664
-  what: min-issue-was-found
-  where: github
-- _id: 250795
-  _time: 2025-04-19 15:07:56.566126112 Z
-  _version: 0.10.0/0.39.2/
-  latest: 2
-  repository: 396732517
   what: min-issue-was-found
   where: github
 - _id: 251030
@@ -130549,7 +130521,7 @@
   label: bug
   repository: 889819508
   what: label-was-attached
-  when: 2025-04-19 14:45:53.000000000 Z
+  when: &733 2025-04-19 14:45:53.000000000 Z
   where: github
   who: 526301
 - _id: 252444
@@ -130622,13 +130594,6 @@
   repository: 721146770
   what: min-issue-was-found
   where: github
-- _id: 252515
-  _time: 2025-04-19 22:10:16.339073338 Z
-  _version: 0.10.0/0.39.2/
-  latest: 0
-  repository: 784310467
-  what: min-issue-was-found
-  where: github
 - _id: 252516
   _time: 2025-04-19 22:10:16.486845397 Z
   _version: 0.10.0/0.39.2/
@@ -130641,5 +130606,54 @@
   _version: 0.10.0/0.39.2/
   latest: 1
   repository: 546194972
+  what: min-issue-was-found
+  where: github
+- _id: 252518
+  _job: 18066
+  _time: 2025-04-19 22:11:21.892485125 Z
+  _version: 0.10.0/0.40.0/0.5.0!0.6.0
+  details: "@yegor256 attached the '#bug' label to objectionary/lints#501 reported
+    by @volodya-lombrozo; this means that a bug was-accepted as valid, by the project
+    team."
+  issue: 501
+  reporter: 51804353
+  repository: 889819508
+  what: bug-was-accepted
+  when: *733
+  where: github
+  who: 526301
+- _id: 252519
+  _time: 2025-04-19 23:08:36.352909087 Z
+  _version: 0.10.0/0.39.2/
+  latest: 0
+  repository: 784310467
+  what: min-issue-was-found
+  where: github
+- _id: 252520
+  _time: 2025-04-19 23:08:36.495547311 Z
+  _version: 0.10.0/0.39.2/
+  latest: 0
+  repository: 733919301
+  what: min-issue-was-found
+  where: github
+- _id: 252521
+  _time: 2025-04-19 23:08:36.640562694 Z
+  _version: 0.10.0/0.39.2/
+  latest: 0
+  repository: 624420387
+  what: min-issue-was-found
+  where: github
+- _id: 252522
+  _time: 2025-04-19 23:08:36.784048338 Z
+  _version: 0.10.0/0.39.2/
+  latest: 0
+  repository: 574534248
+  what: min-issue-was-found
+  where: github
+- _id: 252523
+  _time: 2025-04-19 23:08:37.745347080 Z
+  _version: 0.10.0/0.39.2/
+  latest: 2
+  repository: 396732517
   what: min-issue-was-found
   where: github
