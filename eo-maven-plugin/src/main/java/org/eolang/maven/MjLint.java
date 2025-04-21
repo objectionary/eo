@@ -168,7 +168,6 @@ public final class MjLint extends MjSafe {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
         new Programs(pkg)
-            .without("inconsistent-args")
             .defects()
             .forEach(
                 defect -> {
@@ -275,11 +274,6 @@ public final class MjLint extends MjSafe {
      * @param xmir The XML before linting
      * @param counts Counts of errors, warnings, and critical
      * @return XML after linting
-     * @todo #4039:30min Enable `inconsistent-args` lint.
-     *  This lint generates many errors during the compilation of eo-runtime.
-     *  We need to fix the errors in eo-runtime and enable this lint.
-     *  Don't forget to enable this lint in {@link #lintAll(ConcurrentHashMap)} method
-     *  as well.
      */
     private static XML linted(
         final String program, final XML xmir, final ConcurrentHashMap<Severity, Integer> counts
@@ -290,8 +284,7 @@ public final class MjLint extends MjSafe {
         final Collection<Defect> found = new Program(xmir)
             .without(
                 "empty-object",
-                "sprintf-without-formatters",
-                "inconsistent-args"
+                "sprintf-without-formatters"
             ).defects();
         defects.addAll(found);
         final Directives dirs = new Directives();
