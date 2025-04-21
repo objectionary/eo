@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 286.533847548
+  seconds: 31.088902356
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-21 03:38:49.205944023 Z
+  when: 2025-04-21 04:12:31.131946387 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -129776,13 +129776,6 @@
   repository: 492899189
   what: min-issue-was-found
   where: github
-- _id: 253030
-  _time: 2025-04-20 03:31:19.813391338 Z
-  _version: 0.10.0/0.39.2/
-  latest: 0
-  repository: 510102039
-  what: min-issue-was-found
-  where: github
 - _id:
   - 253076
   - 252780
@@ -129900,13 +129893,6 @@
   when: *735
   where: github
   who: 526301
-- _id: 253868
-  _time: 2025-04-20 06:15:23.773620905 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 733919301
-  what: min-issue-was-found
-  where: github
 - _id: 253870
   _time: 2025-04-20 06:15:24.088861187 Z
   _version: 0.10.0/0.41.0/
@@ -129962,13 +129948,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 574534248
-  what: min-issue-was-found
-  where: github
-- _id: 254150
-  _time: 2025-04-20 07:11:46.963586216 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 490221501
   what: min-issue-was-found
   where: github
 - _id: 254638
@@ -130109,20 +130088,6 @@
   _version: 0.10.0/0.41.0/
   latest: 6
   repository: 13623548
-  what: min-issue-was-found
-  where: github
-- _id: 257366
-  _time: 2025-04-20 22:09:51.080409805 Z
-  _version: 0.10.0/0.41.0/
-  latest: 2
-  repository: 798766850
-  what: min-issue-was-found
-  where: github
-- _id: 257367
-  _time: 2025-04-20 23:08:18.441098523 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 624420387
   what: min-issue-was-found
   where: github
 - _id: 257368
@@ -130796,5 +130761,40 @@
   _version: 0.10.0/0.41.0/
   latest: 1
   repository: 955159947
+  what: min-issue-was-found
+  where: github
+- _id: 258050
+  _time: 2025-04-21 04:12:12.595644165 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 624420387
+  what: min-issue-was-found
+  where: github
+- _id: 258051
+  _time: 2025-04-21 04:12:12.737741434 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 733919301
+  what: min-issue-was-found
+  where: github
+- _id: 258052
+  _time: 2025-04-21 04:12:12.879253058 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 490221501
+  what: min-issue-was-found
+  where: github
+- _id: 258053
+  _time: 2025-04-21 04:12:13.024455997 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 510102039
+  what: min-issue-was-found
+  where: github
+- _id: 258054
+  _time: 2025-04-21 04:12:13.740718837 Z
+  _version: 0.10.0/0.41.0/
+  latest: 2
+  repository: 798766850
   what: min-issue-was-found
   where: github
