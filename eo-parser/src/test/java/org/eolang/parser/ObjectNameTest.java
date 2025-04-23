@@ -38,4 +38,33 @@ final class ObjectNameTest {
             Matchers.equalTo(expected)
         );
     }
+
+    @Test
+    void retrievesPackagedName() throws ImpossibleModificationException {
+        final String expected = "org.eolang.f.foo";
+        final String retrieved = new ObjectName(
+            new XMLDocument(
+                new Xembler(
+                    new Directives().add("object")
+                        .add("o").attr("name", "foo")
+                        .up()
+                        .add("metas")
+                        .add("meta")
+                        .add("head")
+                        .set("package")
+                        .up()
+                        .add("tail")
+                        .set("org.eolang.f")
+                ).xml()
+            )
+        ).get();
+        MatcherAssert.assertThat(
+            String.format(
+                "Retrieved name '%s' does not match with expected: '%s'",
+                retrieved, expected
+            ),
+            retrieved,
+            Matchers.equalTo(expected)
+        );
+    }
 }
