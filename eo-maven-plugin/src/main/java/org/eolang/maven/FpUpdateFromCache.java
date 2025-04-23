@@ -8,6 +8,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Supplier;
+import org.cactoos.text.TextOf;
 
 /**
  * Footprint that updates target from cache.
@@ -21,26 +22,11 @@ final class FpUpdateFromCache implements Footprint {
     private final Supplier<Path> cache;
 
     /**
-     * Filesystem abstraction.
-     */
-    private final Filesystem filesystem;
-
-    /**
      * Ctor.
      * @param cache Lazy path to cache
      */
     FpUpdateFromCache(final Supplier<Path> cache) {
-        this(cache, new Filesystem.Real());
-    }
-
-    /**
-     * Ctor.
-     * @param cache Lazy path to cache
-     * @param filesystem Filesystem abstraction
-     */
-    FpUpdateFromCache(final Supplier<Path> cache, final Filesystem filesystem) {
         this.cache = cache;
-        this.filesystem = filesystem;
     }
 
     @Override
@@ -50,9 +36,6 @@ final class FpUpdateFromCache implements Footprint {
             "Updating only target %[file]s from cache %[file]s",
             target, source
         );
-        return this.filesystem.save(
-            target,
-            this.filesystem.read(this.cache.get())
-        );
+        return new Saved(new TextOf(this.cache.get()), target).value();
     }
 }

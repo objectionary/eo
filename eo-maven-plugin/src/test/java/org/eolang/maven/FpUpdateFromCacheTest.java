@@ -12,6 +12,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link FpUpdateFromCache}.
@@ -20,19 +21,18 @@ import org.junit.jupiter.api.Test;
 final class FpUpdateFromCacheTest {
 
     @Test
-    void appliesFromCache() throws IOException {
-        final Filesystem.Fake fake = new Filesystem.Fake();
+    void appliesFromCache(@TempDir final Path tmp) throws IOException {
         final Text expected = new TextOf("Cached!");
-        final Path cached = fake.save(Paths.get("./cache.txt"), expected);
-        final Path target = Paths.get("./target.txt");
+        final Path cached = new Saved(expected, tmp.resolve("cache.txt")).value();
+        final Path target = tmp.resolve("target.txt");
         MatcherAssert.assertThat(
             "We expect the footprint will return the target file path",
-            new FpUpdateFromCache(() -> cached, fake).apply(Paths.get("/dev/null"), target),
+            new FpUpdateFromCache(() -> cached).apply(Paths.get("/dev/null"), target),
             Matchers.equalTo(target)
         );
         MatcherAssert.assertThat(
             "The target file should be updated from cache",
-            fake.read(target),
+            new TextOf(target),
             Matchers.equalTo(expected)
         );
     }
