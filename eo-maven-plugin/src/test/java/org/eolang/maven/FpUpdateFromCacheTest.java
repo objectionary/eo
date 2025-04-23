@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,16 +14,17 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link FpUpdateFromCache}.
  * @since 0.57
  */
+@ExtendWith(MktmpResolver.class)
 final class FpUpdateFromCacheTest {
 
     @Test
-    void appliesFromCache(@TempDir final Path tmp) throws IOException {
+    void appliesFromCache(@Mktmp final Path tmp) throws IOException {
         final Text expected = new TextOf("Cached!");
         final Path cached = new Saved(expected, tmp.resolve("cache.txt")).value();
         final Path target = tmp.resolve("target.txt");
