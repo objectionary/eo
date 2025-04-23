@@ -28,7 +28,15 @@ public final class ObjectName implements Supplier<String> {
      * @param xml XML
      */
     public ObjectName(final XML xml) {
-        this.xnav = new Xnav(xml.inner());
+        this(new Xnav(xml.inner()));
+    }
+
+    /**
+     * Ctor.
+     * @param nav Navigator
+     */
+    public ObjectName(final Xnav nav) {
+        this.xnav = nav;
     }
 
     @Override
