@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 198.494557675
+  seconds: 30.198880465
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-23 15:12:38.038411470 Z
+  when: 2025-04-23 16:11:33.895945916 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -130905,13 +130905,6 @@
   since: 2025-04-16 13:25:48.952278052 Z
   what: quantity-of-deliverables
   when: 2025-04-23 13:25:48.952240743 Z
-- _id: 268636
-  _time: 2025-04-23 13:26:19.966977067 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 519299365
-  what: min-issue-was-found
-  where: github
 - _id: 268637
   _time: 2025-04-23 13:26:20.117904515 Z
   _version: 0.10.0/0.41.0/
@@ -131017,6 +131010,7 @@
     and merge it. Even if you are flying solo, contributing via pull requests is a
     [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
     Your running balance is [-376](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
+  href: https://github.com/objectionary/lints/commit/75e9d7b55a2a6fbebe4c645436c62b25449c02b0/#commitcomment-155767307
   is_human: 1
   repository: 889819508
   what: push-to-master-was-punished
@@ -131633,8 +131627,15 @@
   repository: 574459304
   what: min-issue-was-found
   where: github
-- _id: 269118
-  _time: 2025-04-23 15:12:25.151464288 Z
+- _id: 269119
+  _time: 2025-04-23 16:11:32.460393962 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 519299365
+  what: min-issue-was-found
+  where: github
+- _id: 269120
+  _time: 2025-04-23 16:11:33.266562963 Z
   _version: 0.10.0/0.41.0/
   latest: 3
   repository: 671896902
