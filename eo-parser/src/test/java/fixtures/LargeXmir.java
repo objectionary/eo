@@ -93,7 +93,7 @@ public final class LargeXmir {
                     );
                 f.build()
                     .plugins()
-                    .append("org.eolang", "jeo-maven-plugin", "0.7.2")
+                    .append("org.eolang", "jeo-maven-plugin", "0.10.0")
                     .execution("default")
                     .phase("process-classes")
                     .goals("disassemble");
