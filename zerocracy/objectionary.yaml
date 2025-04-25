@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 192.118875112
+  seconds: 44.256289305
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-25 12:18:33.678539152 Z
+  when: 2025-04-25 13:20:49.485754023 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -130888,13 +130888,6 @@
   when: *745
   where: github
   who: 83453843
-- _id: 270345
-  _time: 2025-04-23 23:09:03.322395041 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 721146770
-  what: min-issue-was-found
-  where: github
 - _id: 270396
   _time: 2025-04-23 23:09:20.722086474 Z
   _version: 0.10.0/0.41.0/
@@ -131008,13 +131001,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 565789755
-  what: min-issue-was-found
-  where: github
-- _id: 270902
-  _time: 2025-04-24 02:24:20.187680503 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 551486781
   what: min-issue-was-found
   where: github
 - _id: 270905
@@ -131189,13 +131175,6 @@
   when: 2025-04-24 17:56:07.000000000 Z
   where: github
   who: 37025995
-- _id: 274297
-  _time: 2025-04-24 18:11:57.504777857 Z
-  _version: 0.10.0/0.41.0/
-  latest: 2
-  repository: 798766850
-  what: min-issue-was-found
-  where: github
 - _id: 274914
   _time: 2025-04-24 20:12:44.379932401 Z
   _version: 0.10.0/0.41.0/
@@ -131350,13 +131329,6 @@
   _version: 0.10.0/0.41.0/
   latest: 2
   repository: 396732517
-  what: min-issue-was-found
-  where: github
-- _id: 276169
-  _time: 2025-04-25 04:13:55.377934377 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 570457023
   what: min-issue-was-found
   where: github
 - _id: 276170
@@ -131609,29 +131581,6 @@
   when: 2025-04-25 06:18:47.000000000 Z
   where: github
   who: 8086956
-- _id: 277701
-  _job: 18482
-  _time: 2025-04-25 11:12:10.087982864 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: -16
-  commit: 3bc4e05735529721edc64af04fe233dab8da9ee0
-  default_branch: master
-  details: It's time to punish @yegor256 for pushing to the default branch 'master'
-    in objectionary/eo, the penalty amount is -16.
-  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/07/21/read-only-master-branch.html)
-    to push directly to the default branch `master`. You''ve earned -16 points. Next
-    time, create a new branch, push your changes over there, then make a pull request
-    and merge it. Even if you are flying solo, contributing via pull requests is a
-    [good practice](https://www.yegor256.com/2020/07/29/open-source-etiquette.html).
-    Your running balance is [-204](https://www.eolang.org/zerocracy/objectionary-vitals.html). '
-  href: https://github.com/objectionary/eo/commit/3bc4e05735529721edc64af04fe233dab8da9ee0/#commitcomment-155873471
-  is_human: 1
-  repository: 73056727
-  what: push-to-master-was-punished
-  when: 2025-04-25 11:12:10.106659995 Z
-  where: github
-  who: 526301
-  why: Pushed 3bc4e0573 to the default branch 'master' in objectionary/eo
 - _id: 277702
   _job: 18482
   _time: 2025-04-25 11:12:14.189358375 Z
@@ -131650,30 +131599,6 @@
   when: *750
   where: github
   who: 51804353
-- _id: 277703
-  _job: 18482
-  _time: 2025-04-25 11:12:17.132029296 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/eo#4113,
-    the reward amount is 4.
-  greeting: "Thanks for your review! Here's how your +4 points were calculated: +4
-    base, -24 for self-review, +0.01 per hit-of-code (capped at 16), -10 for <6 comments,
-    +0.25 per comment (capped at 8), adjusted to the minimum 4 points. Your balance
-    is now [-220](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep
-    up the good work and aim for more comments next time! \U0001F4AA\n\n<!-- Thanks
-    for the review! You've earned +4 points for this: +4 as a basis; -10 for very
-    few (2) comments; +10 to give you at least something.  Your running balance is
-    [-220](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->"
-  href: https://github.com/objectionary/eo/issues/4113/#issuecomment-2830122116
-  is_human: 1
-  issue: 4113
-  repository: 73056727
-  what: code-review-was-rewarded
-  when: 2025-04-25 11:12:17.220052755 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/eo#4113
 - _id: 277704
   _time: 2025-04-25 12:15:53.536898471 Z
   _version: 0.10.0/0.41.0/
@@ -132281,5 +132206,100 @@
   _version: 0.10.0/0.41.0/
   latest: 1
   repository: 840332960
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 277953
+  - 277703
+  _job:
+  - 18484
+  - 18482
+  _time:
+  - 2025-04-25 12:18:53.567254884 Z
+  - 2025-04-25 11:12:17.132029296 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/eo#4113,
+    the reward amount is 4.
+  href: https://github.com/objectionary/eo/issues/4113/#issuecomment-2830122116
+  is_human: 1
+  issue: 4113
+  repository: 73056727
+  what: code-review-was-rewarded
+  when: 2025-04-25 11:12:17.220052755 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/eo#4113
+- _id:
+  - 277954
+  - 277701
+  _job:
+  - 18484
+  - 18482
+  _time:
+  - 2025-04-25 12:18:53.623428293 Z
+  - 2025-04-25 11:12:10.087982864 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: -16
+  commit: 3bc4e05735529721edc64af04fe233dab8da9ee0
+  default_branch: master
+  details: It's time to punish @yegor256 for pushing to the default branch 'master'
+    in objectionary/eo, the penalty amount is -16.
+  href: https://github.com/objectionary/eo/commit/3bc4e05735529721edc64af04fe233dab8da9ee0/#commitcomment-155873471
+  is_human: 1
+  repository: 73056727
+  what: push-to-master-was-punished
+  when: 2025-04-25 11:12:10.106659995 Z
+  where: github
+  who: 526301
+  why: Pushed 3bc4e0573 to the default branch 'master' in objectionary/eo
+- _id: 277955
+  _job: 18484
+  _time: 2025-04-25 12:19:03.794107626 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @volodya-lombrozo for the code contributed in objectionary/eo#4113,
+    the reward amount is 4.
+  greeting: "Great work on your contribution! \U0001F31F You've earned +4 points,
+    bringing your total to [+73](https://www.eolang.org/zerocracy/objectionary-vitals.html).
+    We appreciate your dedication to [quality and speed](https://www.yegor256.com/2018/03/06/speed-vs-quality.html).
+    Keep up the fantastic effort!\n\n<!-- Thanks for the contribution! You've earned
+    +4 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running balance is [+73](https://www.eolang.org/zerocracy/objectionary-vitals.html).
+    \ -->"
+  href: https://github.com/objectionary/eo/issues/4113/#issuecomment-2830272271
+  issue: 4113
+  repository: 73056727
+  what: code-contribution-was-rewarded
+  when: 2025-04-25 12:19:03.814408100 Z
+  where: github
+  who: 51804353
+  why: Contributed code in objectionary/eo#4113
+- _id: 277956
+  _time: 2025-04-25 13:20:22.664487981 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 721146770
+  what: min-issue-was-found
+  where: github
+- _id: 277957
+  _time: 2025-04-25 13:20:22.817139231 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 570457023
+  what: min-issue-was-found
+  where: github
+- _id: 277958
+  _time: 2025-04-25 13:20:22.969233056 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 551486781
+  what: min-issue-was-found
+  where: github
+- _id: 277959
+  _time: 2025-04-25 13:20:23.974269854 Z
+  _version: 0.10.0/0.41.0/
+  latest: 2
+  repository: 798766850
   what: min-issue-was-found
   where: github
