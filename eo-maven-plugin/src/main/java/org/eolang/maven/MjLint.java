@@ -188,7 +188,7 @@ public final class MjLint extends MjSafe {
                             defect
                         )
                     ).applyQuietly(node);
-                    if (MjLint.noSuppressed(new Xnav(node), defect)) {
+                    if (MjLint.notSuppressed(new Xnav(node), defect)) {
                         counts.compute(defect.severity(), (sev, before) -> before + 1);
                         MjLint.logOne(defect);
                     }
@@ -231,7 +231,7 @@ public final class MjLint extends MjSafe {
             if (found.contains(defect)) {
                 MjLint.embedded(dirs, defect);
             }
-            if (MjLint.noSuppressed(xnav, defect)) {
+            if (MjLint.notSuppressed(xnav, defect)) {
                 counts.compute(defect.severity(), (sev, before) -> before + 1);
                 MjLint.logOne(defect);
             }
@@ -388,7 +388,7 @@ public final class MjLint extends MjSafe {
      * @param defect The defect
      * @return TRUE if not suppressed
      */
-    private static boolean noSuppressed(final Xnav xnav, final Defect defect) {
+    private static boolean notSuppressed(final Xnav xnav, final Defect defect) {
         return xnav.path(
             String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
         ).findAny().isEmpty();
