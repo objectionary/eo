@@ -24,8 +24,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
-import org.eolang.lints.Programs;
 import org.eolang.lints.Severity;
+import org.eolang.lints.Source;
 import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -74,9 +74,11 @@ public final class MjLint extends MjSafe {
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
+        if (!this.skipSourceLints.isEmpty()) {
+            Logger.info(this, "Unliting source lints: %[list]s", this.skipSourceLints);
+        }
         final int passed = new Threaded<>(
-            tojos,
-            tojo -> this.lintOne(tojo, counts)
+            tojos, tojo -> this.lintOne(tojo, counts, this.skipSourceLints.toArray(new String[0]))
         ).total();
         if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -125,12 +127,14 @@ public final class MjLint extends MjSafe {
      * XMIR verified to another XMIR.
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
+     * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
      */
     private int lintOne(
         final TjForeign tojo,
-        final ConcurrentHashMap<Severity, Integer> counts
+        final ConcurrentHashMap<Severity, Integer> counts,
+        final String... unlints
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -138,7 +142,7 @@ public final class MjLint extends MjSafe {
         final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
         tojo.withLinted(
             new FpDefault(
-                src -> MjLint.linted(tojo.identifier(), xmir, counts).toString(),
+                src -> this.linted(tojo.identifier(), xmir, counts, unlints).toString(),
                 this.cache.toPath().resolve(MjLint.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -167,9 +171,14 @@ public final class MjLint extends MjSafe {
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
             pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
-        new Programs(pkg)
-            .without("inconsistent-args")
+        if (!this.skipProgramLints.isEmpty()) {
+            Logger.info(this, "Unliting WPA lints: %[list]s", this.skipProgramLints);
+        }
+        new Program(pkg)
+            .without(this.skipProgramLints.toArray(new String[0]))
             .defects()
+            .stream()
+            .filter(defect -> this.skipExperimentalLints || !defect.experimental())
             .forEach(
                 defect -> {
                     final Node node = pkg.get(defect.program()).inner();
@@ -179,13 +188,56 @@ public final class MjLint extends MjSafe {
                             defect
                         )
                     ).applyQuietly(node);
-                    if (!MjLint.suppressed(new Xnav(node), defect)) {
+                    if (MjLint.notSuppressed(new Xnav(node), defect)) {
                         counts.compute(defect.severity(), (sev, before) -> before + 1);
                         MjLint.logOne(defect);
                     }
                 }
             );
         return pkg.size();
+    }
+
+    /**
+     * Find all possible linting defects and add them to the XMIR.
+     * @param program Program identifier
+     * @param xmir The XML before linting
+     * @param counts Counts of errors, warnings, and critical
+     * @param unlints Lints to skip
+     * @return XML after linting
+     * @checkstyle ParameterNumberCheck (40 lines)
+     */
+    private XML linted(
+        final String program,
+        final XML xmir,
+        final ConcurrentHashMap<Severity, Integer> counts,
+        final String... unlints
+    ) {
+        final Node node = xmir.inner();
+        final Xnav xnav = new Xnav(node);
+        final Collection<Defect> defects = MjLint.existing(program, xnav);
+        final Collection<Defect> found = new Source(xmir)
+            .without(unlints)
+            .defects()
+            .stream()
+            .filter(
+                defect -> this.skipExperimentalLints || !defect.experimental()
+            ).collect(Collectors.toList());
+        defects.addAll(found);
+        final Directives dirs = new Directives();
+        if (!found.isEmpty()) {
+            dirs.xpath("/object").addIf("errors").strict(1);
+        }
+        for (final Defect defect : defects) {
+            if (found.contains(defect)) {
+                MjLint.embedded(dirs, defect);
+            }
+            if (MjLint.notSuppressed(xnav, defect)) {
+                counts.compute(defect.severity(), (sev, before) -> before + 1);
+                MjLint.logOne(defect);
+            }
+        }
+        new Xembler(dirs).applyQuietly(node);
+        return new XMLDocument(node);
     }
 
     /**
@@ -270,48 +322,6 @@ public final class MjLint extends MjSafe {
     }
 
     /**
-     * Find all possible linting defects and add them to the XMIR.
-     * @param program Program identifier
-     * @param xmir The XML before linting
-     * @param counts Counts of errors, warnings, and critical
-     * @return XML after linting
-     * @todo #4039:30min Enable `inconsistent-args` lint.
-     *  This lint generates many errors during the compilation of eo-runtime.
-     *  We need to fix the errors in eo-runtime and enable this lint.
-     *  Don't forget to enable this lint in {@link #lintAll(ConcurrentHashMap)} method
-     *  as well.
-     */
-    private static XML linted(
-        final String program, final XML xmir, final ConcurrentHashMap<Severity, Integer> counts
-    ) {
-        final Node node = xmir.inner();
-        final Xnav xnav = new Xnav(node);
-        final Collection<Defect> defects = MjLint.existing(program, xnav);
-        final Collection<Defect> found = new Program(xmir)
-            .without(
-                "empty-object",
-                "sprintf-without-formatters",
-                "inconsistent-args"
-            ).defects();
-        defects.addAll(found);
-        final Directives dirs = new Directives();
-        if (!found.isEmpty()) {
-            dirs.xpath("/object").addIf("errors").strict(1);
-        }
-        for (final Defect defect : defects) {
-            if (found.contains(defect)) {
-                MjLint.embedded(dirs, defect);
-            }
-            if (!MjLint.suppressed(xnav, defect)) {
-                counts.compute(defect.severity(), (sev, before) -> before + 1);
-                MjLint.logOne(defect);
-            }
-        }
-        new Xembler(dirs).applyQuietly(node);
-        return new XMLDocument(node);
-    }
-
-    /**
      * Collection of defects existing in XMIR before linting.
      * @param program Program name
      * @param xnav XML node as Xnav
@@ -373,17 +383,14 @@ public final class MjLint extends MjSafe {
     }
 
     /**
-     * This defect is suppressed?
+     * This defect is not suppressed?
      * @param xnav The XMIR as {@link Xnav}
      * @param defect The defect
-     * @return TRUE if suppressed
+     * @return TRUE if not suppressed
      */
-    private static boolean suppressed(final Xnav xnav, final Defect defect) {
+    private static boolean notSuppressed(final Xnav xnav, final Defect defect) {
         return xnav.path(
-            String.format(
-                "/object/metas/meta[head='unlint' and tail='%s']",
-                defect.rule()
-            )
-        ).findAny().isPresent();
+            String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
+        ).findAny().isEmpty();
     }
 }
