@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: titles
+'on':
+  schedule:
+    - cron: '0 0 * * *'
+  issues:
+    types: [ opened ]
+jobs:
+  titles:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: horw/issue-title-ai@v0.1.2b
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          days-to-scan: 10
+          skip-label: 'good-title'
+          auto-update: true
+          max-issues: 10
+          model: gpt-4
+          verbose: true
+          quiet: true
+          strip-characters: '"'
+          prompt: |-
+            You are an expert at writing clear, concise, and descriptive GitHub issue titles.
+            Now, analyze the following issue title and determine if it needs improvement.
+            If the title is already clear, specific, and well-formatted, return the original title unchanged.
+            Otherwise, improve it to make it more specific, actionable, and easy to understand.
+            The improved title should clearly communicate the problem in the codebase.
+
+            Original Issue Title: "{original_title}"
+
+            Issue Description:
+            \"\"\"
+            {issue_body}
+            \"\"\"
+
+            Stick to the following basic rules:
+            1. The title MUST sound like a bug report, assuring that something is broken
+            2. It may NOT sound like a task order or a suggestion
+            3. Use aggressive tone, to ephasize the problem at hands
+            4. Keep it concise (under 60 characters ideally)
+            5. Don't change the meaning or intent of the original issue
+
+            Your response should ONLY contain the improved issue title or the original title if it's already good.
+            Do not include any other text or explanations.
