@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 44.256289305
+  seconds: 176.561919821
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-25 13:20:49.485754023 Z
+  when: 2025-04-25 14:11:38.228362183 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -131401,20 +131401,6 @@
   repository: 510082372
   what: min-issue-was-found
   where: github
-- _id: 276931
-  _time: 2025-04-25 08:16:56.422110332 Z
-  _version: 0.10.0/0.41.0/
-  latest: 1
-  repository: 73056727
-  what: min-issue-was-found
-  where: github
-- _id: 277194
-  _time: 2025-04-25 09:12:33.280167538 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 490221501
-  what: min-issue-was-found
-  where: github
 - _id: 277195
   _time: 2025-04-25 09:12:33.437223540 Z
   _version: 0.10.0/0.41.0/
@@ -132253,28 +132239,6 @@
   where: github
   who: 526301
   why: Pushed 3bc4e0573 to the default branch 'master' in objectionary/eo
-- _id: 277955
-  _job: 18484
-  _time: 2025-04-25 12:19:03.794107626 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @volodya-lombrozo for the code contributed in objectionary/eo#4113,
-    the reward amount is 4.
-  greeting: "Great work on your contribution! \U0001F31F You've earned +4 points,
-    bringing your total to [+73](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    We appreciate your dedication to [quality and speed](https://www.yegor256.com/2018/03/06/speed-vs-quality.html).
-    Keep up the fantastic effort!\n\n<!-- Thanks for the contribution! You've earned
-    +4 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running balance is [+73](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/eo/issues/4113/#issuecomment-2830272271
-  issue: 4113
-  repository: 73056727
-  what: code-contribution-was-rewarded
-  when: 2025-04-25 12:19:03.814408100 Z
-  where: github
-  who: 51804353
-  why: Contributed code in objectionary/eo#4113
 - _id: 277956
   _time: 2025-04-25 13:20:22.664487981 Z
   _version: 0.10.0/0.41.0/
@@ -132303,3 +132267,51 @@
   repository: 798766850
   what: min-issue-was-found
   where: github
+- _id:
+  - 277960
+  - 277955
+  _job:
+  - 18487
+  - 18484
+  _time:
+  - 2025-04-25 13:21:13.880398090 Z
+  - 2025-04-25 12:19:03.794107626 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @volodya-lombrozo for the code contributed in objectionary/eo#4113,
+    the reward amount is 4.
+  href: https://github.com/objectionary/eo/issues/4113/#issuecomment-2830272271
+  issue: 4113
+  repository: 73056727
+  what: code-contribution-was-rewarded
+  when: 2025-04-25 12:19:03.814408100 Z
+  where: github
+  who: 51804353
+  why: Contributed code in objectionary/eo#4113
+- _id: 277961
+  _time: 2025-04-25 14:10:40.930802527 Z
+  _version: 0.10.0/0.41.0/
+  since: 2025-04-18 14:09:14.861325401 Z
+  total_builds_ran: 1981
+  what: quantity-of-deliverables
+  when: 2025-04-25 14:09:14.861274126 Z
+- _id: 277962
+  _time: 2025-04-25 14:11:01.342784658 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 490221501
+  what: min-issue-was-found
+  where: github
+- _id: 277963
+  _time: 2025-04-25 14:11:02.774415275 Z
+  _version: 0.10.0/0.41.0/
+  latest: 1
+  repository: 73056727
+  what: min-issue-was-found
+  where: github
+- _id: 277964
+  _time: 2025-04-25 14:11:02.871757786 Z
+  _version: 0.10.0/0.41.0/
+  since: 2025-04-18 14:11:02.871943702 Z
+  what: quality-of-service
+  when: 2025-04-25 14:11:02.871895072 Z
