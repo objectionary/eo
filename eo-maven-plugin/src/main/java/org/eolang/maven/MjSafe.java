@@ -253,6 +253,16 @@ abstract class MjSafe extends AbstractMojo {
     protected String tag = "master";
 
     /**
+     * If set to TRUE, experimental lints are skipped during the linting.
+     * @since 0.57.0
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.skipExperimentalLints", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.LongVariable")
+    protected boolean skipExperimentalLints;
+
+    /**
      * Pull again even if the .eo file is already present?
      * @since 0.10.0
      * @checkstyle MemberNameCheck (10 lines)
@@ -301,6 +311,24 @@ abstract class MjSafe extends AbstractMojo {
      */
     @Parameter
     protected Set<String> placeBinaries = new SetOf<>("**");
+
+    /**
+     * List of individual lints which must be skipped during the linting.
+     * @since 0.57
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    protected Set<String> skipSourceLints = new SetOf<>();
+
+    /**
+     * List of WPA lints which must be skipped during the linting.
+     * @since 0.57
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter
+    protected Set<String> skipProgramLints = new SetOf<>();
 
     /**
      * List of exclusion GLOB filters for finding class files while placing them from where

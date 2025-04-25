@@ -584,6 +584,7 @@ final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 MjParse.class,
+                MjLint.class,
                 MjTranspile.class
             ).iterator();
         }

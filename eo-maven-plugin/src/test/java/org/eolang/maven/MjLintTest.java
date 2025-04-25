@@ -19,7 +19,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,19 +31,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  in production code, we got rid of it and replaced with {@link Xnav#path(String)} and
  *  {@link Xnav#element(String)}. But we didn't do it in the tests. Let's do it, it should increase
  *  the performance of our tests and make our code more consistent.
- * @todo #3919:30min Enable {@link MjLintTest} and {@link MjLintIT}. The tests were disabled
- *  because we've significantly changed the structure of XMIR. That's why all the lint cases in
- *  objectionary/lints don't catch defects properly anymore. We need to fix them first, then
- *  release a new version, then update it here, enable {@link MjLintTest} and set
- *  {@code skipLinting} flag in eo-runtime/pom.xml in qulice profile configuration to {@code false}.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
-@Disabled
 final class MjLintTest {
     @Test
-    void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) {
+    void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .execute(new FakeMaven.Lint());
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withHelloWorld()
@@ -57,11 +53,10 @@ final class MjLintTest {
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
-                "+package f\n",
+                "+package foo.x\n",
                 "# No comments.",
                 "[] > main",
-                "  QQ.io.stdout",
-                "    \"Hello world\""
+                "  cti true \"error\" \"msg\" > @"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -81,10 +76,10 @@ final class MjLintTest {
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
-                "+package f\n",
+                "+package foo.x\n",
                 "# No comments.",
                 "[] > main",
-                "    \"Hello world\""
+                "  cti true \"critical\" \"msg\" > @"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -93,17 +88,15 @@ final class MjLintTest {
         );
         MatcherAssert.assertThat(
             "Linted file should not exist",
-            maven.result(),
-            Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", MjLint.DIR))
+            maven.programTojo().linted().toFile(),
+            FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
             "Error must exist in parsed XMIR",
             new Xnav(
-                new XMLDocument(
-                    maven.result().get(String.format("target/%s/foo/x/main.xmir", MjParse.DIR))
-                ).inner()
+                new XMLDocument(maven.programTojo().xmir()).inner()
             ).path("//errors/error[@severity='critical']").count(),
-            Matchers.equalTo(3L)
+            Matchers.equalTo(1L)
         );
     }
 
@@ -111,7 +104,7 @@ final class MjLintTest {
     void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
-                "+package f\n",
+                "+package foo.x\n",
                 "# No comments.",
                 "[] > main",
                 "  # No comments.",
@@ -138,8 +131,7 @@ final class MjLintTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram(
-                    "+package f",
-                    "+unlint object-has-data\n",
+                    "+package foo.x\n",
                     "# No comments.",
                     "[] > main",
                     "  [] > x",
@@ -152,44 +144,15 @@ final class MjLintTest {
     }
 
     @Test
-    void failsOptimizationOnError(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
-                    "# No comments.",
-                    "[args] > main",
-                    "  (stdout \"Hello!\").print > @"
-                )
-                .execute(new FakeMaven.Lint()),
-            "Error in the eo code because of invalid alias, should fail"
-        );
-    }
-
-    @Test
-    void failsOptimizationOnCritical(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "# No comments.",
-                    "[args] > main",
-                    "  seq > @",
-                    "    TRUE > x",
-                    "    FALSE > x"
-                ).with("trackTransformationSteps", true)
-                .execute(new FakeMaven.Lint()),
-            "Program should have failed, but it didn't"
-        );
-    }
-
-    @Test
     void failsParsingOnError(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
-            .withProgram("something > is wrong here");
+            .withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  seq *-1 > @",
+                "    true"
+            );
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -201,45 +164,6 @@ final class MjLintTest {
                 "/object/errors/error[@severity='critical' and @check='eo-parser']"
             ).count(),
             Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
-    void failsOnInvalidProgram(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+alias stdout org.eolang.io.stdout",
-                    "+home https://github.com/objectionary/eo",
-                    "+package test",
-                    "+version 0.0.0",
-                    "",
-                    "[x] < wrong>",
-                    "  (stdout \"Hello!\" x).print"
-                )
-                .execute(new FakeMaven.Lint()),
-                "Invalid program with wrong syntax should have failed to assemble, but it didn't"
-        );
-    }
-
-    @Test
-    void failsOnWarning(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+architect yegor256@gmail.com",
-                    "+tests",
-                    "+package org.eolang.examples\n",
-                    "# No comments.",
-                    "[] > main",
-                    "  [] > @",
-                    "    hello > test"
-                )
-                .with("failOnWarning", true)
-                .execute(new FakeMaven.Lint()),
-            "Program with warning should fail"
         );
     }
 

@@ -7,7 +7,8 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint empty-object
++unlint no-attribute-formation:32
++unlint no-attribute-formation:42
 
 # Returns a floating point number.
 [num] > real
