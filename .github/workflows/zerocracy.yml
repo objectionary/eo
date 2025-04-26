@@ -21,7 +21,7 @@ jobs:
           verbose: false
           cycles: 1
           token: ${{ secrets.ZEROCRACY_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
           repositories: objectionary/*
           options: |
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
@@ -32,7 +32,7 @@ jobs:
           output: pages
           logo: https://www.objectionary.com/cactus.svg
           options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
+            github_token=${{ secrets.ZEROCRACY_GITHUB_PAT }}
       - uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           branch: gh-pages
