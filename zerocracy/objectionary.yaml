@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 191.189346583
+  seconds: 25.735636753
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-26 10:11:05.818262508 Z
+  when: 2025-04-26 11:03:30.346424997 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -131107,13 +131107,6 @@
   when: *748
   where: github
   who: 526301
-- _id: 274251
-  _time: 2025-04-24 17:11:33.755571230 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 731516758
-  what: min-issue-was-found
-  where: github
 - _id: 274258
   _time: 2025-04-24 18:11:26.236077668 Z
   _version: 0.10.0/0.41.0/
@@ -131210,13 +131203,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 559427983
-  what: min-issue-was-found
-  where: github
-- _id: 276701
-  _time: 2025-04-25 07:12:32.630047401 Z
-  _version: 0.10.0/0.41.0/
-  latest: 1
-  repository: 546194972
   what: min-issue-was-found
   where: github
 - _id: 276702
@@ -131651,20 +131637,6 @@
   when: 2025-04-25 09:20:41.000000000 Z
   where: github
   who: 526301
-- _id: 278274
-  _time: 2025-04-25 16:11:10.497754138 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 499536612
-  what: min-issue-was-found
-  where: github
-- _id: 278276
-  _time: 2025-04-25 16:11:10.789270845 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 624420387
-  what: min-issue-was-found
-  where: github
 - _id: 278277
   _time: 2025-04-25 16:11:10.932411786 Z
   _version: 0.10.0/0.41.0/
@@ -133108,154 +133080,6 @@
   when: *769
   where: github
   who: 83453843
-- _id: 281020
-  _job: 18542
-  _time: 2025-04-26 08:13:24.271741633 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/lints#504,
-    the reward amount is 4.
-  greeting: "Hey there, coding superstar! \U0001F31F Awesome job on that review –
-    you've snagged yourself 4 points! Just a heads up, your current balance is sitting
-    at [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up
-    the great work, and remember, more [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)
-    and review comments can boost your points even higher. Every bit counts towards
-    that sweet bonus! Let's keep the momentum going!\n\n<!-- Thanks for the review!
-    You've earned +4 points.  Your running balance is [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/504/#issuecomment-2831981178
-  is_human: 1
-  issue: 504
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-26 08:13:24.290697095 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/lints#504
-- _id: 281021
-  _job: 18542
-  _time: 2025-04-26 08:13:28.307644032 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/eo#4121,
-    the reward amount is 4.
-  greeting: "Hey there! \U0001F44B Thanks for the review, but it looks like we missed
-    the mark this time. You got +4 points as a base, but we had to deduct 16 because
-    there were no comments. We added 16 back to keep you at the minimum 4 points.
-    Remember, comments are crucial - they can earn you up to 8 extra points! Also,
-    don't forget that more code (hits-of-code) can boost your score too. Your current
-    balance is [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Let's aim for a higher score next time! \U0001F4AA\n\n<!-- Thanks for the review!
-    You've earned +4 points for this: +4 as a basis; -16 for absolutely no comments
-    posted; +16 to give you at least something.  Your running balance is [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/eo/issues/4121/#issuecomment-2831981186
-  is_human: 1
-  issue: 4121
-  repository: 73056727
-  what: code-review-was-rewarded
-  when: 2025-04-26 08:13:28.321481392 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/eo#4121
-- _id: 281022
-  _job: 18542
-  _time: 2025-04-26 08:13:32.299335204 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/lints#511,
-    the reward amount is 4.
-  greeting: "Great job on the review! \U0001F31F You've earned +4 points, despite
-    the challenges with comments and hits-of-code. Keep improving, and you'll see
-    your balance grow! Your current balance is [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Let's aim higher next time!\n\n<!-- Thanks for the review! You've earned +4 points
-    for this: +4 as a basis; -16 for absolutely no comments posted; -8 for too few
-    (7) hits-of-code; +24 to give you at least something.  Your running balance is
-    [-217](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->"
-  href: https://github.com/objectionary/lints/issues/511/#issuecomment-2831981200
-  is_human: 1
-  issue: 511
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-26 08:13:32.318385977 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/lints#511
-- _id: 281023
-  _job: 18542
-  _time: 2025-04-26 08:13:35.806522648 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @lgrishin for the code contributed in objectionary/sodg#198,
-    the reward amount is 4.
-  greeting: "Great work on your contribution! \U0001F31F You've earned +4 points:
-    +4 base, -8 for exceeding code limit (476 >= 200), -16 for missing code review,
-    +24 bonus. We appreciate your effort! [Keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    the contributions coming. Your current balance is [-16](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Looking forward to your next submission!\n\n<!-- Thanks for the contribution!
-    You've earned +4 points for this: +4 as a basis; -8 for too many hits-of-code
-    (476 >= 200); -16 for the lack of code review; +24 to give you at least something.
-    Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them
-    coming. Your running balance is [-16](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/sodg/issues/198/#issuecomment-2831981238
-  is_human: 1
-  issue: 198
-  receipt: receipt-#20793
-  repository: 543969974
-  what: code-contribution-was-rewarded
-  when: 2025-04-26 08:13:35.825822366 Z
-  where: github
-  who: 59740671
-  why: Contributed code in objectionary/sodg#198
-- _id: 281024
-  _job: 18542
-  _time: 2025-04-26 08:13:39.635819309 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#4121,
-    the reward amount is 4.
-  greeting: "Hey there! Great job on your contribution! \U0001F44D You've earned +4
-    points for this one: +4 base, +16 for your 387 [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
-    -8 for exceeding 200 HOC, and -8 for going over 800 HOC. We love seeing substantial
-    code changes, but remember to keep them [focused](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    when possible. Your running balance is now [+108](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Keep those contributions coming, and don't forget to engage in code reviews –
-    they're crucial for our team's success!\n\n<!-- Thanks for the contribution! You've
-    earned +4 points for this: +4 as a basis; -8 for too many hits-of-code (387 >=
-    200); +8 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running balance is [+108](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/eo/issues/4121/#issuecomment-2831981222
-  is_human: 1
-  issue: 4121
-  repository: 73056727
-  what: code-contribution-was-rewarded
-  when: 2025-04-26 08:13:39.656855853 Z
-  where: github
-  who: 37025995
-  why: Contributed code in objectionary/eo#4121
-- _id: 281025
-  _job: 18542
-  _time: 2025-04-26 08:13:44.771562006 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 8
-  details: It's time to reward @h1alexbel for the code contributed in objectionary/lints#504,
-    the reward amount is 8.
-  greeting: |-
-    Thank you for your contribution! Your effort is appreciated. You've earned +8 points: +4 base points, +9.5 for 190 hits-of-code (capped at +16), and -5.2 for 29 review comments (capped at -16). Great job keeping your code concise, as [large contributions](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) can be challenging to review. We encourage you to continue making valuable contributions. Your updated balance is now [+151](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the good work!
-
-    <!-- Thanks for the contribution! You've earned +8 points for this: +4 as a basis; +9 for the 190 hits-of-code that you wrote; -5 for too many (29 > 8) comments that were made during review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running balance is [+151](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->
-  href: https://github.com/objectionary/lints/issues/504/#issuecomment-2831981253
-  is_human: 1
-  issue: 504
-  receipt: receipt-#20794
-  repository: 889819508
-  what: code-contribution-was-rewarded
-  when: 2025-04-26 08:13:44.802028291 Z
-  where: github
-  who: 83453843
-  why: Contributed code in objectionary/lints#504
 - _id: 281293
   _time: 2025-04-26 09:11:10.647419144 Z
   _version: 0.10.0/0.41.0/
@@ -133268,13 +133092,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 447446664
-  what: min-issue-was-found
-  where: github
-- _id: 281295
-  _time: 2025-04-26 09:11:10.960580712 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 490258619
   what: min-issue-was-found
   where: github
 - _id: 281296
@@ -133324,6 +133141,7 @@
     you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
     them coming. Your running balance is [+159](https://www.eolang.org/zerocracy/objectionary-vitals.html).
     \ -->"
+  href: https://github.com/objectionary/lints/issues/511/#issuecomment-2832011493
   is_human: 1
   issue: 511
   receipt: receipt-#20799
@@ -133982,5 +133800,174 @@
   _version: 0.10.0/0.41.0/
   latest: 1
   repository: 73056727
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 281566
+  - 281020
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:28.859662296 Z
+  - 2025-04-26 08:13:24.271741633 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/lints#504,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/504/#issuecomment-2831981178
+  is_human: 1
+  issue: 504
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-26 08:13:24.290697095 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/lints#504
+- _id:
+  - 281567
+  - 281021
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:28.919169790 Z
+  - 2025-04-26 08:13:28.307644032 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/eo#4121,
+    the reward amount is 4.
+  href: https://github.com/objectionary/eo/issues/4121/#issuecomment-2831981186
+  is_human: 1
+  issue: 4121
+  repository: 73056727
+  what: code-review-was-rewarded
+  when: 2025-04-26 08:13:28.321481392 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/eo#4121
+- _id:
+  - 281568
+  - 281022
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:28.980649584 Z
+  - 2025-04-26 08:13:32.299335204 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/lints#511,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/511/#issuecomment-2831981200
+  is_human: 1
+  issue: 511
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-26 08:13:32.318385977 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/lints#511
+- _id:
+  - 281569
+  - 281024
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:29.043824461 Z
+  - 2025-04-26 08:13:39.635819309 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#4121,
+    the reward amount is 4.
+  href: https://github.com/objectionary/eo/issues/4121/#issuecomment-2831981222
+  is_human: 1
+  issue: 4121
+  repository: 73056727
+  what: code-contribution-was-rewarded
+  when: 2025-04-26 08:13:39.656855853 Z
+  where: github
+  who: 37025995
+  why: Contributed code in objectionary/eo#4121
+- _id:
+  - 281570
+  - 281023
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:29.107172274 Z
+  - 2025-04-26 08:13:35.806522648 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @lgrishin for the code contributed in objectionary/sodg#198,
+    the reward amount is 4.
+  href: https://github.com/objectionary/sodg/issues/198/#issuecomment-2831981238
+  is_human: 1
+  issue: 198
+  receipt: receipt-#20793
+  repository: 543969974
+  what: code-contribution-was-rewarded
+  when: 2025-04-26 08:13:35.825822366 Z
+  where: github
+  who: 59740671
+  why: Contributed code in objectionary/sodg#198
+- _id:
+  - 281571
+  - 281025
+  _job:
+  - 18549
+  - 18542
+  _time:
+  - 2025-04-26 10:11:29.167206109 Z
+  - 2025-04-26 08:13:44.771562006 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 8
+  details: It's time to reward @h1alexbel for the code contributed in objectionary/lints#504,
+    the reward amount is 8.
+  href: https://github.com/objectionary/lints/issues/504/#issuecomment-2831981253
+  is_human: 1
+  issue: 504
+  receipt: receipt-#20794
+  repository: 889819508
+  what: code-contribution-was-rewarded
+  when: 2025-04-26 08:13:44.802028291 Z
+  where: github
+  who: 83453843
+  why: Contributed code in objectionary/lints#504
+- _id: 281572
+  _time: 2025-04-26 11:03:27.207661310 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 624420387
+  what: min-issue-was-found
+  where: github
+- _id: 281573
+  _time: 2025-04-26 11:03:27.364107603 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 490258619
+  what: min-issue-was-found
+  where: github
+- _id: 281574
+  _time: 2025-04-26 11:03:27.517873971 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 731516758
+  what: min-issue-was-found
+  where: github
+- _id: 281575
+  _time: 2025-04-26 11:03:27.670384113 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 499536612
+  what: min-issue-was-found
+  where: github
+- _id: 281576
+  _time: 2025-04-26 11:03:28.340412757 Z
+  _version: 0.10.0/0.41.0/
+  latest: 1
+  repository: 546194972
   what: min-issue-was-found
   where: github
