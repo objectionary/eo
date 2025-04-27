@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 78.805065692
+  seconds: 22.93332331
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-27 10:09:20.659477220 Z
+  when: 2025-04-27 11:01:54.011784442 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -133820,6 +133820,7 @@
   is_human: 0
   issue: 416
   repository: 889819508
+  review_comments: 20
   succeeded_builds: 18
   what: pull-was-merged
   when: 2025-04-27 09:02:51.000000000 Z
@@ -133832,36 +133833,6 @@
   repository: 510082372
   what: min-issue-was-found
   where: github
-- _id: 285943
-  _time: 2025-04-27 09:12:25.426224029 Z
-  _version: 0.10.0/0.41.0/
-  latest: 1
-  repository: 543969974
-  what: min-issue-was-found
-  where: github
-- _id: 285944
-  _job: 18615
-  _time: 2025-04-27 09:13:25.234197717 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @h1alexbel for the code review in objectionary/lints#416,
-    the reward amount is 4.
-  greeting: "Thanks for the review! You've earned +4 points, which is the minimum
-    reward according to our policy. Despite having no comments and possibly fewer
-    than 16 hits-of-code, you still contributed to the project. Keep in mind that
-    more detailed reviews with comments can earn up to 24 points! Your running balance
-    is [+163](https://www.eolang.org/zerocracy/objectionary-vitals.html). \U0001F680\n\n<!--
-    Thanks for the review! You've earned +4 points.  Your running balance is [+163](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/416/#issuecomment-2833344123
-  is_human: 1
-  issue: 416
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-27 09:13:25.281516799 Z
-  where: github
-  who: 83453843
-  why: Reviewed code in objectionary/lints#416
 - _id: 285945
   _time: 2025-04-27 10:08:31.892741302 Z
   _version: 0.10.0/0.41.0/
@@ -134090,6 +134061,7 @@
   hoc: 2
   issue: 521
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 18
   what: pull-was-merged
   when: 2025-04-27 09:49:21.000000000 Z
@@ -134225,5 +134197,35 @@
   _version: 0.10.0/0.41.0/
   latest: 2
   repository: 501259435
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 285994
+  - 285944
+  _job:
+  - 18617
+  - 18615
+  _time:
+  - 2025-04-27 10:09:44.669045687 Z
+  - 2025-04-27 09:13:25.234197717 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @h1alexbel for the code review in objectionary/lints#416,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/416/#issuecomment-2833344123
+  is_human: 1
+  issue: 416
+  receipt: receipt-#20875
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-27 09:13:25.281516799 Z
+  where: github
+  who: 83453843
+  why: Reviewed code in objectionary/lints#416
+- _id: 285995
+  _time: 2025-04-27 11:01:51.543938353 Z
+  _version: 0.10.0/0.41.0/
+  latest: 1
+  repository: 543969974
   what: min-issue-was-found
   where: github
