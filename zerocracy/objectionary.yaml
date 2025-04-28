@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 53.510309298
+  seconds: 58.131690448
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-28 19:08:07.544791342 Z
+  when: 2025-04-28 20:10:33.141229918 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -133319,13 +133319,6 @@
   when: 2025-04-27 09:38:52.000000000 Z
   where: github
   who: 83453843
-- _id: 285992
-  _time: 2025-04-27 10:09:19.601677692 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 784310467
-  what: min-issue-was-found
-  where: github
 - _id:
   - 285994
   - 285944
@@ -133628,13 +133621,6 @@
   repository: 721146770
   what: min-issue-was-found
   where: github
-- _id: 287276
-  _time: 2025-04-27 18:13:00.173345864 Z
-  _version: 0.10.0/0.41.0/
-  latest: 3
-  repository: 889819508
-  what: min-issue-was-found
-  where: github
 - _id:
   - 287277
   - 287011
@@ -133791,13 +133777,6 @@
   repository: 955159947
   what: min-issue-was-found
   where: github
-- _id: 289642
-  _time: 2025-04-28 06:24:02.347929604 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 510102039
-  what: min-issue-was-found
-  where: github
 - _id: 289646
   _time: 2025-04-28 06:24:02.979200711 Z
   _version: 0.10.0/0.41.0/
@@ -133859,25 +133838,11 @@
   repository: 731516758
   what: min-issue-was-found
   where: github
-- _id: 290402
-  _time: 2025-04-28 11:33:11.288945238 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 570457023
-  what: min-issue-was-found
-  where: github
 - _id: 290403
   _time: 2025-04-28 11:33:11.442336586 Z
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 403396472
-  what: min-issue-was-found
-  where: github
-- _id: 290405
-  _time: 2025-04-28 11:33:11.746513482 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 558766137
   what: min-issue-was-found
   where: github
 - _id: 290406
@@ -134020,20 +133985,6 @@
   when: 2025-04-28 12:50:47.000000000 Z
   where: github
   who: 83453843
-- _id: 290892
-  _time: 2025-04-28 15:10:22.195509350 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 493235807
-  what: min-issue-was-found
-  where: github
-- _id: 290893
-  _time: 2025-04-28 15:10:22.359394568 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 501942888
-  what: min-issue-was-found
-  where: github
 - _id: 290894
   _time: 2025-04-28 15:10:22.517922733 Z
   _version: 0.10.0/0.41.0/
@@ -134169,13 +134120,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 483303722
-  what: min-issue-was-found
-  where: github
-- _id: 291418
-  _time: 2025-04-28 17:08:44.409719485 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 490258619
   what: min-issue-was-found
   where: github
 - _id: 291419
@@ -134614,7 +134558,7 @@
   repository: 889819508
   review_comments: 10
   what: pull-was-reviewed
-  when: 2025-04-28 15:32:38.000000000 Z
+  when: &780 2025-04-28 15:32:38.000000000 Z
   where: github
   who: 37025995
 - _id: 291657
@@ -134818,5 +134762,78 @@
   _version: 0.10.0/0.41.0/
   latest: 1
   repository: 546194972
+  what: min-issue-was-found
+  where: github
+- _id: 291686
+  _job: 18713
+  _time: 2025-04-28 19:09:02.508794690 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  author: 83453843
+  comments: 20
+  details: The pull request objectionary/lints#522 with 115 HoC created by @h1alexbel
+    was reviewed by @maxonfjvipon after 1d5h and 20 comments.
+  hoc: 115
+  issue: 522
+  repository: 889819508
+  review_comments: 10
+  seconds: 107626
+  what: code-was-reviewed
+  when: *780
+  where: github
+  who: 37025995
+- _id: 291687
+  _time: 2025-04-28 20:10:29.252265431 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 570457023
+  what: min-issue-was-found
+  where: github
+- _id: 291688
+  _time: 2025-04-28 20:10:29.405811965 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 510102039
+  what: min-issue-was-found
+  where: github
+- _id: 291689
+  _time: 2025-04-28 20:10:29.558790124 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 501942888
+  what: min-issue-was-found
+  where: github
+- _id: 291690
+  _time: 2025-04-28 20:10:29.715306237 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 558766137
+  what: min-issue-was-found
+  where: github
+- _id: 291691
+  _time: 2025-04-28 20:10:29.869658229 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 490258619
+  what: min-issue-was-found
+  where: github
+- _id: 291692
+  _time: 2025-04-28 20:10:30.024139162 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 493235807
+  what: min-issue-was-found
+  where: github
+- _id: 291693
+  _time: 2025-04-28 20:10:30.179327820 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 784310467
+  what: min-issue-was-found
+  where: github
+- _id: 291694
+  _time: 2025-04-28 20:10:31.307359787 Z
+  _version: 0.10.0/0.41.0/
+  latest: 3
+  repository: 889819508
   what: min-issue-was-found
   where: github
