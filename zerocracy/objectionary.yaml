@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 196.197214244
+  seconds: 34.298556921
   version: 0.41.0
   what: judges-summary
-  when: 2025-04-29 21:11:11.574381040 Z
+  when: 2025-04-29 22:08:54.428024142 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -133809,13 +133809,6 @@
   when: 2025-04-28 12:50:47.000000000 Z
   where: github
   who: 83453843
-- _id: 290894
-  _time: 2025-04-28 15:10:22.517922733 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 492899189
-  what: min-issue-was-found
-  where: github
 - _id: 290900
   _time: 2025-04-28 15:10:23.890757886 Z
   _version: 0.10.0/0.41.0/
@@ -133960,13 +133953,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 493235807
-  what: min-issue-was-found
-  where: github
-- _id: 291696
-  _time: 2025-04-28 21:07:57.883692696 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 490221501
   what: min-issue-was-found
   where: github
 - _id: 291702
@@ -134589,13 +134575,6 @@
   repository: 447446664
   what: min-issue-was-found
   where: github
-- _id: 294334
-  _time: 2025-04-29 10:10:30.462049979 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 531151981
-  what: min-issue-was-found
-  where: github
 - _id: 294335
   _time: 2025-04-29 10:10:30.622115078 Z
   _version: 0.10.0/0.41.0/
@@ -134645,13 +134624,6 @@
   _version: 0.10.0/0.41.0/
   latest: 0
   repository: 558766137
-  what: min-issue-was-found
-  where: github
-- _id: 294599
-  _time: 2025-04-29 11:10:14.429427941 Z
-  _version: 0.10.0/0.41.0/
-  latest: 2
-  repository: 798766850
   what: min-issue-was-found
   where: github
 - _id: 294600
@@ -134725,13 +134697,6 @@
   repository: 784310467
   what: min-issue-was-found
   where: github
-- _id: 295437
-  _time: 2025-04-29 17:10:43.228129590 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 501942888
-  what: min-issue-was-found
-  where: github
 - _id: 295438
   _time: 2025-04-29 17:10:43.392623363 Z
   _version: 0.10.0/0.41.0/
@@ -134759,13 +134724,6 @@
   total_releases_published: 2
   what: quantity-of-deliverables
   when: 2025-04-29 17:12:11.873573122 Z
-- _id: 295626
-  _time: 2025-04-29 18:15:39.404203542 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 733919301
-  what: min-issue-was-found
-  where: github
 - _id: 295627
   _time: 2025-04-29 18:15:39.564544412 Z
   _version: 0.10.0/0.41.0/
@@ -134986,7 +134944,7 @@
   review_comments: 5
   succeeded_builds: 18
   what: pull-was-merged
-  when: 2025-04-29 10:18:28.000000000 Z
+  when: &792 2025-04-29 10:18:28.000000000 Z
   where: github
   who: 8086956
 - _id: 296133
@@ -135011,16 +134969,9 @@
   review_comments: 0
   succeeded_builds: 18
   what: pull-was-merged
-  when: 2025-04-29 09:54:24.000000000 Z
+  when: &793 2025-04-29 09:54:24.000000000 Z
   where: github
   who: 8086956
-- _id: 296143
-  _time: 2025-04-29 20:14:46.161290040 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 386420319
-  what: min-issue-was-found
-  where: github
 - _id: 296144
   _time: 2025-04-29 20:14:46.329346305 Z
   _version: 0.10.0/0.41.0/
@@ -135065,110 +135016,6 @@
   where: github
   who: 526301
   why: Pushed e749e8735 to the default branch 'master' in objectionary/eoc
-- _id: 296148
-  _job: 18794
-  _time: 2025-04-29 20:15:30.732660468 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @maxonfjvipon for the code review in objectionary/lints#526,
-    the reward amount is 4.
-  greeting: "Thanks for the review! Your reward calculation: +4 base points, -24 for
-    self-review, +16 for hits-of-code (max), -16 for no comments, capped at minimum
-    4 points. Total earned: +4 points. Keep in mind, more comments could boost your
-    rewards next time! Your running balance is now [+140](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \U0001F680\n\n<!-- Thanks for the review! You've earned +4 points for this: +4
-    as a basis; -16 for absolutely no comments posted; +16 to give you at least something.
-    \ Your running balance is [+140](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/526/#issuecomment-2840135952
-  is_human: 1
-  issue: 526
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-29 20:15:30.753330484 Z
-  where: github
-  who: 37025995
-  why: Reviewed code in objectionary/lints#526
-- _id: 296149
-  _job: 18794
-  _time: 2025-04-29 20:15:34.314006264 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @maxonfjvipon for the code review in objectionary/lints#523,
-    the reward amount is 4.
-  greeting: "Thanks for your review! Here's how your +4 points were calculated: +4
-    base, -24 for self-review, +1.6 for 160 hits-of-code, -10 for 5 comments, +1.25
-    for those comments, and +31.15 to reach the minimum 4 points. Your [running balance](https://www.eolang.org/zerocracy/objectionary-vitals.html)
-    is now +140. Keep up the good work! \U0001F4BB\n\n<!-- Thanks for the review!
-    You've earned +4 points for this: +4 as a basis; -10 for very few (5) comments;
-    +10 to give you at least something.  Your running balance is [+140](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/523/#issuecomment-2840136005
-  is_human: 1
-  issue: 523
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-29 20:15:34.331893187 Z
-  where: github
-  who: 37025995
-  why: Reviewed code in objectionary/lints#523
-- _id: 296150
-  _job: 18794
-  _time: 2025-04-29 20:15:38.000208136 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/lints#523,
-    the reward amount is 4.
-  greeting: "Hey there! \U0001F44B Thanks for your review! You've earned +4 points
-    this time. Here's the breakdown: +4 base points, -10 for having only 5 comments
-    (we love feedback!), and +10 to keep you motivated. Remember, more [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)
-    and comments can boost your score next time! Your current balance is [-173](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Keep up the good work and let's aim higher together! \U0001F4AA\n\n<!-- Thanks
-    for the review! You've earned +4 points for this: +4 as a basis; -10 for very
-    few (5) comments; +10 to give you at least something.  Your running balance is
-    [-173](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->"
-  href: https://github.com/objectionary/lints/issues/523/#issuecomment-2840136051
-  is_human: 1
-  issue: 523
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-29 20:15:38.021401893 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/lints#523
-- _id: 296151
-  _job: 18794
-  _time: 2025-04-29 20:15:41.682080397 Z
-  _version: 0.10.0/0.41.0/0.6.0
-  award: 4
-  details: It's time to reward @yegor256 for the code review in objectionary/lints#526,
-    the reward amount is 4.
-  greeting: "Hey there! \U0001F44B Thanks for the review, but it looks like we missed
-    out on some bonus points this time. You got the base +4, but since there weren't
-    any comments, we had to deduct 16 points. We bumped it back up to +4 to keep you
-    in the game. Remember, more comments and hits-of-code can really boost your score
-    next time! Your current balance is [-173](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Keep up the good work, and let's aim for those extra points in the next review!
-    \U0001F4AA\n\n<!-- Thanks for the review! You've earned +4 points for this: +4
-    as a basis; -16 for absolutely no comments posted; +16 to give you at least something.
-    \ Your running balance is [-173](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    \ -->"
-  href: https://github.com/objectionary/lints/issues/526/#issuecomment-2840136100
-  is_human: 1
-  issue: 526
-  repository: 889819508
-  what: code-review-was-rewarded
-  when: 2025-04-29 20:15:41.711609520 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/lints#526
-- _id: 296152
-  _time: 2025-04-29 21:08:08.818076372 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 574534248
-  what: min-issue-was-found
-  where: github
 - _id: 296153
   _time: 2025-04-29 21:08:09.009748448 Z
   _version: 0.10.0/0.41.0/
@@ -135832,4 +135679,182 @@
   latest: 48607165443
   repository: 492899189
   what: events-were-scanned
+  where: github
+- _id:
+  - 296409
+  - 296148
+  _job:
+  - 18797
+  - 18794
+  _time:
+  - 2025-04-29 21:11:35.145359340 Z
+  - 2025-04-29 20:15:30.732660468 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @maxonfjvipon for the code review in objectionary/lints#526,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/526/#issuecomment-2840135952
+  is_human: 1
+  issue: 526
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-29 20:15:30.753330484 Z
+  where: github
+  who: 37025995
+  why: Reviewed code in objectionary/lints#526
+- _id:
+  - 296410
+  - 296149
+  _job:
+  - 18797
+  - 18794
+  _time:
+  - 2025-04-29 21:11:35.206600994 Z
+  - 2025-04-29 20:15:34.314006264 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @maxonfjvipon for the code review in objectionary/lints#523,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/523/#issuecomment-2840136005
+  is_human: 1
+  issue: 523
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-29 20:15:34.331893187 Z
+  where: github
+  who: 37025995
+  why: Reviewed code in objectionary/lints#523
+- _id:
+  - 296411
+  - 296150
+  _job:
+  - 18797
+  - 18794
+  _time:
+  - 2025-04-29 21:11:35.263305149 Z
+  - 2025-04-29 20:15:38.000208136 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/lints#523,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/523/#issuecomment-2840136051
+  is_human: 1
+  issue: 523
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-29 20:15:38.021401893 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/lints#523
+- _id:
+  - 296412
+  - 296151
+  _job:
+  - 18797
+  - 18794
+  _time:
+  - 2025-04-29 21:11:35.326224052 Z
+  - 2025-04-29 20:15:41.682080397 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/lints#526,
+    the reward amount is 4.
+  href: https://github.com/objectionary/lints/issues/526/#issuecomment-2840136100
+  is_human: 1
+  issue: 526
+  repository: 889819508
+  what: code-review-was-rewarded
+  when: 2025-04-29 20:15:41.711609520 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/lints#526
+- _id: 296413
+  _job: 18797
+  _time: 2025-04-29 21:11:53.108547372 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  comments: 16
+  details: The pull request objectionary/lints#523 with 137 HoC created by @h1alexbel
+    was merged by @rultor after 1d23h of being in review and 16 comments.
+  hoc: 137
+  issue: 523
+  merger: 8086956
+  repository: 889819508
+  review_comments: 5
+  seconds: 172354
+  what: code-was-contributed
+  when: *792
+  where: github
+  who: 83453843
+- _id: 296414
+  _job: 18797
+  _time: 2025-04-29 21:11:53.430058195 Z
+  _version: 0.10.0/0.41.0/0.6.0
+  comments: 5
+  details: The pull request objectionary/lints#526 with 97 HoC created by @h1alexbel
+    was merged by @rultor after 17h7m of being in review and 5 comments.
+  hoc: 97
+  issue: 526
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 61623
+  what: code-was-contributed
+  when: *793
+  where: github
+  who: 83453843
+- _id: 296415
+  _time: 2025-04-29 22:08:34.524476638 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 490221501
+  what: min-issue-was-found
+  where: github
+- _id: 296416
+  _time: 2025-04-29 22:08:34.691488115 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 501942888
+  what: min-issue-was-found
+  where: github
+- _id: 296417
+  _time: 2025-04-29 22:08:34.879183556 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 386420319
+  what: min-issue-was-found
+  where: github
+- _id: 296418
+  _time: 2025-04-29 22:08:35.043101134 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 574534248
+  what: min-issue-was-found
+  where: github
+- _id: 296419
+  _time: 2025-04-29 22:08:35.203739449 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 733919301
+  what: min-issue-was-found
+  where: github
+- _id: 296420
+  _time: 2025-04-29 22:08:35.365317476 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 492899189
+  what: min-issue-was-found
+  where: github
+- _id: 296421
+  _time: 2025-04-29 22:08:35.526754470 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 531151981
+  what: min-issue-was-found
+  where: github
+- _id: 296422
+  _time: 2025-04-29 22:08:36.289895486 Z
+  _version: 0.10.0/0.41.0/
+  latest: 2
+  repository: 798766850
+  what: min-issue-was-found
   where: github
