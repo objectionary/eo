@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: [ ]
+asserts:
+  - /object[not(errors)]
+input: |
+  # No comments.
+  [n] > fibo
+    if. > @
+      n.lt 2
+      1
+      plus.
+        fibo (n.minus 1)
+        fibo (n.minus 2)
+
+    [] +> fibo-5th-equals-to-seven
+      eq. > @
+        7
+        fibo 5
