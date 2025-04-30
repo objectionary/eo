@@ -71,7 +71,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             .append(new DrProgram())
             .append(new DrListing(ctx))
             .xpath("/object")
-            .strict(1);
+            .strict(1)
+            .add("tests")
+            .up();
     }
 
     @Override
@@ -862,8 +864,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             if (ctx.arrow().PLUS() != null) {
                 System.out.println(ctx.NAME());
                 // mark append test to tests
+            } else {
+                this.objects.prop("name", ctx.NAME().getText());
             }
-            this.objects.prop("name", ctx.NAME().getText());
         }
     }
 
