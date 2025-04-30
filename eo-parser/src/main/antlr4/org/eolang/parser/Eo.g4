@@ -37,6 +37,7 @@ commentMandatory
 object
     : commentMandatory masterBody
     | bound
+    | tests?
     ;
 
 // Objects that may be used inside abstract object
@@ -400,6 +401,27 @@ oname
 // Suffix
 suffix
     : arrow (PHI | NAME)
+    ;
+
+// Object tests
+tests
+    : (test)*
+    ;
+
+// Test attribute
+test
+    : tformation
+//  | bound
+    ;
+
+// Test attribute formation
+tformation
+    : voids tname innersOrEol
+    ;
+
+// Test attribute name
+tname
+    : SPACE PLUS ARROW SPACE (NAME)
     ;
 
 arrow
