@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 267.849186871
+  seconds: 32.31700448
   version: 0.41.0
   what: judges-summary
-  when: 2025-05-01 06:18:06.295682611 Z
+  when: 2025-05-01 07:10:05.443924183 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -134754,13 +134754,6 @@
   where: github
   who: 526301
   why: Pushed e749e8735 to the default branch 'master' in objectionary/eoc
-- _id: 296153
-  _time: 2025-04-29 21:08:09.009748448 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 510102039
-  what: min-issue-was-found
-  where: github
 - _id: 296377
   _time: 2025-04-29 21:10:45.355484283 Z
   _version: 0.10.0/0.41.0/
@@ -135465,13 +135458,6 @@
   when: &800 2025-04-30 07:54:02.000000000 Z
   where: github
   who: 526301
-- _id: 298915
-  _time: 2025-04-30 09:12:46.944559204 Z
-  _version: 0.10.0/0.41.0/
-  latest: 1
-  repository: 955159947
-  what: min-issue-was-found
-  where: github
 - _id: 298916
   _job: 18837
   _time: 2025-04-30 09:13:14.900900197 Z
@@ -135535,13 +135521,6 @@
   _version: 0.10.0/0.41.0/
   latest: 1
   repository: 73056727
-  what: min-issue-was-found
-  where: github
-- _id: 300781
-  _time: 2025-04-30 18:13:16.085412699 Z
-  _version: 0.10.0/0.41.0/
-  latest: 0
-  repository: 574534248
   what: min-issue-was-found
   where: github
 - _id: 301286
@@ -136315,4 +136294,25 @@
   latest: 48607054419
   repository: 733919301
   what: events-were-scanned
+  where: github
+- _id: 302633
+  _time: 2025-05-01 07:10:02.691003864 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 510102039
+  what: min-issue-was-found
+  where: github
+- _id: 302634
+  _time: 2025-05-01 07:10:02.847378988 Z
+  _version: 0.10.0/0.41.0/
+  latest: 0
+  repository: 574534248
+  what: min-issue-was-found
+  where: github
+- _id: 302635
+  _time: 2025-05-01 07:10:03.644717110 Z
+  _version: 0.10.0/0.41.0/
+  latest: 1
+  repository: 955159947
+  what: min-issue-was-found
   where: github
