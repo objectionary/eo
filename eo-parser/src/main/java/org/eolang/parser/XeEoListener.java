@@ -29,6 +29,10 @@ import org.xembly.Directives;
  * @todo #4096:60min Transpile object tree under test attribute into separate Java `*Test` class
  *  with the unit test to be run. Currently, we transpile all `o` into Java tests, while we should
  *  touch only newly introduced test attributes - (`o` with @name that starts with `+`).
+ * @todo #4096:35min Handle name translation from test attribute starts with `+` to Java test method.
+ *  Now, we receiving `invalid method declaration;` when compiling transpiled Java tests, so we
+ *  need to adjust name translation. After this will be fixed, don't forget to move all EO tests
+ *  from `eo-runtime` to new test syntax.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
