@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 170.090064976
+  seconds: 47.147475192
   version: 0.41.0
   what: judges-summary
-  when: 2025-05-01 04:17:55.404992304 Z
+  when: 2025-05-01 05:10:56.152548809 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -134731,13 +134731,6 @@
   when: &793 2025-04-29 09:54:24.000000000 Z
   where: github
   who: 8086956
-- _id: 296146
-  _time: 2025-04-29 20:14:47.592911262 Z
-  _version: 0.10.0/0.41.0/
-  latest: 1
-  repository: 546194972
-  what: min-issue-was-found
-  where: github
 - _id:
   - 296147
   - 295914
@@ -136315,4 +136308,11 @@
   latest: 728
   repository: 73056727
   what: labels-were-scanned
+  where: github
+- _id: 302414
+  _time: 2025-05-01 05:10:54.420751232 Z
+  _version: 0.10.0/0.41.0/
+  latest: 1
+  repository: 546194972
+  what: min-issue-was-found
   where: github
