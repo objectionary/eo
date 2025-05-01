@@ -4,9 +4,8 @@
 sheets: [ ]
 asserts:
   - /object[not(errors)]
-  - /object[tests]
-  - //o[not(@name='fibo-5th-equals-to-seven')]
-  - //o[not(@name='fibo-2nd-equals-to-one')]
+  - //o[@name='+fibo-5th-equals-to-seven']
+  - //o[@name='+fibo-2nd-equals-to-one']
 input: |
   # No comments.
   [n] > fibo
