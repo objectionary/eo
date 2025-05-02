@@ -26,6 +26,13 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
+ * @todo #4096:60min Transpile object tree under test attribute into separate Java `*Test` class
+ *  with the unit test to be run. Currently, we transpile all `o` into Java tests, while we should
+ *  touch only newly introduced test attributes - (`o` with @name that starts with `+`).
+ * @todo #4096:35min Handle name translation from test attribute starts with `+` to Java test method.
+ *  Now, we receiving `invalid method declaration;` when compiling transpiled Java tests, so we
+ *  need to adjust name translation. After this will be fixed, don't forget to move all EO tests
+ *  from `eo-runtime` to new test syntax.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -859,7 +866,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.PHI() != null) {
             this.objects.prop("name", ctx.PHI().getText());
         } else if (ctx.NAME() != null) {
-            this.objects.prop("name", ctx.NAME().getText());
+            if (ctx.arrow().PLUS() != null) {
+                this.objects.prop(
+                    "name",
+                    String.format("%s%s", ctx.arrow().PLUS().getText(), ctx.NAME().getText())
+                );
+            } else {
+                this.objects.prop("name", ctx.NAME().getText());
+            }
         }
     }
 

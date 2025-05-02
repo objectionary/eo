@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: [ ]
+asserts:
+  - /object[not(errors)]
+  - //o[@name='+fibo-5th-equals-to-seven']
+  - //o[@name='+fibo-2nd-equals-to-one']
+input: |
+  # No comments.
+  [n] > fibo
+    if. > @
+      n.lt 2
+      1
+      plus.
+        fibo (n.minus 1)
+        fibo (n.minus 2)
+
+    [] +> fibo-5th-equals-to-seven
+      eq. > @
+        7
+        fibo 5
+    eq. +> fibo-2nd-equals-to-one
+      1
+      fibo 2

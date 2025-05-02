@@ -403,7 +403,7 @@ suffix
     ;
 
 arrow
-    : SPACE ARROW SPACE
+    : SPACE PLUS? ARROW SPACE
     ;
 
 // Simple scope
