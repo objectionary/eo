@@ -512,7 +512,7 @@
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:loc-to-class(@loc)"/>
+        <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new PhDefault</xsl:text>
