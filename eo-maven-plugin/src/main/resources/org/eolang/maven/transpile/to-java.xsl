@@ -618,17 +618,17 @@
       <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="$object-name"/>
+      <xsl:value-of select="eo:escape-plus($object-name)"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@pos"/>
       <xsl:text>, </xsl:text>
       <xsl:text>"</xsl:text>
-      <xsl:value-of select="@loc"/>
+      <xsl:value-of select="eo:escape-plus(@loc)"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="@original-name"/>
+      <xsl:value-of select="eo:escape-plus(@original-name)"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
