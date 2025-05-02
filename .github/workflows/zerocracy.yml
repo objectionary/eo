@@ -6,14 +6,14 @@ name: zerocracy
 run-name: "zerocracy judges"
 'on':
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0,30 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
 jobs:
   zerocracy:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: zerocracy/judges-action@0.7.0
