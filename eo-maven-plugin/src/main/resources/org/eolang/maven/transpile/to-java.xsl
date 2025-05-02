@@ -358,7 +358,7 @@
       <xsl:text>)</xsl:text>
     </xsl:if>
     <xsl:text>.add("</xsl:text>
-    <xsl:value-of select="$name"/>
+    <xsl:value-of select="eo:escape-plus($name)"/>
     <xsl:text>", </xsl:text>
     <xsl:apply-templates select="void|bound|atom|abstract">
       <xsl:with-param name="indent" select="$indent"/>
