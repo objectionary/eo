@@ -260,7 +260,7 @@
   </xsl:template>
   <!-- Nested classes for anonymous abstract objects  -->
   <xsl:template match="nested">
-    <xsl:variable name="name" select="eo:loc-to-class(@loc)"/>
+    <xsl:variable name="name" select="eo:loc-to-class(eo:escape-plus(@loc))"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>private static class </xsl:text>
     <xsl:value-of select="$name"/>
@@ -291,7 +291,7 @@
     <xsl:for-each select="tokenize(text(), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text> * </xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="eo:escape-plus(.)"/>
     </xsl:for-each>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> */</xsl:text>
