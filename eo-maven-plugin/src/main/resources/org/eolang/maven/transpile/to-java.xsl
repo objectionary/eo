@@ -709,7 +709,7 @@
       <xsl:text>() throws java.lang.Exception {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:choose>
-        <xsl:when test="starts-with(@name, 'throws')">
+        <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
           <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
           <xsl:apply-templates select="." mode="dataized">
             <xsl:with-param name="indent" select="3"/>
@@ -737,7 +737,7 @@
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(this.take(</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name, true())"/>
+    <xsl:value-of select="eo:attr-name(eo:escape-plus(@name), true())"/>
     <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->
