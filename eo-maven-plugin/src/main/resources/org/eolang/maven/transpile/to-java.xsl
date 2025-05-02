@@ -171,6 +171,11 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!-- Escape `+` in test name syntax. -->
+  <xsl:function name="eo:escape-plus">
+    <xsl:param name="name"/>
+    <xsl:value-of select="replace($name, '\+', '')"/>
+  </xsl:function>
   <xsl:variable name="object-name">
     <xsl:variable name="pckg" select="/object/class/@package"/>
     <xsl:variable name="obj" select="/object/class/@name"/>
@@ -700,7 +705,7 @@
       <xsl:text>@Test</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>void </xsl:text>
-      <xsl:value-of select="replace(@name, '-', '_')"/>
+      <xsl:value-of select="replace(eo:escape-plus(@name), '-', '_')"/>
       <xsl:text>() throws java.lang.Exception {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:choose>
