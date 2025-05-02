@@ -22,6 +22,6 @@ input: |
 
   # No comments.
   [] > some-tests
-    [] > works
+    [] +> works
       1.eq 1 > @
     false > [] > throws-on
