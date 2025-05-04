@@ -11,6 +11,6 @@
 [] > stdout-tests
   # Prints a simple message to the console. We can't validate
   # the output, so we just run it and see if it crashes.
-  [] > tests-prints-to-console
+  [] +> tests-prints-to-console
     stdout > @
       "Hello, stdout-test!\n"

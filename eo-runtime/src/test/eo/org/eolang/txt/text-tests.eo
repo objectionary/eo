@@ -12,19 +12,19 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > text-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-text-slices-the-origin-string
+  [] +> tests-text-slices-the-origin-string
     eq. > @
       (text "Hello, world!").slice 7 5
       "world"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-trimmed-left-empty-text
+  [] +> tests-trimmed-left-empty-text
     eq. > @
       (text "").trimmed-left
       ""
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-text-trimmed-left-one-space
+  [] +> tests-text-trimmed-left-one-space
     eq. > @
       (text " s").trimmed-left
       "s"

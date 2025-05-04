@@ -9,7 +9,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > while-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-while-dataizes-only-first-cycle
+  [] +> tests-while-dataizes-only-first-cycle
     eq. > @
       0
       malloc.for
@@ -20,14 +20,14 @@
             m.put i > [i] >>
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-while-with-false-first
+  [] +> tests-simple-while-with-false-first
     not. > @
       while > res
         false > [i]
         true > [i]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-bool-expression-via-malloc-in-while
+  [] +> tests-simple-bool-expression-via-malloc-in-while
     eq. > @
       malloc.for
         true
@@ -38,7 +38,7 @@
       false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-last-while-dataization-object
+  [] +> tests-last-while-dataization-object
     eq. > @
       malloc.for
         0
@@ -49,14 +49,14 @@
       3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-last-while-dataization-object-with-false-condition
+  [] +> tests-last-while-dataization-object-with-false-condition
     not. > @
       while
         1.gt 2 > [i]
         true > [i]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-while-simple-iteration
+  [] +> tests-while-simple-iteration
     eq. > @
       malloc.for
         0
@@ -67,7 +67,7 @@
       9
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterating-tuple-with-while-using-internal-iterator
+  [] +> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
     arr.length.plus -1 > max
@@ -94,7 +94,7 @@
                         iter.as-number.plus 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterating-tuple-with-while-using-external-iterator
+  [] +> tests-iterating-tuple-with-while-using-external-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
     arr.length.plus -1 > max
@@ -116,7 +116,7 @@
                       iter.as-number.plus 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterating-tuple-with-while-without-body-multiple
+  [] +> tests-iterating-tuple-with-while-without-body-multiple
     data.eq arr.length > @
     * 1 1 1 > arr
     arr.length > max
@@ -146,7 +146,7 @@
                 acc
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterating-tuple-with-while-without-body-single
+  [] +> tests-iterating-tuple-with-while-without-body-single
     data.eq arr.length > @
     * 1 > arr
     arr.length > max

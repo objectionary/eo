@@ -11,7 +11,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > list-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-should-not-be-empty
+  [] +> tests-list-should-not-be-empty
     not. > @
       is-empty.
         list
@@ -21,7 +21,7 @@
   (list *).is-empty > [] > list-should-be-empty
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-should-not-be-empty-with-three-objects
+  [] +> tests-list-should-not-be-empty-with-three-objects
     (list xs).is-empty.not > @
     * > xs
       [x]
@@ -29,13 +29,13 @@
       [z]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-should-not-be-empty-with-one-anon-object
+  [] +> tests-list-should-not-be-empty-with-one-anon-object
     (list xs).is-empty.not > @
     * > xs
       [f]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-simple-with
+  [] +> tests-list-simple-with
     eq. > @
       with.
         list
@@ -44,7 +44,7 @@
       * 1 2 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-insert
+  [] +> tests-simple-insert
     eq. > @
       withi.
         list
@@ -54,7 +54,7 @@
       * 1 2 3 "hello" 4 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-insert-with-zero-index
+  [] +> tests-insert-with-zero-index
     eq. > @
       withi.
         list
@@ -64,7 +64,7 @@
       * "hello" 1 2 3 4 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-reduce-list-with-index
+  [] +> tests-reduce-list-with-index
     eq. > @
       6
       reducedi.
@@ -79,7 +79,7 @@
     * 2 2 > src
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-reducedi-long-int-array
+  [] +> tests-list-reducedi-long-int-array
     eq. > @
       reducedi.
         list
@@ -89,7 +89,7 @@
       1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-reducedi-bools-array
+  [] +> tests-list-reducedi-bools-array
     not. > @
       reducedi.
         list
@@ -98,7 +98,7 @@
         x.and a > [a x i]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-reducedi-nested-functions
+  [] +> tests-list-reducedi-nested-functions
     eq. > @
       reducedi.
         list
@@ -116,7 +116,7 @@
         0.minus 500
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-reduce-without-index
+  [] +> tests-list-reduce-without-index
     eq. > @
       reduced.
         list
@@ -126,7 +126,7 @@
       -24
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-reduced-printing
+  [] +> tests-list-reduced-printing
     eq. > @
       reduced.
         list
@@ -140,7 +140,7 @@
       "01"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-complex-objects-list-comparison
+  [] +> tests-complex-objects-list-comparison
     list > res
       *
         list (* 0 1)
@@ -153,7 +153,7 @@
         * 7 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-mappedi-should-work
+  [] +> tests-list-mappedi-should-work
     eq. > @
       mappedi.
         list
@@ -171,7 +171,7 @@
       * 2 4 6
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterates-with-eachi
+  [] +> tests-iterates-with-eachi
     eq. > @
       malloc.for
         0
@@ -187,7 +187,7 @@
       9
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-iterates-with-each
+  [] +> tests-iterates-with-each
     eq. > @
       malloc.for
         0
@@ -199,7 +199,7 @@
       6
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-withouti
+  [] +> tests-list-withouti
     eq. > @
       withouti.
         list
@@ -208,7 +208,7 @@
       * 1 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-withouti-complex-case
+  [] +> tests-list-withouti-complex-case
     eq. > @
       foo
         * 1 "text" "f"
@@ -219,7 +219,7 @@
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-withouti-nested-array
+  [] +> tests-list-withouti-nested-array
     eq. > @
       withouti.
         list
@@ -229,7 +229,7 @@
     * 3 2 1 > nested
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-without
+  [] +> tests-list-without
     eq. > @
       without.
         list
@@ -238,14 +238,14 @@
       * 1 1 1 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-equality-test
+  [] +> tests-equality-test
     eq. > @
       list
         * 1 2 3
       * 1 2 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-not-equality-test
+  [] +> tests-not-equality-test
     not. > @
       eq.
         list
@@ -253,7 +253,7 @@
         * 3 2 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-concatenates-lists
+  [] +> tests-concatenates-lists
     and. > @
       eq.
         1
@@ -270,7 +270,7 @@
       0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-concatenates-with-tuple
+  [] +> tests-concatenates-with-tuple
     eq. > @
       concat.
         list
@@ -279,7 +279,7 @@
       * 0 1 2 4
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-index-of
+  [] +> tests-returns-index-of
     eq. > @
       1
       index-of.
@@ -288,7 +288,7 @@
         2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-first-index-of-element
+  [] +> tests-returns-first-index-of-element
     eq. > @
       0
       index-of.
@@ -297,7 +297,7 @@
         -1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-does-not-find-index-of
+  [] +> tests-does-not-find-index-of
     eq. > @
       -1
       index-of.
@@ -306,7 +306,7 @@
         7
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-finds-index-of-string
+  [] +> tests-finds-index-of-string
     eq. > @
       1
       index-of.
@@ -315,7 +315,7 @@
         "qwerty"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-finds-last-index-of
+  [] +> tests-finds-last-index-of
     eq. > @
       1
       last-index-of.
@@ -324,7 +324,7 @@
         2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-finds-last-index-of-repeated
+  [] +> tests-finds-last-index-of-repeated
     eq. > @
       2
       last-index-of.
@@ -333,7 +333,7 @@
         24
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-last-index-of-not-found
+  [] +> tests-last-index-of-not-found
     eq. > @
       -1
       last-index-of.
@@ -342,7 +342,7 @@
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-last-index-of-empty
+  [] +> tests-last-index-of-empty
     eq. > @
       -1
       last-index-of.
@@ -350,7 +350,7 @@
         "abc"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-last-index-of-unicode
+  [] +> tests-last-index-of-unicode
     eq. > @
       3
       last-index-of.
@@ -359,21 +359,21 @@
         "Привет"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-contains-string
+  [] +> tests-list-contains-string
     contains. > @
       list
         * "qwerty" "asdfgh" 3 "qwerty"
       "qwerty"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-contains-number
+  [] +> tests-list-contains-number
     contains. > @
       list
         * "qwerty" "asdfgh" 3 "qwerty"
       3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-does-not-contain
+  [] +> tests-list-does-not-contain
     not. > @
       contains.
         list
@@ -381,7 +381,7 @@
         "Hi"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filteredi-with-lt
+  [] +> tests-filteredi-with-lt
     eq. > @
       filteredi.
         list
@@ -390,7 +390,7 @@
       * 1 2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filteredi-with-string-length
+  [] +> tests-filteredi-with-string-length
     eq. > @
       filteredi.
         list
@@ -399,7 +399,7 @@
       * "Hello"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filteredi-with-empty-list
+  [] +> tests-filteredi-with-empty-list
     is-empty. > @
       filteredi.
         list
@@ -407,7 +407,7 @@
         v.lt 3 > [v i]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filteredi-by-index
+  [] +> tests-filteredi-by-index
     eq. > @
       filteredi.
         list
@@ -416,7 +416,7 @@
       * 1 4
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filteredi-with-bools
+  [] +> tests-filteredi-with-bools
     eq. > @
       filteredi.
         list
@@ -425,7 +425,7 @@
       * false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-filtered
+  [] +> tests-simple-filtered
     eq. > @
       filtered.
         list
@@ -434,7 +434,7 @@
       * 3 4 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-filtered-with-bools
+  [] +> tests-filtered-with-bools
     eq. > @
       filtered.
         list
@@ -443,7 +443,7 @@
       * false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-head
+  [] +> tests-simple-head
     eq. > @
       head.
         list
@@ -452,7 +452,7 @@
       * 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-head-with-zero-index
+  [] +> tests-list-head-with-zero-index
     is-empty. > @
       head.
         list
@@ -460,7 +460,7 @@
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-list-head-with-length-index
+  [] +> tests-list-head-with-length-index
     eq. > @
       head.
         list
@@ -469,7 +469,7 @@
       * 1 2 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-complex-head
+  [] +> tests-complex-head
     eq. > @
       head.
         list
@@ -478,7 +478,7 @@
       * "foo" 2.2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-head-with-negative
+  [] +> tests-head-with-negative
     eq. > @
       head.
         list
@@ -487,7 +487,7 @@
       * 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-complex-head-with-negative
+  [] +> tests-complex-head-with-negative
     eq. > @
       head.
         list
@@ -496,7 +496,7 @@
       * 2.2 00-01 "bar"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-tail
+  [] +> tests-simple-tail
     eq. > @
       tail.
         list
@@ -505,7 +505,7 @@
       * 4 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-zero-index-in-tail
+  [] +> tests-zero-index-in-tail
     is-empty. > @
       tail.
         list
@@ -513,7 +513,7 @@
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-large-index-in-tail
+  [] +> tests-large-index-in-tail
     eq. > @
       tail.
         list
