@@ -154,7 +154,7 @@ public final class MjParse extends MjSafe {
                     new Saved(
                         new TextOf(xmir.toString()),
                         this.targetDir.toPath().resolve(
-                            String.format("broken-%x8d.xmir", System.currentTimeMillis())
+                            String.format("broken-%x.xmir", System.nanoTime())
                         )
                     ).value()
                 )
