@@ -147,14 +147,16 @@ public final class MjParse extends MjSafe {
         );
         final String name = new ObjectName(xmir).get();
         if (!name.equals(identifier)) {
-            final Path broken = this.targetDir.toPath().resolve(
-                String.format("broken-%x8d.xmir", System.currentTimeMillis())
-            );
-            new Saved(new TextOf(xmir.toString()), broken).value();
             throw new IllegalArgumentException(
                 Logger.format(
-                    "For some reason, the identifier of the tojo, which essentially is a name of the source file ('%s') does not match the name of the object discovered in the XMIR after parsing ('%s'); the XMIR is saved to the %[file]s file, for debugging purposes",
-                    identifier, name, broken
+                    "For some reason, the identifier of the tojo, which essentially is a name of the source file ('%s'), does not match the name of the object discovered in the XMIR after parsing ('%s'); the XMIR is saved to the %[file]s file, for debugging purposes",
+                    identifier, name,
+                    new Saved(
+                        new TextOf(xmir.toString()),
+                        this.targetDir.toPath().resolve(
+                            String.format("broken-%x8d.xmir", System.currentTimeMillis())
+                        )
+                    ).value()
                 )
             );
         }
