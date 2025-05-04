@@ -137,6 +137,27 @@ final class MjParseTest {
     }
 
     @Test
+    void crashesIfWrongPackage(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package wrong.package\n",
+                    "# Hello.",
+                    "[] > hello",
+                    "  42 > @"
+                )
+                .execute(new FakeMaven.Parse()),
+            "It is expected to crash if the package is wrong"
+        );
+        MatcherAssert.assertThat(
+            "The XMIR with broken content must exist, but it doesn't",
+            temp.resolve("target/broken.xmir").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void doesNotParseIfAlreadyParsed(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
