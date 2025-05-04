@@ -25,6 +25,7 @@ jobs:
           sed -E -i "s/<version>[^<]+/<version>${latest}/g" eo-maven-plugin/README.md
       - uses: peter-evans/create-pull-request@v7
         with:
+          sign-commits: true
           branch: version-up
           commit-message: 'new version ${{ env.version }} in README'
           delete-branch: true
