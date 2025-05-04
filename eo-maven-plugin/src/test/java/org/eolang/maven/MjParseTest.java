@@ -152,7 +152,9 @@ final class MjParseTest {
         );
         MatcherAssert.assertThat(
             "The XMIR with broken content must exist, but it doesn't",
-            temp.resolve("target/broken.xmir").toFile().exists(),
+            new Walk(temp.resolve("target")).stream().anyMatch(
+                path -> path.toFile().getName().startsWith("broken-")
+            ),
             Matchers.is(true)
         );
     }
