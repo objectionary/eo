@@ -1,7 +1,7 @@
-*.iml
-.DS_Store
 .aider*
+.aidy
 .classpath
+.DS_Store
 .factorypath
 .idea/
 .mvn/wrapper/maven-wrapper.jar
@@ -9,11 +9,11 @@
 .recommenders
 .settings
 .vscode/
+*.iml
+/.aidy/
 eo-maven-plugin/lib
 eo-runtime/lib
 eo-runtime/measures.csv
 node_modules/
 target/
 xs3p.xsl_*
-.aidy
-/.aidy/
