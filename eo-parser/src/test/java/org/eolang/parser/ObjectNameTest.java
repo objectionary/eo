@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.ImpossibleModificationException;
@@ -65,6 +66,40 @@ final class ObjectNameTest {
             ),
             retrieved,
             Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void throwsExceptionWhenNameIsMissing() {
+        Assertions.assertThrows(
+            Exception.class,
+            () -> new ObjectName(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().add("object")
+                            .add("metas")
+                            .add("meta")
+                            .add("head")
+                            .set("package")
+                            .up()
+                            .add("tail")
+                            .set("org.eolang.fail")
+                    ).xml()
+                )
+            ).get(),
+            "The exception is not thrown, thought XMIR is broken"
+        );
+    }
+
+    @Test
+    void doesNotThrowExceptionWhenNameIsPresentButPackageIsMissing() {
+        Assertions.assertDoesNotThrow(
+            () -> new ObjectName(
+                new XMLDocument(
+                    new Xembler(new Directives().add("object").add("o").attr("name", "foo")).xml()
+                )
+            ).get(),
+            "The exception was thrown, but it should not"
         );
     }
 }
