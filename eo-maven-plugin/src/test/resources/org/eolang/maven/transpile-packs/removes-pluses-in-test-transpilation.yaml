@@ -14,6 +14,8 @@ asserts:
   - //java[contains(text(), '@Test')]
   - //java[contains(text(), 'void tests_iterates_with_eachi()')]
   - //java[contains(text(), 'tests_iterates_with_eachiφρα1();')]
+  - //java[contains(text(), 'list-tests.tests-iterates-with-eachi.φ.ρ')]
+  - //java[contains(text(), 'Φ.list-tests.tests-iterates-with-eachi.φ.α0.α0')]
 input: |
   +tests
 
