@@ -12,7 +12,8 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //java[contains(text(), '@Test')]
-  - //java[not(contains(text(), '+tests_iterates_with_eachiφρα1();'))]
+  - //java[contains(text(), 'void tests_iterates_with_eachi()')]
+  - //java[contains(text(), 'tests_iterates_with_eachiφρα1();')]
 input: |
   +tests
 
