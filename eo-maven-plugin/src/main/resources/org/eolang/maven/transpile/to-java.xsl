@@ -174,7 +174,8 @@
   <!-- Escape `+` in test name syntax. -->
   <xsl:function name="eo:escape-plus">
     <xsl:param name="name"/>
-    <xsl:value-of select="replace($name, '\+', '')"/>
+    <xsl:variable name="pos" select="string-length(tokenize($name, '\+')[1]) + 1"/>
+    <xsl:value-of select="concat(substring($name, 1, $pos - 1), substring($name, $pos + 1))"/>
   </xsl:function>
   <xsl:variable name="object-name">
     <xsl:variable name="pckg" select="/object/class/@package"/>
