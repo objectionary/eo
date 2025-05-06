@@ -17,13 +17,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          days-to-scan: 30
+          days-to-scan: 180
           skip-label: 'good-title'
           auto-update: true
           max-issues: 10
           model: gpt-4
           verbose: true
-          apply-to-closed: true
+          apply-to-closed: false
           required-labels: bug, enhancement
           quiet: true
           strip-characters: '"'
