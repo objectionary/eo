@@ -17,7 +17,7 @@ asserts:
   - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
   - //java[contains(text(), 'new Dataized(this.take("works")).asBool()')]
   - //java[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
-  - //java[not(contains(text(), '+works'))]
+  - //java[contains(text(), 'void works()')]
 input: |
   +tests
 

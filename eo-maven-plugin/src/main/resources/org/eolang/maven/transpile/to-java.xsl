@@ -291,7 +291,7 @@
     <xsl:for-each select="tokenize(text(), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text> * </xsl:text>
-      <xsl:value-of select="eo:escape-plus(.)"/>
+      <xsl:value-of select="."/>
     </xsl:for-each>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text> */</xsl:text>
