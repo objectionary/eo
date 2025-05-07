@@ -229,7 +229,7 @@
               <skipSourceLints>
                 <lint>unused-void-attr</lint>
                 <!--
-                  @todo#:35min Enable `duplicate-names-in-diff` lint.
+                  @todo#4148:35min Enable `duplicate-names-in-diff` lint.
                    We should enable this lint after this issue will be fixed: https://github.com/objectionary/lints/issues/559.
                    Don't forget to enable this lint in `test-compile` execution as well.
                 -->
