@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 249.642921707
+  seconds: 187.43307543
   version: 0.42.0
   what: judges-summary
-  when: 2025-05-07 22:44:49.906661805 Z
+  when: 2025-05-07 23:12:37.664637657 Z
 - _id: 55
   _time: 2024-12-26 01:47:22.030433231 Z
   _version: 0.4.0/0.29.0/
@@ -137112,14 +137112,6 @@
   when: &832 2025-05-04 14:56:15.000000000 Z
   where: github
   who: 526301
-- _id: 322226
-  _time: 2025-05-04 15:12:04.028929937 Z
-  _version: 0.10.1/0.42.0/
-  average_pull_files_size: 10.406666666666666
-  average_pull_hoc_size: 365.56
-  since: 2025-04-02 08:15:37.885837921 Z
-  what: quality-of-service
-  when: 2025-04-09 08:15:37.885800952 Z
 - _id:
   - 322447
   - 322162
@@ -141424,6 +141416,7 @@
   is_human: 1
   issue: 4143
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   what: pull-was-merged
   when: 2025-05-07 08:25:11.000000000 Z
@@ -141471,7 +141464,7 @@
   issue: 559
   repository: 889819508
   what: issue-was-opened
-  when: 2025-05-07 09:20:16.000000000 Z
+  when: &857 2025-05-07 09:20:16.000000000 Z
   where: github
   who: 83453843
 - _id: 346498
@@ -141558,31 +141551,6 @@
   when: *856
   where: github
   who: 526301
-- _id: 346511
-  _job: 19634
-  _time: 2025-05-07 21:37:36.474387702 Z
-  _version: 0.10.1/0.42.0/0.7.0
-  award: 4
-  details: It's time to reward @maxonfjvipon for the code review in objectionary/eo#4143,
-    the reward amount is 4.
-  greeting: "Hey there! \U0001F44B Thanks for the review, but it looks like we missed
-    out on some points this time. You got +4 points: +12 as a base, but -16 since
-    there were no comments. We added +8 to keep you in the game. Remember, comments
-    are key – they can boost your points by up to 8! Also, more [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)
-    (at least 16) can prevent point deductions. Your current balance is [+72](https://www.eolang.org/zerocracy/objectionary-vitals.html).
-    Keep up the good work and let's aim higher next time! \U0001F4AA\n\n<!-- Thanks
-    for the review! You've earned +4 points for this: +12 as a basis; -16 for absolutely
-    no comments posted; +8 to give you at least something.  Your running balance is
-    [+72](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->"
-  href: https://github.com/objectionary/eo/issues/4143/#issuecomment-2860553134
-  is_human: 1
-  issue: 4143
-  repository: 73056727
-  what: code-review-was-rewarded
-  when: 2025-05-07 21:37:36.496314814 Z
-  where: github
-  who: 37025995
-  why: Reviewed code in objectionary/eo#4143
 - _id: 346518
   _time: 2025-05-07 22:10:04.477906123 Z
   _version: 0.10.1/0.42.0/
@@ -141596,125 +141564,6 @@
   when: 2025-05-07 09:44:11.000000000 Z
   where: github
   who: 83453843
-- _id: 346558
-  _time: 2025-05-07 22:10:29.077550601 Z
-  _version: 0.10.1/0.42.0/
-  latest: 1
-  repository: 73056727
-  what: min-issue-was-found
-  where: github
-- _id: 346559
-  _time: 2025-05-07 22:40:59.926728302 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49338335025
-  repository: 624420387
-  what: events-were-scanned
-  where: github
-- _id: 346560
-  _time: 2025-05-07 22:41:00.589746776 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49422088455
-  repository: 551486781
-  what: events-were-scanned
-  where: github
-- _id: 346561
-  _time: 2025-05-07 22:41:01.543118059 Z
-  _version: 0.10.1/0.42.0/
-  latest: 45572867640
-  repository: 490221501
-  what: events-were-scanned
-  where: github
-- _id: 346562
-  _time: 2025-05-07 22:41:02.159031248 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49342463411
-  repository: 558766137
-  what: events-were-scanned
-  where: github
-- _id: 346563
-  _time: 2025-05-07 22:41:02.784679163 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48621186098
-  repository: 490157985
-  what: events-were-scanned
-  where: github
-- _id: 346564
-  _time: 2025-05-07 22:41:03.436927126 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607229441
-  repository: 510082372
-  what: events-were-scanned
-  where: github
-- _id: 346565
-  _time: 2025-05-07 22:41:04.079598204 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607221186
-  repository: 403396472
-  what: events-were-scanned
-  where: github
-- _id: 346566
-  _time: 2025-05-07 22:41:04.699267945 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49394253706
-  repository: 492899189
-  what: events-were-scanned
-  where: github
-- _id: 346567
-  _time: 2025-05-07 22:41:05.287629597 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49339601687
-  repository: 721146770
-  what: events-were-scanned
-  where: github
-- _id: 346568
-  _time: 2025-05-07 22:41:05.936739765 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49320681453
-  repository: 386420319
-  what: events-were-scanned
-  where: github
-- _id: 346569
-  _time: 2025-05-07 22:41:06.515962476 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403195622
-  repository: 499536612
-  what: events-were-scanned
-  where: github
-- _id: 346570
-  _time: 2025-05-07 22:41:09.401521527 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49450028026
-  repository: 73056727
-  what: events-were-scanned
-  where: github
-- _id: 346571
-  _time: 2025-05-07 22:41:10.079162620 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607040571
-  repository: 447446664
-  what: events-were-scanned
-  where: github
-- _id: 346572
-  _time: 2025-05-07 22:41:11.542899473 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49432033513
-  repository: 671896902
-  what: events-were-scanned
-  where: github
-- _id: 346573
-  _time: 2025-05-07 22:41:12.138535752 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49388136095
-  repository: 483303722
-  what: events-were-scanned
-  where: github
-- _id: 346574
-  _time: 2025-05-07 22:41:12.852854387 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49350811661
-  repository: 574534248
-  what: events-were-scanned
-  where: github
 - _id: 346575
   _time: 2025-05-07 22:41:15.858464615 Z
   _version: 0.10.1/0.42.0/
@@ -141734,6 +141583,7 @@
   is_human: 1
   issue: 558
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 0
   what: pull-was-merged
   when: 2025-05-07 10:15:00.000000000 Z
@@ -141755,7 +141605,7 @@
   repository: 889819508
   review_comments: 0
   what: pull-was-reviewed
-  when: 2025-05-07 10:14:55.000000000 Z
+  when: &858 2025-05-07 10:14:55.000000000 Z
   where: github
   who: 526301
 - _id: 346577
@@ -141784,202 +141634,6 @@
   when: 2025-05-07 10:02:30.000000000 Z
   where: github
   who: 526301
-- _id: 346579
-  _time: 2025-05-07 22:41:24.154218714 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49449964037
-  repository: 889819508
-  what: events-were-scanned
-  where: github
-- _id: 346580
-  _time: 2025-05-07 22:41:24.905150083 Z
-  _version: 0.10.1/0.42.0/
-  latest: 44193479639
-  repository: 519246071
-  what: events-were-scanned
-  where: github
-- _id: 346581
-  _time: 2025-05-07 22:41:25.555112795 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607215018
-  repository: 568705267
-  what: events-were-scanned
-  where: github
-- _id: 346582
-  _time: 2025-05-07 22:41:26.939916469 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49436889253
-  repository: 489321585
-  what: events-were-scanned
-  where: github
-- _id: 346583
-  _time: 2025-05-07 22:41:27.729520952 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49393156064
-  repository: 840332960
-  what: events-were-scanned
-  where: github
-- _id: 346584
-  _time: 2025-05-07 22:41:28.411878732 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403189019
-  repository: 546194972
-  what: events-were-scanned
-  where: github
-- _id: 346585
-  _time: 2025-05-07 22:41:29.140321068 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403190328
-  repository: 396732517
-  what: events-were-scanned
-  where: github
-- _id: 346586
-  _time: 2025-05-07 22:41:29.739568238 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48636621583
-  repository: 519299365
-  what: events-were-scanned
-  where: github
-- _id: 346587
-  _time: 2025-05-07 22:41:30.332962996 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607072924
-  repository: 731516758
-  what: events-were-scanned
-  where: github
-- _id: 346588
-  _time: 2025-05-07 22:41:30.949427033 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49396573194
-  repository: 574459304
-  what: events-were-scanned
-  where: github
-- _id: 346589
-  _time: 2025-05-07 22:41:32.212174671 Z
-  _version: 0.10.1/0.42.0/
-  latest: 43208171256
-  repository: 531151981
-  what: events-were-scanned
-  where: github
-- _id: 346590
-  _time: 2025-05-07 22:41:32.824642102 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49166020952
-  repository: 490258619
-  what: events-were-scanned
-  where: github
-- _id: 346591
-  _time: 2025-05-07 22:41:33.447689915 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403191429
-  repository: 784310467
-  what: events-were-scanned
-  where: github
-- _id: 346592
-  _time: 2025-05-07 22:41:34.126870809 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403193837
-  repository: 798766850
-  what: events-were-scanned
-  where: github
-- _id: 346593
-  _time: 2025-05-07 22:41:34.736658165 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49447763182
-  repository: 977982682
-  what: events-were-scanned
-  where: github
-- _id: 346594
-  _time: 2025-05-07 22:41:35.541540631 Z
-  _version: 0.10.1/0.42.0/
-  latest: 45742056962
-  repository: 501942888
-  what: events-were-scanned
-  where: github
-- _id: 346595
-  _time: 2025-05-07 22:41:36.177500699 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49378386070
-  repository: 733919301
-  what: events-were-scanned
-  where: github
-- _id: 346596
-  _time: 2025-05-07 22:41:36.867916600 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403194731
-  repository: 501259435
-  what: events-were-scanned
-  where: github
-- _id: 346597
-  _time: 2025-05-07 22:41:37.522556607 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607089770
-  repository: 493235807
-  what: events-were-scanned
-  where: github
-- _id: 346598
-  _time: 2025-05-07 22:41:38.224156791 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49393072145
-  repository: 13623548
-  what: events-were-scanned
-  where: github
-- _id: 346599
-  _time: 2025-05-07 22:41:38.829651870 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49338522181
-  repository: 482612876
-  what: events-were-scanned
-  where: github
-- _id: 346600
-  _time: 2025-05-07 22:41:39.604860060 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49088831640
-  repository: 543969974
-  what: events-were-scanned
-  where: github
-- _id: 346601
-  _time: 2025-05-07 22:41:40.177761639 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49339157473
-  repository: 570457023
-  what: events-were-scanned
-  where: github
-- _id: 346602
-  _time: 2025-05-07 22:41:40.806142538 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403188055
-  repository: 731438612
-  what: events-were-scanned
-  where: github
-- _id: 346603
-  _time: 2025-05-07 22:41:41.387159676 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49403192768
-  repository: 565789755
-  what: events-were-scanned
-  where: github
-- _id: 346604
-  _time: 2025-05-07 22:41:42.033958213 Z
-  _version: 0.10.1/0.42.0/
-  latest: 48607235472
-  repository: 559427983
-  what: events-were-scanned
-  where: github
-- _id: 346605
-  _time: 2025-05-07 22:41:43.458920672 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49348134542
-  repository: 955159947
-  what: events-were-scanned
-  where: github
-- _id: 346606
-  _time: 2025-05-07 22:41:44.286114861 Z
-  _version: 0.10.1/0.42.0/
-  latest: 49453180525
-  repository: 510102039
-  what: events-were-scanned
-  where: github
 - _id: 346608
   _time: 2025-05-07 22:42:04.450771662 Z
   _version: 0.10.1/0.42.0/
@@ -142321,5 +141975,403 @@
   _version: 0.10.1/0.42.0/
   latest: 3
   repository: 671896902
+  what: min-issue-was-found
+  where: github
+- _id:
+  - 346797
+  - 346511
+  _job:
+  - 19640
+  - 19634
+  _time:
+  - 2025-05-07 22:45:14.939186992 Z
+  - 2025-05-07 21:37:36.474387702 Z
+  _version: 0.10.1/0.42.0/0.7.0
+  award: 4
+  details: It's time to reward @maxonfjvipon for the code review in objectionary/eo#4143,
+    the reward amount is 4.
+  href: https://github.com/objectionary/eo/issues/4143/#issuecomment-2860553134
+  is_human: 1
+  issue: 4143
+  repository: 73056727
+  what: code-review-was-rewarded
+  when: 2025-05-07 21:37:36.496314814 Z
+  where: github
+  who: 37025995
+  why: Reviewed code in objectionary/eo#4143
+- _id: 346798
+  _job: 19640
+  _time: 2025-05-07 22:45:33.839627962 Z
+  _version: 0.10.1/0.42.0/0.7.0
+  closer: 526301
+  details: 'In the repository #889819508, the user #83453843 submitted the issue #559
+    which was later closed by the user #526301 not becoming a bug or enhancement;
+    this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  issue: 559
+  repository: 889819508
+  what: dud-was-closed
+  when: *857
+  where: github
+  who: 83453843
+- _id: 346799
+  _job: 19640
+  _time: 2025-05-07 22:45:58.528748807 Z
+  _version: 0.10.1/0.42.0/0.7.0
+  author: 41898282
+  comments: 0
+  details: The pull request objectionary/lints#558 with 2 HoC created by @github-actions[bot]
+    was reviewed by @yegor256 after 17h4m and 0 comments.
+  hoc: 2
+  issue: 558
+  repository: 889819508
+  review_comments: 0
+  seconds: 61449
+  what: code-was-reviewed
+  when: *858
+  where: github
+  who: 526301
+- _id: 346800
+  _job: 19640
+  _time: 2025-05-07 22:45:59.670423567 Z
+  _version: 0.10.1/0.42.0/0.7.0
+  award: 4
+  details: It's time to reward @yegor256 for the code review in objectionary/eo#4143,
+    the reward amount is 4.
+  greeting: "Great job on the review! \U0001F31F You've earned +4 points: +12 base,
+    -16 for no comments, but +8 to recognize your effort. Your balance is now [-304](https://www.eolang.org/zerocracy/objectionary-vitals.html).
+    Keep up the good work and remember to add comments next time for even more points!\n\n<!--
+    Thanks for the review! You've earned +4 points for this: +12 as a basis; -16 for
+    absolutely no comments posted; +8 to give you at least something.  Your running
+    balance is [-304](https://www.eolang.org/zerocracy/objectionary-vitals.html).
+    \ -->"
+  issue: 4143
+  repository: 73056727
+  what: code-review-was-rewarded
+  when: 2025-05-07 22:45:59.686841740 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/eo#4143
+- _id: 346801
+  _time: 2025-05-07 23:09:49.030643121 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403189019
+  repository: 546194972
+  what: events-were-scanned
+  where: github
+- _id: 346802
+  _time: 2025-05-07 23:09:49.599600405 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607072924
+  repository: 731516758
+  what: events-were-scanned
+  where: github
+- _id: 346803
+  _time: 2025-05-07 23:09:50.376934961 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49393072145
+  repository: 13623548
+  what: events-were-scanned
+  where: github
+- _id: 346804
+  _time: 2025-05-07 23:09:50.999490740 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607235472
+  repository: 559427983
+  what: events-were-scanned
+  where: github
+- _id: 346805
+  _time: 2025-05-07 23:09:51.749336883 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49453605227
+  repository: 574534248
+  what: events-were-scanned
+  where: github
+- _id: 346806
+  _time: 2025-05-07 23:09:52.344480302 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49393156064
+  repository: 840332960
+  what: events-were-scanned
+  where: github
+- _id: 346807
+  _time: 2025-05-07 23:09:53.089704571 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49338335025
+  repository: 624420387
+  what: events-were-scanned
+  where: github
+- _id: 346808
+  _time: 2025-05-07 23:09:53.648910295 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48621186098
+  repository: 490157985
+  what: events-were-scanned
+  where: github
+- _id: 346809
+  _time: 2025-05-07 23:09:54.478474055 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49088831640
+  repository: 543969974
+  what: events-were-scanned
+  where: github
+- _id: 346810
+  _time: 2025-05-07 23:09:55.098322631 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49394253706
+  repository: 492899189
+  what: events-were-scanned
+  where: github
+- _id: 346811
+  _time: 2025-05-07 23:09:55.795233037 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49338522181
+  repository: 482612876
+  what: events-were-scanned
+  where: github
+- _id: 346812
+  _time: 2025-05-07 23:09:56.540147805 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403190328
+  repository: 396732517
+  what: events-were-scanned
+  where: github
+- _id: 346813
+  _time: 2025-05-07 23:09:57.336461900 Z
+  _version: 0.10.1/0.42.0/
+  latest: 45572867640
+  repository: 490221501
+  what: events-were-scanned
+  where: github
+- _id: 346814
+  _time: 2025-05-07 23:09:57.911186217 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607221186
+  repository: 403396472
+  what: events-were-scanned
+  where: github
+- _id: 346815
+  _time: 2025-05-07 23:09:58.522058434 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607229441
+  repository: 510082372
+  what: events-were-scanned
+  where: github
+- _id: 346816
+  _time: 2025-05-07 23:09:59.843638447 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49348134542
+  repository: 955159947
+  what: events-were-scanned
+  where: github
+- _id: 346817
+  _time: 2025-05-07 23:10:00.492885470 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49320681453
+  repository: 386420319
+  what: events-were-scanned
+  where: github
+- _id: 346818
+  _time: 2025-05-07 23:10:01.139091900 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403188055
+  repository: 731438612
+  what: events-were-scanned
+  where: github
+- _id: 346819
+  _time: 2025-05-07 23:10:01.859204195 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49422088455
+  repository: 551486781
+  what: events-were-scanned
+  where: github
+- _id: 346820
+  _time: 2025-05-07 23:10:02.527566430 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49339601687
+  repository: 721146770
+  what: events-were-scanned
+  where: github
+- _id: 346821
+  _time: 2025-05-07 23:10:04.544771040 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49450073793
+  repository: 73056727
+  what: events-were-scanned
+  where: github
+- _id: 346822
+  _time: 2025-05-07 23:10:05.179666005 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607040571
+  repository: 447446664
+  what: events-were-scanned
+  where: github
+- _id: 346823
+  _time: 2025-05-07 23:10:05.764625928 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403191429
+  repository: 784310467
+  what: events-were-scanned
+  where: github
+- _id: 346824
+  _time: 2025-05-07 23:10:06.359320968 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49388136095
+  repository: 483303722
+  what: events-were-scanned
+  where: github
+- _id: 346825
+  _time: 2025-05-07 23:10:07.006891456 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403193837
+  repository: 798766850
+  what: events-were-scanned
+  where: github
+- _id: 346826
+  _time: 2025-05-07 23:10:07.585049428 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403195622
+  repository: 499536612
+  what: events-were-scanned
+  where: github
+- _id: 346827
+  _time: 2025-05-07 23:10:08.321538260 Z
+  _version: 0.10.1/0.42.0/
+  latest: 44193479639
+  repository: 519246071
+  what: events-were-scanned
+  where: github
+- _id: 346828
+  _time: 2025-05-07 23:10:09.711041341 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49432033513
+  repository: 671896902
+  what: events-were-scanned
+  where: github
+- _id: 346829
+  _time: 2025-05-07 23:10:11.217486207 Z
+  _version: 0.10.1/0.42.0/
+  latest: 43208171256
+  repository: 531151981
+  what: events-were-scanned
+  where: github
+- _id: 346830
+  _time: 2025-05-07 23:10:11.835403980 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403192768
+  repository: 565789755
+  what: events-were-scanned
+  where: github
+- _id: 346831
+  _time: 2025-05-07 23:10:12.580169323 Z
+  _version: 0.10.1/0.42.0/
+  latest: 45742056962
+  repository: 501942888
+  what: events-were-scanned
+  where: github
+- _id: 346832
+  _time: 2025-05-07 23:10:13.196807372 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49378386070
+  repository: 733919301
+  what: events-were-scanned
+  where: github
+- _id: 346833
+  _time: 2025-05-07 23:10:13.823430586 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49342463411
+  repository: 558766137
+  what: events-were-scanned
+  where: github
+- _id: 346834
+  _time: 2025-05-07 23:10:14.456524553 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607215018
+  repository: 568705267
+  what: events-were-scanned
+  where: github
+- _id: 346835
+  _time: 2025-05-07 23:10:15.084738893 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48636621583
+  repository: 519299365
+  what: events-were-scanned
+  where: github
+- _id: 346836
+  _time: 2025-05-07 23:10:15.688131447 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49453180525
+  repository: 510102039
+  what: events-were-scanned
+  where: github
+- _id: 346837
+  _time: 2025-05-07 23:10:16.344902592 Z
+  _version: 0.10.1/0.42.0/
+  latest: 48607089770
+  repository: 493235807
+  what: events-were-scanned
+  where: github
+- _id: 346838
+  _time: 2025-05-07 23:10:16.955443628 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49403194731
+  repository: 501259435
+  what: events-were-scanned
+  where: github
+- _id: 346839
+  _time: 2025-05-07 23:10:17.585801535 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49339157473
+  repository: 570457023
+  what: events-were-scanned
+  where: github
+- _id: 346840
+  _time: 2025-05-07 23:10:18.233711795 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49447763182
+  repository: 977982682
+  what: events-were-scanned
+  where: github
+- _id: 346841
+  _time: 2025-05-07 23:10:20.314324640 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49449964037
+  repository: 889819508
+  what: events-were-scanned
+  where: github
+- _id: 346842
+  _time: 2025-05-07 23:10:21.825183857 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49436889253
+  repository: 489321585
+  what: events-were-scanned
+  where: github
+- _id: 346843
+  _time: 2025-05-07 23:10:22.534701555 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49396573194
+  repository: 574459304
+  what: events-were-scanned
+  where: github
+- _id: 346844
+  _time: 2025-05-07 23:10:23.126443600 Z
+  _version: 0.10.1/0.42.0/
+  latest: 49166020952
+  repository: 490258619
+  what: events-were-scanned
+  where: github
+- _id: 346845
+  _time: 2025-05-07 23:11:52.668380766 Z
+  _version: 0.10.1/0.42.0/
+  average_pull_files_size: 10.406666666666666
+  average_pull_hoc_size: 365.56
+  average_triage_time: 21019.93650793651
+  since: 2025-04-02 08:15:37.885837921 Z
+  what: quality-of-service
+  when: 2025-04-09 08:15:37.885800952 Z
+- _id: 346846
+  _time: 2025-05-07 23:12:37.242277524 Z
+  _version: 0.10.1/0.42.0/
+  latest: 1
+  repository: 73056727
   what: min-issue-was-found
   where: github
