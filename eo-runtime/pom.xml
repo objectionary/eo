@@ -227,8 +227,13 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
-                <lint>empty-object</lint>
                 <lint>unused-void-attr</lint>
+                <!--
+                  @todo#:35min Enable `duplicate-names-in-diff` lint.
+                   We should enable this lint after this issue will be fixed: https://github.com/objectionary/lints/issues/559.
+                   Don't forget to enable this lint in `test-compile` execution as well.
+                -->
+                <lint>duplicate-names-in-diff-context</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
@@ -264,6 +269,7 @@
                 <lint>unit-test-without-phi</lint>
                 <lint>unused-void-attr</lint>
                 <lint>anonymous-formation</lint>
+                <lint>duplicate-names-in-diff-context</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
