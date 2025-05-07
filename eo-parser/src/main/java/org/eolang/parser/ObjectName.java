@@ -46,7 +46,9 @@ public final class ObjectName implements Supplier<String> {
             .element("o")
             .attribute("name")
             .text()
-            .orElse("");
+            .orElseThrow(
+                () -> new IllegalStateException("XMIR should have '/object/o/@name' attribute")
+            );
         return this.xnav.element("object")
             .elements(Filter.withName("metas"))
             .findFirst()
