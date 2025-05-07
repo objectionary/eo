@@ -266,7 +266,6 @@
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <ignoreRuntime>true</ignoreRuntime>
               <skipSourceLints>
-                <lint>unit-test-without-phi</lint>
                 <lint>unused-void-attr</lint>
                 <lint>anonymous-formation</lint>
                 <lint>duplicate-names-in-diff-context</lint>
