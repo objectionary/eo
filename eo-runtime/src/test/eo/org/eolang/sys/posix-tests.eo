@@ -11,7 +11,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > posix-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-invokes-getpid-correctly
+  [] +> tests-invokes-getpid-correctly
     or. > @
       os.is-windows
       gt.
@@ -22,7 +22,7 @@
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-opens-posix-tcp-socket
+  [] +> tests-opens-posix-tcp-socket
     or. > @
       os.is-windows
       try
@@ -38,7 +38,7 @@
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-closes-posix-tcp-socket
+  [] +> tests-closes-posix-tcp-socket
     or. > @
       os.is-windows
       seq
@@ -57,7 +57,7 @@
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-valid-posix-inet-addr-for-localhost
+  [] +> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @
       os.is-windows
       addr.eq 16777343

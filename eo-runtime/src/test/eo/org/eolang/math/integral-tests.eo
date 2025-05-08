@@ -10,7 +10,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > integral-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-lineal-integral
+  [] +> tests-calculates-lineal-integral
     close-to > @
       lineal
       49.5
@@ -37,7 +37,7 @@
           value.neg
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-quadratic-integral
+  [] +> tests-calculates-quadratic-integral
     close-to > @
       quadratic
       333
@@ -64,7 +64,7 @@
           value.neg
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-cube-integral
+  [] +> tests-calculates-cube-integral
     close-to > @
       cube
       2499.75

@@ -10,7 +10,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > random-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-random-with-seed
+  [] +> tests-random-with-seed
     not. > @
       eq.
         r.next
@@ -18,13 +18,13 @@
     random 51 > r
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-seeded-randoms-are-equal
+  [] +> tests-seeded-randoms-are-equal
     eq. > @
       (random 1654).next.next.next
       (random 1654).next.next.next
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-random-is-in-range
+  [] +> tests-random-is-in-range
     and. > @
       and.
         and.
@@ -39,6 +39,6 @@
     (random 123).fixed > r
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-two-random-numbers-not-equal
+  [] +> tests-two-random-numbers-not-equal
     not. > @
       random.pseudo.eq random.pseudo

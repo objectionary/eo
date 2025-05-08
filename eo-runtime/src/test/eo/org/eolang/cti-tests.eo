@@ -12,7 +12,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > cti-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-tests-just-prints-warning
+  [] +> tests-tests-just-prints-warning
     eq. > @
       cti
         2.times 2

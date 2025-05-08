@@ -11,14 +11,14 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > dir-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-makes-new-directory
+  [] +> tests-makes-new-directory
     and. > @
       d.exists
       d.is-directory
     (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-deletes-empty-directory
+  [] +> tests-deletes-empty-directory
     tmpdir
     .tmpfile
     .deleted
@@ -32,13 +32,13 @@
     .not > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-opening-directory
+  [] +> throws-on-opening-directory
     tmpdir.open > @
       "w"
       true > [d]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-deletes-directory-with-files-recursively
+  [] +> tests-deletes-directory-with-files-recursively
     and. > @
       and.
         and.
@@ -53,7 +53,7 @@
     d.tmpfile > second
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-deletes-directory-with-file-and-dir
+  [] +> tests-deletes-directory-with-file-and-dir
     and. > @
       and.
         and.
@@ -70,7 +70,7 @@
     d.tmpfile > f
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-walks-recursively
+  [] +> tests-walks-recursively
     seq > @
       *
         (d.resolved "foo/bar").as-dir.made

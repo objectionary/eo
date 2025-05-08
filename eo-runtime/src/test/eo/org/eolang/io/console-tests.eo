@@ -11,6 +11,6 @@
 [] > console-tests
   # Prints a simple message to the console. We can't validate
   # the output, so we just run it and see if it crashes.
-  [] > tests-writes-to-console
+  [] +> tests-writes-to-console
     console.write > @
       "Hello, console-test!\n"

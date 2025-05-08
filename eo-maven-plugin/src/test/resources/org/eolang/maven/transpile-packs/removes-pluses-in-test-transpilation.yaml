@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/transpile/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/tests.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //java[contains(text(), '@Test')]
+  - //java[contains(text(), 'void tests_iterates_with_eachi()')]
+  - //java[contains(text(), 'tests_iterates_with_eachiφρα1();')]
+  - //java[contains(text(), 'list-tests.tests-iterates-with-eachi.φ.ρ')]
+  - //java[contains(text(), 'Φ.list-tests.tests-iterates-with-eachi.φ.α0.α0')]
+input: |
+  +tests
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] > list-tests
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] +> tests-iterates-with-eachi
+      eq. > @
+        malloc.for
+          0
+          [m]
+            list
+              * 1 2 3
+            .eachi > @
+              [item index] >>
+                ^.m.put > @
+                  plus.
+                    ^.m.as-number.plus item
+                    index
+        9
