@@ -227,12 +227,13 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
-                <lint>unused-void-attr</lint>
                 <!--
-                  @todo#4148:35min Enable `duplicate-names-in-diff` lint.
-                   We should enable this lint after this issue will be fixed: https://github.com/objectionary/lints/issues/559.
-                   Don't forget to enable this lint in `test-compile` execution as well.
+                  @todo#4148:35min Enable `unused-void-attr` lint.
+                   We should enable this lint after the following issue with magic
+                   voids will be resolved: https://github.com/objectionary/lints/issues/574.
+                   Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
                 -->
+                <lint>unused-void-attr</lint>
                 <lint>duplicate-names-in-diff-context</lint>
               </skipSourceLints>
               <keepBinaries>
