@@ -9,7 +9,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > go-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-goto-jumps-backwards
+  [] +> tests-goto-jumps-backwards
     eq. > @
       malloc.of
         8
@@ -30,7 +30,7 @@
       10
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-goto-jumps-forward
+  [] +> tests-goto-jumps-forward
     and. > @
       eq.
         div 7
@@ -53,7 +53,7 @@
                   r.put (42.div x)
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-from-method-body
+  [] +> tests-returns-from-method-body
     eq. > @
       max 7 42
       42
@@ -69,7 +69,7 @@
               b
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-nested-goto
+  [] +> tests-nested-goto
     eq. > @
       go.to
         [g1]

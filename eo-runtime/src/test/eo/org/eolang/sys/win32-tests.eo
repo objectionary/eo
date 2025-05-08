@@ -11,7 +11,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > win32-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-valid-win32-inet-addr-for-localhost
+  [] +> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not
       addr.eq 16777343

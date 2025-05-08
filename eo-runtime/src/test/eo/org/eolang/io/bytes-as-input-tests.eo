@@ -9,7 +9,7 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > bytes-as-input-tests
-  [] > tests-makes-an-input-from-bytes-and-reads
+  [] +> tests-makes-an-input-from-bytes-and-reads
     and. > @
       and.
         and.

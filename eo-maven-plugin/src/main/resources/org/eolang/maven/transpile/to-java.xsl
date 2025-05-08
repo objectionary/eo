@@ -171,6 +171,12 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!-- Escape `+` in test name syntax. -->
+  <xsl:function name="eo:escape-plus">
+    <xsl:param name="name"/>
+    <xsl:variable name="pos" select="string-length(tokenize($name, '\+')[1]) + 1"/>
+    <xsl:value-of select="concat(substring($name, 1, $pos - 1), substring($name, $pos + 1))"/>
+  </xsl:function>
   <xsl:variable name="object-name">
     <xsl:variable name="pckg" select="/object/class/@package"/>
     <xsl:variable name="obj" select="/object/class/@name"/>
@@ -255,7 +261,7 @@
   </xsl:template>
   <!-- Nested classes for anonymous abstract objects  -->
   <xsl:template match="nested">
-    <xsl:variable name="name" select="eo:loc-to-class(@loc)"/>
+    <xsl:variable name="name" select="eo:loc-to-class(eo:escape-plus(@loc))"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>private static class </xsl:text>
     <xsl:value-of select="$name"/>
@@ -353,7 +359,7 @@
       <xsl:text>)</xsl:text>
     </xsl:if>
     <xsl:text>.add("</xsl:text>
-    <xsl:value-of select="$name"/>
+    <xsl:value-of select="eo:escape-plus($name)"/>
     <xsl:text>", </xsl:text>
     <xsl:apply-templates select="void|bound|atom|abstract">
       <xsl:with-param name="indent" select="$indent"/>
@@ -507,7 +513,7 @@
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:loc-to-class(@loc)"/>
+        <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new PhDefault</xsl:text>
@@ -613,17 +619,17 @@
       <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="$object-name"/>
+      <xsl:value-of select="eo:escape-plus($object-name)"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@pos"/>
       <xsl:text>, </xsl:text>
       <xsl:text>"</xsl:text>
-      <xsl:value-of select="@loc"/>
+      <xsl:value-of select="eo:escape-plus(@loc)"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="@original-name"/>
+      <xsl:value-of select="eo:escape-plus(@original-name)"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
@@ -700,11 +706,11 @@
       <xsl:text>@Test</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>void </xsl:text>
-      <xsl:value-of select="replace(@name, '-', '_')"/>
+      <xsl:value-of select="replace(eo:escape-plus(@name), '-', '_')"/>
       <xsl:text>() throws java.lang.Exception {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:choose>
-        <xsl:when test="starts-with(@name, 'throws')">
+        <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
           <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
           <xsl:apply-templates select="." mode="dataized">
             <xsl:with-param name="indent" select="3"/>
@@ -732,7 +738,7 @@
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(this.take(</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name, true())"/>
+    <xsl:value-of select="eo:attr-name(eo:escape-plus(@name), true())"/>
     <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->

@@ -9,7 +9,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > dataized-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-dataized-does-not-do-recalculation
+  [] +> tests-dataized-does-not-do-recalculation
     eq. > @
       malloc.for
         0
@@ -26,7 +26,7 @@
       1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-dataizes-as-bytes-behaves-as-exclamationed
+  [] +> tests-dataizes-as-bytes-behaves-as-exclamationed
     seq > @
       *
         cached1

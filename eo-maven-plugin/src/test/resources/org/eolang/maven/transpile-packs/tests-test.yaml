@@ -17,11 +17,12 @@ asserts:
   - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
   - //java[contains(text(), 'new Dataized(this.take("works")).asBool()')]
   - //java[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
+  - //java[contains(text(), 'void works()')]
 input: |
   +tests
 
   # No comments.
   [] > some-tests
-    [] > works
+    [] +> works
       1.eq 1 > @
     false > [] > throws-on

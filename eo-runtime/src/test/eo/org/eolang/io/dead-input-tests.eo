@@ -10,7 +10,7 @@
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > dead-input-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-reads-empty-bytes
+  [] +> tests-reads-empty-bytes
     and. > @
       i1.eq --
       i2.eq --
