@@ -234,6 +234,12 @@
                    Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
                 -->
                 <lint>unused-void-attr</lint>
+                <!--
+                  @todo#4148:35min Enable `duplicate-names-in-diff-context` lint.
+                   For now its too pedantic. See this: https://github.com/objectionary/lints/issues/578.
+                   Also, we should fix the bug with false positives with lambda object names in the atoms,
+                   in order to enable this lint.
+                -->
                 <lint>duplicate-names-in-diff-context</lint>
               </skipSourceLints>
               <keepBinaries>
