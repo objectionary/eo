@@ -276,6 +276,11 @@
                 <lint>anonymous-formation</lint>
               </skipSourceLints>
               <skipProgramLints>
+                <!--
+                  @todo#4148:35min Enable `inconsistent-args` lint.
+                   We should enable this lint after the issue with self object names will be resolved:
+                   https://github.com/objectionary/lints/issues/576.
+                -->
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
             </configuration>
