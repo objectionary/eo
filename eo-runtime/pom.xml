@@ -275,9 +275,9 @@
               <skipSourceLints>
                 <lint>unused-void-attr</lint>
                 <!--
-                  @todo #4148:35min Enable `anonymous-formation` lint after bug fixes.
-                   We should enable `anonymous-formation` lint, right after these issues will resolved:
-                   https://github.com/objectionary/lints/issues/561, https://github.com/objectionary/lints/issues/562.
+                  @todo #4148:35min Enable `anonymous-formation` lint after required fixes.
+                   We should enable `anonymous-formation` lint, right after these issues will resolved in
+                   linter: https://github.com/objectionary/lints/issues/561, https://github.com/objectionary/lints/issues/562.
                 -->
                 <lint>anonymous-formation</lint>
               </skipSourceLints>
