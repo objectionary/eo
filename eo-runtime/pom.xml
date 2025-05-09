@@ -275,15 +275,15 @@
               <skipSourceLints>
                 <lint>unused-void-attr</lint>
                 <!--
-                  @todo #4148:35min Enable `anonymous-formation` lint.
-                   We should enable this lint after these issues will resolved:
+                  @todo #4148:35min Enable `anonymous-formation` lint after bug fixes.
+                   We should enable `anonymous-formation` lint, right after these issues will resolved:
                    https://github.com/objectionary/lints/issues/561, https://github.com/objectionary/lints/issues/562.
                 -->
                 <lint>anonymous-formation</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <!--
-                  @todo #4148:35min Enable `inconsistent-args` lint.
+                  @todo #4148:35min Enable `inconsistent-args` lint after its adjustment.
                    We should enable this lint after the issue with self object names will be resolved:
                    https://github.com/objectionary/lints/issues/576.
                 -->
