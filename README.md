@@ -64,7 +64,7 @@ All of them have something **we don't tolerate**:
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Then, you install [eoc](https://github.com/objectionary/eoc):
+Then, install [eoc](https://github.com/objectionary/eoc):
 
 ```bash
 npm install -g eolang@0.29.0
@@ -112,7 +112,7 @@ QQ.io.stdout
 ```
 
 The indentation in EO is important, just like in Python.
-There have to be two spaces
+There must be two spaces
 in front of the line in order to go to the deeper level of nesting.
 This code can also be written in a "horizontal" notation:
 
@@ -211,7 +211,7 @@ Got the idea?
 ## Backus-Naur Form
 
 This is our
-[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form),
+[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
 of EO language:
 
 <img alt="EBNF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
