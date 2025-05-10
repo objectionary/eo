@@ -16,11 +16,11 @@
     eq. > @
       malloc.of
         5
-        [m]
+        [mem]
           read. > @
             tee-input
               bytes-as-input 01-02-03-04-05
-              malloc-as-output m
+              malloc-as-output mem
             5
       01-02-03-04-05
 

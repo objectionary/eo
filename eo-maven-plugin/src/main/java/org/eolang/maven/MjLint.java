@@ -181,7 +181,7 @@ public final class MjLint extends MjSafe {
             .filter(defect -> this.skipExperimentalLints || !defect.experimental())
             .forEach(
                 defect -> {
-                    final Node node = pkg.get(defect.program()).inner();
+                    final Node node = pkg.get(defect.object()).inner();
                     new Xembler(
                         MjLint.embedded(
                             new Directives().xpath("/object").addIf("errors").strict(1),
@@ -246,7 +246,7 @@ public final class MjLint extends MjSafe {
      */
     private static void logOne(final Defect defect) {
         final StringBuilder message = new StringBuilder()
-            .append(defect.program())
+            .append(defect.object())
             .append(':').append(defect.line())
             .append(' ')
             .append(defect.text())

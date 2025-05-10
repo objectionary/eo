@@ -227,8 +227,20 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
-                <lint>empty-object</lint>
+                <!--
+                  @todo #4148:35min Enable `unused-void-attr` lint.
+                   We should enable this lint after the following issue with magic
+                   voids will be resolved: https://github.com/objectionary/lints/issues/574.
+                   Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
+                -->
                 <lint>unused-void-attr</lint>
+                <!--
+                  @todo #4148:35min Enable `duplicate-names-in-diff-context` lint.
+                   For now its too pedantic. See this: https://github.com/objectionary/lints/issues/578.
+                   Also, we should fix the bug with false positives with lambda object names in the atoms,
+                   in order to enable this lint.
+                -->
+                <lint>duplicate-names-in-diff-context</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
@@ -261,11 +273,20 @@
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <ignoreRuntime>true</ignoreRuntime>
               <skipSourceLints>
-                <lint>unit-test-without-phi</lint>
                 <lint>unused-void-attr</lint>
+                <!--
+                  @todo #4148:35min Enable `anonymous-formation` lint after required fixes.
+                   We should enable `anonymous-formation` lint, right after these issues will resolved in
+                   linter: https://github.com/objectionary/lints/issues/561, https://github.com/objectionary/lints/issues/562.
+                -->
                 <lint>anonymous-formation</lint>
               </skipSourceLints>
               <skipProgramLints>
+                <!--
+                  @todo #4148:35min Enable `inconsistent-args` lint after its adjustment.
+                   We should enable this lint after the issue with self object names will be resolved:
+                   https://github.com/objectionary/lints/issues/576.
+                -->
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
             </configuration>

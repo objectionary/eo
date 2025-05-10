@@ -28,15 +28,15 @@
     and. > @
       and.
         and.
-          r.lt 1
-          (r.lt 0).not
+          rand.lt 1
+          (rand.lt 0).not
         and.
-          r.next.lt 1
-          (r.next.lt 0).not
+          rand.next.lt 1
+          (rand.next.lt 0).not
       and.
-        r.next.next.lt 1
-        (r.next.next.lt 0).not
-    (random 123).fixed > r
+        rand.next.next.lt 1
+        (rand.next.next.lt 0).not
+    (random 123).fixed > rand
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-two-random-numbers-not-equal
