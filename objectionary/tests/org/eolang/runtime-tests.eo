@@ -2,12 +2,11 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
-+unlint unit-test-without-phi
 +unlint decorated-formation
++unlint duplicate-names-in-diff-context
 
 # This unit test is supposed to check the globals bound objects work as tests.
 [] > runtime-tests
@@ -15,7 +14,7 @@
   true > global-test
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-understands-this-correctly
+  [] +> tests-understands-this-correctly
     eq. > @
       a 42
       42
@@ -23,7 +22,7 @@
       $.x > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-takes-parent-object
+  [] +> tests-takes-parent-object
     eq. > @
       a 42
       42
@@ -33,7 +32,7 @@
         ^.x > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-makes-object-a-constant
+  [] +> tests-makes-object-a-constant
     eq. > @
       f
       f
@@ -44,7 +43,7 @@
     foo.@ > f!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-takes-parent-through-attribute
+  [] +> tests-takes-parent-through-attribute
     [] > @
       [] > @
         [] > @
@@ -55,14 +54,14 @@
     $ > this
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-when-applies-to-closed-object
+  [] +> throws-when-applies-to-closed-object
     closed true > @
     [x] > a
       x > @
     a false > closed
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-makes-deep-object-recursively
+  [] +> tests-makes-deep-object-recursively
     eq. > @
       x 5
       0
@@ -74,7 +73,7 @@
           i.minus 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-only-once
+  [] +> tests-calculates-only-once
     eq. > @
       malloc.for
         0
@@ -91,7 +90,7 @@
       1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-recursion-without-arguments
+  [] +> tests-recursion-without-arguments
     eq. > @
       malloc.for 4 [m]>>
         func m > @
@@ -106,19 +105,19 @@
         n
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-unescapes-slashes
+  [] +> tests-unescapes-slashes
     eq. > @
       "x\\b\\f\\u\\r\\t\\n\\'"
       78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-unescapes-symbols
+  [] +> tests-unescapes-symbols
     eq. > @
       "\b\f\n\r\t\u27E6"
       08-0C-0A-0D-09-E2-9F-A6
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compiles-correctly-with-long-duplicate-names
+  [] +> tests-compiles-correctly-with-long-duplicate-names
     true > @
     [] > long-object-name
       [] > long-object-name
@@ -128,7 +127,7 @@
               42 > x
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-named-inner-abstract-object
+  [] +> tests-named-inner-abstract-object
     seq > @
       *
         [] > b
@@ -137,7 +136,7 @@
           true > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-app-that-calls-func
+  [] +> tests-app-that-calls-func
     eq. > @
       output
       2
@@ -150,7 +149,7 @@
     app > output
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-directly-accesses-objects-from-root
+  [] +> tests-directly-accesses-objects-from-root
     eq. > @
       Q.org.eolang.malloc.of
         8
@@ -163,7 +162,7 @@
       40
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-directly-accesses-objects-from-standard-root
+  [] +> tests-directly-accesses-objects-from-standard-root
     eq. > @
       QQ.malloc.of
         8
@@ -176,7 +175,7 @@
       40
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-standard-root-and-root
+  [] +> tests-standard-root-and-root
     eq. > @
       root
       stand-root
@@ -184,7 +183,7 @@
     Q.org.eolang.sys.os > root
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-extract-attribute-from-decoratee
+  [] +> tests-extract-attribute-from-decoratee
     eq. > @
       a.foo
       43
@@ -196,7 +195,7 @@
           1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-constant-defends-against-side-effects
+  [] +> tests-constant-defends-against-side-effects
     eq. > @
       malloc.for 7 [m]>>
         m.put > @
@@ -214,7 +213,7 @@
           x.as-number
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-parent-in-vertical-notation
+  [] +> tests-parent-in-vertical-notation
     eq. > @
       value
       5
@@ -226,7 +225,7 @@
             ^
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-parent-in-horizontal-notation
+  [] +> tests-parent-in-horizontal-notation
     eq. > @
       value
       5
@@ -236,7 +235,7 @@
         ^.^.m > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-phi-in-vertical-notation
+  [] +> tests-phi-in-vertical-notation
     eq. > @
       @.
         value
@@ -246,7 +245,7 @@
         100 > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-phi-in-horizontal-notation
+  [] +> tests-phi-in-horizontal-notation
     eq. > @
       value.@
       100
@@ -255,7 +254,7 @@
         100 > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-right-way-to-use-hierarchy
+  [] +> tests-right-way-to-use-hierarchy
     ((pyint 1).add (pyint 3)).eq (pyint 4) > @
     [value] > pybool
       value > @
@@ -266,7 +265,7 @@
         ^.^.pyint (^.value.plus x.value) > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-check-triple-quotes
+  [] +> tests-check-triple-quotes
     eq. > @
       """
       Hello
@@ -276,7 +275,7 @@
       "Hello\n\nHello"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-correctly-handles-same-name-attrs-simplified
+  [] +> tests-correctly-handles-same-name-attrs-simplified
     eq. > @
       calc
         []
@@ -294,7 +293,7 @@
         second
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-correctly-handles-same-name-attrs
+  [] +> tests-correctly-handles-same-name-attrs
     eq. > @
       calc
         []
@@ -320,7 +319,7 @@
         s.next
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-with-void-phi
+  [] +> tests-with-void-phi
     and. > @
       (five.plus 5).eq 10
       five.hello.eq "Hello"
@@ -329,10 +328,10 @@
     x 5 > five
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] (seq (* (five.eq 5) true) > @) (5 > five) > complex-horizontal
+  [] (seq (* (five.eq 5) true) > @) (5 > five) +> complex-horizontal
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-vertical-bound-method
+  [] +> tests-vertical-bound-method
     eq. > @
       if.
         true
@@ -342,7 +341,7 @@
       "first"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-methods-by-position
+  [] +> tests-methods-by-position
     and. > @
       bound.~0.eq 1
       bound.~1.eq "Hey"
@@ -350,7 +349,7 @@
     obj 1 "Hey" > bound
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-nesting-blah-test
+  [] +> tests-nesting-blah-test
     blah0 > @
     [] > blah0
       blah1 > @

@@ -3,14 +3,15 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint duplicate-names-in-diff-context
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > range-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-range-from-one-to-ten
+  [] +> tests-simple-range-from-one-to-ten
     eq. > @
       rng
       * 1 2 3 4 5 6 7 8 9
@@ -23,7 +24,7 @@
       10
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-range-with-floats-from-one-to-five
+  [] +> tests-simple-range-with-floats-from-one-to-five
     eq. > @
       rng
       * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
@@ -36,7 +37,7 @@
       5.0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-range-with-out-of-bounds
+  [] +> tests-range-with-out-of-bounds
     eq. > @
       rng
       * 1 6
@@ -49,7 +50,7 @@
       10
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-range-with-wrong-items-is-an-empty-array
+  [] +> tests-range-with-wrong-items-is-an-empty-array
     rng.is-empty > @
     range > rng
       []

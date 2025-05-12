@@ -2,63 +2,62 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > bool-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-two-bools
+  [] +> tests-compares-two-bools
     eq. > @
       true
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-as-bool
+  [] +> tests-true-as-bool
     true.as-bool > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-two-different-bool-types
+  [] +> tests-compares-two-different-bool-types
     not. > @
       eq.
         true
         42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-bytes
+  [] +> tests-compares-bool-to-bytes
     and. > @
       true.eq 01-
       false.eq 00-
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-string
+  [] +> tests-compares-bool-to-string
     and. > @
       true.eq "\001"
       false.eq "\000"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-bool-to-bytes-reverse
+  [] +> tests-compares-bool-to-bytes-reverse
     and. > @
       01-.as-bytes.eq true
       00-.as-bytes.eq false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-not-is-false
+  [] +> tests-true-not-is-false
     eq. > @
       true.not
       false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-true-and-false-is-false
+  [] +> tests-true-and-false-is-false
     not. > @
       and.
         true
         false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-forks-on-true-condition
+  [] +> tests-forks-on-true-condition
     eq. > @
       if.
         5.eq 5
@@ -67,7 +66,7 @@
       123
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-forks-on-false-condition
+  [] +> tests-forks-on-false-condition
     eq. > @
       if.
         5.eq 8

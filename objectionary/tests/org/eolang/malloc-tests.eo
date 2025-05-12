@@ -2,15 +2,15 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
++unlint duplicate-names-in-diff-context
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > malloc-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-writes-into-memory-of
+  [] +> tests-writes-into-memory-of
     mem.eq 10 > @
     malloc.of > mem
       8
@@ -21,14 +21,14 @@
             m
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-puts-into-memory-for
+  [] +> tests-puts-into-memory-for
     mem.eq 10 > @
     malloc.for > mem
       0
       m.put 10 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-returns-size-from-scope
+  [] +> tests-returns-size-from-scope
     eq. > @
       malloc.of
         5
@@ -36,7 +36,7 @@
       5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-scope-is-dataized-twice
+  [] +> tests-malloc-scope-is-dataized-twice
     eq. > @
       2
       malloc.for
@@ -51,7 +51,7 @@
             f.put (f.as-number.plus 1) > [s] >>
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-for-writes-first-init-value
+  [] +> tests-malloc-for-writes-first-init-value
     eq. > @
       malloc.for
         42
@@ -59,7 +59,7 @@
       42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-puts-over-the-previous-data
+  [] +> tests-malloc-puts-over-the-previous-data
     eq. > @
       42.as-bytes.concat
         "orld!".as-bytes
@@ -73,7 +73,7 @@
             m.put 42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-rewrites-and-increments-itself
+  [] +> tests-malloc-rewrites-and-increments-itself
     mem.eq 6 > @
     malloc.of > mem
       8
@@ -84,7 +84,7 @@
             m.put (m.as-number.plus 5)
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-writes-into-two-malloc-objects
+  [] +> tests-writes-into-two-malloc-objects
     and. > @
       a.eq 10
       b.eq 20
@@ -96,19 +96,19 @@
       m.put 20 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-overflow-boolean-malloc
+  [] +> throws-on-overflow-boolean-malloc
     malloc.for > @
       false
       m.put 86124867.88 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-overflow-string-malloc
+  [] +> throws-on-overflow-string-malloc
     malloc.for > @
       "Hello"
       m.put "Much longer string!" > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-is-strictly-sized-int
+  [] +> tests-malloc-is-strictly-sized-int
     eq. > @
       malloc.for
         12248
@@ -116,7 +116,7 @@
       2556
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-is-strictly-typed-float
+  [] +> tests-malloc-is-strictly-typed-float
     eq. > @
       malloc.for
         245.88
@@ -124,7 +124,7 @@
       82.22
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-memory-is-strictly-sized-string
+  [] +> tests-memory-is-strictly-sized-string
     eq. > @
       malloc.for
         "Hello"
@@ -132,19 +132,19 @@
       "Proto"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-is-strictly-typed-bool
+  [] +> tests-malloc-is-strictly-typed-bool
     malloc.for > @
       false
       m.put true > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-gives-id-to-allocated-block
+  [] +> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
       m.put (m.id.gt 0) > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-allocates-right-size-block
+  [] +> tests-malloc-allocates-right-size-block
     malloc.of > @
       1
       [b]
@@ -153,7 +153,7 @@
           b.put (m.size.eq 10) > [m] >>
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-writes-and-reads
+  [] +> tests-malloc-writes-and-reads
     malloc.of > @
       1
       [b]
@@ -170,7 +170,7 @@
                     "Hello, Jeff!"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-concacts-strings-with-offset
+  [] +> tests-malloc-concacts-strings-with-offset
     malloc.of > @
       1
       [b]
@@ -185,13 +185,13 @@
                   (m.read 0 3).eq "XYX"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-writing-more-than-allocated-to-malloc-with-offset
+  [] +> throws-on-writing-more-than-allocated-to-malloc-with-offset
     malloc.of > @
       1
       m.write 1 true > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-reads-with-offset-and-length
+  [] +> tests-malloc-reads-with-offset-and-length
     malloc.of > @
       1
       [b]
@@ -205,7 +205,7 @@
                   (m.read 2 5).eq "Hello"
 
   # Creates memory block of zero bytes (this should be a legal operation).
-  [] > tests-allocates-zero-bytes
+  [] +> tests-allocates-zero-bytes
     eq. > @
       0
       malloc.of
@@ -213,7 +213,7 @@
         m.size > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-increases-block-size
+  [] +> tests-malloc-increases-block-size
     malloc.of > @
       1
       [b]
@@ -226,7 +226,7 @@
                 m.get.eq 01-02-03-04-00-00
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-decreases-block-size
+  [] +> tests-malloc-decreases-block-size
     malloc.of > @
       1
       [b]
@@ -239,18 +239,18 @@
                 m.get.eq 01-02-03
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-changing-size-to-negative
+  [] +> throws-on-changing-size-to-negative
     malloc.of > @
       1
       m.resized -1 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-malloc-empty-is-empty
+  [] +> tests-malloc-empty-is-empty
     malloc.empty > @
       m.size.eq 0 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-copies-data-inside-itself
+  [] +> tests-copies-data-inside-itself
     malloc.for > @
       01-02-03-04-05
       [m]
@@ -259,7 +259,7 @@
           m.get.eq 01-02-02-03-05
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-copies-data-from-start-to-end
+  [] +> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
       [m]
@@ -268,19 +268,19 @@
           m.get.eq 01-02-03-01-02-03
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-copying-with-wrong-source
+  [] +> throws-on-copying-with-wrong-source
     malloc.for > @
       0
       m.copy 9 1 1 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-copying-with-wrong-target
+  [] +> throws-on-copying-with-wrong-target
     malloc.for > @
       0
       m.copy 3 9 1 > [m]
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-copying-with-wrong-length
+  [] +> throws-on-copying-with-wrong-length
     malloc.for > @
       0
       m.copy 3 1 9 > [m]

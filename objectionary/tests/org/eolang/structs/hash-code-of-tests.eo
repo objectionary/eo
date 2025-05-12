@@ -3,15 +3,15 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
++unlint duplicate-names-in-diff-context
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > hash-code-of-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-code-of-bools-is-number
+  [] +> tests-hash-code-of-bools-is-number
     and. > @
       true-code.as-bytes.size.eq 8
       false-code.as-bytes.size.eq 8
@@ -19,7 +19,7 @@
     hash-code-of false > false-code
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-code-of-int-is-int
+  [] +> tests-hash-code-of-int-is-int
     eq. > @
       1
       div.
@@ -28,34 +28,34 @@
     hash-code-of 42 > num-code!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-big-ints-are-equal
+  [] +> tests-hash-codes-of-the-same-big-ints-are-equal
     eq. > @
       hash-code-of big-int
       hash-code-of big-int
     123456789012345678 > big-int
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-ints-are-equal
+  [] +> tests-hash-codes-of-the-same-ints-are-equal
     eq. > @
       hash-code-of 42
       hash-code-of 42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-ints-are-not-equal
+  [] +> tests-hash-codes-of-different-ints-are-not-equal
     not. > @
       eq.
         hash-code-of 42
         hash-code-of 24
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-sign-ints-are-not-equal
+  [] +> tests-hash-codes-of-different-sign-ints-are-not-equal
     not. > @
       eq.
         hash-code-of 42
         hash-code-of -42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-code-of-string-is-int
+  [] +> tests-hash-code-of-string-is-int
     eq. > @
       1
       div.
@@ -64,27 +64,27 @@
     hash-code-of "hello" > str-code!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-strings-are-equal
+  [] +> tests-hash-codes-of-the-same-strings-are-equal
     eq. > @
       hash-code-of "Hello"
       hash-code-of "Hello"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-same-length-strings-are-not-equal
+  [] +> tests-hash-codes-of-same-length-strings-are-not-equal
     not. > @
       eq.
         hash-code-of "one"
         hash-code-of "two"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-strings-are-not-equal
+  [] +> tests-hash-codes-of-different-strings-are-not-equal
     not. > @
       eq.
         hash-code-of "hello"
         hash-code-of "bye!!!"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-code-of-abstract-object-is-int
+  [] +> tests-hash-code-of-abstract-object-is-int
     eq. > @
       1
       div.
@@ -95,7 +95,7 @@
     hash-code-of (obj 42) > obj-code!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-abstract-objects-are-equal
+  [] +> tests-hash-codes-of-the-same-abstract-objects-are-equal
     eq. > @
       hash-code-of forty-two-obj
       hash-code-of forty-two-obj
@@ -104,7 +104,7 @@
     obj 42 > forty-two-obj
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-abstract-objects-are-not-equal
+  [] +> tests-hash-codes-of-different-abstract-objects-are-not-equal
     not. > @
       eq.
         hash-code-of (obj 42)
@@ -113,7 +113,7 @@
       x > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-code-of-float-is-int
+  [] +> tests-hash-code-of-float-is-int
     eq. > @
       1
       div.
@@ -122,28 +122,28 @@
     hash-code-of 42.42 > float-code!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-floats-are-equal
+  [] +> tests-hash-codes-of-the-same-floats-are-equal
     eq. > @
       hash-code-of emergency
       hash-code-of emergency
     0.911 > emergency
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-the-same-big-floats-are-equal
+  [] +> tests-hash-codes-of-the-same-big-floats-are-equal
     eq. > @
       hash-code-of big-float
       hash-code-of big-float
     42.42e42 > big-float!
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-floats-are-not-equal
+  [] +> tests-hash-codes-of-different-floats-are-not-equal
     not. > @
       eq.
         hash-code-of 3.14
         hash-code-of 2.72
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-hash-codes-of-different-sign-floats-are-not-equal
+  [] +> tests-hash-codes-of-different-sign-floats-are-not-equal
     not. > @
       eq.
         hash-code-of 3.22

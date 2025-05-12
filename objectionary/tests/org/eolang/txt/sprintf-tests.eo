@@ -3,17 +3,16 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 +unlint wrong-sprintf-arguments
 +unlint sprintf-without-formatters
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > sprintf-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-prints-simple-string
+  [] +> tests-prints-simple-string
     eq. > @
       "Hello, Jeffrey!"
       sprintf
@@ -21,7 +20,7 @@
         * "Jeffrey"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-prints-complex-string
+  [] +> tests-prints-complex-string
     eq. > @
       "Привет 3.140000 Jeff X!"
       sprintf
@@ -29,7 +28,7 @@
         * 3.14 "Jeff" "X"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-prints-bytes-string
+  [] +> tests-prints-bytes-string
     eq. > @
       "40-45-00-00-00-00-00-00"
       sprintf
@@ -37,7 +36,7 @@
         * 42.as-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-formats-all-objects
+  [] +> tests-formats-all-objects
     eq. > @
       "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
       sprintf
@@ -45,13 +44,13 @@
         * "Jeff" "Jeff".as-bytes 42.3 14 false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-sprintf-with-arguments-that-does-not-match
+  [] +> throws-on-sprintf-with-arguments-that-does-not-match
     sprintf > @
       "%s%s"
       * "Jeff"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-sprintf-does-not-fail-if-arguments-more-than-formats
+  [] +> tests-sprintf-does-not-fail-if-arguments-more-than-formats
     eq. > @
       "Hey"
       sprintf
@@ -59,7 +58,7 @@
         * "Hey" "Jeff"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-sprintf-unsupported-format
+  [] +> throws-on-sprintf-unsupported-format
     sprintf "%o" * > @
 
   # This unit test is supposed to check the functionality of the corresponding object.

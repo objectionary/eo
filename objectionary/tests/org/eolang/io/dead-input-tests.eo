@@ -3,14 +3,14 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > dead-input-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-reads-empty-bytes
+  [] +> tests-reads-empty-bytes
     and. > @
       i1.eq --
       i2.eq --

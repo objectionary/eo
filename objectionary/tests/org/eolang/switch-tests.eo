@@ -2,15 +2,14 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > switch-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-switch-simple-case
+  [] +> tests-switch-simple-case
     eq. > @
       switch
         *
@@ -23,7 +22,7 @@
       "2"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-switch-strings-case
+  [] +> tests-switch-strings-case
     eq. > @
       switch
         *
@@ -40,7 +39,7 @@
     "swordfish" > password
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-switch-with-several-true-cases
+  [] +> tests-switch-with-several-true-cases
     eq. > @
       switch
         *
@@ -56,7 +55,7 @@
       "TRUE1"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-switch-with-all-false-cases
+  [] +> tests-switch-with-all-false-cases
     switch > @
       *
         *
@@ -67,11 +66,11 @@
           "false2"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > throws-on-empty-switch
+  [] +> throws-on-empty-switch
     switch * > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-switch-complex-case
+  [] +> tests-switch-complex-case
     eq. > @
       switch
         *

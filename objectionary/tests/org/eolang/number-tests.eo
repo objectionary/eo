@@ -2,21 +2,21 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
++unlint duplicate-names-in-diff-context
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > number-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-less-true
+  [] +> tests-int-less-true
     lt. > @
       10
       50
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-less-equal
+  [] +> tests-int-less-equal
     eq. > @
       not.
         lt.
@@ -25,7 +25,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-less-false
+  [] +> tests-int-less-false
     eq. > @
       not.
         lt.
@@ -34,7 +34,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-greater-true
+  [] +> tests-int-greater-true
     eq. > @
       gt.
         -200
@@ -42,7 +42,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-greater-false
+  [] +> tests-int-greater-false
     eq. > @
       not.
         gt.
@@ -51,7 +51,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-greater-equal
+  [] +> tests-int-greater-equal
     eq. > @
       not.
         gt.
@@ -60,7 +60,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-leq-true
+  [] +> tests-int-leq-true
     eq. > @
       lte.
         -200
@@ -68,7 +68,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-leq-equal
+  [] +> tests-int-leq-equal
     eq. > @
       lte.
         50
@@ -76,7 +76,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-leq-false
+  [] +> tests-int-leq-false
     eq. > @
       not.
         lte.
@@ -85,7 +85,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-gte-true
+  [] +> tests-int-gte-true
     eq. > @
       gte.
         -1000
@@ -93,7 +93,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-gte-equal
+  [] +> tests-int-gte-equal
     eq. > @
       gte.
         113
@@ -101,7 +101,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-gte-false
+  [] +> tests-int-gte-false
     eq. > @
       not.
         gte.
@@ -110,7 +110,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-equal-to-nan-and-infinites-is-false
+  [] +> tests-int-equal-to-nan-and-infinites-is-false
     eq. > @
       and.
         and.
@@ -126,7 +126,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-zero-eq-to-zero
+  [] +> tests-int-zero-eq-to-zero
     eq. > @
       eq.
         0
@@ -134,7 +134,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-zero-eq-to-float-zero
+  [] +> tests-int-zero-eq-to-float-zero
     eq. > @
       eq.
         0
@@ -142,7 +142,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-eq-true
+  [] +> tests-int-eq-true
     eq. > @
       eq.
         123
@@ -150,7 +150,7 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-int-eq-false
+  [] +> tests-int-eq-false
     eq. > @
       not.
         eq.
@@ -159,25 +159,25 @@
       true
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-one-plus-one
+  [] +> tests-one-plus-one
     eq. > @
       1.plus 1
       2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-one-minus-one
+  [] +> tests-one-minus-one
     eq. > @
       1.minus 1
       0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-compares-two-different-number-types
+  [] +> tests-compares-two-different-number-types
     eq. > @
       68.eq "12345678"
       false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-fibonacci-number-with-recursion
+  [] +> tests-calculates-fibonacci-number-with-recursion
     eq. > @
       fibo 4
       3
@@ -190,7 +190,7 @@
           fibo (n.minus 2)
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-calculates-fibonacci-number-with-tail
+  [] +> tests-calculates-fibonacci-number-with-tail
     eq. > @
       fibonacci 4
       3
@@ -214,7 +214,7 @@
           rec (n.minus 1) (minus1.plus minus2) minus1
 
   # Checks that division by zero does not return an error object.
-  [] > tests-zero-division
+  [] +> tests-zero-division
     try > @
       seq
         *
@@ -224,7 +224,7 @@
       false
 
   # Checks that division by one returns the dividend.
-  [] > tests-division-by-one
+  [] +> tests-division-by-one
     eq. > @
       dividend.div 1
       dividend
@@ -232,27 +232,27 @@
 
   # Checks that div works properly with dividends greater than zero
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-div-for-dividend-greater-than-zero
+  [] +> tests-div-for-dividend-greater-than-zero
     eq. > @
       256.div 16
       16
 
   # Checks div with remainder
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-div-with-remainder
+  [] +> tests-div-with-remainder
     eq. > @
       floor.
         13.div -5
       -2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-div-less-than-one
+  [] +> tests-div-less-than-one
     lt. > @
       1.div 5
       1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-to-bytes-and-backwards
+  [] +> tests-to-bytes-and-backwards
     eq. > @
       as-number.
         as-bytes.
@@ -260,40 +260,40 @@
       42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-as-bytes-equals-to-int
+  [] +> tests-as-bytes-equals-to-int
     eq. > @
       42
       42.as-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-as-bytes-equals-to-int-backwards
+  [] +> tests-as-bytes-equals-to-int-backwards
     eq. > @
       42.as-bytes
       42
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-multiply-by-zero
+  [] +> tests-multiply-by-zero
     eq. > @
       1000.times 0
       0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-simple-number-is-not-nan
+  [] +> tests-simple-number-is-not-nan
     42.5.is-nan.not > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  32.is-integer > [] > int-number-is-integer
+  32.is-integer > [] +> int-number-is-integer
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  32.5.is-integer.not > [] > float-number-is-not-integer
+  32.5.is-integer.not > [] +> float-number-is-not-integer
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  32.is-finite > [] > simple-number-is-finite
+  32.is-finite > [] +> simple-number-is-finite
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-number-with-nan-bytes-is-nan
+  [] +> tests-number-with-nan-bytes-is-nan
     (number nan.as-bytes).is-nan > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-number-with-infinite-bytes-is-not-finite
+  [] +> tests-number-with-infinite-bytes-is-not-finite
     (number positive-infinity.as-bytes).is-finite.not > @

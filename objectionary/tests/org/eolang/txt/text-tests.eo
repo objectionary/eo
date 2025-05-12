@@ -5,27 +5,26 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > text-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-text-slices-the-origin-string
+  [] +> tests-text-slices-the-origin-string
     eq. > @
       (text "Hello, world!").slice 7 5
       "world"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-trimmed-left-empty-text
+  [] +> tests-trimmed-left-empty-text
     eq. > @
       (text "").trimmed-left
       ""
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-text-trimmed-left-one-space
+  [] +> tests-text-trimmed-left-one-space
     eq. > @
       (text " s").trimmed-left
       "s"

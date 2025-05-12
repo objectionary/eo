@@ -3,15 +3,14 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.math
-+version 0.56.0
++version 0.56.2
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint sparse-decoration
 
 # This unit test is supposed to check the functionality of the corresponding object.
 [] > random-tests
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-random-with-seed
+  [] +> tests-random-with-seed
     not. > @
       eq.
         r.next
@@ -19,27 +18,27 @@
     random 51 > r
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-seeded-randoms-are-equal
+  [] +> tests-seeded-randoms-are-equal
     eq. > @
       (random 1654).next.next.next
       (random 1654).next.next.next
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-random-is-in-range
+  [] +> tests-random-is-in-range
     and. > @
       and.
         and.
-          r.lt 1
-          (r.lt 0).not
+          rand.lt 1
+          (rand.lt 0).not
         and.
-          r.next.lt 1
-          (r.next.lt 0).not
+          rand.next.lt 1
+          (rand.next.lt 0).not
       and.
-        r.next.next.lt 1
-        (r.next.next.lt 0).not
-    (random 123).fixed > r
+        rand.next.next.lt 1
+        (rand.next.next.lt 0).not
+    (random 123).fixed > rand
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-two-random-numbers-not-equal
+  [] +> tests-two-random-numbers-not-equal
     not. > @
       random.pseudo.eq random.pseudo
