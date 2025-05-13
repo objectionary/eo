@@ -8,6 +8,7 @@ import com.yegor256.Together;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,24 @@ import org.junit.jupiter.api.Test;
  * @since 0.28.11
  */
 final class ChCachedTest {
+
+    @Test
+    void raisesException() {
+        final String msg = "inner problem";
+        MatcherAssert.assertThat(
+            "The exception message should provide information about the inner problem",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new ChCached(
+                    () -> {
+                        throw new IllegalStateException(msg);
+                    }
+                ).value(),
+                "An exception should be thrown, but it was not"
+            ).getMessage(),
+            Matchers.containsString(msg)
+        );
+    }
 
     @Test
     void cachesHashAndInvokesDelegateOnlyOnce() {
@@ -63,6 +82,15 @@ final class ChCachedTest {
             "The delegate should be called exactly once in concurrent environment, but it was not",
             invocations.get(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void returnsNullIfDelegateReturnsNull() {
+        MatcherAssert.assertThat(
+            "The cached value should be null",
+            new ChCached(() -> null).value(),
+            Matchers.nullValue()
         );
     }
 }

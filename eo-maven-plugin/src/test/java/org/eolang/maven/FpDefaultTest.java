@@ -292,6 +292,24 @@ final class FpDefaultTest {
         );
     }
 
+    @Test
+    void throwsNpeIfHashIsNull(@Mktmp final Path temp) throws IOException {
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        final Cache cache = FpDefaultTest.existedCache(temp);
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new FpDefault(
+                src1 -> FpDefaultTest.LAMBDA_CONTENT,
+                cache.base,
+                cache.semver,
+                null,
+                cache.tail
+            ).apply(source, target),
+            "Should throw NPE if hash is null"
+        );
+    }
+
     /**
      * Apply default footprint.
      * @param cache Cache
