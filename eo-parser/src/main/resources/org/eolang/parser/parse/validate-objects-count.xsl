@@ -10,7 +10,7 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/object">
     <xsl:variable name="error" as="element()*">
-      <xsl:if test="count(o)!=1">
+      <xsl:if test="count(o)!=1 and count(o)!=0">
         <xsl:element name="error">
           <xsl:attribute name="check" select="'validate-objects-count'"/>
           <xsl:attribute name="line" select="if (o[2]/@line) then o[2]/@line else 0"/>

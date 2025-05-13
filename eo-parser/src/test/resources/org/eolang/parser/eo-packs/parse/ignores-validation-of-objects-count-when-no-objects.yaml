@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 sheets:
-  - /org/eolang/parser/parse/vars-float-up.xsl
   - /org/eolang/parser/parse/validate-objects-count.xsl
 asserts:
-  - /object/errors[count(error[@severity='critical'])=0]
+  - /object[not(errors)]
 document: |
   <object/>
