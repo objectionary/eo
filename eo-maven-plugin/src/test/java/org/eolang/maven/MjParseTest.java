@@ -205,13 +205,11 @@ final class MjParseTest {
                 result.get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
             ),
             XhtmlMatchers.hasXPaths(
-                "/errors[count(error[@severity='critical'])=1]"
+                "/object/errors[count(error)=1]",
+                "//error[@severity='critical']",
+                "//error[text() = \"Tojo identifier 'main' does not match to result object name 'app'\"]"
             )
         );
-//        final File parsed = result.get(
-//            String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR)
-//        ).toFile();
-//        System.out.println(parsed);
     }
 
     /**
