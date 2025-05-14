@@ -1,6 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-**Last Updated: May 14, 2025**
+### Last Updated: May 14, 2025
 
 ## Our Pledge
 
