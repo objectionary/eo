@@ -149,7 +149,6 @@ public final class MjParse extends MjSafe {
         );
         final String name = new ObjectName(xmir).get();
         if (!name.equals(identifier)) {
-            // add errors
             try {
                 new Xembler(
                     new Directives()
@@ -167,7 +166,7 @@ public final class MjParse extends MjSafe {
                 ).apply(xmir.inner());
             } catch (final ImpossibleModificationException exception) {
                 throw new IllegalStateException(
-                    "Failed to modify XMIR", exception
+                    "Failed to modify XMIR to add errors", exception
                 );
             }
         }
