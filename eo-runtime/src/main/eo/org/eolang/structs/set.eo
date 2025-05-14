@@ -32,7 +32,7 @@
           mp.with item true
 
     # Remove `item` from `set`. If `item` is not present,
-    # the set wont be changed.
+    # the set won't be changed.
     [item] > without
       this. > @
         set.initialized

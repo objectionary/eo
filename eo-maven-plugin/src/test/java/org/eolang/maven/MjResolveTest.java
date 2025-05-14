@@ -249,13 +249,13 @@ final class MjResolveTest {
             "# No comment.",
             "[] > main-1 ?"
         );
-        final Exception excpt = Assertions.assertThrows(
+        final Exception except = Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Resolve())
         );
         MatcherAssert.assertThat(
             "Expected that conflicting dependencies were found, but they were not",
-            excpt.getCause().getCause().getMessage(),
+            except.getCause().getCause().getMessage(),
             Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )
