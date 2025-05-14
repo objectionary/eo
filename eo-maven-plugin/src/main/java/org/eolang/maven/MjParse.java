@@ -24,6 +24,9 @@ import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -146,12 +149,27 @@ public final class MjParse extends MjSafe {
         );
         final String name = new ObjectName(xmir).get();
         if (!name.equals(identifier)) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Tojo identifier '%s' does not match to result object name '%s'",
-                    identifier, name
-                )
-            );
+            // add errors
+            try {
+                new Xembler(
+                    new Directives()
+                        .xpath("/object")
+                        .addIf("errors")
+                        .add("error")
+                        .attr("check", "validate-object-name")
+                        .attr("severity", "critical")
+                        .set(
+                            String.format(
+                                "Tojo identifier '%s' does not match to result object name '%s'",
+                                identifier, name
+                            )
+                        )
+                ).apply(xmir.inner());
+            } catch (final ImpossibleModificationException exception) {
+                throw new IllegalStateException(
+                    "Failed to modify XMIR", exception
+                );
+            }
         }
         return xmir.inner();
     }

@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
@@ -185,6 +187,31 @@ final class MjParseTest {
                     ))
             );
         }
+    }
+
+    @Test
+    void addsErrorsIfObjectNameDoesNotMatchFilename(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Map<String, Path> result = maven
+            .withProgram(
+                "# App.\n[] > app",
+                "main"
+            )
+            .execute(new FakeMaven.Parse())
+            .result();
+        MatcherAssert.assertThat(
+            "Errors are not present in the resulted XMIR, but they should",
+            new XMLDocument(
+                result.get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/errors[count(error[@severity='critical'])=1]"
+            )
+        );
+//        final File parsed = result.get(
+//            String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR)
+//        ).toFile();
+//        System.out.println(parsed);
     }
 
     /**
