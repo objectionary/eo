@@ -163,6 +163,7 @@ public final class MjParse extends MjSafe {
                                 identifier, name
                             )
                         )
+                    
                 ).apply(xmir.inner());
             } catch (final ImpossibleModificationException exception) {
                 throw new IllegalStateException(
