@@ -191,18 +191,17 @@ final class MjParseTest {
 
     @Test
     void addsErrorsIfObjectNameDoesNotMatchFilename(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        final Map<String, Path> result = maven
-            .withProgram(
-                "# App.\n[] > app",
-                "main"
-            )
-            .execute(new FakeMaven.Parse())
-            .result();
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                result.get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
+                new FakeMaven(temp)
+                    .withProgram(
+                        "# App.\n[] > app",
+                        "main"
+                    )
+                    .execute(new FakeMaven.Parse())
+                    .result()
+                    .get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors[count(error)=1]",
