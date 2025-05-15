@@ -26,4 +26,5 @@ jobs:
           key: ubuntu-surefire-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-surefire-jdk-21-maven-
       - run: |
+          rm -rf ~/.m2/repo/org/eolang
           mvn clean install -PskipUTs --errors --batch-mode
