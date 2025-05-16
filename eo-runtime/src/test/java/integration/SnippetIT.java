@@ -4,7 +4,6 @@
  */
 package integration;
 
-import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -57,15 +56,6 @@ final class SnippetIT {
                             "%s\n",
                             xtory.map().get("eo")
                         ).getBytes(StandardCharsets.UTF_8)
-                    );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
                     );
                 final String target;
                 if (xtory.map().containsKey("target")) {
