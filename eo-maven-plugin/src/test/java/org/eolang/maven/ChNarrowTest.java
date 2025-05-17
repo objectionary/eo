@@ -46,4 +46,13 @@ final class ChNarrowTest {
             "An exception should be thrown for an empty commit hash, but it was not"
         );
     }
+
+    @Test
+    void throwsExceptionIfNull() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new ChNarrow(null).value(),
+            "An exception should be thrown for a null commit hash, but it was not"
+        );
+    }
 }
