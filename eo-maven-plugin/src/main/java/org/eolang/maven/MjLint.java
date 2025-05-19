@@ -106,6 +106,7 @@ public final class MjLint extends MjSafe {
             "Read more about lints: https://www.objectionary.com/lints/%s",
             Manifests.read("Lints-Version")
         );
+        
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
                 String.format(
