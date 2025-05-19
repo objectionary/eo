@@ -703,34 +703,36 @@
       <xsl:if test="position()&gt;1">
         <xsl:value-of select="eo:eol(1)"/>
       </xsl:if>
-      <xsl:text>@Test</xsl:text>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>void </xsl:text>
-      <xsl:value-of select="replace(eo:escape-plus(@name), '-', '_')"/>
-      <xsl:text>() throws java.lang.Exception {</xsl:text>
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:choose>
-        <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
-          <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
-          <xsl:apply-templates select="." mode="dataized">
-            <xsl:with-param name="indent" select="3"/>
-          </xsl:apply-templates>
-          <xsl:text>;</xsl:text>
-          <xsl:value-of select="eo:eol(2)"/>
-          <xsl:text>});</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>Assertions.assertTrue(</xsl:text>
-          <xsl:apply-templates select="." mode="dataized">
-            <xsl:with-param name="indent" select="3"/>
-          </xsl:apply-templates>
-          <xsl:value-of select="eo:eol(2)"/>
-          <xsl:text>);</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>}</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:if test="starts-with(@name, '+')">
+        <xsl:text>@Test</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>void </xsl:text>
+        <xsl:value-of select="replace(eo:escape-plus(@name), '-', '_')"/>
+        <xsl:text>() throws java.lang.Exception {</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:choose>
+          <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
+            <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
+            <xsl:apply-templates select="." mode="dataized">
+              <xsl:with-param name="indent" select="3"/>
+            </xsl:apply-templates>
+            <xsl:text>;</xsl:text>
+            <xsl:value-of select="eo:eol(2)"/>
+            <xsl:text>});</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>Assertions.assertTrue(</xsl:text>
+            <xsl:apply-templates select="." mode="dataized">
+              <xsl:with-param name="indent" select="3"/>
+            </xsl:apply-templates>
+            <xsl:value-of select="eo:eol(2)"/>
+            <xsl:text>);</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
   <!-- Dataize test -->

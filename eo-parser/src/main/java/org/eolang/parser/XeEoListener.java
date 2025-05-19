@@ -26,9 +26,6 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
- * @todo #4096:60min Transpile object tree under test attribute into separate Java `*Test` class
- *  with the unit test to be run. Currently, we transpile all `o` into Java tests, while we should
- *  touch only newly introduced test attributes - (`o` with @name that starts with `+`).
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
