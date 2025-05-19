@@ -239,8 +239,8 @@ Read [our blog](https://news.eolang.org), especially the section with
 Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html),
 a dialect of XML, which we use to
 represent EO program:
-XSD is [here](https://www.eolang.org/XMIR.xsd),
-full specification is [here](https://www.eolang.org/XMIR.html).
+XSD is [in this file](https://www.eolang.org/XMIR.xsd),
+full specification is [in HTML](https://www.eolang.org/XMIR.html).
 
 See the full collection of canonical objects:
 [objectionary](https://github.com/objectionary/home).
@@ -248,10 +248,11 @@ See the full collection of canonical objects:
 Take a look how we use EO as an Intermediary Representation (IR) in
 [Polystat](https://www.polystat.org), a polyglot static analyzer.
 
-Play with more examples [here](https://github.com/objectionary/sandbox).
+Play with more examples in the
+[sandbox](https://github.com/objectionary/sandbox).
 
-Read about integration with Maven,
-[here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
+Read more about integration
+[with Maven](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
 
 ## Benchmark
 
