@@ -76,8 +76,7 @@
           plus. > @
             x
             a.plus
-              ^.src.at i
-    * 2 2 > src
+              (* 2 2).at i
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-list-reducedi-long-int-array
