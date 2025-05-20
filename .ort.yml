@@ -3,6 +3,7 @@
 
 # See https://oss-review-toolkit.org/ort/docs/configuration/ort-yml for file specification
 ---
+# yamllint disable rule:line-length
 license_choices:
   package_license_choices:
     - package_id: "Maven:org.glassfish:javax.json:1.1.4"

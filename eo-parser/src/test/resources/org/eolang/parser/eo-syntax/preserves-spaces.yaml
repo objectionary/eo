@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - //o[@name='x' and o/o[text()='20-20-20-20']]
   - //o[@name='y' and o/o[text()='20-66-6F-6F']]

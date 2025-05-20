@@ -34,7 +34,7 @@ jobs:
           # Find script
           SCRIPT=${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh
           # Check that script is exists
-          if [ ! -f "${SCRIPT}" ]; then
+          if [! -f "${SCRIPT}"]; then
               echo "Script ${SCRIPT} not found"
               exit 1
           fi

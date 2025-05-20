@@ -5,7 +5,7 @@
 out:
   - ".*8 is the 6th number.*"
 file: org/eolang/snippets/fibo.eo
-args: [ "org.eolang.snippets.fibo" ]
+args: ["org.eolang.snippets.fibo"]
 eo: |
   +alias org.eolang.io.stdout
   +alias org.eolang.txt.sprintf

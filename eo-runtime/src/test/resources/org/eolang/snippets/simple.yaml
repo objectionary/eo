@@ -8,7 +8,7 @@ out:
   - ".*eoc/eo/4-resolve.*"
   - ".*eoc/eo-foreign.json.*"
 file: simple.eo
-args: [ "simple", "Jeff" ]
+args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
   +alias org.eolang.io.stdout

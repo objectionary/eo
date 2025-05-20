@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - //o[not(@base) and count(o)=1 and @name='aliases']
 input: |

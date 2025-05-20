@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - /object[count(o)=1]
   - //o[@base='.plus' and @name='s' and o[1][not(@name) and not(@base)]/o[@base='$.^']]/o[2][@base='Q.org.eolang.int']

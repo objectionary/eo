@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - /object/o[count(o)=7]
 input: |

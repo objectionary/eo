@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - //o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']

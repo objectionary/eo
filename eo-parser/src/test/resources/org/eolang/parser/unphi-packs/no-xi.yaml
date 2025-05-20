@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: [ ]
+sheets: []
 asserts:
   - /object/o/o[@base='$']/following-sibling::o[@base='.a' and o[@base='$'] and o[@base='.c' and @as="b" and @method]]
   - /object/o/o[@name='z' and o[@base='$'] and o[@base='.^' and @name='@'] and o[@base='.@' and @name='t']]
@@ -14,5 +14,5 @@ input: |
         φ ↦ ρ,
         t ↦ φ
       ⟧
-    ]]
+   ]]
   ⟧}

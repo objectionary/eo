@@ -17,7 +17,7 @@ phi: |
         void -> ?,
         atom -> [[
           L> Lambda
-        ]],
+       ]],
         x -> QQ.bytes([[D> 01-]]),
         y -> Q.org.eolang.nan,
         err -> T,
@@ -25,6 +25,6 @@ phi: |
           ~0 -> 1,
           ~1 -> "XYZ"
         ).~0.@.^
-      ]]
-    ]]
+     ]]
+   ]]
   }
