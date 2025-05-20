@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - //o[@base='Q.org.eolang.error.m' and @name='x']
   - //o[@base='Q.org.eolang.error' and @name='y']/o[@as='α0' and @base='$.x']
@@ -12,7 +13,7 @@ phi: |
           err -> [[
             x ↦ ⊥.m,
             y ↦ ⊥(α0 ↦ ξ.x)
-          ]],
+         ]],
           λ ⤍ Package
         ⟧,
         λ ⤍ Package

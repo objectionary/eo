@@ -26,7 +26,7 @@ merge:
 release:
   pre: false
   script: |-
-    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
+    [["${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$]] || exit -1
 
     mvn flatten:flatten
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never

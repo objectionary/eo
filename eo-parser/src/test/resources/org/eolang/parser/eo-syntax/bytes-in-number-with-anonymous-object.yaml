@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - /object[not(errors)]
   - /object/o[@base='Q.org.eolang.number' and @name='zero']/o[@base='Q.org.eolang.bytes']/o[text()='00-00-00-00-00-00-00-00']

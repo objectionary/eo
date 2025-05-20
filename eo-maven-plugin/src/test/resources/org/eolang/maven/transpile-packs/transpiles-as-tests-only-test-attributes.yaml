@@ -1,20 +1,27 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# yamllint disable rule:line-length
 sheets:
   - /org/eolang/maven/transpile/set-locators.xsl
   - /org/eolang/maven/transpile/set-original-names.xsl
   - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/tests.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java/text()[contains(., 'new PhWith(r, 0')]
-  - //java/text()[contains(., 'new PhWith(r, "text"')]
+  - //java[contains(text(), '@Test')]
+  - //java[contains(text(), 'void runs_smoothly()')]
+  - //java[not(contains(text(), 'void some_other_method()'))]
 input: |
-  # No comments.
-  [] > main
-    stdout x:0 > print1
-    stdout x:text > print2
+  +tests
+
+  # Foo tests.
+  [] > foo-tests
+    # Test.
+    [] +> runs-smoothly
+      x > @
+    # Something else.
+    [] > some-other-method
+      boom > @

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets:
   - /org/eolang/maven/transpile/set-locators.xsl
   - /org/eolang/maven/transpile/set-original-names.xsl
@@ -25,4 +26,4 @@ input: |
   [] > some-tests
     [] +> works
       1.eq 1 > @
-    false > [] > throws-on
+    false > [] +> throws-on

@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - //o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']

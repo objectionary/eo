@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 
-# See https://oss-review-toolkit.org/ort/docs/configuration/ort-yml for file specification
+# See https://oss-review-toolkit.org/ort/docs/configuration/ort-yml
 ---
+# yamllint disable rule:line-length
 license_choices:
   package_license_choices:
     - package_id: "Maven:org.glassfish:javax.json:1.1.4"

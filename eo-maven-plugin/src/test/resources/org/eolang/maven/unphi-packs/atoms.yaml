@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - /object/o[@name='lambdas']/o[@name='main' and o[@name='λ']]
   - /object/o[@name='lambdas']/o[@name='outer']/o[@name='inner' and o[@name='λ']]
@@ -16,6 +17,6 @@ phi: |
             λ ⤍ Lambda
           ⟧
         ⟧
-      ]]
+     ]]
     ⟧
   }

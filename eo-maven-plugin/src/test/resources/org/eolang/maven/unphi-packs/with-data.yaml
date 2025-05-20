@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - //o[@name='five' and @base='Q.org.eolang.int']/o[@base='Q.org.eolang.bytes' and @as='α0']
 phi: "{⟦five ↦ Φ.org.eolang.int(α0 ↦ Φ.org.eolang.bytes(α0 ↦ ⟦Δ ⤍ 00-00-00-00-00-00-00-05⟧))⟧}"
