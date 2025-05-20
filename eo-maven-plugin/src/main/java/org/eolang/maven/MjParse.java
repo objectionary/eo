@@ -148,6 +148,7 @@ public final class MjParse extends MjSafe {
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
         final String name = new ObjectName(xmir).get();
+        final Node document = xmir.inner();
         if (!name.equals(identifier)) {
             try {
                 new Xembler(
@@ -163,14 +164,14 @@ public final class MjParse extends MjSafe {
                                 identifier, name
                             )
                         )
-                ).apply(xmir.inner());
+                ).apply(document);
             } catch (final ImpossibleModificationException exception) {
                 throw new IllegalStateException(
                     "Failed to modify XMIR to add errors", exception
                 );
             }
         }
-        return xmir.inner();
+        return document;
     }
 
     /**
