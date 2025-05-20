@@ -77,15 +77,13 @@
   [] +> tests-div-mod-compatibility
     eq. +> @
       plus.
-        remainder
+        (real dividend).mod divisor
         times.
           divisor
-          quotient
+          (dividend.div divisor).floor
       dividend
     -13 > dividend
     5 > divisor
-    (real dividend).mod divisor > remainder
-    (dividend.div divisor).floor > quotient
 
   # This unit test is supposed to check the functionality of the corresponding object.
   # Checks modulo: dividend < divisor.

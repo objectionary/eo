@@ -29,5 +29,4 @@
     malloc.of > @
       2
       [m]
-        output.write 01-02-03 > @
-        malloc-as-output m > output
+        (malloc-as-output m).write 01-02-03 > @
