@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[1][not(@base) and not(@name)]
   - //o[@name='test' and not(@base)]/o[@base='.plus' and @name='s']/o[2][@as='α0' and @base='Q.org.eolang.int']

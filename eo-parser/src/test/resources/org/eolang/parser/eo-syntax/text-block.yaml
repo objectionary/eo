@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets: [ ]
 asserts:
   - //o[@base='Q.org.eolang.string' and o/o[text()='48-69-2C-20-74-68-65-72-65-0A-41-64-69-C3-B3-73']]

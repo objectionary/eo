@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - /object/o[@name='main']
   - /object/o[not(@base) and @name='main']/o[@base='$.^.x' and @name='x']

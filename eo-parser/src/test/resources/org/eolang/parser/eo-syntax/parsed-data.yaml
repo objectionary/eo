@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets: [ ]
 asserts:
   - //o[@name='i1' and o/o[text()='40-45-00-00-00-00-00-00']]
