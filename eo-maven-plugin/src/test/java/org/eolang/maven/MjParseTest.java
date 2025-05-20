@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
@@ -185,6 +187,28 @@ final class MjParseTest {
                     ))
             );
         }
+    }
+
+    @Test
+    void addsErrorsIfObjectNameDoesNotMatchFilename(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "Errors are not present in the resulted XMIR, but they should",
+            new XMLDocument(
+                new FakeMaven(temp)
+                    .withProgram(
+                        "# App.\n[] > app",
+                        "main"
+                    )
+                    .execute(new FakeMaven.Parse())
+                    .result()
+                    .get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=1]",
+                "//error[@severity='critical']",
+                "//error[text() = \"Tojo identifier 'main' does not match to result object name 'app'\"]"
+            )
+        );
     }
 
     /**

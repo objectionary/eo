@@ -24,6 +24,8 @@ import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -145,15 +147,24 @@ public final class MjParse extends MjSafe {
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
         final String name = new ObjectName(xmir).get();
+        final Node document = xmir.inner();
         if (!name.equals(identifier)) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Tojo identifier '%s' does not match to result object name '%s'",
-                    identifier, name
-                )
-            );
+            new Xembler(
+                new Directives()
+                    .xpath("/object")
+                    .addIf("errors")
+                    .add("error")
+                    .attr("check", "validate-object-name")
+                    .attr("severity", "critical")
+                    .set(
+                        String.format(
+                            "Tojo identifier '%s' does not match to result object name '%s'",
+                            identifier, name
+                        )
+                    )
+            ).applyQuietly(document);
         }
-        return xmir.inner();
+        return document;
     }
 
     /**
