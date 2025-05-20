@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 asserts:
   - /object/o[@name='foo']/o[@name='void' and @base='∅']
   - /object/o[@name='foo']/o[@name='atom']/o[@name='λ']
@@ -16,7 +17,7 @@ phi: |
         void -> ?,
         atom -> [[
           L> Lambda
-        ]],
+       ]],
         x -> QQ.bytes([[D> 01-]]),
         y -> Q.org.eolang.nan,
         err -> T,
@@ -24,6 +25,6 @@ phi: |
           ~0 -> 1,
           ~1 -> "XYZ"
         ).~0.@.^
-      ]]
-    ]]
+     ]]
+   ]]
   }

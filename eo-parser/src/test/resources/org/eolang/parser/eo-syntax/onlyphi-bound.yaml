@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - //o[@base='Q.org.eolang.p']/o[@base='$.first']
   - //o[@name='first' and o[@name='@' and @base='Q.org.eolang.a.b'] and o[@base='∅' and @name='i']]
