@@ -25,7 +25,6 @@ import org.eolang.parser.EoSyntax;
 import org.eolang.parser.ObjectName;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
-import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
@@ -150,26 +149,20 @@ public final class MjParse extends MjSafe {
         final String name = new ObjectName(xmir).get();
         final Node document = xmir.inner();
         if (!name.equals(identifier)) {
-            try {
-                new Xembler(
-                    new Directives()
-                        .xpath("/object")
-                        .addIf("errors")
-                        .add("error")
-                        .attr("check", "validate-object-name")
-                        .attr("severity", "critical")
-                        .set(
-                            String.format(
-                                "Tojo identifier '%s' does not match to result object name '%s'",
-                                identifier, name
-                            )
+            new Xembler(
+                new Directives()
+                    .xpath("/object")
+                    .addIf("errors")
+                    .add("error")
+                    .attr("check", "validate-object-name")
+                    .attr("severity", "critical")
+                    .set(
+                        String.format(
+                            "Tojo identifier '%s' does not match to result object name '%s'",
+                            identifier, name
                         )
-                ).apply(document);
-            } catch (final ImpossibleModificationException exception) {
-                throw new IllegalStateException(
-                    "Failed to modify XMIR to add errors", exception
-                );
-            }
+                    )
+            ).applyQuietly(document);
         }
         return document;
     }
