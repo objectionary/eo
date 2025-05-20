@@ -7,7 +7,7 @@ name: titles
   schedule:
     - cron: '0 * * * *'
   issues:
-    types: [ opened ]
+    types: [opened]
 jobs:
   titles:
     timeout-minutes: 15
