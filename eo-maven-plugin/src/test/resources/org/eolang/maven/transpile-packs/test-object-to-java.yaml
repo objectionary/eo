@@ -23,7 +23,7 @@ input: |
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] > tests
-    [] > compares-two-bools
+    [] +> compares-two-bools
       eq. > @
         true
         true
