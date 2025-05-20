@@ -26,4 +26,4 @@ input: |
   [] > some-tests
     [] +> works
       1.eq 1 > @
-    false > [] > throws-on
+    false > [] +> throws-on
