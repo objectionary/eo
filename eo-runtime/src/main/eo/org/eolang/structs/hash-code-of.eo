@@ -14,7 +14,6 @@
   rec-hash-code 0 0 > @
   input.as-bytes > input-as-bytes!
   input-as-bytes.size > size!
-  31.as-i64 > magic-number
 
   [acc index] > rec-hash-code
     if. > @
@@ -22,7 +21,7 @@
       acc.as-number
       rec-hash-code
         plus.
-          magic-number.times acc
+          31.as-i64.times acc
           as-i64.
             concat.
               00-00-00-00-00-00-00
