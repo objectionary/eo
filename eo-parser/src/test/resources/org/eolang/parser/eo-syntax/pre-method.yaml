@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - //o[@base='Q.two.a' and @name='one']
   - //o[@base='Q.three.b' and @name='two']

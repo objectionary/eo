@@ -3,12 +3,11 @@
 ---
 # yamllint disable rule:line-length
 name: Post Benchmark Comment
-on:
+'on':
   workflow_run:
-    workflows: [ "Performance Regression Check" ]
+    workflows: ["Performance Regression Check"]
     types:
       - completed
-
 jobs:
   post-comment:
     timeout-minutes: 15
