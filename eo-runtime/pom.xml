@@ -241,6 +241,14 @@
                    in order to enable this lint.
                 -->
                 <lint>duplicate-names-in-diff-context</lint>
+                <!--
+                  @todo #4157:60min Enable `redundant-object` lint after several fixes.
+                   Currently, it has multiple false-positives, that are reported here:
+                   https://github.com/objectionary/lints/issues/606, https://github.com/objectionary/lints/issues/607,
+                   and https://github.com/objectionary/lints/issues/609. After all of them will
+                   be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
+                -->
+                <lint>redundant-object</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
@@ -274,12 +282,7 @@
               <ignoreRuntime>true</ignoreRuntime>
               <skipSourceLints>
                 <lint>unused-void-attr</lint>
-                <!--
-                  @todo #4148:35min Enable `anonymous-formation` lint after required fixes.
-                   We should enable `anonymous-formation` lint, right after these issues will resolved in
-                   linter: https://github.com/objectionary/lints/issues/561, https://github.com/objectionary/lints/issues/562.
-                -->
-                <lint>anonymous-formation</lint>
+                <lint>redundant-object</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <!--

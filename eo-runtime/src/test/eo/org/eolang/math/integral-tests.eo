@@ -13,15 +13,14 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-calculates-lineal-integral
     close-to > @
-      lineal
+      as-number.
+        integral
+          x > [x]
+          1
+          10
+          15
       49.5
       0.0000001
-    as-number. > lineal
-      integral
-        x > [x]
-        1
-        10
-        15
 
     # Checks where given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
@@ -40,15 +39,14 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-calculates-quadratic-integral
     close-to > @
-      quadratic
+      as-number.
+        integral
+          x.times x > [x]
+          1
+          10
+          100
       333
       0.0000001
-    as-number. > quadratic
-      integral
-        x.times x > [x]
-        1
-        10
-        100
 
     # Checks where given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
@@ -67,15 +65,14 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-calculates-cube-integral
     close-to > @
-      cube
+      as-number.
+        integral
+          (x.times x).times x > [x]
+          1
+          10
+          100
       2499.75
       0.0000001
-    as-number. > cube
-      integral
-        (x.times x).times x > [x]
-        1
-        10
-        100
 
     # Checks where given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
