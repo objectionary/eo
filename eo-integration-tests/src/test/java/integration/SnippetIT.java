@@ -4,6 +4,7 @@
  */
 package integration;
 
+import com.jcabi.manifests.Manifests;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -12,7 +13,6 @@ import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
 import org.eolang.jucs.ClasspathSource;
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Integration test for simple snippets.
- * @since 0.1
+ * @since 0.57
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
@@ -46,9 +46,6 @@ final class SnippetIT {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files().file("src/main").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
-                );
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
                     .write(
@@ -56,6 +53,15 @@ final class SnippetIT {
                             "%s\n",
                             xtory.map().get("eo")
                         ).getBytes(StandardCharsets.UTF_8)
+                    );
+                f.dependencies()
+                    .append(
+                        "org.eolang",
+                        "eo-runtime",
+                        System.getProperty(
+                            "eo.version",
+                            Manifests.read("EO-Version")
+                        )
                     );
                 final String target;
                 if (xtory.map().containsKey("target")) {
