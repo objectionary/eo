@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.8.3
+      - uses: zerocracy/judges-action@0.8.5
         with:
           verbose: false
           cycles: 1
