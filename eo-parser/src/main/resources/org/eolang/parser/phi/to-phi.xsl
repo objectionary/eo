@@ -253,7 +253,7 @@
     <xsl:param name="before" select="$tabs * 2"/>
     <xsl:variable name="name">
       <xsl:if test="@name">
-        <xsl:value-of select="eo:specials(@name)"/>
+        <xsl:value-of select="eo:escape-plus(eo:specials(@name))"/>
         <xsl:value-of select="$eo:arrow"/>
       </xsl:if>
     </xsl:variable>
@@ -371,7 +371,7 @@
     <xsl:param name="no-binding" select="false()"/>
     <xsl:variable name="name" select="eo:specials(@name)"/>
     <xsl:if test="@name">
-      <xsl:value-of select="$name"/>
+      <xsl:value-of select="eo:escape-plus($name)"/>
       <xsl:choose>
         <!-- Atom -->
         <xsl:when test="@name=$eo:lambda">
@@ -400,7 +400,7 @@
             <xsl:with-param name="package">
               <xsl:value-of select="$package"/>
               <xsl:text>.</xsl:text>
-              <xsl:value-of select="$name"/>
+              <xsl:value-of select="eo:escape-plus($name)"/>
             </xsl:with-param>
             <xsl:with-param name="before" select="$tabs * 2"/>
           </xsl:apply-templates>

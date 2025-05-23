@@ -156,4 +156,10 @@
     <xsl:variable name="decimal" select="sum(for $i in 1 to $length return (index-of($hex-digits, string-to-codepoints(substring($hex-upper, $i, 1))) - 1) * math:pow(16, $length - $i))"/>
     <xsl:value-of select="xs:int($decimal)"/>
   </xsl:function>
+  <!-- Escape `+` in test name syntax. -->
+  <xsl:function name="eo:escape-plus">
+    <xsl:param name="name"/>
+    <xsl:variable name="pos" select="string-length(tokenize($name, '\+')[1]) + 1"/>
+    <xsl:value-of select="concat(substring($name, 1, $pos - 1), substring($name, $pos + 1))"/>
+  </xsl:function>
 </xsl:stylesheet>
