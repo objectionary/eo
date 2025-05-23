@@ -16,23 +16,20 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.8.5
+      - uses: zerocracy/judges-action@0.8.7
         with:
-          verbose: false
-          cycles: 1
           token: ${{ secrets.ZEROCRACY_TOKEN }}
-          github_token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
+          github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
           repositories: objectionary/*
+          factbase: objectionary.fb
           options: |
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
-          factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.1.1
+      - uses: zerocracy/pages-action@0.1.4
         with:
           factbase: objectionary.fb
           output: pages
           logo: https://www.objectionary.com/cactus.svg
-          options: |
-            github_token=${{ secrets.ZEROCRACY_GITHUB_PAT }}
+          github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
       - uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           branch: gh-pages
