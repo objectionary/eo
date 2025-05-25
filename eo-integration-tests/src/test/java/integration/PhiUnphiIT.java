@@ -35,11 +35,12 @@ final class PhiUnphiIT {
     void runsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
+                final Path runtime = Paths.get("../eo-runtime");
                 f.files().file("src/main").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
+                    runtime.resolve("src/main")
                 );
                 f.files().file("src/test/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/test/eo")
+                    runtime.resolve("src/test/eo")
                 );
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
