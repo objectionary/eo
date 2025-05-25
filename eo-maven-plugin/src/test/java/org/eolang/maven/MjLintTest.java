@@ -26,11 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjLint}.
  *
  * @since 0.31.0
- * @todo #4049:30min Replace all occurrences of new XMLDocument().nodes() with new Xnav().path().
- *  Right now we don't use {@link XMLDocument#nodes(String)} and {@link XMLDocument#xpath(String)}
- *  in production code, we got rid of it and replaced with {@link Xnav#path(String)} and
- *  {@link Xnav#element(String)}. But we didn't do it in the tests. Let's do it, it should increase
- *  the performance of our tests and make our code more consistent.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)

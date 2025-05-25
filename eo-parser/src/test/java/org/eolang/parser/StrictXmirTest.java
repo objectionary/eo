@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -84,9 +85,11 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "XSD location must be absolute",
             Paths.get(
-                new StrictXmir(StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp)
-                    .xpath("/object/@xsi:noNamespaceSchemaLocation")
-                    .get(0)
+                new Xnav(
+                    new StrictXmir(
+                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+                    ).inner()
+                ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
                     .substring("file:///".length())
             ).isAbsolute(),
             Matchers.is(true)

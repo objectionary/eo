@@ -38,6 +38,10 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  *
  * @since 0.1
+ * @todo #4052:35min Replace XML.xpath() with Xnav.path().
+ *  Currently, in {@link EoSyntaxTest#checksTypoPacks} its blocked by attribute parsing issue in
+ *  Xnav. Please check <a href="https://github.com/volodya-lombrozo/xnav/issues/119">this</a> issue
+ *  for more details. Once it will be resolved, we should proceed with the replacement.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
@@ -331,18 +335,21 @@ final class EoSyntaxTest {
 
     @Test
     void printsSyntaxWithComments() throws IOException {
-        final XML xml = new EoSyntax(
-            new InputOf(
-                String.join(
-                    "\n",
-                    "# Foo.",
-                    "# Bar.",
-                    "# Xyz.",
-                    "[] > foo"
+        final Xnav xml = new Xnav(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# Foo.",
+                        "# Bar.",
+                        "# Xyz.",
+                        "[] > foo"
+                    )
                 )
-            )
-        ).parsed();
-        final String comments = xml.xpath("/object/comments/comment/text()").get(0);
+            ).parsed().inner()
+        );
+        final String comments = xml.element("object").element("comments").element("comment").text()
+            .get();
         final String expected = "Foo.\\nBar.\\nXyz.";
         MatcherAssert.assertThat(
             String.format(
