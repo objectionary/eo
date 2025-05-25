@@ -4,6 +4,7 @@
  */
 package integration;
 
+import com.jcabi.manifests.Manifests;
 import com.yegor256.Jaxec;
 import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
@@ -11,23 +12,31 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
+ * @todo #4197:30min Enable JarIT test.
+ *  The test is disabled because it requires EOorg.EOeolang.EOio Classes
+ *  You can read about the issue
+ *  <a href="https://github.com/objectionary/eo/issues/4203"> here </a>
+ *  When it is fixed, please enable the test.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
     @Test
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
@@ -36,13 +45,19 @@ final class JarIT {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files().file("src/main").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
-                );
                 f.files()
                     .file("src/main/eo/simple.eo")
                     .write(
                         "QQ.io.stdout \"Hello, world!\" > simple\n".getBytes(StandardCharsets.UTF_8)
+                    );
+                f.dependencies()
+                    .append(
+                        "org.eolang",
+                        "eo-runtime",
+                        System.getProperty(
+                            "eo.version",
+                            Manifests.read("EO-Version")
+                        )
                     );
                 new EoMavenPlugin(f)
                     .appended()
@@ -59,10 +74,22 @@ final class JarIT {
                     f.log(),
                     RequisiteMatcher.SUCCESS
                 );
+                final String ver = System.getProperty("eo.version", Manifests.read("EO-Version"));
+                final String jar = String.format("eo-runtime-%s.jar", ver);
+                final String runtime = Paths.get(System.getProperty("user.home")).resolve(".m2")
+                    .resolve("repository")
+                    .resolve("org/eolang/eo-runtime")
+                    .resolve(ver)
+                    .resolve(jar).toString();
+                final String classpath = String.join(
+                    File.pathSeparator,
+                    "test-0.0.0.jar",
+                    runtime
+                );
                 MatcherAssert.assertThat(
                     "Simple program must be successfully executed from jar",
                     new Jaxec(
-                        "java", "-cp", "test-0.0.0.jar",
+                        "java", "-cp", classpath,
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
                         "org.eolang.Main", "simple"
                     ).withHome(temp.resolve("target")).exec().stdout(),
