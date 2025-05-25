@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
@@ -54,9 +55,8 @@ final class DrProgramTest {
     void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
-            new XMLDocument(new Xembler(new DrProgram()).xml()).xpath(
-                "/object/@xsi:noNamespaceSchemaLocation"
-            ).get(0),
+            new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner()).element("object")
+                .attribute("xsi:noNamespaceSchemaLocation").text().get(),
             Matchers.startsWith("file:///")
         );
     }
