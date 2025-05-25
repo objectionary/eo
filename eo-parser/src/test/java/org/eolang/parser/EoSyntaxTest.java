@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
@@ -108,18 +109,20 @@ final class EoSyntaxTest {
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
         ).asString();
-        final XML xml = new XMLDocument(
-            new String(
-                new EoSyntax(
-                    new InputOf(src)
-                ).parsed().toString().getBytes(),
-                StandardCharsets.UTF_8
-            )
+        final Xnav xml = new Xnav(
+            new XMLDocument(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(),
+                    StandardCharsets.UTF_8
+                )
+            ).inner()
         );
         MatcherAssert.assertThat(
             "EoSyntax must copy listing to XMIR",
-            xml.xpath("/object/listing/text()"),
-            Matchers.contains(src)
+            xml.element("object").element("listing").text().get(),
+            Matchers.containsString(src)
         );
     }
 
