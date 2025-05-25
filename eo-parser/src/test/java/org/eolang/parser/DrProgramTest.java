@@ -67,9 +67,9 @@ final class DrProgramTest {
         MatcherAssert.assertThat(
             "XSD file exists",
             Paths.get(
-                new XMLDocument(new Xembler(new DrProgram()).xml()).xpath(
-                    "/object/@xsi:noNamespaceSchemaLocation"
-                ).get(0).substring("file:///".length())
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
+                    .substring("file:///".length())
             ).toFile().exists(),
             Matchers.is(true)
         );
