@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,28 +23,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test for phi-unphi.
  *
  * @since 0.1
- * @todo #4127:45min Enable `runsAfterPhiAndUnphi` test after resolving `+` test syntax.
- *  For now, in EO test sources, when we use `+` syntax in test attributes, we getting
- *  `'no viable alternative at input 'org()↦⟦eolang()↦⟦foo()↦⟦foo-tests()↦⟦+''`. We should
- *  resolve it in PHI. Once it will be fixed, enable this test.
  * @checkstyle MethodLengthCheck (500 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
 
-    @Disabled
     @Test
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
+                final Path runtime = Paths.get("../eo-runtime");
                 f.files().file("src/main").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
+                    runtime.resolve("src/main")
                 );
                 f.files().file("src/test/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/test/eo")
+                    runtime.resolve("src/test/eo")
                 );
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
