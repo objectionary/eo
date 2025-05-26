@@ -145,6 +145,19 @@ final class TjsForeignTest {
         );
     }
 
+    @Test
+    void selectsSortedTojos() {
+        this.tojos.add("foo");
+        this.tojos.add("bar");
+        this.tojos.add("xyz");
+        this.tojos.add("abc");
+        MatcherAssert.assertThat(
+            "Tojos are not sorted as expected",
+            this.tojos.all(),
+            Matchers.contains("abc", "bar", "foo", "xyz")
+        );
+    }
+
     @AfterEach
     void tearDown() throws IOException {
         this.tojos.close();
