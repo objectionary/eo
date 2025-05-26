@@ -48,8 +48,8 @@ final class MjResolveIT {
     }
 
     @Test
-    void resolvesJarWithEmptyClassifier(@Mktmp final Path temp) throws IOException {
-        final String version = "0.39.0";
+    void logsJarWithEmptyClassifierCorrectly(@Mktmp final Path temp) throws IOException {
+        final String version = "0.52.0";
         new Farea(temp).together(
             f -> {
                 MjResolveIT.configureFarea(f, version);
@@ -57,7 +57,7 @@ final class MjResolveIT {
                 MatcherAssert.assertThat(
                     "Classifier should not be displayed, if its absent",
                     f.log().content(),
-                    Matchers.containsString("org.eolang:eo-runtime:0.39.0 unpacked to")
+                    Matchers.containsString("org.eolang:eo-runtime:0.52.0 unpacked to")
                 );
             }
         );
