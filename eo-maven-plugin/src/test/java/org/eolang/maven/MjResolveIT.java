@@ -57,7 +57,12 @@ final class MjResolveIT {
                 MatcherAssert.assertThat(
                     "Classifier should not be displayed, if its absent",
                     f.log().content(),
-                    Matchers.containsString("org.eolang:eo-runtime:0.52.0 unpacked to")
+                    Matchers.containsString(
+                        String.format(
+                            "org.eolang:eo-runtime:%s unpacked to",
+                            version
+                        )
+                    )
                 );
             }
         );
