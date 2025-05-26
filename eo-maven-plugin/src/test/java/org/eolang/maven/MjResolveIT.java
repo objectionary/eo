@@ -48,6 +48,22 @@ final class MjResolveIT {
     }
 
     @Test
+    void resolvesJarWithEmptyClassifier(@Mktmp final Path temp) throws IOException {
+        final String version = "0.39.0";
+        new Farea(temp).together(
+            f -> {
+                MjResolveIT.configureFarea(f, version);
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "Classifier should not be displayed, if its absent",
+                    f.log().content(),
+                    Matchers.containsString("org.eolang:eo-runtime:0.39.0 unpacked to")
+                );
+            }
+        );
+    }
+
+    @Test
     void removesOldJarFile(@Mktmp final Path temp) throws IOException {
         final String version = "0.38.0";
         new Farea(temp).together(
