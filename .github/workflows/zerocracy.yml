@@ -3,10 +3,10 @@
 ---
 # yamllint disable rule:line-length
 name: zerocracy
-run-name: "zerocracy judges"
+run-name: "Zerocracy judges"
 'on':
   schedule:
-    - cron: '0,30 * * * *'
+    - cron: '36 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
