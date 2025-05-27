@@ -83,11 +83,11 @@ final class ReadmeSnippetsIT {
 
     private static Stream<Arguments> snippets() throws IOException {
         final Stream.Builder<Arguments> result = Stream.builder();
-        final String content = Files.readString(
-            Paths.get("").toAbsolutePath().getParent().resolve("README.md")
+        final Matcher matcher = Pattern.compile("(?ms)```eo\\s+(.*?)```").matcher(
+            Files.readString(
+                Paths.get("").toAbsolutePath().getParent().resolve("README.md")
+            )
         );
-        final Pattern pattern = Pattern.compile("(?ms)```eo\\s+(.*?)```");
-        final Matcher matcher = pattern.matcher(content);
         while (matcher.find()) {
             result.add(Arguments.of(matcher.group(1)));
         }
