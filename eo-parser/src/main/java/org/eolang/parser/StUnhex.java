@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Node;
-import org.xembly.Directives;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -58,46 +57,6 @@ final class StUnhex extends StEnvelope {
                         new String(
                             StUnhex.buffer(
                                 StUnhex.undash(xnav.element("o").text().orElse(""))
-                            ).array(),
-                            StandardCharsets.UTF_8
-                        )
-                    )
-                )
-            )
-        )
-    );
-
-    /**
-     * Unhexing via {@link com.jcabi.xml.XMLDocument#xpath(String)}.
-     */
-    static final Shift XPATH = new StSequence(
-        StUnhex.class.getSimpleName(),
-        new StXPath(
-            StUnhex.BYTES,
-            xml -> new Directives().set(xml.xpath("./o[1]/text()").get(0))
-        ),
-        new StXPath(
-            StUnhex.elements("number"),
-            xml -> {
-                final double number = StUnhex.buffer(
-                    StUnhex.undash(xml.xpath("./o[1]/text()").get(0))
-                ).getDouble();
-                final Directives dirs = new Directives();
-                if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    dirs.set(StUnhex.number(number));
-                }
-                return dirs;
-            }
-        ),
-        new StXPath(
-            StUnhex.elements("string"),
-            xml -> new Directives().set(
-                String.format(
-                    "\"%s\"",
-                    StringEscapeUtils.escapeJava(
-                        new String(
-                            StUnhex.buffer(
-                                StUnhex.undash(xml.xpath("./o[1]/text()").get(0))
                             ).array(),
                             StandardCharsets.UTF_8
                         )

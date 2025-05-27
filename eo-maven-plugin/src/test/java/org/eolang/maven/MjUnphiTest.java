@@ -42,6 +42,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test cases for {@link MjUnphi}.
  * @since 0.34.0
+ * @todo #4052:35min Replace usage of XML.nodes() with Xnav.path().
+ *  For now, in {@link MjUnphiTest#checksUnphiPacks} we still use {@link XML#nodes(String)}, and
+ *  cannot replace it with more faster alternative from Xnav, because of
+ *  <a href="https://github.com/volodya-lombrozo/xnav/issues/118">this</a>
+ *  issue. When it will be resolved, replace the usage to Xnav method.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
