@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -75,12 +77,23 @@ final class ReadmeSnippetsIT {
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", "app");
                 f.exec("clean", "test");
-                // match content
-//                    System.out.println(f.log().content());
+                MatcherAssert.assertThat(
+                    String.format(
+                        "EO snippet was not been executed as expected:\n%s",
+                        snippet
+                    ),
+                    f.log().content(),
+                    Matchers.containsString("BUILD SUCCESS")
+                );
             }
         );
     }
 
+    /**
+     * EO snippets from README.md file.
+     * @return Stream of EO snippets
+     * @throws IOException if I/O fails
+     */
     private static Stream<Arguments> snippets() throws IOException {
         final Stream.Builder<Arguments> result = Stream.builder();
         final Matcher matcher = Pattern.compile("(?ms)```eo\\s+(.*?)```").matcher(
