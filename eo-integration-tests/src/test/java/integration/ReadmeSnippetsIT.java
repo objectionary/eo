@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Integration test for EO snippets in README.md
+ * Integration test for EO snippets in `README.md`.
  * @since 0.56.3
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -62,23 +62,7 @@ final class ReadmeSnippetsIT {
                 f.build()
                     .properties()
                     .set("directory", "target");
-                new EoMavenPlugin(f)
-                    .appended()
-                    .execution("compile")
-                    .phase("generate-sources")
-                    .goals("register", "compile", "transpile")
-                    .configuration()
-                    .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("skipLinting", Boolean.TRUE.toString());
-                f.build()
-                    .plugins()
-                    .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
-                    .execution("run")
-                    .phase("test")
-                    .goals("java")
-                    .configuration()
-                    .set("mainClass", "org.eolang.Main")
-                    .set("arguments", "app");
+                new EoSourceRun(f).exec("app");
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     String.format(
