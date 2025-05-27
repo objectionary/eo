@@ -30,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Integration test for EO snippets in README.md
  * @since 0.56.3
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class ReadmeSnippetsIT {
 
     @Tag("snippets")
@@ -45,7 +46,7 @@ final class ReadmeSnippetsIT {
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.files()
-                    .file(String.format("src/main/eo/%s.eo", "snippet"))
+                    .file(String.format("src/main/eo/%s.eo", "app"))
                     .write(
                         String.format("%s\n", snippet).getBytes(StandardCharsets.UTF_8)
                     );
