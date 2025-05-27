@@ -12,7 +12,10 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -31,6 +34,8 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXParseException;
 
@@ -359,5 +364,30 @@ final class EoSyntaxTest {
             comments,
             Matchers.equalTo(expected)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("naughty")
+    void parsesNaughtyString(final String suspect) throws IOException {
+        MatcherAssert.assertThat(
+            String.format(
+                "Parser was not being able to parse %s string, but it should",
+                suspect
+            ),
+            new EoSyntax(
+                String.join(
+                    "\n",
+                    "# App.",
+                    "[] > app",
+                    String.format("  QQ.io.stdout \"%s\" > @", suspect)
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    private static Stream<Arguments> naughty() throws IOException {
+        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+            .map(Arguments::of);
     }
 }
