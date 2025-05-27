@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,6 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 final class ReadmeSnippetsIT {
 
+    @Tag("snippets")
     @ParameterizedTest
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
