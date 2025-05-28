@@ -48,9 +48,10 @@ import org.xml.sax.SAXParseException;
  *  Currently, in {@link EoSyntaxTest#checksTypoPacks} its blocked by attribute parsing issue in
  *  Xnav. Please check <a href="https://github.com/volodya-lombrozo/xnav/issues/119">this</a> issue
  *  for more details. Once it will be resolved, we should proceed with the replacement.
- * @todo #4122:40min Enable naughty strings test.
+ * @todo #4122:40min Enable naughty string tests.
  *  Currently, EO parser fails to understand strings, that are in the restricted XML range.
  *  We can't pass these special characters to the Xembly: ''.
+ *  Don't forget to enable the {@link PhiSyntaxTest#parsesNaughtyString(String)} too.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {

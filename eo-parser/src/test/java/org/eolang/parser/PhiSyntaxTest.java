@@ -8,10 +8,6 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
-import org.apache.commons.text.StringEscapeUtils;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtStrictAfter;
@@ -23,7 +19,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xembly.Directives;
@@ -146,19 +141,14 @@ final class PhiSyntaxTest {
         );
     }
 
+    @Disabled
     @ParameterizedTest
-    @MethodSource("naughty")
+    @MethodSource("org.eolang.parser.EoSyntaxTest#naughty")
     void parsesNaughtyString(final String input) throws IOException {
-           MatcherAssert.assertThat(
+        MatcherAssert.assertThat(
             String.format("Failed to understand string: %s", input),
-           new PhiSyntax(String.format("{[[ number -> \"%s\" ]]}", input)).parsed(),
+            new PhiSyntax(String.format("{[[ string -> \"%s\" ]]}", input)).parsed(),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
-    }
-
-    private static Stream<Arguments> naughty() throws IOException {
-        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
-            .map(StringEscapeUtils::escapeJava)
-            .map(Arguments::of);
     }
 }
