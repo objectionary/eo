@@ -72,24 +72,7 @@ final class SnippetIT {
                 f.build()
                     .properties()
                     .set("directory", target);
-                new EoMavenPlugin(f)
-                    .appended()
-                    .execution("compile")
-                    .phase("generate-sources")
-                    .goals("register", "compile", "transpile")
-                    .configuration()
-                    .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("skipLinting", Boolean.TRUE.toString());
-                f.build()
-                    .plugins()
-                    .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
-                    .execution("run")
-                    .phase("test")
-                    .goals("java")
-                    .configuration()
-                    .set("mainClass", "org.eolang.Main")
-                    .set("arguments", xtory.map().get("args"));
-                f.exec("clean", "test");
+                new EoSourceRun(f).exec(xtory.map().get("args"));
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     f.log().content(),

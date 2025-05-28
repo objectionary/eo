@@ -97,10 +97,17 @@ final class Central implements BiConsumer<Dependency, Path> {
         } catch (final MojoExecutionException ex) {
             throw new IllegalStateException(ex);
         }
-        Logger.info(
-            this, "%s:%s:%s:%s unpacked to %[file]s",
-            dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(), path
-        );
+        if (dep.getClassifier() != null) {
+            Logger.info(
+                this, "%s:%s:%s:%s unpacked to %[file]s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getVersion(), path
+            );
+        } else {
+            Logger.info(
+                this, "%s:%s:%s unpacked to %[file]s",
+                dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), path
+            );
+        }
     }
 
     @Override
