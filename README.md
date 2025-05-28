@@ -106,7 +106,7 @@ It can't be used directly, a copy of it has to be created,
 with a few requirement arguments provided.
 This is how a copy of the object `stdout` is made:
 
-```eo
+```text
 QQ.io.stdout
   "Hello, world!\n"
 ```
@@ -116,7 +116,7 @@ There must be two spaces
 in front of the line in order to go to the deeper level of nesting.
 This code can also be written in a "horizontal" notation:
 
-```eo
+```text
 QQ.io.stdout "Hello, world!"
 ```
 
@@ -145,7 +145,7 @@ This program can be written using horizontal notation:
 
 # Also says hello to Jeff.
 [] > app
-  (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
+  stdout (sprintf "Hello, %s!" (* "Jeffrey")) > @
 ```
 
 The special attribute `@` denotes an object that is being
