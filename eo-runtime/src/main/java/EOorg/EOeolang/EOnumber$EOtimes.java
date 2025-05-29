@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
@@ -37,7 +36,7 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Double left = new Expect.Number(Expect.at(this, Attr.RHO)).it();
+        final Double left = new Expect.Number(Expect.at(this, Phi.RHO)).it();
         final Double right = new Expect.Number(Expect.at(this, "x")).it();
         return new Data.ToPhi(left * right);
     }

@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
@@ -36,7 +35,7 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Attr.RHO);
+        final Phi rho = this.take(Phi.RHO);
         final int id = Expect.at(rho, "id")
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")

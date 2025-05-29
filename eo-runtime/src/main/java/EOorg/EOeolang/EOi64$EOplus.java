@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -44,7 +43,7 @@ public final class EOi64$EOplus extends PhDefault implements Atom {
             new Data.ToPhi(
                 new BytesOf(
                     Long.sum(
-                        new Dataized(this.take(Attr.RHO)).take(Long.class),
+                        new Dataized(this.take(Phi.RHO)).take(Long.class),
                         new Dataized(this.take("x").take("as-i64")).take(Long.class)
                     )
                 ).take()

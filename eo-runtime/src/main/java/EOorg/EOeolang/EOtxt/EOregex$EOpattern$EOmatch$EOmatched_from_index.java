@@ -16,7 +16,6 @@ import java.io.ObjectInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -61,9 +60,9 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
 
     @Override
     public Phi lambda() {
-        final Phi match = this.take(Attr.RHO);
+        final Phi match = this.take(Phi.RHO);
         final InputStream bais = new ByteArrayInputStream(
-            new Dataized(match.take(Attr.RHO).take("serialized")).take()
+            new Dataized(match.take(Phi.RHO).take("serialized")).take()
         );
         final Matcher matcher;
         try {

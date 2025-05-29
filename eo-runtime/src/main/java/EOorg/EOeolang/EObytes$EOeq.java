@@ -11,7 +11,6 @@ package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -43,7 +42,7 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
                 new Dataized(
                     this.take("b").take("as-bytes")
                 ).take(),
-                new Dataized(this.take(Attr.RHO)).take()
+                new Dataized(this.take(Phi.RHO)).take()
             )
         );
     }

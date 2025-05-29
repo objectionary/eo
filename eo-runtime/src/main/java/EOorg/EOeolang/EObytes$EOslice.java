@@ -11,7 +11,6 @@ package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
@@ -60,7 +59,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .it();
         return new Data.ToPhi(
             Arrays.copyOfRange(
-                new Dataized(this.take(Attr.RHO)).take(),
+                new Dataized(this.take(Phi.RHO)).take(),
                 start, start + length
             )
         );

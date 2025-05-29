@@ -6,7 +6,7 @@
 package org.eolang;
 
 /**
- * Wrapper for {@link Attr}.
+ * Wrapper for {@link Phi}.
  *
  * @since 0.36.0
  * @checkstyle DesignForExtensionCheck (100 lines)

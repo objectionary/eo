@@ -31,7 +31,7 @@ public class PhDefault implements Phi, Cloneable {
      * Attribute name matcher.
      */
     private static final Pattern SORTABLE = Pattern.compile(
-        String.format("^([a-z].*)|%s$", Attr.PHI)
+        String.format("^([a-z].*)|%s$", Phi.PHI)
     );
 
     /**
@@ -113,7 +113,7 @@ public class PhDefault implements Phi, Cloneable {
     public boolean hasRho() {
         boolean has = true;
         try {
-            this.attrs.get(Attr.RHO).take(0);
+            this.attrs.get(Phi.RHO).take(0);
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -153,12 +153,12 @@ public class PhDefault implements Phi, Cloneable {
         final Phi object;
         if (this.attrs.containsKey(name)) {
             object = this.attrs.get(name).take(0);
-        } else if (name.equals(Attr.LAMBDA)) {
+        } else if (name.equals(Phi.LAMBDA)) {
             object = new AtomSafe(this).lambda();
         } else if (this instanceof Atom) {
-            object = this.take(Attr.LAMBDA).take(name);
-        } else if (this.attrs.containsKey(Attr.PHI)) {
-            object = this.take(Attr.PHI).take(name);
+            object = this.take(Phi.LAMBDA).take(name);
+        } else if (this.attrs.containsKey(Phi.PHI)) {
+            object = this.take(Phi.PHI).take(name);
         } else {
             throw new ExUnset(
                 String.format(
@@ -167,8 +167,8 @@ public class PhDefault implements Phi, Cloneable {
                     this.attrs.size(),
                     this.forma(),
                     String.join(", ", this.attrs.keySet()),
-                    Attr.PHI,
-                    Attr.LAMBDA
+                    Phi.PHI,
+                    Phi.LAMBDA
                 )
             );
         }
@@ -196,9 +196,9 @@ public class PhDefault implements Phi, Cloneable {
         if (this.data.isPresent()) {
             bytes = this.data.get();
         } else if (this instanceof Atom) {
-            bytes = this.take(Attr.LAMBDA).delta();
-        } else if (this.attrs.containsKey(Attr.PHI)) {
-            bytes = this.take(Attr.PHI).delta();
+            bytes = this.take(Phi.LAMBDA).delta();
+        } else if (this.attrs.containsKey(Phi.PHI)) {
+            bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
                 String.format(
@@ -313,7 +313,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     private static Map<String, Phi> defaults() {
         final Map<String, Phi> attrs = new HashMap<>(0);
-        attrs.put(Attr.RHO, new PhRho());
+        attrs.put(Phi.RHO, new PhRho());
         return attrs;
     }
 

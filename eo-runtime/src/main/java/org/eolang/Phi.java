@@ -20,6 +20,21 @@ package org.eolang;
 public interface Phi extends Data {
 
     /**
+     * Lambda attribute.
+     */
+    String LAMBDA = "λ";
+
+    /**
+     * Phi attribute.
+     */
+    String PHI = "φ";
+
+    /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
      * The global scope object, which owns all other objects.
      *
      * @checkstyle ConstantNameCheck (5 lines)

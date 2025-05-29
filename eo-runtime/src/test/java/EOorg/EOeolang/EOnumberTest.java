@@ -9,7 +9,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -75,7 +74,7 @@ final class EOnumberTest {
                     new PhWith(
                         new PhWith(
                             (Phi) cls.getDeclaredConstructor().newInstance(),
-                            Attr.RHO,
+                            Phi.RHO,
                             new Data.ToPhi(42)
                         ),
                         "x",
@@ -105,7 +104,7 @@ final class EOnumberTest {
                 () -> new Dataized(
                     new PhWith(
                         (Phi) cls.getDeclaredConstructor().newInstance(),
-                        Attr.RHO,
+                        Phi.RHO,
                         new Data.ToPhi(true)
                     )
                 ).take(),

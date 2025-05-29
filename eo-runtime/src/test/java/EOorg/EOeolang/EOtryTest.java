@@ -9,7 +9,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -126,7 +125,7 @@ final class EOtryTest {
         MainWithCounter() {
             super();
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhComposite(
                     this,
                     rho -> {

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -45,10 +44,10 @@ public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
-                this.take(Attr.RHO)
-                    .take(Attr.RHO)
-                    .take(Attr.RHO)
-                    .take(Attr.RHO)
+                this.take(Phi.RHO)
+                    .take(Phi.RHO)
+                    .take(Phi.RHO)
+                    .take(Phi.RHO)
                     .take("path")
             ).asString()
         );

@@ -61,8 +61,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Attr.RHO)
+            () -> phi.take(Phi.RHO),
+            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
         );
     }
 
@@ -70,8 +70,8 @@ final class PhDefaultTest {
     void setsRhoAfterDispatch() {
         final Phi kid = new PhDefaultTest.Int().take(PhDefaultTest.PLUS_ATT);
         Assertions.assertDoesNotThrow(
-            () -> kid.take(Attr.RHO),
-            String.format("Kid of should have %s attribute after dispatch", Attr.RHO)
+            () -> kid.take(Phi.RHO),
+            String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
         );
     }
 
@@ -80,8 +80,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.RHO),
-            String.format("Object should not give %s attribute after copying", Attr.RHO)
+            () -> phi.take(Phi.RHO),
+            String.format("Object should not give %s attribute after copying", Phi.RHO)
         );
     }
 
@@ -116,18 +116,18 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int().copy();
         final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
         Assertions.assertDoesNotThrow(
-            () -> plus.take(Attr.RHO),
+            () -> plus.take(Phi.RHO),
             String.format(
                 "Child object should get %s attribute after copying main object",
-                Attr.RHO
+                Phi.RHO
             )
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied child object should be equal to copied main object",
-                Attr.RHO
+                Phi.RHO
             ),
-            plus.take(Attr.RHO),
+            plus.take(Phi.RHO),
             Matchers.equalTo(phi)
         );
     }
@@ -152,17 +152,17 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             String.format(
-                "%s attribute of original object kid should refer to original object", Attr.RHO
+                "%s attribute of original object kid should refer to original object", Phi.RHO
             ),
-            phi.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO)))
+            phi.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
+            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
-                Attr.RHO
+                Phi.RHO
             ),
-            copy.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO),
+            copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
             Matchers.equalTo(copy)
         );
     }
@@ -175,11 +175,11 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
-                Attr.RHO
+                Phi.RHO
             ),
-            first.take(Attr.RHO),
+            first.take(Phi.RHO),
             Matchers.equalTo(
-                second.take(Attr.RHO)
+                second.take(Phi.RHO)
             )
         );
     }
@@ -189,9 +189,9 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
         MatcherAssert.assertThat(
-            String.format("%s attributes should not be copied while dispatch", Attr.RHO),
-            plus.take(Attr.RHO),
-            Matchers.equalTo(plus.take(Attr.RHO))
+            String.format("%s attributes should not be copied while dispatch", Phi.RHO),
+            plus.take(Phi.RHO),
+            Matchers.equalTo(plus.take(Phi.RHO))
         );
     }
 
@@ -246,12 +246,12 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.PHI),
+            () -> phi.take(Phi.PHI),
             PhCompositeTest.TO_ADD_MESSAGE
         );
         phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
-            () -> phi.take(Attr.PHI),
+            () -> phi.take(Phi.PHI),
             PhCompositeTest.TO_ADD_MESSAGE
         );
     }
@@ -260,10 +260,10 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context").take(Attr.RHO),
+            () -> phi.take("context").take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
-                Attr.RHO
+                Phi.RHO
             )
         );
     }
@@ -516,7 +516,7 @@ final class PhDefaultTest {
             this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
             this.add(PhDefaultTest.PLUS_ATT, new PhaSimple(new PhDefault()));
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhaOnce(
                     new PhComposite(
                         this,
@@ -568,7 +568,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         WithVoidPhi() {
-            this.add(Attr.PHI, new PhVoid(Attr.PHI));
+            this.add(Phi.PHI, new PhVoid(Phi.PHI));
         }
     }
 
@@ -588,7 +588,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Counter() {
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhaOnce(
                     new PhComposite(
                         this,
@@ -614,7 +614,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
             this.add("z", new PhVoid("z"));
-            this.add(Attr.PHI, new PhaSimple(new Data.ToPhi(true)));
+            this.add(Phi.PHI, new PhaSimple(new Data.ToPhi(true)));
         }
     }
 
@@ -634,7 +634,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         EndlessRecursion() {
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhComposite(
                     this,
                     self -> {

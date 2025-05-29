@@ -45,7 +45,7 @@ public final class PhCompositeTest {
     @Test
     void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
-        final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
+        final Phi phi = new PhMethod(rnd, Phi.LAMBDA);
         MatcherAssert.assertThat(
             PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).asNumber(),
@@ -67,7 +67,7 @@ public final class PhCompositeTest {
         Rnd() {
             super();
             this.add(
-                Attr.LAMBDA,
+                Phi.LAMBDA,
                 new PhComposite(
                     this,
                     rho -> new Data.ToPhi(new SecureRandom().nextDouble())

@@ -9,7 +9,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -96,7 +95,7 @@ final class EOmallocTest {
         Dummy() {
             this.add("m", new PhVoid("m"));
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhComposite(
                     this,
                     rho -> {
@@ -127,7 +126,7 @@ final class EOmallocTest {
         ErrorDummy() {
             this.add("m", new PhVoid("m"));
             this.add(
-                Attr.PHI,
+                Phi.PHI,
                 new PhComposite(
                     this,
                     rho -> {
