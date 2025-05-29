@@ -83,6 +83,4 @@ public interface Phi extends Data {
     Phi copy(Phi self);
 
     Phi get();
-
-    void put(Phi phi);
 }

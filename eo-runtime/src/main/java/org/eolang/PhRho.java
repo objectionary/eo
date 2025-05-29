@@ -95,13 +95,6 @@ final class PhRho implements Phi {
     }
 
     @Override
-    public void put(final Phi phi) {
-        if (this.rho.get() == null) {
-            this.rho.set(phi);
-        }
-    }
-
-    @Override
     public byte[] delta() {
         throw new UnsupportedOperationException("#delta()");
     }

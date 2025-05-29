@@ -64,11 +64,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public void put(final Phi phi) {
-        throw new UnsupportedOperationException("#put()");
-    }
-
-    @Override
     public Phi copy() {
         return this;
     }

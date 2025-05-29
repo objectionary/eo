@@ -88,11 +88,6 @@ final class PhWithRho implements Phi {
         return ret;
     }
 
-    @Override
-    public void put(final Phi phi) {
-        this.original.put(phi);
-    }
-
     /**
      * Returns the original attribute.
      * @return The original attribute

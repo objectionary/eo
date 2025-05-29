@@ -95,11 +95,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public void put(final Phi phi) {
-        throw new UnsupportedOperationException("#put()");
-    }
-
-    @Override
     public boolean equals(final Object obj) {
         return this.origin.equals(obj);
     }

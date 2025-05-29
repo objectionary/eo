@@ -244,11 +244,6 @@ public class PhDefault implements Phi, Cloneable {
         throw new UnsupportedOperationException("#get()");
     }
 
-    @Override
-    public void put(final Phi phi) {
-        throw new UnsupportedOperationException("#put()");
-    }
-
     /**
      * Add new attribute.
      *

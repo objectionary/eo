@@ -168,11 +168,6 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
-    public void put(final Phi phi) {
-        throw new UnsupportedOperationException("#put()");
-    }
-
-    @Override
     public byte[] delta() {
         return this.through(this.origin::delta, ".Δ");
     }
