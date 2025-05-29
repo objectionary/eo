@@ -37,7 +37,7 @@ final class PhRho implements Phi {
 
     @Override
     public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
+        return new PhRho(this.rho.get());
     }
 
     @Override
@@ -57,12 +57,16 @@ final class PhRho implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        throw new UnsupportedOperationException("#put()");
+        if (this.rho.get() == null) {
+            this.rho.set(object);
+        }
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new UnsupportedOperationException("#put()");
+        if (this.rho.get() == null) {
+            this.rho.set(object);
+        }
     }
 
     @Override

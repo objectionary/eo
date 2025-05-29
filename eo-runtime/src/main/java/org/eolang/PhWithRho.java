@@ -52,12 +52,12 @@ final class PhWithRho implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        throw new UnsupportedOperationException("#put()");
+        this.original.put(object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new UnsupportedOperationException("#put()");
+        this.original.put(object);
     }
 
     @Override
