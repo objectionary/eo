@@ -7,6 +7,7 @@ package org.eolang.parser;
 import java.util.Iterator;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -41,7 +42,7 @@ final class DrListing implements Iterable<Directive> {
         return new Directives()
             .xpath("/object")
             .strict(1).add("listing")
-            .set(text)
+            .set(StringEscapeUtils.escapeXml11(text))
             .iterator();
     }
 }
