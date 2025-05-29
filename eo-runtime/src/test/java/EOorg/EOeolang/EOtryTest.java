@@ -11,13 +11,13 @@ package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
-import org.eolang.AtVoid;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
+import org.eolang.PhVoid;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -193,7 +193,7 @@ final class EOtryTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Catcher() {
-            this.add("ex", new AtVoid("ex"));
+            this.add("ex", new PhVoid("ex"));
             this.add(
                 "φ",
                 new AtComposite(

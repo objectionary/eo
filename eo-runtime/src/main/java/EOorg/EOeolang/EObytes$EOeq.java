@@ -10,12 +10,12 @@
 package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -33,7 +33,7 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOeq() {
-        this.add("b", new AtVoid("b"));
+        this.add("b", new PhVoid("b"));
     }
 
     @Override

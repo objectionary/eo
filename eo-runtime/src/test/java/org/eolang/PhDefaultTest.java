@@ -513,7 +513,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            this.add(PhDefaultTest.VOID_ATT, new AtVoid(PhDefaultTest.VOID_ATT));
+            this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
             this.add(PhDefaultTest.PLUS_ATT, new AtSimple(new PhDefault()));
             this.add(
                 Attr.PHI,
@@ -552,7 +552,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Foo() {
-            this.add("x", new AtVoid("x"));
+            this.add("x", new PhVoid("x"));
             this.add("kid", new AtSimple(new PhDefaultTest.Kid()));
             this.add("φ", new AtSimple(new Data.ToPhi(5L)));
         }
@@ -568,7 +568,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         WithVoidPhi() {
-            this.add(Attr.PHI, new AtVoid(Attr.PHI));
+            this.add(Attr.PHI, new PhVoid(Attr.PHI));
         }
     }
 
@@ -613,7 +613,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
-            this.add("z", new AtVoid("z"));
+            this.add("z", new PhVoid("z"));
             this.add(Attr.PHI, new AtSimple(new Data.ToPhi(true)));
         }
     }

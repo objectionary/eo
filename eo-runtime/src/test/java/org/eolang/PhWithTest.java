@@ -101,7 +101,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
-            this.add(attr, new AtVoid(attr));
+            this.add(attr, new PhVoid(attr));
         }
     }
 

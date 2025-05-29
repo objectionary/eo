@@ -15,12 +15,12 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -51,11 +51,11 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         this.add(
             EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            new PhVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
         );
         this.add(
             EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            new PhVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         );
     }
 

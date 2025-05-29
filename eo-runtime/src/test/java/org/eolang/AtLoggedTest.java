@@ -62,7 +62,7 @@ final class AtLoggedTest {
         this.handler = new StreamHandler(this.out, new SimpleFormatter());
         mock.addHandler(this.handler);
         this.logged = new AtLogged(this.origin, this.label, mock);
-        this.put = new AtLogged(new AtVoid("x"), this.label, mock);
+        this.put = new AtLogged(new PhVoid("x"), this.label, mock);
     }
 
     @Test
