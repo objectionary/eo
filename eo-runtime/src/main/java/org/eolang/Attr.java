@@ -25,28 +25,4 @@ public interface Attr {
      * Rho attribute.
      */
     String RHO = "ρ";
-
-    /**
-     * Make a copy of it.
-     *
-     * @param self The object that this attribute will belong to
-     * @return A copy
-     */
-    Attr copy(Phi self);
-
-    /**
-     * Take the object out.
-     *
-     * <p>If attribute is not set - throws {@link ExUnset}.</p>
-     *
-     * @return The object
-     */
-    Phi get();
-
-    /**
-     * Put a new object in.
-     *
-     * @param phi The object to put
-     */
-    void put(Phi phi);
 }
