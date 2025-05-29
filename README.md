@@ -313,6 +313,10 @@ You will need [Maven 3.3+](https://maven.apache.org) and Java 11+ installed.
 Also, if you have [xcop](https://github.com/yegor256/xcop) installed, make sure
 it is version `0.8.0`+.
 
+## Contributors
+
+[![contributors](https://contributors-img.web.app/image?repo=objectionary/eo)](https://github.com/objectionary/eo/graphs/contributors)
+
 ## Special thanks
 
 We are using the [YourKit Java Profiler](https://www.yourkit.com/java/profiler)
