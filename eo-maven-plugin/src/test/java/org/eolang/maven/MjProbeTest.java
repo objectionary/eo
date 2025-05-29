@@ -26,6 +26,17 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link MjProbe}.
  *
  * @since 0.28.11
+ * @todo #4203:90min Make {@link MjProbeTest} To Check Probes
+ *  Currently, this test case only checks the number of probes found
+ *  but does not verify the actual content of the probes.
+ *  It would be beneficial to enhance this test to
+ *  check the actual probes found.
+ * @todo #4203:90min Enable {@link MjProbeTest#findsProbesInSimpleProgram(Path)} Test.
+ *  This test is currently disabled because it fails.
+ *  We should investigate the cause of the failure and enable the test.
+ *  <a href="https://github.com/objectionary/eo/issues/4203">
+ *      Here is where we investigated this issue
+ *  </a>
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
@@ -85,6 +96,48 @@ final class MjProbeTest {
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void findsProbesInSimpleProgram(@Mktmp final Path temp) throws IOException {
+        final String found = new FakeMaven(temp)
+            .withProgram(
+                "+alias QQ.io.stdout\n",
+                "stdout \"Hello, world!\" > simple"
+            )
+            .execute(new FakeMaven.Probe())
+            .programTojo().probed();
+        final String expected = "6";
+        MatcherAssert.assertThat(
+            String.format(
+                "We should find %s objects in simple program, but %s found",
+                expected, found
+            ),
+            found,
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void findsProbesInSimpleProgramWithComment(@Mktmp final Path temp) throws IOException {
+        final String found = new FakeMaven(temp)
+            .withProgram(
+                "# No comments.",
+                "[] > simple",
+                "  QQ.io.stdout > @",
+                "    \"Hello, world!\""
+            ).execute(new FakeMaven.Probe())
+            .programTojo()
+            .probed();
+        final String expected = "6";
+        MatcherAssert.assertThat(
+            String.format(
+                "We should find %s objects in simple program without comments, but %s found",
+                expected, found
+            ),
+            found,
             Matchers.equalTo(expected)
         );
     }

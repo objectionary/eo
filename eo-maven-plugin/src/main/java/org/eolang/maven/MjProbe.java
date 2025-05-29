@@ -71,7 +71,7 @@ public final class MjProbe extends MjSafe {
     /**
      * Probe objects.
      */
-    private void probe() throws IOException {
+    private void probe() {
         final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
