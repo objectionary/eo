@@ -102,11 +102,6 @@ public class PhOnce implements Phi {
     }
 
     @Override
-    public Phi get() {
-        throw new UnsupportedOperationException("#get()");
-    }
-
-    @Override
     public byte[] delta() {
         return this.object.get().delta();
     }

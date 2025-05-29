@@ -42,12 +42,22 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final String name) {
-        throw new UnsupportedOperationException("#take()");
+        Phi ret = this.original.get();
+        if (!ret.hasRho()) {
+            ret = ret.copy();
+            ret.put(Attr.RHO, this.rho);
+        }
+        return ret;
     }
 
     @Override
     public Phi take(final int pos) {
-        throw new UnsupportedOperationException("#take()");
+        Phi ret = this.original.get();
+        if (!ret.hasRho()) {
+            ret = ret.copy();
+            ret.put(Attr.RHO, this.rho);
+        }
+        return ret;
     }
 
     @Override
@@ -76,16 +86,6 @@ final class PhWithRho implements Phi {
             this.original.copy(self),
             self
         );
-    }
-
-    @Override
-    public Phi get() {
-        Phi ret = this.original.get();
-        if (!ret.hasRho()) {
-            ret = ret.copy();
-            ret.put(Attr.RHO, this.rho);
-        }
-        return ret;
     }
 
     /**

@@ -113,7 +113,7 @@ public class PhDefault implements Phi, Cloneable {
     public boolean hasRho() {
         boolean has = true;
         try {
-            this.attrs.get(Attr.RHO).get();
+            this.attrs.get(Attr.RHO).take(0);
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -152,7 +152,7 @@ public class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
-            object = this.attrs.get(name).get();
+            object = this.attrs.get(name).take(0);
         } else if (name.equals(Attr.LAMBDA)) {
             object = new AtomSafe(this).lambda();
         } else if (this instanceof Atom) {
@@ -237,11 +237,6 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public Phi copy(final Phi self) {
         throw new UnsupportedOperationException("#copy()");
-    }
-
-    @Override
-    public Phi get() {
-        throw new UnsupportedOperationException("#get()");
     }
 
     /**

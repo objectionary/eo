@@ -107,11 +107,6 @@ public interface Data {
         }
 
         @Override
-        public Phi get() {
-            throw new UnsupportedOperationException("#get()");
-        }
-
-        @Override
         public byte[] delta() {
             return this.object.delta();
         }

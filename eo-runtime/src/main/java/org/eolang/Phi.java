@@ -81,6 +81,4 @@ public interface Phi extends Data {
     String forma();
 
     Phi copy(Phi self);
-
-    Phi get();
 }

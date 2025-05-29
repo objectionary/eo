@@ -90,11 +90,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Phi get() {
-        throw new UnsupportedOperationException("#get()");
-    }
-
-    @Override
     public boolean equals(final Object obj) {
         return this.origin.equals(obj);
     }

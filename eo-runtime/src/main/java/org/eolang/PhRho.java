@@ -47,12 +47,22 @@ final class PhRho implements Phi {
 
     @Override
     public Phi take(final String name) {
-        throw new UnsupportedOperationException("#take()");
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("The \"%s\" attribute is not set", Attr.RHO)
+            );
+        }
+        return this.rho.get();
     }
 
     @Override
     public Phi take(final int pos) {
-        throw new UnsupportedOperationException("#take()");
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("The \"%s\" attribute is not set", Attr.RHO)
+            );
+        }
+        return this.rho.get();
     }
 
     @Override
@@ -82,16 +92,6 @@ final class PhRho implements Phi {
     @Override
     public Phi copy(final Phi self) {
         return new PhRho(this.rho.get());
-    }
-
-    @Override
-    public Phi get() {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Attr.RHO)
-            );
-        }
-        return this.rho.get();
     }
 
     @Override
