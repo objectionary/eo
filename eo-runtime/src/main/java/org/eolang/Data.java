@@ -102,6 +102,21 @@ public interface Data {
         }
 
         @Override
+        public Phi copy(final Phi self) {
+            throw new UnsupportedOperationException("#copy()");
+        }
+
+        @Override
+        public Phi get() {
+            throw new UnsupportedOperationException("#get()");
+        }
+
+        @Override
+        public void put(final Phi phi) {
+            throw new UnsupportedOperationException("#put()");
+        }
+
+        @Override
         public byte[] delta() {
             return this.object.delta();
         }

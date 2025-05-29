@@ -64,7 +64,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Attributes.
      */
-    private Map<String, Attr> attrs;
+    private Map<String, Phi> attrs;
 
     /**
      * Default ctor.
@@ -97,8 +97,8 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final Map<String, Phi> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Phi> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -122,7 +122,7 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public void put(final int pos, final Phi object) {
         final String name = this.attr(pos);
-        if (!(((AtWithRho) this.attrs.get(name)).origin() instanceof AtVoid)) {
+        if (!(((PhWithRho) this.attrs.get(name)).origin() instanceof AtVoid)) {
             throw new ExReadOnly(
                 String.format(
                     "Can't put attribute with position %d because it's not void one",
@@ -233,6 +233,21 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
+    @Override
+    public Phi copy(final Phi self) {
+        throw new UnsupportedOperationException("#copy()");
+    }
+
+    @Override
+    public Phi get() {
+        throw new UnsupportedOperationException("#get()");
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        throw new UnsupportedOperationException("#put()");
+    }
+
     /**
      * Add new attribute.
      *
@@ -247,7 +262,7 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, new AtWithRho(attr, this));
+        this.attrs.put(name, new PhWithRho(attr, this));
     }
 
     /**
@@ -305,9 +320,9 @@ public class PhDefault implements Phi, Cloneable {
      * Default attributes hash map with RHO attribute put.
      * @return Default attributes hash map
      */
-    private static Map<String, Attr> defaults() {
-        final Map<String, Attr> attrs = new HashMap<>(0);
-        attrs.put(Attr.RHO, new AtRho());
+    private static Map<String, Phi> defaults() {
+        final Map<String, Phi> attrs = new HashMap<>(0);
+        attrs.put(Attr.RHO, new PhRho());
         return attrs;
     }
 

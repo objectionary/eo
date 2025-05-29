@@ -79,4 +79,10 @@ public interface Phi extends Data {
      * @return Forma of it as {@link String}.
      */
     String forma();
+
+    Phi copy(Phi self);
+
+    Phi get();
+
+    void put(Phi phi);
 }
