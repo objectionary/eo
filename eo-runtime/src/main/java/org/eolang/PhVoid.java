@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.1
  */
-public final class PhVoid implements Attr {
+public final class PhVoid implements Phi {
     /**
      * Name of the attribute.
      */
@@ -45,7 +45,7 @@ public final class PhVoid implements Attr {
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Phi copy(final Phi self) {
         final Phi obj = this.object.get();
         final Phi copy;
         if (obj == null) {
@@ -57,7 +57,45 @@ public final class PhVoid implements Attr {
     }
 
     @Override
-    public Phi get() {
+    public void put(final String nme, final Phi phi) {
+        if (this.object.get() == null) {
+            this.object.set(phi);
+        } else {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    this.name
+                )
+            );
+        }
+    }
+
+    @Override
+    public String locator() {
+        throw new UnsupportedOperationException("#locator()");
+    }
+
+    @Override
+    public String forma() {
+        throw new UnsupportedOperationException("#forma()");
+    }
+
+    @Override
+    public void put(final int pos, final Phi phi) {
+        if (this.object.get() == null) {
+            this.object.set(phi);
+        } else {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    this.name
+                )
+            );
+        }
+    }
+
+    @Override
+    public Phi take(final int pos) {
         final Phi phi = this.object.get();
         if (phi == null) {
             throw new ExUnset(
@@ -70,16 +108,30 @@ public final class PhVoid implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
-            throw new ExReadOnly(
+    public Phi copy() {
+        throw new UnsupportedOperationException("#copy()");
+    }
+
+    @Override
+    public boolean hasRho() {
+        throw new UnsupportedOperationException("#hasRho()");
+    }
+
+    @Override
+    public Phi take(final String nme) {
+        final Phi phi = this.object.get();
+        if (phi == null) {
+            throw new ExUnset(
                 String.format(
-                    "This void attribute \"%s\" is already set, can't reset",
-                    this.name
+                    "The attribute \"%s\" is not initialized, can't read", this.name
                 )
             );
         }
+        return phi;
+    }
+
+    @Override
+    public byte[] delta() {
+        throw new UnsupportedOperationException("#delta()");
     }
 }

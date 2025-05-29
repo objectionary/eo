@@ -16,26 +16,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtLogged}.
+ * Test case for {@link PhaLogged}.
  *
  * @since 0.29
  */
-final class AtLoggedTest {
+final class PhaLoggedTest {
 
     /**
      * Testable object.
      */
-    private AtLogged logged;
+    private PhaLogged logged;
 
     /**
      * Object to test put.
      */
-    private AtLogged put;
+    private PhaLogged put;
 
     /**
      * Delegate.
      */
-    private AtSimple origin;
+    private PhaSimple origin;
 
     /**
      * Output stream.
@@ -56,25 +56,25 @@ final class AtLoggedTest {
     @BeforeEach
     void setUp() {
         this.out = new ByteArrayOutputStream();
-        this.origin = new AtSimple();
+        this.origin = new PhaSimple();
         this.label = "test";
         final Logger mock = Logger.getLogger("mock");
         this.handler = new StreamHandler(this.out, new SimpleFormatter());
         mock.addHandler(this.handler);
-        this.logged = new AtLogged(this.origin, this.label, mock);
-        this.put = new AtLogged(new PhVoid("x"), this.label, mock);
+        this.logged = new PhaLogged(this.origin, this.label, mock);
+        this.put = new PhaLogged(new PhVoid("x"), this.label, mock);
     }
 
     @Test
     void copiesWithLogging() {
         this.logged.copy(Phi.Φ);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.copy()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.copy()!", this.label))
         );
@@ -83,17 +83,17 @@ final class AtLoggedTest {
     @Test
     void getsWithLogging() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            this.logged.get(),
-            Matchers.equalTo(this.origin.get())
+            PhCompositeTest.TO_ADD_MESSAGE,
+            this.logged.take(0),
+            Matchers.equalTo(this.origin.take(0))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.get()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.get()!", this.label))
         );
@@ -101,14 +101,14 @@ final class AtLoggedTest {
 
     @Test
     void putsWithLogging() {
-        this.put.put(Phi.Φ);
+        this.put.put("start", Phi.Φ);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.put()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             this.log(),
             Matchers.containsString(String.format("  %s.put()!", this.label))
         );

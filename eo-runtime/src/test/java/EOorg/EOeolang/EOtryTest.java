@@ -9,12 +9,12 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtComposite;
-import org.eolang.AtCompositeTest;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.PhComposite;
+import org.eolang.PhCompositeTest;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
 import org.eolang.PhVoid;
@@ -76,7 +76,7 @@ final class EOtryTest {
     @Test
     void worksWithoutException() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -103,7 +103,7 @@ final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             main.count,
             Matchers.equalTo(1)
         );
@@ -127,7 +127,7 @@ final class EOtryTest {
             super();
             this.add(
                 Attr.PHI,
-                new AtComposite(
+                new PhComposite(
                     this,
                     rho -> {
                         ++this.count;
@@ -151,7 +151,7 @@ final class EOtryTest {
         Main() {
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     self -> new Data.ToPhi(
                         new Dataized(new Data.ToPhi(42L)).take()
@@ -173,7 +173,7 @@ final class EOtryTest {
         Broken() {
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     self -> {
                         throw new ExFailure("it is broken");
@@ -196,7 +196,7 @@ final class EOtryTest {
             this.add("ex", new PhVoid("ex"));
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     self -> self.take("ex")
                 )

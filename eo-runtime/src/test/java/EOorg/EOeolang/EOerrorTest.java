@@ -11,15 +11,15 @@ package EOorg.EOeolang; // NOPMD
 
 import java.nio.ByteBuffer;
 import java.util.stream.Stream;
-import org.eolang.AtComposite;
-import org.eolang.AtCompositeTest;
-import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.PhComposite;
+import org.eolang.PhCompositeTest;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
+import org.eolang.PhaOnce;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,7 +47,7 @@ final class EOerrorTest {
                     new Data.ToPhi("intentional error")
                 )
             ).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -100,8 +100,8 @@ final class EOerrorTest {
         MyError(final Object data) {
             this.add(
                 "φ",
-                new AtOnce(
-                    new AtComposite(
+                new PhaOnce(
+                    new PhComposite(
                         this,
                         rho -> new PhWith(
                             new PhCopy(

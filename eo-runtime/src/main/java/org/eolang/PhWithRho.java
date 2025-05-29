@@ -13,7 +13,7 @@ final class PhWithRho implements Phi {
     /**
      * Original attribute.
      */
-    private final Attr original;
+    private final Phi original;
 
     /**
      * Rho.
@@ -25,7 +25,7 @@ final class PhWithRho implements Phi {
      * @param attr Attribute
      * @param rho Rho
      */
-    PhWithRho(final Attr attr, final Phi rho) {
+    PhWithRho(final Phi attr, final Phi rho) {
         this.original = attr;
         this.rho = rho;
     }
@@ -42,7 +42,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final String name) {
-        Phi ret = this.original.get();
+        Phi ret = this.original.take(0);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Attr.RHO, this.rho);
@@ -52,7 +52,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final int pos) {
-        Phi ret = this.original.get();
+        Phi ret = this.original.take(0);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Attr.RHO, this.rho);
@@ -62,12 +62,12 @@ final class PhWithRho implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.original.put(object);
+        this.original.put(pos, object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        this.original.put(object);
+        this.original.put(name, object);
     }
 
     @Override
@@ -92,7 +92,7 @@ final class PhWithRho implements Phi {
      * Returns the original attribute.
      * @return The original attribute
      */
-    Attr origin() {
+    Phi origin() {
         return this.original;
     }
 

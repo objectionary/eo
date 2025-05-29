@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtComposite}.
+ * Test case for {@link PhComposite}.
  *
  * @since 0.16
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
-public final class AtCompositeTest {
+public final class PhCompositeTest {
 
     /**
      * Empty message for JUnit Assertions.
      *
-     * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
+     * @todo #2297:60m Replace all appearances of {@link PhCompositeTest#TO_ADD_MESSAGE} field in
      *  eo-runtime with meaningful assert messages. Don't forget to remove
-     *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  {@link PhCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
      *  no longer need.
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
@@ -32,13 +32,13 @@ public final class AtCompositeTest {
     void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new AtComposite(
+            () -> new PhComposite(
                 Phi.Φ,
                 self -> {
                     throw new IllegalStateException("intended unchecked");
                 }
-            ).get(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            ).take(0),
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -47,7 +47,7 @@ public final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).asNumber(),
             Matchers.equalTo(
                 new Dataized(phi).asNumber()
@@ -68,7 +68,7 @@ public final class AtCompositeTest {
             super();
             this.add(
                 Attr.LAMBDA,
-                new AtComposite(
+                new PhComposite(
                     this,
                     rho -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )

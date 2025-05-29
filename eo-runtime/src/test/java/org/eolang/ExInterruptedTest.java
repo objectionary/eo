@@ -20,7 +20,7 @@ final class ExInterruptedTest {
         Assertions.assertThrows(
             ExInterrupted.class,
             () -> new Dataized(phi.take(Attr.PHI)).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
