@@ -42,32 +42,22 @@ public final class PhaOnce implements Phi {
 
     @Override
     public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
+        return this.origin.copy();
     }
 
     @Override
     public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
+        return this.origin.hasRho();
     }
 
     @Override
     public Phi take(final String name) {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(0));
-            }
-        }
-        return this.cached.get();
+        return this.get();
     }
 
     @Override
     public Phi take(final int pos) {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(0));
-            }
-        }
-        return this.cached.get();
+        return this.get();
     }
 
     @Override
@@ -92,16 +82,25 @@ public final class PhaOnce implements Phi {
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return this.origin.locator();
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.origin.forma();
     }
 
     @Override
     public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
+        return this.origin.delta();
+    }
+
+    private Phi get() {
+        synchronized (this.cached) {
+            if (this.cached.get() == null) {
+                this.cached.set(this.origin.take(0));
+            }
+        }
+        return this.cached.get();
     }
 }

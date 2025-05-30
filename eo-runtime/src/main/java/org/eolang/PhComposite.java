@@ -47,12 +47,12 @@ public final class PhComposite implements Phi {
 
     @Override
     public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
+        return this.argument.copy();
     }
 
     @Override
     public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
+        return this.argument.hasRho();
     }
 
     @Override
@@ -69,12 +69,12 @@ public final class PhComposite implements Phi {
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return this.argument.locator();
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.argument.forma();
     }
 
     @Override
@@ -86,6 +86,6 @@ public final class PhComposite implements Phi {
 
     @Override
     public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
+        return this.argument.delta();
     }
 }

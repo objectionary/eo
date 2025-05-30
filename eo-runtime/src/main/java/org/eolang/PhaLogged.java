@@ -69,12 +69,12 @@ final class PhaLogged implements Phi {
 
     @Override
     public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
+        return this.origin.copy();
     }
 
     @Override
     public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
+        return this.origin.hasRho();
     }
 
     @Override
@@ -94,12 +94,12 @@ final class PhaLogged implements Phi {
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return this.origin.locator();
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.origin.forma();
     }
 
     @Override
@@ -111,6 +111,6 @@ final class PhaLogged implements Phi {
 
     @Override
     public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
+        return this.origin.delta();
     }
 }

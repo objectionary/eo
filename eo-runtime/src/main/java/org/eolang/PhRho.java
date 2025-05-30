@@ -57,12 +57,16 @@ final class PhRho implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.put(object);
+        if (this.rho.get() == null) {
+            this.rho.set(object);
+        }
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        this.put(object);
+        if (this.rho.get() == null) {
+            this.rho.set(object);
+        }
     }
 
     @Override
@@ -92,11 +96,5 @@ final class PhRho implements Phi {
             );
         }
         return this.rho.get();
-    }
-
-    private void put(final Phi phi) {
-        if (this.rho.get() == null) {
-            this.rho.set(phi);
-        }
     }
 }

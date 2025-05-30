@@ -58,30 +58,50 @@ public final class PhVoid implements Phi {
 
     @Override
     public void put(final String nme, final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
-            throw new ExReadOnly(
-                String.format(
-                    "This void attribute \"%s\" is already set, can't reset",
-                    this.name
-                )
-            );
-        }
+        this.put(phi);
     }
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return String.format("%s:%s.∅", this.object.get().locator(), this.name);
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.name;
     }
 
     @Override
     public void put(final int pos, final Phi phi) {
+        this.put(phi);
+    }
+
+    @Override
+    public Phi take(final int pos) {
+        return this.get();
+    }
+
+    @Override
+    public Phi copy() {
+        return this.object.get().copy();
+    }
+
+    @Override
+    public boolean hasRho() {
+        return false;
+    }
+
+    @Override
+    public Phi take(final String nme) {
+        return this.get();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.object.get().delta();
+    }
+
+    private void put(final Phi phi) {
         if (this.object.get() == null) {
             this.object.set(phi);
         } else {
@@ -94,8 +114,7 @@ public final class PhVoid implements Phi {
         }
     }
 
-    @Override
-    public Phi take(final int pos) {
+    private Phi get() {
         final Phi phi = this.object.get();
         if (phi == null) {
             throw new ExUnset(
@@ -105,33 +124,5 @@ public final class PhVoid implements Phi {
             );
         }
         return phi;
-    }
-
-    @Override
-    public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
-    }
-
-    @Override
-    public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
-    }
-
-    @Override
-    public Phi take(final String nme) {
-        final Phi phi = this.object.get();
-        if (phi == null) {
-            throw new ExUnset(
-                String.format(
-                    "The attribute \"%s\" is not initialized, can't read", this.name
-                )
-            );
-        }
-        return phi;
-    }
-
-    @Override
-    public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
     }
 }
