@@ -149,12 +149,12 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterObject(final PhiParser.ObjectContext ctx) {
-        this.anames.push(new HashSet<>());
+        // Nothing here
     }
 
     @Override
     public void exitObject(final PhiParser.ObjectContext ctx) {
-        this.anames.pop();
+        // Nothing here
     }
 
     @Override
@@ -201,6 +201,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterBindings(final PhiParser.BindingsContext ctx) {
+        this.anames.push(new HashSet<>());
         if (XePhiListener.hasLambdaPackage(ctx)) {
             this.packages.add(this.attributes.peek());
             this.objs.add(new Objects());
@@ -212,6 +213,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (XePhiListener.hasLambdaPackage(ctx)) {
             this.objs.poll();
         }
+        this.anames.pop();
     }
 
     @Override
@@ -548,6 +550,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
      * @param ctx Parsing context
      * @param aname Attribute name
      */
+    // it does not understand scopes correctly
     private void checkDuplicates(final ParserRuleContext ctx, final String aname) {
         final Set<String> cscope = this.anames.peek();
         if (cscope != null) {
