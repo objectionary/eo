@@ -32,12 +32,12 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi copy() {
-        throw new UnsupportedOperationException("#copy()");
+        return this.original.copy();
     }
 
     @Override
     public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
+        return this.original.hasRho();
     }
 
     @Override
@@ -72,12 +72,12 @@ final class PhWithRho implements Phi {
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return this.original.locator();
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.original.forma();
     }
 
     @Override
@@ -98,6 +98,6 @@ final class PhWithRho implements Phi {
 
     @Override
     public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
+        return this.original.delta();
     }
 }

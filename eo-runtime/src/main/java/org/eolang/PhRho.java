@@ -42,51 +42,37 @@ final class PhRho implements Phi {
 
     @Override
     public boolean hasRho() {
-        throw new UnsupportedOperationException("#hasRho()");
+        return this.rho.get().hasRho();
     }
 
     @Override
     public Phi take(final String name) {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
-            );
-        }
-        return this.rho.get();
+        return this.get();
     }
 
     @Override
     public Phi take(final int pos) {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
-            );
-        }
-        return this.rho.get();
+        return this.get();
     }
 
     @Override
     public void put(final int pos, final Phi object) {
-        if (this.rho.get() == null) {
-            this.rho.set(object);
-        }
+        this.put(object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        if (this.rho.get() == null) {
-            this.rho.set(object);
-        }
+        this.put(object);
     }
 
     @Override
     public String locator() {
-        throw new UnsupportedOperationException("#locator()");
+        return this.rho.get().locator();
     }
 
     @Override
     public String forma() {
-        throw new UnsupportedOperationException("#forma()");
+        return this.rho.get().forma();
     }
 
     @Override
@@ -96,6 +82,21 @@ final class PhRho implements Phi {
 
     @Override
     public byte[] delta() {
-        throw new UnsupportedOperationException("#delta()");
+        return this.rho.get().delta();
+    }
+
+    private Phi get() {
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("The \"%s\" attribute is not set", Phi.RHO)
+            );
+        }
+        return this.rho.get();
+    }
+
+    private void put(final Phi phi) {
+        if (this.rho.get() == null) {
+            this.rho.set(phi);
+        }
     }
 }
