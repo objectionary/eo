@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -29,7 +28,7 @@ public final class EOmalloc$EOof$EOallocated$EOsize extends PhDefault implements
     public Phi lambda() {
         return new Data.ToPhi(
             Heaps.INSTANCE.size(
-                new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue()
+                new Dataized(this.take(Phi.RHO).take("id")).asNumber().intValue()
             )
         );
     }

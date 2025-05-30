@@ -18,7 +18,7 @@ final class PhMethodTest {
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             num.take("plus"),
             Matchers.not(Matchers.equalTo(num.take("plus")))
         );
@@ -33,7 +33,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -48,7 +48,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -60,7 +60,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -70,7 +70,7 @@ final class PhMethodTest {
     void hasDifferentFormasWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy.forma(),
             Matchers.not(
                 Matchers.equalTo(
@@ -97,8 +97,8 @@ final class PhMethodTest {
         Dummy() {
             this.add(
                 "φ",
-                new AtOnce(
-                    new AtComposite(
+                new PhaOnce(
+                    new PhComposite(
                         this,
                         self -> {
                             this.count += 1;
@@ -109,7 +109,7 @@ final class PhMethodTest {
             );
             this.add(
                 "foo",
-                new AtComposite(
+                new PhComposite(
                     this,
                     self -> {
                         this.count += 1;

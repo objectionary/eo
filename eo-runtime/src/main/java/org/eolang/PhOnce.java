@@ -97,6 +97,11 @@ public class PhOnce implements Phi {
     }
 
     @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
+    }
+
+    @Override
     public byte[] delta() {
         return this.object.get().delta();
     }

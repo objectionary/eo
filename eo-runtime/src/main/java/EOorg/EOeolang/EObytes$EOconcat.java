@@ -9,12 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -32,12 +31,12 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOconcat() {
-        this.add("b", new AtVoid("b"));
+        this.add("b", new PhVoid("b"));
     }
 
     @Override
     public Phi lambda() {
-        final byte[] current = new Dataized(this.take(Attr.RHO)).take();
+        final byte[] current = new Dataized(this.take(Phi.RHO)).take();
         final byte[] provided = new Dataized(this.take("b")).take();
         final byte[] dest = new byte[current.length + provided.length];
         System.arraycopy(current, 0, dest, 0, current.length);

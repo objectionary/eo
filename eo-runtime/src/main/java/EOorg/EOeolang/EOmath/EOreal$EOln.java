@@ -10,7 +10,6 @@
 package EOorg.EOeolang.EOmath; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -28,7 +27,7 @@ public final class EOreal$EOln extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.log(new Dataized(this.take(Attr.RHO)).asNumber())
+            Math.log(new Dataized(this.take(Phi.RHO)).asNumber())
         );
     }
 }

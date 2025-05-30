@@ -25,7 +25,7 @@ final class PhWithTest {
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy, Matchers.equalTo(dummy)
         );
     }
@@ -33,7 +33,7 @@ final class PhWithTest {
     @Test
     void takesMethod() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new Data.ToPhi("Hello, world!")
             ).asString(),
@@ -45,7 +45,7 @@ final class PhWithTest {
     void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhCopy(new PhMethod(dummy, "plus")),
@@ -66,7 +66,7 @@ final class PhWithTest {
             new Together<>(
                 thread -> {
                     MatcherAssert.assertThat(
-                        AtCompositeTest.TO_ADD_MESSAGE,
+                        PhCompositeTest.TO_ADD_MESSAGE,
                         new Dataized(ref.take(attr)).asString(),
                         Matchers.is(data)
                     );
@@ -81,7 +81,7 @@ final class PhWithTest {
     void hasTheSameFormaWithBoundAttribute() {
         final Phi dummy = new DummyWithAtFree("x");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             dummy.forma(),
             Matchers.equalTo(
                 new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()
@@ -101,7 +101,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
-            this.add(attr, new AtVoid(attr));
+            this.add(attr, new PhVoid(attr));
         }
     }
 
@@ -116,7 +116,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new PhComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
 }

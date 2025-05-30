@@ -12,12 +12,12 @@ package EOorg.EOeolang; // NOPMD
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.VerboseBytesAsString;
 import org.eolang.XmirObject;
@@ -40,7 +40,7 @@ public final class EOerror extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOerror() {
-        this.add("message", new AtVoid("message"));
+        this.add("message", new PhVoid("message"));
     }
 
     @Override

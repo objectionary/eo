@@ -19,8 +19,8 @@ final class ExInterruptedTest {
         final EOthrow phi = new EOthrow();
         Assertions.assertThrows(
             ExInterrupted.class,
-            () -> new Dataized(phi.take(Attr.PHI)).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            () -> new Dataized(phi.take(Phi.PHI)).take(),
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 

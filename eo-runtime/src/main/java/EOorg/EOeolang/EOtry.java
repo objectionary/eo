@@ -9,11 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -30,9 +30,9 @@ public final class EOtry extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOtry() {
-        this.add("main", new AtVoid("main"));
-        this.add("catch", new AtVoid("catch"));
-        this.add("finally", new AtVoid("finally"));
+        this.add("main", new PhVoid("main"));
+        this.add("catch", new PhVoid("catch"));
+        this.add("finally", new PhVoid("finally"));
     }
 
     @Override

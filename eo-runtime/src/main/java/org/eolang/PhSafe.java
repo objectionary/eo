@@ -158,6 +158,11 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
+    }
+
+    @Override
     public byte[] delta() {
         return this.through(this.origin::delta, ".Δ");
     }

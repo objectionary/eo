@@ -9,12 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -31,14 +30,14 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     EOmalloc$EOof$EOallocated$EOwrite() {
-        this.add("offset", new AtVoid("offset"));
-        this.add("data", new AtVoid("data"));
+        this.add("offset", new PhVoid("offset"));
+        this.add("data", new PhVoid("data"));
     }
 
     @Override
     public Phi lambda() {
         Heaps.INSTANCE.write(
-            new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
+            new Dataized(this.take(Phi.RHO).take("id")).asNumber().intValue(),
             new Dataized(this.take("offset")).asNumber().intValue(),
             new Dataized(this.take("data")).take()
         );

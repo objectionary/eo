@@ -9,12 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -32,13 +31,13 @@ public final class EObytes$EOright extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOright() {
-        this.add("x", new AtVoid("x"));
+        this.add("x", new PhVoid("x"));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Dataized(this.take(Attr.RHO))
+            new Dataized(this.take(Phi.RHO))
                 .asBytes()
                 .shift(new Dataized(this.take("x")).asNumber().intValue())
                 .take()

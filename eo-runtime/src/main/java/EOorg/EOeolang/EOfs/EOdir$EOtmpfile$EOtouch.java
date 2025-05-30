@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -34,7 +33,7 @@ public final class EOdir$EOtmpfile$EOtouch extends PhDefault implements Atom {
     public Phi lambda() {
         final Path home = Paths.get(
             new Dataized(
-                this.take(Attr.RHO).take(Attr.RHO).take("path")
+                this.take(Phi.RHO).take(Phi.RHO).take("path")
             ).asString()
         );
         final Path path;

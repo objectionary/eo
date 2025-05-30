@@ -9,11 +9,10 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtCompositeTest;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.PhCompositeTest;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -35,7 +34,7 @@ final class EOnumberTest {
     @Test
     void hasDifferentHashes() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Data.ToPhi(42L).hashCode(),
             Matchers.not(Matchers.equalTo(new Data.ToPhi(42L).hashCode()))
         );
@@ -44,7 +43,7 @@ final class EOnumberTest {
     @Test
     void hasHashEvenWithoutData() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new EOnumber().hashCode(),
             Matchers.greaterThan(0)
         );
@@ -53,7 +52,7 @@ final class EOnumberTest {
     @Test
     void hasDifferentHash() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new EOnumber().hashCode(),
             Matchers.not(new Data.ToPhi(0L).hashCode())
         );
@@ -75,7 +74,7 @@ final class EOnumberTest {
                     new PhWith(
                         new PhWith(
                             (Phi) cls.getDeclaredConstructor().newInstance(),
-                            Attr.RHO,
+                            Phi.RHO,
                             new Data.ToPhi(42)
                         ),
                         "x",
@@ -105,7 +104,7 @@ final class EOnumberTest {
                 () -> new Dataized(
                     new PhWith(
                         (Phi) cls.getDeclaredConstructor().newInstance(),
-                        Attr.RHO,
+                        Phi.RHO,
                         new Data.ToPhi(true)
                     )
                 ).take(),

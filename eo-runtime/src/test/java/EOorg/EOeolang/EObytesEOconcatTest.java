@@ -9,9 +9,9 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhCompositeTest;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -29,7 +29,7 @@ final class EObytesEOconcatTest {
     @Test
     void concatenatesBytes() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     Phi.Φ.take("org.eolang.string"),

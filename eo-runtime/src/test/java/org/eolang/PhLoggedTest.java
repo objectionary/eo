@@ -19,7 +19,7 @@ final class PhLoggedTest {
     @Test
     void copiesOrigin() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ).copy(),
             Matchers.equalTo(Phi.Φ)
         );
@@ -28,7 +28,7 @@ final class PhLoggedTest {
     @Test
     void returnsOriginHashCode() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ).hashCode(),
             Matchers.equalTo(Phi.Φ.hashCode())
         );
@@ -37,7 +37,7 @@ final class PhLoggedTest {
     @Test
     void equalsToOrigin() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ),
             Matchers.equalTo(Phi.Φ)
         );
@@ -47,7 +47,7 @@ final class PhLoggedTest {
     void getsOriginLocator() {
         final Phi phi = Phi.Φ;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(phi).locator(),
             Matchers.equalTo(phi.locator())
         );

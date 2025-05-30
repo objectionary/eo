@@ -20,6 +20,22 @@ package org.eolang;
 public interface Phi extends Data {
 
     /**
+     * Lambda attribute.
+     */
+    String LAMBDA = "λ";
+
+    /**
+     * Phi attribute.
+     */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
+    String PHI = "φ";
+
+    /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
      * The global scope object, which owns all other objects.
      *
      * @checkstyle ConstantNameCheck (5 lines)
@@ -79,4 +95,15 @@ public interface Phi extends Data {
      * @return Forma of it as {@link String}.
      */
     String forma();
+
+    /**
+     * Copy self object.
+     * @param self Self
+     * @return Copy of self
+     * @todo #3480:45min Remove Phi.copy(Phi) method from the interface.
+     *  Currently, we use this method in {@link PhDefault#copy()} in order to copy the attributes
+     *  correctly. However, not all Phi implementations need this type of copying. It should be
+     *  possible to remove this method, and use only {@link Phi#copy()}.
+     */
+    Phi copy(Phi self);
 }

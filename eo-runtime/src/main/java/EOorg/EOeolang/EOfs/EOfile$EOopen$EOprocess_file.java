@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -31,9 +30,9 @@ import org.eolang.XmirObject;
 public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        final Phi open = this.take(Attr.RHO);
+        final Phi open = this.take(Phi.RHO);
         final Path path = Paths.get(
-            new Dataized(open.take(Attr.RHO).take("path")).asString()
+            new Dataized(open.take(Phi.RHO).take("path")).asString()
         );
         try {
             Files.INSTANCE.open(path.toString());
