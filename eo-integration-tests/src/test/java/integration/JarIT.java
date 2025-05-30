@@ -47,7 +47,7 @@ final class JarIT {
                                 "# No comments.",
                                 "[] > simple",
                                 "  QQ.io.stdout > @",
-                                "    \"Hello, world!\""
+                                "    \"Hello, world!\"",
                             }
                         ).getBytes(StandardCharsets.UTF_8)
                     );
