@@ -31,7 +31,8 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.57
  * @todo #3480:30min Enable integration tests after new release 0.56.3 to Maven.
  *  Currently, integration tests fail because we are pulling eo-maven-plugin:0.56.2,
- *  which has org.eolang.Attr, which is removed now.
+ *  which has org.eolang.Attr, which is removed now. Don't forget to enable {@link ReadmeSnippetsIT}
+ *  too.
  */
 @Disabled
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
