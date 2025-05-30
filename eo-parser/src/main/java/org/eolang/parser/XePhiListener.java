@@ -90,6 +90,11 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     private final List<ParsingException> errors;
 
     /**
+     * Attribute names.
+     */
+    private final List<String> anames;
+
+    /**
      * Ctor.
      */
     XePhiListener() {
@@ -101,6 +106,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.packages = new ListOf<>();
         this.errors = new ArrayList<>(0);
         this.start = System.nanoTime();
+        this.anames = new ArrayList<>();
     }
 
     @Override
@@ -280,6 +286,15 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "";
         }
         this.attributes.push(attr);
+        if (this.anames.contains(attr)) {
+            this.errors.add(
+                new ParsingError(
+                    ctx, String.format("Attribute %s is duplicated", attr)
+                ).cause()
+            );
+        } else {
+            this.anames.add(attr);
+        }
     }
 
     @Override
