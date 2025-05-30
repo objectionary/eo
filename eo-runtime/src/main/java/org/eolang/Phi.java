@@ -27,6 +27,7 @@ public interface Phi extends Data {
     /**
      * Phi attribute.
      */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
     String PHI = "φ";
 
     /**
@@ -95,5 +96,14 @@ public interface Phi extends Data {
      */
     String forma();
 
+    /**
+     * Copy self object.
+     * @param self Self
+     * @return Copy of self
+     * @todo #3480:45min Remove Phi.copy(Phi) method from the interface.
+     *  Currently, we use this method in {@link PhDefault#copy()} in order to copy the attributes
+     *  correctly. However, not all Phi implementations need this type of copying. It should be
+     *  possible to remove this method, and use only {@link Phi#copy()}.
+     */
     Phi copy(Phi self);
 }

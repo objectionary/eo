@@ -47,12 +47,22 @@ final class PhRho implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return this.get();
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("The \"%s\" attribute is not set", Phi.RHO)
+            );
+        }
+        return this.rho.get();
     }
 
     @Override
     public Phi take(final int pos) {
-        return this.get();
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("The \"%s\" attribute is not set", Phi.RHO)
+            );
+        }
+        return this.rho.get();
     }
 
     @Override
@@ -87,14 +97,5 @@ final class PhRho implements Phi {
     @Override
     public byte[] delta() {
         return this.rho.get().delta();
-    }
-
-    private Phi get() {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
-            );
-        }
-        return this.rho.get();
     }
 }

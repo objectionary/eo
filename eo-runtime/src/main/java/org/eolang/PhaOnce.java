@@ -52,12 +52,22 @@ public final class PhaOnce implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return this.get();
+        synchronized (this.cached) {
+            if (this.cached.get() == null) {
+                this.cached.set(this.origin.take(0));
+            }
+        }
+        return this.cached.get();
     }
 
     @Override
     public Phi take(final int pos) {
-        return this.get();
+        synchronized (this.cached) {
+            if (this.cached.get() == null) {
+                this.cached.set(this.origin.take(0));
+            }
+        }
+        return this.cached.get();
     }
 
     @Override
@@ -93,14 +103,5 @@ public final class PhaOnce implements Phi {
     @Override
     public byte[] delta() {
         return this.origin.delta();
-    }
-
-    private Phi get() {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(0));
-            }
-        }
-        return this.cached.get();
     }
 }

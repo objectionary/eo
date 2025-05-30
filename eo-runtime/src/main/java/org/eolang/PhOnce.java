@@ -98,7 +98,7 @@ public class PhOnce implements Phi {
 
     @Override
     public Phi copy(final Phi self) {
-        throw new UnsupportedOperationException("#copy()");
+        return this.copy();
     }
 
     @Override

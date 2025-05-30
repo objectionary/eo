@@ -159,7 +159,7 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public Phi copy(final Phi self) {
-        throw new UnsupportedOperationException("#copy()");
+        return this.copy();
     }
 
     @Override

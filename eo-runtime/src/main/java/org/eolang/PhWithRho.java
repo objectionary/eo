@@ -8,7 +8,11 @@ package org.eolang;
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
  * @since 0.36.0
+ * @todo #3480:30min Move out `PhiWithRHo.origin()` method.
+ *  Now we use it in {@link PhDefault#put(int, Phi)}. Let's move it to other class,
+ *  in order to get rid of `TooManyMethods` PMD violation.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhWithRho implements Phi {
     /**
      * Original attribute.
@@ -88,16 +92,16 @@ final class PhWithRho implements Phi {
         );
     }
 
+    @Override
+    public byte[] delta() {
+        return this.original.delta();
+    }
+
     /**
      * Returns the original attribute.
      * @return The original attribute
      */
     Phi origin() {
         return this.original;
-    }
-
-    @Override
-    public byte[] delta() {
-        return this.original.delta();
     }
 }

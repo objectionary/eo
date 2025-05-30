@@ -57,11 +57,6 @@ public final class PhVoid implements Phi {
     }
 
     @Override
-    public void put(final String nme, final Phi phi) {
-        this.put(phi);
-    }
-
-    @Override
     public String locator() {
         return String.format("%s:%s.∅", this.object.get().locator(), this.name);
     }
@@ -72,13 +67,44 @@ public final class PhVoid implements Phi {
     }
 
     @Override
+    public void put(final String nme, final Phi phi) {
+        if (this.object.get() == null) {
+            this.object.set(phi);
+        } else {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    this.name
+                )
+            );
+        }
+    }
+
+    @Override
     public void put(final int pos, final Phi phi) {
-        this.put(phi);
+        if (this.object.get() == null) {
+            this.object.set(phi);
+        } else {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    this.name
+                )
+            );
+        }
     }
 
     @Override
     public Phi take(final int pos) {
-        return this.get();
+        final Phi phi = this.object.get();
+        if (phi == null) {
+            throw new ExUnset(
+                String.format(
+                    "The attribute \"%s\" is not initialized, can't read", this.name
+                )
+            );
+        }
+        return phi;
     }
 
     @Override
@@ -93,28 +119,6 @@ public final class PhVoid implements Phi {
 
     @Override
     public Phi take(final String nme) {
-        return this.get();
-    }
-
-    @Override
-    public byte[] delta() {
-        return this.object.get().delta();
-    }
-
-    private void put(final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
-            throw new ExReadOnly(
-                String.format(
-                    "This void attribute \"%s\" is already set, can't reset",
-                    this.name
-                )
-            );
-        }
-    }
-
-    private Phi get() {
         final Phi phi = this.object.get();
         if (phi == null) {
             throw new ExUnset(
@@ -124,5 +128,10 @@ public final class PhVoid implements Phi {
             );
         }
         return phi;
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.object.get().delta();
     }
 }

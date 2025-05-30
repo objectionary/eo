@@ -99,7 +99,6 @@ public class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             final Map<String, Phi> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Phi> ent : this.attrs.entrySet()) {
-                // -> PhCopySelf
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -236,7 +235,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi copy(final Phi self) {
-        throw new UnsupportedOperationException("#copy()");
+        return this.copy();
     }
 
     /**
