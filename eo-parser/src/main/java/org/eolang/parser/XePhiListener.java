@@ -10,8 +10,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.function.Supplier;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -92,7 +94,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
      * Attribute names.
      */
-    private final List<String> anames;
+    private final Deque<Set<String>> anames;
 
     /**
      * Ctor.
@@ -106,7 +108,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.packages = new ListOf<>();
         this.errors = new ArrayList<>(0);
         this.start = System.nanoTime();
-        this.anames = new ArrayList<>();
+        this.anames = new ArrayDeque<>();
     }
 
     @Override
@@ -147,12 +149,12 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterObject(final PhiParser.ObjectContext ctx) {
-        // Nothing here
+        this.anames.push(new HashSet<>());
     }
 
     @Override
     public void exitObject(final PhiParser.ObjectContext ctx) {
-        // Nothing here
+        this.anames.pop();
     }
 
     @Override
@@ -227,6 +229,8 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
         this.objects().start(ctx);
+        final PhiParser.AttributeContext cattr = ctx.attribute();
+        this.checkDuplicates(cattr, cattr.getText());
     }
 
     @Override
@@ -286,15 +290,6 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "";
         }
         this.attributes.push(attr);
-        if (this.anames.contains(attr)) {
-            this.errors.add(
-                new ParsingError(
-                    ctx, String.format("Attribute %s is duplicated", attr)
-                ).cause()
-            );
-        } else {
-            this.anames.add(attr);
-        }
     }
 
     @Override
@@ -319,6 +314,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
         this.addVoidAttribute(ctx);
+        this.checkDuplicates(ctx, ctx.attribute().getText());
     }
 
     @Override
@@ -337,6 +333,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
             );
         } else {
             this.objects().data(ctx.BYTES().getText().trim());
+            this.checkDuplicates(ctx, "Δ");
         }
     }
 
@@ -349,6 +346,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
             this.objects().start(ctx).prop("name", "λ").leave();
+            this.checkDuplicates(ctx, "λ");
         }
     }
 
@@ -543,5 +541,25 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                     .getText()
                     .equals(XePhiListener.LAMBDA_PACKAGE)
             );
+    }
+
+    /**
+     * Check the duplicate attributes.
+     * @param ctx Parsing context
+     * @param aname Attribute name
+     */
+    private void checkDuplicates(final ParserRuleContext ctx, final String aname) {
+        final Set<String> cscope = this.anames.peek();
+        if (cscope != null) {
+            if (cscope.contains(aname) && !"^".equals(aname)) {
+                this.errors.add(
+                    new ParsingError(
+                        ctx, String.format("Attribute '%s' is duplicated", aname)
+                    ).cause()
+                );
+            } else {
+                cscope.add(aname);
+            }
+        }
     }
 }
