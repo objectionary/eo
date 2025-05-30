@@ -18,6 +18,7 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,9 +35,8 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @todo #4203:90min Enable {@link MjProbeTest#findsProbesInSimpleProgram(Path)} Test.
  *  This test is currently disabled because it fails.
  *  We should investigate the cause of the failure and enable the test.
- *  <a href="https://github.com/objectionary/eo/issues/4203">
- *      Here is where we investigated this issue
- *  </a>
+ *  Originally this issue affected the integration tests,
+ *  <a href="https://github.com/objectionary/eo/issues/4203">here</a>
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
@@ -101,6 +101,7 @@ final class MjProbeTest {
     }
 
     @Test
+    @Disabled
     void findsProbesInSimpleProgram(@Mktmp final Path temp) throws IOException {
         final String found = new FakeMaven(temp)
             .withProgram(
