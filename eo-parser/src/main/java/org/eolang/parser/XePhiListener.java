@@ -550,11 +550,10 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
      * @param ctx Parsing context
      * @param aname Attribute name
      */
-    // it does not understand scopes correctly
     private void checkDuplicates(final ParserRuleContext ctx, final String aname) {
         final Set<String> cscope = this.anames.peek();
         if (cscope != null) {
-            if (cscope.contains(aname) && !"^".equals(aname)) {
+            if (cscope.contains(aname)) {
                 this.errors.add(
                     new ParsingError(
                         ctx, String.format("Attribute '%s' is duplicated", aname)
