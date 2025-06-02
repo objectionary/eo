@@ -8,7 +8,7 @@ package org.eolang;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Special attribute for \rho.
+ * Phi representation of \rho attribute.
  *
  * <p>The attribute can be set only once, and it ignores all other puts.</p>
  *
