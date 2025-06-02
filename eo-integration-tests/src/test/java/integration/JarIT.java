@@ -19,24 +19,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
- * @todo #4197:30min Enable JarIT test.
- *  The test is disabled because it requires EOorg.EOeolang.EOio Classes
- *  You can read about the issue
- *  <a href="https://github.com/objectionary/eo/issues/4203"> here </a>
- *  When it is fixed, please enable the test.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
@@ -48,7 +41,15 @@ final class JarIT {
                 f.files()
                     .file("src/main/eo/simple.eo")
                     .write(
-                        "QQ.io.stdout \"Hello, world!\" > simple\n".getBytes(StandardCharsets.UTF_8)
+                        String.join(
+                            "\n",
+                            new String[]{
+                                "# No comments.",
+                                "[] > simple",
+                                "  QQ.io.stdout > @",
+                                "    \"Hello, world!\"",
+                            }
+                        ).getBytes(StandardCharsets.UTF_8)
                     );
                 f.dependencies()
                     .append(
@@ -65,7 +66,6 @@ final class JarIT {
                     .goals("register", "compile", "transpile")
                     .configuration()
                     .set("ignoreRuntime", Boolean.TRUE.toString())
-                    .set("offline", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("skipLinting", Boolean.TRUE.toString());
                 f.exec("clean", "compile", "jar:jar");
@@ -80,7 +80,8 @@ final class JarIT {
                     .resolve("repository")
                     .resolve("org/eolang/eo-runtime")
                     .resolve(ver)
-                    .resolve(jar).toString();
+                    .resolve(jar)
+                    .toString();
                 final String classpath = String.join(
                     File.pathSeparator,
                     "test-0.0.0.jar",
