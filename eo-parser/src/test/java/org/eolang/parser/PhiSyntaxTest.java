@@ -19,6 +19,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.xembly.Directives;
 
 /**
@@ -136,6 +137,16 @@ final class PhiSyntaxTest {
             "syntax is broken, can't be parsed without errors",
             XhtmlMatchers.xhtml(xml.toString()),
             XhtmlMatchers.hasXPaths("/object/errors/error/@line")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.eolang.parser.EoSyntaxTest#naughty")
+    void parsesNaughtyString(final String input) throws IOException {
+        MatcherAssert.assertThat(
+            String.format("Failed to understand string: %s", input),
+            new PhiSyntax(String.format("{[[ string -> \"%s\" ]]}", input)).parsed(),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
     }
 }
