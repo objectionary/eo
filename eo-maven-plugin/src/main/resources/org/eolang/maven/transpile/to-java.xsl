@@ -396,7 +396,7 @@
       </xsl:if>
       <xsl:text>atom</xsl:text>
     </xsl:variable>
-    <xsl:text>new PhaOnce(new PhComposite(</xsl:text>
+    <xsl:text>new PhCached(new PhComposite(</xsl:text>
     <xsl:value-of select="$context"/>
     <xsl:text>, new Function&lt;&gt;() {</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
@@ -432,7 +432,7 @@
     <xsl:param name="indent"/>
     <xsl:variable name="rho" select="eo:rho($context)"/>
     <xsl:variable name="ctx" select="eo:context($context)"/>
-    <xsl:text>new PhaOnce(new PhComposite(</xsl:text>
+    <xsl:text>new PhCached(new PhComposite(</xsl:text>
     <xsl:value-of select="$context"/>
     <xsl:text>, new Function&lt;&gt;() {</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
@@ -473,7 +473,7 @@
     <xsl:param name="context"/>
     <xsl:variable name="rho" select="eo:rho($context)"/>
     <xsl:variable name="ctx" select="eo:context($context)"/>
-    <xsl:text>new PhaOnce(new PhComposite(</xsl:text>
+    <xsl:text>new PhCached(new PhComposite(</xsl:text>
     <xsl:value-of select="$context"/>
     <xsl:text>, new Function&lt;&gt;() {</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>

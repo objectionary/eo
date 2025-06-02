@@ -517,7 +517,7 @@ final class PhDefaultTest {
             this.add(PhDefaultTest.PLUS_ATT, new PhaSimple(new PhDefault()));
             this.add(
                 Phi.PHI,
-                new PhaOnce(
+                new PhCached(
                     new PhComposite(
                         this,
                         rho -> rho.take(PhDefaultTest.VOID_ATT)
@@ -526,7 +526,7 @@ final class PhDefaultTest {
             );
             this.add(
                 "context",
-                new PhaOnce(
+                new PhCached(
                     new PhComposite(
                         this,
                         rho -> {
@@ -589,7 +589,7 @@ final class PhDefaultTest {
         Counter() {
             this.add(
                 Phi.PHI,
-                new PhaOnce(
+                new PhCached(
                     new PhComposite(
                         this,
                         rho -> {

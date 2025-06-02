@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.PhCached;
 import org.eolang.PhComposite;
 import org.eolang.PhCompositeTest;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
-import org.eolang.PhaOnce;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -100,7 +100,7 @@ final class EOerrorTest {
         MyError(final Object data) {
             this.add(
                 "φ",
-                new PhaOnce(
+                new PhCached(
                     new PhComposite(
                         this,
                         rho -> new PhWith(

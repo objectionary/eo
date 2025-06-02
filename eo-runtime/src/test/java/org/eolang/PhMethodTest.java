@@ -97,7 +97,7 @@ final class PhMethodTest {
         Dummy() {
             this.add(
                 "φ",
-                new PhaOnce(
+                new PhCached(
                     new PhComposite(
                         this,
                         self -> {

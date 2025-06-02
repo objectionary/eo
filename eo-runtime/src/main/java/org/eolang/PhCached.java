@@ -8,13 +8,13 @@ package org.eolang;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Attribute that retrieves object only once.
+ * Cached Phi.
  *
  * <p>It's highly recommended to use it with {@link PhComposite}.</p>
  *
  * @since 0.1
  */
-public final class PhaOnce implements Phi {
+public final class PhCached implements Phi {
 
     /**
      * Origin attribute.
@@ -30,14 +30,14 @@ public final class PhaOnce implements Phi {
      * Ctor.
      * @param attr Origin attribute
      */
-    public PhaOnce(final Phi attr) {
+    public PhCached(final Phi attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>();
     }
 
     @Override
     public Phi copy(final Phi self) {
-        return new PhaOnce(this.origin.copy(self));
+        return new PhCached(this.origin.copy(self));
     }
 
     @Override
