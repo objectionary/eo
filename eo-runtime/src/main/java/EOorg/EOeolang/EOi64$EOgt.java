@@ -10,6 +10,7 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
+import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhVoid;
@@ -35,7 +36,7 @@ public final class EOi64$EOgt extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return new ToPhi(
+        return new Data.ToPhi(
             new Dataized(this.take(Phi.RHO)).take(Long.class)
                 > new Dataized(this.take("x").take("as-i64")).take(Long.class)
         );

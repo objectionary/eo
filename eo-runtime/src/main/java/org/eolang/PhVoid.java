@@ -68,9 +68,7 @@ public final class PhVoid implements Phi {
 
     @Override
     public void put(final String nme, final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
+        if (!this.object.compareAndSet(null, phi)) {
             throw new ExReadOnly(
                 String.format(
                     "This void attribute \"%s\" is already set, can't reset",
@@ -82,9 +80,7 @@ public final class PhVoid implements Phi {
 
     @Override
     public void put(final int pos, final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
+        if (!this.object.compareAndSet(null, phi)) {
             throw new ExReadOnly(
                 String.format(
                     "This void attribute \"%s\" is already set, can't reset",

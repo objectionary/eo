@@ -36,7 +36,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi copy() {
-        return this.original.copy();
+        return new PhWithRho(this.original.copy(), this.rho);
     }
 
     @Override
@@ -46,7 +46,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final String name) {
-        Phi ret = this.original.take(0);
+        Phi ret = this.original.take(name);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);
@@ -56,7 +56,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final int pos) {
-        Phi ret = this.original.take(0);
+        Phi ret = this.original.take(pos);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);

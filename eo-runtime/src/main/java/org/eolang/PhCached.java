@@ -54,7 +54,7 @@ public final class PhCached implements Phi {
     public Phi take(final String name) {
         synchronized (this.cached) {
             if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(0));
+                this.cached.set(this.origin.take(name));
             }
         }
         return this.cached.get();
@@ -64,7 +64,7 @@ public final class PhCached implements Phi {
     public Phi take(final int pos) {
         synchronized (this.cached) {
             if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(0));
+                this.cached.set(this.origin.take(pos));
             }
         }
         return this.cached.get();
