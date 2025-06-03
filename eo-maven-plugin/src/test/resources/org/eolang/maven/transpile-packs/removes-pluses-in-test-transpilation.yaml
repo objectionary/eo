@@ -12,16 +12,14 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), '@Test')]
-  - //java[contains(text(), 'void tests_iterates_with_eachi()')]
-  - //java[contains(text(), 'tests_iterates_with_eachiφρα1();')]
-  - //java[contains(text(), 'list-tests.tests-iterates-with-eachi.φ.ρ')]
-  - //java[contains(text(), 'Φ.list-tests.tests-iterates-with-eachi.φ.α0.α0')]
+  - //tests[contains(text(), '@Test')]
+  - //tests[contains(text(), 'void tests_iterates_with_eachi()')]
+  - //tests[contains(text(), 'tests_iterates_with_eachiφρα1();')]
+  - //tests[contains(text(), 'EOΦlisttests_iterates_with_eachiφρα1')]
 input: |
-  +tests
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] > list-tests
+  # This is the list.
+  [] > list
+    [x] > bar
     # This unit test is supposed to check the functionality of the corresponding object.
     [] +> tests-iterates-with-eachi
       eq. > @
