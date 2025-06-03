@@ -702,7 +702,6 @@
   </xsl:template>
   <!-- Test suite for given class. -->
   <xsl:template match="class" mode="testing">
-
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
@@ -734,7 +733,7 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="testing-ctors"/>
-      <xsl:apply-templates select="." mode="tests"/>
+    <xsl:apply-templates select="." mode="tests"/>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
