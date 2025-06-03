@@ -216,6 +216,10 @@
     </xsl:attribute>
   </xsl:template>
   <!-- Class body  -->
+  <!-- object -> java -->
+  <!-- object -> tests -->
+  <!-- tests -> *Test -->
+  <!-- each test attribute -> @Test -->
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
@@ -344,24 +348,26 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:if test="$context!='this'">
-      <xsl:text>((PhDefault) </xsl:text>
+    <xsl:if test="not(contains($name, '+'))">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>((PhDefault) </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="$context"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>.add("</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>", </xsl:text>
+      <xsl:apply-templates select="void|bound|atom|abstract">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$name"/>
+        <xsl:with-param name="parent" select="$parent"/>
+        <xsl:with-param name="context" select="$context"/>
+      </xsl:apply-templates>
+      <xsl:text>);</xsl:text>
     </xsl:if>
-    <xsl:value-of select="$context"/>
-    <xsl:if test="$context!='this'">
-      <xsl:text>)</xsl:text>
-    </xsl:if>
-    <xsl:text>.add("</xsl:text>
-    <xsl:value-of select="eo:escape-plus($name)"/>
-    <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="void|bound|atom|abstract">
-      <xsl:with-param name="indent" select="$indent"/>
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="parent" select="$parent"/>
-      <xsl:with-param name="context" select="$context"/>
-    </xsl:apply-templates>
-    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="void">
@@ -607,20 +613,20 @@
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:if test="@line and @pos">
+    <xsl:if test="@line and @pos and not(contains(@loc, '+'))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="eo:escape-plus($object-name)"/>
+      <xsl:value-of select="$object-name"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@pos"/>
       <xsl:text>, </xsl:text>
       <xsl:text>"</xsl:text>
-      <xsl:value-of select="eo:escape-plus(@loc)"/>
+      <xsl:value-of select="@loc"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
       <xsl:value-of select="eo:escape-plus(@original-name)"/>
