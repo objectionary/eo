@@ -189,6 +189,10 @@
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
+      <xsl:element name="tests">
+        <xsl:apply-templates select="." mode="testing"/>
+        <!-- construct test cases here -->
+      </xsl:element>
       <xsl:element name="java">
         <xsl:apply-templates select="/object" mode="license"/>
         <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
@@ -216,10 +220,6 @@
     </xsl:attribute>
   </xsl:template>
   <!-- Class body  -->
-  <!-- object -> java -->
-  <!-- object -> tests -->
-  <!-- tests -> *Test -->
-  <!-- each test attribute -> @Test -->
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
@@ -696,6 +696,43 @@
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
   </xsl:template>
+  <!-- Test suite for given class. -->
+  <xsl:template match="class" mode="testing">
+    <xsl:apply-templates select="xmir"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>@XmirObject(name = "</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:text>", oname = "</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@original-name">
+        <xsl:value-of select="@original-name"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>")</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>public final class </xsl:text>
+    <xsl:value-of select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:choose>
+      <xsl:when test="@base">
+        <xsl:text> extends PhOnce {</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> extends PhDefault {</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="/object/metas/meta[head='tests']">
+      <xsl:apply-templates select="." mode="tests"/>
+    </xsl:if>
+    <xsl:apply-templates select="nested"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+
   <!-- Class for tests -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
