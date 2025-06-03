@@ -12,21 +12,19 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - /object/class/java[contains(text(), 'this.add("b"')]
-  - /object/class/java[contains(text(), '((PhDefault) r).add("c",')]
-  - /object/class/java[contains(text(), '((PhDefault) rr).add("φ",')]
-  - /object/class/java[contains(text(), 'void b() throws java.lang.Exception')]
   - /object/class/java[contains(text(), 'private static class EOΦabcφα0')]
   - /object/class/java[contains(text(), 'PhDefault r1 = new EOΦabcφα0boundα0();')]
   - /object/class/java[contains(text(), 'private static class EOΦabcφα0boundα0 extends PhDefault')]
   - /object/class/java[contains(text(), 'private static class EOΦabcφα1 extends PhDefault')]
-  - /object/class/java[contains(text(), 'PhDefault rrr1 = new EOΦabcφα0();')]
-  - /object/class/java[contains(text(), 'PhDefault rrr2 = new EOΦabcφα1();')]
-  - /object/class/java[contains(text(), 'PhDefault rrr3 = new PhDefault();')]
+  - /object/class/tests[contains(text(), '((PhDefault) rr).add("φ",')]
+  - /object/class/tests[contains(text(), '((PhDefault) r).add("c",')]
+  - /object/class/tests[contains(text(), 'this.add("b"')]
+  - /object/class/tests[contains(text(), 'PhDefault rrr1 = new EOΦabcφα0();')]
+  - /object/class/tests[contains(text(), 'PhDefault rrr2 = new EOΦabcφα1();')]
+  - /object/class/tests[contains(text(), 'PhDefault rrr3 = new PhDefault();')]
+  - /object/class/tests[contains(text(), 'void b()')]
 input: |
-  +tests
-
-  # No comments.
+  # A.
   [] > a
     # No comments.
     [] +> b
