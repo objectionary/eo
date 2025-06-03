@@ -254,9 +254,6 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
-    <xsl:if test="/object/metas/meta[head='tests']">
-      <xsl:apply-templates select="." mode="tests"/>
-    </xsl:if>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
