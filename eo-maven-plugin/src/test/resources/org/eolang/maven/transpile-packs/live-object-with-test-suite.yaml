@@ -11,9 +11,11 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //tests[contains(text(), '  FooTest')]
+  - //java[contains(text(), 'EOfoo')]
+  - //java[not(contains(text(), 'void formats_name() throws java.lang.Exception {'))]
+  - //tests[contains(text(), 'EOfooTest')]
   - //tests[contains(text(), '  @Test')]
-  - //tests[contains(text(), '  void formats-name() throws java.lang.Exception {')]
+  - //tests[contains(text(), '  void formats_name() throws java.lang.Exception {')]
   - //tests[contains(text(), '    new Dataized(')]
   - //tests[contains(text(), '')]
   - //tests[contains(text(), '    Assertions.assertTrue(')]
