@@ -18,9 +18,11 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -218,6 +220,9 @@ public final class MjTranspile extends MjSafe {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
+    // java or tests
+    // save to target/generated-sources/ or target/generated-test-sources/
+    // if clazz has tests -> place them to target/generated-test-sources
     private int javaGenerated(
         final boolean rewrite,
         final Path target,
@@ -240,6 +245,18 @@ public final class MjTranspile extends MjSafe {
                     hsh,
                     this.generatedDir.toPath().relativize(tgt)
                 );
+                if (clazz.element("tests").text().isPresent()) {
+                    final String[] jparts = jname.split("\\.");
+                    final Path resolved = Arrays.stream(jparts, 0, jparts.length - 1)
+                        .reduce(
+                            this.generatedDir.toPath().getParent().resolve(
+                                "generated-test-sources"
+                            ),
+                            Path::resolve,
+                            Path::resolve
+                        ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
+                    new Saved(clazz.element("tests").text().get(), resolved).value();
+                }
                 final Footprint generated = new FpGenerated(
                     src -> {
                         saved.incrementAndGet();
