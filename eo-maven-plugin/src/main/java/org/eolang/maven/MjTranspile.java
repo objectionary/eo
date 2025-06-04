@@ -139,12 +139,13 @@ public final class MjTranspile extends MjSafe {
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
                 this.generatedDir
             );
-        }
-        if (this.addTestSourcesRoot) {
-            this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
+            final String gtests = this.generatedDir.toPath().getParent().resolve(
+                "generated-test-sources"
+            ).toAbsolutePath().toString();
+            this.project.addTestCompileSourceRoot(gtests);
             Logger.info(
                 this, "The directory added to Maven 'test-compile-source-root': %[file]s",
-                this.generatedDir
+                gtests
             );
         }
     }
@@ -256,15 +257,7 @@ public final class MjTranspile extends MjSafe {
                             Path::resolve,
                             Path::resolve
                         ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
-                    if (
-                        Files.exists(
-                            tests.getParent().resolve("test-classes").resolve(
-                                tests.relativize(resolved)
-                            )
-                        )
-                    ) {
-                        new Saved(clazz.element("tests").text().get(), resolved).value();
-                    }
+                    new Saved(clazz.element("tests").text().get(), resolved).value();
                 }
                 final Footprint generated = new FpGenerated(
                     src -> {
