@@ -39,3 +39,59 @@
           sin-port.size
         sin-addr.size
       sin-zero.size
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-invokes-getpid-correctly
+    or. > @
+      os.is-windows
+      gt.
+        code.
+          posix
+            "getpid"
+            tuple.empty
+        0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-opens-posix-tcp-socket
+    or. > @
+      os.is-windows
+      try
+        sd.gt 0
+        ex > [ex]
+        code.
+          posix
+            "close"
+            * sd
+    code. > sd
+      posix
+        "socket"
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-closes-posix-tcp-socket
+    or. > @
+      os.is-windows
+      seq
+        *
+          sd
+          not.
+            eq.
+              code.
+                posix
+                  "close"
+                  * sd
+              -1
+    code. > sd
+      posix
+        "socket"
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-returns-valid-posix-inet-addr-for-localhost
+    or. > @
+      os.is-windows
+      addr.eq 16777343
+    code. > addr
+      posix
+        "inet_addr"
+        * "127.0.0.1"

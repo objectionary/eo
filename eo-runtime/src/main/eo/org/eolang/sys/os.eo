@@ -23,3 +23,11 @@
 
   # Returns the name of the current operation system as `org.eolang.string`.
   [] > name ?
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-checks-os-family
+    or. > @
+      or.
+        os.is-windows
+        os.is-macos
+      os.is-linux
