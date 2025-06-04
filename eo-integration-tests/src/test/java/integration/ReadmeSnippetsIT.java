@@ -29,6 +29,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Integration test for EO snippets in `README.md`.
  * @since 0.56.3
+ * @todo #4096:45min Remove JUnit dependency from integration source run.
+ *  Currently its needed because of `org.junit.jupiter.api.*"` imports, injected
+ *  by the `to-java.xsl` during transpilation. Instead of hardcoding the JUnit import,
+ *  we should place it only there, where we have test attributes.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class ReadmeSnippetsIT {
@@ -59,6 +63,26 @@ final class ReadmeSnippetsIT {
                             Manifests.read("EO-Version")
                         )
                     );
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-engine",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-params",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-api",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit-pioneer",
+                    "junit-pioneer",
+                    "2.2.0"
+                );
                 f.build()
                     .properties()
                     .set("directory", "target");
