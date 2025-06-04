@@ -278,7 +278,7 @@
   [] +> tests-negative-infinity-times-int-zero
     eq. > @
       as-bytes.
-        positive-infinity.times 0
+        negative-infinity.times 0
       nan.as-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.

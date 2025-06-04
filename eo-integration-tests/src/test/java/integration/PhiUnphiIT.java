@@ -59,7 +59,7 @@ final class PhiUnphiIT {
                         "print"
                     )
                     .configuration()
-                    .set("sourcesDir", "${project.basedir}/src/mai/eo")
+                    .set("sourcesDir", "${project.basedir}/src/main/eo")
                     .set("targetDir", "${project.build.directory}/eo")
                     .set("phiInputDir", "${project.build.directory}/eo/1-parse")
                     .set("phiOutputDir", "${project.basedir}/src/phi")
