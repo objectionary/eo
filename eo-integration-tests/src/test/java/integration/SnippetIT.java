@@ -63,26 +63,6 @@ final class SnippetIT {
                             Manifests.read("EO-Version")
                         )
                     );
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-engine",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-params",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-api",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit-pioneer",
-                    "junit-pioneer",
-                    "2.2.0"
-                );
                 final String target;
                 if (xtory.map().containsKey("target")) {
                     target = xtory.map().get("target").toString();
