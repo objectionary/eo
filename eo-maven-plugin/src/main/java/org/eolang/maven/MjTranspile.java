@@ -243,25 +243,7 @@ public final class MjTranspile extends MjSafe {
                     this.generatedDir.toPath().relativize(tgt)
                 );
                 if (clazz.element("tests").text().isPresent()) {
-                    final String[] jparts = jname.split("\\.");
-                    final Path tests = this.generatedDir.toPath().getParent().resolve(
-                        "generated-test-sources"
-                    );
-                    final Path resolved = Arrays.stream(jparts, 0, jparts.length - 1)
-                        .reduce(
-                            tests,
-                            Path::resolve,
-                            Path::resolve
-                        ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
-                    if (
-                        !Files.exists(
-                            tests.getParent().getParent().resolve("src").resolve("test")
-                                .resolve("java")
-                                .resolve(tests.relativize(resolved))
-                        )
-                    ) {
-                        new Saved(clazz.element("tests").text().get(), resolved).value();
-                    }
+                    this.placeJavaTests(clazz, jname);
                 }
                 final Footprint generated = new FpGenerated(
                     src -> {
@@ -353,5 +335,32 @@ public final class MjTranspile extends MjSafe {
             size = 0;
         }
         return size;
+    }
+
+    /**
+     * Place Java tests.
+     * @param clazz Transpiled class
+     * @param jname Java class name
+     */
+    private void placeJavaTests(final Xnav clazz, final String jname) throws IOException {
+        final String[] jparts = jname.split("\\.");
+        final Path tests = this.generatedDir.toPath().getParent().resolve(
+            "generated-test-sources"
+        );
+        final Path resolved = Arrays.stream(jparts, 0, jparts.length - 1)
+            .reduce(
+                tests,
+                Path::resolve,
+                Path::resolve
+            ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
+        if (
+            !Files.exists(
+                tests.getParent().getParent().resolve("src").resolve("test")
+                    .resolve("java")
+                    .resolve(tests.relativize(resolved))
+            )
+        ) {
+            new Saved(clazz.element("tests").text().get(), resolved).value();
+        }
     }
 }

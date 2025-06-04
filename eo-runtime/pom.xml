@@ -227,6 +227,8 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
+                <!-- Required to be skipped, since we in runtime origin library. -->
+                <lint>prohibited-package</lint>
                 <!--
                   @todo #4148:35min Enable `unused-void-attr` lint.
                    We should enable this lint after the following issue with magic
@@ -249,6 +251,13 @@
                    be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
                 -->
                 <lint>redundant-object</lint>
+                <!--
+                  @todo #4096:35min Enable `sparse-decoration` lint.
+                   After we merged EO tests together with their source objects, and removed
+                   `+tests` meta, we have complains about sparse-decoration. Let's adjust and
+                   enable it.
+                -->
+                <lint>sparse-decoration</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
