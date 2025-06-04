@@ -18,7 +18,6 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -221,9 +220,6 @@ public final class MjTranspile extends MjSafe {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
-    // java or tests
-    // save to target/generated-sources/ or target/generated-test-sources/
-    // if clazz has tests -> place them to target/generated-test-sources
     private int javaGenerated(
         final boolean rewrite,
         final Path target,
@@ -259,9 +255,9 @@ public final class MjTranspile extends MjSafe {
                         ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
                     if (
                         !Files.exists(
-                            tests.relativize(resolved).resolve(
-                                tests.getParent().getParent().resolve("src").resolve("test").resolve("java")
-                            )
+                            tests.getParent().getParent().resolve("src").resolve("test")
+                                .resolve("java")
+                                .resolve(tests.relativize(resolved))
                         )
                     ) {
                         new Saved(clazz.element("tests").text().get(), resolved).value();

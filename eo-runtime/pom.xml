@@ -260,40 +260,6 @@
               </keepBinaries>
             </configuration>
           </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>register</goal>
-              <goal>compile</goal>
-              <goal>xmir-to-phi</goal>
-              <goal>transpile</goal>
-            </goals>
-            <configuration>
-              <scope>test</scope>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
-              <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>true</failOnWarning>
-              <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
-              <ignoreRuntime>true</ignoreRuntime>
-              <skipSourceLints>
-                <lint>unused-void-attr</lint>
-                <lint>redundant-object</lint>
-              </skipSourceLints>
-              <skipProgramLints>
-                <!--
-                  @todo #4148:35min Enable `inconsistent-args` lint after its adjustment.
-                   We should enable this lint after the issue with self object names will be resolved:
-                   https://github.com/objectionary/lints/issues/576.
-                -->
-                <lint>inconsistent-args</lint>
-              </skipProgramLints>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
