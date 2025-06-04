@@ -7,7 +7,7 @@
 
 # This unit test is supposed to check the functionality of the corresponding object.
 # @todo #4096:90min Merge tests for EO atoms together with their sources.
-#  Currenlty, we cannot move atom tests to their sources, because parser will fail to recognize
+#  Currently, we cannot move atom tests to their sources, because parser will fail to recognize
 #  them. Once it will be possible to have tests with the EO atom in the single file, then we
 #  should move the tests in it. Don't forget to move `runtime-tests.eo`, `try-tests.eo`,
 #  `txt/sscanf-tests.eo`, `txt/sprintf-tests.eo` too.
