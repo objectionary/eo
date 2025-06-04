@@ -189,6 +189,21 @@
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
+      <!--
+        @todo #4096:90min Resolve code duplication for `tests` generation.
+         Currently, we have a lot of code duplication in the templates that generate Java tests.
+         They all are similar to the templates applied in the `java` element. Let's make them as
+         generic as possible and reuse in both places.
+      -->
+      <xsl:element name="tests">
+        <xsl:apply-templates select="/object" mode="license"/>
+        <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
+        <xsl:text>import java.util.function.Function;</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:text>import org.eolang.*;</xsl:text>
+        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:apply-templates select="." mode="testing"/>
+      </xsl:element>
       <xsl:element name="java">
         <xsl:apply-templates select="/object" mode="license"/>
         <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
@@ -196,7 +211,6 @@
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="/object/metas/meta[head='tests']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
@@ -246,9 +260,6 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
-    <xsl:if test="/object/metas/meta[head='tests']">
-      <xsl:apply-templates select="." mode="tests"/>
-    </xsl:if>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -344,24 +355,26 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:if test="$context!='this'">
-      <xsl:text>((PhDefault) </xsl:text>
+    <xsl:if test="not(contains($name, '+'))">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>((PhDefault) </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="$context"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>.add("</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>", </xsl:text>
+      <xsl:apply-templates select="void|bound|atom|abstract">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$name"/>
+        <xsl:with-param name="parent" select="$parent"/>
+        <xsl:with-param name="context" select="$context"/>
+      </xsl:apply-templates>
+      <xsl:text>);</xsl:text>
     </xsl:if>
-    <xsl:value-of select="$context"/>
-    <xsl:if test="$context!='this'">
-      <xsl:text>)</xsl:text>
-    </xsl:if>
-    <xsl:text>.add("</xsl:text>
-    <xsl:value-of select="eo:escape-plus($name)"/>
-    <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="void|bound|atom|abstract">
-      <xsl:with-param name="indent" select="$indent"/>
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="parent" select="$parent"/>
-      <xsl:with-param name="context" select="$context"/>
-    </xsl:apply-templates>
-    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="void">
@@ -607,7 +620,7 @@
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:if test="@line and @pos">
+    <xsl:if test="@line and @pos and not(contains(@loc, '+'))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhSafe(</xsl:text>
@@ -690,6 +703,118 @@
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
   </xsl:template>
+  <!-- Test suite for given class. -->
+  <xsl:template match="class" mode="testing">
+    <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>@XmirObject(name = "</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:text>", oname = "</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@original-name">
+        <xsl:value-of select="@original-name"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>")</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>public final class </xsl:text>
+    <xsl:value-of select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:choose>
+      <xsl:when test="@base">
+        <xsl:text> extends PhOnce {</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> extends PhDefault {</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:apply-templates select="." mode="testing-ctors"/>
+    <xsl:apply-templates select="." mode="tests"/>
+    <xsl:apply-templates select="nested"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <!-- Testing ctors. -->
+  <xsl:template match="class" mode="testing-ctors">
+    <xsl:variable name="class" select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public </xsl:text>
+    <xsl:value-of select="$class"/>
+    <xsl:text>() {</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@base">
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>super(</xsl:text>
+        <xsl:value-of select="eo:eol(3)"/>
+        <xsl:text>() -&gt; {</xsl:text>
+        <xsl:apply-templates select="o" mode="object">
+          <xsl:with-param name="name" select="'r'"/>
+          <xsl:with-param name="indent" select="4"/>
+        </xsl:apply-templates>
+        <xsl:value-of select="eo:eol(4)"/>
+        <xsl:text>return r;</xsl:text>
+        <xsl:value-of select="eo:eol(3)"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>);</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="attr" mode="tattr">
+          <xsl:with-param name="indent" select="2"/>
+          <xsl:with-param name="parent" select="$class"/>
+          <xsl:with-param name="context" select="'this'"/>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <!-- Test attribute. -->
+  <xsl:template match="attr" mode="tattr">
+    <xsl:param name="indent"/>
+    <xsl:param name="parent"/>
+    <xsl:param name="context"/>
+    <xsl:variable name="name" select="eo:attr-name(@name, false())"/>
+    <xsl:if test="not(@name)">
+      <xsl:message terminate="yes">
+        <xsl:text>Unnamed attribute found in </xsl:text>
+        <xsl:value-of select="parent::*/@loc"/>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="contains($name, '+')">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>((PhDefault) </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="$context"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>.add("</xsl:text>
+      <xsl:value-of select="eo:escape-plus($name)"/>
+      <xsl:text>", </xsl:text>
+      <xsl:apply-templates select="void|bound|atom|abstract">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$name"/>
+        <xsl:with-param name="parent" select="$parent"/>
+        <xsl:with-param name="context" select="$context"/>
+      </xsl:apply-templates>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
+  </xsl:template>
   <!-- Class for tests -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
@@ -742,14 +867,6 @@
     <xsl:text>package </xsl:text>
     <xsl:value-of select="eo:class-name(tail, '')"/>
     <xsl:text>;</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:value-of select="eo:eol(0)"/>
-  </xsl:template>
-  <!-- Imports for tests  -->
-  <xsl:template match="meta[head='tests']" mode="head">
-    <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>

@@ -1,12 +1,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 # This unit test is supposed to check the functionality of the corresponding object.
+# @todo #4096:90min Merge tests for EO atoms together with their sources.
+#  Currently, we cannot move atom tests to their sources, because parser will fail to recognize
+#  them. Once it will be possible to have tests with the EO atom in the single file, then we
+#  should move the tests in it. Don't forget to move `runtime-tests.eo`, `try-tests.eo`,
+#  `txt/sscanf-tests.eo`, `txt/sprintf-tests.eo` too.
 [] > bool-tests
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-compares-two-bools

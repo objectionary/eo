@@ -227,6 +227,8 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
+                <!-- Required to be skipped, since we in runtime origin library. -->
+                <lint>prohibited-package</lint>
                 <!--
                   @todo #4148:35min Enable `unused-void-attr` lint.
                    We should enable this lint after the following issue with magic
@@ -249,6 +251,13 @@
                    be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
                 -->
                 <lint>redundant-object</lint>
+                <!--
+                  @todo #4096:35min Enable `sparse-decoration` lint.
+                   After we merged EO tests together with their source objects, and removed
+                   `+tests` meta, we have complains about sparse-decoration. Let's adjust and
+                   enable it.
+                -->
+                <lint>sparse-decoration</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
@@ -258,40 +267,6 @@
                 <glob>EOorg/EOeolang/EOsys/package-info.class</glob>
                 <glob>EOorg/EOeolang/EOtxt/package-info.class</glob>
               </keepBinaries>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>register</goal>
-              <goal>compile</goal>
-              <goal>xmir-to-phi</goal>
-              <goal>transpile</goal>
-            </goals>
-            <configuration>
-              <scope>test</scope>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
-              <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>true</failOnWarning>
-              <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
-              <ignoreRuntime>true</ignoreRuntime>
-              <skipSourceLints>
-                <lint>unused-void-attr</lint>
-                <lint>redundant-object</lint>
-              </skipSourceLints>
-              <skipProgramLints>
-                <!--
-                  @todo #4148:35min Enable `inconsistent-args` lint after its adjustment.
-                   We should enable this lint after the issue with self object names will be resolved:
-                   https://github.com/objectionary/lints/issues/576.
-                -->
-                <lint>inconsistent-args</lint>
-              </skipProgramLints>
             </configuration>
           </execution>
         </executions>

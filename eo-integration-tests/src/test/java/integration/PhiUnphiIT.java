@@ -39,9 +39,6 @@ final class PhiUnphiIT {
                 f.files().file("src/main").save(
                     runtime.resolve("src/main")
                 );
-                f.files().file("src/test/eo").save(
-                    runtime.resolve("src/test/eo")
-                );
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
@@ -62,15 +59,14 @@ final class PhiUnphiIT {
                         "print"
                     )
                     .configuration()
-                    .set("sourcesDir", "${project.basedir}/src/test/eo")
-                    .set("targetDir", "${project.build.directory}/eo-test")
-                    .set("phiInputDir", "${project.build.directory}/eo-test/1-parse")
+                    .set("sourcesDir", "${project.basedir}/src/main/eo")
+                    .set("targetDir", "${project.build.directory}/eo")
+                    .set("phiInputDir", "${project.build.directory}/eo/1-parse")
                     .set("phiOutputDir", "${project.basedir}/src/phi")
                     .set("unphiInputDir", "${project.basedir}/src/phi")
                     .set("unphiOutputDir", "${project.basedir}/src/unphi")
-                    .set("unphiMetas", new String[]{"+tests"})
                     .set("printSourcesDir", "${project.basedir}/src/unphi")
-                    .set("printOutputDir", "${project.basedir}/src/test/generated-eo");
+                    .set("printOutputDir", "${project.basedir}/src/main/generated-eo");
                 f.exec("clean", "process-sources");
                 MatcherAssert.assertThat(
                     "Converting to phi and back was not successful",
@@ -119,8 +115,8 @@ final class PhiUnphiIT {
                     .set("ignoreRuntime", Boolean.TRUE.toString());
                 new EoMavenPlugin(f)
                     .appended()
-                    .execution("tests")
-                    .phase("generate-test-sources")
+                    .execution("run")
+                    .phase("generate-sources")
                     .goals("register", "compile", "transpile")
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.json")
@@ -128,13 +124,13 @@ final class PhiUnphiIT {
                     .set("failOnWarning", Boolean.FALSE.toString())
                     .set("offline", Boolean.TRUE.toString())
                     .set("scope", "test")
-                    .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
-                    .set("targetDir", "${project.basedir}/target/eo-test")
+                    .set("sourcesDir", "${project.basedir}/src/generated-eo")
+                    .set("targetDir", "${project.basedir}/target/eo")
                     .set("addSourcesRoot", Boolean.FALSE.toString())
                     .set("addTestSourcesRoot", Boolean.TRUE.toString())
                     .set("skipLinting", Boolean.TRUE.toString())
                     .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("generatedDir", "${project.basedir}/target/generated-test-sources")
+                    .set("generatedDir", "${project.basedir}/target/generated-sources")
                     .set("ignoreRuntime", Boolean.TRUE.toString());
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(

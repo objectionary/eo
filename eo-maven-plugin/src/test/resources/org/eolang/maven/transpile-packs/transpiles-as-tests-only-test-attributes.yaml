@@ -11,14 +11,12 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), '@Test')]
-  - //java[contains(text(), 'void runs_smoothly()')]
+  - //tests[contains(text(), '@Test')]
+  - //tests[contains(text(), 'void runs_smoothly()')]
   - //java[not(contains(text(), 'void some_other_method()'))]
 input: |
-  +tests
-
-  # Foo tests.
-  [] > foo-tests
+  # Foo.
+  [] > foo
     # Test.
     [] +> runs-smoothly
       x > @

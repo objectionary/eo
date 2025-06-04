@@ -23,3 +23,11 @@
       # Read `size` amount of bytes from nowhere.
       # Returns new instance of `input-block`.
       input-block > [size] > read
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-reads-empty-bytes
+    and. > @
+      i1.eq --
+      i2.eq --
+    dead-input.read 10 > i1
+    i1.read 10 > i2
