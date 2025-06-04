@@ -189,6 +189,12 @@
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
+      <!--
+        @todo #4096:90min Resolve code duplication for `tests` generation.
+         Currently, we have a lot of code duplication in the templates that generate Java tests.
+         They all are similar to the templates applied in the `java` element. Let's make them as
+         generic as possible and reuse in both places.
+      -->
       <xsl:element name="tests">
         <xsl:apply-templates select="/object" mode="license"/>
         <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
