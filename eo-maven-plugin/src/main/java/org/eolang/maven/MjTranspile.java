@@ -257,7 +257,15 @@ public final class MjTranspile extends MjSafe {
                             Path::resolve,
                             Path::resolve
                         ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
-                    new Saved(clazz.element("tests").text().get(), resolved).value();
+                    if (
+                        !Files.exists(
+                            tests.relativize(resolved).resolve(
+                                tests.getParent().getParent().resolve("src").resolve("test").resolve("java")
+                            )
+                        )
+                    ) {
+                        new Saved(clazz.element("tests").text().get(), resolved).value();
+                    }
                 }
                 final Footprint generated = new FpGenerated(
                     src -> {
