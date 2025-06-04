@@ -181,3 +181,9 @@
                   "WriteFile"
                   * win32.std-output-handle buffer buffer.size
               output-block
+
+  # Prints a simple message to the console. We can't validate
+  # the output, so we just run it and see if it crashes.
+  [] +> tests-writes-to-console
+    console.write > @
+      "Hello, console-test!\n"
