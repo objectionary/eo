@@ -12,7 +12,7 @@ package org.eolang;
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
-abstract class PhaEnvelope implements Phi {
+abstract class PhEnvelope implements Phi {
     /**
      * Original attribute.
      */
@@ -22,7 +22,7 @@ abstract class PhaEnvelope implements Phi {
      * Ctor.
      * @param attr Attribute
      */
-    PhaEnvelope(final Phi attr) {
+    PhEnvelope(final Phi attr) {
         this.origin = attr;
     }
 

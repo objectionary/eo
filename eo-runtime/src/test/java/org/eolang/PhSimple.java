@@ -18,11 +18,11 @@ package org.eolang;
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleInheritanceInTests"
 })
-final class PhaSimple extends PhaEnvelope {
+final class PhSimple extends PhEnvelope {
     /**
      * Ctor.
      */
-    PhaSimple() {
+    PhSimple() {
         this(Phi.Φ);
     }
 
@@ -30,7 +30,7 @@ final class PhaSimple extends PhaEnvelope {
      * Ctor.
      * @param object Object that attribute keeps
      */
-    PhaSimple(final Phi object) {
+    PhSimple(final Phi object) {
         super(new PhComposite(object, arg -> object));
     }
 }

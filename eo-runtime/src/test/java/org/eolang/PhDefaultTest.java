@@ -514,7 +514,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
             this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
-            this.add(PhDefaultTest.PLUS_ATT, new PhaSimple(new PhDefault()));
+            this.add(PhDefaultTest.PLUS_ATT, new PhSimple(new PhDefault()));
             this.add(
                 Phi.PHI,
                 new PhCached(
@@ -553,8 +553,8 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Foo() {
             this.add("x", new PhVoid("x"));
-            this.add("kid", new PhaSimple(new PhDefaultTest.Kid()));
-            this.add("φ", new PhaSimple(new Data.ToPhi(5L)));
+            this.add("kid", new PhSimple(new PhDefaultTest.Kid()));
+            this.add("φ", new PhSimple(new Data.ToPhi(5L)));
         }
     }
 
@@ -614,7 +614,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
             this.add("z", new PhVoid("z"));
-            this.add(Phi.PHI, new PhaSimple(new Data.ToPhi(true)));
+            this.add(Phi.PHI, new PhSimple(new Data.ToPhi(true)));
         }
     }
 
