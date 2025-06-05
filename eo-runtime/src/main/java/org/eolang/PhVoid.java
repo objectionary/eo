@@ -128,6 +128,12 @@ public final class PhVoid implements Phi {
 
     @Override
     public byte[] delta() {
-        return this.object.get().delta();
+        final Phi obj = this.object.get();
+        if (obj == null) {
+            throw new ExUnset(
+                String.format("The attribute \"%s\" is not initialized, can't get delta", this.name)
+            );
+        }
+        return obj.delta();
     }
 }
