@@ -58,7 +58,15 @@ public final class PhVoid implements Phi {
 
     @Override
     public String locator() {
-        return String.format("%s:%s.∅", this.object.get().locator(), this.name);
+        final Phi obj = this.object.get();
+        if (obj == null) {
+            throw new ExUnset(
+                String.format(
+                    "The attribute \"%s\" is not initialized, can't get locator", this.name
+                )
+            );
+        }
+        return String.format("%s:%s.∅", obj.locator(), this.name);
     }
 
     @Override
@@ -105,7 +113,13 @@ public final class PhVoid implements Phi {
 
     @Override
     public Phi copy() {
-        return this.object.get().copy();
+        final Phi obj = this.object.get();
+        if (obj == null) {
+            throw new ExUnset(
+                String.format("The attribute \"%s\" is not initialized, can't copy", this.name)
+            );
+        }
+        return obj.copy();
     }
 
     @Override
