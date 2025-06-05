@@ -20,8 +20,12 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link EOmalloc}.
@@ -63,6 +67,139 @@ final class EOmallocTest {
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
             AtCompositeTest.TO_ADD_MESSAGE
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOresized.class,
+        EOmalloc$EOof$EOallocated$EOsize.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForIdAttrNaN(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        (Phi) cls.getDeclaredConstructor().newInstance(),
+                        Attr.RHO,
+                        new PhWith(
+                            new EOmallocTest.IdDummy(),
+                            "id",
+                            new Data.ToPhi(true)
+                        )
+                    )
+                ).take(),
+                "put TRUE in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'id' attribute must be a number")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOresized.class,
+        EOmalloc$EOof$EOallocated$EOsize.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForIdAttrNotAnInt(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        (Phi) cls.getDeclaredConstructor().newInstance(),
+                        Attr.RHO,
+                        new PhWith(
+                            new EOmallocTest.IdDummy(),
+                            "id",
+                            new Data.ToPhi(42.42)
+                        )
+                    )
+                ).take(),
+                "put double in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'id' attribute (42.42) must be an integer")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNaN(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
+                        "offset",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "put TRUE in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute must be a number")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNotAnInt(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
+                        "offset",
+                        new Data.ToPhi(42.42)
+                    )
+                ).take(),
+                "put double in int attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (42.42) must be an integer")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+        EOmalloc$EOof$EOallocated$EOread.class,
+        EOmalloc$EOof$EOallocated$EOwrite.class
+    })
+    void throwsCorrectErrorForOffsetAttrNotNatural(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhiWithIdDummy(
+                            (Phi) cls.getDeclaredConstructor().newInstance()
+                        ).it(),
+                        "offset",
+                        new Data.ToPhi(-42)
+                    )
+                ).take(),
+                "put negative int in natural attr fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (-42) must be greater or equal to zero")
         );
     }
 
@@ -111,6 +248,58 @@ final class EOmallocTest {
     }
 
     /**
+     * Phi with Dummy with 'id' attribute.
+     *
+     * @since 0.52
+     */
+    @SuppressWarnings("PMD.ShortMethodName")
+    static class PhiWithIdDummy {
+        /**
+         * Phi.
+         */
+        private final Phi phi;
+
+        /**
+         * Ctor.
+         * @param phi Phi
+         */
+        PhiWithIdDummy(final Phi phi) {
+            this.phi = phi;
+        }
+
+        /**
+         * Return it.
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Phi it() {
+            return new PhWith(
+                this.phi,
+                Attr.RHO,
+                new PhWith(
+                    new EOmallocTest.IdDummy(),
+                    "id",
+                    new Data.ToPhi(42)
+                )
+            );
+        }
+    }
+
+    /**
+     * Dummy with id attr.
+     *
+     * @since 0.52
+     */
+    private static class IdDummy extends PhDefault {
+        /**
+         * Ctor.
+         */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        IdDummy() {
+            this.add("id", new AtVoid("id"));
+        }
+    }
+
+    /**
      * Dummy that throws an exception.
      * @since 0.36.0
      */
@@ -145,4 +334,5 @@ final class EOmallocTest {
             );
         }
     }
+
 }

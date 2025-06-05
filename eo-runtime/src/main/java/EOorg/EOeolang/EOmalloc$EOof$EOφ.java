@@ -13,6 +13,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -29,7 +30,7 @@ public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
         final int identifier = Heaps.INSTANCE.malloc(
-            this, new Dataized(rho.take("size")).asNumber().intValue()
+            this, new Expect.Natural(Expect.at(rho, "size")).it()
         );
         final Phi res;
         try {
