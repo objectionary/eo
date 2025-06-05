@@ -11,7 +11,6 @@ package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.io.File;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -31,7 +30,7 @@ public final class EOfile$EOsize extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             new File(
-                new Dataized(this.take(Attr.RHO).take("path")).asString()
+                new Dataized(this.take(Phi.RHO).take("path")).asString()
             ).length()
         );
     }

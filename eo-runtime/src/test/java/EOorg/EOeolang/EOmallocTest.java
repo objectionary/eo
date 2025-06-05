@@ -9,15 +9,14 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtComposite;
-import org.eolang.AtCompositeTest;
-import org.eolang.AtVoid;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.PhComposite;
+import org.eolang.PhCompositeTest;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +41,7 @@ final class EOmallocTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -57,12 +56,12 @@ final class EOmallocTest {
                     dummy
                 )
             ).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -94,10 +93,10 @@ final class EOmallocTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("m", new AtVoid("m"));
+            this.add("m", new PhVoid("m"));
             this.add(
-                Attr.PHI,
-                new AtComposite(
+                Phi.PHI,
+                new PhComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(
@@ -125,10 +124,10 @@ final class EOmallocTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
-            this.add("m", new AtVoid("m"));
+            this.add("m", new PhVoid("m"));
             this.add(
-                Attr.PHI,
-                new AtComposite(
+                Phi.PHI,
+                new PhComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(

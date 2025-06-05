@@ -11,7 +11,6 @@ package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.nio.file.Paths;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -32,7 +31,7 @@ public final class EOfile$EOis_directory extends PhDefault implements Atom {
         return new Data.ToPhi(
             Paths.get(
                 new Dataized(
-                    this.take(Attr.RHO).take("path")
+                    this.take(Phi.RHO).take("path")
                 ).asString()
             ).toFile().isDirectory()
         );

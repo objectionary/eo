@@ -136,7 +136,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             reader.readLine().length(),
             Matchers.greaterThan(0)
         );
@@ -157,7 +157,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             reader.readLine().length(),
             Matchers.greaterThan(1)
         );
@@ -166,7 +166,7 @@ final class MainTest {
     @Test
     void readsBytesCorrectly() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new ByteArrayInputStream(
                 "··\uD835\uDD38➜Φ".getBytes(
                     StandardCharsets.UTF_8

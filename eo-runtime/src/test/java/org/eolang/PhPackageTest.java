@@ -32,7 +32,7 @@ final class PhPackageTest {
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             Phi.Φ.take("org.eolang.seq"),
             Matchers.not(
                 Matchers.equalTo(
@@ -46,10 +46,10 @@ final class PhPackageTest {
     void doesNotSetRhoToGlobalObject() {
         Assertions.assertThrows(
             ExUnset.class,
-            () -> Phi.Φ.take(Attr.RHO),
+            () -> Phi.Φ.take(Phi.RHO),
             String.format(
                 "Global object '%s' must not have %s attribute",
-                PhPackage.GLOBAL, Attr.RHO
+                PhPackage.GLOBAL, Phi.RHO
             )
         );
     }
@@ -59,8 +59,8 @@ final class PhPackageTest {
         final Phi org = Phi.Φ.take("org");
         final Phi eolang = org.take("eolang");
         MatcherAssert.assertThat(
-            String.format("The %s attribute must be set to package object on dispatch", Attr.RHO),
-            eolang.take(Attr.RHO),
+            String.format("The %s attribute must be set to package object on dispatch", Phi.RHO),
+            eolang.take(Phi.RHO),
             Matchers.equalTo(org)
         );
     }
@@ -70,8 +70,8 @@ final class PhPackageTest {
         final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            seq.take(Attr.RHO),
+            PhCompositeTest.TO_ADD_MESSAGE,
+            seq.take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
     }
@@ -79,7 +79,7 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             Phi.Φ.take("org.eolang.bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
@@ -91,7 +91,7 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.instanceOf(expected)
         );
@@ -102,7 +102,7 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            PhCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -128,7 +128,7 @@ final class PhPackageTest {
     @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            PhCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
             Matchers.equalTo("?:?:?")
         );

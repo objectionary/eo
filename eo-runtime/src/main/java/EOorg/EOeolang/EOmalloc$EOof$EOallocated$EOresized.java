@@ -9,12 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -31,12 +30,12 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     EOmalloc$EOof$EOallocated$EOresized() {
-        this.add("new-size", new AtVoid("new-size"));
+        this.add("new-size", new PhVoid("new-size"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Attr.RHO);
+        final Phi rho = this.take(Phi.RHO);
         final int id = Expect.at(rho, "id")
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")
