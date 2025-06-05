@@ -24,13 +24,7 @@ is an object-oriented programming language based on
 [𝜑-calculus](https://arxiv.org/abs/2111.13384).
 We're aware of popular semi-OOP languages and we don't think
 they are good enough, including:
-[Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
-[C++](https://en.wikipedia.org/wiki/C%2B%2B),
-[Smalltalk](https://en.wikipedia.org/wiki/Smalltalk),
-[Python](https://en.wikipedia.org/wiki/Python_%28programming_language%29),
-[PHP](https://en.wikipedia.org/wiki/PHP),
-[C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
+[Java], [Ruby], [C++], [Smalltalk], [Python], [PHP], [C#].
 All of them have something **we don't tolerate**:
 
 * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
@@ -62,9 +56,9 @@ All of them have something **we don't tolerate**:
 
 ## Quick Start
 
-First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Then, install [eoc](https://github.com/objectionary/eoc):
+First, install [Java SE], [npm].
+
+Then, install [eoc]:
 
 ```bash
 npm install -g eolang@0.29.0
@@ -96,12 +90,12 @@ You should see "Hello, world!" printed.
 ## Simple Tutorial
 
 In the example above, we create a new
-[abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
+[abstract object][abstract objects]
 named `app`, which has got a single attribute named `@`. The object
 attached to the attribute `@` is a copy of the object `stdout` with
 a single argument `"Hello, world!"`. The object
 `stdout` is also
-[abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+[abstract][abstract objects].
 It can't be used directly, a copy of it has to be created,
 with a few requirement arguments provided.
 This is how a copy of the object `stdout` is made:
@@ -135,7 +129,7 @@ argument: a copy of the object `sprintf`:
 ```
 
 Here, the object `sprintf` is also
-[abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+[abstract][abstract objects].
 It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
@@ -149,7 +143,7 @@ This program can be written using horizontal notation:
 ```
 
 The special attribute `@` denotes an object that is being
-[decorated](https://www.yegor256.com/2015/02/26/composable-decorators.html).
+[decorated][composable decorators].
 In this example, the object `app` decorates the copy of the
 object `stdout` and through this starts to behave like
 the object `stdout`: all attributes of `stdout` become the
@@ -210,19 +204,15 @@ Got the idea?
 
 ## Backus-Naur Form
 
-This is our
-[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
-of EO language:
+This is our [EBNF] of EO language:
 
 ![Grammar](/ebnf/Eo.png)
 
-This is the
-[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
-of 𝜑-calculus:
+This is the [EBNF] of 𝜑-calculus:
 
 ![EBNF of 𝜑-calculus](/ebnf/Phi.png)
 
-The images were
+The PNG images were
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
 It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg)
 and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
@@ -243,16 +233,11 @@ XSD is [in this file](https://www.eolang.org/XMIR.xsd),
 full specification is [in HTML](https://www.eolang.org/XMIR.html).
 
 See the full collection of canonical objects:
-[objectionary](https://github.com/objectionary/home).
+[objectionary][home].
 
-Take a look how we use EO as an Intermediary Representation (IR) in
-[Polystat](https://www.polystat.org), a polyglot static analyzer.
+Play with more examples in the [sandbox].
 
-Play with more examples in the
-[sandbox](https://github.com/objectionary/sandbox).
-
-Read more about integration
-[with Maven](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
+Read more about integration [with Maven][eo-maven-plugin].
 
 ## Benchmark
 
@@ -299,8 +284,7 @@ awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
 
 ## How to Contribute
 
-Fork repository, make changes, then send us
-a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+Fork repository, make changes, then send us a [pull request][guidelines].
 We will review your changes and apply them to the `master` branch shortly,
 provided they don't violate our quality standards. To avoid frustration,
 before sending us your pull request please run full Maven build:
@@ -324,4 +308,21 @@ to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
+[abstract objects]: https://www.yegor256.com/2020/12/01/abstract-objects.html
 [benchmark-gha]: https://github.com/objectionary/eo/actions/runs/15285415850
+[C#]: https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29
+[C++]: https://en.wikipedia.org/wiki/C%2B%2B
+[composable decorators]: https://www.yegor256.com/2015/02/26/composable-decorators.html
+[EBNF]: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form
+[eo-maven-plugin]: https://github.com/objectionary/eo/tree/master/eo-maven-plugin
+[eoc]: https://github.com/objectionary/eoc
+[guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
+[home]: https://github.com/objectionary/home
+[Java SE]: https://www.oracle.com/java/technologies/downloads/
+[Java]: https://en.wikipedia.org/wiki/Java_%28programming_language%29
+[npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+[PHP]: https://en.wikipedia.org/wiki/PHP
+[Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
+[Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
+[sandbox]: https://github.com/objectionary/sandbox
+[Smalltalk]: https://en.wikipedia.org/wiki/Smalltalk
