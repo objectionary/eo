@@ -167,10 +167,7 @@ public final class MjTranspile extends MjSafe {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         new FpFork(
-            (src, tgt) -> new Xnav(xmir.inner())
-                .path("/object/o/o[@name='λ']")
-                .findAny()
-                .isEmpty(),
+            (src, tgt) -> true,
             new FpDefault(
                 src -> {
                     rewrite.compareAndSet(false, true);
@@ -242,7 +239,7 @@ public final class MjTranspile extends MjSafe {
                     hsh,
                     this.generatedDir.toPath().relativize(tgt)
                 );
-                if (clazz.element("tests").text().isPresent()) {
+                if (MjTranspile.testsPresent(clazz)) {
                     this.placeJavaTests(clazz, jname);
                 }
                 final Footprint generated = new FpGenerated(
@@ -347,12 +344,16 @@ public final class MjTranspile extends MjSafe {
         final Path tests = this.generatedDir.toPath().getParent().resolve(
             "generated-test-sources"
         );
-        final Path resolved = Arrays.stream(jparts, 0, jparts.length - 1)
+        final Path base = Arrays.stream(jparts, 0, jparts.length - 1)
             .reduce(
                 tests,
                 Path::resolve,
                 Path::resolve
-            ).resolve(String.format("%sTest.java", jparts[jparts.length - 1]));
+            );
+        final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
+        final Path resolved = base.resolve(origin);
+        final Path resulted;
+        final String content;
         if (
             !Files.exists(
                 tests.getParent().getParent().resolve("src").resolve("test")
@@ -360,7 +361,24 @@ public final class MjTranspile extends MjSafe {
                     .resolve(tests.relativize(resolved))
             )
         ) {
-            new Saved(clazz.element("tests").text().get(), resolved).value();
+            resulted = resolved;
+            content = clazz.element("tests").text().get();
+        } else {
+            final String atomized = String.format("%sEOAtomTest.java", jparts[jparts.length - 1]);
+            resulted = base.resolve(atomized);
+            content = clazz.element("tests").text().get().replaceAll(
+                 origin.replace(".java", ""), atomized.replace(".java", "")
+            );
         }
+        new Saved(content, resulted).value();
+    }
+
+    /**
+     * Tests exist?
+     * @param clazz Class
+     * @return True or False
+     */
+    private static boolean testsPresent(final Xnav clazz) {
+        return clazz.element("tests").text().map(s -> s.contains("@Test")).orElse(false);
     }
 }
