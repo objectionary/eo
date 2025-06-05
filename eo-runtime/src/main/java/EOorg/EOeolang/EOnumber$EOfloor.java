@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
@@ -29,7 +28,7 @@ public final class EOnumber$EOfloor extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
+            new Expect.Number(Expect.at(this, Phi.RHO)).it().longValue()
         );
     }
 }

@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -34,7 +33,7 @@ public final class EOi32$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Dataized(this.take(Attr.RHO)).take(Integer.class).longValue()
+                    new Dataized(this.take(Phi.RHO)).take(Integer.class).longValue()
                 ).take()
             )
         );

@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
@@ -70,7 +69,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Attr.RHO);
+        final Phi rho = this.take(Phi.RHO);
         final String call = new Dataized(rho.take("name")).asString();
         if (!EOposix$EOφ.SYS_CALLS.containsKey(call)) {
             throw new ExFailure(
