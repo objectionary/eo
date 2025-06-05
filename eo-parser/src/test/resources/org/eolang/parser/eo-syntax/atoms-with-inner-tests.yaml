@@ -14,8 +14,12 @@ input: |-
   # Foo atom together with the tests.
   [] > foo ?
     # Test 1.
-    [] +> test-1
+    eq. +> test-1
+      foo
+      "FoX"
     # Test 2.
     [] +> test-2
+      foo > @
     # Test 3.
     [] +> test-3
+      foo > i
