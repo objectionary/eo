@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -32,7 +32,7 @@
           mp.with item true
 
     # Remove `item` from `set`. If `item` is not present,
-    # the set wont be changed.
+    # the set won't be changed.
     [item] > without
       this. > @
         set.initialized
@@ -40,3 +40,32 @@
 
     # Check if given `item` exists in set.
     mp.has item > [item] > has
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-set-rebuilds-itself
+    eq. > @
+      set
+        * 1 2 2
+      * 1 2
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-does-not-append-existed-item-to-set
+    set
+      * 1 2
+    .with 1
+    .size
+    .eq 2 > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-appends-new-item-to-set
+    set
+      * 1 2
+    .with 3
+    .has 3 > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-empty-set-has-size-of-zero
+    set
+      *
+    .size
+    .eq 0 > @

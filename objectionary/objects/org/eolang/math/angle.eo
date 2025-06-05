@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.56.2
++rt jvm org.eolang:eo-runtime:0.56.4
 +rt node eo2js-runtime:0.0.0
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -49,3 +49,39 @@
       nan
       cos.div sine
     sin > sine!
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-sin-zero
+    eq. > @
+      (angle 0).sin
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-sin-pi-div-2
+    eq. > @
+      (angle (pi.div 2)).sin
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-sin-pi-floored
+    eq. > @
+      (angle pi).sin.floor
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-cos-zero
+    eq. > @
+      (angle 0).cos
+      1
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-cos-pi-div-2-floored
+    eq. > @
+      (angle (pi.div 2)).cos.floor
+      0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-cos-pi
+    eq. > @
+      (angle pi).cos
+      -1

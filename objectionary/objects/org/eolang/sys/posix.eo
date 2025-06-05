@@ -1,9 +1,10 @@
++alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.56.2
++rt jvm org.eolang:eo-runtime:0.56.4
 +rt node eo2js-runtime:0.0.0
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -39,3 +40,59 @@
           sin-port.size
         sin-addr.size
       sin-zero.size
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-invokes-getpid-correctly
+    or. > @
+      os.is-windows
+      gt.
+        code.
+          posix
+            "getpid"
+            tuple.empty
+        0
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-opens-posix-tcp-socket
+    or. > @
+      os.is-windows
+      try
+        sd.gt 0
+        ex > [ex]
+        code.
+          posix
+            "close"
+            * sd
+    code. > sd
+      posix
+        "socket"
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-closes-posix-tcp-socket
+    or. > @
+      os.is-windows
+      seq
+        *
+          sd
+          not.
+            eq.
+              code.
+                posix
+                  "close"
+                  * sd
+              -1
+    code. > sd
+      posix
+        "socket"
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-returns-valid-posix-inet-addr-for-localhost
+    or. > @
+      os.is-windows
+      addr.eq 16777343
+    code. > addr
+      posix
+        "inet_addr"
+        * "127.0.0.1"

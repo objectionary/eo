@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -42,3 +42,134 @@
 
   # Quotient of the division of $ by x.
   ^ > [x] > div
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-eq-number
+    not. > @
+      eq.
+        nan
+        42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-eq-nan
+    not. > @
+      eq.
+        nan
+        nan
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-lt-number
+    eq. > @
+      nan.lt 42
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-lt-nan
+    eq. > @
+      nan.lt nan
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-lte-number
+    eq. > @
+      nan.lte 42
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-lte-nan
+    eq. > @
+      nan.lte nan
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-gt-number
+    eq. > @
+      nan.gt 42
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-gt-nan
+    eq. > @
+      nan.gt nan
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-gte-number
+    eq. > @
+      nan.gte 42
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-not-gte-nan
+    eq. > @
+      nan.gte nan
+      false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-times-number-is-nan
+    eq. > @
+      (nan.times 42).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-times-nan-is-nan
+    eq. > @
+      (nan.times nan).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-div-number-is-nan
+    eq. > @
+      (nan.div 42).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-div-nan-is-nan
+    eq. > @
+      (nan.div nan).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-plus-number-is-nan
+    eq. > @
+      (nan.plus 42).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-plus-nan-is-nan
+    eq. > @
+      (nan.plus nan).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-neg-is-nan
+    eq. > @
+      nan.neg.as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-minus-number-is-nan
+    eq. > @
+      (nan.minus 42).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-minus-nan-is-nan
+    eq. > @
+      (nan.minus nan).as-bytes
+      nan.as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nan-as-bytes-is-bytes-of-zero-div-zero
+    eq. > @
+      nan.as-bytes
+      (0.0.div 0.0).as-bytes
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  nan.is-nan > [] +> nan-is-nan
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  nan.is-finite.not > [] +> nan-is-not-finite
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  nan.is-integer.not > [] +> nan-is-not-integer

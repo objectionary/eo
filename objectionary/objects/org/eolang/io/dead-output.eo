@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -22,3 +22,6 @@
       # Writes given `buffer` to nowhere.
       # Returns new instance of `output-block`.
       output-block > [buffer] > write
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  dead-output.write 01-02-03 > [] +> writes-bytes-to-nowhere

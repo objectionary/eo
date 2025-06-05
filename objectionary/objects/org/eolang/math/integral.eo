@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -50,3 +50,81 @@
                 0.5
                 a.plus b
           fun b
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-calculates-lineal-integral
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          1
+          10
+          15
+      49.5
+      0.0000001
+
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-calculates-quadratic-integral
+    close-to > @
+      as-number.
+        integral
+          x.times x > [x]
+          1
+          10
+          100
+      333
+      0.0000001
+
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-calculates-cube-integral
+    close-to > @
+      as-number.
+        integral
+          (x.times x).times x > [x]
+          1
+          10
+          100
+      2499.75
+      0.0000001
+
+    # Checks where given `value` is close to `operand` with given precision `err`.
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      [value] > abs
+        if. > @
+          value.gte 0
+          value
+          value.neg

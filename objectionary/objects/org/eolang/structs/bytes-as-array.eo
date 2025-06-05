@@ -1,7 +1,9 @@
++alias org.eolang.structs.bytes-as-array
++alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -20,3 +22,27 @@
         tup.with (bts.slice index 1)
         (index.plus 1).as-number
       tup
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-converts-bytes-to-array
+    eq. > @
+      list
+        bytes-as-array
+          20-1F-EE-B5-FF
+      * 20- 1F- EE- B5- FF-
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-single-byte-to-array
+    eq. > @
+      list
+        bytes-as-array
+          1F-
+      * 1F-
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-zero-bytes-to-array
+    eq. > @
+      list
+        bytes-as-array
+          --
+      *

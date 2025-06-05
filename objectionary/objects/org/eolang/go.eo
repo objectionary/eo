@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -59,3 +59,76 @@
         error > @
           jump
             res
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-goto-jumps-backwards
+    eq. > @
+      malloc.of
+        8
+        [i]
+          seq > @
+            *
+              i.put 1
+              go.to
+                [g] >>
+                  seq > @
+                    *
+                      i.put (i.as-number.plus 1)
+                      if.
+                        i.as-number.lt 10
+                        g.backward
+                        true
+              i
+      10
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-goto-jumps-forward
+    and. > @
+      eq.
+        div 7
+        6
+      eq.
+        div 0
+        0
+    [x] > div
+      malloc.for > @
+        0
+        [r] >>
+          go.to > @
+            [g] >>
+              seq > @
+                *
+                  if.
+                    x.eq 0
+                    g.forward r
+                    true
+                  r.put (42.div x)
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-returns-from-method-body
+    eq. > @
+      max 7 42
+      42
+    [a b] > max
+      go.to > @
+        [g] >>
+          seq > @
+            *
+              if.
+                a.gt b
+                g.forward a
+                true
+              b
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-nested-goto
+    eq. > @
+      go.to
+        [g1]
+          seq > @
+            *
+              go.to
+                [g2] >>
+                  g1.forward 42 > @
+              7
+      42

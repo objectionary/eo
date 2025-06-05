@@ -1,12 +1,13 @@
++alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.56.2
++rt jvm org.eolang:eo-runtime:0.56.4
 +rt node eo2js-runtime:0.0.0
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint many-free-attributes:36
++unlint many-void-attributes:37
 
 # Makes a kernel32.dll function call by name.
 #
@@ -45,3 +46,13 @@
           sin-port.size
         sin-addr.size
       sin-zero.size
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-returns-valid-win32-inet-addr-for-localhost
+    or. > @
+      os.is-windows.not
+      addr.eq 16777343
+    code. > addr
+      win32
+        "inet_addr"
+        * "127.0.0.1"

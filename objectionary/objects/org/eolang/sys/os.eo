@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.56.2
++rt jvm org.eolang:eo-runtime:0.56.4
 +rt node eo2js-runtime:0.0.0
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -23,3 +23,11 @@
 
   # Returns the name of the current operation system as `org.eolang.string`.
   [] > name ?
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-checks-os-family
+    or. > @
+      or.
+        os.is-windows
+        os.is-macos
+      os.is-linux

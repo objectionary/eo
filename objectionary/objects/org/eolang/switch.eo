@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -43,3 +43,90 @@
         tup.value.prev.value > match!
         tup.value.value > value
     (rec-case tup.prev).self > previous
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-switch-simple-case
+    eq. > @
+      switch
+        *
+          *
+            false
+            "1"
+          *
+            true
+            "2"
+      "2"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-switch-strings-case
+    eq. > @
+      switch
+        *
+          *
+            password.eq "swordfish"
+            "password is correct!"
+          *
+            password.eq ""
+            "empty password is not allowed"
+          *
+            false
+            "password is wrong"
+      "password is correct!"
+    "swordfish" > password
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-switch-with-several-true-cases
+    eq. > @
+      switch
+        *
+          *
+            true
+            "TRUE1"
+          *
+            false
+            "FALSE"
+          *
+            true
+            "TRUE2"
+      "TRUE1"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-switch-with-all-false-cases
+    switch > @
+      *
+        *
+          false
+          "false1"
+        *
+          false
+          "false2"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> throws-on-empty-switch
+    switch * > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-switch-complex-case
+    eq. > @
+      switch
+        *
+          *
+            [] >>
+              c1 > @
+            22.0
+          *
+            [] >>
+              c2 > @
+            0.0
+          *
+            [] >>
+              c3 > @
+            []
+              "true case" > @
+      "true case"
+    [] > c1
+      false > @
+    [] > c2
+      "1".eq "2" > @
+    [] > c3
+      true > @

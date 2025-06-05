@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.56.2
++version 0.56.4
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -23,3 +23,11 @@
       # Read `size` amount of bytes from nowhere.
       # Returns new instance of `input-block`.
       input-block > [size] > read
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-reads-empty-bytes
+    and. > @
+      i1.eq --
+      i2.eq --
+    dead-input.read 10 > i1
+    i1.read 10 > i2
