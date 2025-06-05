@@ -41,10 +41,10 @@ final class Moja<T extends AbstractMojo> {
     /**
      * Ctor.
      *
-     * @param tpe The type
+     * @param mojo The type of Mojo
      */
-    Moja(final Class<T> tpe) {
-        this.type = tpe;
+    Moja(final Class<T> mojo) {
+        this.type = mojo;
         this.attrs = new HashMap<>(0);
     }
 
