@@ -54,6 +54,9 @@
   <xsl:template match="o" mode="class">
     <xsl:param name="bound"/>
     <xsl:element name="class">
+      <xsl:if test="eo:atom(.)">
+        <xsl:attribute name="skip-java">true</xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates select="@*"/>
       <xsl:choose>
         <xsl:when test="$bound">

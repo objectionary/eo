@@ -204,15 +204,17 @@
         <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="." mode="testing"/>
       </xsl:element>
-      <xsl:element name="java">
-        <xsl:apply-templates select="/object" mode="license"/>
-        <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
-        <xsl:text>import java.util.function.Function;</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>import org.eolang.*;</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="." mode="body"/>
-      </xsl:element>
+      <xsl:if test="not(@skip-java)">
+        <xsl:element name="java">
+          <xsl:apply-templates select="/object" mode="license"/>
+          <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
+          <xsl:text>import java.util.function.Function;</xsl:text>
+          <xsl:value-of select="eo:eol(0)"/>
+          <xsl:text>import org.eolang.*;</xsl:text>
+          <xsl:value-of select="eo:eol(0)"/>
+          <xsl:apply-templates select="." mode="body"/>
+        </xsl:element>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
   <!-- Class name  -->

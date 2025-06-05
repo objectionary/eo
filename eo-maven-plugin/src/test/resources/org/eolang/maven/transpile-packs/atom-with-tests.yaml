@@ -12,7 +12,7 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - /class[not(java)]
+  - //class[not(java)]
   - //tests[contains(text(), '@Test')]
   - //tests[contains(text(), 'void test_1()')]
 input: |
