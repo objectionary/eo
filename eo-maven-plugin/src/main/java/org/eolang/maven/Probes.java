@@ -37,7 +37,7 @@ final class Probes implements Iterable<String> {
     /**
      * Xmir file where probes are searched.
      */
-    private XML xmir;
+    private final XML xmir;
 
     /**
      * Constructor.
@@ -96,7 +96,7 @@ final class Probes implements Iterable<String> {
 
     /**
      * Trim Q prefix.
-     * Q.a.b.c -> a.b
+     * Q.a.b.c -> a.b.c
      * a.b.c -> a.b.c
      * @param obj Full object name
      * @return Trimmed object name

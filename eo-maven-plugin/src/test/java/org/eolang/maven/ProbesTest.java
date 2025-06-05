@@ -9,27 +9,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.InputOf;
-import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
-import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtYaml;
-import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link Probes}.
  *
  * @since 0.53
- * @todo #4226:30min Move {@link  ProbesTest#checksProbePacks(String)} to eo-runtime.
- *  This test checks the functionality related to the `eo-runtime` module only.
- *  There is no need to keep it in the `eo-maven-plugin` module since it doesn't touch
- *  the eo-maven-plugin functionality.
  * @todo #4203:90min Enable {@link ProbesTest#findsProbesInSimpleProgram()} Test.
  *  This test is currently disabled because it fails.
  *  We should investigate the cause of the failure and enable the test.
@@ -37,23 +27,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  *  <a href="https://github.com/objectionary/eo/issues/4203">here</a>
  */
 final class ProbesTest {
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/probe-packs/", glob = "**.yaml")
-    void checksProbePacks(final String yaml) {
-        MatcherAssert.assertThat(
-            "passed without exceptions",
-            new XtSticky(
-                new XtYaml(
-                    yaml,
-                    eo -> new EoSyntax(
-                        new InputOf(String.format("%s\n", eo))
-                    ).parsed()
-                )
-            ),
-            new XtoryMatcher()
-        );
-    }
 
     @Test
     void findsProbes() throws IOException {
