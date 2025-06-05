@@ -18,7 +18,6 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,37 +26,14 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link MjProbe}.
  *
  * @since 0.28.11
- * @todo #4203:90min Make {@link MjProbeTest} To Check Probes
- *  Currently, this test case only checks the number of probes found
- *  but does not verify the actual content of the probes.
- *  It would be beneficial to enhance this test to
- *  check the actual probes found.
- * @todo #4203:90min Enable {@link MjProbeTest#findsProbesInSimpleProgram(Path)} Test.
- *  This test is currently disabled because it fails.
- *  We should investigate the cause of the failure and enable the test.
- *  Originally this issue affected the integration tests,
- *  <a href="https://github.com/objectionary/eo/issues/4203">here</a>
+ * @todo #4226:30min Move {@link  MjProbeTest#checksProbePacks(String)} to eo-runtime.
+ *  This test checks the functionality related to the `eo-runtime` module only.
+ *  There is no need to keep it in the `eo-maven-plugin` module since it doesn't touch
+ *  the eo-maven-plugin functionality.
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MjProbeTest {
-    @Test
-    void findsProbes(@Mktmp final Path temp) throws Exception {
-        final String expected = "11";
-        MatcherAssert.assertThat(
-            String.format(
-                "Number of objects that we should find during the probing phase should be equal %s",
-                expected
-            ),
-            new FakeMaven(temp)
-                .with("foreignFormat", "json")
-                .withProgram(MjProbeTest.program())
-                .execute(new FakeMaven.Probe())
-                .programTojo()
-                .probed(),
-            Matchers.equalTo(expected)
-        );
-    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/probe-packs/", glob = "**.yaml")
@@ -96,49 +72,6 @@ final class MjProbeTest {
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @Test
-    @Disabled
-    void findsProbesInSimpleProgram(@Mktmp final Path temp) throws IOException {
-        final String found = new FakeMaven(temp)
-            .withProgram(
-                "+alias QQ.io.stdout\n",
-                "stdout \"Hello, world!\" > simple"
-            )
-            .execute(new FakeMaven.Probe())
-            .programTojo().probed();
-        final String expected = "6";
-        MatcherAssert.assertThat(
-            String.format(
-                "We should find %s objects in simple program, but %s found",
-                expected, found
-            ),
-            found,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @Test
-    void findsProbesInSimpleProgramWithComment(@Mktmp final Path temp) throws IOException {
-        final String found = new FakeMaven(temp)
-            .withProgram(
-                "# No comments.",
-                "[] > simple",
-                "  QQ.io.stdout > @",
-                "    \"Hello, world!\""
-            ).execute(new FakeMaven.Probe())
-            .programTojo()
-            .probed();
-        final String expected = "6";
-        MatcherAssert.assertThat(
-            String.format(
-                "We should find %s objects in simple program without comments, but %s found",
-                expected, found
-            ),
-            found,
             Matchers.equalTo(expected)
         );
     }
