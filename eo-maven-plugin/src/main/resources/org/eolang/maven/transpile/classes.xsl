@@ -43,7 +43,7 @@
       <xsl:text>&gt;</xsl:text>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="object/o[eo:abstract(.) and not(eo:atom(.))]">
+  <xsl:template match="object/o[not(eo:atom(.)) or (eo:atom(.) and count(./o[contains(@name, '+')]) > 0)]">
     <xsl:apply-templates select="." mode="class"/>
   </xsl:template>
   <xsl:template match="object/o[@base and @name]">
