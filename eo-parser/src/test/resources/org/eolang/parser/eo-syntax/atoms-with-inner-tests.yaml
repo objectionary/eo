@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+input: |-
+  # Foo atom together with the tests.
+  [a] > foo ?
+    # Test 1.
+    [] +> test-1
+    # Test 2.
+    [] +> test-2
+    # Test 3.
+    [] +> test-3

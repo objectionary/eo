@@ -51,7 +51,7 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym oname) EOL
+    | (atom | hanonym oname EOL)
     ;
 
 // Just an object reference without name
@@ -61,7 +61,7 @@ just: beginner
 
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
-atom: voids suffix SPACE QUESTION
+atom: voids suffix SPACE QUESTION innersOrEol
     ;
 
 // Formation - abstract object with mandatory name

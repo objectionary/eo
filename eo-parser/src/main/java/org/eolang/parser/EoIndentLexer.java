@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Pair;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
 
@@ -142,8 +143,15 @@ final class EoIndentLexer extends EoLexer {
      * @param type Type.
      */
     private void emitToken(final int type) {
-        final CommonToken tkn = new CommonToken(type, EoParser.VOCABULARY.getSymbolicName(type));
+        final CommonToken tkn = new CommonToken(
+            new Pair<>(this, this._input), // set TokenSource and CharStream
+            type,
+            Token.DEFAULT_CHANNEL,
+            this.getCharIndex(),
+            this.getCharIndex()
+        );
         tkn.setLine(this.getLine());
+        tkn.setCharPositionInLine(this.getCharPositionInLine());
         this.tokens.offer(tkn);
     }
 }
