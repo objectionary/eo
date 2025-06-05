@@ -181,15 +181,6 @@ public final class EoSyntax implements Syntax {
         final EoParser parser = new EoParser(
             new CommonTokenStream(lexer)
         );
-//        ip.fill();
-//        ip.getTokens().forEach(
-//            new Consumer<Token>() {
-//                @Override
-//                public void accept(final Token token) {
-//                    System.out.println(token);
-//                }
-//            }
-//        );
         parser.removeErrorListeners();
         final EoParserErrors eospy = new EoParserErrors(lines);
         parser.addErrorListener(eospy);
