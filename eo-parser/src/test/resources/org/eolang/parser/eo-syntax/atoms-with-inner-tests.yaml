@@ -5,9 +5,14 @@
 sheets: []
 asserts:
   - /object[not(errors)]
+  - /object/o[count(o)=4]
+  - /object/o[@name='foo']/o[@name='+test-1']
+  - /object/o[@name='foo']/o[@name='+test-2']
+  - /object/o[@name='foo']/o[@name='+test-3']
+  - /object/o[@name='foo']/o[@name='λ']
 input: |-
   # Foo atom together with the tests.
-  [a] > foo ?
+  [] > foo ?
     # Test 1.
     [] +> test-1
     # Test 2.
