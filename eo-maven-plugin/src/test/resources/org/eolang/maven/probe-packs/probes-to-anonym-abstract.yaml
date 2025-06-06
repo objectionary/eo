@@ -2,15 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets:
-  - /org/eolang/maven/probe/add-probes.xsl
-asserts:
-  - /object[not(errors)]
-  - /object/metas[count(meta[head='probe'])=3]
-  - /object/metas/meta[head='probe' and tail='Q.org']
-  - /object/metas/meta[head='probe' and tail='Q.org.eolang']
-  - /object/metas/meta[head='probe' and tail='Q.org.eolang.int']
-input: |
+probes:
+  - 'org'
+  - 'org.eolang'
+  - 'org.eolang.int'
+eo: |
   # No comments.
   [] > test
     ([] (^ > x)).plus.minus > s
