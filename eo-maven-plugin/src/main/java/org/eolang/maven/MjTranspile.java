@@ -424,7 +424,7 @@ public final class MjTranspile extends MjSafe {
                     "%sEOAtomTest.java", jparts[jparts.length - 1]
                 );
                 resulted = base.resolve(atomized);
-                content = clazz.element("tests").text().get().replaceAll(
+                content = clazz.element("tests").text().get().replace(
                     origin.replace(".java", ""), atomized.replace(".java", "")
                 );
             } else {
