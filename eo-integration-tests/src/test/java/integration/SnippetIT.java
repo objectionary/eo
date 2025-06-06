@@ -22,19 +22,13 @@ import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Integration test for simple snippets.
  * @since 0.57
- * @todo #3480:30min Enable integration tests after new release 0.56.3 to Maven.
- *  Currently, integration tests fail because we are pulling eo-maven-plugin:0.56.2,
- *  which has org.eolang.Attr, which is removed now. Don't forget to enable {@link ReadmeSnippetsIT}
- *  too.
  */
-@Disabled
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
