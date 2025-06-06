@@ -5,11 +5,14 @@
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint decorated-formation
++unlint cti
++unlint incorrect-unlint
++unlint unlint-non-existing-defect
 
 # This unit test is supposed to check the globals bound objects work as tests.
-[] > runtime-tests
+[] > runtime
   # This unit test is supposed to check the globals bound objects work as tests.
-  true > global-test
+  true +> global-test
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-understands-this-correctly
@@ -429,3 +432,12 @@
                                                                                   blah39 > @
                                                                                   [] > blah39
                                                                                     true > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-tests-just-prints-warning
+    eq. > @
+      cti
+        2.times 2
+        "warning"
+        "This method is deprecated!"
+      4
