@@ -2,12 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets:
-  - /org/eolang/maven/probe/add-probes.xsl
-asserts:
-  - /object[not(errors)]
-  - //metas[count(.//meta[head/text()='probe'])=2]
-input: |
+probes:
+  - 'foo'
+  - 'foo.boom'
+eo: |
   # No comments.
   [] > app
     Q.foo.boom > @
