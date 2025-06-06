@@ -390,7 +390,7 @@
     We use new Function<>() {...} syntax instead of lambdas from Java 8 because
     1. java does not manage to compile the code with 17+ nested lambdas.
        It just freezes and fails in 5-10 min with heap overflow error.
-       So we can't compile nested-blah-test from runtime-tests.eo.
+       So we can't compile nested-blah-test from runtime.eo.
        We haven't reported the bug to openjdk yet, but we will
     2. it just works faster because dynamic dispatch is not happened
   -->
