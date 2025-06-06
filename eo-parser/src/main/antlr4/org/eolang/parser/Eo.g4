@@ -62,7 +62,7 @@ just: beginner
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
 // @todo #4235:60min Allow atom to have only test attributes inside.
-//  Currenlty we allow to have just inners, while we should allow only test attributes
+//  Currently we allow to have just inners, while we should allow only test attributes
 //  inside the atom. For this, we need to intoduce new grammar rules. Don't forget to
 //  enable all the tests, related on not empty atoms.
 atom: voids suffix SPACE QUESTION innersOrEol
