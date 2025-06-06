@@ -224,72 +224,76 @@ public final class MjTranspile extends MjSafe {
     ) throws IOException {
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
-            final Collection<Xnav> classes = new Xnav(target)
-                .element("object")
-                .elements(Filter.withName("class"))
+            final Xnav object = new Xnav(target).element("object");
+            final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
+            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
-                final Path tgt = new Place(jname).make(
-                    this.generatedDir.toPath(), MjTranspile.JAVA
-                );
-                final Supplier<Path> che = new CachePath(
-                    this.cache.toPath().resolve(MjTranspile.CACHE),
-                    this.plugin.getVersion(),
-                    hsh,
-                    this.generatedDir.toPath().relativize(tgt)
-                );
-                if (MjTranspile.testsPresent(clazz)) {
-                    this.placeJavaTests(clazz, jname);
-                }
-                final Footprint generated = new FpGenerated(
-                    src -> {
-                        saved.incrementAndGet();
-                        Logger.debug(
-                            this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
-                            tgt, tgt.toFile().length(), target, target.toFile().length()
-                        );
-                        return new InputOf(
-                            new Joined(
-                                "",
-                                clazz.elements(Filter.withName("java")).map(
-                                    java -> java.text().orElse("")
-                                ).collect(Collectors.toList())
-                            )
-                        );
+                if (!atom || jname.endsWith("Test")) {
+                    final Path tgt = new Place(jname).make(
+                        this.generatedDir.toPath(), MjTranspile.JAVA
+                    );
+                    final Supplier<Path> che = new CachePath(
+                        this.cache.toPath().resolve(MjTranspile.CACHE),
+                        this.plugin.getVersion(),
+                        hsh,
+                        this.generatedDir.toPath().relativize(tgt)
+                    );
+                    if (MjTranspile.testsPresent(clazz)) {
+                        this.placeJavaTests(clazz, jname);
                     }
-                );
-                final Footprint both = new FpUpdateBoth(generated, che);
-                new FpIfReleased(
-                    this.plugin.getVersion(),
-                    hsh,
-                    new FpFork(
-                        (src, trgt) -> {
-                            if (rewrite) {
+                    if (clazz.element("java").text().isPresent()) {
+                        final Footprint generated = new FpGenerated(
+                            src -> {
+                                saved.incrementAndGet();
                                 Logger.debug(
-                                    this,
-                                    "Rewriting %[file]s because XMIR %[file]s was changed",
-                                    trgt, target
+                                    this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
+                                    tgt, tgt.toFile().length(), target, target.toFile().length()
+                                );
+                                return new InputOf(
+                                    new Joined(
+                                        "",
+                                        clazz.elements(Filter.withName("java")).map(
+                                            java -> java.text().orElse("")
+                                        ).collect(Collectors.toList())
+                                    )
                                 );
                             }
-                            return rewrite;
-                        },
-                        new FpFork(this.cacheEnabled, both, generated),
-                        new FpIfTargetExists(
-                            new FpIgnore(),
+                        );
+                        final Footprint both = new FpUpdateBoth(generated, che);
+                        new FpIfReleased(
+                            this.plugin.getVersion(),
+                            hsh,
                             new FpFork(
-                                this.cacheEnabled,
+                                (src, trgt) -> {
+                                    if (rewrite) {
+                                        Logger.debug(
+                                            this,
+                                            "Rewriting %[file]s because XMIR %[file]s was changed",
+                                            trgt, target
+                                        );
+                                    }
+                                    return rewrite;
+                                },
+                                new FpFork(this.cacheEnabled, both, generated),
                                 new FpIfTargetExists(
-                                    trgt -> che.get(),
-                                    new FpUpdateFromCache(che),
-                                    both
-                                ),
-                                generated
-                            )
-                        )
-                    ),
-                    generated
-                ).apply(Paths.get(""), tgt);
+                                    new FpIgnore(),
+                                    new FpFork(
+                                        this.cacheEnabled,
+                                        new FpIfTargetExists(
+                                            trgt -> che.get(),
+                                            new FpUpdateFromCache(che),
+                                            both
+                                        ),
+                                        generated
+                                    )
+                                )
+                            ),
+                            generated
+                        ).apply(Paths.get(""), tgt);
+                    }
+                }
             }
         }
         return saved.get();
