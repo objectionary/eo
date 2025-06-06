@@ -167,20 +167,16 @@ public final class MjTranspile extends MjSafe {
         final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        new FpFork(
-            (src, tgt) -> true,
-            new FpDefault(
-                src -> {
-                    rewrite.compareAndSet(false, true);
-                    return transform.apply(xmir).toString();
-                },
-                this.cache.toPath().resolve(MjTranspile.CACHE),
-                this.plugin.getVersion(),
-                hsh,
-                base.relativize(target),
-                this.cacheEnabled
-            ),
-            new FpIgnore()
+        new FpDefault(
+            src -> {
+                rewrite.compareAndSet(false, true);
+                return transform.apply(xmir).toString();
+            },
+            this.cache.toPath().resolve(MjTranspile.CACHE),
+            this.plugin.getVersion(),
+            hsh,
+            base.relativize(target),
+            this.cacheEnabled
         ).apply(source, target);
         return this.javaGenerated(rewrite.get(), target, hsh.get());
     }
