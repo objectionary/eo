@@ -43,10 +43,10 @@
       <xsl:text>&gt;</xsl:text>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="object/o[eo:abstract(.) and not(eo:atom(.))]">
+  <xsl:template match="object/o[not(eo:atom(.)) or (eo:atom(.) and count(./o[contains(@name, '+')])&gt;0)]" priority="1">
     <xsl:apply-templates select="." mode="class"/>
   </xsl:template>
-  <xsl:template match="object/o[@base and @name]">
+  <xsl:template match="object/o[@base and @name]" priority="2">
     <xsl:apply-templates select="." mode="class">
       <xsl:with-param name="bound" select="true()"/>
     </xsl:apply-templates>
@@ -54,6 +54,9 @@
   <xsl:template match="o" mode="class">
     <xsl:param name="bound"/>
     <xsl:element name="class">
+      <xsl:if test="eo:atom(.)">
+        <xsl:attribute name="skip-java">true</xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates select="@*"/>
       <xsl:choose>
         <xsl:when test="$bound">
