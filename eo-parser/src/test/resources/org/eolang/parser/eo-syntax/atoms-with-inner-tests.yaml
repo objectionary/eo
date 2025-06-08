@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[count(o)=4]
+  - /object/o[@name='foo']/o[@name='+test-1']
+  - /object/o[@name='foo']/o[@name='+test-2']
+  - /object/o[@name='foo']/o[@name='+test-3']
+  - /object/o[@name='foo']/o[@name='λ']
+input: |-
+  # Foo atom together with the tests.
+  [] > foo ?
+    # Test 1.
+    eq. +> test-1
+      foo
+      "fox"
+    # Test 2.
+    [] +> test-2
+      foo > @
+    # Test 3.
+    [] +> test-3
+      foo > i
