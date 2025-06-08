@@ -72,7 +72,7 @@
     sprintf "%o" * > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-sprintf-prints-percents
+  [] +> tests-sprintf-prints-percents
     eq. > @
       "%Jeff"
       sprintf
@@ -80,7 +80,7 @@
         * "Jeff"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-sprintf-does-not-print-i64
+  [] +> tests-sprintf-does-not-print-i64
     not. > @
       eq.
         sprintf
@@ -89,7 +89,7 @@
         "42"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] > tests-sprintf-prints-i64-as-number
+  [] +> tests-sprintf-prints-i64-as-number
     eq. > @
       "42"
       sprintf
