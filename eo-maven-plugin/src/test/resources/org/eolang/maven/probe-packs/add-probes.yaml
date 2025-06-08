@@ -2,22 +2,27 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets:
-  - /org/eolang/maven/probe/add-probes.xsl
-asserts:
-  - /object[not(errors)]
-  - //metas[count(.//meta[head/text()='probe'])=19]
-  - //meta[head/text()='probe' and tail/text()='Q.org' and part/text()='Q.org']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt' and part/text()='Q.org.eolang.txt']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.sprintf' and part/text()='Q.org.eolang.txt.sprintf']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.text' and part/text()='Q.org.eolang.txt.text']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car' and part/text()='Q.org.eolang.car']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine' and part/text()='Q.org.eolang.car.engine']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.stdout.and' and part/text()='Q.org.eolang.stdout.and']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.stdout.and.or' and part/text()='Q.org.eolang.stdout.and.or']
-input: |
+probes:
+  - 'org'
+  - 'org.eolang'
+  - 'org.eolang.txt'
+  - 'org.eolang.txt.sprintf'
+  - 'org.eolang.txt.text'
+  - 'org.eolang.car'
+  - 'org.eolang.car.engine'
+  - 'org.eolang.car.engine.start'
+  - 'org.eolang.stdout.and'
+  - 'org.eolang.stdout.and.or'
+  - 'org.eolang.string'
+  - 'org.eolang.bytes'
+  - 'org.eolang.stdout'
+  - 'org.eolang.sprintf'
+  - 'org.eolang.n'
+  - 'org.eolang.true'
+  - 'org.eolang.number'
+  - 'org.eolang.memory'
+  - 'org.eolang.fibonacci'
+eo: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom
   +version 0.0.0

@@ -9,12 +9,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link Probes}.
@@ -27,6 +35,26 @@ import org.junit.jupiter.api.io.TempDir;
  *  <a href="https://github.com/objectionary/eo/issues/4203">here</a>
  */
 final class ProbesTest {
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/probe-packs/", glob = "**.yaml")
+    void checksProbePacks(final String yaml) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(yaml));
+        final List<String> expected = Optional.ofNullable(
+            (List<String>) xtory.map().get("probes")
+        ).orElse(Collections.emptyList());
+        final Probes actual = new Probes(new EoSyntax(xtory.map().get("eo").toString()).parsed());
+        MatcherAssert.assertThat(
+            "We should find the same number of probes as in the YAML file",
+            actual,
+            Matchers.iterableWithSize(expected.size())
+        );
+        MatcherAssert.assertThat(
+            "Probes should match the ones in the YAML file",
+            actual,
+            Matchers.containsInAnyOrder(expected.toArray(new String[0]))
+        );
+    }
 
     @Test
     void findsProbes() throws IOException {

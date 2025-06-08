@@ -26,7 +26,7 @@ merge:
 release:
   pre: false
   script: |-
-    [["${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$]] || exit -1
+    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
 
     mvn flatten:flatten
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
@@ -36,7 +36,6 @@ release:
 
     mkdir /tmp/objectionary
     cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
-    cp -R eo-runtime/src/test/eo /tmp/objectionary/tests
     cp eo-parser/target/classes/XMIR.xsd /tmp
     branch=$(git rev-parse --abbrev-ref HEAD)
     git checkout gh-pages
