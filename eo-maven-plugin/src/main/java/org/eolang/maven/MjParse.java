@@ -146,25 +146,45 @@ public final class MjParse extends MjSafe {
             "Parsed program '%s' from %[file]s:\n %s",
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
-        final String name = new ObjectName(xmir).get();
+        String name = "";
         final Node document = xmir.inner();
+        try {
+            name = new ObjectName(xmir).get();
+        } catch (final IllegalStateException exception) {
+            MjParse.applyErrors("mandatory-object-name", exception.getMessage(), document);
+        }
         if (!name.equals(identifier)) {
-            new Xembler(
-                new Directives()
-                    .xpath("/object")
-                    .addIf("errors")
-                    .add("error")
-                    .attr("check", "validate-object-name")
-                    .attr("severity", "critical")
-                    .set(
-                        String.format(
-                            "Tojo identifier '%s' does not match to result object name '%s'",
-                            identifier, name
-                        )
-                    )
-            ).applyQuietly(document);
+            MjParse.applyErrors(
+                "validate-object-name",
+                String.format(
+                    "Tojo identifier '%s' does not match to result object name '%s'", identifier,
+                    name
+                ),
+                document
+            );
         }
         return document;
+    }
+
+    /**
+     * Apply errors to the document.
+     * @param check Check name
+     * @param message Error message
+     * @param document Document
+     * @return Document with applied errors
+     */
+    private static Node applyErrors(
+        final String check, final String message, final Node document
+    ) {
+        return new Xembler(
+            new Directives()
+                .xpath("/object")
+                .addIf("errors")
+                .add("error")
+                .attr("check", check)
+                .attr("severity", "critical")
+                .set(message)
+        ).applyQuietly(document);
     }
 
     /**

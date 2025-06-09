@@ -211,6 +211,25 @@ final class MjParseTest {
         );
     }
 
+    @Test
+    void addsErrorsWhenObjectNameFails(@Mktmp final Path temp) throws IOException {
+        final XMLDocument actual = new XMLDocument(
+            new FakeMaven(temp)
+                .withProgram("# App.")
+                .execute(new FakeMaven.Parse())
+                .result()
+                .get("target/1-parse/foo/x/main.xmir")
+        );
+        MatcherAssert.assertThat(
+            "Errors are not present in the resulted XMIR, but they should",
+            actual,
+            XhtmlMatchers.hasXPaths(
+                "//error[@severity='critical']",
+                "//error[text()=\"XMIR should have '/object/o/@name' attribute\"]"
+            )
+        );
+    }
+
     /**
      * The mojo that does nothing, but executes infinitely.
      * @since 0.29
