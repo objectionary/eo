@@ -151,10 +151,10 @@ public final class MjParse extends MjSafe {
         try {
             name = new ObjectName(xmir).get();
         } catch (final IllegalStateException exception) {
-            MjParse.applyErrors("mandatory-object-name", exception.getMessage(), document);
+            MjParse.applyError("mandatory-object-name", exception.getMessage(), document);
         }
         if (!name.equals(identifier)) {
-            MjParse.applyErrors(
+            MjParse.applyError(
                 "validate-object-name",
                 String.format(
                     "Tojo identifier '%s' does not match to result object name '%s'", identifier,
@@ -167,13 +167,13 @@ public final class MjParse extends MjSafe {
     }
 
     /**
-     * Apply errors to the document.
+     * Apply error to the document.
      * @param check Check name
      * @param message Error message
      * @param document Document
      * @return Document with applied errors
      */
-    private static Node applyErrors(
+    private static Node applyError(
         final String check, final String message, final Node document
     ) {
         return new Xembler(
