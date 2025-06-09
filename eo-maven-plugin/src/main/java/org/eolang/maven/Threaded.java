@@ -34,7 +34,7 @@ final class Threaded<T> {
     private final Func<T, Integer> scalar;
 
     /**
-     * Logger.
+     * The logger.
      */
     private final Consumer<? super String> logger;
 
@@ -51,6 +51,7 @@ final class Threaded<T> {
      * Ctor.
      * @param src The sources
      * @param fun The function to run
+     * @param log The logger
      */
     Threaded(
         final Iterable<T> src, final Func<T, Integer> fun, final Consumer<? super String> log
