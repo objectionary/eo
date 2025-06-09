@@ -19,7 +19,6 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,11 +27,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test cases for {@link Probes}.
  *
  * @since 0.53
- * @todo #4203:90min Enable {@link ProbesTest#findsProbesInSimpleProgram()} Test.
- *  This test is currently disabled because it fails.
- *  We should investigate the cause of the failure and enable the test.
- *  Originally this issue affected the integration tests,
- *  <a href="https://github.com/objectionary/eo/issues/4203">here</a>
  */
 final class ProbesTest {
 
@@ -113,7 +107,6 @@ final class ProbesTest {
     }
 
     @Test
-    @Disabled
     void findsProbesInSimpleProgram() throws IOException {
         MatcherAssert.assertThat(
             "We should find 6 objects in the program",
@@ -126,7 +119,17 @@ final class ProbesTest {
                     )
                 ).parsed()
             ),
-            Matchers.iterableWithSize(6)
+            Matchers.allOf(
+                Matchers.iterableWithSize(6),
+                Matchers.hasItems(
+                    "org",
+                    "org.eolang",
+                    "org.eolang.io",
+                    "org.eolang.io.stdout",
+                    "org.eolang.string",
+                    "org.eolang.bytes"
+                )
+            )
         );
     }
 
