@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo'][count(o)=2]
+  - /object/o[@name='foo']/o[@base='Q.org.eolang.true' and @name='+test-works']
+  - /object/o[@name='foo']/o[@base='Q.org.eolang.false' and @name='+always-fails']
+input: |-
+  # Foo.
+  [] > foo
+    # Unit test.
+    true +> test-works
+    # Unit test
+    false +> always-fails
