@@ -171,12 +171,11 @@ public final class MjParse extends MjSafe {
      * @param check Check name
      * @param message Error message
      * @param document Document
-     * @return Document with applied errors
      */
-    private static Node applyError(
+    private static void applyError(
         final String check, final String message, final Node document
     ) {
-        return new Xembler(
+        new Xembler(
             new Directives()
                 .xpath("/object")
                 .addIf("errors")
