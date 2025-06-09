@@ -60,7 +60,7 @@
   <!-- ENTRY POINT 1 - no metas -->
   <xsl:template match="/object[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
-      <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('$', '^', '@'))) and not(.='Q')]"/>
     <xsl:copy>
@@ -77,7 +77,7 @@
   <!-- ENTRY POINT 2 - metas exists -->
   <xsl:template match="/object/metas">
     <xsl:variable name="candidates" as="element()*">
-      <xsl:apply-templates select="//o[eo:abstract(.)]/o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
