@@ -245,4 +245,13 @@ final class MjLintTest {
             Matchers.is(new XMLDocument(cached.asString()))
         );
     }
+
+    @Test
+    void reportsWhenObjectNameFails(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            Exception.class,
+            () -> new FakeMaven(temp).withProgram("# App.").execute(new FakeMaven.Lint()),
+            () -> "MjLint's execution was not failed, but it should"
+        );
+    }
 }
