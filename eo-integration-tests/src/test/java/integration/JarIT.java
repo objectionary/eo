@@ -29,77 +29,113 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
+
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                f.properties()
-                    .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
-                    .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files()
-                    .file("src/main/eo/simple.eo")
-                    .write(
-                        String.join(
-                            "\n",
-                            new String[]{
-                                "# No comments.",
-                                "[] > simple",
-                                "  QQ.io.stdout > @",
-                                "    \"Hello, world!\"",
-                            }
-                        ).getBytes(StandardCharsets.UTF_8)
-                    );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    );
-                new EoMavenPlugin(f)
-                    .appended()
-                    .execution("compile")
-                    .goals("register", "compile", "transpile")
-                    .configuration()
-                    .set("ignoreRuntime", Boolean.TRUE.toString())
-                    .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("skipLinting", Boolean.TRUE.toString());
-                f.exec("clean", "compile", "jar:jar");
-                MatcherAssert.assertThat(
-                    "Project must be successfully built and packaged into jar",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
-                final String ver = System.getProperty("eo.version", Manifests.read("EO-Version"));
-                final String jar = String.format("eo-runtime-%s.jar", ver);
-                final String runtime = Paths.get(System.getProperty("user.home")).resolve(".m2")
-                    .resolve("repository")
-                    .resolve("org/eolang/eo-runtime")
-                    .resolve(ver)
-                    .resolve(jar)
-                    .toString();
-                final String classpath = String.join(
-                    File.pathSeparator,
-                    "test-0.0.0.jar",
-                    runtime
+                final String classpath = JarIT.compile(
+                    f,
+                    "# No comments.",
+                    "[] > simple",
+                    "  QQ.io.stdout > @",
+                    "    \"Hello, world!\""
                 );
                 MatcherAssert.assertThat(
-                    "Simple program must be successfully executed from jar",
+                    "simple program must be successfully executed from jar",
                     new Jaxec(
                         "java", "-cp", classpath,
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
                         "org.eolang.Main", "simple"
                     ).withHome(temp.resolve("target")).exec().stdout(),
+                    Matchers.containsString("Hello, world!")
+                );
+            }
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MayBeSlow.class)
+    void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
+        new Farea(temp).together(
+            f -> {
+                final String classpath = JarIT.compile(
+                    f,
+                    "# No comments.",
+                    "[] > simple",
+                    "  unknown.io.stdout > @",
+                    "    \"Hello, world!\""
+                );
+                MatcherAssert.assertThat(
+                    "the program must throw an error and print it to stderr",
+                    new Jaxec(
+                        "java", "-cp", classpath,
+                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                        "org.eolang.Main", "simple"
+                    ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
                     Matchers.allOf(
-                        Matchers.containsString("Hello, world!"),
-                        Matchers.containsString("[0x01] = true")
+                        Matchers.containsString("Couldn't find object 'Φ.org.eolang.unknown'"),
+                        Matchers.containsString(
+                            "because there's no class or package 'EOorg.EOeolang.EOunknown"
+                        )
                     )
                 );
             }
+        );
+    }
+
+    /**
+     * Compile EO program to XMIR and package it into a JAR.
+     * @param farea Farea to use for compilation
+     * @param program The EO program to compile
+     * @return Classpath for the compiled program, with eo-runtime jar
+     * @throws IOException If fails to compile
+     */
+    private static String compile(final Farea farea, final String... program) throws IOException {
+        farea.properties()
+            .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
+            .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
+        farea.files()
+            .file("src/main/eo/simple.eo")
+            .write(String.join("\n", program).getBytes(StandardCharsets.UTF_8));
+        farea.dependencies()
+            .append(
+                "org.eolang",
+                "eo-runtime",
+                System.getProperty(
+                    "eo.version",
+                    Manifests.read("EO-Version")
+                )
+            );
+        new EoMavenPlugin(farea)
+            .appended()
+            .execution("compile")
+            .goals("register", "compile", "transpile")
+            .configuration()
+            .set("ignoreRuntime", Boolean.TRUE.toString())
+            .set("failOnWarning", Boolean.FALSE.toString())
+            .set("skipLinting", Boolean.TRUE.toString());
+        farea.exec("clean", "compile", "jar:jar");
+        MatcherAssert.assertThat(
+            "Project must be successfully built and packaged into jar",
+            farea.log(),
+            RequisiteMatcher.SUCCESS
+        );
+        final String ver = System.getProperty("eo.version", Manifests.read("EO-Version"));
+        final String jar = String.format("eo-runtime-%s.jar", ver);
+        final String runtime = Paths.get(System.getProperty("user.home")).resolve(".m2")
+            .resolve("repository")
+            .resolve("org/eolang/eo-runtime")
+            .resolve(ver)
+            .resolve(jar)
+            .toString();
+        return String.join(
+            File.pathSeparator,
+            "test-0.0.0.jar",
+            runtime
         );
     }
 }
