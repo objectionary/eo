@@ -251,7 +251,7 @@ final class MjLintTest {
         Assertions.assertThrows(
             Exception.class,
             () -> new FakeMaven(temp).withProgram("# App.").execute(new FakeMaven.Lint()),
-            () -> "MjLint's execution was not failed, but it should"
+            "MjLint's execution was not failed, but it should"
         );
     }
 }

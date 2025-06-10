@@ -19,30 +19,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests for {@link VerboseObjectName}.
+ * Tests for {@link ObjectNameFailure}.
  *
  * @since 0.56.5
  */
 @ExtendWith(MktmpResolver.class)
-final class VerboseObjectNameTest {
+final class ObjectNameFailureTest {
 
     @Test
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
         final XML xmir = new XMLDocument("<nothing/>");
-        final String name = "f.xmir";
-        final Path source = temp.resolve(name);
-        Files.write(source, xmir.toString().getBytes(StandardCharsets.UTF_8));
+        Files.write(temp.resolve("f.xmir"), xmir.toString().getBytes(StandardCharsets.UTF_8));
+        final String expected = "Boom!";
         MatcherAssert.assertThat(
             "Exception message is not detailed, as it should be",
             Assertions.assertThrows(
                 Exception.class,
-                () -> new VerboseObjectName(new ObjectName(xmir), source).get(),
+                () -> new ObjectNameFailure(
+                    new ObjectName(xmir), input -> {
+                        throw new IllegalStateException(expected, input);
+                    }
+                ).get(),
                 "Exception was not thrown, but it should, since object name is not here"
             ).getLocalizedMessage(),
-            Matchers.allOf(
-                Matchers.containsString(name),
-                Matchers.containsString("broken syntax")
-            )
+            Matchers.equalTo(expected)
         );
     }
 }

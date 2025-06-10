@@ -4,17 +4,17 @@
  */
 package org.eolang.parser;
 
-import java.nio.file.Path;
 import java.util.function.Supplier;
 import org.cactoos.Proc;
+import org.cactoos.proc.UncheckedProc;
 
 /**
- * Verbose object name.
+ * Object name failure.
  * This object is supposed to be used together with {@link ObjectName}.
  *
  * @since 0.56.5
  */
-public final class VerboseObjectName implements Supplier<String> {
+public final class ObjectNameFailure implements Supplier<String> {
 
     /**
      * Origin.
@@ -22,32 +22,30 @@ public final class VerboseObjectName implements Supplier<String> {
     private final Supplier<String> origin;
 
     /**
-     * Program path.
+     * If fails.
      */
-    private final Path program;
+    private final Proc<Exception> failure;
 
     /**
      * Ctor.
      *
      * @param orgn Origin
-     * @param source Program path
+     * @param fail If fails
      */
-    public VerboseObjectName(final Supplier<String> orgn, final Path source) {
+    public ObjectNameFailure(final Supplier<String> orgn, final Proc<Exception> fail) {
         this.origin = orgn;
-        this.program = source;
+        this.failure = fail;
     }
 
     @Override
     public String get() {
+        String result;
         try {
-            return this.origin.get();
+            result = this.origin.get();
         } catch (final IllegalStateException exception) {
-            throw new IllegalStateException(
-                String.format(
-                    "Source file '%s' encountered some problems, broken syntax?", this.program
-                ),
-                exception
-            );
+            new UncheckedProc<>(this.failure).exec(exception);
+            result = "";
         }
+        return result;
     }
 }
