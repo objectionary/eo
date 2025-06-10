@@ -11,7 +11,8 @@ import org.cactoos.proc.UncheckedProc;
 
 /**
  * Object name failure.
- * This object is supposed to be used together with {@link ObjectName}.
+ * If {@link ObjectName} throw an exception, this object catches it, and executes supplied
+ * procedure. This object is supposed to be used together with {@link ObjectName}.
  *
  * @since 0.56.5
  */

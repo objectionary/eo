@@ -29,20 +29,17 @@ final class ObjectNameFailureTest {
     @Test
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
         final XML xmir = new XMLDocument("<nothing/>");
-        Files.write(temp.resolve("f.xmir"), xmir.toString().getBytes(StandardCharsets.UTF_8));
-        final String expected = "Boom!";
+        final String expected = "f.xmir";
+        final Path source = temp.resolve(expected);
+        Files.write(source, xmir.toString().getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "Exception message is not detailed, as it should be",
             Assertions.assertThrows(
                 Exception.class,
-                () -> new ObjectNameFailure(
-                    new ObjectName(xmir), input -> {
-                        throw new IllegalStateException(expected, input);
-                    }
-                ).get(),
+                () -> new ObjectNameFailure(new ObjectName(xmir), source).get(),
                 "Exception was not thrown, but it should, since object name is not here"
             ).getLocalizedMessage(),
-            Matchers.equalTo(expected)
+            Matchers.containsString(expected)
         );
     }
 }
