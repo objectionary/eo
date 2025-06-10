@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.nio.file.Path;
 import java.util.function.Supplier;
 import org.cactoos.Proc;
 import org.cactoos.proc.UncheckedProc;
@@ -25,6 +26,25 @@ public final class ObjectNameFailure implements Supplier<String> {
      * If fails.
      */
     private final Proc<Exception> failure;
+
+    /**
+     * Ctor.
+     * @param orgn Origin
+     * @param source Program source path
+     */
+    public ObjectNameFailure(final Supplier<String> orgn, final Path source) {
+        this(
+            orgn,
+            e -> {
+                throw new IllegalStateException(
+                    String.format(
+                        "Source file '%s' encountered some problems, broken syntax?", source
+                    ),
+                    e
+                );
+            }
+        );
+    }
 
     /**
      * Ctor.

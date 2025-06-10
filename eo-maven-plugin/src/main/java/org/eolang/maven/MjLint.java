@@ -141,17 +141,7 @@ public final class MjLint extends MjSafe {
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjLint.DIR);
         final Path target = new Place(
-            new ObjectNameFailure(
-                new ObjectName(xmir),
-                e -> {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Source file '%s' encountered some problems, broken syntax?", source
-                        ),
-                        e
-                    );
-                }
-            ).get()
+            new ObjectNameFailure(new ObjectName(xmir), source).get()
         ).make(base, MjAssemble.XMIR);
         tojo.withLinted(
             new FpDefault(
