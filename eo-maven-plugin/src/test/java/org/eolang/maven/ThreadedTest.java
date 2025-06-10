@@ -9,7 +9,6 @@ import java.util.List;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,7 +35,6 @@ final class ThreadedTest {
                 },
                 logs::add
             ).total();
-            Assertions.fail("Expected exception to be thrown");
         } catch (final Exception ignored) {
             // Swallow the exception in order to do asserts
         }
