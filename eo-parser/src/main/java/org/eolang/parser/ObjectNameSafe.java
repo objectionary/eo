@@ -10,13 +10,14 @@ import org.cactoos.Proc;
 import org.cactoos.proc.UncheckedProc;
 
 /**
- * Object name failure.
+ * Safe object name.
+ * Object name that catches  and re-throws an exception if original one fails.
  * If {@link ObjectName} throw an exception, this object catches it, and executes supplied
  * procedure. This object is supposed to be used together with {@link ObjectName}.
  *
  * @since 0.56.5
  */
-public final class ObjectNameFailure implements Supplier<String> {
+public final class ObjectNameSafe implements Supplier<String> {
 
     /**
      * Origin.
@@ -26,14 +27,14 @@ public final class ObjectNameFailure implements Supplier<String> {
     /**
      * If fails.
      */
-    private final Proc<Exception> failure;
+    private final UncheckedProc<Exception> failure;
 
     /**
      * Ctor.
      * @param orgn Origin
      * @param source Program source path
      */
-    public ObjectNameFailure(final Supplier<String> orgn, final Path source) {
+    public ObjectNameSafe(final Supplier<String> orgn, final Path source) {
         this(
             orgn,
             e -> {
@@ -49,11 +50,20 @@ public final class ObjectNameFailure implements Supplier<String> {
 
     /**
      * Ctor.
+     * @param orgn Origin
+     * @param fail If fails
+     */
+    public ObjectNameSafe(final Supplier<String> orgn, final Proc<Exception> fail) {
+        this(orgn, new UncheckedProc<>(fail));
+    }
+
+    /**
+     * Ctor.
      *
      * @param orgn Origin
      * @param fail If fails
      */
-    public ObjectNameFailure(final Supplier<String> orgn, final Proc<Exception> fail) {
+    public ObjectNameSafe(final Supplier<String> orgn, final UncheckedProc<Exception> fail) {
         this.origin = orgn;
         this.failure = fail;
     }
@@ -64,7 +74,7 @@ public final class ObjectNameFailure implements Supplier<String> {
         try {
             result = this.origin.get();
         } catch (final IllegalStateException exception) {
-            new UncheckedProc<>(this.failure).exec(exception);
+            this.failure.exec(exception);
             result = "";
         }
         return result;

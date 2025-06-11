@@ -39,7 +39,7 @@ import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
 import org.eolang.parser.ObjectName;
-import org.eolang.parser.ObjectNameFailure;
+import org.eolang.parser.ObjectNameSafe;
 import org.eolang.parser.TrFull;
 
 /**
@@ -166,7 +166,7 @@ public final class MjTranspile extends MjSafe {
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjTranspile.DIR);
         final Path target = new Place(
-            new ObjectNameFailure(new ObjectName(xmir), source).get()
+            new ObjectNameSafe(new ObjectName(xmir), source).get()
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
