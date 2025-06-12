@@ -5,12 +5,15 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.manifests.Manifests;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +22,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.Func;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Joined;
 
@@ -67,6 +71,11 @@ public final class MjResolve extends MjSafe {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private boolean resolveJna = true;
+
+    /**
+     * Resolve dependencies in central or not.
+     */
+    private boolean resolveInCentral = true;
 
     @Override
     public void exec() throws IOException {
@@ -212,7 +221,23 @@ public final class MjResolve extends MjSafe {
                     runtime.get().getVersion()
                 );
             } else {
-                deps = new DpsWithRuntime(deps);
+                if (this.resolveInCentral) {
+                    deps = new DpsWithRuntime(deps);
+                } else {
+                    final List<Dep> all = new ListOf<>(deps);
+                    all.add(
+                        new Dep().withGroupId("org.eolang")
+                            .withArtifactId("eo-runtime")
+                            .withVersion(Manifests.read("EO-Version"))
+                    );
+                    deps = new Dependencies() {
+                        @Override
+                        public Iterator<Dep> iterator() {
+                            return all.iterator();
+                        }
+                    };
+                    // DpsOfflineRuntime
+                }
             }
         }
         if (!this.ignoreVersionConflicts) {
