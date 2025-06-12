@@ -29,7 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.31.0
  * @todo #4261:30min Enable MjLint tests after lints will migrate to the ObjectName implementation.
- *  Now, `lints` uses `org.eolang.parser.ObjetName` as class. Now its an interface, and
+ *  Now, `lints` uses `org.eolang.parser.ObjectName` as class. Now its an interface, and
  *  `lints` should use {@link OnDefault} instead. Don't forget to enable lints in the
  *  {@link MjTranspileTest}, {@link MjLintIT} and `pom.xml` of `eo-runtime` as well.
  */
