@@ -31,11 +31,16 @@ final class DpsOfflineRuntime implements Dependencies {
     @Override
     public Iterator<Dep> iterator() {
         final Collection<Dep> deps = new ListOf<>(this.all);
-        deps.add(
-            new Dep().withGroupId("org.eolang")
-                .withArtifactId("eo-runtime")
-                .withVersion(Manifests.read("EO-Version"))
+        final boolean present = deps.stream().anyMatch(
+            dep -> dep.toString().startsWith("org.eolang:eo-runtime:")
         );
+        if (!present) {
+            deps.add(
+                new Dep().withGroupId("org.eolang")
+                    .withArtifactId("eo-runtime")
+                    .withVersion(Manifests.read("EO-Version"))
+            );
+        }
         return deps.iterator();
     }
 }

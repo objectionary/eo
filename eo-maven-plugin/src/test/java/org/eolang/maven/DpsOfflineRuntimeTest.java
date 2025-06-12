@@ -23,7 +23,41 @@ final class DpsOfflineRuntimeTest {
             new DpsOfflineRuntime(new ListOf<>()),
             Matchers.hasItem(
                 Matchers.hasToString(
-                    Matchers.containsString("org.eolang:eo-runtime:1.0-SNAPSHOT")
+                    Matchers.containsString("org.eolang:eo-runtime")
+                )
+            )
+        );
+    }
+
+    @Test
+    void doesNotDuplicatesRuntime() {
+        MatcherAssert.assertThat(
+            "Size of dependencies does not match with expected",
+            new DpsOfflineRuntime(
+                new ListOf<>(
+                    new Dep().withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withVersion("0.56.2")
+                )
+            ),
+            Matchers.iterableWithSize(1)
+        );
+    }
+
+    @Test
+    void usesAlreadyDefinedVersion() {
+        MatcherAssert.assertThat(
+            "Offline EO runtime dependency should use already defined version",
+            new DpsOfflineRuntime(
+                new ListOf<>(
+                    new Dep().withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withVersion("0.0.1")
+                )
+            ),
+            Matchers.hasItem(
+                Matchers.hasToString(
+                    Matchers.containsString("org.eolang:eo-runtime:0.0.1")
                 )
             )
         );
