@@ -10,7 +10,7 @@ import org.cactoos.proc.UncheckedProc;
 
 /**
  * Object name, with more detailed error message.
- * Object name that catches  and re-throws an exception if original one fails.
+ * Object name that catches and re-throws an exception if original one fails.
  * If {@link ObjectName} throw an exception, this object catches it, and executes supplied
  * procedure.
  *
