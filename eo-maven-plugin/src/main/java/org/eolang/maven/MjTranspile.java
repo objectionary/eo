@@ -38,8 +38,8 @@ import org.cactoos.Input;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
-import org.eolang.parser.ObjectName;
-import org.eolang.parser.ObjectNameSafe;
+import org.eolang.parser.OnDefault;
+import org.eolang.parser.OnDetailed;
 import org.eolang.parser.TrFull;
 
 /**
@@ -166,7 +166,7 @@ public final class MjTranspile extends MjSafe {
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjTranspile.DIR);
         final Path target = new Place(
-            new ObjectNameSafe(new ObjectName(xmir), source).get()
+            new OnDetailed(new OnDefault(xmir), source).get()
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
@@ -198,7 +198,7 @@ public final class MjTranspile extends MjSafe {
                 new TrSpy(
                     measured,
                     new StickyFunc<>(
-                        doc -> new Place(new ObjectName(doc).get())
+                        doc -> new Place(new OnDefault(doc).get())
                             .make(this.targetDir.toPath().resolve(MjTranspile.PRE), "")
                     )
                 )

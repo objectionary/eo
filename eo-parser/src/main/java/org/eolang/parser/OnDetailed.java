@@ -5,24 +5,23 @@
 package org.eolang.parser;
 
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import org.cactoos.Proc;
 import org.cactoos.proc.UncheckedProc;
 
 /**
- * Safe object name.
+ * Object name, with more detailed error message.
  * Object name that catches  and re-throws an exception if original one fails.
  * If {@link ObjectName} throw an exception, this object catches it, and executes supplied
- * procedure. This object is supposed to be used together with {@link ObjectName}.
+ * procedure.
  *
  * @since 0.56.5
  */
-public final class ObjectNameSafe implements Supplier<String> {
+public final class OnDetailed implements ObjectName {
 
     /**
      * Origin.
      */
-    private final Supplier<String> origin;
+    private final ObjectName origin;
 
     /**
      * If fails.
@@ -34,7 +33,7 @@ public final class ObjectNameSafe implements Supplier<String> {
      * @param orgn Origin
      * @param source Program source path
      */
-    public ObjectNameSafe(final Supplier<String> orgn, final Path source) {
+    public OnDetailed(final ObjectName orgn, final Path source) {
         this(
             orgn,
             e -> {
@@ -53,7 +52,7 @@ public final class ObjectNameSafe implements Supplier<String> {
      * @param orgn Origin
      * @param fail If fails
      */
-    public ObjectNameSafe(final Supplier<String> orgn, final Proc<Exception> fail) {
+    public OnDetailed(final ObjectName orgn, final Proc<Exception> fail) {
         this(orgn, new UncheckedProc<>(fail));
     }
 
@@ -63,7 +62,7 @@ public final class ObjectNameSafe implements Supplier<String> {
      * @param orgn Origin
      * @param fail If fails
      */
-    public ObjectNameSafe(final Supplier<String> orgn, final UncheckedProc<Exception> fail) {
+    public OnDetailed(final ObjectName orgn, final UncheckedProc<Exception> fail) {
         this.origin = orgn;
         this.failure = fail;
     }

@@ -14,7 +14,7 @@ import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
- * Tests for {@link ObjectName}.
+ * Tests for {@link OnDefault}.
  *
  * @since 0.56.1
  */
@@ -23,7 +23,7 @@ final class ObjectNameTest {
     @Test
     void retrievesSimpleName() throws ImpossibleModificationException {
         final String expected = "foo";
-        final String retrieved = new ObjectName(
+        final String retrieved = new OnDefault(
             new XMLDocument(
                 new Xembler(
                     new Directives().add("object").add("o").attr("name", expected)
@@ -43,7 +43,7 @@ final class ObjectNameTest {
     @Test
     void retrievesPackagedName() throws ImpossibleModificationException {
         final String expected = "org.eolang.f.foo";
-        final String retrieved = new ObjectName(
+        final String retrieved = new OnDefault(
             new XMLDocument(
                 new Xembler(
                     new Directives().add("object")
@@ -73,7 +73,7 @@ final class ObjectNameTest {
     void throwsExceptionWhenNameIsMissing() {
         Assertions.assertThrows(
             Exception.class,
-            () -> new ObjectName(
+            () -> new OnDefault(
                 new XMLDocument(
                     new Xembler(
                         new Directives().add("object")
@@ -94,7 +94,7 @@ final class ObjectNameTest {
     @Test
     void doesNotThrowExceptionWhenNameIsPresentButPackageIsMissing() {
         Assertions.assertDoesNotThrow(
-            () -> new ObjectName(
+            () -> new OnDefault(
                 new XMLDocument(
                     new Xembler(new Directives().add("object").add("o").attr("name", "foo")).xml()
                 )

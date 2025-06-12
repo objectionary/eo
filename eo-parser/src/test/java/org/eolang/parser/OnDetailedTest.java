@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests for {@link ObjectNameSafe}.
+ * Tests for {@link OnDetailed}.
  *
  * @since 0.56.5
  */
 @ExtendWith(MktmpResolver.class)
-final class ObjectNameSafeTest {
+final class OnDetailedTest {
 
     @Test
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
@@ -36,7 +36,7 @@ final class ObjectNameSafeTest {
             "Exception message is not detailed, as it should be",
             Assertions.assertThrows(
                 Exception.class,
-                () -> new ObjectNameSafe(new ObjectName(xmir), source).get(),
+                () -> new OnDetailed(new OnDefault(xmir), source).get(),
                 "Exception was not thrown, but it should, since object name is not here"
             ).getLocalizedMessage(),
             Matchers.containsString(expected)
