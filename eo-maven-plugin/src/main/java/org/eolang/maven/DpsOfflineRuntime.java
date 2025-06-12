@@ -16,6 +16,13 @@ import org.cactoos.list.ListOf;
 final class DpsOfflineRuntime implements Dependencies {
 
     /**
+     * EO current offline version.
+     */
+    private static final Dep EO_OFFLINE = new Dep().withGroupId("org.eolang")
+        .withArtifactId("eo-runtime")
+        .withVersion(Manifests.read("EO-Version"));
+
+    /**
      * All dependencies.
      */
     private final Iterable<Dep> all;
@@ -35,11 +42,7 @@ final class DpsOfflineRuntime implements Dependencies {
             dep -> dep.toString().startsWith("org.eolang:eo-runtime:")
         );
         if (!present) {
-            deps.add(
-                new Dep().withGroupId("org.eolang")
-                    .withArtifactId("eo-runtime")
-                    .withVersion(Manifests.read("EO-Version"))
-            );
+            deps.add(DpsOfflineRuntime.EO_OFFLINE);
         }
         return deps.iterator();
     }
