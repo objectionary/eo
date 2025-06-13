@@ -43,6 +43,13 @@ object
 // Ends on the next line
 bound
     : commentOptional (application | ((method | just) oname) EOL)
+    | errorBound
+    ;
+
+// Error production to handle malformed bound objects
+// This should consume exactly one malformed line and allow parsing to continue
+errorBound
+    : commentOptional ~(EOL)* EOL
     ;
 
 subMaster

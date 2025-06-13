@@ -26,8 +26,13 @@ final class ErrorRecoveryTest {
         long objectCount = Long.parseLong(xml.xpath("count(//o[@name])").get(0));
         System.out.println("\nObjects count: " + objectCount);
         
-        // The test should fail initially since no objects are parsed after error
-        // After fix, we should have at least the "good" object 
-        Assertions.assertTrue(objectCount > 1, "Should recover and parse objects after error");
+        // Check specifically for the good object inside example
+        long goodCount = Long.parseLong(xml.xpath("count(//o[@name='example']/o[@name='good'])").get(0));
+        System.out.println("Good objects inside example: " + goodCount);
+        
+        // The test should pass if we have the example object and the good object inside it
+        // OR if we have both example and good at the same level
+        Assertions.assertTrue(objectCount >= 1 && goodCount >= 1 || objectCount >= 2, 
+            "Should recover and parse objects after error. Found " + objectCount + " objects, " + goodCount + " good objects");
     }
 }
