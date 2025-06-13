@@ -185,33 +185,26 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <!-- Common templates of class.java and class.tests -->
+  <xsl:template name="commonclass">
+    <xsl:apply-templates select="/object" mode="license"/>
+    <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
+    <xsl:text>import java.util.function.Function;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import org.eolang.*;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
   <!-- Class. Entry point  -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <!--
-        @todo #4096:90min Resolve code duplication for `tests` generation.
-         Currently, we have a lot of code duplication in the templates that generate Java tests.
-         They all are similar to the templates applied in the `java` element. Let's make them as
-         generic as possible and reuse in both places.
-      -->
       <xsl:element name="tests">
-        <xsl:apply-templates select="/object" mode="license"/>
-        <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
-        <xsl:text>import java.util.function.Function;</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>import org.eolang.*;</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:call-template name="commonclass"/>
         <xsl:apply-templates select="." mode="testing"/>
       </xsl:element>
       <xsl:if test="not(@skip-java)">
         <xsl:element name="java">
-          <xsl:apply-templates select="/object" mode="license"/>
-          <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
-          <xsl:text>import java.util.function.Function;</xsl:text>
-          <xsl:value-of select="eo:eol(0)"/>
-          <xsl:text>import org.eolang.*;</xsl:text>
-          <xsl:value-of select="eo:eol(0)"/>
+          <xsl:call-template name="commonclass"/>
           <xsl:apply-templates select="." mode="body"/>
         </xsl:element>
       </xsl:if>
