@@ -184,7 +184,6 @@ public final class EoSyntax implements Syntax {
         parser.removeErrorListeners();
         final EoParserErrors eospy = new EoParserErrors(lines);
         parser.addErrorListener(eospy);
-        parser.setErrorHandler(new EoErrorRecoveryStrategy());
         final XeEoListener xel = new XeEoListener();
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = this.transform.apply(

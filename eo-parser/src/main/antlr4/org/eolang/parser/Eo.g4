@@ -47,9 +47,9 @@ bound
     ;
 
 // Error production to handle malformed bound objects
-// This should consume exactly one malformed line and allow parsing to continue
+// This consumes malformed lines that start with [ and any following indented content
 errorBound
-    : commentOptional ~(EOL)* EOL
+    : commentOptional LSQ (~EOL)* EOL innersOrEol?
     ;
 
 subMaster
@@ -94,7 +94,12 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    : EOL TAB innersItems UNTAB
+    ;
+
+// Items inside inners - can be valid bounds/subMasters or error items
+innersItems
+    : (bound | subMaster | errorBound) (bound | EOL? subMaster | errorBound)*
     ;
 
 // Void attributes of an abstract object, atom or horizontal anonym object
