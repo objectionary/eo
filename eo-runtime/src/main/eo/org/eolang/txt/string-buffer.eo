@@ -1,0 +1,38 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.txt
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# The `string-buffer` object allows you to build strings by appending
+# multiple strings together using a memory buffer that grows as needed.
+# It uses `m.resized` to increase the size of the memory block.
+#
+# Usage:
+#   string-buffer m   # where m is a malloc.of allocated memory
+#   .with "hello"     # append "hello"
+#   .with ", world"   # append ", world"
+#   .with "!"         # append "!"
+[m] > string-buffer ?
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-creates-empty-buffer
+    eq. > @
+      malloc.of
+        0
+        [m] >>
+          string-buffer m > @
+      ""
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-appends-all-together
+    eq. > @
+      malloc.of
+        0
+        [m] >>
+          (string-buffer m).with "hello" > sb1!
+          sb1.with ", world" > sb2!
+          sb2.with "!" > @
+      "hello, world!"
