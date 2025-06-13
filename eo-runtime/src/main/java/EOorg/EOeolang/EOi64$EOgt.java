@@ -9,11 +9,11 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
+import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -31,13 +31,13 @@ public final class EOi64$EOgt extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOi64$EOgt() {
-        this.add("x", new AtVoid("x"));
+        this.add("x", new PhVoid("x"));
     }
 
     @Override
     public Phi lambda() {
-        return new ToPhi(
-            new Dataized(this.take(Attr.RHO)).take(Long.class)
+        return new Data.ToPhi(
+            new Dataized(this.take(Phi.RHO)).take(Long.class)
                 > new Dataized(this.take("x").take("as-i64")).take(Long.class)
         );
     }

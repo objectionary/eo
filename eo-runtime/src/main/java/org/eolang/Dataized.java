@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("java:S5164")
 public final class Dataized {
     /**
-     * The object to datarize.
+     * The object to dataize.
      */
     private final Phi phi;
 

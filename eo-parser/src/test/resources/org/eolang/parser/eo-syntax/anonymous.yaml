@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - //object/o[count(o)=3]
   - //o[@base='$.x.plus' and @name='a']

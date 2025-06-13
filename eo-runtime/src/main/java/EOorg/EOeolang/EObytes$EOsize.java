@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -28,6 +27,6 @@ import org.eolang.XmirObject;
 public final class EObytes$EOsize extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        return new Data.ToPhi(new Dataized(this.take(Attr.RHO)).take().length);
+        return new Data.ToPhi(new Dataized(this.take(Phi.RHO)).take().length);
     }
 }

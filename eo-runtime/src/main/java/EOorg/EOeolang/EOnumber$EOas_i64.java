@@ -10,7 +10,6 @@
 package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Expect;
@@ -33,7 +32,7 @@ public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
+                    new Expect.Number(Expect.at(this, Phi.RHO)).it().longValue()
                 ).take()
             )
         );

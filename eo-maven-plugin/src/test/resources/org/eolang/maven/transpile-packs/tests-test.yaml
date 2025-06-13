@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets:
   - /org/eolang/maven/transpile/set-locators.xsl
   - /org/eolang/maven/transpile/set-original-names.xsl
@@ -11,17 +12,17 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), '@Test')]
-  - //java[contains(text(), 'void works() throws java.lang.Exception')]
-  - //java[contains(text(), 'void throws_on() throws java.lang.Exception')]
-  - //java[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
-  - //java[contains(text(), 'new Dataized(this.take("works")).asBool()')]
-  - //java[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
+  - //java[contains(text(), 'yes')]
+  - //tests[contains(text(), '@Test')]
+  - //tests[contains(text(), 'void works() throws java.lang.Exception')]
+  - //tests[contains(text(), 'void throws_on() throws java.lang.Exception')]
+  - //tests[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
+  - //tests[contains(text(), 'new Dataized(this.take("works")).asBool()')]
+  - //tests[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
 input: |
-  +tests
-
   # No comments.
-  [] > some-tests
-    [] > works
+  [] > some
+    7 > yes
+    [] +> works
       1.eq 1 > @
-    false > [] > throws-on
+    false > [] +> throws-on

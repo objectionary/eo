@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-
+# yamllint disable rule:line-length
 name: typos
 'on':
   push:
@@ -16,6 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: crate-ci/typos@master
+      - uses: crate-ci/typos@v1.33.1
         with:
           config: ./.github/typos.toml

@@ -51,7 +51,7 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym oname) EOL
+    | (atom | hanonym oname EOL)
     ;
 
 // Just an object reference without name
@@ -61,7 +61,11 @@ just: beginner
 
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
-atom: voids suffix SPACE QUESTION
+// @todo #4235:60min Allow atom to have only test attributes inside.
+//  Currently we allow to have just inners, while we should allow only test attributes
+//  inside the atom. For this, we need to intoduce new grammar rules. Don't forget to
+//  enable all the tests, related on not empty atoms.
+atom: voids suffix SPACE QUESTION innersOrEol
     ;
 
 // Formation - abstract object with mandatory name

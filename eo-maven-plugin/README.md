@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.56.0</version>
+        <version>0.56.4</version>
         <executions>
           <execution>
             <goals>
@@ -142,7 +142,7 @@ To transform your XMIR files, you need to add the following plugin configuration
 <plugin>
   <groupId>org.eolang</groupId>
   <artifactId>eo-maven-plugin</artifactId>
-  <version>0.56.0</version>
+  <version>0.56.4</version>
   <executions>
     <execution>
       <id>xmir-to-phi</id>
@@ -173,7 +173,8 @@ To transform your XMIR files, you need to add the following plugin configuration
 Pay attention, that `PHI/UNPHI` transformations don't support `metas` objects
 in the current version of the plugin.
 This might lead to possible loss of information about an object's metadata.
-You can read more about it [here](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
+You can read more about it
+[in this issue](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
 
 ## How To Build Plugin
 

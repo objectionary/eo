@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-sheets: [ ]
+# yamllint disable rule:line-length
+sheets: []
 asserts:
   - //o[@name='x' and o/o[text()='20-20-20-20']]
   - //o[@name='y' and o/o[text()='20-66-6F-6F']]

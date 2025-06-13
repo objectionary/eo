@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
@@ -142,6 +143,19 @@ final class TjsForeignTest {
             method.apply(tojo),
             key,
             String.format("Shouldn't throw an exception if key='%s' was found in Tojo", key)
+        );
+    }
+
+    @Test
+    void selectsSortedTojos() {
+        this.tojos.add("foo");
+        this.tojos.add("bar");
+        this.tojos.add("xyz");
+        this.tojos.add("abc");
+        MatcherAssert.assertThat(
+            "Tojos are not sorted as expected",
+            this.tojos.all().stream().map(TjForeign::identifier).collect(Collectors.toList()),
+            Matchers.contains("abc", "bar", "foo", "xyz")
         );
     }
 

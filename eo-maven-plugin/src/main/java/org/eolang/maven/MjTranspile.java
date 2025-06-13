@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,6 +34,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.Input;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
@@ -137,12 +139,13 @@ public final class MjTranspile extends MjSafe {
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
                 this.generatedDir
             );
-        }
-        if (this.addTestSourcesRoot) {
-            this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
+            final String gtests = this.generatedDir.toPath().getParent().resolve(
+                "generated-test-sources"
+            ).toAbsolutePath().toString();
+            this.project.addTestCompileSourceRoot(gtests);
             Logger.info(
                 this, "The directory added to Maven 'test-compile-source-root': %[file]s",
-                this.generatedDir
+                gtests
             );
         }
     }
@@ -164,23 +167,16 @@ public final class MjTranspile extends MjSafe {
         final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        new FpFork(
-            (src, tgt) -> new Xnav(xmir.inner())
-                .path("/object/o/o[@name='λ']")
-                .findAny()
-                .isEmpty(),
-            new FpDefault(
-                src -> {
-                    rewrite.compareAndSet(false, true);
-                    return transform.apply(xmir).toString();
-                },
-                this.cache.toPath().resolve(MjTranspile.CACHE),
-                this.plugin.getVersion(),
-                hsh,
-                base.relativize(target),
-                this.cacheEnabled
-            ),
-            new FpIgnore()
+        new FpDefault(
+            src -> {
+                rewrite.compareAndSet(false, true);
+                return transform.apply(xmir).toString();
+            },
+            this.cache.toPath().resolve(MjTranspile.CACHE),
+            this.plugin.getVersion(),
+            hsh,
+            base.relativize(target),
+            this.cacheEnabled
         ).apply(source, target);
         return this.javaGenerated(rewrite.get(), target, hsh.get());
     }
@@ -225,69 +221,39 @@ public final class MjTranspile extends MjSafe {
     ) throws IOException {
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
-            final Collection<Xnav> classes = new Xnav(target)
-                .element("object")
-                .elements(Filter.withName("class"))
+            final Xnav object = new Xnav(target).element("object");
+            final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
+            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
-                final Path tgt = new Place(jname).make(
-                    this.generatedDir.toPath(), MjTranspile.JAVA
-                );
-                final Supplier<Path> che = new CachePath(
-                    this.cache.toPath().resolve(MjTranspile.CACHE),
-                    this.plugin.getVersion(),
-                    hsh,
-                    this.generatedDir.toPath().relativize(tgt)
-                );
-                final Footprint generated = new FpGenerated(
-                    src -> {
-                        saved.incrementAndGet();
-                        Logger.debug(
-                            this, "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
-                            tgt, tgt.toFile().length(), target, target.toFile().length()
-                        );
-                        return new InputOf(
-                            new Joined(
-                                "",
-                                clazz.elements(Filter.withName("java")).map(
-                                    java -> java.text().orElse("")
-                                ).collect(Collectors.toList())
-                            )
-                        );
-                    }
-                );
-                final Footprint both = new FpUpdateBoth(generated, che);
-                new FpIfReleased(
-                    this.plugin.getVersion(),
-                    hsh,
-                    new FpFork(
-                        (src, trgt) -> {
-                            if (rewrite) {
-                                Logger.debug(
-                                    this,
-                                    "Rewriting %[file]s because XMIR %[file]s was changed",
-                                    trgt, target
-                                );
-                            }
-                            return rewrite;
-                        },
-                        new FpFork(this.cacheEnabled, both, generated),
-                        new FpIfTargetExists(
-                            new FpIgnore(),
-                            new FpFork(
-                                this.cacheEnabled,
-                                new FpIfTargetExists(
-                                    trgt -> che.get(),
-                                    new FpUpdateFromCache(che),
-                                    both
-                                ),
-                                generated
-                            )
-                        )
-                    ),
-                    generated
-                ).apply(Paths.get(""), tgt);
+                if (!atom || jname.endsWith("Test")) {
+                    final Path tgt = new Place(jname).make(
+                        this.generatedDir.toPath(), MjTranspile.JAVA
+                    );
+                    this.placeJavaTests(clazz, jname);
+                    MjTranspile.placeJava(
+                        clazz,
+                        this.apply(
+                            rewrite,
+                            target,
+                            hsh,
+                            new FpGenerated(
+                                src -> {
+                                    saved.incrementAndGet();
+                                    Logger.debug(
+                                        this,
+                                        "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
+                                        tgt, tgt.toFile().length(), target, target.toFile().length()
+                                    );
+                                    return MjTranspile.javaInput(clazz);
+                                }
+                            ),
+                            jname
+                        ),
+                        tgt
+                    );
+                }
             }
         }
         return saved.get();
@@ -330,5 +296,151 @@ public final class MjTranspile extends MjSafe {
             size = 0;
         }
         return size;
+    }
+
+    /**
+     * Apply Java.
+     * @param rewrite Rewrite
+     * @param target Target path
+     * @param hsh Hash
+     * @param generated Generated footprint
+     * @param jname Java class name
+     * @return Applied {@link Footprint}
+     * @todo #4235:35min Refactor MjTranspile.apply().
+     *  Now, it accepts too many parameters, let's decompose it into more manageable
+     *  objects, that can be tested. Thus, we not only improve the situation in this class,
+     *  but also improve the testability of the MjTranspile.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    private FpIfReleased apply(
+        final boolean rewrite,
+        final Path target,
+        final String hsh,
+        final Footprint generated,
+        final String jname
+    ) {
+        final Supplier<Path> che = new CachePath(
+            this.cache.toPath().resolve(MjTranspile.CACHE),
+            this.plugin.getVersion(),
+            hsh,
+            this.generatedDir.toPath().relativize(
+                new Place(jname).make(
+                    this.generatedDir.toPath(), MjTranspile.JAVA
+                )
+            )
+        );
+        final Footprint both = new FpUpdateBoth(generated, che);
+        return new FpIfReleased(
+            this.plugin.getVersion(),
+            hsh,
+            new FpFork(
+                (src, trgt) -> {
+                    if (rewrite) {
+                        Logger.debug(
+                            this,
+                            "Rewriting %[file]s because XMIR %[file]s was changed",
+                            trgt, target
+                        );
+                    }
+                    return rewrite;
+                },
+                new FpFork(this.cacheEnabled, both, generated),
+                new FpIfTargetExists(
+                    new FpIgnore(),
+                    new FpFork(
+                        this.cacheEnabled,
+                        new FpIfTargetExists(
+                            trgt -> che.get(),
+                            new FpUpdateFromCache(che),
+                            both
+                        ),
+                        generated
+                    )
+                )
+            ),
+            generated
+        );
+    }
+
+    /**
+     * Java class input.
+     * @param clazz Java class
+     * @return Input
+     */
+    private static Input javaInput(final Xnav clazz) {
+        return new InputOf(
+            new Joined(
+                "",
+                clazz.elements(Filter.withName("java")).map(
+                    java -> java.text().orElse("")
+                ).collect(Collectors.toList())
+            )
+        );
+    }
+
+    /**
+     * Place Java code.
+     * @param clazz Java class
+     * @param footprint Footprint
+     * @param target Target path
+     * @throws IOException If I/O fails
+     */
+    private static void placeJava(final Xnav clazz, final Footprint footprint, final Path target)
+        throws IOException {
+        if (clazz.element("java").text().isPresent()) {
+            footprint.apply(Paths.get(""), target);
+        }
+    }
+
+    /**
+     * Place Java tests.
+     * @param clazz Transpiled class
+     * @param jname Java class name
+     */
+    private void placeJavaTests(final Xnav clazz, final String jname) throws IOException {
+        if (MjTranspile.testsPresent(clazz)) {
+            final String[] jparts = jname.split("\\.");
+            final Path tests = this.generatedDir.toPath().getParent().resolve(
+                "generated-test-sources"
+            );
+            final Path base = Arrays.stream(jparts, 0, jparts.length - 1)
+                .reduce(
+                    tests,
+                    Path::resolve,
+                    Path::resolve
+                );
+            final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
+            final Path resolved = base.resolve(origin);
+            final Path resulted;
+            final String content;
+            if (
+                Files.exists(
+                    tests.getParent().getParent().resolve("src").resolve("test")
+                        .resolve("java")
+                        .resolve(tests.relativize(resolved))
+                )
+            ) {
+                final String atomized = String.format(
+                    "%sEOAtomTest.java", jparts[jparts.length - 1]
+                );
+                resulted = base.resolve(atomized);
+                content = clazz.element("tests").text().get().replace(
+                    origin.replace(".java", ""), atomized.replace(".java", "")
+                );
+            } else {
+                resulted = resolved;
+                content = clazz.element("tests").text().get();
+            }
+            new Saved(content, resulted).value();
+        }
+    }
+
+    /**
+     * Tests exist?
+     * @param clazz Class
+     * @return True or False
+     */
+    private static boolean testsPresent(final Xnav clazz) {
+        return clazz.element("tests").text().map(s -> s.contains("@Test")).orElse(false);
     }
 }

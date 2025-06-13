@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 object: org.eolang.bool-tests
 input: |
   +architect yegor256@gmail.com
   +home https://github.com/objectionary/eo
-  +tests
   +package org.eolang
   +version 0.0.0
 

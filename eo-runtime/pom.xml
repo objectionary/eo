@@ -227,8 +227,37 @@
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
-                <lint>empty-object</lint>
+                <!-- Required to be skipped, since we in runtime origin library. -->
+                <lint>prohibited-package</lint>
+                <!--
+                  @todo #4148:35min Enable `unused-void-attr` lint.
+                   We should enable this lint after the following issue with magic
+                   voids will be resolved: https://github.com/objectionary/lints/issues/574.
+                   Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
+                -->
                 <lint>unused-void-attr</lint>
+                <!--
+                  @todo #4148:35min Enable `duplicate-names-in-diff-context` lint.
+                   For now its too pedantic. See this: https://github.com/objectionary/lints/issues/578.
+                   Also, we should fix the bug with false positives with lambda object names in the atoms,
+                   in order to enable this lint.
+                -->
+                <lint>duplicate-names-in-diff-context</lint>
+                <!--
+                  @todo #4157:60min Enable `redundant-object` lint after several fixes.
+                   Currently, it has multiple false-positives, that are reported here:
+                   https://github.com/objectionary/lints/issues/606, https://github.com/objectionary/lints/issues/607,
+                   and https://github.com/objectionary/lints/issues/609. After all of them will
+                   be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
+                -->
+                <lint>redundant-object</lint>
+                <!--
+                  @todo #4096:35min Enable `sparse-decoration` lint.
+                   After we merged EO tests together with their source objects, and removed
+                   `+tests` meta, we have complains about sparse-decoration. Let's adjust and
+                   enable it.
+                -->
+                <lint>sparse-decoration</lint>
               </skipSourceLints>
               <keepBinaries>
                 <glob>EOorg/package-info.class</glob>
@@ -238,36 +267,6 @@
                 <glob>EOorg/EOeolang/EOsys/package-info.class</glob>
                 <glob>EOorg/EOeolang/EOtxt/package-info.class</glob>
               </keepBinaries>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>register</goal>
-              <goal>compile</goal>
-              <goal>xmir-to-phi</goal>
-              <goal>transpile</goal>
-            </goals>
-            <configuration>
-              <scope>test</scope>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
-              <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>true</failOnWarning>
-              <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
-              <ignoreRuntime>true</ignoreRuntime>
-              <skipSourceLints>
-                <lint>unit-test-without-phi</lint>
-                <lint>unused-void-attr</lint>
-                <lint>anonymous-formation</lint>
-              </skipSourceLints>
-              <skipProgramLints>
-                <lint>inconsistent-args</lint>
-              </skipProgramLints>
             </configuration>
           </execution>
         </executions>
@@ -404,7 +403,7 @@
               <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>3.0.24</version>
+                <version>3.0.25</version>
               </dependency>
             </dependencies>
           </plugin>

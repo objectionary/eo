@@ -56,8 +56,7 @@ public final class Main {
      */
     public static void main(final String... args) throws Exception {
         Main.setup();
-        final List<String> opts = new ArrayList<>(args.length);
-        opts.addAll(Arrays.asList(args));
+        final List<String> opts = new ArrayList<>(Arrays.asList(args));
         while (!opts.isEmpty()) {
             final String opt = opts.get(0);
             if (Main.parse(opt)) {
@@ -151,9 +150,8 @@ public final class Main {
     /**
      * Run this opts.
      * @param opts The opts left
-     * @throws Exception If fails
      */
-    private static void run(final List<String> opts) throws Exception {
+    private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
             throw new IllegalArgumentException(
@@ -187,13 +185,14 @@ public final class Main {
      * @throws IOException If fails
      */
     private static String version() throws IOException {
-        try (BufferedReader input =
-            new BufferedReader(
-                new InputStreamReader(
-                    Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
-                    StandardCharsets.UTF_8
+        try (
+            BufferedReader input =
+                new BufferedReader(
+                    new InputStreamReader(
+                        Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
+                        StandardCharsets.UTF_8
+                    )
                 )
-            )
         ) {
             return input.lines().findFirst().orElse("N/A");
         }

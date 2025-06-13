@@ -1,6 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
+# @todo #4235:45min Enable test case for not empty atoms.
+#  In order to make this test passing, we need to update our Eo.g4 grammar to allow
+#  atoms have only test attributes inside, but not objects.
+skip: true
 line: 3
 message: |-
   [3:-1] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'

@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.68.0</version>
+    <version>0.69.4</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -19,6 +19,7 @@
     <module>eo-parser</module>
     <module>eo-maven-plugin</module>
     <module>eo-runtime</module>
+    <module>eo-integration-tests</module>
   </modules>
   <description>EO Language Compiler and Runtime</description>
   <url>https://github.com/objectionary/eo</url>
@@ -185,13 +186,13 @@
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>12.5</version>
+        <version>12.7</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.34.0</version>
+        <version>0.35.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -201,7 +202,7 @@
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>jaxec</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.1</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
@@ -289,13 +290,13 @@
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>5.0.0-alpha-12</version>
+      <version>5.0.0-beta-1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>5.0.0-alpha-12</version>
+      <version>5.0.0-beta-1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -407,6 +408,7 @@
             <skipTests>${skipITs}</skipTests>
             <forkCount>1.0C</forkCount>
             <reuseForks>true</reuseForks>
+            <excludedGroups>snippets</excludedGroups>
           </configuration>
         </plugin>
       </plugins>
@@ -446,6 +448,28 @@
       <properties>
         <skipUTs>true</skipUTs>
       </properties>
+    </profile>
+    <profile>
+      <id>snippets</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <skipUTs>true</skipUTs>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <skipTests>${skipITs}</skipTests>
+              <forkCount>1.0C</forkCount>
+              <reuseForks>true</reuseForks>
+              <excludedGroups>!snippets</excludedGroups>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>qulice</id>
@@ -497,17 +521,17 @@
               <dependency>
                 <groupId>com.jcabi</groupId>
                 <artifactId>jcabi-xml</artifactId>
-                <version>0.34.0</version>
+                <version>0.35.0</version>
               </dependency>
               <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>3.0.24</version>
+                <version>3.0.25</version>
               </dependency>
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>12.5</version>
+                <version>12.7</version>
               </dependency>
             </dependencies>
           </plugin>

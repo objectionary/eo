@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:eo="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eolang</groupId>
+    <artifactId>eo-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>eo-integration-tests</artifactId>
+  <name>eo-integration-tests</name>
+  <description>Integration tests for eo modules</description>
+  <properties>
+    <!--  This is required for later correct replacement of argline  -->
+    <argLine/>
+  </properties>
+  <dependencies>
+    <dependency>
+      <!--
+      This dependency is required by the javadoc plugin. In the eo-runtime,
+      we use classes from this JAR, but can't have it as a normal dependency.
+      That's why the scope is "provided" here: it won't become a transitive
+      one, but at the same time will satisfy javadoc plugin.
+      -->
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.17.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>2.0.17</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.5.18</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>xax</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jaxec</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jhome</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-manifests</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.llorllale</groupId>
+      <artifactId>cactoos-matchers</artifactId>
+      <version>0.25</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>together</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>maybeslow</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.artsok</groupId>
+      <artifactId>rerunner-jupiter</artifactId>
+      <version>2.1.6</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>${skipUTs}</skipTests>
+          <runOrder>random</runOrder>
+          <failIfNoTests>false</failIfNoTests>
+          <argLine>
+            @{argLine} -Xmx${heap-size} -Xss${stack-size}
+          </argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>snippet-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <argLine>
+                @{argLine} -Xmx${heap-size} -Xss${stack-size}
+              </argLine>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>eo-maven-plugin</artifactId>
+            <configuration>
+              <skipLinting>false</skipLinting>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>project-validate</id>
+                <phase>none</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

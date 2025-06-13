@@ -54,3 +54,15 @@
             getenv "TEMPDIR" > tempdir!
             getenv "USERPROFILE" > userprofile!
             -- > empty
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  tmpdir.exists > [] +> global-temp-dir-exists
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  tmpdir.is-directory > [] +> global-temp-dir-is-directory
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  tmpdir.path.eq tmpdir.path > [] +> returns-the-same-tmpdir
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  tmpdir.tmpfile.exists > [] +> creates-tmpfile

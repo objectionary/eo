@@ -13,6 +13,7 @@ import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -169,7 +170,9 @@ final class TjsForeign implements Closeable {
      * @return Collection of tojos.
      */
     Collection<TjForeign> all() {
-        return this.select(all -> true);
+        return this.select(all -> true).stream()
+            .sorted(Comparator.comparing(TjForeign::identifier))
+            .collect(Collectors.toList());
     }
 
     /**

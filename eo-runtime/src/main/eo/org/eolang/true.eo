@@ -23,3 +23,41 @@
   # Or.
   # A logical operation that returns True if at least one of the given conditions is true.
   ^ > [x] > or
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-compares-two-bools
+    eq. > @
+      true
+      true
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-true-as-bool
+    true.as-bool > @
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-compares-two-different-bool-types
+    not. > @
+      eq.
+        true
+        42
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-compares-bool-to-bytes
+    and. > @
+      true.eq 01-
+      false.eq 00-
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-compares-bool-to-bytes-reverse
+    and. > @
+      01-.as-bytes.eq true
+      00-.as-bytes.eq false
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> tests-forks-on-true-condition
+    eq. > @
+      if.
+        5.eq 5
+        123
+        42
+      123

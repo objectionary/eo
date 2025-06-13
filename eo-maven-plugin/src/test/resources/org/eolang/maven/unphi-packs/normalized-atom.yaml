@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 skip: true
 asserts:
   - //o[@base='Q.org.eolang.io.stdout' and @name='x']/o[@as='text' and @base='Q.org.eolang.bytes']

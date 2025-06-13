@@ -137,8 +137,8 @@ public final class MjResolve extends MjSafe {
                 Logger.warn(this, "No new files after unpacking of %s!", dep);
             } else {
                 Logger.info(
-                    this, "Found %d new file(s) after unpacking of %s",
-                    files, dep
+                    this, "Found %d new file(s) (%d MB) after unpacking of %s",
+                    files, MjResolve.folderSizeInMb(dest), dep
                 );
             }
             total = 1;
@@ -245,5 +245,28 @@ public final class MjResolve extends MjSafe {
                 .findFirst();
         }
         return res;
+    }
+
+    /**
+     * Folder size in megabytes.
+     * @param path Folder
+     * @return Folder size
+     * @throws IOException if I/O fails
+     */
+    private static long folderSizeInMb(final Path path) throws IOException {
+        try (Stream<Path> paths = Files.walk(path)) {
+            return paths.filter(Files::isRegularFile).mapToLong(
+                p -> {
+                    try {
+                        return Files.size(p);
+                    } catch (final IOException exception) {
+                        throw new IllegalStateException(
+                            String.format("Failed to calculate size in %s", p),
+                            exception
+                        );
+                    }
+                }
+            ).sum() / 1024L / 1024L;
+        }
     }
 }

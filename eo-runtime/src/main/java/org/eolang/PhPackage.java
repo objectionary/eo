@@ -54,6 +54,11 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
+    }
+
+    @Override
     public Phi copy() {
         return this;
     }
@@ -67,14 +72,14 @@ final class PhPackage implements Phi {
     public Phi take(final String name) {
         final String fqn = String.join(".", this.pkg, name);
         final Phi taken;
-        if (name.equals(Attr.RHO)) {
-            if (this.objects.containsKey(Attr.RHO)) {
-                taken = this.objects.get(Attr.RHO);
+        if (name.equals(Phi.RHO)) {
+            if (this.objects.containsKey(Phi.RHO)) {
+                taken = this.objects.get(Phi.RHO);
             } else {
                 throw new ExUnset(
                     String.format(
                         "The %s attribute is absent in package object '%s'",
-                        Attr.RHO, this.pkg
+                        Phi.RHO, this.pkg
                     )
                 );
             }
@@ -89,7 +94,7 @@ final class PhPackage implements Phi {
             taken = next;
         } else {
             final Phi loaded = this.loadPhi(fqn);
-            loaded.put(Attr.RHO, this);
+            loaded.put(Phi.RHO, this);
             this.put(fqn, loaded);
             taken = this.take(name);
         }

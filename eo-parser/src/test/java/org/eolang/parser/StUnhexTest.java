@@ -141,8 +141,7 @@ final class StUnhexTest {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> shifts() {
         return Stream.of(
-            Arguments.of(StUnhex.XNAV, "xnav"),
-            Arguments.of(StUnhex.XPATH, "xpath")
+            Arguments.of(StUnhex.XNAV, "xnav")
         );
     }
 }

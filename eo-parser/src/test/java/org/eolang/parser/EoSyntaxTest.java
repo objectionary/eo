@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
@@ -11,7 +12,11 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Stream;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -30,6 +35,8 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXParseException;
 
@@ -37,6 +44,10 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  *
  * @since 0.1
+ * @todo #4052:35min Replace XML.xpath() with Xnav.path().
+ *  Currently, in {@link EoSyntaxTest#checksTypoPacks} its blocked by attribute parsing issue in
+ *  Xnav. Please check <a href="https://github.com/volodya-lombrozo/xnav/issues/119">this</a> issue
+ *  for more details. Once it will be resolved, we should proceed with the replacement.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
@@ -98,7 +109,7 @@ final class EoSyntaxTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors[count(error)=2]",
-                String.format("/object[listing='%s']", src)
+                String.format("/object[listing='%s']", StringEscapeUtils.escapeXml11(src))
             )
         );
     }
@@ -108,18 +119,20 @@ final class EoSyntaxTest {
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
         ).asString();
-        final XML xml = new XMLDocument(
-            new String(
-                new EoSyntax(
-                    new InputOf(src)
-                ).parsed().toString().getBytes(),
-                StandardCharsets.UTF_8
-            )
+        final Xnav xml = new Xnav(
+            new XMLDocument(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(),
+                    StandardCharsets.UTF_8
+                )
+            ).inner()
         );
         MatcherAssert.assertThat(
             "EoSyntax must copy listing to XMIR",
-            xml.xpath("/object/listing/text()"),
-            Matchers.contains(src)
+            xml.element("object").element("listing").text().get(),
+            Matchers.containsString(StringEscapeUtils.escapeXml11(src))
         );
     }
 
@@ -328,18 +341,21 @@ final class EoSyntaxTest {
 
     @Test
     void printsSyntaxWithComments() throws IOException {
-        final XML xml = new EoSyntax(
-            new InputOf(
-                String.join(
-                    "\n",
-                    "# Foo.",
-                    "# Bar.",
-                    "# Xyz.",
-                    "[] > foo"
+        final Xnav xml = new Xnav(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# Foo.",
+                        "# Bar.",
+                        "# Xyz.",
+                        "[] > foo"
+                    )
                 )
-            )
-        ).parsed();
-        final String comments = xml.xpath("/object/comments/comment/text()").get(0);
+            ).parsed().inner()
+        );
+        final String comments = xml.element("object").element("comments").element("comment").text()
+            .get();
         final String expected = "Foo.\\nBar.\\nXyz.";
         MatcherAssert.assertThat(
             String.format(
@@ -349,5 +365,33 @@ final class EoSyntaxTest {
             comments,
             Matchers.equalTo(expected)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("naughty")
+    void parsesNaughtyString(final String input) throws IOException {
+        MatcherAssert.assertThat(
+            String.format("Failed to understand string: %s", input),
+            new EoSyntax(
+                String.join(
+                    "\n",
+                    "# App.",
+                    "[] > app",
+                    String.format("  QQ.io.stdout \"%s\" > @", input)
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    /**
+     * Prepare naughty strings.
+     * @return Stream of strings
+     * @throws IOException if I/O fails
+     */
+    private static Stream<Arguments> naughty() throws IOException {
+        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+            .map(StringEscapeUtils::escapeJava)
+            .map(Arguments::of);
     }
 }

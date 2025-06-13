@@ -27,11 +27,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -856,7 +856,7 @@ final class EOsocketTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Simple() {
-            this.add("s", new AtVoid("s"));
+            this.add("s", new PhVoid("s"));
         }
 
         @Override
@@ -885,7 +885,7 @@ final class EOsocketTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Server(final int received) {
-            this.add("s", new AtVoid("s"));
+            this.add("s", new PhVoid("s"));
             this.received = received;
         }
 
@@ -914,7 +914,7 @@ final class EOsocketTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Receiver(final int received) {
-            this.add("s", new AtVoid("s"));
+            this.add("s", new PhVoid("s"));
             this.received = received;
         }
 
@@ -943,7 +943,7 @@ final class EOsocketTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Client(final String msg) {
-            this.add("s", new AtVoid("s"));
+            this.add("s", new PhVoid("s"));
             this.message = msg;
         }
 
