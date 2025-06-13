@@ -11,6 +11,16 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:28
++unlint redundant-object:30
++unlint redundant-object:150
++unlint redundant-object:164
++unlint redundant-object:166
++unlint redundant-object:198
++unlint redundant-object:212
++unlint redundant-object:238
++unlint redundant-object:254
++unlint redundant-object:331
 
 # The file object in the filesystem.
 [path] > file
@@ -592,7 +602,6 @@
     .open
       "a+"
       [f]
-        o1.write "!" > @
-        f.write "Hello, world" > o1
+        (f.write "Hello, world").write "!" > @
     .size
     .eq 13 > @

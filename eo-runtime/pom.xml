@@ -250,7 +250,6 @@
                    and https://github.com/objectionary/lints/issues/609. After all of them will
                    be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
                 -->
-                <lint>redundant-object</lint>
                 <!--
                   @todo #4096:35min Enable `sparse-decoration` lint.
                    After we merged EO tests together with their source objects, and removed
