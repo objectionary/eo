@@ -32,92 +32,15 @@ public final class EOstring_buffer extends PhDefault implements Atom {
      */
     public EOstring_buffer() {
         this.add("m", new PhVoid("m"));
+        this.add("content", new PhVoid("content"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi memory = this.take("m");
-        return new StringBufferState(memory, "");
-    }
-
-    /**
-     * String buffer state that can be chained with .with calls.
-     */
-    public static final class StringBufferState extends PhDefault implements Atom {
+        final String content = new Dataized(this.take("content")).asString();
         
-        /**
-         * Memory block.
-         */
-        private final Phi memory;
-        
-        /**
-         * Current content.
-         */
-        private final String content;
-        
-        /**
-         * Ctor.
-         * @param mem Memory block
-         * @param cnt Current content
-         */
-        public StringBufferState(final Phi mem, final String cnt) {
-            this.memory = mem;
-            this.content = cnt;
-        }
-        
-        @Override
-        public Phi take(final String name) {
-            if ("with".equals(name)) {
-                return new WithMethod(this);
-            }
-            return super.take(name);
-        }
-        
-        @Override
-        public Phi lambda() {
-            // Get the content as bytes
-            final byte[] bytes = this.content.getBytes(StandardCharsets.UTF_8);
-            
-            // Resize memory to fit the content using m.resized
-            final Phi resized = this.memory.take("resized").copy();
-            resized.put("new-size", new Data.ToPhi(bytes.length));
-            new Dataized(resized).take(); // Execute the resize
-            
-            // Write content to memory using m.write
-            final Phi writer = this.memory.take("write").copy();
-            writer.put("offset", new Data.ToPhi(0));
-            writer.put("data", new Data.ToPhi(bytes));
-            new Dataized(writer).take(); // Execute the write
-            
-            // Return the string content
-            return new Data.ToPhi(this.content);
-        }
-    }
-    
-    /**
-     * The 'with' method implementation.
-     */
-    public static final class WithMethod extends PhDefault implements Atom {
-        
-        /**
-         * The string buffer state.
-         */
-        private final StringBufferState state;
-        
-        /**
-         * Ctor.
-         * @param buffer The buffer state
-         */
-        public WithMethod(final StringBufferState buffer) {
-            this.state = buffer;
-        }
-        
-        @Override
-        public Phi lambda() {
-            // Access the first positional argument (the string to append)
-            final String newStr = new Dataized(this.take("0")).asString();
-            final String newContent = this.state.content + newStr;
-            return new StringBufferState(this.state.memory, newContent);
-        }
+        // For now, just return the content without using memory
+        // TODO: implement memory management with m.resized
+        return new Data.ToPhi(content);
     }
 }

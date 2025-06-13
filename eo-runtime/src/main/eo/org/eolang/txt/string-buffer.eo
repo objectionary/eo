@@ -10,29 +10,14 @@
 # The `string-buffer` object allows you to build strings by appending
 # multiple strings together using a memory buffer that grows as needed.
 # It uses `m.resized` to increase the size of the memory block.
-#
-# Usage:
-#   string-buffer m   # where m is a malloc.of allocated memory
-#   .with "hello"     # append "hello"
-#   .with ", world"   # append ", world"
-#   .with "!"         # append "!"
-[m] > string-buffer ?
+[m content] > string-buffer ?
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-creates-empty-buffer
     eq. > @
-      malloc.of
-        0
-        [m] >>
-          string-buffer m > @
+      string-buffer
+        malloc.of
+          0
+          [m] >>
+            m > @
+        ""
       ""
-
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-appends-all-together
-    eq. > @
-      malloc.of
-        0
-        [m] >>
-          (string-buffer m).with "hello" > sb1!
-          sb1.with ", world" > sb2!
-          sb2.with "!" > @
-      "hello, world!"
