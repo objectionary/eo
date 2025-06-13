@@ -47,9 +47,9 @@ bound
     ;
 
 // Error production to handle malformed bound objects
-// This consumes malformed lines that start with [ and any following indented content
+// This specifically targets malformed attribute syntax like [x] +++ bad
 errorBound
-    : commentOptional LSQ (~EOL)* EOL innersOrEol?
+    : commentOptional LSQ NAME* RSQ SPACE PLUS PLUS (~EOL)* EOL innersOrEol?
     ;
 
 subMaster
@@ -94,12 +94,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB innersItems UNTAB
-    ;
-
-// Items inside inners - can be valid bounds/subMasters or error items
-innersItems
-    : (bound | subMaster | errorBound) (bound | EOL? subMaster | errorBound)*
+    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
     ;
 
 // Void attributes of an abstract object, atom or horizontal anonym object

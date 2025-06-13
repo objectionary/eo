@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.IntervalSet;
 
 /**
  * Custom error recovery strategy for EO parser.
@@ -21,22 +20,26 @@ import org.antlr.v4.runtime.misc.IntervalSet;
 final class EoErrorRecoveryStrategy extends DefaultErrorStrategy {
 
     @Override
-    public void recover(final Parser recognizer, final RecognitionException exc) {
+    public void recover(
+        final Parser recognizer,
+        final RecognitionException exc
+    ) {
         final String rule = recognizer.getRuleInvocationStack().get(0);
         final String[] names = recognizer.getRuleNames();
-        if (names[EoParser.RULE_bound].equals(rule) || 
-            names[EoParser.RULE_object].equals(rule)) {
-            this.skipToNextObjectAtSameLevel(recognizer);
+        if (names[EoParser.RULE_bound].equals(rule)
+            || names[EoParser.RULE_object].equals(rule)) {
+            EoErrorRecoveryStrategy.skipToNextObjectAtSameLevel(recognizer);
         } else {
             super.recover(recognizer, exc);
         }
     }
 
     /**
-     * Skip tokens until we find the start of the next object at the same indentation level.
+     * Skip tokens until we find the start of the next object
+     * at the same indentation level.
      * @param recognizer The parser
      */
-    private void skipToNextObjectAtSameLevel(final Parser recognizer) {
+    private static void skipToNextObjectAtSameLevel(final Parser recognizer) {
         final TokenStream tokens = recognizer.getInputStream();
         int index = recognizer.getCurrentToken().getTokenIndex();
         while (index < tokens.size()) {
@@ -54,22 +57,10 @@ final class EoErrorRecoveryStrategy extends DefaultErrorStrategy {
                     return;
                 }
             }
-            index++;
+            index = index + 1;
         }
         if (index < tokens.size()) {
             recognizer.getInputStream().seek(index);
-        }
-    }
-
-    @Override
-    protected void consumeUntil(final Parser recognizer, final IntervalSet set) {
-        Token token = recognizer.getCurrentToken();
-        while (token.getType() != Token.EOF && !set.contains(token.getType())) {
-            if (token.getType() == EoParser.UNTAB) {
-                break;
-            }
-            recognizer.consume();
-            token = recognizer.getCurrentToken();
         }
     }
 }

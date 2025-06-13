@@ -177,18 +177,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterErrorBound(final EoParser.ErrorBoundContext ctx) {
+        // Nothing here
     }
 
     @Override
     public void exitErrorBound(final EoParser.ErrorBoundContext ctx) {
-    }
-
-    @Override
-    public void enterInnersItems(final EoParser.InnersItemsContext ctx) {
-    }
-
-    @Override
-    public void exitInnersItems(final EoParser.InnersItemsContext ctx) {
+        // Nothing here
     }
 
     @Override
