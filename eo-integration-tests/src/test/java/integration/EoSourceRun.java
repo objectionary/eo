@@ -37,7 +37,6 @@ final class EoSourceRun implements Proc<Object> {
             .configuration()
             .set("failOnWarning", Boolean.FALSE.toString())
             .set("skipLinting", Boolean.TRUE.toString());
-
         this.farea.build()
             .plugins()
             .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
