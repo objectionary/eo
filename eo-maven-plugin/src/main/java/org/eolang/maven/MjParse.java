@@ -22,7 +22,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.eolang.parser.EoSyntax;
-import org.eolang.parser.ObjectName;
+import org.eolang.parser.OnDefault;
+import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -146,13 +147,11 @@ public final class MjParse extends MjSafe {
             "Parsed program '%s' from %[file]s:\n %s",
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
-        String name = "";
         final Node document = xmir.inner();
-        try {
-            name = new ObjectName(xmir).get();
-        } catch (final IllegalStateException exception) {
-            MjParse.applyError("mandatory-object-name", exception.getMessage(), document);
-        }
+        final String name = new OnDetailed(
+            new OnDefault(xmir),
+            e -> MjParse.applyError("mandatory-object-name", e.getMessage(), document)
+        ).get();
         if (!name.equals(identifier)) {
             MjParse.applyError(
                 "validate-object-name",

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.parser.ObjectName;
+import org.eolang.parser.OnDefault;
 
 /**
  * Take .xmir files from target/eo/03-optimize directory and
@@ -65,7 +65,7 @@ public final class MjLatex extends MjSafe {
             final Path file = tojo.xmir();
             final Path dir = this.targetDir.toPath();
             final Path target = new Place(
-                MjLatex.last(new ObjectName(new XMLDocument(file)).get())
+                MjLatex.last(new OnDefault(new XMLDocument(file)).get())
             ).make(dir.resolve(MjLatex.DIR), MjLatex.EXT);
             new Saved(
                 new LatexTemplate(
