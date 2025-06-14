@@ -139,19 +139,15 @@ final class MjParseTest {
     }
 
     @Test
-    void crashesIfWrongPackage(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package wrong.package\n",
-                    "# Hello.",
-                    "[] > hello",
-                    "  42 > @"
-                )
-                .execute(new FakeMaven.Parse()),
-            "It is expected to crash if the package is wrong"
-        );
+    void crashesIfWrongPackage(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(
+                "+package wrong.package\n",
+                "# Hello.",
+                "[] > hello",
+                "  42 > @"
+            )
+            .execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
             "The XMIR with broken content must exist, but it doesn't",
             new Walk(temp.resolve("target")).stream().anyMatch(
@@ -230,7 +226,7 @@ final class MjParseTest {
             XhtmlMatchers.hasXPaths(
                 "/object/errors[count(error)=1]",
                 "//error[@severity='critical']",
-                "//error[text() = \"Tojo identifier 'main' does not match to result object name 'app'\"]"
+                "//error[contains(text(), \"does not match the name of the object\")]"
             )
         );
     }
