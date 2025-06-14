@@ -6,7 +6,6 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -175,7 +174,6 @@ final class MjPlaceTest {
      * @throws IOException If fails
      */
     @Test
-    @ExtendWith(WeAreOnline.class)
     void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
