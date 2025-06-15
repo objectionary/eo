@@ -46,7 +46,7 @@
         as-i64.
           and.
             time-bytes.left const-1
-            ((one.left const-2).as-i64.minus one).as-bytes
+            ((one.left 53).as-i64.minus one).as-bytes
         plus.
           as-i64.
             and.
@@ -66,7 +66,6 @@
             as-number.
               timeval.tv-usec.as-i64.div 1000.as-i64
     35 > const-1
-    53 > const-2
     17 > const-3
     00-00-00-00-00-00-00-01 > one
 

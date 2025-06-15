@@ -244,13 +244,6 @@
                 -->
                 <lint>duplicate-names-in-diff-context</lint>
                 <!--
-                  @todo #4157:60min Enable `redundant-object` lint after several fixes.
-                   Currently, it has multiple false-positives, that are reported here:
-                   https://github.com/objectionary/lints/issues/606, https://github.com/objectionary/lints/issues/607,
-                   and https://github.com/objectionary/lints/issues/609. After all of them will
-                   be fixed, we should enable lint. Don't forget to enable it in the `test-compile` execution too.
-                -->
-                <!--
                   @todo #4096:35min Enable `sparse-decoration` lint.
                    After we merged EO tests together with their source objects, and removed
                    `+tests` meta, we have complains about sparse-decoration. Let's adjust and

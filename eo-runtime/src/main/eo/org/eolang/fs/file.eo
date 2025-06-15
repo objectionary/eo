@@ -11,16 +11,17 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:28
-+unlint redundant-object:30
-+unlint redundant-object:150
-+unlint redundant-object:164
-+unlint redundant-object:166
-+unlint redundant-object:198
-+unlint redundant-object:212
-+unlint redundant-object:238
-+unlint redundant-object:254
-+unlint redundant-object:331
++unlint redundant-object:29
++unlint redundant-object:31
++unlint redundant-object:151
++unlint redundant-object:165
++unlint redundant-object:167
++unlint redundant-object:199
++unlint redundant-object:213
++unlint redundant-object:239
++unlint redundant-object:255
++unlint redundant-object:332
++unlint redundant-object:594
 
 # The file object in the filesystem.
 [path] > file
@@ -590,8 +591,7 @@
                   *
                     f.write "Hello, world"
                     ^.m.put i2
-                f.read 7 > i1
-                i1.read 5 > i2
+                (f.read 7).read 5 > i2
             m
     .eq "world" > @
 
