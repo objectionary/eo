@@ -6,6 +6,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:19
++unlint redundant-object:25
++unlint redundant-object:393
 
 # List implements based operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
@@ -322,8 +325,7 @@
           plus. > @
             x
             a.plus
-              ^.src.at i
-    * 2 2 > src
+              (* 2 2).at i
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-list-reducedi-long-int-array
@@ -470,10 +472,9 @@
     eq. > @
       withouti.
         list
-          * "smthg" 27 nested
+          * "smthg" 27 (* 3 2 1)
         2
       * "smthg" 27
-    * 3 2 1 > nested
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-list-without
@@ -508,12 +509,10 @@
       eq.
         list3
         * 1 2 3
-    list (* 0 1) > list1
-    list (* 2 3) > list2
     withouti. > list3
       concat.
-        list1
-        list2
+        list (* 0 1)
+        list (* 2 3)
       0
 
   # This unit test is supposed to check the functionality of the corresponding object.

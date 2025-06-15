@@ -4,6 +4,11 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:16
++unlint redundant-object:21
++unlint redundant-object:22
++unlint redundant-object:24
++unlint redundant-object:25
 
 # Tuple.
 # An ordered, immutable collection of elements.
