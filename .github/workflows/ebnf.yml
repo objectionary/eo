@@ -21,7 +21,7 @@ jobs:
       - run: |
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: teatimeguest/setup-texlive-action@v3.3.4
+      - uses: teatimeguest/setup-texlive-action@v3.4.1
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
