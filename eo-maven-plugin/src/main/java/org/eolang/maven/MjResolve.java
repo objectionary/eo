@@ -68,6 +68,13 @@ public final class MjResolve extends MjSafe {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean resolveJna = true;
 
+    /**
+     * Resolve dependencies in central or not.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean resolveInCentral = true;
+
     @Override
     public void exec() throws IOException {
         final Collection<Dep> deps = this.deps();
@@ -212,7 +219,11 @@ public final class MjResolve extends MjSafe {
                     runtime.get().getVersion()
                 );
             } else {
-                deps = new DpsWithRuntime(deps);
+                if (this.resolveInCentral) {
+                    deps = new DpsWithRuntime(deps);
+                } else {
+                    deps = new DpsOfflineRuntime(deps);
+                }
             }
         }
         if (!this.ignoreVersionConflicts) {
