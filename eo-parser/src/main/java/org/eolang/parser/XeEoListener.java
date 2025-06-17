@@ -15,7 +15,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.antlr.v4.runtime.tree.Trees;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -938,13 +937,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.enter();
         if (ctx.PHI() != null) {
             this.objects.prop("name", ctx.PHI().getText());
-        } else if (ctx.NAME() != null) {
-            if (ctx.tarrow().PLUS() != null) {
-                this.objects.prop(
-                    "name",
-                    String.format("%s%s", ctx.tarrow().PLUS().getText(), ctx.NAME().getText())
-                );
-            }
+        } else if (ctx.NAME() != null && ctx.tarrow().PLUS() != null) {
+            this.objects.prop(
+                "name",
+                String.format("%s%s", ctx.tarrow().PLUS().getText(), ctx.NAME().getText())
+            );
         }
     }
 
