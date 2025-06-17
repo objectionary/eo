@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.Trees;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -176,6 +177,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTbound(final EoParser.TboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTbound(final EoParser.TboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTsubMaster(final EoParser.TsubMasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTsubMaster(final EoParser.TsubMasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterSubMaster(final EoParser.SubMasterContext ctx) {
         // Nothing here
     }
@@ -192,6 +213,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitMasterBody(final EoParser.MasterBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTmasterBody(final EoParser.TmasterBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTmasterBody(final EoParser.TmasterBodyContext ctx) {
         // Nothing here
     }
 
@@ -230,6 +261,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTformation(final EoParser.TformationContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitTformation(final EoParser.TformationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTestsOrEol(final EoParser.TestsOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTestsOrEol(final EoParser.TestsOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterInnersOrEol(final EoParser.InnersOrEolContext ctx) {
         // Nothing here
     }
@@ -246,6 +297,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitInners(final EoParser.InnersContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterTests(final EoParser.TestsContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitTests(final EoParser.TestsContext ctx) {
         this.objects.leave();
     }
 
@@ -850,6 +911,36 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.CONST() != null) {
             this.objects.enter().prop("const").leave();
         }
+    }
+
+    @Override
+    public void enterTname(final EoParser.TnameContext ctx) {
+        this.objects.enter();
+        if (ctx.PHI() != null) {
+            this.objects.prop("name", ctx.PHI().getText());
+        } else if (ctx.NAME() != null) {
+            if (ctx.tarrow().PLUS() != null) {
+                this.objects.prop(
+                    "name",
+                    String.format("%s%s", ctx.tarrow().PLUS().getText(), ctx.NAME().getText())
+                );
+            }
+        }
+    }
+
+    @Override
+    public void exitTname(final EoParser.TnameContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterTarrow(final EoParser.TarrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTarrow(final EoParser.TarrowContext ctx) {
+        // Nothing here
     }
 
     @Override

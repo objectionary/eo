@@ -45,13 +45,26 @@ bound
     : commentOptional (application | ((method | just) oname) EOL)
     ;
 
+tbound
+    : commentOptional (application | ((method | just) tname) EOL)
+    ;
+
+tsubMaster
+    : commentOptional tmasterBody
+    ;
+
 subMaster
     : commentOptional masterBody
     ;
 
 masterBody
     : formation
-    | (atom | hanonym oname EOL)
+    | (atom | hanonym (oname) EOL)
+    ;
+
+tmasterBody
+    : tformation
+    | (atom | hanonym (tname) EOL)
     ;
 
 // Just an object reference without name
@@ -65,7 +78,7 @@ just: beginner
 //  Currently we allow to have just inners, while we should allow only test attributes
 //  inside the atom. For this, we need to intoduce new grammar rules. Don't forget to
 //  enable all the tests, related on not empty atoms.
-atom: voids suffix SPACE QUESTION innersOrEol
+atom: voids suffix SPACE QUESTION testsOrEol
     ;
 
 // Formation - abstract object with mandatory name
@@ -73,6 +86,15 @@ atom: voids suffix SPACE QUESTION innersOrEol
 // Ends on the next line
 formation
     : voids oname innersOrEol
+    ;
+
+tformation
+    : voids tname innersOrEol
+    ;
+
+testsOrEol
+    : tests
+    | EOL
     ;
 
 // Inners object inside formation or EOL
@@ -88,6 +110,10 @@ innersOrEol
 // May be one empty line before "master"
 inners
     : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    ;
+
+tests
+    : EOL TAB (tbound | tsubMaster) (tbound | EOL? tsubMaster)* UNTAB
     ;
 
 // Void attributes of an abstract object, atom or horizontal anonym object
@@ -399,6 +425,14 @@ fname
 // Object name
 oname
     : suffix CONST?
+    ;
+
+tname
+    : tarrow (PHI | NAME)
+    ;
+
+tarrow
+    : SPACE PLUS ARROW SPACE
     ;
 
 // Suffix
