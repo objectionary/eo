@@ -353,6 +353,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTapplication(final EoParser.TapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTapplication(final EoParser.TapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
         // Nothing here
     }
@@ -511,6 +521,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVapplication(final EoParser.VapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTvapplication(final EoParser.TvapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTvapplication(final EoParser.TvapplicationContext ctx) {
         // Nothing here
     }
 

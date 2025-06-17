@@ -46,7 +46,7 @@ bound
     ;
 
 tbound
-    : commentOptional (application | ((method | just) tname) EOL)
+    : commentOptional (tapplication | ((method | just) tname) EOL)
     ;
 
 tsubMaster
@@ -135,6 +135,11 @@ application
     | vapplication
     ;
 
+tapplication
+    : happlicationExtended tname EOL
+    | tvapplication
+    ;
+
 // Horizontal application
 // The whole application is written in one line
 // The head does not contain elements in vertical notation
@@ -219,6 +224,11 @@ happlicationArgScoped
 vapplication
     : vapplicationHead oname vapplicationArgs
     | reversed oname vapplicationArgsReversed
+    ;
+
+tvapplication
+    : vapplicationHead tname vapplicationArgs
+    | reversed tname vapplicationArgsReversed
     ;
 
 // Vertical application head
