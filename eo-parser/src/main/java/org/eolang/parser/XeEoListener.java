@@ -921,6 +921,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOnameOrTname(final EoParser.OnameOrTnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitOnameOrTname(final EoParser.OnameOrTnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterOname(final EoParser.OnameContext ctx) {
         // Nothing here
     }
@@ -968,11 +978,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("name", ctx.PHI().getText());
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
-//            if (ctx.arrow().PLUS() != null) {
-//                this.objects.prop(
-//                    "name",
-//                    String.format("%s%s", ctx.arrow().PLUS().getText(), ctx.NAME().getText())
-//                );
         }
     }
 

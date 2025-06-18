@@ -42,7 +42,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) (oname | tname)) EOL)
+    : commentOptional (application | ((method | just) onameOrTname) EOL)
     ;
 
 tbound
@@ -59,7 +59,7 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym (oname | tname) EOL)
+    | (atom | hanonym onameOrTname EOL)
     ;
 
 tmasterBody
@@ -81,7 +81,7 @@ atom: voids suffix SPACE QUESTION testsOrEol
 // Can contain inner objects
 // Ends on the next line
 formation
-    : voids (oname | tname) innersOrEol
+    : voids onameOrTname innersOrEol
     ;
 
 tformation
@@ -128,7 +128,7 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended (oname | tname) EOL
+    : happlicationExtended onameOrTname EOL
     | vapplication
     ;
 
@@ -219,8 +219,8 @@ happlicationArgScoped
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHead (oname | tname) vapplicationArgs
-    | reversed (oname | tname) vapplicationArgsReversed
+    : vapplicationHead onameOrTname vapplicationArgs
+    | reversed onameOrTname vapplicationArgsReversed
     ;
 
 tvapplication
@@ -427,6 +427,11 @@ aname
 fname
     : oname
     | SPACE aname
+    ;
+
+// Either object name or test name
+onameOrTname
+    : oname | tname
     ;
 
 // Object name
