@@ -82,7 +82,7 @@ public final class StrictXmir implements XML {
             new Synced<>(
                 new Sticky<>(
                     () -> new StrictXML(
-                        StrictXmir.reset(before, tmp)
+                        reset(before, tmp)
                     )
                 )
             )
@@ -158,7 +158,7 @@ public final class StrictXmir implements XML {
             if (before.startsWith("http")) {
                 after = String.format(
                     "file:///%s",
-                    StrictXmir.fetch(
+                    fetch(
                         before,
                         tmp.resolve(
                             before.substring(before.lastIndexOf('/') + 1)
@@ -190,10 +190,10 @@ public final class StrictXmir implements XML {
      */
     private static File fetch(final String uri, final Path path, final Path tmp) {
         final File ret;
-        if (StrictXmir.MINE.equals(uri)) {
-            ret = StrictXmir.copied(uri, path, tmp);
+        if (MINE.equals(uri)) {
+            ret = copied(uri, path, tmp);
         } else {
-            ret = StrictXmir.downloaded(uri, path, tmp);
+            ret = downloaded(uri, path, tmp);
         }
         return ret;
     }

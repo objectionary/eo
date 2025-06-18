@@ -53,7 +53,7 @@ final class DrProgram implements Iterable<Directive> {
             .add("object")
             .attr(
                 "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                DrProgram.schema()
+                schema()
             )
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))

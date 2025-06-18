@@ -134,7 +134,7 @@ public final class Xmir implements XML {
      * @return EO representation as {@link String}
      */
     public String toEO() {
-        return this.converted(Xmir.FOR_EO, "eo");
+        return this.converted(FOR_EO, "eo");
     }
 
     /**
@@ -142,7 +142,7 @@ public final class Xmir implements XML {
      * @return PHI representation as {@link String}
      */
     public String toPhi() {
-        return this.converted(Xmir.FOR_PHI, "phi");
+        return this.converted(FOR_PHI, "phi");
     }
 
     /**

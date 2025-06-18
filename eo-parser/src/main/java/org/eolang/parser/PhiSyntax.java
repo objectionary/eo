@@ -131,7 +131,7 @@ public final class PhiSyntax implements Syntax {
      * @param extra Extra directives to append
      */
     public PhiSyntax(final Text inpt, final Iterable<Directive> extra) {
-        this(inpt, extra, PhiSyntax.CANONICAL);
+        this(inpt, extra, CANONICAL);
     }
 
     /**
