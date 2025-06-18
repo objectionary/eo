@@ -42,7 +42,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) oname) EOL)
+    : commentOptional (application | ((method | just) (oname | tname)) EOL)
     ;
 
 tbound
@@ -59,7 +59,7 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym (oname) EOL)
+    | (atom | hanonym (oname | tname) EOL)
     ;
 
 tmasterBody
@@ -74,10 +74,6 @@ just: beginner
 
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
-// @todo #4235:60min Allow atom to have only test attributes inside.
-//  Currently we allow to have just inners, while we should allow only test attributes
-//  inside the atom. For this, we need to intoduce new grammar rules. Don't forget to
-//  enable all the tests, related on not empty atoms.
 atom: voids suffix SPACE QUESTION testsOrEol
     ;
 
@@ -85,7 +81,7 @@ atom: voids suffix SPACE QUESTION testsOrEol
 // Can contain inner objects
 // Ends on the next line
 formation
-    : voids oname innersOrEol
+    : voids (oname | tname) innersOrEol
     ;
 
 tformation
@@ -112,6 +108,7 @@ inners
     : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
     ;
 
+// Tests
 tests
     : EOL TAB (tbound | tsubMaster) (tbound | EOL? tsubMaster)* UNTAB
     ;
@@ -131,7 +128,7 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended oname EOL
+    : happlicationExtended (oname | tname) EOL
     | vapplication
     ;
 
@@ -222,8 +219,8 @@ happlicationArgScoped
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHead oname vapplicationArgs
-    | reversed oname vapplicationArgsReversed
+    : vapplicationHead (oname | tname) vapplicationArgs
+    | reversed (oname | tname) vapplicationArgsReversed
     ;
 
 tvapplication
@@ -451,7 +448,7 @@ suffix
     ;
 
 arrow
-    : SPACE PLUS? ARROW SPACE
+    : SPACE ARROW SPACE
     ;
 
 // Simple scope
