@@ -28,7 +28,7 @@ final class EoErrorRecoveryStrategy extends DefaultErrorStrategy {
         final String[] names = recognizer.getRuleNames();
         if (names[EoParser.RULE_bound].equals(rule)
             || names[EoParser.RULE_object].equals(rule)) {
-            EoErrorRecoveryStrategy.skipToNextObjectAtSameLevel(recognizer);
+            skipToNextObjectAtSameLevel(recognizer);
         } else {
             super.recover(recognizer, exc);
         }

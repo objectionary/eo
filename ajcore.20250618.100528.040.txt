@@ -1,0 +1,629 @@
+---- AspectJ Properties ---
+AspectJ Compiler 1.9.8.M1 built on Monday Jul 26, 2021 at 00:35:33 PDT
+---- Dump Properties ---
+Dump file: ajcore.20250618.100528.040.txt
+Dump reason: java.lang.RuntimeException
+Dump on exception: true
+Dump at exit condition: abort
+---- Exception Information ---
+java.lang.RuntimeException: key not found in wovenClassFile
+	at org.aspectj.weaver.WeaverStateInfo.findEndOfKey(WeaverStateInfo.java:431)
+	at org.aspectj.weaver.WeaverStateInfo.replaceKeyWithDiff(WeaverStateInfo.java:387)
+	at org.aspectj.weaver.bcel.LazyClassGen.getJavaClassBytesIncludingReweavable(LazyClassGen.java:769)
+	at org.aspectj.weaver.bcel.BcelWeaver.getClassFilesFor(BcelWeaver.java:1460)
+	at org.aspectj.weaver.bcel.BcelWeaver.weaveAndNotify(BcelWeaver.java:1422)
+	at org.aspectj.weaver.bcel.BcelWeaver.weave(BcelWeaver.java:1192)
+	at org.aspectj.ajdt.internal.compiler.AjPipeliningCompilerAdapter.weaveQueuedEntries(AjPipeliningCompilerAdapter.java:510)
+	at org.aspectj.ajdt.internal.compiler.AjPipeliningCompilerAdapter.afterCompiling(AjPipeliningCompilerAdapter.java:374)
+	at org.aspectj.ajdt.internal.compiler.CompilerAdapter.ajc$afterReturning$org_aspectj_ajdt_internal_compiler_CompilerAdapter$2$f9cc9ca0(CompilerAdapter.aj:79)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:428)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performCompilation(AjBuildManager.java:1096)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:275)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:188)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:103)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:47)
+	at org.aspectj.tools.ajc.Main.run(Main.java:374)
+	at com.jcabi.maven.plugin.AjcMojo.executeAjc(AjcMojo.java:250)
+	at com.jcabi.maven.plugin.AjcMojo.execute(AjcMojo.java:225)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:906)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:283)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:206)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:255)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:201)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:361)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:314)
+---- System Properties ---
+java.specification.version=17
+sun.jnu.encoding=UTF-8
+java.class.path=/usr/share/apache-maven-3.9.10/boot/plexus-classworlds-2.9.0.jar
+java.vm.vendor=Eclipse Adoptium
+sun.arch.data.model=64
+java.vendor.url=https://adoptium.net/
+user.timezone=Etc/UTC
+maven.conf=/usr/share/apache-maven-3.9.10/conf
+java.vm.specification.version=17
+os.name=Linux
+sun.java.launcher=SUN_STANDARD
+sun.boot.library.path=/usr/lib/jvm/temurin-17-jdk-amd64/lib
+sun.java.command=org.codehaus.plexus.classworlds.launcher.Launcher install -DskipTests -q
+jdk.debug=release
+maven.home=/usr/share/apache-maven-3.9.10
+sun.cpu.endian=little
+user.home=/home/runner
+user.language=en
+sun.stderr.encoding=UTF-8
+java.specification.vendor=Oracle Corporation
+java.version.date=2025-04-15
+java.home=/usr/lib/jvm/temurin-17-jdk-amd64
+file.separator=/
+java.vm.compressedOopsMode=Zero based
+line.separator=
+
+sun.stdout.encoding=UTF-8
+java.vm.specification.vendor=Oracle Corporation
+java.specification.name=Java Platform API Specification
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+java.runtime.version=17.0.15+6
+user.name=runner
+path.separator=:
+securerandom.source=file:/dev/./urandom
+os.version=6.11.0-1015-azure
+java.runtime.name=OpenJDK Runtime Environment
+file.encoding=UTF-8
+guice.disable.misplaced.annotation.check=true
+java.vm.name=OpenJDK 64-Bit Server VM
+skipTests=true
+java.vendor.version=Temurin-17.0.15+6
+java.vendor.url.bug=https://github.com/adoptium/adoptium-support/issues
+java.io.tmpdir=/tmp
+java.version=17.0.15
+user.dir=/home/runner/work/eo/eo
+os.arch=amd64
+maven.multiModuleProjectDirectory=/home/runner/work/eo/eo
+java.vm.specification.name=Java Virtual Machine Specification
+org.slf4j.simpleLogger.defaultLogLevel=error
+native.encoding=UTF-8
+java.library.path=/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info=mixed mode, sharing
+java.vendor=Eclipse Adoptium
+java.vm.version=17.0.15+6
+classworlds.conf=/usr/share/apache-maven-3.9.10/bin/m2.conf
+java.specification.maintenance.version=1
+sun.io.unicode.encoding=UnicodeLittle
+library.jansi.path=/usr/share/apache-maven-3.9.10/lib/jansi-native
+java.class.version=61.0
+---- Command Line ---
+-Xset:avoidFinal=true
+-Xlint:warning
+-inpath
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes
+-sourceroots
+/tmp/temp11881197819194599869
+-d
+/home/runner/work/eo/eo/eo-maven-plugin/target/jcabi-ajc
+-classpath
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes:/home/runner/.m2/repository/org/eolang/eo-parser/1.0-SNAPSHOT/eo-parser-1.0-SNAPSHOT.jar:/home/runner/.m2/repository/net/sf/saxon/Saxon-HE/12.7/Saxon-HE-12.7.jar:/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar:/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar:/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar:/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar:/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-all/3.0.24/groovy-all-3.0.24.pom:/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar:/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-junit/1.10.15/ant-junit-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-antlr/1.10.15/ant-antlr-1.10.15.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar:/home/runner/.m2/repository/info/picocli/picocli/4.6.3/picocli-4.6.3.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar:/home/runner/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar:/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar:/home/runner/.m2/repository/org/testng/testng/7.5.1/testng-7.5.1.jar:/home/runner/.m2/repository/com/beust/jcommander/1.78/jcommander-1.78.jar:/home/runner/.m2/repository/org/webjars/jquery/3.5.1/jquery-3.5.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar:/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar:/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar:/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar:/home/runner/.m2/repository/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar:/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar:/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar:/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar:/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar:/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar:/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar:/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar:/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar:/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar:/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar:/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar:/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar:/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar:/home/runner/.m2/repository/org/glassfish/javax.json/1.1.4/javax.json-1.1.4.jar:/home/runner/.m2/repository/com/opencsv/opencsv/5.11.1/opencsv-5.11.1.jar:/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar:/home/runner/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar:/home/runner/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar:/home/runner/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar:/home/runner/.m2/repository/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar:/home/runner/.m2/repository/org/junit/vintage/junit-vintage-engine/5.11.4/junit-vintage-engine-5.11.4.jar:/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar:/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar:/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar:/home/runner/.m2/repository/ch/qos/reload4j/reload4j/1.2.26/reload4j-1.2.26.jar:/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar:/home/runner/work/eo/eo/eo-maven-plugin/target/classes:/home/runner/work/eo/eo/eo-parser/target/eo-parser-1.0-SNAPSHOT.jar:/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar:/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar:/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar:/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar:/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar:/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar:/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar:/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar:/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar:/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar:/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar:/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar:/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar:/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar:/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar:/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar:/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar:/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar:/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar:/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar:/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar:/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar:/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar:/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar:/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar:/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar:/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar
+-aspectpath
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes:/home/runner/.m2/repository/org/eolang/eo-parser/1.0-SNAPSHOT/eo-parser-1.0-SNAPSHOT.jar:/home/runner/.m2/repository/net/sf/saxon/Saxon-HE/12.7/Saxon-HE-12.7.jar:/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar:/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar:/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar:/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar:/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-all/3.0.24/groovy-all-3.0.24.pom:/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar:/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-junit/1.10.15/ant-junit-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar:/home/runner/.m2/repository/org/apache/ant/ant-antlr/1.10.15/ant-antlr-1.10.15.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar:/home/runner/.m2/repository/info/picocli/picocli/4.6.3/picocli-4.6.3.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar:/home/runner/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar:/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar:/home/runner/.m2/repository/org/testng/testng/7.5.1/testng-7.5.1.jar:/home/runner/.m2/repository/com/beust/jcommander/1.78/jcommander-1.78.jar:/home/runner/.m2/repository/org/webjars/jquery/3.5.1/jquery-3.5.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar:/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar:/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar:/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar:/home/runner/.m2/repository/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar:/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar:/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar:/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar:/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar:/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar:/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar:/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar:/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar:/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar:/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar:/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar:/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar:/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar:/home/runner/.m2/repository/org/glassfish/javax.json/1.1.4/javax.json-1.1.4.jar:/home/runner/.m2/repository/com/opencsv/opencsv/5.11.1/opencsv-5.11.1.jar:/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar:/home/runner/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar:/home/runner/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar:/home/runner/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar:/home/runner/.m2/repository/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar:/home/runner/.m2/repository/org/junit/vintage/junit-vintage-engine/5.11.4/junit-vintage-engine-5.11.4.jar:/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar:/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar:/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar:/home/runner/.m2/repository/ch/qos/reload4j/reload4j/1.2.26/reload4j-1.2.26.jar:/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar:/home/runner/work/eo/eo/eo-maven-plugin/target/classes:/home/runner/work/eo/eo/eo-parser/target/eo-parser-1.0-SNAPSHOT.jar:/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar:/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar:/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar:/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar:/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar:/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar:/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar:/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar:/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar:/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar:/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar:/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar:/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar:/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar:/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar:/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar:/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar:/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar:/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar:/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar:/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar:/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar:/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar:/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar:/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar:/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar:/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar:/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar:/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar:/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar:/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar:/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar:/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar:/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar:/usr/share/apache-maven-3.9.10/boot/plexus-classworlds-2.9.0.jar
+-source
+1.8
+-target
+1.8
+-g:none
+-encoding
+UTF-8
+-time
+-log
+/home/runner/work/eo/eo/eo-maven-plugin/target/jcabi-ajc.log
+-showWeaveInfo
+-warn:constructorName
+-warn:packageDefaultMethod
+-warn:deprecation
+-warn:maskedCatchBlocks
+-warn:unusedLocals
+-warn:unusedArguments
+-warn:unusedImports
+-warn:syntheticAccess
+-warn:assertIdentifier
+---- Full Classpath ---
+/usr/lib/jvm/temurin-17-jdk-amd64/lib/jrt-fs.jar(110494 bytes)
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes(3 entries)
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes(3 entries)
+/home/runner/.m2/repository/org/eolang/eo-parser/1.0-SNAPSHOT/eo-parser-1.0-SNAPSHOT.jar(250480 bytes)
+/home/runner/.m2/repository/net/sf/saxon/Saxon-HE/12.7/Saxon-HE-12.7.jar(5782706 bytes)
+/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar(167889 bytes)
+/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar(1033122 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar(259067 bytes)
+/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar(4273459 bytes)
+/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar(125497 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar(69908 bytes)
+/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar(1366079 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar(8056938 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar(82810 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar(2304360 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-junit/1.10.15/ant-junit-1.10.15.jar(141395 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar(18870 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-antlr/1.10.15/ant-antlr-1.10.15.jar(12273 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar(6183 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar(60614 bytes)
+/home/runner/.m2/repository/info/picocli/picocli/4.6.3/picocli-4.6.3.jar(405953 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar(1576687 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar(15175 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar(122958 bytes)
+/home/runner/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar(179818 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar(161781 bytes)
+/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar(1394638 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar(133002 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar(128878 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar(16841 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar(261221 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar(29427 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar(22730 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar(78912 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar(428909 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar(94088 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar(118008 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar(9115 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar(5485 bytes)
+/home/runner/.m2/repository/org/testng/testng/7.5.1/testng-7.5.1.jar(943465 bytes)
+/home/runner/.m2/repository/com/beust/jcommander/1.78/jcommander-1.78.jar(83782 bytes)
+/home/runner/.m2/repository/org/webjars/jquery/3.5.1/jquery-3.5.1.jar(313070 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar(291623 bytes)
+/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar(140425 bytes)
+/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar(42094 bytes)
+/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar(58015 bytes)
+/home/runner/.m2/repository/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar(326307 bytes)
+/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar(354579 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar(53010 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar(12869 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar(91571 bytes)
+/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar(93107 bytes)
+/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar(132609 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar(47198 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar(47118 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar(58819 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar(215833 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar(54086 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar(217935 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar(713072 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar(44671 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar(42355 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar(23604 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar(13003 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar(14351 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar(28529 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar(208641 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar(78418 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar(319948 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar(37919 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar(157081 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar(51563 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar(195892 bytes)
+/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar(151103 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar(305040 bytes)
+/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar(126113 bytes)
+/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar(656919 bytes)
+/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar(4467 bytes)
+/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar(3023797 bytes)
+/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar(3819 bytes)
+/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar(10763 bytes)
+/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar(2497 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar(87143 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar(4151 bytes)
+/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar(13786 bytes)
+/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar(12913 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar(19936 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar(40433 bytes)
+/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar(2254 bytes)
+/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar(109318 bytes)
+/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar(52116 bytes)
+/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar(30810 bytes)
+/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar(31095 bytes)
+/home/runner/.m2/repository/org/glassfish/javax.json/1.1.4/javax.json-1.1.4.jar(128770 bytes)
+/home/runner/.m2/repository/com/opencsv/opencsv/5.11.1/opencsv-5.11.1.jar(241710 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar(673587 bytes)
+/home/runner/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar(246806 bytes)
+/home/runner/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar(73737 bytes)
+/home/runner/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar(588337 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar(898652 bytes)
+/home/runner/.m2/repository/org/junit/vintage/junit-vintage-engine/5.11.4/junit-vintage-engine-5.11.4.jar(68610 bytes)
+/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar(384581 bytes)
+/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(45024 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar(10734 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar(271773 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar(90732 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar(45558 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar(8695 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar(13040 bytes)
+/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar(1608803 bytes)
+/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar(195922 bytes)
+/home/runner/.m2/repository/ch/qos/reload4j/reload4j/1.2.26/reload4j-1.2.26.jar(338688 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar(10496 bytes)
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes(3 entries)
+/home/runner/work/eo/eo/eo-parser/target/eo-parser-1.0-SNAPSHOT.jar(250480 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar(259067 bytes)
+/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar(4273459 bytes)
+/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar(125497 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar(69908 bytes)
+/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar(1366079 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar(8056938 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar(82810 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar(2304360 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar(6183 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar(60614 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar(1576687 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar(15175 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar(122958 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar(161781 bytes)
+/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar(1394638 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar(133002 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar(128878 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar(16841 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar(261221 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar(29427 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar(22730 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar(78912 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar(428909 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar(94088 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar(118008 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar(9115 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar(5485 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar(291623 bytes)
+/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar(140425 bytes)
+/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar(42094 bytes)
+/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar(58015 bytes)
+/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar(354579 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar(53010 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar(12869 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar(91571 bytes)
+/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar(93107 bytes)
+/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar(132609 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar(47198 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar(47118 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar(58819 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar(215833 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar(54086 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar(217935 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar(713072 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar(44671 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar(42355 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar(23604 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar(13003 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar(14351 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar(28529 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar(208641 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar(78418 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar(319948 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar(37919 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar(157081 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar(51563 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar(195892 bytes)
+/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar(151103 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar(305040 bytes)
+/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar(126113 bytes)
+/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar(656919 bytes)
+/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar(4467 bytes)
+/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar(3023797 bytes)
+/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar(3819 bytes)
+/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar(10763 bytes)
+/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar(2497 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar(87143 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar(4151 bytes)
+/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar(13786 bytes)
+/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar(12913 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar(19936 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar(40433 bytes)
+/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar(2254 bytes)
+/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar(109318 bytes)
+/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar(52116 bytes)
+/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar(30810 bytes)
+/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar(31095 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar(673587 bytes)
+/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar(384581 bytes)
+/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(45024 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar(10734 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar(271773 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar(90732 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar(45558 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar(8695 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar(13040 bytes)
+/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar(1608803 bytes)
+/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar(195922 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar(10496 bytes)
+/usr/share/apache-maven-3.9.10/boot/plexus-classworlds-2.9.0.jar(54086 bytes)
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes(3 entries)
+/home/runner/.m2/repository/org/eolang/eo-parser/1.0-SNAPSHOT/eo-parser-1.0-SNAPSHOT.jar(250480 bytes)
+/home/runner/.m2/repository/net/sf/saxon/Saxon-HE/12.7/Saxon-HE-12.7.jar(5782706 bytes)
+/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar(167889 bytes)
+/home/runner/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar(1033122 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar(259067 bytes)
+/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar(4273459 bytes)
+/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar(125497 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar(69908 bytes)
+/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar(1366079 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-all/3.0.24/groovy-all-3.0.24.pom(25300 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar(8056938 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar(82810 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar(2304360 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-junit/1.10.15/ant-junit-1.10.15.jar(141395 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar(18870 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant-antlr/1.10.15/ant-antlr-1.10.15.jar(12273 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar(6183 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar(60614 bytes)
+/home/runner/.m2/repository/info/picocli/picocli/4.6.3/picocli-4.6.3.jar(405953 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar(1576687 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar(15175 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar(122958 bytes)
+/home/runner/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar(179818 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar(161781 bytes)
+/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar(1394638 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar(133002 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar(128878 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar(16841 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar(261221 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar(29427 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar(22730 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar(78912 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar(428909 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar(94088 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar(118008 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar(9115 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar(5485 bytes)
+/home/runner/.m2/repository/org/testng/testng/7.5.1/testng-7.5.1.jar(943465 bytes)
+/home/runner/.m2/repository/com/beust/jcommander/1.78/jcommander-1.78.jar(83782 bytes)
+/home/runner/.m2/repository/org/webjars/jquery/3.5.1/jquery-3.5.1.jar(313070 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar(291623 bytes)
+/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar(140425 bytes)
+/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar(42094 bytes)
+/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar(58015 bytes)
+/home/runner/.m2/repository/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar(326307 bytes)
+/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar(354579 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar(53010 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar(12869 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar(91571 bytes)
+/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar(93107 bytes)
+/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar(132609 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar(47198 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar(47118 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar(58819 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar(215833 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar(54086 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar(217935 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar(713072 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar(44671 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar(42355 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar(23604 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar(13003 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar(14351 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar(28529 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar(208641 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar(78418 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar(319948 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar(37919 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar(157081 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar(51563 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar(195892 bytes)
+/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar(151103 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar(305040 bytes)
+/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar(126113 bytes)
+/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar(656919 bytes)
+/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar(4467 bytes)
+/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar(3023797 bytes)
+/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar(3819 bytes)
+/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar(10763 bytes)
+/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar(2497 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar(87143 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar(4151 bytes)
+/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar(13786 bytes)
+/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar(12913 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar(19936 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar(40433 bytes)
+/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar(2254 bytes)
+/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar(109318 bytes)
+/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar(52116 bytes)
+/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar(30810 bytes)
+/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar(31095 bytes)
+/home/runner/.m2/repository/org/glassfish/javax.json/1.1.4/javax.json-1.1.4.jar(128770 bytes)
+/home/runner/.m2/repository/com/opencsv/opencsv/5.11.1/opencsv-5.11.1.jar(241710 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar(673587 bytes)
+/home/runner/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar(246806 bytes)
+/home/runner/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar(73737 bytes)
+/home/runner/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar(588337 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar(898652 bytes)
+/home/runner/.m2/repository/org/junit/vintage/junit-vintage-engine/5.11.4/junit-vintage-engine-5.11.4.jar(68610 bytes)
+/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar(384581 bytes)
+/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(45024 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar(10734 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar(271773 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar(90732 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar(45558 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar(8695 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar(13040 bytes)
+/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar(1608803 bytes)
+/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar(195922 bytes)
+/home/runner/.m2/repository/ch/qos/reload4j/reload4j/1.2.26/reload4j-1.2.26.jar(338688 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar(10496 bytes)
+/home/runner/work/eo/eo/eo-maven-plugin/target/classes(3 entries)
+/home/runner/work/eo/eo/eo-parser/target/eo-parser-1.0-SNAPSHOT.jar(250480 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar(259067 bytes)
+/home/runner/.m2/repository/org/eolang/lints/0.0.50/lints-0.0.50.jar(4273459 bytes)
+/home/runner/.m2/repository/io/github/secretx33/path-matching-resource-pattern-resolver/0.1/path-matching-resource-pattern-resolver-0.1.jar(125497 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar(69908 bytes)
+/home/runner/.m2/repository/org/apache/opennlp/opennlp-tools/2.1.1/opennlp-tools-2.1.1.jar(1366079 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy/3.0.24/groovy-3.0.24.jar(8056938 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-ant/3.0.24/groovy-ant-3.0.24.jar(82810 bytes)
+/home/runner/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar(2304360 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-astbuilder/3.0.24/groovy-astbuilder-3.0.24.jar(6183 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-cli-picocli/3.0.24/groovy-cli-picocli-3.0.24.jar(60614 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-console/3.0.24/groovy-console-3.0.24.jar(1576687 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-datetime/3.0.24/groovy-datetime-3.0.24.jar(15175 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-docgenerator/3.0.24/groovy-docgenerator-3.0.24.jar(122958 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-groovydoc/3.0.24/groovy-groovydoc-3.0.24.jar(161781 bytes)
+/home/runner/.m2/repository/com/github/javaparser/javaparser-core/3.25.6/javaparser-core-3.25.6.jar(1394638 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jmx/3.0.24/groovy-jmx-3.0.24.jar(133002 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-json/3.0.24/groovy-json-3.0.24.jar(128878 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-jsr223/3.0.24/groovy-jsr223-3.0.24.jar(16841 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-macro/3.0.24/groovy-macro-3.0.24.jar(261221 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-nio/3.0.24/groovy-nio-3.0.24.jar(29427 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-servlet/3.0.24/groovy-servlet-3.0.24.jar(22730 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-sql/3.0.24/groovy-sql-3.0.24.jar(78912 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-swing/3.0.24/groovy-swing-3.0.24.jar(428909 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-templates/3.0.24/groovy-templates-3.0.24.jar(94088 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test/3.0.24/groovy-test-3.0.24.jar(118008 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-test-junit5/3.0.24/groovy-test-junit5-3.0.24.jar(9115 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-testng/3.0.24/groovy-testng-3.0.24.jar(5485 bytes)
+/home/runner/.m2/repository/org/codehaus/groovy/groovy-xml/3.0.24/groovy-xml-3.0.24.jar(291623 bytes)
+/home/runner/.m2/repository/org/glassfish/jakarta.json/1.1.6/jakarta.json-1.1.6.jar(140425 bytes)
+/home/runner/.m2/repository/com/yegor256/xsline/0.23.1/xsline-0.23.1.jar(42094 bytes)
+/home/runner/.m2/repository/com/jcabi/incubator/xembly/0.32.2/xembly-0.32.2.jar(58015 bytes)
+/home/runner/.m2/repository/org/cactoos/cactoos/0.57.0/cactoos-0.57.0.jar(354579 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-log/0.24.3/jcabi-log-0.24.3.jar(53010 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-manifests/2.1.0/jcabi-manifests-2.1.0.jar(12869 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar(91571 bytes)
+/home/runner/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar(93107 bytes)
+/home/runner/.m2/repository/org/aspectj/aspectjrt/1.9.24/aspectjrt-1.9.24.jar(132609 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-xml/0.35.0/jcabi-xml-0.35.0.jar(47198 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-plugin-api/3.9.10/maven-plugin-api-3.9.10.jar(47118 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-artifact/3.9.10/maven-artifact-3.9.10.jar(58819 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M4/org.eclipse.sisu.plexus-0.9.0.M4.jar(215833 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.9.0/plexus-classworlds-2.9.0.jar(54086 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model/3.9.10/maven-model-3.9.10.jar(217935 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-core/3.9.10/maven-core-3.9.10.jar(713072 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings/3.9.10/maven-settings-3.9.10.jar(44671 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-settings-builder/3.9.10/maven-settings-builder-3.9.10.jar(42355 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar(23604 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar(13003 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-builder-support/3.9.10/maven-builder-support-3.9.10.jar(14351 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-repository-metadata/3.9.10/maven-repository-metadata-3.9.10.jar(28529 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-model-builder/3.9.10/maven-model-builder-3.9.10.jar(208641 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-resolver-provider/3.9.10/maven-resolver-provider-3.9.10.jar(78418 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.9.23/maven-resolver-impl-1.9.23.jar(319948 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.9.23/maven-resolver-named-locks-1.9.23.jar(37919 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.9.23/maven-resolver-api-1.9.23.jar(157081 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.9.23/maven-resolver-spi-1.9.23.jar(51563 bytes)
+/home/runner/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.9.23/maven-resolver-util-1.9.23.jar(195892 bytes)
+/home/runner/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar(151103 bytes)
+/home/runner/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M4/org.eclipse.sisu.inject-0.9.0.M4.jar(305040 bytes)
+/home/runner/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar(126113 bytes)
+/home/runner/.m2/repository/com/google/inject/guice/5.1.0/guice-5.1.0-classes.jar(656919 bytes)
+/home/runner/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar(4467 bytes)
+/home/runner/.m2/repository/com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar(3023797 bytes)
+/home/runner/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar(3819 bytes)
+/home/runner/.m2/repository/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar(10763 bytes)
+/home/runner/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar(2497 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.28/plexus-interpolation-1.28.jar(87143 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar(4151 bytes)
+/home/runner/.m2/repository/org/apache/maven/plugin-tools/maven-plugin-annotations/3.15.1/maven-plugin-annotations-3.15.1.jar(13786 bytes)
+/home/runner/.m2/repository/org/twdata/maven/mojo-executor/2.4.1/mojo-executor-2.4.1.jar(12913 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar(19936 bytes)
+/home/runner/.m2/repository/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2.jar(40433 bytes)
+/home/runner/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar(2254 bytes)
+/home/runner/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar(109318 bytes)
+/home/runner/.m2/repository/com/github/volodya-lombrozo/xnav/0.1.18/xnav-0.1.18.jar(52116 bytes)
+/home/runner/.m2/repository/com/yegor256/tojos/0.18.5/tojos-0.18.5.jar(30810 bytes)
+/home/runner/.m2/repository/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar(31095 bytes)
+/home/runner/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar(673587 bytes)
+/home/runner/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar(384581 bytes)
+/home/runner/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(45024 bytes)
+/home/runner/.m2/repository/org/slf4j/slf4j-reload4j/2.0.17/slf4j-reload4j-2.0.17.jar(10734 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-utils/3.6.0/plexus-utils-3.6.0.jar(271773 bytes)
+/home/runner/.m2/repository/org/codehaus/plexus/plexus-xml/4.1.0/plexus-xml-4.1.0.jar(90732 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-xml/4.0.0-rc-3/maven-xml-4.0.0-rc-3.jar(45558 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-xml/4.0.0-rc-3/maven-api-xml-4.0.0-rc-3.jar(8695 bytes)
+/home/runner/.m2/repository/org/apache/maven/maven-api-annotations/4.0.0-rc-3/maven-api-annotations-4.0.0-rc-3.jar(13040 bytes)
+/home/runner/.m2/repository/com/fasterxml/woodstox/woodstox-core/7.1.0/woodstox-core-7.1.0.jar(1608803 bytes)
+/home/runner/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2.jar(195922 bytes)
+/home/runner/.m2/repository/com/jcabi/jcabi-maven-slf4j/0.12.2/jcabi-maven-slf4j-0.12.2.jar(10496 bytes)
+---- Compiler Messages ---
+warning build config error: skipping missing, empty or corrupt aspectpath entry: /home/runner/.m2/repository/org/codehaus/groovy/groovy-all/3.0.24/groovy-all-3.0.24.pom
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/ImmutabilityChecker.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodCacher.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodCacher.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodScheduler.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodScheduler.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/ImmutabilityChecker.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodCacher.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodCacher.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodScheduler.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodScheduler.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/MethodValidator.class::0 can not build thisJoinPoint lazily for this advice since it has no suitable guard [Xlint:noGuardForLazyTjp]
+warning at org/eolang/maven/OyRemote.java:71::0 can not implement lazyTjp on this joinpoint method-execution(boolean org.eolang.maven.OyRemote.contains(java.lang.String)) because around advice is used [Xlint:canNotImplementLazyTjp]
+	see also: /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/Repeater.class::0
+weaveinfo Join point 'method-execution(boolean org.eolang.maven.OyRemote.contains(java.lang.String))' in Type 'org.eolang.maven.OyRemote' (OyRemote.java:71) advised by around advice from 'com.jcabi.aspects.aj.Repeater' (jcabi-aspects-0.26.0.jar!Repeater.class(from Repeater.java))
+warning at org/eolang/maven/DpsWithRuntime.java::0 can not implement lazyTjp on this joinpoint method-execution(org.cactoos.scalar.Unchecked org.eolang.maven.DpsWithRuntime.mavenDependency()) because around advice is used [Xlint:canNotImplementLazyTjp]
+	see also: /home/runner/.m2/repository/com/jcabi/jcabi-aspects/0.26.0/jcabi-aspects-0.26.0.jar!com/jcabi/aspects/aj/Repeater.class::0
+weaveinfo Join point 'method-execution(org.cactoos.scalar.Unchecked org.eolang.maven.DpsWithRuntime.mavenDependency())' in Type 'org.eolang.maven.DpsWithRuntime' (DpsWithRuntime.java) advised by around advice from 'com.jcabi.aspects.aj.Repeater' (jcabi-aspects-0.26.0.jar!Repeater.class(from Repeater.java))
+abort ABORT -- (RuntimeException) key not found in wovenClassFile
+key not found in wovenClassFile
+java.lang.RuntimeException: key not found in wovenClassFile
+	at org.aspectj.weaver.WeaverStateInfo.findEndOfKey(WeaverStateInfo.java:431)
+	at org.aspectj.weaver.WeaverStateInfo.replaceKeyWithDiff(WeaverStateInfo.java:387)
+	at org.aspectj.weaver.bcel.LazyClassGen.getJavaClassBytesIncludingReweavable(LazyClassGen.java:769)
+	at org.aspectj.weaver.bcel.BcelWeaver.getClassFilesFor(BcelWeaver.java:1460)
+	at org.aspectj.weaver.bcel.BcelWeaver.weaveAndNotify(BcelWeaver.java:1422)
+	at org.aspectj.weaver.bcel.BcelWeaver.weave(BcelWeaver.java:1192)
+	at org.aspectj.ajdt.internal.compiler.AjPipeliningCompilerAdapter.weaveQueuedEntries(AjPipeliningCompilerAdapter.java:510)
+	at org.aspectj.ajdt.internal.compiler.AjPipeliningCompilerAdapter.afterCompiling(AjPipeliningCompilerAdapter.java:374)
+	at org.aspectj.ajdt.internal.compiler.CompilerAdapter.ajc$afterReturning$org_aspectj_ajdt_internal_compiler_CompilerAdapter$2$f9cc9ca0(CompilerAdapter.aj:79)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:428)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performCompilation(AjBuildManager.java:1096)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:275)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:188)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:103)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:47)
+	at org.aspectj.tools.ajc.Main.run(Main.java:374)
+	at com.jcabi.maven.plugin.AjcMojo.executeAjc(AjcMojo.java:250)
+	at com.jcabi.maven.plugin.AjcMojo.execute(AjcMojo.java:225)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:906)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:283)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:206)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:255)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:201)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:361)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:314)
+
