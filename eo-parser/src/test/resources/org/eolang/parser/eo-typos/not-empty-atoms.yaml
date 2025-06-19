@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-skip: true
-line: 3
-message: |-
-  [3:-1] error: 'Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct'
-    # No comments.
-  ^^^^^^^^^^^^^^^^
+line: 5
+# @todo #4264:45min Improve error message for atoms containing inners.
+#  For now we fail to report it properly. Current message contains:
+#  [5:-1] error: 'mismatched input 'UNTAB' expecting {'Q', 'QQ', '*', '$', '[', '(', '@', '^', '~', BYTES, STRING, INT, FLOAT, HEX, NAME, TEXT}'.
+#  We should improve, and verify it using `message` key in this YAML story. Also, check this issue:
+#  https://github.com/objectionary/eo/issues/4106.
 input: |
   # No comments.
   [] > test ?
