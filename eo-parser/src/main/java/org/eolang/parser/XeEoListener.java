@@ -947,7 +947,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.enter();
         if (ctx.PHI() != null) {
             this.objects.prop("name", ctx.PHI().getText());
-        } else if (ctx.NAME() != null && ctx.tarrow().PLUS() != null) {
+        } else if (ctx.NAME() != null) {
             this.objects.prop(
                 "name",
                 String.format("%s%s", ctx.tarrow().PLUS().getText(), ctx.NAME().getText())
