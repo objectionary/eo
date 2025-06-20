@@ -7,9 +7,12 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -22,17 +25,36 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpAppliedWithCacheTest {
 
     @Test
-    void appliesThroughCache(@Mktmp final Path temp) throws IOException {
+    void appliesWithCache(@Mktmp final Path temp) throws IOException {
+        final Path cached = temp.resolve("cached");
+        final Path target = temp.resolve("target");
         new FpAppliedWithCache(
             new FpGenerated(input -> new InputOf(new TextOf("testing!"))),
-            () -> temp.resolve("cached"),
+            () -> cached,
             new RewritePolicy(true, temp),
             true
-        ).apply(temp.resolve("src"), temp.resolve("target"));
-        // writes to both
+        ).apply(temp.resolve("src"), target);
+        MatcherAssert.assertThat(
+            "Cached does not have the same content as generated",
+            Files.readString(cached),
+            Matchers.equalTo(Files.readString(target))
+        );
     }
 
     @Test
-    void appliesOnlyToTarget() {
+    void appliesOnlyToTarget(@Mktmp final Path temp) throws IOException {
+        final String expected = "foo bar";
+        final Path target = temp.resolve("target");
+        new FpAppliedWithCache(
+            new FpGenerated(input -> new InputOf(new TextOf(expected))),
+            () -> temp.resolve("cached"),
+            new RewritePolicy(true, temp),
+            false
+        ).apply(temp.resolve("src"), target);
+        MatcherAssert.assertThat(
+            "Cached does not have the same content as generated",
+            Files.readString(target),
+            Matchers.equalTo(expected)
+        );
     }
 }
