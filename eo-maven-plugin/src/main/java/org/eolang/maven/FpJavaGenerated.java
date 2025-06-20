@@ -20,8 +20,14 @@ import org.cactoos.text.Joined;
 final class FpJavaGenerated extends FpEnvelope {
     /**
      * Ctor.
+     * @param saved Saved
+     * @param clazz Transpiled Java class
+     * @param generated Generated
+     * @param target Target
      */
-    FpJavaGenerated(final AtomicInteger saved, final Xnav clazz, final Path generated, final Path target) {
+    FpJavaGenerated(
+        final AtomicInteger saved, final Xnav clazz, final Path generated, final Path target
+    ) {
         super(
             new FpGenerated(
                 src -> {
