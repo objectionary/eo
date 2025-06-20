@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,10 +32,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.Input;
 import org.cactoos.func.StickyFunc;
-import org.cactoos.io.InputOf;
-import org.cactoos.text.Joined;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
 import org.eolang.parser.TrFull;
@@ -234,28 +229,22 @@ public final class MjTranspile extends MjSafe {
                     final Path tgt = new Place(jname).make(
                         this.generatedDir.toPath(), MjTranspile.JAVA
                     );
-                    this.placeJavaTests(clazz, jname);
-                    MjTranspile.placeJava(
-                        clazz,
-                        this.apply(
-                            rewrite,
-                            target,
+                    final Footprint java = new FpJavaGenerated(saved, clazz, tgt, target);
+                    new PlacedJava(
+                        new FpIfReleased(
+                            this.plugin.getVersion(),
                             hsh,
-                            new FpGenerated(
-                                src -> {
-                                    saved.incrementAndGet();
-                                    Logger.debug(
-                                        this,
-                                        "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
-                                        tgt, tgt.toFile().length(), target, target.toFile().length()
-                                    );
-                                    return MjTranspile.javaInput(clazz);
-                                }
+                            new FpAppliedWithCache(
+                                java,
+                                this.cached(hsh, jname),
+                                new RewritePolicy(rewrite, tgt),
+                                this.cacheEnabled
                             ),
-                            jname
+                            java
                         ),
-                        tgt
-                    );
+                        target,
+                        this.generatedDir.toPath()
+                    ).exec(clazz);
                 }
             }
         }
@@ -302,27 +291,13 @@ public final class MjTranspile extends MjSafe {
     }
 
     /**
-     * Apply Java.
-     * @param rewrite Rewrite
-     * @param target Target path
+     * Cached path.
      * @param hsh Hash
-     * @param generated Generated footprint
      * @param jname Java class name
-     * @return Applied {@link Footprint}
-     * @todo #4235:35min Refactor MjTranspile.apply().
-     *  Now, it accepts too many parameters, let's decompose it into more manageable
-     *  objects, that can be tested. Thus, we not only improve the situation in this class,
-     *  but also improve the testability of the MjTranspile.
-     * @checkstyle ParameterNumberCheck (10 lines)
+     * @return Supplier of cached path
      */
-    private FpIfReleased apply(
-        final boolean rewrite,
-        final Path target,
-        final String hsh,
-        final Footprint generated,
-        final String jname
-    ) {
-        final Supplier<Path> che = new CachePath(
+    private Supplier<Path> cached(final String hsh, final String jname) {
+        return new CachePath(
             this.cache.toPath().resolve(MjTranspile.CACHE),
             this.plugin.getVersion(),
             hsh,
@@ -332,118 +307,5 @@ public final class MjTranspile extends MjSafe {
                 )
             )
         );
-        final Footprint both = new FpUpdateBoth(generated, che);
-        return new FpIfReleased(
-            this.plugin.getVersion(),
-            hsh,
-            new FpFork(
-                (src, trgt) -> {
-                    if (rewrite) {
-                        Logger.debug(
-                            this,
-                            "Rewriting %[file]s because XMIR %[file]s was changed",
-                            trgt, target
-                        );
-                    }
-                    return rewrite;
-                },
-                new FpFork(this.cacheEnabled, both, generated),
-                new FpIfTargetExists(
-                    new FpIgnore(),
-                    new FpFork(
-                        this.cacheEnabled,
-                        new FpIfTargetExists(
-                            trgt -> che.get(),
-                            new FpUpdateFromCache(che),
-                            both
-                        ),
-                        generated
-                    )
-                )
-            ),
-            generated
-        );
-    }
-
-    /**
-     * Java class input.
-     * @param clazz Java class
-     * @return Input
-     */
-    private static Input javaInput(final Xnav clazz) {
-        return new InputOf(
-            new Joined(
-                "",
-                clazz.elements(Filter.withName("java")).map(
-                    java -> java.text().orElse("")
-                ).collect(Collectors.toList())
-            )
-        );
-    }
-
-    /**
-     * Place Java code.
-     * @param clazz Java class
-     * @param footprint Footprint
-     * @param target Target path
-     * @throws IOException If I/O fails
-     */
-    private static void placeJava(final Xnav clazz, final Footprint footprint, final Path target)
-        throws IOException {
-        if (clazz.element("java").text().isPresent()) {
-            footprint.apply(Paths.get(""), target);
-        }
-    }
-
-    /**
-     * Place Java tests.
-     * @param clazz Transpiled class
-     * @param jname Java class name
-     */
-    private void placeJavaTests(final Xnav clazz, final String jname) throws IOException {
-        if (MjTranspile.testsPresent(clazz)) {
-            final String[] jparts = jname.split("\\.");
-            final Path tests = this.generatedDir.toPath().getParent().resolve(
-                "generated-test-sources"
-            );
-            final Path base = Arrays.stream(jparts, 0, jparts.length - 1)
-                .reduce(
-                    tests,
-                    Path::resolve,
-                    Path::resolve
-                );
-            final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
-            final Path resolved = base.resolve(origin);
-            final Path resulted;
-            final String content;
-            if (
-                Files.exists(
-                    tests.getParent().getParent().resolve("src").resolve("test")
-                        .resolve("java")
-                        .resolve(tests.relativize(resolved))
-                )
-            ) {
-                final String atomized = String.format(
-                    "%sEOAtomTest.java", jparts[jparts.length - 1]
-                );
-                resulted = base.resolve(atomized);
-                content = clazz.element("tests").text().get().replace(
-                    origin.replace(".java", ""), atomized.replace(".java", "")
-                );
-            } else {
-                resulted = resolved;
-                content = clazz.element("tests").text().get();
-            }
-            new Saved(content, resulted).value();
-        }
-    }
-
-    /**
-     * Tests exist?
-     * @param clazz Class
-     * @return True or False
-     */
-    private static boolean testsPresent(final Xnav clazz) {
-        return clazz.element("tests").text().map(s -> s.contains("@Test")).orElse(false);
     }
 }
