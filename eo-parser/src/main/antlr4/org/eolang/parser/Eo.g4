@@ -42,7 +42,15 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) oname) EOL)
+    : commentOptional (application | ((method | just) onameOrTname) EOL)
+    ;
+
+tbound
+    : commentOptional (tapplication | ((method | just) tname) EOL)
+    ;
+
+tsubMaster
+    : commentOptional tmasterBody
     ;
 
 subMaster
@@ -51,7 +59,12 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym oname EOL)
+    | (atom | hanonym onameOrTname EOL)
+    ;
+
+tmasterBody
+    : tformation
+    | (atom | hanonym (tname) EOL)
     ;
 
 // Just an object reference without name
@@ -61,18 +74,23 @@ just: beginner
 
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
-// @todo #4235:60min Allow atom to have only test attributes inside.
-//  Currently we allow to have just inners, while we should allow only test attributes
-//  inside the atom. For this, we need to intoduce new grammar rules. Don't forget to
-//  enable all the tests, related on not empty atoms.
-atom: voids suffix SPACE QUESTION innersOrEol
+atom: voids suffix SPACE QUESTION testsOrEol
     ;
 
 // Formation - abstract object with mandatory name
 // Can contain inner objects
 // Ends on the next line
 formation
-    : voids oname innersOrEol
+    : voids onameOrTname innersOrEol
+    ;
+
+tformation
+    : voids tname innersOrEol
+    ;
+
+testsOrEol
+    : tests
+    | EOL
     ;
 
 // Inners object inside formation or EOL
@@ -90,6 +108,11 @@ inners
     : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
     ;
 
+// Tests
+tests
+    : EOL TAB (tbound | tsubMaster) (tbound | EOL? tsubMaster)* UNTAB
+    ;
+
 // Void attributes of an abstract object, atom or horizontal anonym object
 voids
     : LSQ (void (SPACE void)*)? RSQ
@@ -105,8 +128,13 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended oname EOL
+    : happlicationExtended onameOrTname EOL
     | vapplication
+    ;
+
+tapplication
+    : happlicationExtended tname EOL
+    | tvapplication
     ;
 
 // Horizontal application
@@ -191,8 +219,13 @@ happlicationArgScoped
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHead oname vapplicationArgs
-    | reversed oname vapplicationArgsReversed
+    : vapplicationHead onameOrTname vapplicationArgs
+    | reversed onameOrTname vapplicationArgsReversed
+    ;
+
+tvapplication
+    : vapplicationHead tname vapplicationArgs
+    | reversed tname vapplicationArgsReversed
     ;
 
 // Vertical application head
@@ -396,9 +429,22 @@ fname
     | SPACE aname
     ;
 
+// Either object name or test name
+onameOrTname
+    : oname | tname
+    ;
+
 // Object name
 oname
     : suffix CONST?
+    ;
+
+tname
+    : tarrow (PHI | NAME)
+    ;
+
+tarrow
+    : SPACE PLUS ARROW SPACE
     ;
 
 // Suffix
@@ -407,7 +453,7 @@ suffix
     ;
 
 arrow
-    : SPACE PLUS? ARROW SPACE
+    : SPACE ARROW SPACE
     ;
 
 // Simple scope
