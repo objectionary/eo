@@ -38,19 +38,20 @@ final class FpAppliedWithCache implements Footprint {
     /**
      * Ctor.
      * @param ipt Input
-     * @param cache Cache
-     * @param rewrite Rewrite
+     * @param che Cache
+     * @param rwrte Rewrite
      * @param enabled Cache enabled?
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     FpAppliedWithCache(
         final Footprint ipt,
-        final Supplier<Path> cache,
-        final BiFunc<Path, Path, Boolean> rewrite,
+        final Supplier<Path> che,
+        final BiFunc<Path, Path, Boolean> rwrte,
         final boolean enabled
     ) {
         this.input = ipt;
-        this.cache = cache;
-        this.rewrite = rewrite;
+        this.cache = che;
+        this.rewrite = rwrte;
         this.caching = enabled;
     }
 
