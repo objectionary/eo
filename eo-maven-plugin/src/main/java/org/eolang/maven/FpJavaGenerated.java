@@ -6,6 +6,8 @@ package org.eolang.maven;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
@@ -15,6 +17,16 @@ import org.cactoos.text.Joined;
  * @since 0.56.7
  */
 final class FpJavaGenerated extends FpEnvelope {
+    /**
+     * Ctor.
+     * @param clazz Transpiled Java class
+     * @param generated Generated path
+     * @param target Target path
+     */
+    FpJavaGenerated(final Xnav clazz, final Path generated, final Path target) {
+        this(clazz, new GeneratedEntry(new AtomicInteger(), generated, target));
+    }
+
     /**
      * Ctor.
      * @param clazz Transpiled Java class

@@ -16,7 +16,7 @@ import org.cactoos.Proc;
  * Placed Java generated code.
  * @since 0.56.7
  */
-final class PlacedJava implements Proc<Xnav> {
+final class JavaPlaced implements Proc<Xnav> {
 
     /**
      * The footprint.
@@ -39,7 +39,7 @@ final class PlacedJava implements Proc<Xnav> {
      * @param tgt The target path
      * @param gen Generated sources dir
      */
-    PlacedJava(final Footprint ftprnt, final Path tgt, final Path gen) {
+    JavaPlaced(final Footprint ftprnt, final Path tgt, final Path gen) {
         this.footprint = ftprnt;
         this.target = tgt;
         this.generated = gen;
@@ -50,7 +50,7 @@ final class PlacedJava implements Proc<Xnav> {
         if (clazz.element("java").text().isPresent()) {
             this.footprint.apply(Paths.get(""), this.target);
         }
-        if (PlacedJava.testsPresent(clazz)) {
+        if (JavaPlaced.testsPresent(clazz)) {
             this.placeJavaTests(clazz);
         }
     }

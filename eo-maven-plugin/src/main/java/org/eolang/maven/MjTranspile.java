@@ -232,7 +232,7 @@ public final class MjTranspile extends MjSafe {
                     final Footprint java = new FpJavaGenerated(
                         clazz, new GeneratedEntry(saved, tgt, target)
                     );
-                    new PlacedJava(
+                    new JavaPlaced(
                         new FpIfReleased(
                             this.plugin.getVersion(),
                             hsh,
