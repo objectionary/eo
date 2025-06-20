@@ -4,8 +4,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:14
 +unlint unit-test-missing
-+unlint no-attribute-formation:11
++unlint no-attribute-formation:12
 
 # The object is a TRUE boolean state.
 [] > true

@@ -7,7 +7,20 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint many-void-attributes:37
++unlint many-void-attributes:50
++unlint redundant-object:35
++unlint redundant-object:36
++unlint redundant-object:37
++unlint redundant-object:38
++unlint redundant-object:39
++unlint redundant-object:40
++unlint redundant-object:41
++unlint redundant-object:42
++unlint redundant-object:43
++unlint redundant-object:47
++unlint redundant-object:54
++unlint redundant-object:55
++unlint redundant-object:68
 
 # Makes a kernel32.dll function call by name.
 #

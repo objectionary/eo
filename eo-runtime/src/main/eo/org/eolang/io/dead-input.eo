@@ -28,6 +28,5 @@
   [] +> tests-reads-empty-bytes
     and. > @
       i1.eq --
-      i2.eq --
+      (i1.read 10).eq --
     dead-input.read 10 > i1
-    i1.read 10 > i2
