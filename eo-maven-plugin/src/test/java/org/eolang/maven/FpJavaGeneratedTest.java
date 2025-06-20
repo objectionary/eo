@@ -34,10 +34,10 @@ final class FpJavaGeneratedTest {
         final Path java = temp.resolve("Foo.java");
         final String content = "public final class Foo {}";
         new FpJavaGenerated(
-            new AtomicInteger(),
             new Xnav(new Xembler(new Directives().add("java").set(content)).xml()),
-            new Place("foo").make(temp, MjAssemble.EO),
-            java
+            new GeneratedEntry(
+                new AtomicInteger(), new Place("foo").make(temp, MjAssemble.EO), java
+            )
         ).apply(source, java);
         MatcherAssert.assertThat(
             "Placed Java code does not match with expected",

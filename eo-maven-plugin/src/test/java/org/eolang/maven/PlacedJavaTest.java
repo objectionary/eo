@@ -39,10 +39,8 @@ final class PlacedJavaTest {
         );
         new PlacedJava(
             new FpJavaGenerated(
-                new AtomicInteger(),
                 java,
-                generated,
-                target
+                new GeneratedEntry(new AtomicInteger(), generated, target)
             ),
             target,
             generated

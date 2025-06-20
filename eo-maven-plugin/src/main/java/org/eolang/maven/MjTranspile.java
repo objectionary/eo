@@ -229,7 +229,9 @@ public final class MjTranspile extends MjSafe {
                     final Path tgt = new Place(jname).make(
                         this.generatedDir.toPath(), MjTranspile.JAVA
                     );
-                    final Footprint java = new FpJavaGenerated(saved, clazz, tgt, target);
+                    final Footprint java = new FpJavaGenerated(
+                        clazz, new GeneratedEntry(saved, tgt, target)
+                    );
                     new PlacedJava(
                         new FpIfReleased(
                             this.plugin.getVersion(),
