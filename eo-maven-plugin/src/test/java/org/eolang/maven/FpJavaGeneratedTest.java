@@ -7,17 +7,16 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.xembly.Directives;
-import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
@@ -29,22 +28,20 @@ import org.xembly.Xembler;
 final class FpJavaGeneratedTest {
 
     @Test
-    void placesTheJavaAsInputFiles(@Mktmp final Path temp) throws ImpossibleModificationException, IOException {
+    void placesTheJavaAsInputFiles(@Mktmp final Path temp) throws Exception {
         final Path source = temp.resolve("foo.eo");
         Files.write(source, "# Foo.\n[] > foo".getBytes(StandardCharsets.UTF_8));
         final Path java = temp.resolve("Foo.java");
         final String content = "public final class Foo {}";
         new FpJavaGenerated(
             new AtomicInteger(),
-            new Xnav(
-                new Xembler(new Directives().add("java").set(content)).xml()
-            ),
+            new Xnav(new Xembler(new Directives().add("java").set(content)).xml()),
             new Place("foo").make(temp, MjAssemble.EO),
             java
         ).apply(source, java);
         MatcherAssert.assertThat(
             "Placed Java code does not match with expected",
-            Files.readString(java),
+            new TextOf(java).asString(),
             Matchers.equalTo(content)
         );
     }

@@ -6,8 +6,6 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
@@ -25,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpAppliedWithCacheTest {
 
     @Test
-    void appliesWithCache(@Mktmp final Path temp) throws IOException {
+    void appliesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cached = temp.resolve("cached");
         final Path target = temp.resolve("target");
         new FpAppliedWithCache(
@@ -36,13 +34,13 @@ final class FpAppliedWithCacheTest {
         ).apply(temp.resolve("src"), target);
         MatcherAssert.assertThat(
             "Cached does not have the same content as generated",
-            Files.readString(cached),
-            Matchers.equalTo(Files.readString(target))
+            new TextOf(cached).asString(),
+            Matchers.equalTo(new TextOf(target).asString())
         );
     }
 
     @Test
-    void appliesOnlyToTarget(@Mktmp final Path temp) throws IOException {
+    void appliesOnlyToTarget(@Mktmp final Path temp) throws Exception {
         final String expected = "foo bar";
         final Path target = temp.resolve("target");
         new FpAppliedWithCache(
@@ -53,7 +51,7 @@ final class FpAppliedWithCacheTest {
         ).apply(temp.resolve("src"), target);
         MatcherAssert.assertThat(
             "Cached does not have the same content as generated",
-            Files.readString(target),
+            new TextOf(target).asString(),
             Matchers.equalTo(expected)
         );
     }
