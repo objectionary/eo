@@ -21,12 +21,12 @@ import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
- * Tests for {@link FpJavaInput}.
+ * Tests for {@link FpJavaGenerated}.
  *
  * @since 0.56.7
  */
 @ExtendWith(MktmpResolver.class)
-final class FpJavaInputTest {
+final class FpJavaGeneratedTest {
 
     @Test
     void placesTheJavaAsInputFiles(@Mktmp final Path temp) throws ImpossibleModificationException, IOException {
@@ -34,7 +34,7 @@ final class FpJavaInputTest {
         Files.write(source, "# Foo.\n[] > foo".getBytes(StandardCharsets.UTF_8));
         final Path java = temp.resolve("Foo.java");
         final String content = "public final class Foo {}";
-        new FpJavaInput(
+        new FpJavaGenerated(
             new AtomicInteger(),
             new Xnav(
                 new Xembler(new Directives().add("java").set(content)).xml()

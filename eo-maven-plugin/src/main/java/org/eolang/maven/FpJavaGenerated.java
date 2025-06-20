@@ -17,17 +17,17 @@ import org.cactoos.text.Joined;
  * Footprint of Java generated files as input.
  * @since 0.56.7
  */
-final class FpJavaInput extends FpEnvelope {
+final class FpJavaGenerated extends FpEnvelope {
     /**
      * Ctor.
      */
-    FpJavaInput(final AtomicInteger saved, final Xnav clazz, final Path generated, final Path target) {
+    FpJavaGenerated(final AtomicInteger saved, final Xnav clazz, final Path generated, final Path target) {
         super(
             new FpGenerated(
                 src -> {
                     saved.incrementAndGet();
                     Logger.debug(
-                        FpJavaInput.class,
+                        FpJavaGenerated.class,
                         "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",
                         generated, generated.toFile().length(),
                         target, target.toFile().length()
