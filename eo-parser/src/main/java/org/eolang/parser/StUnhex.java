@@ -31,32 +31,32 @@ final class StUnhex extends StEnvelope {
     static final Shift XNAV = new StSequence(
         StUnhex.class.getSimpleName(),
         new StXnav(
-            StUnhex.BYTES,
+            BYTES,
             xnav -> xnav.node().setTextContent(
                 xnav.element("o").text().orElse("")
             )
         ),
         new StXnav(
-            StUnhex.elements("number"),
+            elements("number"),
             xnav -> {
-                final double number = StUnhex.buffer(
-                    StUnhex.undash(xnav.element("o").text().orElse(""))
+                final double number = buffer(
+                    undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
                 final Node node = xnav.node();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    node.setTextContent(StUnhex.number(number));
+                    node.setTextContent(number(number));
                 }
             }
         ),
         new StXnav(
-            StUnhex.elements("string"),
+            elements("string"),
             xnav -> xnav.node().setTextContent(
                 String.format(
                     "\"%s\"",
                     StringEscapeUtils.escapeJava(
                         new String(
-                            StUnhex.buffer(
-                                StUnhex.undash(xnav.element("o").text().orElse(""))
+                            buffer(
+                                undash(xnav.element("o").text().orElse(""))
                             ).array(),
                             StandardCharsets.UTF_8
                         )
@@ -70,7 +70,7 @@ final class StUnhex extends StEnvelope {
      * Ctor.
      */
     StUnhex() {
-        this(StUnhex.XNAV);
+        this(XNAV);
     }
 
     /**

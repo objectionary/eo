@@ -176,6 +176,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterErrorBound(final EoParser.ErrorBoundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitErrorBound(final EoParser.ErrorBoundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterSubMaster(final EoParser.SubMasterContext ctx) {
         // Nothing here
     }
@@ -954,7 +964,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 final int indent = ctx.getStart().getCharPositionInLine();
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
-                        XeEoListener.trimMargin(text, indent)
+                        trimMargin(text, indent)
                     ).getBytes(StandardCharsets.UTF_8)
                 );
             }

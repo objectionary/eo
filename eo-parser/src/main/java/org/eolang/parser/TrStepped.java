@@ -45,7 +45,7 @@ final class TrStepped extends TrEnvelope {
      * @param train Original train
      */
     TrStepped(final Train<Shift> train) {
-        this(train, TrStepped.STEPPED);
+        this(train, STEPPED);
     }
 
     /**

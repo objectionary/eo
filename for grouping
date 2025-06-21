@@ -1,0 +1,188 @@
+[1mdiff --git a/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 b/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4[m
+[1mindex a18d110..7734a89 100644[m
+[1m--- a/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4[m
+[1m+++ b/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4[m
+[36m@@ -43,6 +43,13 @@[m [mobject[m
+ // Ends on the next line[m
+ bound[m
+     : commentOptional (application | ((method | just) oname) EOL)[m
+[32m+[m[32m    | errorBound[m
+[32m+[m[32m    ;[m
+[32m+[m
+[32m+[m[32m// Error production to handle malformed bound objects[m
+[32m+[m[32m// This consumes malformed lines that start with [ and any following indented content[m
+[32m+[m[32merrorBound[m
+[32m+[m[32m    : commentOptional LSQ (~EOL)* EOL innersOrEol?[m
+     ;[m
+ [m
+ subMaster[m
+[36m@@ -87,7 +94,12 @@[m [minnersOrEol[m
+ // No empty lines before "slave"[m
+ // May be one empty line before "master"[m
+ inners[m
+[31m-    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB[m
+[32m+[m[32m    : EOL TAB innersItems UNTAB[m
+[32m+[m[32m    ;[m
+[32m+[m
+[32m+[m[32m// Items inside inners - can be valid bounds/subMasters or error items[m
+[32m+[m[32minnersItems[m
+[32m+[m[32m    : (bound | subMaster | errorBound) (bound | EOL? subMaster | errorBound)*[m
+     ;[m
+ [m
+ // Void attributes of an abstract object, atom or horizontal anonym object[m
+[1mdiff --git a/eo-parser/src/main/java/org/eolang/parser/EoErrorRecoveryStrategy.java b/eo-parser/src/main/java/org/eolang/parser/EoErrorRecoveryStrategy.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..03ba001[m
+[1m--- /dev/null[m
+[1m+++ b/eo-parser/src/main/java/org/eolang/parser/EoErrorRecoveryStrategy.java[m
+[36m@@ -0,0 +1,75 @@[m
+[32m+[m[32m/*[m
+[32m+[m[32m * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com[m
+[32m+[m[32m * SPDX-License-Identifier: MIT[m
+[32m+[m[32m */[m
+[32m+[m[32mpackage org.eolang.parser;[m
+[32m+[m
+[32m+[m[32mimport org.antlr.v4.runtime.DefaultErrorStrategy;[m
+[32m+[m[32mimport org.antlr.v4.runtime.Parser;[m
+[32m+[m[32mimport org.antlr.v4.runtime.RecognitionException;[m
+[32m+[m[32mimport org.antlr.v4.runtime.Token;[m
+[32m+[m[32mimport org.antlr.v4.runtime.TokenStream;[m
+[32m+[m[32mimport org.antlr.v4.runtime.misc.IntervalSet;[m
+[32m+[m
+[32m+[m[32m/**[m
+[32m+[m[32m * Custom error recovery strategy for EO parser.[m
+[32m+[m[32m * When encountering errors in object declarations, skip to the next[m
+[32m+[m[32m * object at the same indentation level to allow parsing to continue.[m
+[32m+[m[32m *[m
+[32m+[m[32m * @since 0.1[m
+[32m+[m[32m */[m
+[32m+[m[32mfinal class EoErrorRecoveryStrategy extends DefaultErrorStrategy {[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void recover(final Parser recognizer, final RecognitionException exc) {[m
+[32m+[m[32m        final String rule = recognizer.getRuleInvocationStack().get(0);[m
+[32m+[m[32m        final String[] names = recognizer.getRuleNames();[m
+[32m+[m[32m        if (names[EoParser.RULE_bound].equals(rule) ||[m[41m [m
+[32m+[m[32m            names[EoParser.RULE_object].equals(rule)) {[m
+[32m+[m[32m            this.skipToNextObjectAtSameLevel(recognizer);[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m            super.recover(recognizer, exc);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Skip tokens until we find the start of the next object at the same indentation level.[m
+[32m+[m[32m     * @param recognizer The parser[m
+[32m+[m[32m     */[m
+[32m+[m[32m    private void skipToNextObjectAtSameLevel(final Parser recognizer) {[m
+[32m+[m[32m        final TokenStream tokens = recognizer.getInputStream();[m
+[32m+[m[32m        int index = recognizer.getCurrentToken().getTokenIndex();[m
+[32m+[m[32m        while (index < tokens.size()) {[m
+[32m+[m[32m            final Token token = tokens.get(index);[m
+[32m+[m[32m            if (token.getType() == Token.EOF) {[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            if (token.getType() == EoParser.UNTAB) {[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            if (token.getType() == EoParser.EOL && index + 1 < tokens.size()) {[m
+[32m+[m[32m                final Token next = tokens.get(index + 1);[m
+[32m+[m[32m                if (next.getType() == EoParser.LSQ) {[m
+[32m+[m[32m                    recognizer.getInputStream().seek(index);[m
+[32m+[m[32m                    return;[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m[32m            index++;[m
+[32m+[m[32m        }[m
+[32m+[m[32m        if (index < tokens.size()) {[m
+[32m+[m[32m            recognizer.getInputStream().seek(index);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    protected void consumeUntil(final Parser recognizer, final IntervalSet set) {[m
+[32m+[m[32m        Token token = recognizer.getCurrentToken();[m
+[32m+[m[32m        while (token.getType() != Token.EOF && !set.contains(token.getType())) {[m
+[32m+[m[32m            if (token.getType() == EoParser.UNTAB) {[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            recognizer.consume();[m
+[32m+[m[32m            token = recognizer.getCurrentToken();[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/eo-parser/src/main/java/org/eolang/parser/XeEoListener.java b/eo-parser/src/main/java/org/eolang/parser/XeEoListener.java[m
+[1mindex 025fcb7..04336a7 100644[m
+[1m--- a/eo-parser/src/main/java/org/eolang/parser/XeEoListener.java[m
+[1m+++ b/eo-parser/src/main/java/org/eolang/parser/XeEoListener.java[m
+[36m@@ -175,6 +175,22 @@[m [mfinal class XeEoListener implements EoListener, Iterable<Directive> {[m
+         // Nothing here[m
+     }[m
+ [m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void enterErrorBound(final EoParser.ErrorBoundContext ctx) {[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void exitErrorBound(final EoParser.ErrorBoundContext ctx) {[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void enterInnersItems(final EoParser.InnersItemsContext ctx) {[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void exitInnersItems(final EoParser.InnersItemsContext ctx) {[m
+[32m+[m[32m    }[m
+[32m+[m
+     @Override[m
+     public void enterSubMaster(final EoParser.SubMasterContext ctx) {[m
+         // Nothing here[m
+[1mdiff --git a/eo-parser/src/test/java/org/eolang/parser/ErrorRecoveryTest.java b/eo-parser/src/test/java/org/eolang/parser/ErrorRecoveryTest.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..541b65f[m
+[1m--- /dev/null[m
+[1m+++ b/eo-parser/src/test/java/org/eolang/parser/ErrorRecoveryTest.java[m
+[36m@@ -0,0 +1,40 @@[m
+[32m+[m[32mpackage org.eolang.parser;[m
+[32m+[m
+[32m+[m[32mimport com.jcabi.xml.XML;[m
+[32m+[m[32mimport org.cactoos.io.InputOf;[m
+[32m+[m[32mimport org.junit.jupiter.api.Test;[m
+[32m+[m[32mimport org.junit.jupiter.api.Assertions;[m
+[32m+[m
+[32m+[m[32m/**[m
+[32m+[m[32m * Test for error recovery in parser.[m
+[32m+[m[32m */[m
+[32m+[m[32mfinal class ErrorRecoveryTest {[m
+[32m+[m
+[32m+[m[32m    @Test[m
+[32m+[m[32m    void testErrorRecovery() throws Exception {[m
+[32m+[m[32m        String code = "# Example.\n[] > example\n  [x] +++ bad\n    one\n      two\n  [] > good\n    one\n      two";[m
+[32m+[m[32m        XML xml = new EoSyntax(new InputOf(code)).parsed();[m
+[32m+[m[32m        System.out.println("Generated XMIR:");[m
+[32m+[m[32m        System.out.println(xml.toString());[m
+[32m+[m[32m        System.out.println("\nErrors:");[m
+[32m+[m[32m        System.out.println(xml.xpath("/object/errors/error/text()"));[m
+[32m+[m[32m        long objectCount = Long.parseLong(xml.xpath("count(//o[@name])").get(0));[m
+[32m+[m[32m        System.out.println("\nObjects count: " + objectCount);[m
+[32m+[m[32m        long goodCount = Long.parseLong(xml.xpath("count(//o[@name='example']/o[@name='good'])").get(0));[m
+[32m+[m[32m        System.out.println("Good objects inside example: " + goodCount);[m
+[32m+[m[32m        String listing = xml.xpath("/object/listing/text()").get(0);[m
+[32m+[m[32m        System.out.println("Listing length: " + listing.length());[m
+[32m+[m[32m        Assertions.assertTrue(listing.contains("good"), "Should preserve full listing including good object");[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Test[m
+[32m+[m[32m    void testSimpleErrorRecovery() throws Exception {[m
+[32m+[m[32m        String code = "# Simple test.\n[] > obj\n  [x] +++ bad\n  [] > good";[m
+[32m+[m[32m        XML xml = new EoSyntax(new InputOf(code)).parsed();[m
+[32m+[m[32m        System.out.println("Simple test XMIR:");[m
+[32m+[m[32m        System.out.println(xml.toString());[m
+[32m+[m[32m        String listing = xml.xpath("/object/listing/text()").get(0);[m
+[32m+[m[32m        System.out.println("Simple listing: " + listing);[m
+[32m+[m[32m        Assertions.assertTrue(listing.contains("good"), "Should preserve full listing in simple case");[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m

@@ -28,7 +28,7 @@ final class ParsingError extends RuntimeException {
                     msg
                 ).formatted(),
                 new MsgUnderlined(
-                    ParsingError.line(ctx),
+                    line(ctx),
                     ctx.getStart().getCharPositionInLine(),
                     ctx.getText().length()
                 ).formatted()

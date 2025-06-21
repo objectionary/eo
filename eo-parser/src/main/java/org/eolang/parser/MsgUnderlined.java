@@ -72,12 +72,12 @@ final class MsgUnderlined {
         if (this.origin.isEmpty() || this.length <= 0 || this.from >= this.origin.length()) {
             result = "";
         } else if (this.from < 0) {
-            result = MsgUnderlined.repeat("^", this.origin.length());
+            result = repeat("^", this.origin.length());
         } else {
             result = String.format(
                 "%s%s",
-                MsgUnderlined.repeat(" ", this.from),
-                MsgUnderlined.repeat("^", Math.min(this.length, this.origin.length()))
+                repeat(" ", this.from),
+                repeat("^", Math.min(this.length, this.origin.length()))
             );
         }
         return result;
