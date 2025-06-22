@@ -224,9 +224,10 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <skipLinting>true</skipLinting>
+              <skipLinting>false</skipLinting>
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
+              <failOnWarning>true</failOnWarning>
               <skipSourceLints>
                 <!-- Required to be skipped, since we in runtime origin library. -->
                 <lint>prohibited-package</lint>
