@@ -210,6 +210,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>eo-maven-plugin</artifactId>
+            <version>${project.version}</version>
             <configuration>
               <skipLinting>false</skipLinting>
             </configuration>
