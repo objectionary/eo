@@ -183,6 +183,7 @@ final class FakeMaven {
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
+            this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(

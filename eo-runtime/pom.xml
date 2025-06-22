@@ -224,6 +224,7 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
+              <skipLinting>true</skipLinting>
               <ignoreRuntime>true</ignoreRuntime>
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>

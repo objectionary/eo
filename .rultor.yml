@@ -30,6 +30,7 @@ release:
 
     mvn flatten:flatten
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
+    sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
     mvn clean install -DskipTests -Dinvoker.skip
     mvn clean deploy -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never

@@ -26,7 +26,8 @@ import org.eolang.lints.Defect;
 import org.eolang.lints.Program;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.parser.ObjectName;
+import org.eolang.parser.OnDefault;
+import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -139,7 +140,9 @@ public final class MjLint extends MjSafe {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjLint.DIR);
-        final Path target = new Place(new ObjectName(xmir).get()).make(base, MjAssemble.XMIR);
+        final Path target = new Place(
+            new OnDetailed(new OnDefault(xmir), source).get()
+        ).make(base, MjAssemble.XMIR);
         tojo.withLinted(
             new FpDefault(
                 src -> this.linted(tojo.identifier(), xmir, counts, unlints).toString(),
