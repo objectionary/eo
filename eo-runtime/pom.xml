@@ -225,9 +225,13 @@
             </goals>
             <configuration>
               <skipLinting>false</skipLinting>
-              <ignoreRuntime>true</ignoreRuntime>
-              <lintAsPackage>false</lintAsPackage>
               <failOnWarning>true</failOnWarning>
+              <ignoreRuntime>true</ignoreRuntime>
+              <!--
+                @todo #4148:35min Enable `lintAsPackage` below and fix
+                 all warnings that will be reported (there will be many of them):
+              -->
+              <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
                 <!-- Required to be skipped, since we in runtime origin library. -->
                 <lint>prohibited-package</lint>
