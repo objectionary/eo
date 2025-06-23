@@ -191,7 +191,6 @@ final class MjPhiTest {
                         object,
                         place.make("eo").toString()
                     )
-                    .with("conservative", xtory.map().get("conservative") != null)
                     .with("phiNoSugar", false)
                     .execute(new FakeMaven.Phi())
                     .targetPath()

@@ -145,28 +145,7 @@ public final class Xmir implements XML {
         return this.converted(Xmir.FOR_PHI, "phi");
     }
 
-    /**
-     * Converts XMIR to PHI.
-     * @param conservative Add empty braces to formations or not
-     * @return PHI representation as {@link  String}.
-     */
-    public String toPhi(final boolean conservative) {
-        return this.converted(
-            new Xsline(
-                new TrFull(
-                    new TrDefault<>(
-                        new StUnhex(),
-                        new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
-                        new StClasspath(
-                            "/org/eolang/parser/phi/to-phi.xsl",
-                            String.format("conservative %b", conservative)
-                        )
-                    )
-                )
-            ),
-            "phi"
-        );
-    }
+
 
     /**
      * Converts XMIR to PHI without any syntax sugar.

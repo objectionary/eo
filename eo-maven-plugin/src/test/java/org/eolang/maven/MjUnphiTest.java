@@ -230,7 +230,6 @@ final class MjUnphiTest {
         final Path xmir = temp.resolve(String.format("target/%s/main.xmir", MjParse.DIR));
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
-            .with("conservative", xtory.map().get("conservative") != null)
             .execute(MjPhi.class)
             .result()
             .get(main);

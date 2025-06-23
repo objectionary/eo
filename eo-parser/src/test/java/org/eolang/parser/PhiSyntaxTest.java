@@ -80,7 +80,7 @@ final class PhiSyntaxTest {
             "Salty XMIR should be equivalent to sweet one",
             new Xmir(
                 new PhiSyntax((String) xtory.map().get("salty")).parsed()
-            ).toPhi(xtory.map().get("conservative") != null),
+            ).toPhi(),
             Matchers.equalTo(xtory.map().get("sweet"))
         );
     }

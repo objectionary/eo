@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 object: org.eolang.foo
-conservative: true
 input: |
   +package org.eolang
 
@@ -17,10 +16,10 @@ input: |
         a > b
 sweet: |-
   {⟦
-    org() ↦ ⟦
-      eolang() ↦ ⟦
+    org ↦ ⟦
+      eolang ↦ ⟦
         foo(x) ↦ ⟦
-          empty() ↦ ⟦
+          empty ↦ ⟦
             n ↦ Φ̇.m
           ⟧,
           inner(y) ↦ ⟦

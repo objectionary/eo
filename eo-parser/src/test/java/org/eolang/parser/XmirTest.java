@@ -43,14 +43,13 @@ final class XmirTest {
     @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
     void convertsToSweetPhi(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
-        final boolean conservative = xtory.map().containsKey("conservative");
         final Xmir xmir = this.asXmir((String) xtory.map().get("input"));
         MatcherAssert.assertThat(
             String.format(
                 "Result PHI should be equal to provided PHI with syntax sugar, XMIR is:\n%s",
                 xmir
             ),
-            xmir.toPhi(conservative),
+            xmir.toPhi(),
             Matchers.equalTo(xtory.map().get("sweet"))
         );
     }
