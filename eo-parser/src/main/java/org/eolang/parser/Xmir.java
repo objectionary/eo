@@ -57,10 +57,7 @@ public final class Xmir implements XML {
             new TrDefault<>(
                 new StUnhex(),
                 new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
-                new StClasspath(
-                    "/org/eolang/parser/phi/to-phi.xsl",
-                    String.format("conservative %b", false)
-                )
+                new StClasspath("/org/eolang/parser/phi/to-phi.xsl")
             )
         )
     );

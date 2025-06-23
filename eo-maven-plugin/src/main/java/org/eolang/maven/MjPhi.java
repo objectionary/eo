@@ -59,8 +59,6 @@ public final class MjPhi extends MjSafe {
     )
     private File phiOutputDir;
 
-
-
     /**
      * Convert to PHI without syntax sugar.
      * @checkstyle MemberNameCheck (10 lines)
