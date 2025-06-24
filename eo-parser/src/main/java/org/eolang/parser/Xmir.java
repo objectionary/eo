@@ -142,8 +142,6 @@ public final class Xmir implements XML {
         return this.converted(Xmir.FOR_PHI, "phi");
     }
 
-
-
     /**
      * Converts XMIR to PHI without any syntax sugar.
      * @return PHI representation as {@link String}
