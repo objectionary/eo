@@ -6,7 +6,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="to-phi" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
-
   <!-- Variables -->
   <xsl:variable name="aliases" select="object/metas/meta/part[last()]"/>
   <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
