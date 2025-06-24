@@ -35,7 +35,7 @@ final class FpJavaGeneratedTest {
         final String content = "public final class Foo {}";
         new FpJavaGenerated(
             new Xnav(new Xembler(new Directives().add("java").set(content)).xml()),
-            new GeneratedEntry(
+            new FileGenerationReport(
                 new AtomicInteger(), new Place("foo").make(temp, MjAssemble.EO), java
             )
         ).apply(source, java);

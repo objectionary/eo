@@ -24,7 +24,7 @@ final class FpJavaGenerated extends FpEnvelope {
      * @param target Target path
      */
     FpJavaGenerated(final Xnav clazz, final Path generated, final Path target) {
-        this(clazz, new GeneratedEntry(new AtomicInteger(), generated, target));
+        this(clazz, new FileGenerationReport(new AtomicInteger(), generated, target));
     }
 
     /**
@@ -33,12 +33,12 @@ final class FpJavaGenerated extends FpEnvelope {
      * @param generated Generated
      */
     FpJavaGenerated(
-        final Xnav clazz, final GeneratedEntry generated
+        final Xnav clazz, final FileGenerationReport generated
     ) {
         super(
             new FpGenerated(
                 src -> {
-                    generated.increment();
+                    generated.incrementAndLog();
                     return new InputOf(
                         new Joined(
                             "",

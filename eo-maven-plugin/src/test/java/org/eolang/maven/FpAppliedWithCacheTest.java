@@ -50,7 +50,7 @@ final class FpAppliedWithCacheTest {
             false
         ).apply(temp.resolve("src"), target);
         MatcherAssert.assertThat(
-            "Cached does not have the same content as generated",
+            "Target does not have expected content",
             new TextOf(target).asString(),
             Matchers.equalTo(expected)
         );

@@ -9,15 +9,15 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Generated entry.
+ * File generation report.
  * @since 0.56.7
  */
-final class GeneratedEntry {
+final class FileGenerationReport {
 
     /**
      * Saved counter.
      */
-    private final AtomicInteger saved;
+    private final AtomicInteger counter;
 
     /**
      * Generated directory.
@@ -31,21 +31,21 @@ final class GeneratedEntry {
 
     /**
      * Ctor.
-     * @param counter Saved counter
+     * @param aggregate Saved counter
      * @param gen Generated directory
      * @param tgt Target directory
      */
-    GeneratedEntry(final AtomicInteger counter, final Path gen, final Path tgt) {
-        this.saved = counter;
+    FileGenerationReport(final AtomicInteger aggregate, final Path gen, final Path tgt) {
+        this.counter = aggregate;
         this.generated = gen;
         this.target = tgt;
     }
 
     /**
-     * Increment it.
+     * Increment and log the file generation.
      */
-    void increment() {
-        this.saved.incrementAndGet();
+    void incrementAndLog() {
+        this.counter.incrementAndGet();
         Logger.debug(
             this,
             "Generated %[file]s (%[size]s) file from %[file]s (%[size]s)",

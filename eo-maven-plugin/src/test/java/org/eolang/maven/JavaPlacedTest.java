@@ -34,7 +34,7 @@ final class JavaPlacedTest {
         new JavaPlaced(
             new FpJavaGenerated(
                 java,
-                new GeneratedEntry(new AtomicInteger(), generated, target)
+                new FileGenerationReport(new AtomicInteger(), generated, target)
             ),
             target,
             generated
