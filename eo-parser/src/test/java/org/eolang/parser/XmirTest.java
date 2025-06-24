@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -76,6 +77,53 @@ final class XmirTest {
             String.format("Phi expression should contain the data, but it doesn't: %n%s", phi),
             phi,
             Matchers.containsString("foo ↦ 1")
+        );
+    }
+
+    @Test
+    void skips() throws IOException {
+        final String xml = String.join(
+            "\n",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            "<object>",
+            "  <metas>",
+            "    <meta>",
+            "      <head>alias</head>",
+            "      <tail>j$foo</tail>",
+            "      <part>j$foo</part>",
+            "    </meta>",
+            "  </metas>",
+            "  <o name='j$foo'>",
+            "    <o name='j$AbstractParent' base='Q.jeo.class'>",
+            "      <o name='j$foo' base='Q.jeo.method'>",
+            "        <o name='signature'>\"\"</o>",
+            "      </o>",
+            "    </o>",
+            "  </o>",
+            "</object>"
+        );
+        final Xmir xmir = new Xmir(new XMLDocument(xml));
+        final String phi = xmir.toPhi();
+        final String salty = xmir.toSaltyPhi();
+        MatcherAssert.assertThat(
+            "Sweet PHI should not contain 'Φ.j$foo'",
+            phi,
+            Matchers.not(Matchers.containsString("Φ.j$foo"))
+        );
+        MatcherAssert.assertThat(
+            "Salty PHI should not contain 'Φ.j$foo'",
+            salty,
+            Matchers.not(Matchers.containsString("Φ.j$foo"))
+        );
+        MatcherAssert.assertThat(
+            "PHI should contain 'j$foo ↦ ⟦'",
+            phi,
+            Matchers.containsString("j$foo ↦ ⟦")
+        );
+        MatcherAssert.assertThat(
+            "PHI should contain 'j$foo ↦ Φ.jeo.method'",
+            phi,
+            Matchers.containsString("j$foo ↦ Φ.jeo.method")
         );
     }
 

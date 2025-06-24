@@ -291,7 +291,7 @@ final class MjPhiTest {
     }
 
     @Test
-    void doesNotAddPhiPrefixToJavaStyleAttributeNames(@Mktmp final Path temp) throws Exception {
+    void skips(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -344,7 +344,7 @@ final class MjPhiTest {
     }
 
     @Test
-    void addsPhiPrefixToRegularAliases(@Mktmp final Path temp) throws Exception {
+    void adds(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
