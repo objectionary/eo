@@ -6,7 +6,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="to-phi" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
-  <xsl:param name="conservative" as="xs:boolean"/>
   <!-- Variables -->
   <xsl:variable name="aliases" select="object/metas/meta/part[last()]"/>
   <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
@@ -188,10 +187,6 @@
           <xsl:when test="$has-package">
             <xsl:for-each select="$parts">
               <xsl:value-of select="."/>
-              <xsl:if test="$conservative">
-                <xsl:value-of select="$eo:clb"/>
-                <xsl:value-of select="$eo:crb"/>
-              </xsl:if>
               <xsl:value-of select="$eo:arrow"/>
               <xsl:value-of select="$eo:lb"/>
               <xsl:value-of select="eo:eol($tabs+position())"/>
@@ -379,7 +374,7 @@
           <xsl:value-of select="eo:lambda-name($package)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:if test="$conservative or count(o[eo:void(.)])&gt;0">
+          <xsl:if test="count(o[eo:void(.)])&gt;0">
             <xsl:apply-templates select="." mode="inline-voids"/>
           </xsl:if>
           <xsl:value-of select="$eo:arrow"/>
@@ -426,7 +421,7 @@
           <xsl:value-of select="$position - 1"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="eo:abstract(.) and ($conservative or o[eo:void(.)])">
+      <xsl:if test="eo:abstract(.) and o[eo:void(.)]">
         <xsl:apply-templates select="." mode="inline-voids"/>
       </xsl:if>
       <xsl:value-of select="$eo:arrow"/>

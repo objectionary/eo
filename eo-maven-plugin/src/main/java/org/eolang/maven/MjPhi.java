@@ -60,12 +60,6 @@ public final class MjPhi extends MjSafe {
     private File phiOutputDir;
 
     /**
-     * Print all the braces in sweet notation.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean conservative = true;
-
-    /**
      * Convert to PHI without syntax sugar.
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -156,7 +150,7 @@ public final class MjPhi extends MjSafe {
             if (this.phiNoSugar) {
                 phi = xmir.toSaltyPhi();
             } else {
-                phi = xmir.toPhi(this.conservative);
+                phi = xmir.toPhi();
             }
         } catch (final IndexOutOfBoundsException exception) {
             throw new ImpossibleToPhiTranslationException(
