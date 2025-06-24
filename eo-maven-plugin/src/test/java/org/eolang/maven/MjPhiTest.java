@@ -289,4 +289,96 @@ final class MjPhiTest {
             Matchers.lessThan(cached.lastModified())
         );
     }
+
+    @Test
+    void doesNotAddPhiPrefixToJavaStyleAttributeNames(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/1-parse/foo.xmir").write(
+                    String.join(
+                        "\n",
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+                        "<object>",
+                        "  <metas>",
+                        "    <meta>",
+                        "      <head>alias</head>",
+                        "      <tail>j$foo</tail>",
+                        "      <part>j$foo</part>",
+                        "    </meta>",
+                        "  </metas>",
+                        "  <o name='j$foo'>",
+                        "    <o name='j$AbstractParent' base='Q.jeo.class'>",
+                        "      <o name='j$foo' base='Q.jeo.method'>",
+                        "        <o name='signature'>\"\"</o>",
+                        "      </o>",
+                        "    </o>",
+                        "  </o>",
+                        "</object>"
+                    ).getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("xmir-to-phi");
+                f.exec("compile");
+            }
+        );
+        final String phi = Files.readString(temp.resolve("target/eo/phi/foo.phi"));
+        MatcherAssert.assertThat(
+            "PHI expression should not contain 'Φ.j$foo' - j$ names should not get program prefix",
+            phi,
+            Matchers.not(Matchers.containsString("Φ.j$foo"))
+        );
+        MatcherAssert.assertThat(
+            "PHI should contain 'j$foo ↦ ⟦' as the main object binding",
+            phi,
+            Matchers.containsString("j$foo ↦ ⟦")
+        );
+        MatcherAssert.assertThat(
+            "PHI should contain 'j$foo ↦ Φ.jeo.method' inside the class",
+            phi,
+            Matchers.containsString("j$foo ↦ Φ.jeo.method")
+        );
+    }
+
+    @Test
+    void addsPhiPrefixToRegularAliases(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/1-parse/foo.xmir").write(
+                    String.join(
+                        "\n",
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+                        "<object>",
+                        "  <metas>",
+                        "    <meta>",
+                        "      <head>alias</head>",
+                        "      <tail>myAlias</tail>",
+                        "      <part>myAlias</part>",
+                        "    </meta>",
+                        "  </metas>",
+                        "  <o name='myAlias'>",
+                        "    <o name='test' base='string'>hello</o>",
+                        "  </o>",
+                        "</object>"
+                    ).getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("xmir-to-phi");
+                f.exec("compile");
+            }
+        );
+        final String phi = Files.readString(temp.resolve("target/eo/phi/foo.phi"));
+        MatcherAssert.assertThat(
+            "PHI should contain 'Φ.myAlias ↦ ⟦' for regular aliases",
+            phi,
+            Matchers.containsString("Φ.myAlias ↦ ⟦")
+        );
+    }
 }
