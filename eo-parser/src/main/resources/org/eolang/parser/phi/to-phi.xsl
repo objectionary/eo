@@ -7,7 +7,6 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
-  <xsl:variable name="aliases" select="object/metas/meta/part[last()]"/>
   <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
   <!-- Functions -->
   <!-- Get clean escaped object name  -->
@@ -42,18 +41,6 @@
       <xsl:when test="starts-with($n, 'Q.org.eolang')">
         <xsl:value-of select="$eo:def-package"/>
         <xsl:value-of select="substring-after($n, 'Q.org.eolang')"/>
-      </xsl:when>
-      <xsl:when test="$aliases[text()=$n]">
-        <xsl:value-of select="$eo:program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:choose>
-          <xsl:when test="starts-with($n, 'Q.')">
-            <xsl:value-of select="substring($n, 3)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$n"/>
-          </xsl:otherwise>
-        </xsl:choose>
       </xsl:when>
       <xsl:when test="contains($n, '.')">
         <xsl:for-each select="tokenize($n, '\.')">
