@@ -1,10 +1,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.56.5
++rt jvm org.eolang:eo-runtime:0.56.9
 +rt node eo2js-runtime:0.0.0
-+version 0.56.5
-+spdx SPDX-FileCopyrightText Copyright (c) 2016-2025 Objectionary.com
++version 0.56.9
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 # The `malloc` object is an abstraction of a storage of data in heap
