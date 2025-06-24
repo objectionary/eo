@@ -7,7 +7,6 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
-  <xsl:variable name="aliases" select="object/metas/meta/part[last()]"/>
   <xsl:variable name="number-pattern" select="'^[0-9]+$'"/>
   <!-- Functions -->
   <!-- Get clean escaped object name  -->
@@ -18,6 +17,7 @@
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
+    <xsl:param name="is-name" as="xs:boolean"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
         <xsl:value-of select="$eo:phi"/>
@@ -43,24 +43,12 @@
         <xsl:value-of select="$eo:def-package"/>
         <xsl:value-of select="substring-after($n, 'Q.org.eolang')"/>
       </xsl:when>
-      <xsl:when test="$aliases[text()=$n]">
-        <xsl:value-of select="$eo:program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:choose>
-          <xsl:when test="starts-with($n, 'Q.')">
-            <xsl:value-of select="substring($n, 3)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$n"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
       <xsl:when test="contains($n, '.')">
         <xsl:for-each select="tokenize($n, '\.')">
           <xsl:if test="position()&gt;1">
             <xsl:text>.</xsl:text>
           </xsl:if>
-          <xsl:value-of select="eo:specials(.)"/>
+          <xsl:value-of select="eo:specials(., $is-name)"/>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -225,7 +213,7 @@
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="o[eo:void(.)]">
-    <xsl:value-of select="eo:specials(@name)"/>
+    <xsl:value-of select="eo:specials(@name, true())"/>
     <xsl:value-of select="$eo:arrow"/>
     <xsl:value-of select="$eo:empty"/>
   </xsl:template>
@@ -237,7 +225,7 @@
         <xsl:value-of select="eo:comma(position(), -1)"/>
         <xsl:value-of select="$eo:space"/>
       </xsl:if>
-      <xsl:value-of select="eo:specials(@name)"/>
+      <xsl:value-of select="eo:specials(@name, true())"/>
     </xsl:for-each>
     <xsl:value-of select="$eo:crb"/>
   </xsl:template>
@@ -248,7 +236,7 @@
     <xsl:param name="before" select="$tabs * 2"/>
     <xsl:variable name="name">
       <xsl:if test="@name">
-        <xsl:value-of select="eo:escape-plus(eo:specials(@name))"/>
+        <xsl:value-of select="eo:escape-plus(eo:specials(@name, true()))"/>
         <xsl:value-of select="$eo:arrow"/>
       </xsl:if>
     </xsl:variable>
@@ -263,7 +251,7 @@
               <xsl:value-of select="eo:read-data(.)"/>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="eo:specials(@base)"/>
+              <xsl:value-of select="eo:specials(@base, false())"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
@@ -288,7 +276,7 @@
             <xsl:with-param name="before" select="$after-name"/>
           </xsl:apply-templates>
         </xsl:variable>
-        <xsl:variable name="method" select="eo:specials(@base)"/>
+        <xsl:variable name="method" select="eo:specials(@base, false())"/>
         <xsl:value-of select="$start"/>
         <xsl:value-of select="$method"/>
         <xsl:variable name="after-start">
@@ -364,7 +352,7 @@
     <xsl:param name="tabs"/>
     <xsl:param name="package"/>
     <xsl:param name="no-binding" select="false()"/>
-    <xsl:variable name="name" select="eo:specials(@name)"/>
+    <xsl:variable name="name" select="eo:specials(@name, false())"/>
     <xsl:if test="@name">
       <xsl:value-of select="eo:escape-plus($name)"/>
       <xsl:choose>
@@ -414,7 +402,7 @@
       <xsl:value-of select="eo:comma($position, $tabs)"/>
       <xsl:choose>
         <xsl:when test="@as">
-          <xsl:value-of select="eo:specials(@as)"/>
+          <xsl:value-of select="eo:specials(@as, true())"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$eo:alpha"/>
