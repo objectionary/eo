@@ -700,7 +700,7 @@
   </xsl:template>
   <!-- Test suite for given class. -->
   <xsl:template match="class" mode="testing">
-    <xsl:if test="attr[starts-with(@name, '+')]">
+    <xsl:if test="attr[eo:test-attr(.)]">
       <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
@@ -819,7 +819,7 @@
       <xsl:if test="position()&gt;1">
         <xsl:value-of select="eo:eol(1)"/>
       </xsl:if>
-      <xsl:if test="starts-with(@name, '+')">
+      <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
