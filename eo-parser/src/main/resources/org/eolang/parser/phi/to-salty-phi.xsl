@@ -17,56 +17,59 @@
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
-    <xsl:choose>
-      <xsl:when test="$n='@'">
-        <xsl:value-of select="$eo:phi"/>
-      </xsl:when>
-      <xsl:when test="$n='.@'">
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$eo:phi"/>
-      </xsl:when>
-      <xsl:when test="$n='^'">
-        <xsl:value-of select="$eo:rho"/>
-      </xsl:when>
-      <xsl:when test="$n='.^'">
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$eo:rho"/>
-      </xsl:when>
-      <xsl:when test="$n='$'">
-        <xsl:value-of select="$eo:xi"/>
-      </xsl:when>
-      <xsl:when test="$n='Q'">
-        <xsl:value-of select="$eo:program"/>
-      </xsl:when>
-      <xsl:when test="starts-with($n, 'org.eolang')">
-        <xsl:value-of select="$eo:program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$n"/>
-      </xsl:when>
-      <xsl:when test="$aliases[text()=$n]">
-        <xsl:value-of select="$eo:program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:choose>
-          <xsl:when test="starts-with($n, 'Q.')">
-            <xsl:value-of select="substring($n, 3)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$n"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="contains($n, '.')">
-        <xsl:for-each select="tokenize($n, '\.')">
-          <xsl:if test="position()&gt;1">
-            <xsl:text>.</xsl:text>
-          </xsl:if>
-          <xsl:value-of select="eo:specials(.)"/>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$n"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:variable name="result">
+      <xsl:choose>
+        <xsl:when test="$n='@'">
+          <xsl:value-of select="$eo:phi"/>
+        </xsl:when>
+        <xsl:when test="$n='.@'">
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$eo:phi"/>
+        </xsl:when>
+        <xsl:when test="$n='^'">
+          <xsl:value-of select="$eo:rho"/>
+        </xsl:when>
+        <xsl:when test="$n='.^'">
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$eo:rho"/>
+        </xsl:when>
+        <xsl:when test="$n='$'">
+          <xsl:value-of select="$eo:xi"/>
+        </xsl:when>
+        <xsl:when test="$n='Q'">
+          <xsl:value-of select="$eo:program"/>
+        </xsl:when>
+        <xsl:when test="starts-with($n, 'org.eolang')">
+          <xsl:value-of select="$eo:program"/>
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$n"/>
+        </xsl:when>
+        <xsl:when test="$aliases[text()=$n] and not(starts-with($n, 'j$'))">
+          <xsl:value-of select="$eo:program"/>
+          <xsl:text>.</xsl:text>
+          <xsl:choose>
+            <xsl:when test="starts-with($n, 'Q.')">
+              <xsl:value-of select="substring($n, 3)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$n"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:when test="contains($n, '.')">
+          <xsl:for-each select="tokenize($n, '\.')">
+            <xsl:if test="position()&gt;1">
+              <xsl:text>.</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="eo:specials(.)"/>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$n"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="string($result)"/>
   </xsl:function>
   <!-- COMMA WITH SPACE -->
   <xsl:function name="eo:comma">
