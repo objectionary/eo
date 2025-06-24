@@ -140,7 +140,7 @@ public final class EoSyntax implements Syntax {
      * @param ipt The EO program to parse
      */
     public EoSyntax(final Input ipt) {
-        this(ipt, EoSyntax.CANONICAL);
+        this(ipt, CANONICAL);
     }
 
     /**

@@ -70,10 +70,10 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         final String result;
         final String underlined;
         if (error instanceof NoViableAltException) {
-            result = EoParserErrors.impasse((Parser) recognizer);
+            result = impasse((Parser) recognizer);
             underlined = this.underlined(symbol, line, position);
         } else if (error instanceof InputMismatchException) {
-            result = EoParserErrors.mismatch((Parser) recognizer, msg);
+            result = mismatch((Parser) recognizer, msg);
             underlined = this.underlined(symbol, line, position);
         } else {
             result = msg;

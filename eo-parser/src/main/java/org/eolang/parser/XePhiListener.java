@@ -165,7 +165,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitFormation(final PhiParser.FormationContext ctx) {
         this.properties.pop();
-        if (!this.properties.empty() && !XePhiListener.hasLambdaPackage(ctx.bindings())) {
+        if (!this.properties.empty() && !hasLambdaPackage(ctx.bindings())) {
             this.objects().leave();
         }
     }
@@ -202,7 +202,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterBindings(final PhiParser.BindingsContext ctx) {
         this.anames.push(new HashSet<>());
-        if (XePhiListener.hasLambdaPackage(ctx)) {
+        if (hasLambdaPackage(ctx)) {
             this.packages.add(this.attributes.peek());
             this.objs.add(new Objects());
         }
@@ -210,7 +210,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitBindings(final PhiParser.BindingsContext ctx) {
-        if (XePhiListener.hasLambdaPackage(ctx)) {
+        if (hasLambdaPackage(ctx)) {
             this.objs.poll();
         }
         this.anames.pop();
@@ -303,7 +303,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterFullAttribute(final PhiParser.FullAttributeContext ctx) {
         if (ctx.attribute() == null) {
             this.attributes.push(
-                String.format("%s%s", XePhiListener.ALPHA, ctx.getText().substring(1))
+                String.format("%s%s", ALPHA, ctx.getText().substring(1))
             );
         }
     }
@@ -346,7 +346,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
-        if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
+        if (!LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
             this.objects().start(ctx).prop("name", "λ").leave();
             this.checkDuplicates(ctx, "λ");
         }
@@ -395,7 +395,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
         final int index = this.alphas.peek();
         this.alphas.pop();
         this.alphas.push(index + 1);
-        this.attributes.push(String.format("%s%d", XePhiListener.ALPHA, index));
+        this.attributes.push(String.format("%s%d", ALPHA, index));
     }
 
     @Override
@@ -541,7 +541,7 @@ final class XePhiListener implements PhiListener, Iterable<Directive> {
                 context -> context.lambdaBinding() != null && context.lambdaBinding()
                     .FUNCTION()
                     .getText()
-                    .equals(XePhiListener.LAMBDA_PACKAGE)
+                    .equals(LAMBDA_PACKAGE)
             );
     }
 

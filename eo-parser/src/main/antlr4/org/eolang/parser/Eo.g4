@@ -43,6 +43,13 @@ object
 // Ends on the next line
 bound
     : commentOptional (application | ((method | just) oname) EOL)
+    | errorBound
+    ;
+
+// Error production to handle malformed bound objects
+// This specifically targets malformed attribute syntax like [x] +++ bad
+errorBound
+    : commentOptional LSQ NAME* RSQ SPACE PLUS PLUS (~EOL)* EOL innersOrEol?
     ;
 
 subMaster
