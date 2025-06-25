@@ -45,7 +45,7 @@ final class OyCached implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        this.cache.computeIfAbsent(
+        return this.cache.computeIfAbsent(
             name, key -> {
                 try {
                     return this.origin.get(name);
@@ -57,7 +57,6 @@ final class OyCached implements Objectionary {
                 }
             }
         );
-        return this.cache.get(name);
     }
 
     @Override
