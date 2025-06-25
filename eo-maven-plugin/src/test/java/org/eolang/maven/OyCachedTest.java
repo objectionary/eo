@@ -79,7 +79,8 @@ final class OyCachedTest {
         MatcherAssert.assertThat(
             "We expect that all values are equal to the same content",
             new Together<>(30, thread -> objectionary.get("parallel"))
-                .asList().stream().allMatch(input -> input.equals(content))
+                .asList().stream().allMatch(input -> input.equals(content)),
+            Matchers.equalTo(true)
         );
         final int expected = 1;
         MatcherAssert.assertThat(

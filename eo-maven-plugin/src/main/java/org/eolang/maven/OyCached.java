@@ -21,7 +21,7 @@ final class OyCached implements Objectionary {
     private final Objectionary origin;
 
     /**
-     * Cache.
+     * The cache.
      */
     private final Map<String, Input> cache;
 
@@ -36,6 +36,7 @@ final class OyCached implements Objectionary {
     /**
      * Ctor.
      * @param oby The objectionary
+     * @param che The cache
      */
     OyCached(final Objectionary oby, final Map<String, Input> che) {
         this.origin = oby;
