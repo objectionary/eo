@@ -4,13 +4,16 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Together;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -58,6 +61,31 @@ final class OyCachedTest {
             "The retrieved content from origin should be saved in cache, but it was not",
             cache,
             Matchers.hasEntry(key, value)
+        );
+    }
+
+    @RepeatedTest(10)
+    void cachesInConcurrentEnvironment() {
+        final AtomicInteger calls = new AtomicInteger(0);
+        final Input content = new InputOf("[] > foo");
+        final Objectionary objectionary = new OyCached(
+            new Objectionary.Fake(
+                nme -> {
+                    calls.incrementAndGet();
+                    return content;
+                }
+            )
+        );
+        MatcherAssert.assertThat(
+            "We expect that all values are equal to the same content",
+            new Together<>(30, thread -> objectionary.get("parallel"))
+                .asList().stream().allMatch(input -> input.equals(content))
+        );
+        final int expected = 1;
+        MatcherAssert.assertThat(
+            String.format("Original objectionary should be called only %d time", expected),
+            calls.get(),
+            Matchers.equalTo(expected)
         );
     }
 }
