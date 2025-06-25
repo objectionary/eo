@@ -44,9 +44,18 @@ final class OyCached implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        if (!this.cache.containsKey(name)) {
-            this.cache.put(name, this.origin.get(name));
-        }
+        this.cache.computeIfAbsent(
+            name, key -> {
+                try {
+                    return this.origin.get(name);
+                } catch (final IOException exception) {
+                    throw new IllegalStateException(
+                        "An error occurred during the access to the origin objectionary",
+                        exception
+                    );
+                }
+            }
+        );
         return this.cache.get(name);
     }
 
