@@ -17,6 +17,7 @@ import org.cactoos.io.InputWithFallback;
 
 /**
  * The simple HTTP Objectionary server.
+ * <p>This class is supposed to be used together with {@link OyCached}.</p>
  *
  * @since 0.1
  */
