@@ -97,6 +97,9 @@
     (random 123).fixed > rand
 
   # This unit test is supposed to check the functionality of the corresponding object.
+  # Fixed flaky test: instead of comparing two pseudo-random numbers (which can be equal
+  # due to identical system time), we compare two deterministic random numbers with
+  # different seeds. This ensures the test is reliable and deterministic.
   [] +> tests-two-random-numbers-not-equal
     not. > @
-      random.pseudo.eq random.pseudo
+      (random 123).fixed.eq (random 456).fixed
