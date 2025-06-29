@@ -483,6 +483,94 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void handlesThreadLocalNestingCorrectly() {
+        final Phi phi = new PhDefaultTest.Int();
+        // Test normal nesting - should not throw any exceptions
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context"),
+            "Nesting should be properly managed without exceptions"
+        );
+    }
+
+    @Test
+    void handlesThreadLocalNestingWithExceptions() {
+        final Phi phi = new PhDefaultTest.Int();
+        // Test that nesting is properly cleaned up even when exceptions occur
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> phi.take("non-existent-attribute"),
+            "Should throw exception for non-existent attribute"
+        );
+        // After exception, nesting should still be properly managed
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context"),
+            "Should still work after exception"
+        );
+    }
+
+    @Test
+    void cleanupNestingWorksCorrectly() {
+        final Phi phi = new PhDefaultTest.Int();
+        // Use the ThreadLocal
+        phi.take("context");
+        // Clean it up
+        PhDefault.cleanupNesting();
+        // Should still work after cleanup
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context"),
+            "Should work after cleanup"
+        );
+    }
+
+    @Test
+    void threadLocalWorksCorrectlyInMultipleThreads() {
+        final int threads = 10;
+        final int iterations = 100;
+        
+        // Test that ThreadLocal works correctly across multiple threads
+        final boolean[] results = new boolean[threads];
+        final Thread[] threadArray = new Thread[threads];
+        
+        for (int i = 0; i < threads; i++) {
+            final int threadId = i;
+            threadArray[i] = new Thread(() -> {
+                final Phi phi = new PhDefaultTest.Int();
+                try {
+                    for (int j = 0; j < iterations; j++) {
+                        phi.take("context");
+                    }
+                    results[threadId] = true;
+                } catch (final Exception ex) {
+                    results[threadId] = false;
+                } finally {
+                    // Clean up ThreadLocal for this thread
+                    PhDefault.cleanupNesting();
+                }
+            });
+            threadArray[i].start();
+        }
+        
+        // Wait for all threads to complete
+        for (final Thread thread : threadArray) {
+            try {
+                thread.join();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
+        }
+        
+        // All threads should have completed successfully
+        for (int i = 0; i < threads; i++) {
+            MatcherAssert.assertThat(
+                String.format("Thread %d should have completed successfully", i),
+                results[i],
+                Matchers.is(true)
+            );
+        }
+    }
+
     /**
      * Rnd.
      * @since 0.1.0

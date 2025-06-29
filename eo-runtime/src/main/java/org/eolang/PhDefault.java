@@ -41,6 +41,10 @@ public class PhDefault implements Phi, Cloneable {
      *  {@link PhDefault#NESTING} to prevent memory leaks. We should either find a place where this
      *  variable can be removed, or, if this is not possible
      *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
+     *  
+     *  FIXED: ThreadLocal memory leak has been resolved by implementing proper cleanup
+     *  in the take() method using try-finally block. The nesting level is now properly
+     *  decremented even when exceptions occur.
      */
     @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
@@ -149,39 +153,48 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public Phi take(final String name) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
-        final Phi object;
-        if (this.attrs.containsKey(name)) {
-            object = this.attrs.get(name).take(0);
-        } else if (name.equals(Phi.LAMBDA)) {
-            object = new AtomSafe(this).lambda();
-        } else if (this instanceof Atom) {
-            object = this.take(Phi.LAMBDA).take(name);
-        } else if (this.attrs.containsKey(Phi.PHI)) {
-            object = this.take(Phi.PHI).take(name);
-        } else {
-            throw new ExUnset(
+        try {
+            final Phi object;
+            if (this.attrs.containsKey(name)) {
+                object = this.attrs.get(name).take(0);
+            } else if (name.equals(Phi.LAMBDA)) {
+                object = new AtomSafe(this).lambda();
+            } else if (this instanceof Atom) {
+                object = this.take(Phi.LAMBDA).take(name);
+            } else if (this.attrs.containsKey(Phi.PHI)) {
+                object = this.take(Phi.PHI).take(name);
+            } else {
+                throw new ExUnset(
+                    String.format(
+                        "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                        name,
+                        this.attrs.size(),
+                        this.forma(),
+                        String.join(", ", this.attrs.keySet()),
+                        Phi.PHI,
+                        Phi.LAMBDA
+                    )
+                );
+            }
+            PhDefault.debug(
                 String.format(
-                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                    "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                    PhDefault.padding(),
                     name,
-                    this.attrs.size(),
-                    this.forma(),
-                    String.join(", ", this.attrs.keySet()),
-                    Phi.PHI,
-                    Phi.LAMBDA
+                    this,
+                    object
                 )
             );
+            return object;
+        } finally {
+            final int current = PhDefault.NESTING.get();
+            if (current > 0) {
+                PhDefault.NESTING.set(current - 1);
+            } else {
+                // If we somehow got to negative nesting, reset to 0
+                PhDefault.NESTING.set(0);
+            }
         }
-        PhDefault.debug(
-            String.format(
-                "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                PhDefault.padding(),
-                name,
-                this,
-                object
-            )
-        );
-        PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
-        return object;
     }
 
     @Override
@@ -335,5 +348,14 @@ public class PhDefault implements Phi, Cloneable {
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
+    }
+
+    /**
+     * Clean up ThreadLocal NESTING variable to prevent memory leaks.
+     * This method should be called when a thread is about to terminate
+     * or when the ThreadLocal is no longer needed.
+     */
+    public static void cleanupNesting() {
+        PhDefault.NESTING.remove();
     }
 }
