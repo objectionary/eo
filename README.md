@@ -198,11 +198,11 @@ Got the idea?
 
 This is our [EBNF] of EO language:
 
-![Grammar](/ebnf/Eo.png)
+![Grammar][EO-Grammar]
 
 This is the [EBNF] of 𝜑-calculus:
 
-![EBNF of 𝜑-calculus](/ebnf/Phi.png)
+![EBNF of 𝜑-calculus][Phi-Grammar]
 
 The PNG images were
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
@@ -324,3 +324,5 @@ to enhance the performance of EO components:
 [book]: http://www.yegor256.com/elegant-objects.html
 [𝜑-calculus]: https://arxiv.org/abs/2111.13384
 [Esperanto]: https://en.wikipedia.org/wiki/Esperanto
+[EO-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Eo.png
+[Phi-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Phi.png
