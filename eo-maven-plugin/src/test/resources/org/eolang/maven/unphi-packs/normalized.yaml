@@ -1,8 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
-# SPDX-License-Identifier: MIT
----
-# yamllint disable rule:line-length
-asserts:
-  - /object[count(o)=1]/o[@name='app']
-phi:
-  "{ ⟦ app ↦ ⟦ args ↦ ∅, φ ↦ Φ.org.eolang.io.stdout (α0 ↦ Φ.org.eolang.string (α0 ↦ Φ.org.eolang.bytes (α0 ↦ ⟦Δ ⤍ 48-65-6C-6C-6F-2C-20-77-6F-72-6C-64-21-0A⟧))) ⟧ ⟧ }"
