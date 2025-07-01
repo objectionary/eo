@@ -209,7 +209,6 @@
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>true</failOnWarning>
           <offline>true</offline>
-          <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
           <skipLinting>true</skipLinting>
         </configuration>
         <executions>
