@@ -200,14 +200,9 @@ This is our [EBNF] of EO language:
 
 ![Grammar][EO-Grammar]
 
-This is the [EBNF] of 𝜑-calculus:
-
-![EBNF of 𝜑-calculus][Phi-Grammar]
-
-The PNG images were
+The PNG image was
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
-It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg)
-and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
+It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg).
 
 ## What's Next?
 
@@ -325,4 +320,3 @@ to enhance the performance of EO components:
 [𝜑-calculus]: https://arxiv.org/abs/2111.13384
 [Esperanto]: https://en.wikipedia.org/wiki/Esperanto
 [EO-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Eo.png
-[Phi-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Phi.png
