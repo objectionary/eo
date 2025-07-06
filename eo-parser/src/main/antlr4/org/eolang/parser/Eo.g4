@@ -238,7 +238,7 @@ vapplicationHead
 
 // Compact arrays
 compactArray
-    : NAME SPACE STAR INT?
+    : (HOME DOT)? NAME SPACE STAR INT?
     ;
 
 // Vertical application arguments
@@ -591,6 +591,8 @@ HEX : '0x' [0-9a-fA-F]+
 
 NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(]*
     ;
+
+//NAME: [a-zA-Z] ~[ \r\n\t,|':;!?\][}{)(]* ;
 
 fragment TEXT_MARK
     : '"""'
