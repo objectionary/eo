@@ -22,6 +22,8 @@ jobs:
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
       - uses: DanySK/setup-texlive-action@master
+        with:
+          requirements-file: .github/texlive/requirements.txt
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
