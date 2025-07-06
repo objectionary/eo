@@ -21,9 +21,10 @@ jobs:
       - run: |
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: DanySK/setup-texlive-action@master
+      - uses: DanySK/setup-texlive-action@0.1.1
       - name: Install LaTeX packages
         run: |
+          which tlmgr
           tlmgr install scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v4
         with:
