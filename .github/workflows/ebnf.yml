@@ -21,7 +21,7 @@ jobs:
       - run: |
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: paolobrasolin/setup-texlive-action@v1
+      - uses: paolobrasolin/setup-texlive-action@v1.0.2
         with:
           packages-path: .github/texlive/requirements.txt
       - uses: actions/setup-java@v4
