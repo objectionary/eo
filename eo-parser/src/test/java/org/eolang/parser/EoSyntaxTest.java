@@ -384,6 +384,34 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void parsesCommentsWithLeadingCommentsProperly() throws IOException {
+        final Xnav xml = new Xnav(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# First comment.",
+                        "  # Indented comment.",
+                        "[] > foo"
+                    )
+                )
+            ).parsed().inner()
+        );
+        final String comments = xml.element("object").element("comments").element("comment").text()
+            .get();
+        final String expected = "First comment.\\nIndented comment.";
+        MatcherAssert.assertThat(
+            String.format(
+                "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",
+                xml, comments, expected
+            ),
+            comments,
+            Matchers.equalTo(expected)
+        );
+
+    }
+
     /**
      * Prepare naughty strings.
      * @return Stream of strings
