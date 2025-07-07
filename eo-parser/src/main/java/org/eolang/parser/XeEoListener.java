@@ -9,8 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -568,11 +566,15 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             count = 0;
         }
+        final String fqn = ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."));
+        final String base;
+        if (ctx.XI() == null) {
+            base = fqn;
+        } else {
+            base = String.format("%s.%s", ctx.XI().getText(), fqn);
+        }
         this.objects.start(ctx)
-            .prop(
-                "base",
-                ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."))
-            )
+            .prop("base", base)
             .prop("before-star", count);
     }
 
