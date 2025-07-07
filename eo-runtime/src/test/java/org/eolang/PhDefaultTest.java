@@ -510,7 +510,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void cleanupNestingWorksCorrectly() {
+    void cleansUpNesting() {
         final Phi phi = new PhDefaultTest.Int();
         // Use the ThreadLocal
         phi.take("context");
@@ -524,14 +524,14 @@ final class PhDefaultTest {
     }
 
     @Test
-    void threadLocalWorksCorrectlyInMultipleThreads() {
+    void worksWithThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int iterations = 100;
-        
+
         // Test that ThreadLocal works correctly across multiple threads
         final boolean[] results = new boolean[threads];
         final Thread[] threadArray = new Thread[threads];
-        
+
         for (int i = 0; i < threads; i++) {
             final int threadId = i;
             threadArray[i] = new Thread(() -> {
@@ -550,7 +550,7 @@ final class PhDefaultTest {
             });
             threadArray[i].start();
         }
-        
+
         // Wait for all threads to complete
         for (final Thread thread : threadArray) {
             try {
@@ -560,7 +560,7 @@ final class PhDefaultTest {
                 throw new IllegalStateException(ex);
             }
         }
-        
+
         // All threads should have completed successfully
         for (int i = 0; i < threads; i++) {
             MatcherAssert.assertThat(
