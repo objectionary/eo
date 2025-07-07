@@ -489,7 +489,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void handlesThreadLocalNestingCorrectly() {
+    void verifiesThreadLocalNesting() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
             () -> phi.take(PhDefaultTest.CONTEXT),
@@ -498,7 +498,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void handlesThreadLocalNestingWithExceptions() {
+    void verifiesThreadLocalNestingWithExceptions() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertThrows(
             ExUnset.class,
@@ -512,7 +512,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void cleanupNestingWorks() {
+    void verifiesCleanupNesting() {
         final Phi phi = new PhDefaultTest.Int();
         phi.take(PhDefaultTest.CONTEXT);
         PhDefault.cleanupNesting();
@@ -523,7 +523,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void threadLocalWorksInMultipleThreads() {
+    void verifiesThreadLocalInMultipleThreads() {
         final int totalThreads = 10;
         final int iterationsCount = 100;
         final boolean[] results = new boolean[totalThreads];
@@ -547,11 +547,17 @@ final class PhDefaultTest {
             threadPool[threadIndex].start();
         }
         
-        joinThreads(threadPool);
-        verifyThreadResults(results);
+        joinsThreads(threadPool);
+        
+        for (int threadIndex = 0; threadIndex < totalThreads; threadIndex += 1) {
+            Assertions.assertTrue(
+                results[threadIndex],
+                String.format("Thread %d should have completed successfully", threadIndex)
+            );
+        }
     }
 
-    private void joinThreads(final Thread[] threads) {
+    private void joinsThreads(final Thread[] threads) {
         for (final Thread thread : threads) {
             try {
                 thread.join();
@@ -559,16 +565,6 @@ final class PhDefaultTest {
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Thread interrupted", ex);
             }
-        }
-    }
-
-    private void verifyThreadResults(final boolean[] results) {
-        for (int threadIndex = 0; threadIndex < results.length; threadIndex += 1) {
-            MatcherAssert.assertThat(
-                String.format("Thread %d should have completed successfully", threadIndex),
-                results[threadIndex],
-                Matchers.is(true)
-            );
         }
     }
 
