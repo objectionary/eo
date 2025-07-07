@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 1
       - uses: anthropics/claude-code-action@beta
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
           custom_instructions: |
             Follow our coding standards
             Ensure all new code has tests
