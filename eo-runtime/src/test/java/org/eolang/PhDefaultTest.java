@@ -509,6 +509,7 @@ final class PhDefaultTest {
         );
     }
 
+    @SuppressWarnings("JTCOP.RulePresentTense")
     @Test
     void cleanupNestingWorksCorrectly() {
         final Phi phi = new PhDefaultTest.Int();
@@ -523,6 +524,7 @@ final class PhDefaultTest {
         );
     }
 
+    @SuppressWarnings("JTCOP.RulePresentTense")
     @Test
     void threadLocalWorksCorrectlyInMultipleThreads() {
         final int threads = 10;
