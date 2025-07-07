@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 name: ClaudeCode
-on:
+'on':
   issue_comment:
     types: [created]
   pull_request_review_comment:
