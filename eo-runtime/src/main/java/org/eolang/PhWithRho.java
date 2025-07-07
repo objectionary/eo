@@ -5,19 +5,8 @@
 
 package org.eolang;
 
-/**
- * The attribute that tries to copy object and set \rho to it if it has not already set.
- * @since 0.36.0
- * @todo #3480:30min Move out `PhiWithRHo.origin()` method.
- *  Now we use it in {@link PhDefault#put(int, Phi)}. Let's move it to other class,
- *  in order to get rid of `TooManyMethods` PMD violation.
- */
 @SuppressWarnings("PMD.TooManyMethods")
-final class PhWithRho implements Phi {
-    /**
-     * Original attribute.
-     */
-    private final Phi original;
+final class PhWithRho extends AbstractPhWithAttr {
 
     /**
      * Rho.
@@ -30,23 +19,23 @@ final class PhWithRho implements Phi {
      * @param rho Rho
      */
     PhWithRho(final Phi attr, final Phi rho) {
-        this.original = attr;
+        super(attr);
         this.rho = rho;
     }
 
     @Override
     public Phi copy() {
-        return new PhWithRho(this.original.copy(), this.rho);
+        return new PhWithRho(origin().copy(), this.rho);
     }
 
     @Override
     public boolean hasRho() {
-        return this.original.hasRho();
+        return origin().hasRho();
     }
 
     @Override
     public Phi take(final String name) {
-        Phi ret = this.original.take(name);
+        Phi ret = origin().take(name);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);
@@ -56,7 +45,7 @@ final class PhWithRho implements Phi {
 
     @Override
     public Phi take(final int pos) {
-        Phi ret = this.original.take(pos);
+        Phi ret = origin().take(pos);
         if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);
@@ -66,42 +55,34 @@ final class PhWithRho implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.original.put(pos, object);
+        origin().put(pos, object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        this.original.put(name, object);
+        origin().put(name, object);
     }
 
     @Override
     public String locator() {
-        return this.original.locator();
+        return origin().locator();
     }
 
     @Override
     public String forma() {
-        return this.original.forma();
+        return origin().forma();
     }
 
     @Override
     public Phi copy(final Phi self) {
         return new PhWithRho(
-            this.original.copy(self),
+            origin().copy(self),
             self
         );
     }
 
     @Override
     public byte[] delta() {
-        return this.original.delta();
-    }
-
-    /**
-     * Returns the original attribute.
-     * @return The original attribute
-     */
-    Phi origin() {
-        return this.original;
+        return origin().delta();
     }
 }
