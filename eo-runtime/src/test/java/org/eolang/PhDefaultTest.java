@@ -524,40 +524,40 @@ final class PhDefaultTest {
 
     @Test
     void verifiesThreadLocalInMultipleThreads() {
-        final int totalThreads = 10;
-        final int iterationsCount = 100;
-        final boolean[] results = new boolean[totalThreads];
-        final Thread[] threadPool = new Thread[totalThreads];
+        final int threads = 10;
+        final int count = 100;
+        final boolean[] res = new boolean[threads];
+        final Thread[] pool = new Thread[threads];
         
-        for (int threadIndex = 0; threadIndex < totalThreads; threadIndex += 1) {
-            final int currentThreadId = threadIndex;
-            threadPool[threadIndex] = new Thread(() -> {
+        for (int idx = 0; idx < threads; idx += 1) {
+            final int id = idx;
+            pool[idx] = new Thread(() -> {
                 final Phi phi = new PhDefaultTest.Int();
                 try {
-                    for (int iteration = 0; iteration < iterationsCount; iteration += 1) {
+                    for (int iter = 0; iter < count; iter += 1) {
                         phi.take(PhDefaultTest.CONTEXT);
                     }
-                    results[currentThreadId] = true;
+                    res[id] = true;
                 } catch (final IllegalStateException ex) {
-                    results[currentThreadId] = false;
+                    res[id] = false;
                 } finally {
                     PhDefault.cleanupNesting();
                 }
             });
-            threadPool[threadIndex].start();
+            pool[idx].start();
         }
         
-        joinsThreads(threadPool);
+        this.joinsThreads(pool);
         
-        for (int threadIndex = 0; threadIndex < totalThreads; threadIndex += 1) {
+        for (int idx = 0; idx < threads; idx += 1) {
             Assertions.assertTrue(
-                results[threadIndex],
-                String.format("Thread %d should have completed successfully", threadIndex)
+                res[idx],
+                String.format("Thread %d should have completed successfully", idx)
             );
         }
     }
 
-    private void joinsThreads(final Thread[] threads) {
+    private void joinsThreads(final Thread... threads) {
         for (final Thread thread : threads) {
             try {
                 thread.join();
