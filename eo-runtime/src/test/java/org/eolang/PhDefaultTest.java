@@ -29,11 +29,6 @@ final class PhDefaultTest {
      */
     private static final String VOID_ATT = "void";
 
-    /**
-     * Name of attribute.
-     */
-    private static final String CONTEXT_ATT = "context";
-
     @Test
     void comparesTwoObjects() {
         final Phi phi = new PhDefaultTest.Int();
@@ -515,40 +510,49 @@ final class PhDefaultTest {
     }
 
     @Test
-    void cleansUpNesting() {
+    void cleanupNestingWorksCorrectly() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.take(CONTEXT_ATT);
+        // Use the ThreadLocal
+        phi.take("context");
+        // Clean it up
         PhDefault.cleanupNesting();
+        // Should still work after cleanup
         Assertions.assertDoesNotThrow(
-            () -> phi.take(CONTEXT_ATT),
+            () -> phi.take("context"),
             "Should work after cleanup"
         );
     }
 
     @Test
-    void worksWithThreadLocalInMultipleThreads() {
+    void threadLocalWorksCorrectlyInMultipleThreads() {
         final int threads = 10;
         final int iterations = 100;
-        final boolean[] resultsArr = new boolean[threads];
-        final Thread[] threadsArr = new Thread[threads];
-        for (int idx = 0; idx < threads; idx = idx + 1) {
-            final int threadIdx = idx;
-            threadsArr[idx] = new Thread(() -> {
+        
+        // Test that ThreadLocal works correctly across multiple threads
+        final boolean[] results = new boolean[threads];
+        final Thread[] threadArray = new Thread[threads];
+        
+        for (int i = 0; i < threads; i++) {
+            final int threadId = i;
+            threadArray[i] = new Thread(() -> {
                 final Phi phi = new PhDefaultTest.Int();
                 try {
-                    for (int idy = 0; idy < iterations; idy = idy + 1) {
-                        phi.take(CONTEXT_ATT);
+                    for (int j = 0; j < iterations; j++) {
+                        phi.take("context");
                     }
-                    resultsArr[threadIdx] = true;
-                } catch (final RuntimeException ex) {
-                    resultsArr[threadIdx] = false;
+                    results[threadId] = true;
+                } catch (final Exception ex) {
+                    results[threadId] = false;
                 } finally {
+                    // Clean up ThreadLocal for this thread
                     PhDefault.cleanupNesting();
                 }
             });
-            threadsArr[idx].start();
+            threadArray[i].start();
         }
-        for (final Thread thread : threadsArr) {
+        
+        // Wait for all threads to complete
+        for (final Thread thread : threadArray) {
             try {
                 thread.join();
             } catch (final InterruptedException ex) {
@@ -556,10 +560,12 @@ final class PhDefaultTest {
                 throw new IllegalStateException(ex);
             }
         }
-        for (int idx = 0; idx < threads; idx = idx + 1) {
+        
+        // All threads should have completed successfully
+        for (int i = 0; i < threads; i++) {
             MatcherAssert.assertThat(
-                String.format("Thread %d should have completed successfully", idx),
-                resultsArr[idx],
+                String.format("Thread %d should have completed successfully", i),
+                results[i],
                 Matchers.is(true)
             );
         }
