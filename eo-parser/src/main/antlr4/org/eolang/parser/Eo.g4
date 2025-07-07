@@ -238,8 +238,12 @@ vapplicationHead
 
 // Compact arrays
 compactArray
-    : (HOME DOT)? NAME SPACE STAR INT?
+    : (HOME | NAME) (DOT NAME)* SPACE STAR INT?
     ;
+
+//fullName
+//    : (HOME | NAME) (DOT NAME)*
+//    ;
 
 // Vertical application arguments
 // Ends on the next line

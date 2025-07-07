@@ -9,11 +9,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
@@ -566,7 +569,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             count = 0;
         }
         this.objects.start(ctx)
-            .prop("base", ctx.NAME().getText())
+            .prop(
+                "base",
+                ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."))
+            )
             .prop("before-star", count);
     }
 
