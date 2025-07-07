@@ -6,16 +6,14 @@ package integration;
 
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 
 /**
  * Execution of EO source.
  * @since 0.56.3
- * @todo #4232:30min Conditionally add JUnit dependencies to integration tests.
- *  JUnit dependencies are needed for EO programs that contain test attributes
- *  (methods starting with '+'), but not for programs without tests. The XSL
- *  template now conditionally generates JUnit imports, but integration tests
- *  still need JUnit dependencies available when processing EO programs with tests.
  */
 final class EoSourceRun implements Proc<Object> {
 
@@ -42,26 +40,29 @@ final class EoSourceRun implements Proc<Object> {
             .configuration()
             .set("failOnWarning", Boolean.FALSE.toString())
             .set("skipLinting", Boolean.TRUE.toString());
-        this.farea.dependencies().append(
-            "org.junit.jupiter",
-            "junit-jupiter-engine",
-            "5.10.3"
-        );
-        this.farea.dependencies().append(
-            "org.junit.jupiter",
-            "junit-jupiter-params",
-            "5.10.3"
-        );
-        this.farea.dependencies().append(
-            "org.junit.jupiter",
-            "junit-jupiter-api",
-            "5.10.3"
-        );
-        this.farea.dependencies().append(
-            "org.junit-pioneer",
-            "junit-pioneer",
-            "2.2.0"
-        );
+        this.farea.exec("clean", "generate-sources");
+        if (this.testsPresent()) {
+            this.farea.dependencies().append(
+                "org.junit.jupiter",
+                "junit-jupiter-engine",
+                "5.10.3"
+            );
+            this.farea.dependencies().append(
+                "org.junit.jupiter",
+                "junit-jupiter-params",
+                "5.10.3"
+            );
+            this.farea.dependencies().append(
+                "org.junit.jupiter",
+                "junit-jupiter-api",
+                "5.10.3"
+            );
+            this.farea.dependencies().append(
+                "org.junit-pioneer",
+                "junit-pioneer",
+                "2.2.0"
+            );
+        }
         this.farea.build()
             .plugins()
             .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
@@ -71,6 +72,29 @@ final class EoSourceRun implements Proc<Object> {
             .configuration()
             .set("mainClass", "org.eolang.Main")
             .set("arguments", args);
-        this.farea.exec("clean", "test");
+        this.farea.exec("test");
+    }
+
+    /**
+     * Check if tests are present in generated test sources.
+     * @return True if test sources contain JUnit tests, false otherwise
+     * @throws IOException If I/O fails
+     */
+    private boolean testsPresent() throws IOException {
+        final Path testdir = this.farea.files().path().resolve("target/generated-test-sources");
+        if (!Files.exists(testdir)) {
+            return false;
+        }
+        try (Stream<Path> paths = Files.walk(testdir)) {
+            return paths
+                .filter(path -> path.toString().endsWith(".java"))
+                .anyMatch(path -> {
+                    try {
+                        return Files.readString(path).contains("@Test");
+                    } catch (final IOException ex) {
+                        return false;
+                    }
+                });
+        }
     }
 }
