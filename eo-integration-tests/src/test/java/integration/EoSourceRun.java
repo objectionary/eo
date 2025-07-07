@@ -82,7 +82,7 @@ final class EoSourceRun implements Proc<Object> {
      */
     private boolean testsPresent() throws IOException {
         final Path testdir = this.farea.files().path().resolve("target/generated-test-sources");
-        if (!Files.exists(testdir)) {
+        if (!Files.isDirectory(testdir)) {
             return false;
         }
         try (Stream<Path> paths = Files.walk(testdir)) {
