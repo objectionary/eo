@@ -6,8 +6,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-salty-phi" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="text"/>
-  <!-- Variables -->
-  <xsl:variable name="aliases" select="/object/metas/meta/part[last()]"/>
   <!-- Functions -->
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:lambda-name">
@@ -42,18 +40,6 @@
         <xsl:value-of select="$eo:program"/>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$n"/>
-      </xsl:when>
-      <xsl:when test="$aliases[text()=$n]">
-        <xsl:value-of select="$eo:program"/>
-        <xsl:text>.</xsl:text>
-        <xsl:choose>
-          <xsl:when test="starts-with($n, 'Q.')">
-            <xsl:value-of select="substring($n, 3)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$n"/>
-          </xsl:otherwise>
-        </xsl:choose>
       </xsl:when>
       <xsl:when test="contains($n, '.')">
         <xsl:for-each select="tokenize($n, '\.')">

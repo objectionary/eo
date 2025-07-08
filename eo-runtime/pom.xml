@@ -209,7 +209,6 @@
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>true</failOnWarning>
           <offline>true</offline>
-          <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
           <skipLinting>true</skipLinting>
         </configuration>
         <executions>
@@ -224,7 +223,14 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
+              <skipLinting>false</skipLinting>
+              <failOnWarning>true</failOnWarning>
               <ignoreRuntime>true</ignoreRuntime>
+              <!--
+                @todo #4148:35min Enable `lintAsPackage` below and fix
+                 all warnings that will be reported (there will be many of them),
+                 so that we can enable it in the `test-compile` execution as well:
+              -->
               <lintAsPackage>false</lintAsPackage>
               <skipSourceLints>
                 <!-- Required to be skipped, since we in runtime origin library. -->

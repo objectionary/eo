@@ -37,7 +37,7 @@ public final class MjProbe extends MjSafe {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary = new OyIndexed(
-        new OyRemote(this.hash)
+        new OyCached(new OyRemote(this.hash))
     );
 
     @Override

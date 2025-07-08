@@ -16,6 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: crate-ci/typos@v1.33.1
+      - uses: crate-ci/typos@v1.34.0
         with:
           config: ./.github/typos.toml

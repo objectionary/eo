@@ -21,8 +21,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.text.TextOf;
 import org.eolang.parser.EoSyntax;
-import org.eolang.parser.ObjectName;
+import org.eolang.parser.OnDefault;
+import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -146,19 +148,23 @@ public final class MjParse extends MjSafe {
             "Parsed program '%s' from %[file]s:\n %s",
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
-        String name = "";
         final Node document = xmir.inner();
-        try {
-            name = new ObjectName(xmir).get();
-        } catch (final IllegalStateException exception) {
-            MjParse.applyError("mandatory-object-name", exception.getMessage(), document);
-        }
+        final String name = new OnDetailed(
+            new OnDefault(xmir),
+            e -> MjParse.applyError("mandatory-object-name", e.getMessage(), document)
+        ).get();
         if (!name.equals(identifier)) {
             MjParse.applyError(
                 "validate-object-name",
-                String.format(
-                    "Tojo identifier '%s' does not match to result object name '%s'", identifier,
-                    name
+                Logger.format(
+                    "For some reason, the identifier of the tojo, which essentially is a name of the source file ('%s'), does not match the name of the object discovered in the XMIR after parsing ('%s'); the XMIR is saved to the %[file]s file, for debugging purposes",
+                    identifier, name,
+                    new Saved(
+                        new TextOf(xmir.toString()),
+                        this.targetDir.toPath().resolve(
+                            String.format("broken-%x.xmir", System.nanoTime())
+                        )
+                    ).value()
                 ),
                 document
             );
