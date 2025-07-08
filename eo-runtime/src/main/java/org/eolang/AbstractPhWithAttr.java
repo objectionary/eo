@@ -20,7 +20,7 @@ abstract class AbstractPhWithAttr implements Phi {
      * Returns the original attribute.
      * @return The original attribute
      */
-    public Phi origin() {
+    Phi origin() {
         return this.origin;
     }
 }
