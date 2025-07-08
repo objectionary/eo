@@ -385,7 +385,7 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void parsesCommentsWithIndentedNestedCommentsProperly() throws IOException {
+    void savesIndentationInComments() throws IOException {
         MatcherAssert.assertThat(
             "Parsed comments in XMIR should respect indentation",
             new Xnav(
@@ -394,13 +394,13 @@ final class EoSyntaxTest {
                         String.join(
                             "\n",
                             "# Top comment.",
-                            "#  Indented comment is here, 守规矩!",
+                            "#   Indented comment is here, 守规矩!",
                             "[] > foo"
                         )
                     )
                 ).parsed().inner()
             ).element("object").element("comments").element("comment").text().get(),
-            Matchers.equalTo("Top comment.\\n Indented comment is here, 守规矩!")
+            Matchers.equalTo("Top comment.\\n  Indented comment is here, 守规矩!")
         );
     }
 
