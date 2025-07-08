@@ -385,31 +385,23 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void parsesCommentsWithLeadingCommentsProperly() throws IOException {
-        final Xnav xml = new Xnav(
-            new EoSyntax(
-                new InputOf(
-                    String.join(
-                        "\n",
-                        "# First comment.",
-                        "  # Indented comment.",
-                        "[] > foo"
-                    )
-                )
-            ).parsed().inner()
-        );
-        final String comments = xml.element("object").element("comments").element("comment").text()
-            .get();
-        final String expected = "First comment.\\nIndented comment.";
+    void parsesCommentsWithIndentedNestedCommentsProperly() throws IOException {
         MatcherAssert.assertThat(
-            String.format(
-                "EO parsed: %s, but comments: '%s' don't match with expected: '%s'",
-                xml, comments, expected
-            ),
-            comments,
-            Matchers.equalTo(expected)
+            "Parsed comments in XMIR should respect indentation",
+            new Xnav(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            "\n",
+                            "# Top comment.",
+                            "#  Indented comment is here, 守规矩!",
+                            "[] > foo"
+                        )
+                    )
+                ).parsed().inner()
+            ).element("object").element("comments").element("comment").text().get(),
+            Matchers.equalTo("Top comment\n  Indented comment is here, 守规矩!")
         );
-
     }
 
     /**
