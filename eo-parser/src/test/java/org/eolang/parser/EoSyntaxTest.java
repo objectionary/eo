@@ -404,6 +404,25 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void parsesEmptyComment() throws IOException {
+        MatcherAssert.assertThat(
+            "Parsed empty comments in XMIR should be empty as well",
+            new Xnav(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            "\n",
+                            "#",
+                            "[] > foo"
+                        )
+                    )
+                ).parsed().inner()
+            ).element("object").element("comments").element("comment").text().get(),
+            Matchers.emptyString()
+        );
+    }
+
     /**
      * Prepare naughty strings.
      * @return Stream of strings

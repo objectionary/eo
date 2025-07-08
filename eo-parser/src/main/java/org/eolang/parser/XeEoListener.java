@@ -1135,14 +1135,20 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.dirs.push().xpath("/object").addIf("comments").add("comment").set(
                 comment.stream().map(
                     context -> {
-                        final int sub;
+                        final String result;
                         final String text = context.COMMENTARY().getText();
-                        if (text.length() > 1) {
-                            sub = 2;
+                        if (text.isEmpty()) {
+                            result = "";
                         } else {
-                            sub = 1;
+                            final int sub;
+                            if (text.length() > 1 && text.charAt(1) == ' ') {
+                                sub = 2;
+                            } else {
+                                sub = 1;
+                            }
+                            result = context.COMMENTARY().getText().substring(sub);
                         }
-                        return context.COMMENTARY().getText().substring(sub);
+                        return result;
                     }
                 ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
