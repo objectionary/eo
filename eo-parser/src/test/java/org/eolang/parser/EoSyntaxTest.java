@@ -400,7 +400,7 @@ final class EoSyntaxTest {
                     )
                 ).parsed().inner()
             ).element("object").element("comments").element("comment").text().get(),
-            Matchers.equalTo("Top comment\n  Indented comment is here, 守规矩!")
+            Matchers.equalTo("Top comment.\\n Indented comment is here, 守规矩!")
         );
     }
 

@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -1134,7 +1135,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (!comment.isEmpty()) {
             this.dirs.push().xpath("/object").addIf("comments").add("comment").set(
                 comment.stream().map(
-                    context -> context.COMMENTARY().getText().substring(1).trim()
+                    context -> {
+                        final int sub;
+                        final String text = context.COMMENTARY().getText();
+                        if (text.length() > 1) {
+                            sub = 2;
+                        } else {
+                            sub = 1;
+                        }
+                        return context.COMMENTARY().getText().substring(sub);
+                    }
                 ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }
