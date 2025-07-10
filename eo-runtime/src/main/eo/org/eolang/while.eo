@@ -62,7 +62,7 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-simple-while-with-false-first
     not. > @
-      while > res
+      while
         false > [i]
         true > [i]
 

@@ -198,14 +198,8 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-writes-into-two-malloc-objects
     and. > @
-      a.eq 10
-      b.eq 20
-    malloc.of > a
-      8
-      m.put 10 > [m]
-    malloc.of > b
-      8
-      m.put 20 > [m]
+      (malloc.of 8 (m.put 10 > [m])).eq 10
+      (malloc.of 8 (m.put 20 > [m])).eq 20
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-on-overflow-boolean-malloc

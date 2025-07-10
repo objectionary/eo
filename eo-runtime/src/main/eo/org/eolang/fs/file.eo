@@ -11,6 +11,15 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:27
++unlint redundant-object:29
++unlint redundant-object:162
++unlint redundant-object:164
++unlint redundant-object:196
++unlint redundant-object:210
++unlint redundant-object:236
++unlint redundant-object:252
++unlint redundant-object:588
 
 # The file object in the filesystem.
 [path] > file
@@ -137,7 +146,6 @@
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
-    (access.eq "a").as-bool > append
     (access.eq "r+").as-bool > read-write
     (access.eq "w+").as-bool > write-read
     (access.eq "a+").as-bool > read-append
@@ -150,7 +158,7 @@
         or.
           write.or read-write
           write-read.or read-append
-        append
+        (access.eq "a").as-bool
     as-bool. > must-exists
       read.or read-write
     as-bool. > truncate
@@ -315,12 +323,9 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-moves-a-file
     and. > @
-      (temp.moved dest).exists
+      (temp.moved (sprintf "%s.dest" (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
-    sprintf > dest
-      "%s.dest"
-      * temp.path
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-on-opening-with-wrong-mode
@@ -580,8 +585,7 @@
                   *
                     f.write "Hello, world"
                     ^.m.put i2
-                f.read 7 > i1
-                i1.read 5 > i2
+                (f.read 7).read 5 > i2
             m
     .eq "world" > @
 
@@ -592,7 +596,6 @@
     .open
       "a+"
       [f]
-        o1.write "!" > @
-        f.write "Hello, world" > o1
+        (f.write "Hello, world").write "!" > @
     .size
     .eq 13 > @
