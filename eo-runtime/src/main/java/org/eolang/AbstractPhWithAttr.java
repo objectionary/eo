@@ -5,15 +5,23 @@
 
 package org.eolang;
 
+/**
+ * Abstract Phi object with attribute.
+ *
+ * @since 1.0
+ */
 abstract class AbstractPhWithAttr implements Phi {
-    private final Phi origin;
+    /**
+     * Original phi object.
+     */
+    private final Phi original;
 
     /**
      * Ctor.
-     * @param attr Attribute
+     * @param attr Original phi object
      */
-    protected AbstractPhWithAttr(Phi attr) {
-        this.origin = attr;
+    protected AbstractPhWithAttr(final Phi attr) {
+        this.original = attr;
     }
 
     /**
@@ -21,6 +29,6 @@ abstract class AbstractPhWithAttr implements Phi {
      * @return The original attribute
      */
     Phi origin() {
-        return this.origin;
+        return this.original;
     }
 }

@@ -5,6 +5,12 @@
 
 package org.eolang;
 
+/**
+ * A decorator for an attribute that ensures the object has a {@code \rho} attribute.
+ * If not already set, it sets it.
+ *
+ * @since 0.36.0
+ */
 @SuppressWarnings("PMD.TooManyMethods")
 final class PhWithRho extends AbstractPhWithAttr {
 
