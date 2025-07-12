@@ -11,7 +11,6 @@ package org.eolang;
  *
  * @since 0.36.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhWithRho extends AbstractPhWithAttr {
 
     /**
