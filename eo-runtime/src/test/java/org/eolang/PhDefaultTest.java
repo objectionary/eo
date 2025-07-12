@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidGodClass", "PMD.GodClass"})
 final class PhDefaultTest {
     /**
      * Name of attribute.
@@ -28,6 +28,11 @@ final class PhDefaultTest {
      * Name of attribute.
      */
     private static final String VOID_ATT = "void";
+
+    /**
+     * Name of context.
+     */
+    private static final String CONTEXT = "context";
 
     @Test
     void comparesTwoObjects() {
@@ -236,8 +241,8 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             PhCompositeTest.TO_ADD_MESSAGE,
-            phi.take("context"),
-            Matchers.equalTo(phi.take("context"))
+            phi.take(PhDefaultTest.CONTEXT),
+            Matchers.equalTo(phi.take(PhDefaultTest.CONTEXT))
         );
     }
 
@@ -260,7 +265,7 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context").take(Phi.RHO),
+            () -> phi.take(PhDefaultTest.CONTEXT).take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
                 Phi.RHO
@@ -483,6 +488,88 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void verifiesThreadLocalNesting() {
+        final Phi phi = new PhDefaultTest.Int();
+        Assertions.assertDoesNotThrow(
+            () -> phi.take(PhDefaultTest.CONTEXT),
+            "Nesting should be properly managed without exceptions"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalNestingWithExceptions() {
+        final Phi phi = new PhDefaultTest.Int();
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> phi.take("non-existent-attribute"),
+            "Should throw exception for non-existent attribute"
+        );
+        Assertions.assertDoesNotThrow(
+            () -> phi.take(PhDefaultTest.CONTEXT),
+            "Should still work after exception"
+        );
+    }
+
+    @Test
+    void verifiesCleanupNesting() {
+        final Phi phi = new PhDefaultTest.Int();
+        phi.take(PhDefaultTest.CONTEXT);
+        PhDefault.cleansupNesting();
+        Assertions.assertDoesNotThrow(
+            () -> phi.take(PhDefaultTest.CONTEXT),
+            "Should work after cleanup"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalInMultipleThreads() {
+        final int threads = 10;
+        final int cnt = 100;
+        final boolean[] res = new boolean[threads];
+        final Thread[] pool = new Thread[threads];
+        for (int idx = 0; idx < threads; idx += 1) {
+            final int id = idx;
+            pool[idx] = new Thread(
+                () -> {
+                    final Phi phi = new PhDefaultTest.Int();
+                    try {
+                        for (int iter = 0; iter < cnt; iter += 1) {
+                            phi.take(PhDefaultTest.CONTEXT);
+                        }
+                        res[id] = true;
+                    } catch (final IllegalStateException ex) {
+                        res[id] = false;
+                    } finally {
+                        PhDefault.cleansupNesting();
+                    }
+                }
+            );
+            pool[idx].start();
+        }
+        this.joinsThreads(pool);
+        for (int idx = 0; idx < threads; idx += 1) {
+            Assertions.assertTrue(
+                res[idx],
+                String.format(
+                    "Thread %d should have completed successfully",
+                    idx
+                )
+            );
+        }
+    }
+
+    private void joinsThreads(final Thread... threads) {
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Thread interrupted", ex);
+            }
+        }
+    }
+
     /**
      * Rnd.
      * @since 0.1.0
@@ -525,7 +612,7 @@ final class PhDefaultTest {
                 )
             );
             this.add(
-                "context",
+                PhDefaultTest.CONTEXT,
                 new PhCached(
                     new PhComposite(
                         this,
