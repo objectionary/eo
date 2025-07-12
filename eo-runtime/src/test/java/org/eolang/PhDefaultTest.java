@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidGodClass"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidGodClass", "PMD.GodClass"})
 final class PhDefaultTest {
     /**
      * Name of attribute.
@@ -515,7 +515,7 @@ final class PhDefaultTest {
     void verifiesCleanupNesting() {
         final Phi phi = new PhDefaultTest.Int();
         phi.take(PhDefaultTest.CONTEXT);
-        PhDefault.cleanupNesting();
+        PhDefault.cleansupNesting();
         Assertions.assertDoesNotThrow(
             () -> phi.take(PhDefaultTest.CONTEXT),
             "Should work after cleanup"
@@ -525,7 +525,7 @@ final class PhDefaultTest {
     @Test
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
-        final int count = 100;
+        final int cnt = 100;
         final boolean[] res = new boolean[threads];
         final Thread[] pool = new Thread[threads];
         for (int idx = 0; idx < threads; idx += 1) {
@@ -534,14 +534,14 @@ final class PhDefaultTest {
                 () -> {
                     final Phi phi = new PhDefaultTest.Int();
                     try {
-                        for (int iter = 0; iter < count; iter += 1) {
+                        for (int iter = 0; iter < cnt; iter += 1) {
                             phi.take(PhDefaultTest.CONTEXT);
                         }
                         res[id] = true;
                     } catch (final IllegalStateException ex) {
                         res[id] = false;
                     } finally {
-                        PhDefault.cleanupNesting();
+                        PhDefault.cleansupNesting();
                     }
                 }
             );

@@ -268,6 +268,15 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     /**
+     * Clean up ThreadLocal NESTING variable to prevent memory leaks.
+     * This method should be called when a thread is about to terminate
+     * or when the ThreadLocal is no longer needed.
+     */
+    static void cleansupNesting() {
+        PhDefault.NESTING.remove();
+    }
+
+    /**
      * Get attribute name by position.
      * @param pos Position of the attribute
      * @return Attribute name
@@ -349,12 +358,4 @@ public class PhDefault implements Phi, Cloneable {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
 
-    /**
-     * Clean up ThreadLocal NESTING variable to prevent memory leaks.
-     * This method should be called when a thread is about to terminate
-     * or when the ThreadLocal is no longer needed.
-     */
-    static void cleanupNesting() {
-        PhDefault.NESTING.remove();
-    }
 }
