@@ -11,9 +11,8 @@
 +unlint redundant-object
 
 # Runtime.
-# @todo #4235:35min Move all tests from `runtime.eo` to other objects.
-#  For now runtime is just a set of runtime tests. Instead of having this, let's move its tests
-#  to the other objects, which tests are most suitable for.
+# The runtime object provides a collection of test cases that verify
+# core EO language functionality and behavior.
 [] > runtime
   # This unit test is supposed to check the globals bound objects work as tests.
   true +> global-test

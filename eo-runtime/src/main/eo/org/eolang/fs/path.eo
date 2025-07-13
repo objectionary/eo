@@ -261,7 +261,7 @@
 
     # Windows validated path with forward slashes replaced with back ones.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `path` object.
     [uri] > validated
       uri > @

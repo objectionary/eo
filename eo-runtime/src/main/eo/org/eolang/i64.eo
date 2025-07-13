@@ -45,7 +45,7 @@
         i64 value
     x > value!
 
-  # Returns `true` if `$` <= `x`.
+  # Returns `org.eolang.true` if `$` <= `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > lte
     or. > @
@@ -57,7 +57,7 @@
   # Here `x` must be an `org.eolang.i64` object.
   [x] > gt ?
 
-  # Returns `true` if `$` >= `x`.
+  # Returns `org.eolang.true` if `$` >= `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > gte
     or. > @

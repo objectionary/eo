@@ -34,7 +34,7 @@
 
     # Malloc output block.
     #
-    # Attention! The object is for internal usage only, please don't use the object
+    # Note: This object is intended for internal use only. Please do not use this object
     # programmatically outside of `malloc-as-output` object.
     #
     # Here `offset` is the offset to write to allocated block in memory with.

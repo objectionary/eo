@@ -15,12 +15,12 @@
 # (dataized some-object).as-bytes > cached
 # ```
 #
-# Dataization is a process of retrieving data (bytes) from an object, by taking its \Delta
+# Dataization is a process of retrieving data (bytes) from an object by taking its Δ
 # attribute.
 # An example of usage:
 #
 # ```
-# # Some 64+ characters comment should be here.
+# # Example object with nested structure for dataization demonstration.
 # [] > foo
 #   [] > @
 #     inner.five > @

@@ -48,7 +48,7 @@
 
     # Creates new empty file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > touch ?
 
@@ -65,7 +65,7 @@
 
     # Deletes the file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > delete ?
 
@@ -81,7 +81,7 @@
     # and returns path of moved file as `org.eolang.string`.
     # Returns `org.eolang.error` is failed to move the file.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > move ?
 
@@ -174,7 +174,7 @@
     # The object is stream-safe, which means that stream is closed anyway,
     # even if errors are occurred while `scope` dataization.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
     [] > process-file ?
 
@@ -189,7 +189,7 @@
 
         # File input block
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > input-block
           buffer > @
@@ -215,7 +215,7 @@
 
         # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [size] > read-bytes ?
 
@@ -229,7 +229,7 @@
 
         # File output block.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [] > output-block
           true > @
@@ -256,7 +256,7 @@
 
         # Writes given `buffer` of bytes to file output stream and returns `org.eolang.true`.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes ?
 
