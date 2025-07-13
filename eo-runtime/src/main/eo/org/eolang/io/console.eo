@@ -88,7 +88,7 @@
 
       # Posix console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
         buffer > @
@@ -115,7 +115,7 @@
 
       # Posix console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
         true > @
@@ -144,7 +144,7 @@
 
       # Windows console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
         buffer > @
@@ -171,7 +171,7 @@
 
       # Windows console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
         true > @
