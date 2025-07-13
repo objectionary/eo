@@ -69,7 +69,7 @@
   # Here `x` must be an `org.eolang.i64` object.
   [x] > times ?
 
-  # Sum of `$` and `x` as `org.eolang.i64`
+  # Sum of `$` and `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > plus ?
 
@@ -81,7 +81,7 @@
 
   # Quotient of the division of `$` by `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
-  # An `org.eolang.error` is returned if or `x` is equal to 0.
+  # An `org.eolang.error` is returned if `x` is equal to 0.
   [x] > div ?
 
   # This unit test is supposed to check the functionality of the corresponding object.

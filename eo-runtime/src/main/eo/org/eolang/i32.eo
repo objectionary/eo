@@ -92,7 +92,7 @@
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `org.eolang.i32` object.
-  # An `error` is returned if or `x` is equal to 0.
+  # An `error` is returned if `x` is equal to 0.
   [x] > div
     if. > @
       x-as-i32.eq zero

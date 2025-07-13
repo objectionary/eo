@@ -78,7 +78,7 @@
           scope m
     (dataized object).as-bytes > bts
 
-  # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
+  # Allocates block in memory of given `size`. After allocation, `size` zero bytes are
   # written into memory.
   [size scope] > of
     # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
@@ -99,7 +99,7 @@
       # Returns `org.eolang.malloc.of.allocated` object.
       [new-size] > resized ?
 
-      # Reads the data from block in memory with with offset `source` and `length` and writes
+      # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
       # Returns `true` on success, or `error` on failure.
       [source target length] > copy

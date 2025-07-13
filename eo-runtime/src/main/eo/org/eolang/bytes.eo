@@ -22,7 +22,7 @@
   $ > as-bytes
   eq 01- > as-bool
   # Turn this chain of eight bytes into a number.
-  # If there are less or more than eight bytes, there will
+  # If there are fewer or more than eight bytes, there will
   # be an error returned.
   if. > as-number
     eq nan.as-bytes
@@ -41,7 +41,7 @@
               "Can't convert non 8 length bytes to a number, bytes are %x"
               * $
   # Turn this chain of eight bytes into a i64 number.
-  # If there are less or more than eight bytes, there will
+  # If there are fewer or more than eight bytes, there will
   # be an error returned.
   if. > as-i64
     size.eq 8
@@ -51,7 +51,7 @@
         "Can't convert non 8 length bytes to i64, bytes are %x"
         * $
   # Turn this chain of four bytes into a i32 number.
-  # If there are less or more than four bytes, there will
+  # If there are fewer or more than four bytes, there will
   # be an error returned.
   if. > as-i32
     size.eq 4
@@ -61,7 +61,7 @@
         "Can't convert non 4 length bytes to i32, bytes are %x"
         * $
   # Turn this chain of two bytes into a i16 number.
-  # If there are less or more than two bytes, there will
+  # If there are fewer or more than two bytes, there will
   # be an error returned.
   if. > as-i16
     size.eq 2
