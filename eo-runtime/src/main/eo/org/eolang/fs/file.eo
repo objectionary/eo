@@ -25,7 +25,7 @@
 [path] > file
   $.path > @
   $ > as-file
-  # Convert the `file` to the `path`.
+  # Converts the `file` to a `path`.
   (QQ.fs.path path).determined > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
@@ -72,7 +72,7 @@
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   [] > size ?
 
-  # Move current file to `target`, making and returning a new `file` from it.
+  # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
     as-file. > @
       file move
@@ -220,7 +220,7 @@
         [size] > read-bytes ?
 
       # Write given `buffer` to file output stream.
-      # Here `buffer` is either sequence of bytes or and object that can be
+      # Here `buffer` is either a sequence of bytes or an object that can be
       # dataized via `as-bytes` object.
       # Returns new instance of `output-block` ready to write again, or
       # returns an error if provided access mode does not allow writing operations.
@@ -236,7 +236,7 @@
           $ > this
 
           # Write given `buffer` to file output stream.
-          # Here `buffer` is either sequence of bytes or and object that can be
+          # Here `buffer` is either a sequence of bytes or an object that can be
           # dataized via `as-bytes` object.
           # Returns new instance of `output-block` ready to write again, or
           # returns an error if provided access mode does not allow writing operations.

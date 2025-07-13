@@ -52,7 +52,7 @@
 # ready to `write` again.
 #
 # Console is platform dependent, which means the internal algorithm is different for
-# Posix and Windows. Defining the console is happen every time you "touch" `console` object.
+# Posix and Windows. Defining the console happens every time you "touch" `console` object.
 # If you use it as input/output:
 # ```
 # console.read 2 > i1
