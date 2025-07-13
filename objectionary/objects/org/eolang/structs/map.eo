@@ -4,9 +4,22 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:40
++unlint redundant-object:53
++unlint redundant-object:68
++unlint redundant-object:69
++unlint redundant-object:72
++unlint redundant-object:77
++unlint redundant-object:120
++unlint redundant-object:121
++unlint redundant-object:122
++unlint redundant-object:127
++unlint redundant-object:128
++unlint redundant-object:129
++unlint redundant-object:146
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.

@@ -2,12 +2,24 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.57.0
++rt jvm org.eolang:eo-runtime:0.57.1
 +rt node eo2js-runtime:0.0.0
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint many-void-attributes:37
++unlint many-void-attributes:49
++unlint redundant-object:34
++unlint redundant-object:35
++unlint redundant-object:36
++unlint redundant-object:37
++unlint redundant-object:38
++unlint redundant-object:39
++unlint redundant-object:40
++unlint redundant-object:41
++unlint redundant-object:42
++unlint redundant-object:46
++unlint redundant-object:53
++unlint redundant-object:54
 
 # Makes a kernel32.dll function call by name.
 #
@@ -51,8 +63,4 @@
   [] +> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not
-      addr.eq 16777343
-    code. > addr
-      win32
-        "inet_addr"
-        * "127.0.0.1"
+      (code. (win32 "inet_addr" (* "127.0.0.1"))).eq 16777343

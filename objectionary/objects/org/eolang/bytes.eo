@@ -2,11 +2,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.0
++rt jvm org.eolang:eo-runtime:0.57.1
 +rt node eo2js-runtime:0.0.0
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:22
++unlint redundant-object:23
++unlint redundant-object:27
++unlint redundant-object:46
++unlint redundant-object:56
++unlint redundant-object:66
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -385,11 +391,9 @@
   [] +> tests-concat-bools-as-bytes
     eq. > @
       concat.
-        b1
-        b2
+        true.as-bytes
+        false.as-bytes
       01-00
-    true.as-bytes > b1
-    false.as-bytes > b2
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-concat-with-empty
@@ -418,11 +422,11 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-concat-strings
     eq. > @
-      string s-bytes
+      string
+        concat.
+          "hello ".as-bytes
+          "world".as-bytes
       "hello world"
-    concat. > s-bytes
-      "hello ".as-bytes
-      "world".as-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.
   # (2397719729.xor 4294967295).eq 1897247566.

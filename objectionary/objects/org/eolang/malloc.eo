@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.0
++rt jvm org.eolang:eo-runtime:0.57.1
 +rt node eo2js-runtime:0.0.0
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -198,14 +198,8 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-writes-into-two-malloc-objects
     and. > @
-      a.eq 10
-      b.eq 20
-    malloc.of > a
-      8
-      m.put 10 > [m]
-    malloc.of > b
-      8
-      m.put 20 > [m]
+      (malloc.of 8 (m.put 10 > [m])).eq 10
+      (malloc.of 8 (m.put 20 > [m])).eq 20
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-on-overflow-boolean-malloc

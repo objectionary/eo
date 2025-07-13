@@ -2,11 +2,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.0
++rt jvm org.eolang:eo-runtime:0.57.1
 +rt node eo2js-runtime:0.0.0
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:19
++unlint redundant-object:20
++unlint redundant-object:21
++unlint redundant-object:22
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.

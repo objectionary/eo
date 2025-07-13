@@ -1,9 +1,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:43
 
 # Makes an output from allocated block in memory.
 # Here `allocated` is `malloc.of.allocated` object.
@@ -58,11 +59,8 @@
         [mem]
           seq > @
             *
-              o2.write 08-09-A0
+              (((malloc-as-output mem).write 01-02-03).write 04-05-06-07).write 08-09-A0
               mem
-          malloc-as-output mem > out
-          out.write 01-02-03 > o1
-          o1.write 04-05-06-07 > o2
       01-02-03-04-05-06-07-08-09-A0
 
   # This unit test is supposed to check the functionality of the corresponding object.

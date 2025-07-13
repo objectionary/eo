@@ -2,11 +2,20 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.57.0
++rt jvm org.eolang:eo-runtime:0.57.1
 +rt node eo2js-runtime:0.0.0
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:28
++unlint redundant-object:29
++unlint redundant-object:30
++unlint redundant-object:31
++unlint redundant-object:32
++unlint redundant-object:33
++unlint redundant-object:36
++unlint redundant-object:44
++unlint redundant-object:45
 
 # Makes a Unix syscall by `name` with POSIX interface.
 # Here `args` is a `org.eolang.tuple` of arguments required for
@@ -91,8 +100,4 @@
   [] +> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @
       os.is-windows
-      addr.eq 16777343
-    code. > addr
-      posix
-        "inet_addr"
-        * "127.0.0.1"
+      (code. (posix "inet_addr" (* "127.0.0.1"))).eq 16777343

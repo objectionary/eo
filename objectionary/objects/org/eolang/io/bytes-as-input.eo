@@ -1,9 +1,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:47
 
 # Makes an `input` from bytes.
 # Here `bts` is sequence of bytes or an object that can be dataized
@@ -78,10 +79,7 @@
           i1.eq 01-02-03-04
           i2.eq 05-06-07-08
         i3.eq F5-F6
-      i4.eq --
-    bytes-as-input > i
-      01-02-03-04-05-06-07-08-F5-F6
-    i.read 4 > i1
+      (i3.read 2).eq --
+    (bytes-as-input 01-02-03-04-05-06-07-08-F5-F6).read 4 > i1
     i1.read 4 > i2
     i2.read 4 > i3
-    i3.read 2 > i4

@@ -7,9 +7,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:56
++unlint redundant-object:58
++unlint redundant-object:59
++unlint redundant-object:268
++unlint redundant-object:270
++unlint redundant-object:271
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
@@ -407,10 +413,10 @@
           validated
             string
               if.
-                other-is-drive-relative
+                (^.is-drive-relative valid-other).as-bool
                 valid-other
                 if.
-                  other-is-root-relative
+                  (^.is-root-relative valid-other).as-bool
                   if.
                     is-drive-relative uri-as-bytes
                     concat.
@@ -424,8 +430,6 @@
                     valid-other
         uri > uri-as-bytes!
         separated-correctly other > valid-other!
-        (^.is-drive-relative valid-other).as-bool > other-is-drive-relative
-        (^.is-root-relative valid-other).as-bool > other-is-root-relative
 
       # Takes the base name from the provided `path`, for example:
       # |------------------------------|---------------|

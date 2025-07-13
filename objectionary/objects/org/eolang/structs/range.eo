@@ -2,9 +2,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:65
++unlint redundant-object:78
++unlint redundant-object:91
++unlint redundant-object:103
 
 # Range - create a `list` containing a range of elements
 # Here `start` must be a abstract object that must have an object `next` to get

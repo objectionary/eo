@@ -4,14 +4,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 # Reads all the bytes from provided `input` and returns its length.
 [input] > input-length
   rec-read input 0 > @
-  4096 > chunk
 
   [input length] > rec-read
     if. > @
@@ -20,7 +19,7 @@
       rec-read
         read-bytes
         length.plus read-bytes.size
-    (input.read chunk).read.^ > read-bytes
+    (input.read 4096).read.^ > read-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-reads-all-bytes-and-returns-length

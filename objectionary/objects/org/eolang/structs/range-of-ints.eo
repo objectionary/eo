@@ -2,9 +2,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:27
 
 # Range of integers from `start` to `end` (soft border) with step = 1.
 # Here `start` and `end` must be `int`s. If they're not - an error will

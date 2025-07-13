@@ -2,9 +2,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.0
++version 0.57.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:94
++unlint redundant-object:110
 
 # The `string` object is an abstraction of a text string, which
 # internally is a chain of bytes.
@@ -211,8 +213,7 @@
   # The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
   # incomplete 4 byte character.
   [] +> throws-on-taking-length-of-incomplete-n4-byte-character
-    should-be-smile.length > @
-    string F0-9F-98 > should-be-smile
+    (string F0-9F-98).length > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-compares-two-different-string-types
