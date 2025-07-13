@@ -42,7 +42,7 @@
 
   # Constructor of range.
   #
-  # Attention! The object is for internal usage only, please
+  # Note: This object is intended for internal use only. Please
   # don't use the object programmatically outside of `range` object.
   [acc current] > appended
     if. > @

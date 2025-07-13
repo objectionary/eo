@@ -7,8 +7,8 @@
 +unlint redundant-object:44
 +unlint redundant-object:46
 
-# The object allows to choose right options according to cases conditions.
-# Parameter cases is the array of two dimensional array, which
+# The object allows choosing the right options according to case conditions.
+# Parameter `cases` is an array of two-dimensional arrays, which
 # consist of condition bool value and expected value, if this
 # condition is true. For example:
 #

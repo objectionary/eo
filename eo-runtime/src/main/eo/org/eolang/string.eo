@@ -29,7 +29,7 @@
     pattern-two > result-three
     pattern-three > result-four
 
-    # The object checks if `index` + `char-size` is out of string bounds.
+    # The object checks if `index` + `char-size` is out of the string bounds.
     # If not - the new recursion iteration is started with `index` increased by `char-size` and
     # `accum` increased by 1.
     [index char-size len] > increase-length
@@ -117,7 +117,7 @@
           * (num-start.plus num-len)
       bts-start
 
-    # The object checks if `index` + provided `char-size` is not out of the string bounds.
+    # The object checks if `index` + `char-size` is not out of the string bounds.
     # If not -  the new recursion circle is started with `index` is increased by `char-size` and
     # `accum` is increased by 1.
     [index char-size accum result cause] > increase

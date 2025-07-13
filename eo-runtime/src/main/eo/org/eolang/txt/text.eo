@@ -114,8 +114,8 @@
           tup.prev
 
   # Returns `text` repeated `times` times.
-  # If `times` < 0 - an error is returned.
-  # If `times` == 0 - an original text is returned.
+  # If `times` < 0, an error is returned.
+  # If `times` == 0, the original text is returned.
   [times] > repeated
     if. > @
       0.gt amount

@@ -26,7 +26,7 @@
   all-lines > @
 
   # Consumes all lines from the standard input stream.
-  # There's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > all-lines
     rec-read next-line -- true > @
     line-separator > separator!
@@ -48,7 +48,7 @@
           false
 
   # Consumes only one line from the standard input stream.
-  # If there's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > next-line
     if. > @
       first.as-bytes.size.eq 0

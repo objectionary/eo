@@ -82,7 +82,7 @@
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gt ?
 
-  # Returns `true` if `$` > `x`.
+  # Returns `true` if `$` >= `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gte

@@ -15,7 +15,7 @@
   [] > max
     if. > @
       lst.is-empty
-      error "Can't get max number from empty sequence"
+      error "Can't get the max number from an empty sequence"
       reduced.
         lst
         negative-infinity
@@ -30,7 +30,7 @@
   [] > min
     if. > @
       lst.is-empty
-      error "Can't get min number from empty sequence"
+      error "Can't get the min number from an empty sequence"
       reduced.
         lst
         positive-infinity

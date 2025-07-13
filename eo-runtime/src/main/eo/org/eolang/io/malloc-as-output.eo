@@ -26,7 +26,7 @@
 # Third, you write read bytes to output
 # After the dataization the object `result` contains read bytes.
 [allocated] > malloc-as-output
-  # Writes bytes contained in `buffer` to operation system console.
+  # Writes bytes contained in `buffer` to the operating system console.
   # Returns new instance of `output-block` ready to write again.
   [buffer] > write
     self. > @
@@ -34,7 +34,7 @@
 
     # Malloc output block.
     #
-    # Attention! The object is for internal usage only, please don't use the object
+    # Note: This object is intended for internal use only. Please do not use this object
     # programmatically outside of `malloc-as-output` object.
     #
     # Here `offset` is the offset to write to allocated block in memory with.
@@ -42,7 +42,7 @@
       true > @
       $ > self
 
-      # Writes bytes contained in `buffer` to operation system console.
+      # Writes bytes contained in `buffer` to the operating system console.
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
         self. > @
