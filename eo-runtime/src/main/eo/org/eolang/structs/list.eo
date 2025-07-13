@@ -9,7 +9,7 @@
 +unlint redundant-object:18
 +unlint redundant-object:24
 
-# List implements based operations on collections like reducing, mapping, filtering, etc.
+# List implements basic operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple`.
 [origin] > list
   origin > @
