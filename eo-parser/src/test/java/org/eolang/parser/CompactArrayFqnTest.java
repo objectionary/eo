@@ -6,7 +6,8 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests for {@link CompactArrayFqn}.
@@ -15,12 +16,20 @@ import org.junit.jupiter.api.Test;
  */
 final class CompactArrayFqnTest {
 
-    @Test
-    void buildsFqnForSimpleName() {
+    @ParameterizedTest
+    @CsvSource(
+        value = {
+            "foo *1,foo",
+            "QQ.foo.bar *42,Q.org.eolang.foo.bar",
+            "QQ.nan *52,Q.org.eolang.nan",
+            "$.seq *1,$.seq"
+        }
+    )
+    void buildsFqnForSimpleName(final String compact, final String fqn) {
         MatcherAssert.assertThat(
             "FQN of the compact array does not match with expected",
-            new CompactArrayFqn("foo *1").asString(),
-            Matchers.equalTo("foo")
+            new CompactArrayFqn(compact).asString(),
+            Matchers.equalTo(fqn)
         );
     }
 }
