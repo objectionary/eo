@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidGodClass", "PMD.GodClass"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
     /**
      * Name of attribute.
@@ -28,11 +28,6 @@ final class PhDefaultTest {
      * Name of attribute.
      */
     private static final String VOID_ATT = "void";
-
-    /**
-     * Name of context.
-     */
-    private static final String CONTEXT = "context";
 
     @Test
     void comparesTwoObjects() {
@@ -241,8 +236,8 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             PhCompositeTest.TO_ADD_MESSAGE,
-            phi.take(PhDefaultTest.CONTEXT),
-            Matchers.equalTo(phi.take(PhDefaultTest.CONTEXT))
+            phi.take("context-doesNotCopyContextAttributeWithRho"),
+            Matchers.equalTo(phi.take("context-doesNotCopyContextAttributeWithRho"))
         );
     }
 
@@ -265,7 +260,7 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take(PhDefaultTest.CONTEXT).take(Phi.RHO),
+            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
                 Phi.RHO
@@ -492,7 +487,7 @@ final class PhDefaultTest {
     void verifiesThreadLocalNesting() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take(PhDefaultTest.CONTEXT),
+            () -> phi.take("context-verifiesThreadLocalNesting"),
             "Nesting should be properly managed without exceptions"
         );
     }
@@ -506,7 +501,7 @@ final class PhDefaultTest {
             "Should throw exception for non-existent attribute"
         );
         Assertions.assertDoesNotThrow(
-            () -> phi.take(PhDefaultTest.CONTEXT),
+            () -> phi.take("context-verifiesThreadLocalNestingWithExceptions"),
             "Should still work after exception"
         );
     }
@@ -514,10 +509,10 @@ final class PhDefaultTest {
     @Test
     void verifiesCleanupNesting() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.take(PhDefaultTest.CONTEXT);
-        PhDefault.cleansupNesting();
+        phi.take("context-verifiesCleanupNesting");
+        cleansupNesting();
         Assertions.assertDoesNotThrow(
-            () -> phi.take(PhDefaultTest.CONTEXT),
+            () -> phi.take("context-verifiesCleanupNesting"),
             "Should work after cleanup"
         );
     }
@@ -535,13 +530,13 @@ final class PhDefaultTest {
                     final Phi phi = new PhDefaultTest.Int();
                     try {
                         for (int iter = 0; iter < cnt; iter += 1) {
-                            phi.take(PhDefaultTest.CONTEXT);
+                            phi.take("context-verifiesThreadLocalInMultipleThreads");
                         }
                         res[id] = true;
                     } catch (final IllegalStateException ex) {
                         res[id] = false;
                     } finally {
-                        PhDefault.cleansupNesting();
+                        cleansupNesting();
                     }
                 }
             );
@@ -567,6 +562,17 @@ final class PhDefaultTest {
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Thread interrupted", ex);
             }
+        }
+    }
+
+    private static void cleansupNesting() {
+        try {
+            final java.lang.reflect.Field field =
+                Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
+            final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);
+            nesting.remove();
+        } catch (final ReflectiveOperationException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
@@ -612,7 +618,7 @@ final class PhDefaultTest {
                 )
             );
             this.add(
-                PhDefaultTest.CONTEXT,
+                "context-hasContextedChildWithSetRhoWhenFormed",
                 new PhCached(
                     new PhComposite(
                         this,

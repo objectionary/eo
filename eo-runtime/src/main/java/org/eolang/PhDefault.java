@@ -36,15 +36,6 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Attributes nesting level.
-     *
-     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
-     *  {@link PhDefault#NESTING} to prevent memory leaks. We should either find a place where this
-     *  variable can be removed, or, if this is not possible
-     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
-     *
-     *  FIXED: ThreadLocal memory leak has been resolved by implementing proper cleanup
-     *  in the take() method using try-finally block. The nesting level is now properly
-     *  decremented even when exceptions occur.
      */
     @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
@@ -265,15 +256,6 @@ public class PhDefault implements Phi, Cloneable {
             this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, new PhWithRho(attr, this));
-    }
-
-    /**
-     * Clean up ThreadLocal NESTING variable to prevent memory leaks.
-     * This method should be called when a thread is about to terminate
-     * or when the ThreadLocal is no longer needed.
-     */
-    static void cleansupNesting() {
-        PhDefault.NESTING.remove();
     }
 
     /**
