@@ -566,7 +566,13 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             count = 0;
         }
-        final String fqn = ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."));
+        final String name = ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."));;
+        final String fqn;
+        if (ctx.HOME() == null) {
+            fqn = name;
+        } else {
+            fqn = String.format("Q.org.eolang.%s", name);
+        }
         final String base;
         if (ctx.XI() == null) {
             base = fqn;
