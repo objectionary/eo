@@ -399,6 +399,20 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="author" use="required">
+      <xs:annotation>
+        <xs:appinfo>The author of the XMIR file</xs:appinfo>
+        <xs:documentation>
+          The attribute contains the name of the author, or software, responsible for
+          producing the XMIR file.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[a-z]+(-[a-z]+)*"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:element name="object" type="object"/>
 </xs:schema>
