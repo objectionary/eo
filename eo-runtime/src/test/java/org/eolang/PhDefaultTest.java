@@ -565,10 +565,12 @@ final class PhDefaultTest {
         }
     }
 
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static void cleansupNesting() {
         try {
             final java.lang.reflect.Field field =
                 Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
+            field.setAccessible(true);
             final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);
             nesting.remove();
         } catch (final ReflectiveOperationException ex) {
@@ -631,6 +633,26 @@ final class PhDefaultTest {
                         }
                     )
                 )
+            );
+            this.add(
+                "context-doesNotCopyContextAttributeWithRho",
+                new PhSimple(new Data.ToPhi(42))
+            );
+            this.add(
+                "context-verifiesThreadLocalNesting",
+                new PhSimple(new Data.ToPhi(42))
+            );
+            this.add(
+                "context-verifiesThreadLocalNestingWithExceptions",
+                new PhSimple(new Data.ToPhi(42))
+            );
+            this.add(
+                "context-verifiesCleanupNesting",
+                new PhSimple(new Data.ToPhi(42))
+            );
+            this.add(
+                "context-verifiesThreadLocalInMultipleThreads",
+                new PhSimple(new Data.ToPhi(42))
             );
         }
     }
