@@ -6,9 +6,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.57.1
++rt jvm org.eolang:eo-runtime:0.57.2
 +rt node eo2js-runtime:0.0.0
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:27
@@ -25,7 +25,7 @@
 [path] > file
   $.path > @
   $ > as-file
-  # Convert the `file` to the `path`.
+  # Converts the `file` to a `path`.
   (QQ.fs.path path).determined > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
@@ -48,7 +48,7 @@
 
     # Creates new empty file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > touch ?
 
@@ -65,14 +65,14 @@
 
     # Deletes the file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > delete ?
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   [] > size ?
 
-  # Move current file to `target`, making and returning a new `file` from it.
+  # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
     as-file. > @
       file move
@@ -81,7 +81,7 @@
     # and returns path of moved file as `org.eolang.string`.
     # Returns `org.eolang.error` is failed to move the file.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > move ?
 
@@ -174,7 +174,7 @@
     # The object is stream-safe, which means that stream is closed anyway,
     # even if errors are occurred while `scope` dataization.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
     [] > process-file ?
 
@@ -189,7 +189,7 @@
 
         # File input block
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > input-block
           buffer > @
@@ -215,12 +215,12 @@
 
         # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [size] > read-bytes ?
 
       # Write given `buffer` to file output stream.
-      # Here `buffer` is either sequence of bytes or and object that can be
+      # Here `buffer` is either a sequence of bytes or an object that can be
       # dataized via `as-bytes` object.
       # Returns new instance of `output-block` ready to write again, or
       # returns an error if provided access mode does not allow writing operations.
@@ -229,14 +229,14 @@
 
         # File output block.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [] > output-block
           true > @
           $ > this
 
           # Write given `buffer` to file output stream.
-          # Here `buffer` is either sequence of bytes or and object that can be
+          # Here `buffer` is either a sequence of bytes or an object that can be
           # dataized via `as-bytes` object.
           # Returns new instance of `output-block` ready to write again, or
           # returns an error if provided access mode does not allow writing operations.
@@ -256,7 +256,7 @@
 
         # Writes given `buffer` of bytes to file output stream and returns `org.eolang.true`.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes ?
 

@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.57.1
++version 0.57.2
 +unlint unit-test-missing
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -26,7 +26,7 @@
   all-lines > @
 
   # Consumes all lines from the standard input stream.
-  # There's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > all-lines
     rec-read next-line -- true > @
     line-separator > separator!
@@ -48,7 +48,7 @@
           false
 
   # Consumes only one line from the standard input stream.
-  # If there's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > next-line
     if. > @
       first.as-bytes.size.eq 0

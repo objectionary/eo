@@ -7,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:56
@@ -162,7 +162,7 @@
     # | ""                           | ""            |
     # |------------------------------|---------------|
     #
-    # Unix OS allows to have "\" (backslash) if file name.
+    # Unix OS allows having "\" (backslash) in file names.
     # In such case it'll be included to the base name since separator
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
@@ -228,7 +228,7 @@
     # | ""                           | ""                 |
     # |------------------------------|--------------------|
     #
-    # Unix OS allows to have "\" (backslash) if file or directory name.
+    # Unix OS allows having "\" (backslash) in file or directory names.
     # In such case it'll be included to the dir name since separator
     # is "/" (regular slash) in Unix OS:
     # With the `path` "/tmp/v\a\r/hello" `dir-name` returns `/tmp/v\a\r`.
@@ -261,7 +261,7 @@
 
     # Windows validated path with forward slashes replaced with back ones.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `path` object.
     [uri] > validated
       uri > @
@@ -442,7 +442,7 @@
       # | ""                           | ""            |
       # |------------------------------|---------------|
       #
-      # Unix OS allows to have "\" (backslash) if file name.
+      # Unix OS allows having "\" (backslash) in file names.
       # In such case it'll be included to the base name since separator
       # is "/" (regular slash) in Unix OS:
       # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.

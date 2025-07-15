@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint decorated-formation
@@ -11,6 +11,10 @@
 +unlint redundant-object
 
 # Runtime.
+#
+# The runtime object provides a collection of test cases that verify
+# core EO language functionality and behavior.
+#
 # @todo #4235:35min Move all tests from `runtime.eo` to other objects.
 #  For now runtime is just a set of runtime tests. Instead of having this, let's move its tests
 #  to the other objects, which tests are most suitable for.

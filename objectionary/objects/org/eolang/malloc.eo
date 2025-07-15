@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.1
++rt jvm org.eolang:eo-runtime:0.57.2
 +rt node eo2js-runtime:0.0.0
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -24,8 +24,8 @@
 #
 # Here, the first argument is a size of allocated block in memory, the second argument
 # is the scope where memory block is available for reading and writing. When `malloc.of` is
-# dataized it dataizes the scope, clears the block and returns the result of scope dataization.
-# So there's no need for end-user to care about clearing memory after allocation.
+# dataized, it processes the scope, clears the block and returns the result of scope dataization.
+# Therefore, users do not need to manage memory cleanup after allocation.
 #
 # Second, when the size is not known upfront, but there exists
 # an object ready to be dataized and placed into the memory block
@@ -41,7 +41,7 @@
 #
 # Here, the first argument is an object which will be dataized, then a block in memory of given data
 # size is allocated and the data is written to the block. The second argument is the same scope as
-# in the p.1.
+# in the first example.
 #
 # Consider the next code:
 # ```
@@ -78,7 +78,7 @@
           scope m
     (dataized object).as-bytes > bts
 
-  # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
+  # Allocates block in memory of given `size`. After allocation, `size` zero bytes are
   # written into memory.
   [size scope] > of
     # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
@@ -99,7 +99,7 @@
       # Returns `org.eolang.malloc.of.allocated` object.
       [new-size] > resized ?
 
-      # Reads the data from block in memory with with offset `source` and `length` and writes
+      # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
       # Returns `true` on success, or `error` on failure.
       [source target length] > copy

@@ -2,17 +2,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.1
++rt jvm org.eolang:eo-runtime:0.57.2
 +rt node eo2js-runtime:0.0.0
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:22
 +unlint redundant-object:23
-+unlint redundant-object:27
-+unlint redundant-object:46
-+unlint redundant-object:56
-+unlint redundant-object:66
++unlint redundant-object:26
++unlint redundant-object:44
++unlint redundant-object:53
++unlint redundant-object:62
 
 # The object encapsulates a chain of bytes, adding a few
 # convenient operations to it. Objects like `int`, `string`,
@@ -21,9 +21,8 @@
   data > @
   $ > as-bytes
   eq 01- > as-bool
-  # Turn this chain of eight bytes into a number.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
+  # Converts this chain of eight bytes into a number.
+  # Returns an error if the byte count is not exactly eight.
   if. > as-number
     eq nan.as-bytes
     nan
@@ -40,9 +39,8 @@
             sprintf
               "Can't convert non 8 length bytes to a number, bytes are %x"
               * $
-  # Turn this chain of eight bytes into a i64 number.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
+  # Converts this chain of eight bytes into an i64 number.
+  # Returns an error if the byte count is not exactly eight.
   if. > as-i64
     size.eq 8
     i64 $
@@ -50,9 +48,8 @@
       sprintf
         "Can't convert non 8 length bytes to i64, bytes are %x"
         * $
-  # Turn this chain of four bytes into a i32 number.
-  # If there are less or more than four bytes, there will
-  # be an error returned.
+  # Converts this chain of four bytes into an i32 number.
+  # Returns an error if the byte count is not exactly four.
   if. > as-i32
     size.eq 4
     i32 $
@@ -60,9 +57,8 @@
       sprintf
         "Can't convert non 4 length bytes to i32, bytes are %x"
         * $
-  # Turn this chain of two bytes into a i16 number.
-  # If there are less or more than two bytes, there will
-  # be an error returned.
+  # Converts this chain of two bytes into an i16 number.
+  # Returns an error if the byte count is not exactly two.
   if. > as-i16
     size.eq 2
     i16 $

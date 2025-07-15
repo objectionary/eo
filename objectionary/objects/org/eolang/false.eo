@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:12
@@ -16,11 +16,11 @@
   right > [left right] > if
 
   # And.
-  # A logical operation that returns True only if all given conditions are true.
+  # A logical operation that returns true only if all given conditions are true.
   ^ > [x] > and
 
   # Or.
-  # A logical operation that returns True if at least one of the given conditions is true.
+  # A logical operation that returns true if at least one of the given conditions is true.
   01-.eq x > [x] > or
 
   # This unit test is supposed to check the functionality of the corresponding object.

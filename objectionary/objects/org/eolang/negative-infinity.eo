@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:19
@@ -13,7 +13,7 @@
 
 # Negative infinity.
 # A special floating-point value representing an unbounded quantity less than all real numbers.
-# When dataized, it signifies an unbounded lower limit or an unreachable maximum value.
+# When dataized, it signifies an unbounded lower limit or an unreachable minimum value.
 [] > negative-infinity
   number FF-F0-00-00-00-00-00-00 > @
   $ > floor

@@ -1,26 +1,27 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# The object dataizes `target`, makes new instance of `bytes` from given data and behaves as result
+# The object dataizes `target`, makes a new instance of `bytes` from given
+# data and behaves as the result
 # `bytes`.
 # The object is used as implementation of caching syntax (`!`).
-# The next two lines of code behaves identically:
+# The next two lines of code behave identically:
 #
 # ```
 # some-object > cached!
 # (dataized some-object).as-bytes > cached
 # ```
 #
-# Dataization is a process of retrieving data (bytes) from an object, by taking its \Delta
-# attribute.
+# Dataization is a process of retrieving data (bytes) from an object
+# by taking its \Delta attribute.
 # An example of usage:
 #
 # ```
-# # Some 64+ characters comment should be here.
+# # Example object with nested structure for dataization demonstration.
 # [] > foo
 #   [] > @
 #     inner.five > @
@@ -31,15 +32,17 @@
 # result.as-number > f             # f is 5
 # ```
 #
-# Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`) from the object `foo`
-# and returns them. The `.as-bytes` is used to prevent double dataization.
+# Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`)
+# from the object `foo` and returns them.
+# The `.as-bytes` is used to prevent double dataization.
 [target] > dataized
   try > @
     target
     error ex > [ex]
     01-
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # This unit test is supposed to check the functionality of the
+  # corresponding object.
   [] +> tests-dataized-does-not-do-recalculation
     eq. > @
       malloc.for

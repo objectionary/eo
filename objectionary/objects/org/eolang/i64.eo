@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.1
++rt jvm org.eolang:eo-runtime:0.57.2
 +rt node eo2js-runtime:0.0.0
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -45,7 +45,7 @@
         i64 value
     x > value!
 
-  # Returns `true` if `$` <= `x`.
+  # Returns `org.eolang.true` if `$` <= `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > lte
     or. > @
@@ -57,7 +57,7 @@
   # Here `x` must be an `org.eolang.i64` object.
   [x] > gt ?
 
-  # Returns `true` if `$` >= `x`.
+  # Returns `org.eolang.true` if `$` >= `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > gte
     or. > @
@@ -69,7 +69,7 @@
   # Here `x` must be an `org.eolang.i64` object.
   [x] > times ?
 
-  # Sum of `$` and `x` as `org.eolang.i64`
+  # Sum of `$` and `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > plus ?
 
@@ -81,7 +81,7 @@
 
   # Quotient of the division of `$` by `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
-  # An `org.eolang.error` is returned if or `x` is equal to 0.
+  # An `org.eolang.error` is returned if `x` is equal to 0.
   [x] > div ?
 
   # This unit test is supposed to check the functionality of the corresponding object.

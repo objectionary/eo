@@ -5,7 +5,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
@@ -71,7 +71,7 @@
   # This conversion is necessary because network protocols like TCP/IP use
   # big-endian byte order, regardless of the host machine's architecture.
   #
-  # Attention! The object is for internal usage only, please don't use
+  # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [port] > htons
     as-i16. > @
@@ -84,7 +84,7 @@
   # The object allows to use `socket` as input stream and `read` from it sequentially.
   # Here `recv` must be an object that receives the data from the socket.
   #
-  # Attention! The object is for internal usage only, please don't use
+  # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [recv] > as-input
     # Read `size` amount of bytes from socket.
@@ -94,7 +94,7 @@
 
       # Socket input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use the object
       # programmatically outside of `socket` object.
       [buffer] > input-block
         buffer > @
@@ -113,7 +113,7 @@
   # The object allows to use `socket` as output stream and `write` to it sequentially.
   # Here `send` must be an object that sends the data to the socket.
   #
-  # Attention! The object is for internal usage only, please don't use
+  # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [send] > as-output
     # Write given `buffer` to the socket.
@@ -125,7 +125,7 @@
 
       # Socket output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use the object
       # programmatically outside of `console` object.
       [] > output-block
         true > @
@@ -141,7 +141,7 @@
 
   # Posix platform specified socket.
   #
-  # Attention! The object is for internal usage only, please don't use
+  # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [address port] > posix-socket
     code. > sd
@@ -214,7 +214,7 @@
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.
     #
-    # Attention! The object is for internal usage only, please don't use
+    # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
     [sockfd] > closed-socket
       if. > @
@@ -231,7 +231,7 @@
 
     # Safe posix socket that ensures that socket is closed even if error is occurred.
     #
-    # Attention! The object is for internal usage only, please don't use
+    # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
     [scope] > safe-socket
       if. > @
@@ -328,7 +328,7 @@
 
   # The win32 platform specified socket.
   #
-  # Attention! The object is for internal usage only, please don't use
+  # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [address port] > win-socket
     code. > sd
@@ -399,7 +399,7 @@
     # Close socket by given descriptor `sockfd`.
     # Returns `true` on success, returns `error` otherwise.
     #
-    # Attention! The object is for internal usage only, please don't use
+    # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
     [sockfd] > closed-socket
       if. > @
@@ -417,7 +417,7 @@
     # Safe win32 socket that ensures that socket is closed and Winsock resources are
     # cleaned even if error is occurred.
     #
-    # Attention! The object is for internal usage only, please don't use
+    # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
     [scope] > safe-socket
       if. > @

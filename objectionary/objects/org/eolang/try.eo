@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.57.1
++rt jvm org.eolang:eo-runtime:0.57.2
 +rt node eo2js-runtime:0.0.0
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -12,8 +12,8 @@
 # Decorate them with `try` and errors will be caught by the `catch`
 # abstract object here and the enclosure of the `error` will be passed to it.
 # When object `try` is dataized - it tries to dataize its `main` attribute.
-# If the error is occurred during the dataization - it caches it and tries
-# to dataize its `catch` attribute. After one the attributes is dataized - it just dataizes
+# If an error occurs during the dataization - it caches it and tries
+# to dataize its `catch` attribute. After one of the attributes is dataized - it just dataizes
 # its `finally` attribute and returns the result of dataization of `main` or `catch`
 # attribute as `org.eolang.bytes`.
 [main catch finally] > try ?

@@ -2,7 +2,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.57.1
++version 0.57.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -15,7 +15,7 @@
   [] > max
     if. > @
       lst.is-empty
-      error "Can't get max number from empty sequence"
+      error "Can't get the max number from an empty sequence"
       reduced.
         lst
         negative-infinity
@@ -30,7 +30,7 @@
   [] > min
     if. > @
       lst.is-empty
-      error "Can't get min number from empty sequence"
+      error "Can't get the min number from an empty sequence"
       reduced.
         lst
         positive-infinity
