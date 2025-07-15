@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
@@ -566,15 +565,8 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             count = 0;
         }
-        final String fqn = ctx.NAME().stream().map(ParseTree::getText).collect(Collectors.joining("."));
-        final String base;
-        if (ctx.XI() == null) {
-            base = fqn;
-        } else {
-            base = String.format("%s.%s", ctx.XI().getText(), fqn);
-        }
         this.objects.start(ctx)
-            .prop("base", base)
+            .prop("base", new CompactArrayFqn(ctx).asString())
             .prop("before-star", count);
     }
 
