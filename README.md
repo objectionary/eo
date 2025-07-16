@@ -230,21 +230,21 @@ This is how many milliseconds were spent on different XSL stylesheets
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl              88877  43.14%
-classes.xsl              61166  29.69%
-set-locators.xsl         15473  7.51%
-set-original-names.xsl   10392  5.04%
-attrs.xsl                8088   3.93%
-data.xsl                 7232   3.51%
-anonymous-to-nested.xsl  4970   2.41%
-tests.xsl                4968   2.41%
-package.xsl              4868   2.36%
+to-java.xsl              84156  42.22%
+classes.xsl              60311  30.25%
+set-locators.xsl         15420  7.74%
+set-original-names.xsl   10811  5.42%
+attrs.xsl                7043   3.53%
+data.xsl                 6449   3.24%
+anonymous-to-nested.xsl  5241   2.63%
+tests.xsl                5042   2.53%
+package.xsl              4873   2.44%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2025-06-11 at 14:48,
+on 2025-07-16 at 12:34,
 on Linux with 4 CPUs.
-The total is 206034 milliseconds.
+The total is 199346 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -291,7 +291,7 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [abstract objects]: https://www.yegor256.com/2020/12/01/abstract-objects.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/15587554778
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/16319190537
 [C#]: https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29
 [C++]: https://en.wikipedia.org/wiki/C%2B%2B
 [composable decorators]: https://www.yegor256.com/2015/02/26/composable-decorators.html
