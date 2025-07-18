@@ -34,9 +34,18 @@
                 11
             00-0F-FF-FF-FF-FF-FF-FF
 
+  # Global counter to ensure unique seed even if time is the same
+  0 > pseudo-counter
+
   # New random with pseudo-random seed.
   [] > pseudo
-    random time-seed > @
+    seq. > @
+      pseudo-counter.write
+        pseudo-counter.plus 1
+      random
+        plus.
+          time-seed
+          pseudo-counter
     (posix "gettimeofday" *).output > timeval
     as-number. > time-seed
       plus.
@@ -102,4 +111,4 @@
   # different seeds. This ensures the test is reliable and deterministic.
   [] +> tests-two-random-numbers-not-equal
     not. > @
-      (random 123).fixed.eq (random 456).fixed
+      random.pseudo.eq random.pseudo
