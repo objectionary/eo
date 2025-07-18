@@ -21,11 +21,13 @@ import org.junit.jupiter.api.Test;
 final class PhDefaultTest {
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String PLUS_ATT = "plus";
 
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String VOID_ATT = "void";
 
