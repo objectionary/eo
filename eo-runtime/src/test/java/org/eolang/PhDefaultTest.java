@@ -233,7 +233,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCopyContextAttributeWithRho() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = new PhiWithContextAttr();
         MatcherAssert.assertThat(
             PhCompositeTest.TO_ADD_MESSAGE,
             phi.take("context-doesNotCopyContextAttributeWithRho"),
@@ -485,7 +485,7 @@ final class PhDefaultTest {
 
     @Test
     void verifiesThreadLocalNesting() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = new PhiWithNesting();
         Assertions.assertDoesNotThrow(
             () -> phi.take("context-verifiesThreadLocalNesting"),
             "Nesting should be properly managed without exceptions"
@@ -494,7 +494,7 @@ final class PhDefaultTest {
 
     @Test
     void verifiesThreadLocalNestingWithExceptions() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = new PhiWithNestingAndExceptions();
         Assertions.assertThrows(
             ExUnset.class,
             () -> phi.take("non-existent-attribute"),
@@ -507,12 +507,12 @@ final class PhDefaultTest {
     }
 
     @Test
-    void verifiesCleanupNesting() {
-        final Phi phi = new PhDefaultTest.Int();
-        phi.take("context-verifiesCleanupNesting");
+    void worksAfterCleanup() {
+        final Phi phi = new PhiWithCleanup();
+        phi.take("context-worksAfterCleanup");
         cleansupNesting();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context-verifiesCleanupNesting"),
+            () -> phi.take("context-worksAfterCleanup"),
             "Should work after cleanup"
         );
     }
@@ -527,7 +527,7 @@ final class PhDefaultTest {
             final int id = idx;
             pool[idx] = new Thread(
                 () -> {
-                    final Phi phi = new PhDefaultTest.Int();
+                    final Phi phi = new PhiWithMultiThread();
                     try {
                         for (int iter = 0; iter < cnt; iter += 1) {
                             phi.take("context-verifiesThreadLocalInMultipleThreads");
@@ -546,10 +546,7 @@ final class PhDefaultTest {
         for (int idx = 0; idx < threads; idx += 1) {
             Assertions.assertTrue(
                 res[idx],
-                String.format(
-                    "Thread %d should have completed successfully",
-                    idx
-                )
+                String.format("Thread %d should have completed successfully", idx)
             );
         }
     }
@@ -575,6 +572,53 @@ final class PhDefaultTest {
             nesting.remove();
         } catch (final ReflectiveOperationException ex) {
             throw new IllegalStateException(ex);
+        }
+    }
+
+    private static class PhiWithContextAttr extends PhDefault {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhiWithContextAttr() {
+            this.add(
+                "context-doesNotCopyContextAttributeWithRho",
+                new PhSimple(new Data.ToPhi(42))
+            );
+        }
+    }
+
+    private static class PhiWithNesting extends PhDefault {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhiWithNesting() {
+            this.add(
+                "context-verifiesThreadLocalNesting",
+                new PhSimple(new Data.ToPhi(42))
+            );
+        }
+    }
+
+    private static class PhiWithNestingAndExceptions extends PhDefault {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhiWithNestingAndExceptions() {
+            this.add(
+                "context-verifiesThreadLocalNestingWithExceptions",
+                new PhSimple(new Data.ToPhi(42))
+            );
+        }
+    }
+
+    private static class PhiWithCleanup extends PhDefault {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhiWithCleanup() {
+            this.add("context-worksAfterCleanup", new PhSimple(new Data.ToPhi(42)));
+        }
+    }
+
+    private static class PhiWithMultiThread extends PhDefault {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        PhiWithMultiThread() {
+            this.add(
+                "context-verifiesThreadLocalInMultipleThreads",
+                new PhSimple(new Data.ToPhi(42))
+            );
         }
     }
 
@@ -633,26 +677,6 @@ final class PhDefaultTest {
                         }
                     )
                 )
-            );
-            this.add(
-                "context-doesNotCopyContextAttributeWithRho",
-                new PhSimple(new Data.ToPhi(42))
-            );
-            this.add(
-                "context-verifiesThreadLocalNesting",
-                new PhSimple(new Data.ToPhi(42))
-            );
-            this.add(
-                "context-verifiesThreadLocalNestingWithExceptions",
-                new PhSimple(new Data.ToPhi(42))
-            );
-            this.add(
-                "context-verifiesCleanupNesting",
-                new PhSimple(new Data.ToPhi(42))
-            );
-            this.add(
-                "context-verifiesThreadLocalInMultipleThreads",
-                new PhSimple(new Data.ToPhi(42))
             );
         }
     }
