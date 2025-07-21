@@ -5,7 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-as-attributes-inside-application" version="2.0">
   <!--
-  Here we are going through all the applications (objects with `@base`), and generate `@as`
+  Here we are going through all the applications (objects with `@base`), and add `@as`
   attributes for each inner object. The content of `@as` attribute is based on `αN`, where `N` is
   an identifier of attribute in the current level of nesting. Object methods (objects with `@base`
   starting with `.` (dot) must not have `@as` attributes.
