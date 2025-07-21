@@ -4,12 +4,18 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-as-attributes-inside-application" version="2.0">
+  <!--
+  Here we are going through all the applications (objects with `@base`), and generate `@as`
+  attributes for each inner object. The content of `@as` attribute is based on `αN`, where `N` is
+  an identifier of attribute in the current level of nesting. Object methods (objects with `@base`
+  starting with `.` (dot) must not have `@as` attributes.
+  -->
   <xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base]/o[not(@as)]">
+  <xsl:template match="o[@base and not(starts-with(@base, '.'))]/o[not(@as)]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="as">

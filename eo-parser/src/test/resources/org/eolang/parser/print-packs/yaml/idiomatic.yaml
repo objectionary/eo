@@ -39,8 +39,8 @@ printed: |
     # No comments.
     [] > rr ?
     if. > @
-      plus.:0
-        this:0
+      plus.
+        this
           n.minus:0
             "\u5BB6":0
             x:1
@@ -48,7 +48,7 @@ printed: |
               "Hello, \u0434\u0440\u0443\u0433"
               2.18
               true
-        bar:1
+        bar
           n.plus:0
             "hello, \u5927\u5BB6!":0
     4.55 > x!
