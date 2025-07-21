@@ -121,7 +121,10 @@ final class BytesOfTest {
     void checksShift(final long num, final int bits, final long expected) {
         final Bytes bytes = new BytesOf(num);
         MatcherAssert.assertThat(
-            String.format("%d >> %d should result in %d, but it didn't", num, bits, expected),
+            String.format(
+                "%d >> %d should result in %d, but it didn't",
+                num, bits, expected
+            ),
             bytes.shift(bits).asNumber(Long.class),
             Matchers.equalTo(expected)
         );
@@ -143,7 +146,10 @@ final class BytesOfTest {
         final Bytes bytes = new BytesOf((int) num);
         final int actual = bytes.sshift(bits).asNumber(Integer.class);
         MatcherAssert.assertThat(
-            String.format("%d >> %d (arithmetic shift) should result in %d, but it didn't", num, bits, expected),
+            String.format(
+                "%d >> %d (arithmetic shift) should result in %d, but it didn't",
+                num, bits, expected
+            ),
             actual,
             Matchers.equalTo((int) expected)
         );

@@ -59,7 +59,10 @@ final class PhPackageTest {
         final Phi org = Phi.Φ.take("org");
         final Phi eolang = org.take("eolang");
         MatcherAssert.assertThat(
-            String.format("The %s attribute must be set to package object on dispatch", Phi.RHO),
+            String.format(
+                "The %s attribute must be set to package object on dispatch",
+                Phi.RHO
+            ),
             eolang.take(Phi.RHO),
             Matchers.equalTo(org)
         );
@@ -70,7 +73,10 @@ final class PhPackageTest {
         final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
-            String.format("The %s attribute must be set to object inside package on dispatch", Phi.RHO),
+            String.format(
+                "The %s attribute must be set to object inside package on dispatch",
+                Phi.RHO
+            ),
             seq.take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
@@ -91,7 +97,10 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
-            String.format("Attribute '%s' should be instance of %s, but it wasn't", attribute, expected.getSimpleName()),
+            String.format(
+                "Attribute '%s' should be instance of %s, but it wasn't",
+                attribute, expected.getSimpleName()
+            ),
             actual,
             Matchers.instanceOf(expected)
         );
