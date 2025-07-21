@@ -32,15 +32,17 @@ final class EOmallocTest {
     @Test
     void freesMemory() {
         final Dummy dummy = new Dummy();
-        ized(
+        new Dataized(
             EOmallocTest.allocated(
                 new Data.ToPhi(1L),
                 dummy
             )
-        ).take().s.assertThrows(
-            () -> Heaps.INSTANCE.free((int) dummy.id), 
+        ).take();
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> Heaps.INSTANCE.free((int) dummy.id),
             "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
-            );
+        );
     }
 
     @Test
