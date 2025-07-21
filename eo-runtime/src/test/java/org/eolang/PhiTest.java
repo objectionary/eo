@@ -18,7 +18,7 @@ final class PhiTest {
     @Test
     void takesPackage() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should resolve and invoke method from org.eolang.io.stdout package, but it didn't",
             new Dataized(
                 new PhCopy(
                     new PhMethod(
@@ -49,7 +49,7 @@ final class PhiTest {
     @Test
     void takesStandardPackage() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should resolve and invoke method from org.eolang.io.stdout package, but it didn't",
             new Dataized(
                 new PhCopy(
                     new PhMethod(
@@ -68,7 +68,7 @@ final class PhiTest {
     @Test
     void takesDirectly() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should resolve nested attribute org.eolang.nan.gt and return false, but it didn't",
             new Dataized(
                 Phi.Φ.take("org").take("eolang").take("nan").take("gt")
             ).asBool(),
@@ -79,7 +79,7 @@ final class PhiTest {
     @Test
     void getsLocation() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should return correct locator, but it didn't",
             new PhSafe(
                 Phi.Φ,
                 "foobar",
@@ -95,7 +95,7 @@ final class PhiTest {
     @Test
     void getsForma() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should return correct forma, but it didn't",
             new PhSafe(
                 Phi.Φ,
                 "foobar",

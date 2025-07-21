@@ -32,7 +32,7 @@ final class PhPackageTest {
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Every take() should return new instance, but it didn't",
             Phi.Φ.take("org.eolang.seq"),
             Matchers.not(
                 Matchers.equalTo(
@@ -70,7 +70,7 @@ final class PhPackageTest {
         final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            String.format("The %s attribute must be set to object inside package on dispatch", Phi.RHO),
             seq.take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
@@ -79,7 +79,7 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Package should resolve class with '$' in the name, but it didn't",
             Phi.Φ.take("org.eolang.bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
@@ -91,7 +91,7 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            String.format("Attribute '%s' should be instance of %s, but it wasn't", attribute, expected.getSimpleName()),
             actual,
             Matchers.instanceOf(expected)
         );
@@ -102,7 +102,7 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Should throw if object cannot be instantiated, but it was"
         );
     }
 
@@ -128,7 +128,7 @@ final class PhPackageTest {
     @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "locator of the DEFAULT_PACKAGE must be ?:?:?, but is wasn't",
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
             Matchers.equalTo("?:?:?")
         );

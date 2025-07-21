@@ -19,7 +19,7 @@ final class PhLoggedTest {
     @Test
     void copiesOrigin() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Copy of PhLogged should return the original Phi, but it didn't",
             new PhLogged(Phi.Φ).copy(),
             Matchers.equalTo(Phi.Φ)
         );
@@ -28,7 +28,7 @@ final class PhLoggedTest {
     @Test
     void returnsOriginHashCode() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "HashCode of PhLogged should return the original hashCode, but it didn't",
             new PhLogged(Phi.Φ).hashCode(),
             Matchers.equalTo(Phi.Φ.hashCode())
         );
@@ -37,7 +37,7 @@ final class PhLoggedTest {
     @Test
     void equalsToOrigin() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "PhLogged should be equlas to the original Phi, but it didn't",
             new PhLogged(Phi.Φ),
             Matchers.equalTo(Phi.Φ)
         );
@@ -47,7 +47,7 @@ final class PhLoggedTest {
     void getsOriginLocator() {
         final Phi phi = Phi.Φ;
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Locator of PhLogged should be equlas to the original, but it didn't",
             new PhLogged(phi).locator(),
             Matchers.equalTo(phi.locator())
         );

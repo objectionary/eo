@@ -47,7 +47,7 @@ final class EOerrorTest {
                     new Data.ToPhi("intentional error")
                 )
             ).take(),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Expected EOerror to throw ExError when dataized, but it didn't"
         );
     }
 

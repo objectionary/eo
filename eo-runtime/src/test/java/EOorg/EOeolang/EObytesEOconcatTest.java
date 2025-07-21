@@ -29,7 +29,7 @@ final class EObytesEOconcatTest {
     @Test
     void concatenatesBytes() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Concatenation of byte arrays should produce 'привет mr. ㄤㄠ!', but it didn't",
             new Dataized(
                 new PhWith(
                     Phi.Φ.take("org.eolang.string"),

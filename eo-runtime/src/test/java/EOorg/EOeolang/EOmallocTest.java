@@ -32,17 +32,15 @@ final class EOmallocTest {
     @Test
     void freesMemory() {
         final Dummy dummy = new Dummy();
-        new Dataized(
+        ized(
             EOmallocTest.allocated(
                 new Data.ToPhi(1L),
                 dummy
             )
-        ).take();
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            PhCompositeTest.TO_ADD_MESSAGE
-        );
+        ).take().s.assertThrows(
+            () -> Heaps.INSTANCE.free((int) dummy.id), 
+            "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
+            );
     }
 
     @Test
@@ -56,12 +54,12 @@ final class EOmallocTest {
                     dummy
                 )
             ).take(),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Should throw an exception on attempting to use RrrorDummy, but it didn't"
         );
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
         );
     }
 

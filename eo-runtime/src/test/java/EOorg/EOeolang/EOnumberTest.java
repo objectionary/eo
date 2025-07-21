@@ -34,7 +34,7 @@ final class EOnumberTest {
     @Test
     void hasDifferentHashes() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Hashes of the two instances should differ, but they didn't",
             new Data.ToPhi(42L).hashCode(),
             Matchers.not(Matchers.equalTo(new Data.ToPhi(42L).hashCode()))
         );
@@ -43,7 +43,7 @@ final class EOnumberTest {
     @Test
     void hasHashEvenWithoutData() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Object without data should have positive hash, but it didn't",
             new EOnumber().hashCode(),
             Matchers.greaterThan(0)
         );
@@ -52,7 +52,7 @@ final class EOnumberTest {
     @Test
     void hasDifferentHash() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Hashes of the two instances should differ, but they didn't",
             new EOnumber().hashCode(),
             Matchers.not(new Data.ToPhi(0L).hashCode())
         );

@@ -27,7 +27,7 @@ class JavaPathTest {
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            String.format("JavaPath should convert '%s' to '%s', but it didn't", name, expected),
             new JavaPath(name).toString(),
             Matchers.equalTo(expected)
         );
