@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.16
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
-public final class PhCompositeTest {
+final class PhCompositeTest {
 
     @Test
     void decoratesUncheckedException() {
