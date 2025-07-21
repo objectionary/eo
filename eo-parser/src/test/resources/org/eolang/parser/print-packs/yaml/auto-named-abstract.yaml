@@ -15,7 +15,7 @@ printed: |
   # No comments.
   [] > y
     x > first
-      [] >>
+      []:0 >>
         5 > five
     x > second
       [f]:1 >>
