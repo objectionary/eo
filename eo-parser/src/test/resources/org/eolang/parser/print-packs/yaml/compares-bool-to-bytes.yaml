@@ -12,7 +12,7 @@ printed: |
   # No comments.
   [] > compares-bool-to-bytes
     and. > @
-      true.eq
-        01-
-      false.eq
-        00-
+      true.eq:0
+        01-:0
+      false.eq:1
+        00-:0

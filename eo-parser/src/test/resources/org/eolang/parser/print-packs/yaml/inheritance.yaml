@@ -43,21 +43,21 @@ printed: |
     # No comments.
     [] > base
       memory > x
-        0
+        0:0
       # No comments.
       [self v] > f
         ^.x.write > @
-          v
+          v:0
       # No comments.
       [self v] > g
         self.f > @
-          self
-          v
+          self:0
+          v:1
     # No comments.
     [] > derived
       ^.base > @
       # No comments.
       [self v] > f
         self.g > @
-          self
-          v
+          self:0
+          v:1

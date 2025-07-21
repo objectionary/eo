@@ -14,8 +14,8 @@ printed: |
   # No comments.
   [] > app
     io.stdout > @
-      txt.sprintf
-        "result is %d\n"
-        times.
-          -1
-          228
+      txt.sprintf:0
+        "result is %d\n":0
+        times.:1
+          -1:0
+          228:1
