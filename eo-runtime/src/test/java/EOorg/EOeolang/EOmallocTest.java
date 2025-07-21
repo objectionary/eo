@@ -55,7 +55,7 @@ final class EOmallocTest {
                     dummy
                 )
             ).take(),
-            "Should throw an exception on attempting to use RrrorDummy, but it didn't"
+            "Should throw an exception on attempting to use ErrorDummy, but it didn't"
         );
         Assertions.assertThrows(
             ExAbstract.class,
