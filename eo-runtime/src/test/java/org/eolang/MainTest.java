@@ -158,7 +158,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            "Reading stream should produce a line longer ther 1 character, but it didn't",
+            "Reading stream should produce a line longer then 1 character, but it didn't",
             reader.readLine().length(),
             Matchers.greaterThan(1)
         );
