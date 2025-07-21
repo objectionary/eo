@@ -13,7 +13,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
 import org.eolang.PhVoid;

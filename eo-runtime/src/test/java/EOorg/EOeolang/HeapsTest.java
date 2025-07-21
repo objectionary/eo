@@ -12,7 +12,6 @@ package EOorg.EOeolang; // NOPMD
 import java.util.function.Supplier;
 import org.eolang.ExFailure;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhDefault;
 import org.eolang.PhVoid;
 import org.eolang.Phi;
