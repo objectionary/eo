@@ -607,21 +607,6 @@ final class FakeMaven {
     }
 
     /**
-     * Translates EO program to Phi-calculus expression.
-     *
-     * @since 0.33.0
-     */
-    static final class Phi implements Iterable<Class<? extends AbstractMojo>> {
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjPhi.class
-            ).iterator();
-        }
-    }
-
-    /**
      * Plan all eo dependencies full pipeline.
      *
      * @since 0.29.0
