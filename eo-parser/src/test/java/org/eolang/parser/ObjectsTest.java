@@ -24,7 +24,7 @@ final class ObjectsTest {
         objs.data("xxx");
         objs.leave();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to parse object: expected /o with line=9, pos=10, x='y', text='xxx'",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -46,7 +46,7 @@ final class ObjectsTest {
         objs.leave();
         objs.leave();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to parse nested objects: expected text 'yyy' under /o/o",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -65,7 +65,7 @@ final class ObjectsTest {
         objs.enter();
         objs.prop("z", "a");
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to re-enter previous object and set property 'z=a' on root <o>",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o/o",
