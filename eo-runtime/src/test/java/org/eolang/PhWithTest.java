@@ -25,7 +25,7 @@ final class PhWithTest {
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should be equal to itself, but it didn't",
             dummy, Matchers.equalTo(dummy)
         );
     }
@@ -33,7 +33,7 @@ final class PhWithTest {
     @Test
     void takesMethod() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should preserve inner method result from Dataized string, but it didn't",
             new Dataized(
                 new Data.ToPhi("Hello, world!")
             ).asString(),
@@ -45,7 +45,7 @@ final class PhWithTest {
     void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should pass attribute to sub-object and calculate correctly, but it didn't",
             new Dataized(
                 new PhWith(
                     new PhCopy(new PhMethod(dummy, "plus")),
@@ -66,7 +66,7 @@ final class PhWithTest {
             new Together<>(
                 thread -> {
                     MatcherAssert.assertThat(
-                        PhCompositeTest.TO_ADD_MESSAGE,
+                        "Attribute 'foo' should return the same string that was passed to Phi, but it didn't",
                         new Dataized(ref.take(attr)).asString(),
                         Matchers.is(data)
                     );
@@ -81,7 +81,7 @@ final class PhWithTest {
     void hasTheSameFormaWithBoundAttribute() {
         final Phi dummy = new DummyWithAtFree("x");
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "forma of PhWith with bound attribute should be same as forma of original, but it didn't",
             dummy.forma(),
             Matchers.equalTo(
                 new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()

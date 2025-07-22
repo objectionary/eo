@@ -137,7 +137,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a non-empty line, but it didn't",
             reader.readLine().length(),
             Matchers.greaterThan(0)
         );
@@ -158,7 +158,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a line longer then 1 character, but it didn't",
             reader.readLine().length(),
             Matchers.greaterThan(1)
         );
@@ -167,7 +167,7 @@ final class MainTest {
     @Test
     void readsBytesCorrectly() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a byte of next character, but it didn't",
             new ByteArrayInputStream(
                 "··\uD835\uDD38➜Φ".getBytes(
                     StandardCharsets.UTF_8

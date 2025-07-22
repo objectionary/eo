@@ -18,7 +18,7 @@ final class PhMethodTest {
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Calling the same method twice should produce different objects, but it didn't",
             num.take("plus"),
             Matchers.not(Matchers.equalTo(num.take("plus")))
         );
@@ -33,7 +33,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should be calculated only once, but it didn't",
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -48,7 +48,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Foo should be calculated only once, but it wasn't",
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -60,7 +60,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Neg should be calculated only once, but it wasn't",
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -70,7 +70,7 @@ final class PhMethodTest {
     void hasDifferentFormasWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Forma of PhMethod should be differ from original, but it wasn't",
             dummy.forma(),
             Matchers.not(
                 Matchers.equalTo(
