@@ -41,8 +41,8 @@ jobs:
         with:
           sign-commits: true
           branch: eoc-version-up
-          commit-message: "new eoc version ${{ env.VERSION }} in README"
+          commit-message: "new eoc version ${{ env.LATEST }} in README"
           delete-branch: true
-          title: "New eoc version ${{ env.VERSION }} in README"
+          title: "New eoc version ${{ env.LATEST }} in README"
           assignees: yegor256
           base: master
