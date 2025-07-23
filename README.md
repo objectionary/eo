@@ -218,8 +218,6 @@ Learn [XMIR], a dialect of XML, which we use to represent EO program:
 
 See the full collection of canonical objects: [objectionary][home].
 
-Play with more examples in the [sandbox].
-
 Read more about integration [with Maven][eo-maven-plugin].
 
 ## Benchmark
@@ -309,7 +307,6 @@ to enhance the performance of EO components:
 [PHP]: https://en.wikipedia.org/wiki/PHP
 [Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
 [Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
-[sandbox]: https://github.com/objectionary/sandbox
 [Smalltalk]: https://en.wikipedia.org/wiki/Smalltalk
 [xcop]: https://github.com/yegor256/xcop
 [XMIR HTML]: https://www.eolang.org/XMIR.html
