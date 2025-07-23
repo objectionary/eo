@@ -51,7 +51,7 @@ All of them have something **we don't tolerate**:
 
 ## Quick Start
 
-First, install [Java SE], [npm].
+First, install [Java SE] and [npm].
 
 Then, install [eoc]:
 
@@ -85,12 +85,12 @@ You should see "Hello, world!" printed.
 ## Simple Tutorial
 
 In the example above, we create a new [abstract object][abstract objects]
-named `app`, which has got a single attribute named `@`. The object
+named `app`, which has a single attribute named `@`. The object
 attached to the attribute `@` is a copy of the object `stdout` with
 a single argument `"Hello, world!"`. The object
 `stdout` is also [abstract][abstract objects].
 It can't be used directly, a copy of it has to be created,
-with a few requirement arguments provided.
+with a few required arguments provided.
 This is how a copy of the object `stdout` is made:
 
 ```text
@@ -261,7 +261,7 @@ Then, to generate the report:
 ```shell
 awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
  printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
- eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+ eo-runtime/measures.csv | sort -g -k 2 | tail -16 | column -t | head "-16"
 ```
 
 ## How to Contribute
