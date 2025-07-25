@@ -237,7 +237,7 @@ final class PhDefaultTest {
     void doesNotCopyContextAttributeWithRho() {
         final Phi phi = this.phiWithContextAttribute("context-doesNotCopyContextAttributeWithRho");
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Context attribute should not be copied with rho, but it did",
             phi.take("context-doesNotCopyContextAttributeWithRho"),
             Matchers.equalTo(phi.take("context-doesNotCopyContextAttributeWithRho"))
         );
