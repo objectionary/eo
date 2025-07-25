@@ -38,7 +38,7 @@
   0 > pseudo-counter
 
   # New random with pseudo-random seed.
-  [] > pseudo
+  > pseudo
     seq. > @
       pseudo-counter.write
         pseudo-counter.plus 1
