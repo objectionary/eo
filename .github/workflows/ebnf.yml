@@ -21,10 +21,10 @@ jobs:
       - run: |
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: teatimeguest/setup-texlive-action@v3.3.4
+      - uses: zauguin/install-texlive@v4.0.0
         with:
-          update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
+          texlive_version: 2025
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -50,15 +50,14 @@ jobs:
           convert --help | grep Delegates
           pdfcrop --version
           set -x
-          for p in Eo Phi; do
-            cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
-            pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
-            pdf2svg "${p}-cropped.pdf" "${p}.svg"
-            convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
-            mkdir -p gh-pages/ebnf
-            cp "${p}.png" gh-pages/ebnf
-            cp "${p}.svg" gh-pages/ebnf
-          done
+          p="Eo"
+          cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
+          pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
+          pdf2svg "${p}-cropped.pdf" "${p}.svg"
+          convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
+          mkdir -p gh-pages/ebnf
+          cp "${p}.png" gh-pages/ebnf
+          cp "${p}.svg" gh-pages/ebnf
       - uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
           branch: gh-pages

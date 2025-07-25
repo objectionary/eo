@@ -566,7 +566,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             count = 0;
         }
         this.objects.start(ctx)
-            .prop("base", ctx.NAME().getText())
+            .prop("base", new CompactArrayFqn(ctx).asString())
             .prop("before-star", count);
     }
 
@@ -1134,7 +1134,22 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (!comment.isEmpty()) {
             this.dirs.push().xpath("/object").addIf("comments").add("comment").set(
                 comment.stream().map(
-                    context -> context.COMMENTARY().getText().substring(1).trim()
+                    context -> {
+                        final String result;
+                        final String text = context.COMMENTARY().getText();
+                        if (text.isEmpty()) {
+                            result = "";
+                        } else {
+                            final int sub;
+                            if (text.length() > 1 && text.charAt(1) == ' ') {
+                                sub = 2;
+                            } else {
+                                sub = 1;
+                            }
+                            result = context.COMMENTARY().getText().substring(sub);
+                        }
+                        return result;
+                    }
                 ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }

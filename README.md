@@ -51,12 +51,12 @@ All of them have something **we don't tolerate**:
 
 ## Quick Start
 
-First, install [Java SE], [npm].
+First, install [Java SE] and [npm].
 
 Then, install [eoc]:
 
 ```bash
-npm install -g eolang@0.29.0
+npm install -g eolang@0.31.0
 ```
 
 Then, start with a simple EO program in the `app.eo` file:
@@ -85,12 +85,12 @@ You should see "Hello, world!" printed.
 ## Simple Tutorial
 
 In the example above, we create a new [abstract object][abstract objects]
-named `app`, which has got a single attribute named `@`. The object
+named `app`, which has a single attribute named `@`. The object
 attached to the attribute `@` is a copy of the object `stdout` with
 a single argument `"Hello, world!"`. The object
 `stdout` is also [abstract][abstract objects].
 It can't be used directly, a copy of it has to be created,
-with a few requirement arguments provided.
+with a few required arguments provided.
 This is how a copy of the object `stdout` is made:
 
 ```text
@@ -198,16 +198,11 @@ Got the idea?
 
 This is our [EBNF] of EO language:
 
-![Grammar](/ebnf/Eo.png)
+![Grammar][EO-Grammar]
 
-This is the [EBNF] of 𝜑-calculus:
-
-![EBNF of 𝜑-calculus](/ebnf/Phi.png)
-
-The PNG images were
+The PNG image was
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
-It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg)
-and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
+It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg).
 
 ## What's Next?
 
@@ -222,8 +217,6 @@ Learn [XMIR], a dialect of XML, which we use to represent EO program:
   [XSD] and [spec][XMIR HTML].
 
 See the full collection of canonical objects: [objectionary][home].
-
-Play with more examples in the [sandbox].
 
 Read more about integration [with Maven][eo-maven-plugin].
 
@@ -266,7 +259,7 @@ Then, to generate the report:
 ```shell
 awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
  printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
- eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+ eo-runtime/measures.csv | sort -g -k 2 | tail -16 | column -t | head "-16"
 ```
 
 ## How to Contribute
@@ -314,7 +307,6 @@ to enhance the performance of EO components:
 [PHP]: https://en.wikipedia.org/wiki/PHP
 [Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
 [Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
-[sandbox]: https://github.com/objectionary/sandbox
 [Smalltalk]: https://en.wikipedia.org/wiki/Smalltalk
 [xcop]: https://github.com/yegor256/xcop
 [XMIR HTML]: https://www.eolang.org/XMIR.html
@@ -324,3 +316,4 @@ to enhance the performance of EO components:
 [book]: http://www.yegor256.com/elegant-objects.html
 [𝜑-calculus]: https://arxiv.org/abs/2111.13384
 [Esperanto]: https://en.wikipedia.org/wiki/Esperanto
+[EO-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Eo.png

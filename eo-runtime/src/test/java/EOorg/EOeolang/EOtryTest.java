@@ -13,7 +13,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
 import org.eolang.PhVoid;
@@ -75,7 +74,7 @@ final class EOtryTest {
     @Test
     void worksWithoutException() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Main threw an exception",
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -102,7 +101,7 @@ final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "EOtry dataized body more than once",
             main.count,
             Matchers.equalTo(1)
         );

@@ -11,12 +11,21 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:27
++unlint redundant-object:29
++unlint redundant-object:162
++unlint redundant-object:164
++unlint redundant-object:196
++unlint redundant-object:210
++unlint redundant-object:236
++unlint redundant-object:252
++unlint redundant-object:588
 
 # The file object in the filesystem.
 [path] > file
   $.path > @
   $ > as-file
-  # Convert the `file` to the `path`.
+  # Converts the `file` to a `path`.
   (QQ.fs.path path).determined > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
@@ -39,7 +48,7 @@
 
     # Creates new empty file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > touch ?
 
@@ -56,14 +65,14 @@
 
     # Deletes the file and returns `org.eolang.true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > delete ?
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   [] > size ?
 
-  # Move current file to `target`, making and returning a new `file` from it.
+  # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
     as-file. > @
       file move
@@ -72,7 +81,7 @@
     # and returns path of moved file as `org.eolang.string`.
     # Returns `org.eolang.error` is failed to move the file.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > move ?
 
@@ -137,7 +146,6 @@
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
-    (access.eq "a").as-bool > append
     (access.eq "r+").as-bool > read-write
     (access.eq "w+").as-bool > write-read
     (access.eq "a+").as-bool > read-append
@@ -150,7 +158,7 @@
         or.
           write.or read-write
           write-read.or read-append
-        append
+        (access.eq "a").as-bool
     as-bool. > must-exists
       read.or read-write
     as-bool. > truncate
@@ -166,7 +174,7 @@
     # The object is stream-safe, which means that stream is closed anyway,
     # even if errors are occurred while `scope` dataization.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
     [] > process-file ?
 
@@ -181,7 +189,7 @@
 
         # File input block
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > input-block
           buffer > @
@@ -207,12 +215,12 @@
 
         # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [size] > read-bytes ?
 
       # Write given `buffer` to file output stream.
-      # Here `buffer` is either sequence of bytes or and object that can be
+      # Here `buffer` is either a sequence of bytes or an object that can be
       # dataized via `as-bytes` object.
       # Returns new instance of `output-block` ready to write again, or
       # returns an error if provided access mode does not allow writing operations.
@@ -221,14 +229,14 @@
 
         # File output block.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [] > output-block
           true > @
           $ > this
 
           # Write given `buffer` to file output stream.
-          # Here `buffer` is either sequence of bytes or and object that can be
+          # Here `buffer` is either a sequence of bytes or an object that can be
           # dataized via `as-bytes` object.
           # Returns new instance of `output-block` ready to write again, or
           # returns an error if provided access mode does not allow writing operations.
@@ -248,7 +256,7 @@
 
         # Writes given `buffer` of bytes to file output stream and returns `org.eolang.true`.
         #
-        # Attention! The object is for internal usage only, please
+        # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes ?
 
@@ -315,12 +323,9 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-moves-a-file
     and. > @
-      (temp.moved dest).exists
+      (temp.moved (sprintf "%s.dest" (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
-    sprintf > dest
-      "%s.dest"
-      * temp.path
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-on-opening-with-wrong-mode
@@ -580,8 +585,7 @@
                   *
                     f.write "Hello, world"
                     ^.m.put i2
-                f.read 7 > i1
-                i1.read 5 > i2
+                (f.read 7).read 5 > i2
             m
     .eq "world" > @
 
@@ -592,7 +596,6 @@
     .open
       "a+"
       [f]
-        o1.write "!" > @
-        f.write "Hello, world" > o1
+        (f.write "Hello, world").write "!" > @
     .size
     .eq 13 > @

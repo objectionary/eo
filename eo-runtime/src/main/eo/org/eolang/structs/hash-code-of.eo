@@ -31,10 +31,8 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-hash-code-of-bools-is-number
     and. > @
-      true-code.as-bytes.size.eq 8
-      false-code.as-bytes.size.eq 8
-    hash-code-of true > true-code
-    hash-code-of false > false-code
+      (hash-code-of true).as-bytes.size.eq 8
+      (hash-code-of false).as-bytes.size.eq 8
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-hash-code-of-int-is-int

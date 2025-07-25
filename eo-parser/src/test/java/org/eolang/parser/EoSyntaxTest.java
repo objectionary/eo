@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXParseException;
@@ -381,6 +382,52 @@ final class EoSyntaxTest {
                 )
             ).parsed(),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        {
+            "#   Indented comment is here 守规矩!,\\n  Indented comment is here 守规矩!",
+            "#     More indentation,\\n    More indentation",
+            "#       This is how it works!,\\n      This is how it works!"
+        }
+    )
+    void savesIndentationInComments(final String comment, final String parsed) throws IOException {
+        MatcherAssert.assertThat(
+            "Parsed comments in XMIR should respect indentation",
+            new Xnav(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            "\n",
+                            "# Top comment.",
+                            comment,
+                            "[] > foo"
+                        )
+                    )
+                ).parsed().inner()
+            ).element("object").element("comments").element("comment").text().get(),
+            Matchers.equalTo(String.format("Top comment.%s", parsed))
+        );
+    }
+
+    @Test
+    void parsesEmptyComment() throws IOException {
+        MatcherAssert.assertThat(
+            "Parsed empty comments in XMIR should be empty as well",
+            new Xnav(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            "\n",
+                            "#",
+                            "[] > foo"
+                        )
+                    )
+                ).parsed().inner()
+            ).element("object").element("comments").element("comment").text().get(),
+            Matchers.emptyString()
         );
     }
 

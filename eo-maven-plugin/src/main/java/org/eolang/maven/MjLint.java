@@ -76,7 +76,7 @@ public final class MjLint extends MjSafe {
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
         if (!this.skipSourceLints.isEmpty()) {
-            Logger.info(this, "Unliting source lints: %[list]s", this.skipSourceLints);
+            Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
         final int passed = new Threaded<>(
             tojos, tojo -> this.lintOne(tojo, counts, this.skipSourceLints.toArray(new String[0]))
