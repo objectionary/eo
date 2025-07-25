@@ -13,7 +13,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhVoid;
@@ -41,7 +40,7 @@ final class EOmallocTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
         );
     }
 
@@ -56,12 +55,12 @@ final class EOmallocTest {
                     dummy
                 )
             ).take(),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Should throw an exception on attempting to use ErrorDummy, but it didn't"
         );
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
         );
     }
 

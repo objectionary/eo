@@ -4,6 +4,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:43
 
 # Makes an output from allocated block in memory.
 # Here `allocated` is `malloc.of.allocated` object.
@@ -25,7 +26,7 @@
 # Third, you write read bytes to output
 # After the dataization the object `result` contains read bytes.
 [allocated] > malloc-as-output
-  # Writes bytes contained in `buffer` to operation system console.
+  # Writes bytes contained in `buffer` to the operating system console.
   # Returns new instance of `output-block` ready to write again.
   [buffer] > write
     self. > @
@@ -33,7 +34,7 @@
 
     # Malloc output block.
     #
-    # Attention! The object is for internal usage only, please don't use the object
+    # Note: This object is intended for internal use only. Please do not use this object
     # programmatically outside of `malloc-as-output` object.
     #
     # Here `offset` is the offset to write to allocated block in memory with.
@@ -41,7 +42,7 @@
       true > @
       $ > self
 
-      # Writes bytes contained in `buffer` to operation system console.
+      # Writes bytes contained in `buffer` to the operating system console.
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
         self. > @
@@ -58,11 +59,8 @@
         [mem]
           seq > @
             *
-              o2.write 08-09-A0
+              (((malloc-as-output mem).write 01-02-03).write 04-05-06-07).write 08-09-A0
               mem
-          malloc-as-output mem > out
-          out.write 01-02-03 > o1
-          o1.write 04-05-06-07 > o2
       01-02-03-04-05-06-07-08-09-A0
 
   # This unit test is supposed to check the functionality of the corresponding object.

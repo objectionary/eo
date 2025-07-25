@@ -16,7 +16,6 @@ import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.PhCached;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -47,7 +46,7 @@ final class EOerrorTest {
                     new Data.ToPhi("intentional error")
                 )
             ).take(),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Expected EOerror to throw ExError when dataized, but it didn't"
         );
     }
 

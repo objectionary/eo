@@ -18,7 +18,7 @@ final class PhCopyTest {
     @Test
     void makesObjectCopy() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "PhCopy should produce the number equal to the original's dataized number, but it didn't",
             new Dataized(
                 new PhCopy(new Data.ToPhi(1))
             ).asNumber(),
@@ -30,7 +30,7 @@ final class PhCopyTest {
     void hasTheSameFormaAsCopied() {
         final Phi phi = new Data.ToPhi(1);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Copy of Phi should have the same forma as the original, but it didn't",
             phi.forma(),
             Matchers.equalTo(
                 phi.copy().forma()

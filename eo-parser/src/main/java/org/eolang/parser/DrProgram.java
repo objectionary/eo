@@ -59,6 +59,7 @@ final class DrProgram implements Iterable<Directive> {
             .attr("revision", Manifests.read("EO-Revision"))
             .attr("dob", Manifests.read("EO-Dob"))
             .attr("time", when)
+            .attr("author", "eo-parser")
             .iterator();
     }
 

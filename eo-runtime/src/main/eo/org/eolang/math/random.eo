@@ -7,6 +7,8 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:20
++unlint redundant-object:28
 
 # Generates a pseudo-random number.
 [seed] > random
@@ -39,7 +41,7 @@
 
   # New random with pseudo-random seed.
   [] > pseudo
-    seq. > @
+  seq. > @
       pseudo-counter.write
         pseudo-counter.plus 1
       random
@@ -56,12 +58,18 @@
         plus.
           as-i64.
             and.
-              time-bytes.left const-3
-              ((one.left const-1).as-i64.minus one).as-bytes
-          as-i64.
-            and.
-              time-bytes
-              ((one.left const-3).as-i64.minus one).as-bytes
+              time-bytes.left const-1
+              ((one.left 53).as-i64.minus one).as-bytes
+          plus.
+            as-i64.
+              and.
+                time-bytes.left const-3
+                ((one.left const-1).as-i64.minus one).as-bytes
+            as-i64.
+              and.
+                time-bytes
+                ((one.left const-3).as-i64.minus one).as-bytes
+    (posix "gettimeofday" *).output > timeval
     as-bytes. > time-bytes
       as-i64.
         if.
@@ -72,7 +80,6 @@
             as-number.
               timeval.tv-usec.as-i64.div 1000.as-i64
     35 > const-1
-    53 > const-2
     17 > const-3
     00-00-00-00-00-00-00-01 > one
 

@@ -17,15 +17,17 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String PLUS_ATT = "plus";
 
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String VOID_ATT = "void";
 
@@ -225,7 +227,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Void attribute should not be copied with rho, but it did",
             phi.take(PhDefaultTest.VOID_ATT),
             Matchers.equalTo(phi.take(PhDefaultTest.VOID_ATT))
         );
@@ -233,11 +235,11 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCopyContextAttributeWithRho() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = this.phiWithContextAttribute("context-doesNotCopyContextAttributeWithRho");
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
-            phi.take("context"),
-            Matchers.equalTo(phi.take("context"))
+            "Context attribute should not be copied with rho, but it did",
+            phi.take("context-doesNotCopyContextAttributeWithRho"),
+            Matchers.equalTo(phi.take("context-doesNotCopyContextAttributeWithRho"))
         );
     }
 
@@ -247,12 +249,12 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> phi.take(Phi.PHI),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Phi should not be accessible without setting void attribute, but it did"
         );
         phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Phi should be accessible after setting void attribute, but it didn't"
         );
     }
 
@@ -260,7 +262,7 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context").take(Phi.RHO),
+            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
                 Phi.RHO
@@ -272,7 +274,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Object should have a hashCode greater then 0, but it didn't",
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -298,7 +300,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Accessing a missing attribute should fail, but it didn't"
         );
     }
 
@@ -309,7 +311,7 @@ final class PhDefaultTest {
         phi.put(0, new Data.ToPhi(data));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Copied Phi should contain the same data, but it didn't",
             new Dataized(copy).asString(),
             Matchers.equalTo(data)
         );
@@ -323,7 +325,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExReadOnly.class,
             () -> phi.put(0, num),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Setting void attribute more than once should fail, but it didn't"
         );
     }
 
@@ -332,7 +334,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.EndlessRecursion();
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -343,7 +345,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -354,7 +356,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew();
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Does not cache phi via new recursively",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -368,7 +370,7 @@ final class PhDefaultTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi should not be read multiple times, but it was",
             new Dataized(new PhMethod(phi, "count")).asNumber(),
             Matchers.equalTo(1.0)
         );
@@ -377,7 +379,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithBoundedData() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Bounded data objects should have the same forma, but they didn't",
             new Data.ToPhi(5L).forma(),
             Matchers.equalTo(new Data.ToPhi(6).forma())
         );
@@ -405,7 +407,7 @@ final class PhDefaultTest {
     void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Phi and bounded method result should have different formas, but they were the same",
             five.forma(),
             Matchers.not(
                 Matchers.equalTo(
@@ -422,7 +424,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Similar Phis with different data should have the same forma, but they didn't",
             new PhWith(
                 new Data.ToPhi(5L).take(PhDefaultTest.PLUS_ATT).copy(),
                 "x",
@@ -464,7 +466,7 @@ final class PhDefaultTest {
             0, new Data.ToPhi(1.2)
         );
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Random value should be the same on second access, but it wasn't",
             new Dataized(rnd).asNumber(),
             Matchers.equalTo(new Dataized(rnd).asNumber())
         );
@@ -481,6 +483,108 @@ final class PhDefaultTest {
             ).getMessage(),
             Matchers.equalTo("Can't put attribute with position 1 because it's not void one")
         );
+    }
+
+    @Test
+    void verifiesThreadLocalNesting() {
+        final Phi phi = this.phiWithContextAttribute("context-verifiesThreadLocalNesting");
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-verifiesThreadLocalNesting"),
+            "Nesting should be properly managed without exceptions"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalNestingWithExceptions() {
+        final Phi phi = this.phiWithContextAttribute(
+            "context-verifiesThreadLocalNestingWithExceptions"
+        );
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> phi.take("non-existent-attribute"),
+            "Should throw exception for non-existent attribute"
+        );
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-verifiesThreadLocalNestingWithExceptions"),
+            "Should still work after exception"
+        );
+    }
+
+    @Test
+    void worksAfterCleanup() {
+        final Phi phi = this.phiWithContextAttribute("context-worksAfterCleanup");
+        phi.take("context-worksAfterCleanup");
+        cleansUpNesting();
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-worksAfterCleanup"),
+            "Should work after cleanup"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalInMultipleThreads() {
+        final int threads = 10;
+        final int cnt = 100;
+        final boolean[] res = new boolean[threads];
+        final Thread[] pool = new Thread[threads];
+        for (int idx = 0; idx < threads; idx += 1) {
+            final int id = idx;
+            pool[idx] = new Thread(
+                () -> {
+                    final Phi phi = this.phiWithContextAttribute(
+                        "context-verifiesThreadLocalInMultipleThreads"
+                    );
+                    try {
+                        for (int iter = 0; iter < cnt; iter += 1) {
+                            phi.take("context-verifiesThreadLocalInMultipleThreads");
+                        }
+                        res[id] = true;
+                    } catch (final IllegalStateException ex) {
+                        res[id] = false;
+                    } finally {
+                        cleansUpNesting();
+                    }
+                }
+            );
+            pool[idx].start();
+        }
+        this.joinsThreads(pool);
+        for (int idx = 0; idx < threads; idx += 1) {
+            Assertions.assertTrue(
+                res[idx],
+                String.format("Thread %d should have completed successfully", idx)
+            );
+        }
+    }
+
+    private void joinsThreads(final Thread... threads) {
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Thread interrupted", ex);
+            }
+        }
+    }
+
+    private Phi phiWithContextAttribute(final String attribute) {
+        final PhDefault phi = new PhDefault();
+        phi.add(attribute, new PhSimple(new Data.ToPhi(42)));
+        return phi;
+    }
+
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+    private static void cleansUpNesting() {
+        try {
+            final java.lang.reflect.Field field =
+                Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
+            field.setAccessible(true);
+            final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);
+            nesting.remove();
+        } catch (final ReflectiveOperationException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**
@@ -525,7 +629,7 @@ final class PhDefaultTest {
                 )
             );
             this.add(
-                "context",
+                "context-hasContextedChildWithSetRhoWhenFormed",
                 new PhCached(
                     new PhComposite(
                         this,

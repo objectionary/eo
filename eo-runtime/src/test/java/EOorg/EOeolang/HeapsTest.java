@@ -12,7 +12,6 @@ package EOorg.EOeolang; // NOPMD
 import java.util.function.Supplier;
 import org.eolang.ExFailure;
 import org.eolang.PhComposite;
-import org.eolang.PhCompositeTest;
 import org.eolang.PhDefault;
 import org.eolang.PhVoid;
 import org.eolang.Phi;
@@ -38,7 +37,7 @@ final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertDoesNotThrow(
             () -> HeapsTest.HEAPS.read(idx, 0, 10),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should successfully read from allocated memory, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -50,7 +49,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.malloc(phi, 10),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to allocate already allocated memory, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -59,7 +58,7 @@ final class HeapsTest {
     void allocatesAndReadsEmptyBytes() {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should return empty bytes after memory allocation, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
@@ -72,7 +71,7 @@ final class HeapsTest {
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should successfully read exactly same bytes that were written, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, bytes.length),
             Matchers.equalTo(bytes)
         );
@@ -84,7 +83,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(new HeapsTest.PhFake().hashCode(), 0, new byte[] {0x01}),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing to an unallocated block, but it didn't"
         );
     }
 
@@ -93,7 +92,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(new HeapsTest.PhFake().hashCode(), 0, 1),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on reading from an unallocated block, but it didn't"
         );
     }
 
@@ -103,7 +102,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 1, 3),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
     }
 
@@ -112,7 +111,7 @@ final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should successfully read correct slice when reading with offset and length, but it didn't",
             HeapsTest.HEAPS.read(idx, 1, 3),
             Matchers.equalTo(new byte[] {2, 3, 4})
         );
@@ -125,7 +124,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 0, bytes),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing more bytes than allocated size, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -137,7 +136,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 1, bytes),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing past allocated block using offset, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -148,7 +147,7 @@ final class HeapsTest {
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
         HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
-            PhCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should return correct bytes after partial overwrite, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
@@ -162,7 +161,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 0, 5),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on reading from a freed block, but it didn't"
         );
     }
 
@@ -171,7 +170,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.free(new HeapsTest.PhFake().hashCode()),
-            PhCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to free a non-existent block, but it didn't"
         );
     }
 
@@ -180,7 +179,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.size(new HeapsTest.PhFake().hashCode()),
-            "Heaps should throw an exception if trying to get size on an empty block, but it didn't"
+            "Heaps should throw an exception on trying to get size of an empty block, but it didn't"
         );
     }
 

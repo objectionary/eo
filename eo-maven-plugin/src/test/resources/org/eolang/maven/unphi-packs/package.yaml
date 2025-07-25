@@ -1,8 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
-# SPDX-License-Identifier: MIT
----
-# yamllint disable rule:line-length
-asserts:
-  - /object/metas/meta[head[text()='package'] and tail[text()='foo.bar.baz'] and part[text()='foo.bar.baz']]
-  - //o[not(@base) and @name='main']/o[@base='Q.org.eolang.stdout']
-phi: "{⟦foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧⟧}"

@@ -20,8 +20,8 @@
 
   # Recursive steps dataization.
   #
-  # Attention! The object is for internal usage only, please
-  # don't use the object programmatically outside of `seq` object.
+  # Note: This object is intended for internal use only. Please
+  # do not use this object programmatically outside of the `seq` object.
   [tup] > loop
     if. > @
       and.

@@ -4,6 +4,6 @@
 # yamllint disable rule:line-length
 errors: 2
 document: |
-  <object>
+  <object author="eo-parser">
     <o name="foo" pos="wrong-position-number"/>
   </object>

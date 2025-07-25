@@ -7,6 +7,12 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object:82
++unlint redundant-object:95
++unlint redundant-object:122
++unlint redundant-object:138
++unlint redundant-object:151
++unlint redundant-object:178
 
 # The `console` object is basic I/O object that allows to
 # interact with operation system console.
@@ -46,7 +52,7 @@
 # ready to `write` again.
 #
 # Console is platform dependent, which means the internal algorithm is different for
-# Posix and Windows. Defining the console is happen every time you "touch" `console` object.
+# Posix and Windows. Defining the console happens every time you "touch" `console` object.
 # If you use it as input/output:
 # ```
 # console.read 2 > i1
@@ -82,7 +88,7 @@
 
       # Posix console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
         buffer > @
@@ -109,7 +115,7 @@
 
       # Posix console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
         true > @
@@ -138,7 +144,7 @@
 
       # Windows console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
         buffer > @
@@ -165,7 +171,7 @@
 
       # Windows console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
         true > @

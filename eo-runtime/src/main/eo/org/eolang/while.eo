@@ -16,7 +16,7 @@
 #       * i
 # ```
 #
-# Here the behaviour of `while` would identical to:
+# Here the behaviour of `while` would be identical to:
 # ```
 # seq > last
 #   *
@@ -37,8 +37,8 @@
 
   # Recursive loop.
   #
-  # Attention! The object is for internal usage only. Please don't use
-  # the object programmatically outside of `while` object.
+  # Note: This object is intended for internal use only. Please do not use
+  # this object programmatically outside of the `while` object.
   [index] > loop
     if. > @
       (condition (index.plus 1)).as-bool
@@ -62,7 +62,7 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-simple-while-with-false-first
     not. > @
-      while > res
+      while
         false > [i]
         true > [i]
 
