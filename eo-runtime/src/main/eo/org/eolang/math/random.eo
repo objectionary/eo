@@ -108,4 +108,7 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-two-random-numbers-not-equal
     not. > @
-      random.pseudo.eq random.pseudo
+      (eq.
+        random.pseudo
+        random.pseudo
+      )
