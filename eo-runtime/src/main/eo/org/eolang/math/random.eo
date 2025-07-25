@@ -41,7 +41,7 @@
 
   # New random with pseudo-random seed.
   [] > pseudo
-  seq. > @
+    seq. > @
       pseudo-counter.write
         pseudo-counter.plus 1
       random
