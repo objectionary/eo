@@ -1,5 +1,7 @@
 # Contributor Covenant Code of Conduct
 
+### Last Updated: May 14, 2025
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -116,7 +118,7 @@ the community.
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 2.0, available
-[https://www.contributor-covenant.org/version/2/0/code_of_conduct.html](here).
+[https://www.contributor-covenant.org/version/2/0/code\_of\_conduct.html](here).
 
 Community Impact Guidelines were inspired by
 [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
