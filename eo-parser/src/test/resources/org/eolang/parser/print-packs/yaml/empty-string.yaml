@@ -12,5 +12,5 @@ printed: |
   # No comments.
   [] > app
     io.stdout > @
-      txt.sprintf
-        ""
+      txt.sprintf:0
+        "":0

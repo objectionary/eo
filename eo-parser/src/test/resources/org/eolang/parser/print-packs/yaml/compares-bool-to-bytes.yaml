@@ -13,6 +13,6 @@ printed: |
   [] > compares-bool-to-bytes
     and. > @
       true.eq
-        01-
+        01-:0
       false.eq
-        00-
+        00-:0

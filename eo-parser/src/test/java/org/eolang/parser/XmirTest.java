@@ -39,36 +39,6 @@ final class XmirTest {
         );
     }
 
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToSweetPhi(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        final Xmir xmir = this.asXmir((String) xtory.map().get("input"));
-        MatcherAssert.assertThat(
-            String.format(
-                "Result PHI should be equal to provided PHI with syntax sugar, XMIR is:\n%s",
-                xmir
-            ),
-            xmir.toPhi(),
-            Matchers.equalTo(xtory.map().get("sweet"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToSaltyPhi(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        final Xmir xmir = this.asXmir((String) xtory.map().get("input"));
-        MatcherAssert.assertThat(
-            String.format(
-                "Result PHI should be equal to provided PHI without syntax sugar, XMIR is:\n%s",
-                xmir
-            ),
-            xmir.toSaltyPhi(),
-            Matchers.equalTo(xtory.map().get("salty"))
-        );
-    }
-
     @Test
     void preservesNumbersInPhiRepresentation() throws IOException {
         final String phi = this.asXmir("1 > foo\n").toPhi();

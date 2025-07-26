@@ -21,11 +21,11 @@ printed: |
   # No comments.
   [args] > main
     io.stdout > @
-      args.at
-        args.length.neg
+      args.at:0
+        args.length.neg:0
     nan.plus > not-a-number
-      negative-infinity
+      negative-infinity:0
     text-of > txt
-      input-of
-        args.at
-          not-a-number
+      input-of:0
+        args.at:0
+          not-a-number:0

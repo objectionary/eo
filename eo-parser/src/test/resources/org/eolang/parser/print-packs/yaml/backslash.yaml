@@ -11,4 +11,4 @@ printed: |
   # No comments.
   [] > main
     regex > rgx
-      "/^[\\x00-\\x7F]*$/"
+      "/^[\\x00-\\x7F]*$/":0

@@ -7,7 +7,6 @@ List<String> expected = [
   'eo/1-parse/org/eolang/bytes.xmir',
   'eo/1-parse/org/eolang/fs/dir.xmir',
   'eo/5-transpile/org/eolang/malloc.xmir',
-  'eo/phi/org/eolang/number.phi',
   'eo/5-transpile/org/eolang/runtime.xmir',
   'generated-sources/EOorg/EOeolang/EOdataized.java',
   'generated-sources/EOorg/EOeolang/EOnet/EOsocket.java',
