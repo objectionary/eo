@@ -14,7 +14,7 @@
     true
     if.
       steps.length.eq 1
-      steps.value
+      steps.head
       loop steps
   steps.length.plus -1 > last-index!
 
@@ -26,10 +26,10 @@
     if. > @
       and.
         tup.length.gt 1
-        loop tup.prev
-      tup.value
+        loop tup.tail
+      tup.head
       or.
-        (dataized tup.value).as-bool.eq --
+        (dataized tup.head).as-bool.eq --
         tup.length.eq last-index
 
   # This unit test is supposed to check the functionality of the corresponding object.
