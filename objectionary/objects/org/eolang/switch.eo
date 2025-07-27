@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.2
++version 0.57.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:44
@@ -30,7 +30,7 @@
     error "Switch cases are empty"
     if.
       true.eq found.match
-      found.value
+      found.head
       true
   (rec-case cases).self > found
 
@@ -42,9 +42,9 @@
       previous
       [] >>
         $ > self
-        tup.value.prev.value > match!
-        tup.value.value > value
-    (rec-case tup.prev).self > previous
+        tup.head.tail.head > match!
+        tup.head.head > head
+    (rec-case tup.tail).self > previous
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-switch-simple-case

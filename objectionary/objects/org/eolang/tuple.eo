@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.57.2
++version 0.57.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:16
@@ -12,7 +12,7 @@
 
 # Tuple.
 # An ordered, immutable collection of elements.
-[prev value length] > tuple
+[tail head length] > tuple
   $ > as-tuple
 
   # Empty tuple.
@@ -21,8 +21,8 @@
     $ > empty
     $ > as-tuple
     0 > length
-    error "Can't get prev from the empty tuple" > prev
-    error "Can't get value from the empty tuple" > value
+    error "Can't get tail from the empty tuple" > tail
+    error "Can't get head from the empty tuple" > head
 
     # Take one element from the tuple, at the given position.
     error "Can't get an object from the empty tuple" > [i] > at
@@ -52,8 +52,8 @@
     [tup] > at-fast
       if. > @
         (tup.length.plus -1).eq index
-        tup.value
-        at-fast tup.prev
+        tup.head
+        at-fast tup.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

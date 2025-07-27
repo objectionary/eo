@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.57.2
++version 0.57.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -32,9 +32,9 @@
   [index item] > withi
     concat. > @
       with.
-        head index
+        front index
         item
-      tail
+      back
         origin.length.minus index
 
   # Reduce with index from "start" using the function "func".
@@ -52,12 +52,12 @@
         tup.length.eq 1
         func
           start
-          tup.value
+          tup.head
           0
         func
-          rec-reducedi tup.prev
-          tup.value
-          tup.prev.length
+          rec-reducedi tup.tail
+          tup.head
+          tup.tail.length
 
   # Reduce from "start" using the function "func".
   # Here "func" must be an abstract object with two free attributes.
@@ -143,8 +143,8 @@
         first.length.eq 0
         true
         and.
-          first.value.eq second.value
-          rec-eq first.prev second.prev
+          first.head.eq second.head
+          rec-eq first.tail second.tail
 
   # Concatenates current list with given one.
   [passed] > concat
@@ -165,11 +165,11 @@
         if.
           next.eq -1
           if.
-            tup.value.eq wanted
-            tup.prev.length
+            tup.head.eq wanted
+            tup.tail.length
             -1
           next
-      rec-index-of tup.prev > next!
+      rec-index-of tup.tail > next!
 
   # Returns index of the last particular item in list.
   # If the list has no this item, returns -1.
@@ -181,9 +181,9 @@
         tup.length.eq 0
         -1
         if.
-          tup.value.eq wanted
-          tup.prev.length
-          rec-last-index-of tup.prev
+          tup.head.eq wanted
+          tup.tail.length
+          rec-last-index-of tup.tail
 
   # Returns `true` if the list contains `element`.
   # Otherwise, `false`.
@@ -208,10 +208,10 @@
         tup.length.eq 0
         *
         if.
-          func tup.value tup.prev.length
-          next.with tup.value
+          func tup.head tup.tail.length
+          next.with tup.head
           next
-      rec-filteredi tup.prev > next
+      rec-filteredi tup.tail > next
 
   # Filter list without index with the function `func`.
   # Here `func` must be an abstract object
@@ -223,13 +223,13 @@
       func item > [item index] >>
 
   # Get the first `index` elements from the start of the list.
-  [index] > head
+  [index] > front
     if. > @
       idx.eq 0
       list *
       if.
         0.gt idx
-        tail (number idx).neg
+        back (number idx).neg
         if.
           (number idx).gte origin.length
           ^
@@ -241,10 +241,10 @@
       if. > @
         tup.length.eq idx
         tup
-        rec-head tup.prev
+        rec-head tup.tail
 
   # Get the last `index` elements from the end of the list.
-  [index] > tail
+  [index] > back
     if. > @
       0.gt start
       ^
@@ -688,79 +688,79 @@
       * false
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-simple-head
+  [] +> tests-simple-front
     eq. > @
-      head.
+      front.
         list
           * 1 2 3 4 5
         1
       * 1
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-list-head-with-zero-index
+  [] +> tests-list-front-with-zero-index
     is-empty. > @
-      head.
+      front.
         list
           * 1 2 3
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-list-head-with-length-index
+  [] +> tests-list-front-with-length-index
     eq. > @
-      head.
+      front.
         list
           * 1 2 3
         3
       * 1 2 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-complex-head
+  [] +> tests-complex-front
     eq. > @
-      head.
+      front.
         list
           * "foo" 2.2 00-01 "bar"
         2
       * "foo" 2.2
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-head-with-negative
+  [] +> tests-front-with-negative
     eq. > @
-      head.
+      front.
         list
           * 1 2 3
         -1
       * 3
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-complex-head-with-negative
+  [] +> tests-complex-front-with-negative
     eq. > @
-      head.
+      front.
         list
           * "foo" 2.2 00-01 "bar"
         -3
       * 2.2 00-01 "bar"
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-simple-tail
+  [] +> tests-simple-back
     eq. > @
-      tail.
+      back.
         list
           * 1 2 3 4 5
         2
       * 4 5
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-zero-index-in-tail
+  [] +> tests-zero-index-in-back
     is-empty. > @
-      tail.
+      back.
         list
           * 1 2 3 4 5
         0
 
   # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-large-index-in-tail
+  [] +> tests-large-index-in-back
     eq. > @
-      tail.
+      back.
         list
           * 1 2 3 4 5
         10

@@ -7,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.57.2
++version 0.57.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:56
@@ -96,8 +96,8 @@
               if.
                 and.
                   accum.length.gt 0
-                  (accum.value.eq "..").not
-                accum.prev
+                  (accum.head.eq "..").not
+                accum.tail
                 if.
                   is-absolute.not
                   accum.with segment
@@ -351,8 +351,8 @@
                 if.
                   and.
                     accum.length.gt 0
-                    (accum.value.eq "..").not
-                  accum.prev
+                    (accum.head.eq "..").not
+                  accum.tail
                   if.
                     and.
                       is-root-relative.not

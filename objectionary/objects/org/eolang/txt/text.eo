@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.57.2
++version 0.57.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:24
@@ -99,7 +99,7 @@
     if. > joined-bts!
       items.length.eq 0
       --
-      with-delimiter items.value items.prev
+      with-delimiter items.head items.tail
 
     [acc tup] > with-delimiter
       if. > @
@@ -108,10 +108,10 @@
         with-delimiter
           concat.
             concat.
-              dataized tup.value
+              dataized tup.head
               delimiter
             acc
-          tup.prev
+          tup.tail
 
   # Returns `text` repeated `times` times.
   # If `times` < 0, an error is returned.
@@ -386,7 +386,7 @@
         sprintf
           "Can't convert text %s to number"
           * origin
-      scanned.value
+      scanned.head
     (sscanf "%f" origin).as-tuple > scanned
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
