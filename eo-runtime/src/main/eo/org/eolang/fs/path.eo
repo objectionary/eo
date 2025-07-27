@@ -96,8 +96,8 @@
               if.
                 and.
                   accum.length.gt 0
-                  (accum.value.eq "..").not
-                accum.prev
+                  (accum.head.eq "..").not
+                accum.tail
                 if.
                   is-absolute.not
                   accum.with segment
@@ -351,8 +351,8 @@
                 if.
                   and.
                     accum.length.gt 0
-                    (accum.value.eq "..").not
-                  accum.prev
+                    (accum.head.eq "..").not
+                  accum.tail
                   if.
                     and.
                       is-root-relative.not

@@ -63,8 +63,8 @@
         tup.length.eq 0
         true
         seq *
-          tup.value.deleted
-          rec-delete tup.prev
+          tup.head.deleted
+          rec-delete tup.tail
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile

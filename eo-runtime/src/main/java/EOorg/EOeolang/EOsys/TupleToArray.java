@@ -36,8 +36,8 @@ final class TupleToArray implements Supplier<Phi[]> {
         final Phi[] arguments = new Phi[length];
         Phi tup = this.tuple;
         for (int idx = length - 1; idx >= 0; --idx) {
-            arguments[idx] = tup.take("value");
-            tup = tup.take("prev");
+            arguments[idx] = tup.take("head");
+            tup = tup.take("tail");
         }
         return arguments;
     }
