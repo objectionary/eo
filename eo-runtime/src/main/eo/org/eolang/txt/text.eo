@@ -387,7 +387,7 @@
           "Can't convert text %s to number"
           * origin
       scanned.head
-    (sscanf "%f" origin).as-tuple > scanned
+    (sscanf "%f" origin).@ > scanned
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split

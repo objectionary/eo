@@ -28,7 +28,7 @@
   this. > @
     [] >>
       initialized > @
-        as-tuple.
+        @.
           if.
             pairs.length.eq 0
             *
