@@ -100,7 +100,6 @@ final class SprintfArgs {
             taken.put(0, new Data.ToPhi(arg));
             arguments.add(SprintfArgs.fmt(symbol, new Dataized(taken)));
         }
-
         return arguments;
     }
 

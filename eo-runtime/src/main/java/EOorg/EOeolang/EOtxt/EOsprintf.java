@@ -11,6 +11,7 @@ package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.util.Locale;
 import org.eolang.Atom;
+import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
@@ -39,19 +40,21 @@ public final class EOsprintf extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
-        final Phi retriever = Expect.at(this, "args")
-            .that(phi -> phi.take("at"))
-            .otherwise("be a tuple with the 'at' attribute")
-            .it();
-        final long length = Expect.at(this, "args")
-            .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
-            .otherwise("be a tuple with the 'length' attribute")
-            .it();
-        return new ToPhi(
+        return new Data.ToPhi(
             String.format(
                 Locale.US,
-                format.replaceAll("%x", "%s"),
-                new SprintfArgs(format, length, retriever).formatted().toArray()
+                format.replaceAll("%\\d+\\$([a-zA-Z])", "%$1").replaceAll("%x", "%s"),
+                new SprintfArgs(
+                    format,
+                    Expect.at(this, "args")
+                        .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
+                        .otherwise("be a tuple with the 'length' attribute")
+                        .it(),
+                    Expect.at(this, "args")
+                        .that(phi -> phi.take("at"))
+                        .otherwise("be a tuple with the 'at' attribute")
+                        .it()
+                ).formatted().toArray()
             )
         );
     }
