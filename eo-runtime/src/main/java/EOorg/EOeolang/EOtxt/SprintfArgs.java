@@ -7,7 +7,7 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,11 @@ final class SprintfArgs {
      */
     private static final Map<Character, Function<Dataized, Object>> CONVERSION = new HashMap<>();
 
+    /**
+     * Percent sign.
+     */
+    private static final char PERCENT = '%';
+
     static {
         SprintfArgs.CONVERSION.put('s', Dataized::asString);
         SprintfArgs.CONVERSION.put('d', element -> element.asNumber().longValue());
@@ -39,11 +44,6 @@ final class SprintfArgs {
         SprintfArgs.CONVERSION.put('x', element -> SprintfArgs.bytesToHex(element.take()));
         SprintfArgs.CONVERSION.put('b', Dataized::asBool);
     }
-
-    /**
-     * Percent sign.
-     */
-    private static final char PERCENT = '%';
 
     /**
      * The format.
@@ -73,7 +73,7 @@ final class SprintfArgs {
     }
 
     public List<Object> formatted() {
-        final List<Object> arguments = new ArrayList<>();
+        final List<Object> arguments = new ArrayList<>(0);
         final Matcher matcher = Pattern.compile("%(\\d+\\$)?([a-zA-Z%])").matcher(this.format);
         long auto = 0L;
         while (matcher.find()) {
@@ -82,11 +82,12 @@ final class SprintfArgs {
             if (symbol == SprintfArgs.PERCENT) {
                 continue;
             }
-            long arg;
+            final long arg;
             if (positional != null) {
                 arg = Long.parseLong(positional.substring(0, positional.length() - 1)) - 1L;
             } else {
-                arg = auto++;
+                arg = auto;
+                auto += 1L;
             }
             if (arg >= this.length) {
                 throw new ExFailure(

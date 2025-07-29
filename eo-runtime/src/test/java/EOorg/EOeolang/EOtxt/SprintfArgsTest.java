@@ -30,9 +30,31 @@ final class SprintfArgsTest {
         final String expected = "Jeff";
         tuple.put("head", new Data.ToPhi(expected));
         MatcherAssert.assertThat(
-            "The sprintf args does not match with expected",
+            "The sprintf args do not match with expected",
             new SprintfArgs("Hello, %s! Bye, %1$s!", 2L, tuple.take("at")).formatted(),
             Matchers.equalTo(new ListOf<>(expected, expected))
+        );
+    }
+
+    @Test
+    void returnsCorrectArgumentsForMixedSubstitutions() {
+        final Phi tuple = Phi.Φ.take("org.eolang.tuple").copy();
+        tuple.put("length", new Data.ToPhi(2));
+        final Phi root = Phi.Φ.take("org.eolang.tuple").copy();
+        root.put("length", new Data.ToPhi(1));
+        final String first = "first";
+        root.put("head", new Data.ToPhi(first));
+        final String second = "second";
+        tuple.put("head", new Data.ToPhi(second));
+        tuple.put("tail", root);
+        MatcherAssert.assertThat(
+            "The sprintf args do not match with expected",
+            new SprintfArgs(
+                "This is the %s! This is %1$s as well! This is the %s",
+                3L,
+                tuple.take("at")
+            ).formatted(),
+            Matchers.equalTo(new ListOf<>(first, first, second))
         );
     }
 }
