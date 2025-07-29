@@ -31,7 +31,7 @@ final class SprintfArgsTest {
         tuple.put("head", new Data.ToPhi(expected));
         MatcherAssert.assertThat(
             "The sprintf args do not match with expected",
-            new SprintfArgs("Hello, %s! Bye, %1$s!", 2L, tuple.take("at")).formatted(),
+            new SprintfArgs("Hello, %s! Bye, %1$s!", 1L, tuple.take("at")).formatted(),
             Matchers.equalTo(new ListOf<>(expected, expected))
         );
     }
