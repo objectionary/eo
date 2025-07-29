@@ -43,7 +43,7 @@ public final class EOsprintf extends PhDefault implements Atom {
         return new Data.ToPhi(
             String.format(
                 Locale.US,
-                format.replaceAll("%\\d+\\$([a-zA-Z])", "%$1").replaceAll("%x", "%s"),
+                format.replaceAll("%\\d+\\$([a-zA-Z])", "%s").replaceAll("%x", "%s"),
                 new SprintfArgs(
                     format,
                     Expect.at(this, "args")
