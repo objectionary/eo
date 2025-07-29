@@ -111,3 +111,11 @@
       sprintf
         "This is the %s; This is the %1$s as well; The %s; and the %d"
         * "first" "second" 3
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> formats-with-ordered-numbered-substitutions
+    eq. > @
+      "first second second is after first"
+      sprintf
+        "%s %s %2$s is after %1$s"
+        * "first" "second"
