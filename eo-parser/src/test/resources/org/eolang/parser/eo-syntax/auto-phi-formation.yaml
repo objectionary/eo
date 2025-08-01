@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+input: |
+  # No comments.
+  [n] > app
+    malloc.of > @
+      8
+      [m]
+        while > @
+          m.get.eq 42 >> [i]
+          m.put 42 >> [i]

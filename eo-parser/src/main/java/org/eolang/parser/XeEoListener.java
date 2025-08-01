@@ -943,6 +943,15 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterAphi(final EoParser.AphiContext ctx) {
+    }
+
+    @Override
+    public void exitAphi(final EoParser.AphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterTname(final EoParser.TnameContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {

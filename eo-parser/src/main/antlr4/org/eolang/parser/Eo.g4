@@ -436,7 +436,12 @@ onameOrTname
 
 // Object name
 oname
-    : suffix CONST?
+    : (suffix CONST?) | aphi
+    ;
+
+// Auto named assigned to PHI (`@`).
+aphi
+    : SPACE ARROW ARROW SPACE voids
     ;
 
 tname
