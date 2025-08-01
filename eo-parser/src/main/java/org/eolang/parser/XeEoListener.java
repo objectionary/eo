@@ -363,11 +363,24 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
-        // Nothing here
+//        if (ctx.aphi() != null) {
+//            this.startAbstract(ctx);
+//        }
     }
 
     @Override
     public void exitHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterAphi(final EoParser.AphiContext ctx) {
+        // where am I? -> create new auto named abstract here
+//        this.objects.enter().prop("name", "auto");
+    }
+
+    @Override
+    public void exitAphi(final EoParser.AphiContext ctx) {
         // Nothing here
     }
 
@@ -473,12 +486,27 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterHapplicationTail(final EoParser.HapplicationTailContext ctx) {
-        this.objects.enter();
+        if (ctx.getParent() instanceof EoParser.HapplicationExtendedContext) {
+            final EoParser.HapplicationExtendedContext parent = (EoParser.HapplicationExtendedContext) ctx.getParent();
+            if (parent.aphi() == null) {
+                this.objects.enter();
+            } else {
+                this.startAbstract(ctx).enter().prop(
+                    "name", new AutoName(ctx).asString()
+                );
+            }
+        } else {
+            this.objects.enter();
+        }
     }
 
     @Override
     public void exitHapplicationTail(final EoParser.HapplicationTailContext ctx) {
         this.objects.leave();
+//        final EoParser.HapplicationExtendedContext parent = (EoParser.HapplicationExtendedContext) ctx.getParent();
+//        if (parent.aphi() == null) {
+//            this.objects.leave();
+//        }
     }
 
     @Override
@@ -942,14 +970,42 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         }
     }
 
-    @Override
-    public void enterAphi(final EoParser.AphiContext ctx) {
-    }
+//    @Override
+//    public void enterAphi(final EoParser.AphiContext ctx) {
+//        this.objects.enter()
+//            .prop(
+//                "name",
+//                String.format(
+//                    "a\uD83C\uDF35%d%d",
+//                    ctx.getStart().getLine(),
+//                    ctx.getStart().getCharPositionInLine()
+//                )
+//            )
+//            .enter()
+//            .prop("base", "∅")
+//            .prop("name", "i")
+//            .leave()
+//            .leave();
+        // remove bases
+        // random name + assign an object to its '@'
+        // m.get.eq 42 >> [i]:
+        // [i] >>
+        // [i] > $random
+        //   m.get.eq 42 > @
+        // <o base="$.m.get.eq" line="7" name="a🌵719" pos="13">
+        //  <o as="α0" base="$.i" line="7"/>
+        //  <o as="α1" base="Q.org.eolang.number" line="7" pos="17">
+        //    <o as="α0" base="Q.org.eolang.bytes" line="7" pos="17">
+        //      <o as="α0" line="7" pos="17">40-45-00-00-00-00-00-00</o>
+        //    </o>
+        //  </o>
+        // </o>
+//    }
 
-    @Override
-    public void exitAphi(final EoParser.AphiContext ctx) {
-        // Nothing here
-    }
+//    @Override
+//    public void exitAphi(final EoParser.AphiContext ctx) {
+//        // Nothing here
+//    }
 
     @Override
     public void enterTname(final EoParser.TnameContext ctx) {
