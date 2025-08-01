@@ -152,8 +152,12 @@ happlicationReversedHead
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
-    : happlicationHeadExtended happlicationTail
+    : happlicationHeadExtended happlicationTail aphi?
     | happlicationReversed
+    ;
+
+aphi
+    : SPACE ARROW ARROW SPACE voids
     ;
 
 // Reversed horizontal application
@@ -436,12 +440,7 @@ onameOrTname
 
 // Object name
 oname
-    : (suffix CONST?) | aphi
-    ;
-
-// Auto named assigned to PHI (`@`).
-aphi
-    : SPACE ARROW ARROW SPACE voids
+    : suffix CONST?
     ;
 
 tname
