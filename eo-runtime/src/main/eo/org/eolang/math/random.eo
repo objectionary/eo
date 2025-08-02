@@ -7,8 +7,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:20
-+unlint redundant-object:28
 
 # Generates a pseudo-random number.
 [seed] > random
@@ -36,25 +34,34 @@
                 11
             00-0F-FF-FF-FF-FF-FF-FF
 
+  # Global counter to ensure unique seed even if time is the same
+  0 > pseudo-counter
+
   # New random with pseudo-random seed.
-  [] > pseudo
-    random > @
-      as-number.
+  > pseudo
+    seq. > @
+      pseudo-counter.write
+        pseudo-counter.plus 1
+      random
+        plus.
+          time-seed
+          pseudo-counter
+    (posix "gettimeofday" *).output > timeval
+    as-number. > time-seed
+      plus.
+        as-i64.
+          and.
+            time-bytes.left const-1
+            ((one.left const-2).as-i64.minus one).as-bytes
         plus.
           as-i64.
             and.
-              time-bytes.left const-1
-              ((one.left 53).as-i64.minus one).as-bytes
-          plus.
-            as-i64.
-              and.
-                time-bytes.left const-3
-                ((one.left const-1).as-i64.minus one).as-bytes
-            as-i64.
-              and.
-                time-bytes
-                ((one.left const-3).as-i64.minus one).as-bytes
-    (posix "gettimeofday" *).output > timeval
+              time-bytes.left const-3
+              ((one.left const-1).as-i64.minus one).as-bytes
+          as-i64.
+            and.
+              time-bytes
+              ((one.left const-3).as-i64.minus one).as-bytes
     as-bytes. > time-bytes
       as-i64.
         if.
@@ -65,39 +72,39 @@
             as-number.
               timeval.tv-usec.as-i64.div 1000.as-i64
     35 > const-1
+    53 > const-2
     17 > const-3
     00-00-00-00-00-00-00-01 > one
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-random-with-seed
-    not. > @
-      eq.
-        r.next
-        r.next.next
-    random 51 > r
+[] +> tests-random-with-seed
+  not. > @
+    eq.
+      r.next
+      r.next.next
+  random 51 > r
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-seeded-randoms-are-equal
-    eq. > @
-      (random 1654).next.next.next
-      (random 1654).next.next.next
+[] +> tests-seeded-randoms-are-equal
+  eq. > @
+    (random 1654).next.next.next
+    (random 1654).next.next.next
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-random-is-in-range
-    and. > @
+[] +> tests-random-is-in-range
+  and. > @
+    and.
       and.
-        and.
-          rand.lt 1
-          (rand.lt 0).not
-        and.
-          rand.next.lt 1
-          (rand.next.lt 0).not
+        rand.lt 1
+        (rand.lt 0).not
       and.
-        rand.next.next.lt 1
-        (rand.next.next.lt 0).not
-    (random 123).fixed > rand
+        rand.next.lt 1
+        (rand.next.lt 0).not
+    and.
+      rand.next.next.lt 1
+      (rand.next.next.lt 0).not
+  (random 123).fixed > rand
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  [] +> tests-two-random-numbers-not-equal
-    not. > @
-      random.pseudo.eq random.pseudo
+[] +> tests-two-random-numbers-not-equal
+  not. > @
+    (eq.
+      (random.pseudo)
+      (random.pseudo)
+    )
