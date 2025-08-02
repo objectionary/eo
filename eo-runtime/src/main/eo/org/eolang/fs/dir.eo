@@ -49,7 +49,7 @@
       if.
         ^.exists
         seq *
-          rec-delete (walk "**").as-tuple
+          rec-delete (walk "**").@
           ^
         ^
 

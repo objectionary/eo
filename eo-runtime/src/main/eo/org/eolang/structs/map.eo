@@ -7,19 +7,19 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:40
-+unlint redundant-object:53
++unlint redundant-object:39
++unlint redundant-object:52
++unlint redundant-object:67
 +unlint redundant-object:68
-+unlint redundant-object:69
-+unlint redundant-object:72
-+unlint redundant-object:77
++unlint redundant-object:71
++unlint redundant-object:76
++unlint redundant-object:119
 +unlint redundant-object:120
 +unlint redundant-object:121
-+unlint redundant-object:122
++unlint redundant-object:126
 +unlint redundant-object:127
 +unlint redundant-object:128
-+unlint redundant-object:129
-+unlint redundant-object:146
++unlint redundant-object:145
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
@@ -28,13 +28,12 @@
   this. > @
     [] >>
       initialized > @
-        as-tuple.
-          if.
-            pairs.length.eq 0
-            *
-            entries.
-              rec-rebuild
-                pairs
+        if.
+          pairs.length.eq 0
+          *
+          entries.
+            rec-rebuild
+              pairs
 
       [entries hashes] > couple
         $ > this
