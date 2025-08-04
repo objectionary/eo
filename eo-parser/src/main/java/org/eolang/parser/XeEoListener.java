@@ -489,7 +489,8 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             if (parent.aphi() == null) {
                 this.objects.enter();
             } else {
-                this.startAbstract(ctx).enter().prop("name", new AutoName(ctx).asString())
+                this.startAbstract(ctx)
+                    .enter().prop("name", new AutoName(ctx).asString())
                     .start(ctx)
                     .prop(
                         "base", String.format("$.%s", parent.happlicationHeadExtended().getText())
