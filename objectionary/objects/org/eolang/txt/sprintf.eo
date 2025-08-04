@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.57.3
++rt jvm org.eolang:eo-runtime:0.58.0
 +rt node eo2js-runtime:0.0.0
-+version 0.57.3
++version 0.58.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint wrong-sprintf-arguments:58
@@ -95,3 +95,27 @@
       sprintf
         "%d"
         * 42.as-i64.as-number
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> formats-numbered-substitution
+    eq. > @
+      "Hello, Jeff! Bye, Jeff!"
+      sprintf
+        "Hello, %s! Bye, %1$s!"
+        * "Jeff"
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> formats-numbered-substitution-with-multiple-args
+    eq. > @
+      "This is the first; This is the first as well; The second; and the 3"
+      sprintf
+        "This is the %s; This is the %1$s as well; The %s; and the %d"
+        * "first" "second" 3
+
+  # This unit test is supposed to check the functionality of the corresponding object.
+  [] +> formats-with-ordered-numbered-substitutions
+    eq. > @
+      "first second second is after first"
+      sprintf
+        "%s %s %2$s is after %1$s"
+        * "first" "second"
