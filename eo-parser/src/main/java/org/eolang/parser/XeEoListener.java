@@ -372,6 +372,42 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop(
+                "base", String.format("$.%s", ctx.happlicationHeadExtended().getText())
+            )
+            .prop("name", "@");
+    }
+
+    @Override
+    public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterAphi(final EoParser.AphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitAphi(final EoParser.AphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHapplicationReversed(final EoParser.HapplicationReversedContext ctx) {
         // Nothing here
     }
