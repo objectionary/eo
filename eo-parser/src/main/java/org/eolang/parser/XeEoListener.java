@@ -372,6 +372,32 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop(
+                "base", String.format("$.%s", ctx.happlicationHeadExtended().getText())
+            )
+            .prop("name", "@");
+    }
+
+    @Override
+    public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterAphi(final EoParser.AphiContext ctx) {
         // Nothing here
     }
@@ -483,23 +509,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterHapplicationTail(final EoParser.HapplicationTailContext ctx) {
-        if (ctx.getParent() instanceof EoParser.HapplicationExtendedContext) {
-            final EoParser.HapplicationExtendedContext parent =
-                (EoParser.HapplicationExtendedContext) ctx.getParent();
-            if (parent.aphi() == null) {
-                this.objects.enter();
-            } else {
-                this.startAbstract(ctx)
-                    .enter().prop("name", new AutoName(ctx).asString())
-                    .start(ctx)
-                    .prop(
-                        "base", String.format("$.%s", parent.happlicationHeadExtended().getText())
-                    )
-                    .prop("name", "@");
-            }
-        } else {
-            this.objects.enter();
-        }
+        this.objects.enter();
     }
 
     @Override

@@ -128,7 +128,7 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended onameOrTname EOL
+    : happlicationExtendedOrAphi onameOrTname EOL
     | vapplication
     ;
 
@@ -152,10 +152,20 @@ happlicationReversedHead
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
-    : happlicationHeadExtended happlicationTail aphi?
+    : happlicationHeadExtended happlicationTail
     | happlicationReversed
     ;
 
+// Application with auto-Phi formation
+onlyAphi
+    : happlicationHeadExtended happlicationTail aphi?
+    ;
+
+happlicationExtendedOrAphi
+    : happlicationExtended | onlyAphi
+    ;
+
+// Auto-Phi formation
 aphi
     : SPACE ARROW ARROW SPACE voids
     ;
@@ -273,7 +283,7 @@ vapplicationArgBound
 // Vertical application arguments with bindings
 // Ends on the current line
 vapplicationArgBoundCurrent
-    : LB happlicationExtended RB as oname? // horizontal application
+    : LB happlicationExtendedOrAphi RB as oname? // horizontal application
     | commentOptional LB hanonym RB as fname? // horizontal anonym object
     | (just | method) as oname? // just an object reference | method
     ;
@@ -296,7 +306,7 @@ vapplicationArgUnbound
 // Vertical application arguments without bindings
 // Ends on the current line
 vapplicationArgUnboundCurrent
-    : happlicationExtended oname? // horizontal application
+    : happlicationExtendedOrAphi oname? // horizontal application
     | commentOptional hanonym fname? // horizontal anonym object
     | (just | method) oname? // just an object reference or method
     ;
