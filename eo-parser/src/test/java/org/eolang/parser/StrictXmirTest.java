@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,12 +27,7 @@ import org.xembly.Xembler;
  * Test case for {@link StrictXmir}.
  *
  * @since 0.5
- * @todo #4360:30min Enable `StrictXmir` tests after XMIR.xsd release.
- *  Now tests fail because the latest schema available
- *  <a href="https://www.eolang.org/XMIR.xsd">here</a> does not allow `@author` attribute in the
- *  `object` element. Let's enable the tests right after we release new version.
  */
-@Disabled
 final class StrictXmirTest {
 
     @Test
