@@ -5,7 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="wrap-data" version="2.0">
   <!--
-  Converts this (which is got after unphi):
+  Converts this:
 
   <o base=".bytes">
     <o base=".eolang">

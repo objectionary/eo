@@ -12,15 +12,14 @@ import java.io.IOException;
  * (XML-based Intermediate Representation) format using ANTLR4.
  *
  * <p>This interface abstracts the parsing process for different syntaxes in the
- * EO ecosystem, such as EO language and Phi-calculus notation. Implementations
- * typically perform lexical analysis, syntax parsing, and XMIR generation through
- * a series of XSL transformations to produce canonical XML output.</p>
+ * EO ecosystem, such as EO language. Implementations typically perform lexical analysis,
+ * syntax parsing, and XMIR generation through a series of XSL transformations to produce canonical
+ * XML output.</p>
  *
  * <p>The interface is designed to be lightweight with a single method {@code parsed()}
  * that handles the entire conversion process.</p>
  *
  * @see org.eolang.parser.EoSyntax Implementation for EO language
- * @see org.eolang.parser.PhiSyntax Implementation for Phi-calculus notation
  * @since 0.34.0
  */
 interface Syntax {

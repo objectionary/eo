@@ -192,40 +192,13 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
-            this.params.putIfAbsent("generateSodgXmlFiles", true);
-            this.params.putIfAbsent("generateXemblyFiles", true);
-            this.params.putIfAbsent("generateGraphFiles", true);
-            this.params.putIfAbsent("generateDotFiles", true);
-            this.params.putIfAbsent("generateDotFiles", true);
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionary", new Objectionary.Fake());
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("phiNoSugar", false);
-            this.params.putIfAbsent("phiSkipFailed", false);
-            this.params.putIfAbsent(
-                "phiInputDir",
-                this.workspace.resolve(
-                    String.format("target/%s", MjParse.DIR)
-                ).toFile()
-            );
-            this.params.putIfAbsent(
-                "phiOutputDir", this.workspace.resolve("target/phi").toFile()
-            );
-            this.params.putIfAbsent(
-                "unphiInputDir", this.workspace.resolve("target/phi").toFile()
-            );
-            this.params.putIfAbsent(
-                "unphiOutputDir",
-                this.workspace.resolve(
-                    String.format("target/%s", MjParse.DIR)
-                ).toFile()
-            );
-            this.params.putIfAbsent(
-                "classesDir", this.classesPath().toFile()
-            );
+            this.params.putIfAbsent("classesDir", this.classesPath().toFile());
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
