@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@name='f' and @line='8']
-  - //o[@base='ξ.^.f']
+  - //o[@base='ξ.ρ.f']
 input: |
   +home https://github.com/objectionary/eo
   +package test

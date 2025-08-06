@@ -897,7 +897,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.PHI() != null) {
             base = "φ";
         } else if (ctx.RHO() != null) {
-            base = "^";
+            base = "ρ";
         } else {
             base = "";
         }

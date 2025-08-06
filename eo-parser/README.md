@@ -56,7 +56,7 @@ asserts:
   - //o[@base='org.eolang.and' and @line='8']
   - //o[@base='foo']
   - //o[@base='ξ']
-  - //o[@base='^']
+  - //o[@base='ρ']
   - //o[@base='Q']
 input: |
   +alias foo
@@ -104,7 +104,7 @@ defined in this section:
 base `org.eolang.and` and the line number `8`.
 - `//o[@base='foo']`: This test checks that there is an object with the base `foo`.
 - `//o[@base='ξ']`: This test checks that there is an object with the base `$`.
-- `//o[@base='^']`: This test checks that there is an object with the base `^`.
+- `//o[@base='ρ']`: This test checks that there is an object with the base `^`.
 - `//o[@base='Q']`: This test checks that there is an object with the base `Q`.
 
 #### eo

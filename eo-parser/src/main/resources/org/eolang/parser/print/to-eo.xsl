@@ -84,7 +84,15 @@
             <xsl:value-of select="substring-after($no-alphas, 'Q.org.eolang.')"/>
           </xsl:when>
           <xsl:when test="starts-with(@base, 'ξ.')">
-            <xsl:value-of select="substring-after($no-alphas, 'ξ.')"/>
+            <xsl:choose>
+              <xsl:when test="contains(@base, $eo:rho)">
+                  <xsl:text>^</xsl:text>
+                  <xsl:value-of select="substring-after($no-alphas, 'ξ.ρ')"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="substring-after($no-alphas, 'ξ.')"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:when test="starts-with(@base, '.')">
             <xsl:value-of select="substring(@base, 2)"/>
