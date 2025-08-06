@@ -86,8 +86,8 @@
           <xsl:when test="starts-with(@base, 'ξ.')">
             <xsl:choose>
               <xsl:when test="contains(@base, $eo:rho)">
-                  <xsl:text>^</xsl:text>
-                  <xsl:value-of select="substring-after($no-alphas, 'ξ.ρ')"/>
+                <xsl:text>^</xsl:text>
+                <xsl:value-of select="substring-after($no-alphas, 'ξ.ρ')"/>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="substring-after($no-alphas, 'ξ.')"/>
