@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='$.^.a.plus' and @name='φ']/o[@base='$.^.b']
+  - //o[@base='ξ.^.a.plus' and @name='φ']/o[@base='ξ.^.b']
 input: |
   +home https://github.com/objectionary/eo
   +package org.eolang.priority

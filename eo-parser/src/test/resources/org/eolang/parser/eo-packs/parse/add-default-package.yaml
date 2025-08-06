@@ -14,7 +14,7 @@ asserts:
   - /object[count(o)=1]
   - //o[@base='Q.org.eolang.and']
   - //o[@base='Q.foo']
-  - //o[@base='$']
+  - //o[@base='ξ']
   - //o[@base='^']
   - //o[@base='Q']
   - /object/metas/meta[head='also' and tail='Q.org.eolang.number' and part='Q.org.eolang.number']

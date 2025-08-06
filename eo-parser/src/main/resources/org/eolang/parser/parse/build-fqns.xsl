@@ -24,7 +24,7 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="this">
     <xsl:element name="o">
-      <xsl:attribute name="base" select="'$'"/>
+      <xsl:attribute name="base" select="'ξ'"/>
     </xsl:element>
   </xsl:variable>
   <!-- Build recursive objects chain from package if exists -->
@@ -199,11 +199,11 @@
       <xsl:element name="o">
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos - 1"/>
-        <xsl:attribute name="base" select="'$'"/>
+        <xsl:attribute name="base" select="'ξ'"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[@base!='$' and @base!='^' and @base!=$eo:empty]" mode="no-dots">
+  <xsl:template match="o[@base!='ξ' and @base!='^' and @base!=$eo:empty]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>
     <xsl:apply-templates select="." mode="fqn">
       <xsl:with-param name="self" select="."/>

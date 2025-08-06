@@ -83,8 +83,8 @@
           <xsl:when test="starts-with(@base, 'Q.org.eolang.')">
             <xsl:value-of select="substring-after($no-alphas, 'Q.org.eolang.')"/>
           </xsl:when>
-          <xsl:when test="starts-with(@base, '$.')">
-            <xsl:value-of select="substring-after($no-alphas, '$.')"/>
+          <xsl:when test="starts-with(@base, 'ξ.')">
+            <xsl:value-of select="substring-after($no-alphas, 'ξ.')"/>
           </xsl:when>
           <xsl:when test="starts-with(@base, '.')">
             <xsl:value-of select="substring(@base, 2)"/>

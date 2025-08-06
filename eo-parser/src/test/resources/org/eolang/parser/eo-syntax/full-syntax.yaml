@@ -13,7 +13,7 @@ asserts:
   - //o[@as='i']
   - //o[@as='α1']
   - //o[@as='α0']
-  - //o[@base='$.five.plus']
+  - //o[@base='ξ.five.plus']
   - /object[not(.//o[@name=''])]
   - //o[o[@name='λ'] and @name='atom' and count(o)=3 and o[@name='a']]
 input: |

@@ -377,7 +377,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             .enter().prop("name", new AutoName(ctx).asString())
             .start(ctx)
             .prop(
-                "base", String.format("$.%s", ctx.happlicationHeadExtended().getText())
+                "base", String.format("ξ.%s", ctx.happlicationHeadExtended().getText())
             )
             .prop("name", "φ");
     }
@@ -865,7 +865,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.data() == null) {
             final String base;
             if (ctx.XI() != null) {
-                base = "$";
+                base = "ξ";
             } else if (ctx.STAR() != null) {
                 base = "Q.org.eolang.tuple";
                 this.objects.prop("star");

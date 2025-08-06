@@ -55,7 +55,7 @@ final class CompactArrayFqn implements Text {
         if (this.context.XI() == null) {
             base = fqn;
         } else {
-            base = String.format("%s.%s", this.context.XI().getText(), fqn);
+            base = String.format("ξ.%s", fqn);
         }
         return base;
     }
