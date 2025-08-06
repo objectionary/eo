@@ -379,7 +379,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             .prop(
                 "base", String.format("$.%s", ctx.happlicationHeadExtended().getText())
             )
-            .prop("name", "@");
+            .prop("name", "φ");
     }
 
     @Override
@@ -472,7 +472,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            base = "@";
+            base = "φ";
         } else {
             base = "";
         }
@@ -757,7 +757,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
-        this.objects.enter().prop("name", "@").leave().leave();
+        this.objects.enter().prop("name", "φ").leave().leave();
     }
 
     @Override
@@ -895,7 +895,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            base = "@";
+            base = "φ";
         } else if (ctx.RHO() != null) {
             base = "^";
         } else {
@@ -1011,7 +1011,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterSuffix(final EoParser.SuffixContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {
-            this.objects.prop("name", ctx.PHI().getText());
+            this.objects.prop("name", "φ");
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
         }

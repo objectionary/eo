@@ -133,7 +133,14 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:text> &gt; </xsl:text>
-          <xsl:value-of select="@name"/>
+          <xsl:choose>
+            <xsl:when test="@name = $eo:phi">
+              <xsl:value-of select="'@'"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="@name"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@const">

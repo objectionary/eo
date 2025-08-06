@@ -80,7 +80,7 @@
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="$find='@'">
+        <xsl:if test="$find='φ'">
           <xsl:message terminate="yes">
             <xsl:text>The </xsl:text>
             <xsl:value-of select="$find"/>

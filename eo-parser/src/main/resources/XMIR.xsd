@@ -64,7 +64,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="α[0-9]+|@|[a-z]\S*|λ"/>
+      <xs:pattern value="α[0-9]+|φ|[a-z]\S*|λ"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">
@@ -77,7 +77,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|\.(\^|@|[a-z][^\s.]*|α[0-9]*)|([Q$])(\.(\^|@|[a-z][^\s.]*|α[0-9]*))*"/>
+      <xs:pattern value="∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Qξ])(\.(ρ|@|[a-z][^\s.]*|α[0-9]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -104,7 +104,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="o" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="o" type="o" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="line" type="whole">
       <xs:annotation>
