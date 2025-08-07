@@ -421,7 +421,6 @@ finisher
     : NAME
     | PHI
     | RHO
-// can >> [NAME] finish the statement?
     ;
 
 // Reversed notation
