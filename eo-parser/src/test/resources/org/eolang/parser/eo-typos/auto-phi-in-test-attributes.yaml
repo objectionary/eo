@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 line: 4
 message: |-
-  [4:19] error: 'Invalid object declaration'
+  [4:18] error: 'Invalid object declaration'
       5.plus 5 >> [] +> test
-                     ^
+                    ^
 input: |-
   # No comments.
   [] > x

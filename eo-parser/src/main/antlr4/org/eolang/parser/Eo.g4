@@ -128,7 +128,7 @@ void: NAME
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtendedOrAphi onameOrTname EOL
+    : happlicationExtended onameOrTname EOL
     | vapplication
     ;
 
@@ -158,11 +158,7 @@ happlicationExtended
 
 // Application with auto-Phi formation
 onlyAphi
-    : happlicationHeadExtended happlicationTail aphi?
-    ;
-
-happlicationExtendedOrAphi
-    : happlicationExtended | onlyAphi
+    : happlicationHeadExtended happlicationTail aphi
     ;
 
 // Auto-Phi formation
@@ -283,7 +279,7 @@ vapplicationArgBound
 // Vertical application arguments with bindings
 // Ends on the current line
 vapplicationArgBoundCurrent
-    : LB happlicationExtendedOrAphi RB as oname? // horizontal application
+    : LB happlicationExtended RB as oname? // horizontal application
     | commentOptional LB hanonym RB as fname? // horizontal anonym object
     | (just | method) as oname? // just an object reference | method
     ;
@@ -299,14 +295,15 @@ vapplicationArgBoundNext
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnbound
-    : vapplicationArgUnboundCurrent EOL
+    : onlyAphi EOL
+    | vapplicationArgUnboundCurrent aphi? EOL
     | vapplicationArgUnboundNext
     ;
 
 // Vertical application arguments without bindings
 // Ends on the current line
 vapplicationArgUnboundCurrent
-    : happlicationExtendedOrAphi oname? // horizontal application
+    : happlicationExtended oname? // horizontal application
     | commentOptional hanonym fname? // horizontal anonym object
     | (just | method) oname? // just an object reference or method
     ;
@@ -424,6 +421,7 @@ finisher
     : NAME
     | PHI
     | RHO
+// can >> [NAME] finish the statement?
     ;
 
 // Reversed notation

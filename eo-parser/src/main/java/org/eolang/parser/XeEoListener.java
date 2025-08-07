@@ -373,27 +373,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        this.startAbstract(ctx)
-            .enter().prop("name", new AutoName(ctx).asString())
-            .start(ctx)
-            .prop(
-                "base", String.format("$.%s", ctx.happlicationHeadExtended().getText())
-            )
-            .prop("name", "@");
+        this.startAutoPhiFormation(ctx, ctx.happlicationHeadExtended().getText());
     }
 
     @Override
     public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
         // Nothing here
     }
 
@@ -679,7 +663,25 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.enter();
+        if (ctx.aphi() != null) {
+            final EoParser.VapplicationArgUnboundCurrentContext vertical =
+                ctx.vapplicationArgUnboundCurrent();
+            if (vertical.just() != null || vertical.method() != null) {
+                this.startAutoPhiFormation(ctx, XeEoListener.verticalApplicationBase(vertical));
+            }
+        } else {
+            this.objects.enter();
+        }
+    }
+
+    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop(
+                "base", String.format("$.%s", application)
+            )
+            .prop("name", "@");
     }
 
     @Override
@@ -1228,5 +1230,22 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
+    }
+
+    /**
+     * Vertical application base.
+     * @param ctx Context
+     * @return The base of vertical application
+     */
+    private static String verticalApplicationBase(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
+        final String result;
+        if (ctx.method() != null) {
+            result = ctx.method().getText();
+        } else {
+            result = ctx.just().getText();
+        }
+        return result;
     }
 }
