@@ -674,16 +674,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         }
     }
 
-    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
-        this.startAbstract(ctx)
-            .enter().prop("name", new AutoName(ctx).asString())
-            .start(ctx)
-            .prop(
-                "base", String.format("$.%s", application)
-            )
-            .prop("name", "@");
-    }
-
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
         this.objects.leave();
@@ -1205,6 +1195,19 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.errors.add(new ParsingError(ctx, msg).cause());
         }
         return String.format("α%d", index);
+    }
+
+    /**
+     * Start new Auto Phi formation, from an application.
+     * @param ctx Context
+     * @param application Application base
+     */
+    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop("base", String.format("$.%s", application))
+            .prop("name", "@");
     }
 
     /**
