@@ -22,7 +22,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
- * Benchmark for XMIR to EO and to Phi transformations.
+ * Benchmark for XMIR to EO transformations.
  *
  * @since 0.41
  * @checkstyle DesignForExtensionCheck (100 lines)
@@ -63,15 +63,5 @@ public class XmirBench {
     @Benchmark
     public void xmirToEO() {
         new Xmir(XmirBench.XMIR).toEO();
-    }
-
-    @Benchmark
-    public void xmirToPhi() {
-        new Xmir(XmirBench.XMIR).toPhi();
-    }
-
-    @Benchmark
-    public void xmirToSaltyPhi() {
-        new Xmir(XmirBench.XMIR).toSaltyPhi();
     }
 }

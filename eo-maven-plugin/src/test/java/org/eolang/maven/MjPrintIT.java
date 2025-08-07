@@ -48,7 +48,7 @@ final class MjPrintIT {
                     );
                 f.exec("eo:print");
                 MatcherAssert.assertThat(
-                    "the .phi file is generated",
+                    "the .eo file is generated",
                     f.files().file("target/generated-sources/eo/foo.eo").exists(),
                     Matchers.is(true)
                 );

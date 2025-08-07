@@ -18,13 +18,12 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXParseException;
 
 /**
- * Prints XMIR to EO or PHI.
+ * Prints XMIR to EO.
  *
  * <p>This class will help you turn XMIR (XML document) into EOLANG
- * plain text source code or PHI calculus expression. It's as simple as this:</p>
+ * plain text source code. It's as simple as this:</p>
  *
  * <pre> String eo = new Xmir(xml).toEO();</pre>
- * <pre> String phi = new Xmir(xml).toPhi();</pre>
  *
  * <p>Here, the {@code xml} is a {@code String} or an instance
  * of {@code XML} from the jcabi-xml package.</p>
@@ -45,19 +44,6 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
                 new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
                 new StClasspath("/org/eolang/parser/print/to-eo.xsl")
-            )
-        )
-    );
-
-    /**
-     * Train of transformations that prepare XMIR for conversion to EO.
-     */
-    private static final Xsline FOR_PHI = new Xsline(
-        new TrFull(
-            new TrDefault<>(
-                new StUnhex(),
-                new StClasspath("/org/eolang/parser/phi/remove-this.xsl"),
-                new StClasspath("/org/eolang/parser/phi/to-phi.xsl")
             )
         )
     );
@@ -132,31 +118,6 @@ public final class Xmir implements XML {
      */
     public String toEO() {
         return this.converted(Xmir.FOR_EO, "eo");
-    }
-
-    /**
-     * Converts XMIR to PHI.
-     * @return PHI representation as {@link String}
-     */
-    public String toPhi() {
-        return this.converted(Xmir.FOR_PHI, "phi");
-    }
-
-    /**
-     * Converts XMIR to PHI without any syntax sugar.
-     * @return PHI representation as {@link String}
-     */
-    public String toSaltyPhi() {
-        return this.converted(
-            new Xsline(
-                new TrFull(
-                    new TrDefault<>(
-                        new StClasspath("/org/eolang/parser/phi/to-salty-phi.xsl")
-                    )
-                )
-            ),
-            "phi"
-        );
     }
 
     /**
