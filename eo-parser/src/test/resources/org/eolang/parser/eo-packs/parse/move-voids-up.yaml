@@ -6,8 +6,8 @@ sheets:
   - /org/eolang/parser/parse/move-voids-up.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='@']]
-  - /object/o[@name='main']/o[@name='bar' and o[@name='x']/following-sibling::o[@name='@']/o[@name='y']/following-sibling::o[@name='@']]
+  - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='φ']]
+  - /object/o[@name='main']/o[@name='bar' and o[@name='x']/following-sibling::o[@name='φ']/o[@name='y']/following-sibling::o[@name='φ']]
 input: |
   # Main.
   [] > main

@@ -22,7 +22,7 @@ final class CompactArrayFqnTest {
             "foo *1,foo",
             "QQ.foo.bar *42,Q.org.eolang.foo.bar",
             "QQ.nan *52,Q.org.eolang.nan",
-            "$.seq *1,$.seq"
+            "$.seq *1,ξ.seq"
         }
     )
     void buildsFqnForSimpleName(final String compact, final String expected) {

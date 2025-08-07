@@ -13,8 +13,8 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@base='Q.org.eolang.foo' and @name='@' and o[@base='Q.org.eolang.i' and @as='α0']]
-  - //o[@base='Q.org.eolang.foo' and @name='@' and o[@base='Q.org.eolang.spb' and @as='α1']]
+  - //o[@base='Q.org.eolang.foo' and @name='φ' and o[@base='Q.org.eolang.i' and @as='α0']]
+  - //o[@base='Q.org.eolang.foo' and @name='φ' and o[@base='Q.org.eolang.spb' and @as='α1']]
   - //o[@base='Q.org.eolang.x' and @name='i' and o[@base='Q.org.eolang.number' and @as='α0']]
   - //o[@base='Q.org.eolang.y' and @name='spb' and o[@base='Q.org.eolang.number' and @as='α0']]
   - //o[@base='Q.org.eolang.y' and @name='spb' and o[@base='Q.org.eolang.number' and @as='α1']]
