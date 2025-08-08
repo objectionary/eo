@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='a🌵78' and o[@name='@']]
-  - //o[not(@base) and @name='a🌵88' and o[@name='@']]
+  - //o[not(@base) and @name='a🌵78' and o[@name='φ']]
+  - //o[not(@base) and @name='a🌵88' and o[@name='φ']]
 input: |
   # No comments.
   [n] > app

@@ -17,8 +17,8 @@ asserts:
   - //o[@base='Q.org.eolang.number' and @loc='Φ.org.abc.main.tt.α1.α0.α1' and @original-name='main.tt.α1.α0.α1']
   - //o[not(@base) and @loc='Φ.org.abc.main.tt.α2' and @original-name='main.tt.α2']
   - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.main.tt.α2.e' and @original-name='main.tt.α2.e']
-  - //o[@base='$.e.hello' and @loc='Φ.org.abc.main.tt.α2.φ' and @original-name='main.tt.α2.φ']
-  - //o[@base='$.^.^.p' and @loc='Φ.org.abc.main.q' and @original-name='main.q']
+  - //o[@base='ξ.e.hello' and @loc='Φ.org.abc.main.tt.α2.φ' and @original-name='main.tt.α2.φ']
+  - //o[@base='ξ.ρ.ρ.p' and @loc='Φ.org.abc.main.q' and @original-name='main.q']
 input: |
   +alias org.abc.foo.b
   +alias x

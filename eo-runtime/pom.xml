@@ -222,7 +222,18 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <skipLinting>false</skipLinting>
+              <!--
+                @todo #4394:35min Lints after fixing Phi dependent lints.
+                 For now, `unit-test-without-phi`, `redundant-object check` for `@` attribute in
+                 the tests, which represents Phi. However, we changed the notation in the XMIR,
+                 and now the same Phi represented as 'φ'. Don't forget to enable these lints, after
+                 new version of lints with the fix will be available. The lint
+                 `unlint-non-existing-defect` should be also enabled, but now disabled due to
+                 massive local unlints of `redundant-object` lint, which is currently disabled.
+                 We decided to skip linting entirely, not just skipping individual lints, because
+                 of this issue: https://github.com/objectionary/lints/issues/699.
+                -->
+              <skipLinting>true</skipLinting>
               <failOnWarning>true</failOnWarning>
               <ignoreRuntime>true</ignoreRuntime>
               <!--
