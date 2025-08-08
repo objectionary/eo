@@ -12,20 +12,20 @@
   <xsl:template match="/object/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:apply-templates select="//o[@base='Q.org.eolang.cti']" mode="create"/>
+      <xsl:apply-templates select="//o[@base='Φ.org.eolang.cti']" mode="create"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="/object[not(errors)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//o[@base='Q.org.eolang.cti']">
+      <xsl:if test="//o[@base='Φ.org.eolang.cti']">
         <errors>
-          <xsl:apply-templates select="//o[@base='Q.org.eolang.cti']" mode="create"/>
+          <xsl:apply-templates select="//o[@base='Φ.org.eolang.cti']" mode="create"/>
         </errors>
       </xsl:if>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base='Q.org.eolang.cti']" mode="create">
+  <xsl:template match="o[@base='Φ.org.eolang.cti']" mode="create">
     <xsl:element name="error">
       <xsl:attribute name="check">
         <xsl:text>cti</xsl:text>

@@ -4,14 +4,14 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[@base='Q.org.eolang.p']/o[@base='ξ.first']
-  - //o[@name='first' and o[@name='φ' and @base='Q.org.eolang.a.b'] and o[@base='∅' and @name='i']]
-  - //o[@base='Q.org.eolang.p']/o[not(@name) and o[@name='φ' and @base='Q.org.eolang.a' and o[@base='Q.org.eolang.b']]]
-  - //o[@base='Q.org.eolang.p']/o[@base="ξ.second"]
-  - //o[@name='second' and o[not(@base) and @name='φ' and o[@base='Q.org.eolang.a' and @name='b']] and o[@name='c']]
-  - //o[@base='Q.org.eolang.p']/o[not(@name) and o[@base='Q.org.eolang.d' and @name='φ']]
-  - //o[@base='.x' and o[not(@base) and not(@name) and o[@base='Q.org.eolang.z' and @name='φ']]]
-  - //o[@base='Q.org.eolang.m']/o[not(@name) and o[@name='q' and @base='∅'] and o[@base='ξ.q' and @name='φ']]
+  - //o[@base='Φ.org.eolang.p']/o[@base='ξ.first']
+  - //o[@name='first' and o[@name='φ' and @base='Φ.org.eolang.a.b'] and o[@base='∅' and @name='i']]
+  - //o[@base='Φ.org.eolang.p']/o[not(@name) and o[@name='φ' and @base='Φ.org.eolang.a' and o[@base='Φ.org.eolang.b']]]
+  - //o[@base='Φ.org.eolang.p']/o[@base="ξ.second"]
+  - //o[@name='second' and o[not(@base) and @name='φ' and o[@base='Φ.org.eolang.a' and @name='b']] and o[@name='c']]
+  - //o[@base='Φ.org.eolang.p']/o[not(@name) and o[@base='Φ.org.eolang.d' and @name='φ']]
+  - //o[@base='.x' and o[not(@base) and not(@name) and o[@base='Φ.org.eolang.z' and @name='φ']]]
+  - //o[@base='Φ.org.eolang.m']/o[not(@name) and o[@name='q' and @base='∅'] and o[@base='ξ.q' and @name='φ']]
 input: |
   # Main.
   [] > main

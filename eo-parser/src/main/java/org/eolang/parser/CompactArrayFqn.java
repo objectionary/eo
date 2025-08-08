@@ -49,7 +49,7 @@ final class CompactArrayFqn implements Text {
         if (this.context.HOME() == null) {
             fqn = name;
         } else {
-            fqn = String.format("Q.org.eolang.%s", name);
+            fqn = String.format("Φ.org.eolang.%s", name);
         }
         final String base;
         if (this.context.XI() == null) {

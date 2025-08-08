@@ -7,10 +7,10 @@ sheets:
   - /org/eolang/parser/parse/expand-aliases.xsl
 asserts:
   - /object[not(errors)]
-  - //meta[head='alias' and tail='scanner Q.org.eolang.txt.scanner' and part[1]='scanner' and part[2]='Q.org.eolang.txt.scanner']
-  - //meta[head='alias' and tail='stdin Q.org.eolang.io.stdin' and part[1]='stdin' and part[2]='Q.org.eolang.io.stdin']
-  - //meta[head='alias' and tail='a b Q.c' and part[1]='a' and part[2]='b' and part[3]='Q.c']
-  - //meta[head='alias' and tail='a b c e Q.f' and part[1]='a' and part[2]='b' and part[3]='c' and part[4]='e' and part[5]='Q.f']
+  - //meta[head='alias' and tail='scanner Φ.org.eolang.txt.scanner' and part[1]='scanner' and part[2]='Φ.org.eolang.txt.scanner']
+  - //meta[head='alias' and tail='stdin Φ.org.eolang.io.stdin' and part[1]='stdin' and part[2]='Φ.org.eolang.io.stdin']
+  - //meta[head='alias' and tail='a b Φ.c' and part[1]='a' and part[2]='b' and part[3]='Φ.c']
+  - //meta[head='alias' and tail='a b c e Φ.f' and part[1]='a' and part[2]='b' and part[3]='c' and part[4]='e' and part[5]='Φ.f']
 input: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin

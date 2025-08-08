@@ -10,15 +10,15 @@ asserts:
   - /object[count(o)=1]
   - //o[@name='app']/o[@name='φ' and @base='bar']
   - //o[@name='app']/o[@base='.foo']/o[@base='φ' and not(@name)]
-  - //o[@base='.as-bytes' and @name='t' and o[@base='Q.org.eolang.dataized']]
-  - /object[count(.//o[@base='Q.org.eolang.string'])=1]
+  - //o[@base='.as-bytes' and @name='t' and o[@base='Φ.org.eolang.dataized']]
+  - /object[count(.//o[@base='Φ.org.eolang.string'])=1]
   - //o[@name='y']/o[@name='t']
   - //o[@name='y']/o[@name='oops']
   - //o[@name='last']
   - //object[count(//o[@name='oops'])=1]
   - //o[@name='aaa']
   - //o[@name='ooo']
-  - //o[@name='mm' and @base='Q.org.eolang.number']
+  - //o[@name='mm' and @base='Φ.org.eolang.number']
   - //o[@base='mm']
 input: |
   # Main.

@@ -12,14 +12,14 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@base='Q.org.eolang.and']
-  - //o[@base='Q.foo']
+  - //o[@base='Φ.org.eolang.and']
+  - //o[@base='Φ.foo']
   - //o[@base='ξ']
   - //o[@base='ρ']
-  - //o[@base='Q']
-  - /object/metas/meta[head='also' and tail='Q.org.eolang.number' and part='Q.org.eolang.number']
-  - /object/metas/meta[head='also' and tail='Q.org.eolang.string' and part='Q.org.eolang.string']
-  - /object/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Q.org.eolang.string' and part='Q.org.eolang.number' and part='Q.org.eolang.foo.bar']
+  - //o[@base='Φ']
+  - /object/metas/meta[head='also' and tail='Φ.org.eolang.number' and part='Φ.org.eolang.number']
+  - /object/metas/meta[head='also' and tail='Φ.org.eolang.string' and part='Φ.org.eolang.string']
+  - /object/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Φ.org.eolang.string' and part='Φ.org.eolang.number' and part='Φ.org.eolang.foo.bar']
 input: |
   +alias foo
   +alias scanner org.eolang.txt.scanner

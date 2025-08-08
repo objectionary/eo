@@ -6,8 +6,8 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - /object/o[@name='foo'][count(o)=3]
-  - /object/o[@name='foo']/o[@base='Q.org.eolang.true' and @name='+test-works']
-  - /object/o[@name='foo']/o[@base='Q.org.eolang.false' and @name='+always-fails']
+  - /object/o[@name='foo']/o[@base='Φ.org.eolang.true' and @name='+test-works']
+  - /object/o[@name='foo']/o[@base='Φ.org.eolang.false' and @name='+always-fails']
   - /object/o[@name='foo']/o[@base='.eq' and @name='+compares-something']
 input: |-
   # Foo.

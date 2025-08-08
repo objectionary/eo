@@ -4,10 +4,10 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[@base='Q.org.eolang.string' and o/o[text()='48-69-2C-20-74-68-65-72-65-0A-41-64-69-C3-B3-73']]
-  - //o[@base='Q.org.eolang.string' and o/o[text()='66-69-72-73-74-0A-20-73-65-63-6F-6E-64']]
-  - //o[@base='Q.org.eolang.string' and o/o[text()='74-68-69-72-64']]
-  - //o[@base='Q.org.eolang.string' and o/o[text()='66-6F-72-74-68']]
+  - //o[@base='Φ.org.eolang.string' and o/o[text()='48-69-2C-20-74-68-65-72-65-0A-41-64-69-C3-B3-73']]
+  - //o[@base='Φ.org.eolang.string' and o/o[text()='66-69-72-73-74-0A-20-73-65-63-6F-6E-64']]
+  - //o[@base='Φ.org.eolang.string' and o/o[text()='74-68-69-72-64']]
+  - //o[@base='Φ.org.eolang.string' and o/o[text()='66-6F-72-74-68']]
 input: |
   # Main.
   [] > main

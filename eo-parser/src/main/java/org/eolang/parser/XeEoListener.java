@@ -467,7 +467,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.start(ctx);
         final String base;
         if (ctx.STAR() != null) {
-            base = "Q.org.eolang.tuple";
+            base = "Φ.org.eolang.tuple";
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
@@ -867,12 +867,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             if (ctx.XI() != null) {
                 base = "ξ";
             } else if (ctx.STAR() != null) {
-                base = "Q.org.eolang.tuple";
+                base = "Φ.org.eolang.tuple";
                 this.objects.prop("star");
             } else if (ctx.ROOT() != null) {
-                base = "Q";
+                base = "Φ";
             } else if (ctx.HOME() != null) {
-                base = "QQ";
+                base = "Φ̇";
             } else {
                 base = "";
             }
@@ -1066,7 +1066,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             this.objects
-                .prop("base", "Q.org.eolang.bytes")
+                .prop("base", "Φ.org.eolang.bytes")
                 .start(ctx)
                 .data(text.replaceAll("\\s+", "").trim())
                 .leave();
@@ -1074,7 +1074,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             final Supplier<String> data;
             final String base;
             if (ctx.FLOAT() != null || ctx.INT() != null) {
-                base = "Q.org.eolang.number";
+                base = "Φ.org.eolang.number";
                 data = new BytesToHex(
                     ByteBuffer
                         .allocate(Double.BYTES)
@@ -1082,7 +1082,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                         .array()
                 );
             } else if (ctx.HEX() != null) {
-                base = "Q.org.eolang.number";
+                base = "Φ.org.eolang.number";
                 data = new BytesToHex(
                     ByteBuffer
                         .allocate(Double.BYTES)
@@ -1090,14 +1090,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                         .array()
                 );
             } else if (ctx.STRING() != null) {
-                base = "Q.org.eolang.string";
+                base = "Φ.org.eolang.string";
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
                         text.substring(1, text.length() - 1)
                     ).getBytes(StandardCharsets.UTF_8)
                 );
             } else {
-                base = "Q.org.eolang.string";
+                base = "Φ.org.eolang.string";
                 final int indent = ctx.getStart().getCharPositionInLine();
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
@@ -1108,7 +1108,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects
                 .prop("base", base)
                 .start(ctx)
-                .prop("base", "Q.org.eolang.bytes")
+                .prop("base", "Φ.org.eolang.bytes")
                 .start(ctx)
                 .data(data.get())
                 .leave()

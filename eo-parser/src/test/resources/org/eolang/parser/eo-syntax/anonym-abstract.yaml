@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[count(o)=1]
-  - //o[@base='.plus' and @name='s' and o[1][not(@name) and not(@base)]/o[@base='ξ.ρ']]/o[2][@base='Q.org.eolang.int']
+  - //o[@base='.plus' and @name='s' and o[1][not(@name) and not(@base)]/o[@base='ξ.ρ']]/o[2][@base='Φ.org.eolang.int']
 input: |
   # No comments.
   [] > test

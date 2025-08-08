@@ -15,10 +15,10 @@ sheets:
   - /org/eolang/parser/parse/decorate.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='main']/o[@base='.with' and @name='φ' and o[1][@base='.joined']/o[@base='Q.org.eolang.foo']/o[@base='Q.org.eolang.string' and not(@name)] and o[2][@base='Q.org.eolang.bytes']]
-  - /object/o[@name='main']/o[@base='.unsafe' and @name='num' and o[1][@base='Q.org.eolang.bar']/o[@base='Q.org.eolang.number'] and o[2][@base='Q.org.eolang.bytes']]
-  - /object/o[@name='main']/o[@base='.string' and @name='str']/o[@base='Q.org.eolang']/o[@base='Q.org.eolang.bytes']
-  - /object/o[@name='main']/o[@base='Q.org.eolang.baz' and @name='abc']/o[@base='Q.org.eolang.bar' and @as='α0']/o[@base='Q.org.eolang.number' and not(@as)]
+  - /object/o[@name='main']/o[@base='.with' and @name='φ' and o[1][@base='.joined']/o[@base='Φ.org.eolang.foo']/o[@base='Φ.org.eolang.string' and not(@name)] and o[2][@base='Φ.org.eolang.bytes']]
+  - /object/o[@name='main']/o[@base='.unsafe' and @name='num' and o[1][@base='Φ.org.eolang.bar']/o[@base='Φ.org.eolang.number'] and o[2][@base='Φ.org.eolang.bytes']]
+  - /object/o[@name='main']/o[@base='.string' and @name='str']/o[@base='Φ.org.eolang']/o[@base='Φ.org.eolang.bytes']
+  - /object/o[@name='main']/o[@base='Φ.org.eolang.baz' and @name='abc']/o[@base='Φ.org.eolang.bar' and @as='α0']/o[@base='Φ.org.eolang.number' and not(@as)]
 input: |
   +decorate string foo
   +decorate number bar
