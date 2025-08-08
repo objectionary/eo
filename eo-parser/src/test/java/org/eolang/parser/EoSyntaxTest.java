@@ -82,7 +82,7 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf("# No comments.\n[] > foo\n\n\n\n")
+                        new InputOf("# No comments.\n[] > a\uD83C\uDF3555\n")
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
@@ -432,32 +432,70 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void checksValidCactusInGeneratedObjectNameWithXsd() throws Exception {
+    void checksProhibitionCactusInObjectName() throws Exception {
         final String src = String.join(
             "\n",
-            "# No comments.",
-            "[] > app",
-            "  x > first",
-            "    [] >>",
-            "      y > second\n"
-        );
-        final XML xml = new EoSyntax(
-            new InputOf(src)
-        ).parsed();
-        final Set<String> errors = new SetOf<>(
-            new Mapped<>(
-                SAXParseException::toString,
-                xml.validate(
-                    new XMLDocument(
-                        new TextOf(new ResourceOf("XMIR.xsd")).asString()
-                    )
-                )
-            )
+            "[] > foo\uD83C\uDF35bar\n"
         );
         MatcherAssert.assertThat(
-            "Allowed cactus in generated object name",
-            errors,
-            Matchers.iterableWithSize(0)
+            "Cactus is prohibited in object name",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
+        );
+    }
+
+    @Test
+    void checksProhibitionCactusInAttributeName() throws Exception {
+        final String src = String.join(
+            "\n",
+            "[] > app",
+            "  x > a\uD83C\uDF3565\n"
+        );
+        MatcherAssert.assertThat(
+            "Cactus is prohibited in attribute name",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
+        );
+    }
+
+    @Test
+    void checksProhibitionCactusInAttributeValue() throws Exception {
+        final String src = String.join(
+            "\n",
+            "[] > x",
+            "  \uD83C\uDF35 > y\n"
+        );
+        MatcherAssert.assertThat(
+            "Cactus is prohibited in attribute value",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
         );
     }
 

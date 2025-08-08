@@ -603,7 +603,7 @@ FLOAT
 HEX : '0x' [0-9a-fA-F]+
     ;
 
-NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(]*
+NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(🌵]*
     ;
 
 fragment TEXT_MARK
