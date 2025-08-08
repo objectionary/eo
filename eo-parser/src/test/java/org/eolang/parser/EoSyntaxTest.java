@@ -432,7 +432,7 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void checksValidCactoosInGeneratedObjectNameWithXsd() throws Exception {
+    void checksValidCactusInGeneratedObjectNameWithXsd() throws Exception {
         final String src = String.join(
             "\n",
             "# No comments.",
@@ -455,7 +455,7 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
-            "Allowed cactoos in generated object name",
+            "Allowed cactus in generated object name",
             errors,
             Matchers.iterableWithSize(0)
         );
