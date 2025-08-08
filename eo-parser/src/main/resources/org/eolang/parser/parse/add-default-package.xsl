@@ -58,7 +58,7 @@
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='∅' and @base!='$']" mode="no-dots">
+  <xsl:template match="o[@base!='φ' and @base!='Q' and @base!='ρ' and @base!='∅' and @base!='ξ']" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">

@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
-  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='$.foobar.with']
+  - //o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
 input: |
   # No comments.
   [] > aliases

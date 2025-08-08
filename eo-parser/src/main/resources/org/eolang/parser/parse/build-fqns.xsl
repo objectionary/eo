@@ -24,7 +24,7 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="this">
     <xsl:element name="o">
-      <xsl:attribute name="base" select="'$'"/>
+      <xsl:attribute name="base" select="'ξ'"/>
     </xsl:element>
   </xsl:variable>
   <!-- Build recursive objects chain from package if exists -->
@@ -80,7 +80,7 @@
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="$find='@'">
+        <xsl:if test="$find='φ'">
           <xsl:message terminate="yes">
             <xsl:text>The </xsl:text>
             <xsl:value-of select="$find"/>
@@ -129,7 +129,7 @@
           <xsl:with-param name="rhos" select="$rhos - 1"/>
           <xsl:with-param name="current">
             <xsl:element name="o">
-              <xsl:attribute name="base" select="'.^'"/>
+              <xsl:attribute name="base" select="'.ρ'"/>
               <xsl:copy-of select="$current"/>
             </xsl:element>
           </xsl:with-param>
@@ -159,7 +159,7 @@
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
                 <xsl:element name="o">
-                  <xsl:attribute name="base" select="'.^'"/>
+                  <xsl:attribute name="base" select="'.ρ'"/>
                   <xsl:copy-of select="$this"/>
                 </xsl:element>
               </xsl:with-param>
@@ -192,18 +192,18 @@
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base='^']" mode="no-dots">
+  <xsl:template match="o[@base='ρ']" mode="no-dots">
     <xsl:element name="o">
       <xsl:apply-templates select="@* except @base"/>
-      <xsl:attribute name="base" select="'.^'"/>
+      <xsl:attribute name="base" select="'.ρ'"/>
       <xsl:element name="o">
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos - 1"/>
-        <xsl:attribute name="base" select="'$'"/>
+        <xsl:attribute name="base" select="'ξ'"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[@base!='$' and @base!='^' and @base!=$eo:empty]" mode="no-dots">
+  <xsl:template match="o[@base!='ξ' and @base!='ρ' and @base!=$eo:empty]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>
     <xsl:apply-templates select="." mode="fqn">
       <xsl:with-param name="self" select="."/>

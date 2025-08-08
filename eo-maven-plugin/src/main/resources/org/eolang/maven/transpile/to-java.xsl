@@ -139,12 +139,12 @@
       <xsl:when test="$first='Q'">
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
-      <xsl:when test="$first='$'">
+      <xsl:when test="$first='ξ'">
         <xsl:value-of select="$rho"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
-          <xsl:text>FQN must start with either with Q or $, but </xsl:text>
+          <xsl:text>FQN must start with either with Q or ξ, but </xsl:text>
           <xsl:value-of select="$first"/>
           <xsl:text> found</xsl:text>
         </xsl:message>
@@ -156,7 +156,7 @@
     <xsl:param name="base"/>
     <xsl:param name="mtd"/>
     <xsl:choose>
-      <xsl:when test="$mtd='^'">
+      <xsl:when test="$mtd='ρ'">
         <xsl:value-of select="$base"/>
         <xsl:text>.take("</xsl:text>
         <xsl:value-of select="$eo:rho"/>
@@ -533,7 +533,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="@base='$' or @base='Q'">
+      <xsl:when test="@base='ξ' or @base='Q'">
         <xsl:value-of select="eo:fqn-start(@base, $rho)"/>
         <xsl:text>;</xsl:text>
       </xsl:when>
