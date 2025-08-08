@@ -64,7 +64,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="α[0-9]+|φ|[a-z]\S*|λ"/>
+      <xs:pattern value="α[0-9]+|φ|[a-z]🌵[0-9]+|[a-z][^\s🌵]*|λ"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">

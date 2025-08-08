@@ -431,6 +431,36 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void checksValidCactoosInGeneratedObjectNameWithXsd() throws Exception {
+        final String src = String.join(
+            "\n",
+            "# No comments.",
+            "[] > app",
+            "  x > first",
+            "    [] >>",
+            "      y > second\n"
+        );
+        final XML xml = new EoSyntax(
+            new InputOf(src)
+        ).parsed();
+        final Set<String> errors = new SetOf<>(
+            new Mapped<>(
+                SAXParseException::toString,
+                xml.validate(
+                    new XMLDocument(
+                        new TextOf(new ResourceOf("XMIR.xsd")).asString()
+                    )
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "Allowed cactoos in generated object name",
+            errors,
+            Matchers.iterableWithSize(0)
+        );
+    }
+
     /**
      * Prepare naughty strings.
      * @return Stream of strings
