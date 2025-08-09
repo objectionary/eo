@@ -82,7 +82,7 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf("# No comments.\n[] > a\uD83C\uDF3555\n")
+                        new InputOf("# No comments.\n[] > foo\n\n\n\n")
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
