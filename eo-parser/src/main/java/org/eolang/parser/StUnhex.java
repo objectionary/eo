@@ -23,7 +23,7 @@ final class StUnhex extends StEnvelope {
      * Xpath for finding bytes.
      */
     private static final String BYTES =
-        "//o[@base='Q.org.eolang.bytes' and o[1][string-length(normalize-space(text()))>0]]";
+        "//o[@base='Φ.org.eolang.bytes' and o[1][string-length(normalize-space(text()))>0]]";
 
     /**
      * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
@@ -144,7 +144,7 @@ final class StUnhex extends StEnvelope {
      */
     private static String elements(final String type) {
         return String.format(
-            "//o[@base='Q.org.eolang.%s' and o[1][@base='Q.org.eolang.bytes' and string-length(normalize-space(text()))>0]]",
+            "//o[@base='Φ.org.eolang.%s' and o[1][@base='Φ.org.eolang.bytes' and string-length(normalize-space(text()))>0]]",
             type
         );
     }

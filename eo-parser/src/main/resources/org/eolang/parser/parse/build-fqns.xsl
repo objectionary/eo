@@ -68,7 +68,7 @@
       <xsl:when test="$parent/o[@name=$find]">
         <xsl:variable name="start">
           <xsl:element name="o">
-            <xsl:attribute name="base" select="'Q'"/>
+            <xsl:attribute name="base" select="'Φ'"/>
           </xsl:element>
         </xsl:variable>
         <xsl:apply-templates select="." mode="to-method">

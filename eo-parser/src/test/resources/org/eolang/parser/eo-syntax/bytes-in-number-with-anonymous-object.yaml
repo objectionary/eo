@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@base='Q.org.eolang.number' and @name='zero']/o[@base='Q.org.eolang.bytes']/o[text()='00-00-00-00-00-00-00-00']
+  - /object/o[@base='Φ.org.eolang.number' and @name='zero']/o[@base='Φ.org.eolang.bytes']/o[text()='00-00-00-00-00-00-00-00']
 input: |
   # No comments.
   0 > zero

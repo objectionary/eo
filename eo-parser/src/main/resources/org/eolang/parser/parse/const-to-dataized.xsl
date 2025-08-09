@@ -43,7 +43,7 @@
       <xsl:attribute name="line" select="@line"/>
       <xsl:attribute name="pos" select="@pos + 8"/>
       <xsl:element name="o">
-        <xsl:attribute name="base" select="'Q.org.eolang.dataized'"/>
+        <xsl:attribute name="base" select="'Φ.org.eolang.dataized'"/>
         <xsl:element name="o">
           <xsl:for-each select="@*[name()!='const' and name()!='name']">
             <xsl:attribute name="{name()}">

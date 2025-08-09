@@ -5,9 +5,9 @@
 sheets: []
 asserts:
   - /object[not(@errors)]
-  - //o[@name='foo']/o[@base='Q.org.eolang.x.α1.α2' and @name='φ']
-  - //o[@base='Q.org.eolang.number' and @name='num']
-  - //o[@name='foo']/o[@base='.α2' and @name='abc']/o[@base='Q.org.eolang.x.α0.α1']/o[@base='Q.org.eolang.y']
+  - //o[@name='foo']/o[@base='Φ.org.eolang.x.α1.α2' and @name='φ']
+  - //o[@base='Φ.org.eolang.number' and @name='num']
+  - //o[@name='foo']/o[@base='.α2' and @name='abc']/o[@base='Φ.org.eolang.x.α0.α1']/o[@base='Φ.org.eolang.y']
 input: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can

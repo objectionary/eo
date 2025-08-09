@@ -12,7 +12,7 @@ asserts:
   - //o[@base='.foo' and count(./o)=1]
   - //o[@base='.trim' and count(./o)=2]
   - //o[@base='.trim']/o[1][@base='.get']
-  - //o[@base='.trim']/o[2][@base='Q.org.eolang.number']
+  - //o[@base='.trim']/o[2][@base='Φ.org.eolang.number']
   - //o[@base='a' and @name='xxx']
   - //o[@base='.f2' and @name='last']
 input: |

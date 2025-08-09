@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='.first' and @name='m']/o[1][not(@base) and not(@name) and o[@base='Q.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]]
+  - //o[@base='.first' and @name='m']/o[1][not(@base) and not(@name) and o[@base='Φ.org.eolang.y']/o[@base='.second']/o[not(@base) and not(@name)]]
 input: |
   # No comments.
   []

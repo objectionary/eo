@@ -36,7 +36,7 @@
         <xsl:apply-templates select="."/>
       </xsl:for-each>
       <xsl:element name="o">
-        <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
+        <xsl:attribute name="base" select="'Φ.org.eolang.tuple'"/>
         <xsl:attribute name="star"/>
         <xsl:for-each select="o[position() &gt; $before]">
           <xsl:apply-templates select="."/>

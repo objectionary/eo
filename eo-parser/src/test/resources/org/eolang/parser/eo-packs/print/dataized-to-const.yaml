@@ -18,13 +18,13 @@ sheets:
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/dataized-to-const.xsl
 asserts:
-  - //o[@base='Q.org.eolang.x' and @const and @name='first']
-  - //o[@base='Q.org.eolang.dataized.as-bytes' and @name='second']
-  - //o[@base='Q.org.eolang.a' and @const and @name='third']/o[@base='Q.org.eolang.b']
+  - //o[@base='Φ.org.eolang.x' and @const and @name='first']
+  - //o[@base='Φ.org.eolang.dataized.as-bytes' and @name='second']
+  - //o[@base='Φ.org.eolang.a' and @const and @name='third']/o[@base='Φ.org.eolang.b']
   - //o[@name='fourth-1' and not(@base)]
   - //o[@base='ξ.fourth-1' and @name='fourth' and @const]
-  - //o[@base='Q.org.eolang.number' and @name='fifths' and @const]/o[@base='Q.org.eolang.bytes']/o[text()!='']
-  - //o[@base='Q.org.eolang.bytes' and @name='sixth' and @const]/o[text()='2A-']
+  - //o[@base='Φ.org.eolang.number' and @name='fifths' and @const]/o[@base='Φ.org.eolang.bytes']/o[text()!='']
+  - //o[@base='Φ.org.eolang.bytes' and @name='sixth' and @const]/o[text()='2A-']
   - //o[@base='ξ.third' and @const and not(@as)]
 input: |
   # No comments.

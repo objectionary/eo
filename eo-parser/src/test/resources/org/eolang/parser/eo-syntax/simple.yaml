@@ -7,9 +7,9 @@ asserts:
   - /object[not(errors)]
   - /object[@version != '']
   - /object[@time != '']
-  - //o[@base='Q.org.eolang.a' and @line='3']
-  - //o[@base='Q.org.eolang.b-друг' and @line='4']
-  - //o[@base='Q.org.eolang.c4-5' and @line='5']
+  - //o[@base='Φ.org.eolang.a' and @line='3']
+  - //o[@base='Φ.org.eolang.b-друг' and @line='4']
+  - //o[@base='Φ.org.eolang.c4-5' and @line='5']
 input: |
   +package test
 

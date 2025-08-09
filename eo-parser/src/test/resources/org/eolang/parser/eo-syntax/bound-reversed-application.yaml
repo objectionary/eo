@@ -5,10 +5,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Q.org.eolang.true.if' and o[@base='Q.org.eolang.string' and @as='α0']]
-  - //o[@base='Q.org.eolang.true.if' and o[@base='Q.org.eolang.string' and @as='α1']]
-  - //o[@base='Q.org.eolang.false.if' and o[@base='Q.org.eolang.number' and @as='a']]
-  - //o[@base='Q.org.eolang.false.if' and o[@base='Q.org.eolang.number' and @as='b']]
+  - //o[@base='Φ.org.eolang.true.if' and o[@base='Φ.org.eolang.string' and @as='α0']]
+  - //o[@base='Φ.org.eolang.true.if' and o[@base='Φ.org.eolang.string' and @as='α1']]
+  - //o[@base='Φ.org.eolang.false.if' and o[@base='Φ.org.eolang.number' and @as='a']]
+  - //o[@base='Φ.org.eolang.false.if' and o[@base='Φ.org.eolang.number' and @as='b']]
 input: |
   # Main.
   [] > main

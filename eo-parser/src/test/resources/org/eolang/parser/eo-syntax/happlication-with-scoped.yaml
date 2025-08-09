@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object//o[@base='Q.org.eolang.malloc.of']/o[2][starts-with(@base, 'ξ.a🌵')]
-  - /object//o[starts-with(@name, 'a🌵') and o[@base='∅' and @name='m'] and o[@base='Q.org.eolang.true' and @name='φ']]
+  - /object//o[@base='Φ.org.eolang.malloc.of']/o[2][starts-with(@base, 'ξ.a🌵')]
+  - /object//o[starts-with(@name, 'a🌵') and o[@base='∅' and @name='m'] and o[@base='Φ.org.eolang.true' and @name='φ']]
 input: |
   # No comments.
   [] > foo

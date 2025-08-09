@@ -7,11 +7,11 @@ sheets:
   - /org/eolang/parser/parse/const-to-dataized.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
-  - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='Q.org.eolang.dataized' and o[@base='number' and not(@name)]]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='Q.org.eolang.dataized' and o[@base='m-3']]]
-  - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']/o[text()!='']
-  - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='Q.org.eolang.dataized']/o[@base='Q.org.eolang.bytes']/o[text()='2A-']
-  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='Q.org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='Φ.org.eolang.dataized' and o[@base='number' and not(@name)]]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='Φ.org.eolang.dataized' and o[@base='m-3']]]
+  - //o[@base='.as-bytes' and @line and @pos and @name='num']/o[@base='Φ.org.eolang.dataized']/o[@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[text()!='']
+  - //o[@base='.as-bytes' and @line and @pos and @name='bts']/o[@base='Φ.org.eolang.dataized']/o[@base='Φ.org.eolang.bytes']/o[text()='2A-']
+  - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='Φ.org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
   - /object[count(//o[@const])=0]
 input: |
   # No comments.

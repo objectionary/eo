@@ -136,7 +136,7 @@
     <xsl:param name="first"/>
     <xsl:param name="rho"/>
     <xsl:choose>
-      <xsl:when test="$first='Q'">
+      <xsl:when test="$first='Φ'">
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="$first='ξ'">
@@ -144,7 +144,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
-          <xsl:text>FQN must start with either with Q or ξ, but </xsl:text>
+          <xsl:text>FQN must start with either with Φ or ξ, but </xsl:text>
           <xsl:value-of select="$first"/>
           <xsl:text> found</xsl:text>
         </xsl:message>
@@ -533,7 +533,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="@base='ξ' or @base='Q'">
+      <xsl:when test="@base='ξ' or @base='Φ'">
         <xsl:value-of select="eo:fqn-start(@base, $rho)"/>
         <xsl:text>;</xsl:text>
       </xsl:when>
@@ -541,7 +541,7 @@
         <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
         <xsl:choose>
           <!-- Little optimization -->
-          <xsl:when test="starts-with(@base, 'Q.org.eolang')">
+          <xsl:when test="starts-with(@base, 'Φ.org.eolang')">
             <xsl:value-of select="eo:fqn-start($parts[1], $rho)"/>
             <xsl:for-each select="$parts[position()&gt;1]">
               <xsl:text>.take(</xsl:text>

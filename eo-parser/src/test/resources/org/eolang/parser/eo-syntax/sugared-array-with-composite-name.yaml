@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='foo.bar']/o[@base='Q.org.eolang.x']
-  - //o[@base='foo.bar']//o[@base='Q.org.eolang.y']
+  - //o[@base='foo.bar']/o[@base='Φ.org.eolang.x']
+  - //o[@base='foo.bar']//o[@base='Φ.org.eolang.y']
 input: |
   # No comments.
   [] > app

@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - //object/o[count(o)=3]
   - //o[@base='ξ.x.plus' and @name='a']
-  - //o[@base='Q.org.eolang.number' and @name='φ' and o[@base="Q.org.eolang.bytes"]/o[starts-with(text(), '40-14')]]
+  - //o[@base='Φ.org.eolang.number' and @name='φ' and o[@base="Φ.org.eolang.bytes"]/o[starts-with(text(), '40-14')]]
 input: |
   # Main.
   [] > main

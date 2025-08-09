@@ -18,7 +18,7 @@ sheets:
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/tuples-to-stars.xsl
 asserts:
-  - /object/o[@name='foo']/o[@base='Q.org.eolang.tuple' and @star and count(o)=3 and count(o[@star]=0)]
+  - /object/o[@name='foo']/o[@base='Φ.org.eolang.tuple' and @star and count(o)=3 and count(o[@star]=0)]
 input: |
   +package test
 

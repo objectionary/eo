@@ -5,10 +5,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=2]
-  - //o[@base='.times']/o[@base='Q.org.eolang.number' and @pos=10]
-  - //o[@base='.times']/o[@base='.plus']/o[@base='Q.org.eolang.number']/o[@base='Q.org.eolang.bytes']
-  - //o[@base='.times']/o[@base='.plus']/o[@base='Q.org.eolang.other.value']
+  - //o[@base='.times']/o[@base='Φ.org.eolang.number' and @pos=2]
+  - //o[@base='.times']/o[@base='Φ.org.eolang.number' and @pos=10]
+  - //o[@base='.times']/o[@base='.plus']/o[@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']
+  - //o[@base='.times']/o[@base='.plus']/o[@base='Φ.org.eolang.other.value']
 input: |
   +home https://github.com/objectionary/eo
   +package org.eolang.priority
