@@ -80,6 +80,9 @@
       <xsl:otherwise>
         <xsl:variable name="no-alphas" select="translate(@base, $eo:alpha, '~')"/>
         <xsl:choose>
+          <xsl:when test="starts-with(@base, 'Φ̇.org.eolang.')">
+            <xsl:value-of select="substring-after($no-alphas, 'Φ̇.org.eolang.')"/>
+          </xsl:when>
           <xsl:when test="starts-with(@base, 'Φ.org.eolang.')">
             <xsl:value-of select="substring-after($no-alphas, 'Φ.org.eolang.')"/>
           </xsl:when>
