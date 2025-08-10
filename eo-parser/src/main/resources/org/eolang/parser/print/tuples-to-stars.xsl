@@ -20,7 +20,7 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="inner">
-    <xsl:if test="@base=('Φ.org.eolang.tuple','Φ̇.org.eolang.tuple')">
+    <xsl:if test="starts-with(@base, 'Φ.org.eolang.tuple') or starts-with(@base, 'Φ̇.org.eolang.tuple')">
       <xsl:variable name="arg">
         <xsl:apply-templates select="o[2]"/>
       </xsl:variable>
