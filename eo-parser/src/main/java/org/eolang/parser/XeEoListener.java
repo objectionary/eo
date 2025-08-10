@@ -919,14 +919,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects.enter().prop(
-            "name",
-            String.format(
-                "a\uD83C\uDF35%d%d",
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine()
-            )
-        );
+        this.objects.enter().prop("name", new AutoName(ctx).asString());
         if (ctx.CONST() != null) {
             this.objects.prop("const");
         }
