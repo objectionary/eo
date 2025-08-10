@@ -103,7 +103,7 @@ final class Probes implements Iterable<String> {
      */
     private static String noPrefix(final String obj) {
         final String result;
-        if (obj.length() > 1 && "Φ.".equals(obj.substring(0, 2))) {
+        if (obj.startsWith("Φ.")) {
             result = obj.substring(2);
         } else {
             result = obj;
