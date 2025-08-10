@@ -36,7 +36,7 @@
           <xsl:text>Φ.</xsl:text>
           <xsl:value-of select="text()"/>
         </xsl:when>
-        <xsl:when test="not(starts-with(text(), 'Φ.org.eolang'))">
+        <xsl:when test="not(starts-with(text(), 'Φ.org.eolang')) and not(starts-with(text(), 'Φ̇.org.eolang'))">
           <xsl:value-of select="'Φ.org.eolang.'"/>
           <xsl:value-of select="text()"/>
         </xsl:when>
@@ -58,7 +58,7 @@
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!='φ' and @base!='Φ' and @base!='ρ' and @base!='∅' and @base!='ξ']" mode="no-dots">
+  <xsl:template match="o[@base!='φ' and @base!='Φ' and @base!='Φ̇' and @base!='ρ' and @base!='∅' and @base!='ξ']" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">

@@ -50,7 +50,7 @@
     <xsl:value-of select="head"/>
     <xsl:if test="not(empty(tail/text()))">
       <xsl:text> </xsl:text>
-      <xsl:value-of select="replace(tail, 'Φ', 'Q')"/>
+      <xsl:value-of select="replace(replace(string(tail), 'Φ̇', 'QQ'), 'Φ', 'Q')"/>
     </xsl:if>
     <xsl:value-of select="$eol"/>
   </xsl:template>
