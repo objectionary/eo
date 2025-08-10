@@ -15,23 +15,23 @@
 
     Into the next one without @star:
 
-    <o base="Q.org.eolang.tuple">
-      <o base="Q.org.eolang.tuple">
-        <o base="Q.org.eolang.tuple">
-          <o base="Q.org.eolang.tuple.empty"/>
+    <o base="Φ.org.eolang.tuple">
+      <o base="Φ.org.eolang.tuple">
+        <o base="Φ.org.eolang.tuple">
+          <o base="Φ.org.eolang.tuple.empty"/>
           <o base="1"/>
-          <o base="Q.org.eolang.number">
-            <o base="Q.org.eolang.bytes" hex="">1</o>
+          <o base="Φ.org.eolang.number">
+            <o base="Φ.org.eolang.bytes" hex="">1</o>
           </o>
         </o>
         <o base="2"/>
-        <o base="Q.org.eolang.number">
-          <o base="Q.org.eolang.bytes" hex="">2</o>
+        <o base="Φ.org.eolang.number">
+          <o base="Φ.org.eolang.bytes" hex="">2</o>
         </o>
       </o>
       <o base="3"/>
-      <o base="Q.org.eolang.number">
-        <o base="Q.org.eolang.bytes" hex="">3</o>
+      <o base="Φ.org.eolang.number">
+        <o base="Φ.org.eolang.bytes" hex="">3</o>
       </o>
     </o>
   -->

@@ -7,7 +7,7 @@
   <!--
 
   - <o base=".org">
-      <o base="Q"/>  => <o base="org"/>
+      <o base="Φ"/>  => <o base="org"/>
     </o>
   - <o base=".instructions">
       <o base="$"/>  => <o base="instructions"/>
@@ -21,7 +21,7 @@
   - <o base=".seq">
       <o base=".eolang">
         <o base=".org">
-          <o base="Q"/>   => <o base="Q.org.eolang.seq"/>
+          <o base="Φ"/>   => <o base="Φ.org.eolang.seq"/>
         </o>
       </o>
     </o>
