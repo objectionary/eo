@@ -62,7 +62,7 @@
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
-    <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ')]"/>
+    <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:if test="not(empty($probes))">
@@ -81,7 +81,7 @@
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ')]">
+      <xsl:for-each select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]">
         <xsl:copy-of select="eo:meta(.)"/>
       </xsl:for-each>
     </xsl:copy>
