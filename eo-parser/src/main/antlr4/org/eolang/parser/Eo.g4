@@ -460,7 +460,7 @@ tarrow
 
 // Suffix
 suffix
-    : arrow (PHI | NAME)
+    : arrow (PHI | NAME) APOSTROPHE?
     ;
 
 arrow
@@ -541,6 +541,9 @@ HASH: '#'
     ;
 TILDE
     : '~'
+    ;
+APOSTROPHE
+    : '\''
     ;
 
 fragment INDENT
