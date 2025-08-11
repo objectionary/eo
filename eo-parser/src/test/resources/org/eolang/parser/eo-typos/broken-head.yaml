@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:7] error: 'mismatched input '[' expecting '?''
+  [2:7] error: 'mismatched input '[' expecting {' ', '''}'
   [] > a [] > b [] > c [] > d hello world
          ^
 input: |

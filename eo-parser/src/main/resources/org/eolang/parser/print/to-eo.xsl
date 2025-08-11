@@ -71,7 +71,7 @@
     </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[@base and not(@base='ξ.🌵') and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -156,6 +156,9 @@
       </xsl:if>
       <xsl:if test="eo:atom(.)">
         <xsl:text> ?</xsl:text>
+      </xsl:if>
+      <xsl:if test="eo:idempotent(.)">
+        <xsl:text>'</xsl:text>
       </xsl:if>
     </xsl:if>
   </xsl:template>
