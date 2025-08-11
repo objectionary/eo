@@ -86,13 +86,13 @@ public final class EoSyntax implements Syntax {
         new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
-                    "/org/eolang/parser/parse/move-voids-up.xsl",
                     "/org/eolang/parser/parse/validate-before-stars.xsl",
                     "/org/eolang/parser/parse/resolve-before-stars.xsl",
                     "/org/eolang/parser/parse/wrap-method-calls.xsl",
                     "/org/eolang/parser/parse/const-to-dataized.xsl",
                     "/org/eolang/parser/parse/stars-to-tuples.xsl",
                     "/org/eolang/parser/parse/vars-float-up.xsl",
+                    "/org/eolang/parser/parse/move-voids-up.xsl",
                     "/org/eolang/parser/parse/validate-objects-count.xsl",
                     "/org/eolang/parser/parse/build-fqns.xsl",
                     "/org/eolang/parser/parse/expand-qqs.xsl",

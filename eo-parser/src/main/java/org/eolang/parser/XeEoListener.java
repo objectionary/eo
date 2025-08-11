@@ -1199,7 +1199,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.startAbstract(ctx)
             .enter().prop("name", new AutoName(ctx).asString())
             .start(ctx)
-            .prop("base", String.format("ξ.%s", application))
+            .prop("base", String.format("ξ.ρ.%s", application))
             .prop("name", "φ");
     }
 
