@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -14,7 +15,11 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Xmir}.
@@ -35,6 +40,32 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(xtory.map().get("printed"))
+        );
+    }
+
+    @Test
+    void restoresApostropheForIdempotency() throws ImpossibleModificationException {
+        MatcherAssert.assertThat(
+            "Apostrophe is not restored, but should be",
+            new Xmir(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives()
+                            .add("object")
+                            .add("o")
+                            .attr("base", "Q.org.eolang.start")
+                            .attr("name", "@")
+                            .add("o")
+                            .attr("base", "Q.org.eolang.random")
+                            .attr("name", "r")
+                            .add("o")
+                            .attr("base", "ξ.🌵")
+                    ).xml()
+                )
+            ).toEO(),
+            Matchers.containsString(
+                "random > r'"
+            )
         );
     }
 
