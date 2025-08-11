@@ -378,7 +378,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        // Nothing here
+        this.objects.leave().leave();
     }
 
     @Override
