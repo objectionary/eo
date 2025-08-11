@@ -12,7 +12,7 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //java[contains(text(), 'Phi r1 = new PhMethod(h, "a🌵44");')]
-  - //java[contains(text(), 'Phi rr2 = new PhMethod(rh, "a🌵54");')]
+  - //java[contains(text(), 'Phi r2 = new PhMethod(h, "a🌵54");')]
 input: |
   # Foo.
   [] > main
