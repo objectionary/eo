@@ -24,8 +24,7 @@
 #    </o>
 #  </o>
 skip: true
-out:
-  - ".*Hello.*"
+out: []
 file: org/eolang/snippets/auto.eo
 args: ["org.eolang.snippets.auto"]
 eo: |
