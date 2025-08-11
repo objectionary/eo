@@ -676,7 +676,13 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.leave();
+        if (ctx.aphi() != null
+            && (ctx.vapplicationArgUnboundCurrent().just() != null
+            || ctx.vapplicationArgUnboundCurrent().method() != null)) {
+            this.objects.leave().leave();
+        } else {
+            this.objects.leave();
+        }
     }
 
     @Override
