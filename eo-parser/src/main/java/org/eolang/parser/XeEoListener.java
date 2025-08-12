@@ -1255,7 +1255,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Translate FQN starting with `QQ` to the one starting with a global Phi object.
+     * Translate FQN starting with `Q` or `QQ` to the one starting with a global Phi object.
      * @param fqn FQN
      * @return Translated FQN.
      */
@@ -1263,6 +1263,8 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final String result;
         if (fqn.startsWith("QQ")) {
             result = String.format("Φ̇%s", fqn.substring(2));
+        } else if (!fqn.startsWith("QQ") && !fqn.isEmpty() && fqn.charAt(0) == 'Q') {
+            result = String.format("Φ%s", fqn.substring(1));
         } else {
             result = fqn;
         }

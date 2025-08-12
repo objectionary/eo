@@ -13,7 +13,9 @@ asserts:
   - /object/metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Φ.org.eolang.txt.sprintfQQ')]])=2]
   - /object/metas/meta[head/text()='also' and tail/text()='Φ.org.eolang.txt.text']
   - /object/metas/meta[head/text()='decorate' and part/text()='Φ.org.eolang.txt.text']
+  - /object/metas/meta[head/text()='alias' and tail/text()='Φ.org.eolang.runtime.sp']
 input: |
+  +alias Q.org.eolang.runtime.sp
   +alias QQ.txt.sprintfQQ
   +also QQ.txt.text
   +decorate string QQ.txt.text
