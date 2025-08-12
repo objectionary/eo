@@ -378,7 +378,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        // Nothing here
+        this.objects.leave().leave();
     }
 
     @Override
@@ -676,7 +676,13 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.leave();
+        if (ctx.aphi() != null
+            && (ctx.vapplicationArgUnboundCurrent().just() != null
+            || ctx.vapplicationArgUnboundCurrent().method() != null)) {
+            this.objects.leave().leave();
+        } else {
+            this.objects.leave();
+        }
     }
 
     @Override
@@ -1202,7 +1208,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.startAbstract(ctx)
             .enter().prop("name", new AutoName(ctx).asString())
             .start(ctx)
-            .prop("base", String.format("ξ.%s", application))
+            .prop("base", String.format("ξ.ρ.%s", application))
             .prop("name", "φ");
     }
 
