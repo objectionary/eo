@@ -431,6 +431,74 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void checksProhibitionCactusInObjectName() throws Exception {
+        final String src = String.join(
+            "\n",
+            "[] > foo\uD83C\uDF35bar\n"
+        );
+        MatcherAssert.assertThat(
+            "Cactus is prohibited in object name",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
+        );
+    }
+
+    @Test
+    void checksProhibitionCactusInAttributeName() throws Exception {
+        final String src = String.join(
+            "\n",
+            "[] > app",
+            "  x > a\uD83C\uDF3565\n"
+        );
+        MatcherAssert.assertThat(
+            "Cactus is prohibited in attribute name",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
+        );
+    }
+
+    @Test
+    void checksProhibitionCactusInAttributeValue() throws Exception {
+        final String src = String.join(
+            "\n",
+            "[] > x",
+            "  \uD83C\uDF35 > y\n"
+        );
+        MatcherAssert.assertThat(
+            "Cactus is prohibited in attribute value",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors[count(error)=2]"
+            )
+        );
+    }
+
     /**
      * Prepare naughty strings.
      * @return Stream of strings

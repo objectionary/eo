@@ -373,28 +373,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        this.startAbstract(ctx)
-            .enter().prop("name", new AutoName(ctx).asString())
-            .start(ctx)
-            .prop(
-                "base", String.format("ξ.%s", ctx.happlicationHeadExtended().getText())
-            )
-            .prop("name", "φ");
+        this.startAutoPhiFormation(ctx, ctx.happlicationHeadExtended().getText());
     }
 
     @Override
     public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationExtendedOrAphi(final EoParser.HapplicationExtendedOrAphiContext ctx) {
-        // Nothing here
+        this.objects.leave().leave();
     }
 
     @Override
@@ -679,12 +663,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.enter();
+        if (ctx.aphi() != null) {
+            final EoParser.VapplicationArgUnboundCurrentContext vertical =
+                ctx.vapplicationArgUnboundCurrent();
+            if (vertical.just() != null || vertical.method() != null) {
+                this.startAutoPhiFormation(ctx, XeEoListener.verticalApplicationBase(vertical));
+            }
+        } else {
+            this.objects.enter();
+        }
     }
 
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.leave();
+        if (ctx.aphi() != null
+            && (ctx.vapplicationArgUnboundCurrent().just() != null
+            || ctx.vapplicationArgUnboundCurrent().method() != null)) {
+            this.objects.leave().leave();
+        } else {
+            this.objects.leave();
+        }
     }
 
     @Override
@@ -927,14 +925,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects.enter().prop(
-            "name",
-            String.format(
-                "a\uD83C\uDF35%d%d",
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine()
-            )
-        );
+        this.objects.enter().prop("name", new AutoName(ctx).asString());
         if (ctx.CONST() != null) {
             this.objects.prop("const");
         }
@@ -1014,6 +1005,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("name", "φ");
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
+        }
+        if (ctx.APOSTROPHE() != null) {
+            this.objects.start(ctx).prop("base", "ξ.xi🌵").leave();
         }
     }
 
@@ -1206,6 +1200,19 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
+     * Start new Auto Phi formation, from an application.
+     * @param ctx Context
+     * @param application Application base
+     */
+    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop("base", String.format("ξ.ρ.%s", application))
+            .prop("name", "φ");
+    }
+
+    /**
      * Trim margin from text block.
      *
      * @param text Text block.
@@ -1228,5 +1235,22 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             res = new StringBuilder(res.substring(0, res.length() - 1));
         }
         return res.toString();
+    }
+
+    /**
+     * Vertical application base.
+     * @param ctx Context
+     * @return The base of vertical application
+     */
+    private static String verticalApplicationBase(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
+        final String result;
+        if (ctx.method() != null) {
+            result = ctx.method().getText();
+        } else {
+            result = ctx.just().getText();
+        }
+        return result;
     }
 }
