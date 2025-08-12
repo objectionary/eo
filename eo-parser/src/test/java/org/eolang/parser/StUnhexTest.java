@@ -86,7 +86,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must convert empty string", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'/><o/></o></p>"
+                    "<p><o base='Φ.org.eolang.string'><o base='Φ.org.eolang.bytes'/><o/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[empty(text())]")

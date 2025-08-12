@@ -7,8 +7,8 @@ asserts:
   - /object[not(errors)]
   - //o[not(@base) and @name='a🌵78' and o[1][@name='i' and @base='∅'] and o[2][@name='φ']]
   - //o[not(@base) and @name='a🌵88' and o[1][@name='i' and @base='∅'] and o[2][@name='φ']]
-  - //o[@base='Q.org.eolang.while' and o[@base='ξ.a🌵78']]
-  - //o[@base='Q.org.eolang.while' and o[@base='ξ.a🌵88']]
+  - //o[@base='Φ.org.eolang.while' and o[@base='ξ.a🌵78']]
+  - //o[@base='Φ.org.eolang.while' and o[@base='ξ.a🌵88']]
 input: |
   # No comments.
   [n] > app

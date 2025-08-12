@@ -24,9 +24,9 @@
       </xsl:element>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="meta/*[text()[matches(., '^QQ\..*')]]">
+  <xsl:template match="meta/*[text()[matches(., '^Φ̇\..*')]]">
     <xsl:copy>
-      <xsl:value-of select="replace(./text(), '^QQ\.', 'Φ.org.eolang.')"/>
+      <xsl:value-of select="replace(./text(), '^Φ̇\.', 'Φ.org.eolang.')"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

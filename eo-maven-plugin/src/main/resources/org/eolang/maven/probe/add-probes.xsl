@@ -17,23 +17,23 @@
   The next metas will be added:
    <meta>
      <head>probe</head>
-     <tail>Q.org</tail>
-     <part>Q.org</part>
+     <tail>Φ.org</tail>
+     <part>Φ.org</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number</tail>
-     <part>Q.org.number</part>
+     <tail>Φ.org.number</tail>
+     <part>Φ.org.number</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number.edf</tail>
-     <part>Q.org.number.edf</part>
+     <tail>Φ.org.number.edf</tail>
+     <part>Φ.org.number.edf</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number.edf.abc</tail>
-     <part>Q.org.number.edf.abc</part>
+     <tail>Φ.org.number.edf.abc</tail>
+     <part>Φ.org.number.edf.abc</part>
    </meta>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>

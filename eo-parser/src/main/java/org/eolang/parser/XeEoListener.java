@@ -108,9 +108,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 .add("head").set(head).up()
                 .add("tail");
             if (pair.length > 1) {
-                this.dirs.set(pair[1].trim()).up();
+                this.dirs.set(XeEoListener.qqToGlobalPhi(pair[1].trim())).up();
                 for (final String part : pair[1].trim().split(" ")) {
-                    this.dirs.add("part").set(part).up();
+                    this.dirs.add("part").set(XeEoListener.qqToGlobalPhi(part)).up();
                 }
             } else {
                 this.dirs.up();
@@ -1250,6 +1250,21 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             result = ctx.method().getText();
         } else {
             result = ctx.just().getText();
+        }
+        return result;
+    }
+
+    /**
+     * Translate FQN starting with `QQ` to the one starting with a global Phi object.
+     * @param fqn FQN
+     * @return Translated FQN.
+     */
+    private static String qqToGlobalPhi(final String fqn) {
+        final String result;
+        if (fqn.startsWith("QQ")) {
+            result = String.format("Φ̇%s", fqn.substring(2));
+        } else {
+            result = fqn;
         }
         return result;
     }

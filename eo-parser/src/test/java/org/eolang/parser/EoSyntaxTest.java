@@ -203,7 +203,7 @@ final class EoSyntaxTest {
                     new ResourceOf("org/eolang/parser/canonical.eo")
                 ).asString()
             ).parsed(),
-            Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Q.org.eolang.bytes' and not(o)]"))
+            Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Φ.org.eolang.bytes' and not(o)]"))
         );
     }
 
