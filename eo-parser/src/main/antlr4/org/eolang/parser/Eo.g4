@@ -28,14 +28,10 @@ commentOptional
     : comment*
     ;
 
-commentMandatory
-    : comment+
-    ;
-
 // Object
 // Ends on the next line
 object
-    : commentMandatory masterBody
+    : commentOptional masterBody
     | bound
     ;
 

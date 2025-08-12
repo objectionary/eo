@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='app' and o[@base='Q.org.eolang.stdout' and @name='φ']]
+  - /object/comments/comment[@line='2' and text()='Application entry point.']
+input: |
+  # Application entry point.
+  [] > app
+    stdout "Hello, world!" > @

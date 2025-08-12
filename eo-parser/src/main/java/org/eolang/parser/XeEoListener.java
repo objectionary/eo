@@ -146,16 +146,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        this.putComment(ctx.comment(), ctx.getStop());
-    }
-
-    @Override
-    public void exitCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterObject(final EoParser.ObjectContext ctx) {
         // Nothing here
     }
