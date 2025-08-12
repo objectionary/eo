@@ -4,22 +4,17 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:16
-+unlint redundant-object:21
-+unlint redundant-object:22
-+unlint redundant-object:24
-+unlint redundant-object:25
++unlint redundant-object:17
++unlint redundant-object:19
++unlint redundant-object:20
 
 # Tuple.
 # An ordered, immutable collection of elements.
 [tail head length] > tuple
-  $ > as-tuple
-
   # Empty tuple.
   # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
     $ > empty
-    $ > as-tuple
     0 > length
     error "Can't get tail from the empty tuple" > tail
     error "Can't get head from the empty tuple" > head
@@ -29,11 +24,10 @@
 
     # Create a new tuple with this element added to the end of it.
     [x] > with
-      as-tuple. > @
-        tuple
-          ^
-          x
-          (length.plus 1).as-number
+      tuple > @
+        ^
+        x
+        (length.plus 1).as-number
 
   # Take one element from the tuple, at the given position.
   [i] > at
@@ -57,11 +51,10 @@
 
   # Create a new tuple with this element added to the end of it.
   [x] > with
-    as-tuple. > @
-      tuple
-        ^
-        x
-        (length.plus 1).as-number
+    tuple > @
+      ^
+      x
+      (length.plus 1).as-number
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-makes-tuple-through-special-syntax
