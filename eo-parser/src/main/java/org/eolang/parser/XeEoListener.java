@@ -1001,7 +1001,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("name", ctx.NAME().getText());
         }
         if (ctx.APOSTROPHE() != null) {
-            this.objects.start(ctx).prop("base", "ξ.🌵").leave();
+            this.objects.start(ctx).prop("base", "ξ.xi🌵").leave();
         }
     }
 

@@ -71,7 +71,7 @@
     </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[@base and not(@base='ξ.🌵') and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[@base and not(@base='ξ.xi🌵') and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
