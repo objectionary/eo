@@ -95,15 +95,15 @@ final class Probes implements Iterable<String> {
     }
 
     /**
-     * Trim Q prefix.
-     * Q.a.b.c -> a.b.c
+     * Trim Φ prefix.
+     * Φ.a.b.c -> a.b.c
      * a.b.c -> a.b.c
      * @param obj Full object name
      * @return Trimmed object name
      */
     private static String noPrefix(final String obj) {
         final String result;
-        if (obj.length() > 1 && "Q.".equals(obj.substring(0, 2))) {
+        if (obj.startsWith("Φ.")) {
             result = obj.substring(2);
         } else {
             result = obj;

@@ -50,7 +50,7 @@
     <xsl:value-of select="head"/>
     <xsl:if test="not(empty(tail/text()))">
       <xsl:text> </xsl:text>
-      <xsl:value-of select="tail"/>
+      <xsl:value-of select="replace(replace(string(tail), 'Φ̇', 'QQ'), 'Φ', 'Q')"/>
     </xsl:if>
     <xsl:value-of select="$eol"/>
   </xsl:template>
@@ -80,8 +80,11 @@
       <xsl:otherwise>
         <xsl:variable name="no-alphas" select="translate(@base, $eo:alpha, '~')"/>
         <xsl:choose>
-          <xsl:when test="starts-with(@base, 'Q.org.eolang.')">
-            <xsl:value-of select="substring-after($no-alphas, 'Q.org.eolang.')"/>
+          <xsl:when test="starts-with(@base, 'Φ̇.org.eolang.')">
+            <xsl:value-of select="substring-after($no-alphas, 'Φ̇.org.eolang.')"/>
+          </xsl:when>
+          <xsl:when test="starts-with(@base, 'Φ.org.eolang.')">
+            <xsl:value-of select="substring-after($no-alphas, 'Φ.org.eolang.')"/>
           </xsl:when>
           <xsl:when test="starts-with(@base, 'ξ.')">
             <xsl:choose>

@@ -7,11 +7,11 @@ sheets:
   - /org/eolang/parser/parse/resolve-before-stars.xsl
 asserts:
   - /object/errors/error[@line='3' and @severity='error']
-  - //o[@name='first' and count(o)=1]/o[@base='Q.org.eolang.tuple' and @star and count(o)=2]
-  - //o[@name='second' and count(o)=2]/o[position()=2 and @base='Q.org.eolang.tuple' and @star and count(o)=2]
-  - //o[@name='third' and count(o)=3]/o[position()=3 and @base='Q.org.eolang.tuple' and @star and count(o)=1]
-  - //o[@name='fourth' and count(o)=2]/o[@base='sprintf' and count(o)=1]/o[@base='Q.org.eolang.tuple' and @star and count(o)=2]
-  - //o[@name='fourth']/o[@base='Q.org.eolang.tuple' and @star and count(o)=1]
+  - //o[@name='first' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
+  - //o[@name='second' and count(o)=2]/o[position()=2 and @base='Φ.org.eolang.tuple' and @star and count(o)=2]
+  - //o[@name='third' and count(o)=3]/o[position()=3 and @base='Φ.org.eolang.tuple' and @star and count(o)=1]
+  - //o[@name='fourth' and count(o)=2]/o[@base='sprintf' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
+  - //o[@name='fourth']/o[@base='Φ.org.eolang.tuple' and @star and count(o)=1]
   - /object[count(//o[@before-star])=0]
 input: |
   # No comments.

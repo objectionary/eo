@@ -34,14 +34,14 @@ final class StHexTest {
             new Xsline(new StHex()).pass(
                 new XMLDocument(
                     String.format(
-                        "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o hex=''>%s</o></o></o></p>",
+                        "<p><o base='Φ.org.eolang.number'><o base='Φ.org.eolang.bytes'><o hex=''>%s</o></o></o></p>",
                         number
                     )
                 )
             ),
             Matchers.allOf(
                 XhtmlMatchers.hasXPath(
-                    String.format("//o[@base='Q.org.eolang.bytes']/o[text()='%s']", bytes)
+                    String.format("//o[@base='Φ.org.eolang.bytes']/o[text()='%s']", bytes)
                 ),
                 XhtmlMatchers.hasXPath("/p[not(//o[@hex])]")
             )

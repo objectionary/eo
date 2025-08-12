@@ -77,7 +77,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Qξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*"/>
+      <xs:pattern value="∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">

@@ -15,23 +15,23 @@
 
     Into the next one without @star:
 
-    <o base="Q.org.eolang.tuple">
-      <o base="Q.org.eolang.tuple">
-        <o base="Q.org.eolang.tuple">
-          <o base="Q.org.eolang.tuple.empty"/>
+    <o base="Φ.org.eolang.tuple">
+      <o base="Φ.org.eolang.tuple">
+        <o base="Φ.org.eolang.tuple">
+          <o base="Φ.org.eolang.tuple.empty"/>
           <o base="1"/>
-          <o base="Q.org.eolang.number">
-            <o base="Q.org.eolang.bytes" hex="">1</o>
+          <o base="Φ.org.eolang.number">
+            <o base="Φ.org.eolang.bytes" hex="">1</o>
           </o>
         </o>
         <o base="2"/>
-        <o base="Q.org.eolang.number">
-          <o base="Q.org.eolang.bytes" hex="">2</o>
+        <o base="Φ.org.eolang.number">
+          <o base="Φ.org.eolang.bytes" hex="">2</o>
         </o>
       </o>
       <o base="3"/>
-      <o base="Q.org.eolang.number">
-        <o base="Q.org.eolang.bytes" hex="">3</o>
+      <o base="Φ.org.eolang.number">
+        <o base="Φ.org.eolang.bytes" hex="">3</o>
       </o>
     </o>
   -->
@@ -46,14 +46,14 @@
           </xsl:element>
         </xsl:variable>
         <xsl:element name="o">
-          <xsl:attribute name="base" select="'Q.org.eolang.tuple'"/>
+          <xsl:attribute name="base" select="'Φ.org.eolang.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:apply-templates select="$nested"/>
           <xsl:apply-templates select="o[last()]"/>
           <xsl:element name="o">
-            <xsl:attribute name="base" select="'Q.org.eolang.number'"/>
+            <xsl:attribute name="base" select="'Φ.org.eolang.number'"/>
             <xsl:element name="o">
-              <xsl:attribute name="base" select="'Q.org.eolang.bytes'">
+              <xsl:attribute name="base" select="'Φ.org.eolang.bytes'">
               </xsl:attribute>
               <xsl:element name="o">
                 <xsl:attribute name="hex"/>
@@ -65,7 +65,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="o">
-          <xsl:attribute name="base" select="'Q.org.eolang.tuple.empty'"/>
+          <xsl:attribute name="base" select="'Φ.org.eolang.tuple.empty'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
         </xsl:element>
       </xsl:otherwise>

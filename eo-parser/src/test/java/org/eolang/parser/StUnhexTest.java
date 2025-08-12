@@ -29,7 +29,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must successfully unhex number", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>43-70-2E-4F-30-46-73-2E</o></o></o></p>"
+                    "<p><o base='Φ.org.eolang.number'><o base='Φ.org.eolang.bytes'><o>43-70-2E-4F-30-46-73-2E</o></o></o></p>"
                 )
             ),
             Matchers.anyOf(
@@ -46,11 +46,11 @@ final class StUnhexTest {
             String.format("StUnhex by %s must skip unhexing max integer number", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>FF-FF-FF-FF-FF-FF-FF-FF</o></o></o></p>"
+                    "<p><o base='Φ.org.eolang.number'><o base='Φ.org.eolang.bytes'><o>FF-FF-FF-FF-FF-FF-FF-FF</o></o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPath(
-                "//o[@base='Q.org.eolang.number' and o[@base='Q.org.eolang.bytes' and not(o) and text()!='']]"
+                "//o[@base='Φ.org.eolang.number' and o[@base='Φ.org.eolang.bytes' and not(o) and text()!='']]"
             )
         );
     }
@@ -67,8 +67,8 @@ final class StUnhexTest {
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'><o>41-42-0A-09</o></o></o>",
-                        "<o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'><o>41-42</o></o></o></p>"
+                        "<p><o base='Φ.org.eolang.string'><o base='Φ.org.eolang.bytes'><o>41-42-0A-09</o></o></o>",
+                        "<o base='Φ.org.eolang.string'><o base='Φ.org.eolang.bytes'><o>41-42</o></o></o></p>"
                     )
                 )
             ),
@@ -86,7 +86,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must convert empty string", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.string'><o base='Q.org.eolang.bytes'/><o/></o></p>"
+                    "<p><o base='Φ.org.eolang.string'><o base='Φ.org.eolang.bytes'/><o/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[empty(text())]")
@@ -100,7 +100,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must convert string with double spaces", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<o base=\"Q.org.eolang.string\"><o base=\"Q.org.eolang.bytes\"><o>7A-0A-20-20-79-0A-20-78</o></o></o>"
+                    "<o base=\"Φ.org.eolang.string\"><o base=\"Φ.org.eolang.bytes\"><o>7A-0A-20-20-79-0A-20-78</o></o></o>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[text()='\"z\\n  y\\n x\"']")
@@ -114,7 +114,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must convert negative zero", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>80-00-00-00-00-00-00-00</o></o></o>"
+                    "<o base='Φ.org.eolang.number'><o base='Φ.org.eolang.bytes'><o>80-00-00-00-00-00-00-00</o></o></o>"
                 )
             ),
             XhtmlMatchers.hasXPath("//o[text()='-0']")
@@ -128,7 +128,7 @@ final class StUnhexTest {
             String.format("StUnhex by %s must convert float", type),
             new Xsline(new StUnhex(shift)).pass(
                 new XMLDocument(
-                    "<p><o base='Q.org.eolang.number'><o base='Q.org.eolang.bytes'><o>41-42-43-67-AE-CD-3E-FD</o></o></o></p>"
+                    "<p><o base='Φ.org.eolang.number'><o base='Φ.org.eolang.bytes'><o>41-42-43-67-AE-CD-3E-FD</o></o></o></p>"
                 )
             ),
             Matchers.anyOf(

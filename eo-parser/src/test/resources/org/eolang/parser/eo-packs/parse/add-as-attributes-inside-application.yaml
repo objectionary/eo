@@ -13,12 +13,12 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@base='Q.org.eolang.foo' and @name='φ' and o[@base='Q.org.eolang.i' and @as='α0']]
-  - //o[@base='Q.org.eolang.foo' and @name='φ' and o[@base='Q.org.eolang.spb' and @as='α1']]
-  - //o[@base='Q.org.eolang.x' and @name='i' and o[@base='Q.org.eolang.number' and @as='α0']]
-  - //o[@base='Q.org.eolang.y' and @name='spb' and o[@base='Q.org.eolang.number' and @as='α0']]
-  - //o[@base='Q.org.eolang.y' and @name='spb' and o[@base='Q.org.eolang.number' and @as='α1']]
-  - //o[@base='Q.org.eolang.bytes' and o[@as='α0']]
+  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.i' and @as='α0']]
+  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.spb' and @as='α1']]
+  - //o[@base='Φ.org.eolang.x' and @name='i' and o[@base='Φ.org.eolang.number' and @as='α0']]
+  - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α0']]
+  - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α1']]
+  - //o[@base='Φ.org.eolang.bytes' and o[@as='α0']]
   - //o[@base='.is' and @name='f' and not(@as)]
 input: |
   # This is main.

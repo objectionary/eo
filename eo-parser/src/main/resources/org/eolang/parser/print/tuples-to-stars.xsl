@@ -8,7 +8,7 @@
     Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[starts-with(@base, 'Q.org.eolang.tuple') and o[1][starts-with(@base, 'Q.org.eolang.tuple')]]">
+  <xsl:template match="o[(starts-with(@base, 'Φ.org.eolang.tuple') or starts-with(@base, 'Φ̇.org.eolang.tuple')) and o[1][starts-with(@base, 'Φ.org.eolang.tuple') or starts-with(@base, 'Φ̇.org.eolang.tuple')]]">
     <xsl:variable name="arg">
       <xsl:apply-templates select="o[2]"/>
     </xsl:variable>
@@ -20,7 +20,7 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="inner">
-    <xsl:if test="@base='Q.org.eolang.tuple'">
+    <xsl:if test="starts-with(@base, 'Φ.org.eolang.tuple') or starts-with(@base, 'Φ̇.org.eolang.tuple')">
       <xsl:variable name="arg">
         <xsl:apply-templates select="o[2]"/>
       </xsl:variable>

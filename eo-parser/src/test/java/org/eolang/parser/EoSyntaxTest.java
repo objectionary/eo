@@ -165,7 +165,7 @@ final class EoSyntaxTest {
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@base='Q.org.eolang.number' and @name='x' and o[text()]]"
+                "/object/o[@base='Φ.org.eolang.number' and @name='x' and o[text()]]"
             )
         );
     }
@@ -203,7 +203,7 @@ final class EoSyntaxTest {
                     new ResourceOf("org/eolang/parser/canonical.eo")
                 ).asString()
             ).parsed(),
-            Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Q.org.eolang.bytes' and not(o)]"))
+            Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Φ.org.eolang.bytes' and not(o)]"))
         );
     }
 
@@ -216,8 +216,8 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@base='.add']",
-                "/object/o/o[@base='Q.org.eolang.number']",
-                "/object/o/o[@base='Q.org.eolang.true']"
+                "/object/o/o[@base='Φ.org.eolang.number']",
+                "/object/o/o[@base='Φ.org.eolang.true']"
             )
         );
     }

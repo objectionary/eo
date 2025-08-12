@@ -13,15 +13,15 @@ asserts:
   - /object[count(o)=1]
   - /object/metas/meta[head='foo']
   - /object/metas[count(meta)=9]
-  - /object/metas/meta[head/text()='also' and tail='Q.org.eolang.xyz' and part='Q.org.eolang.xyz']
-  - /object/metas/meta[head/text()='decorate' and tail='string my foo' and part='Q.org.eolang.xyz']
-  - //o[@base='Q.org.eolang.txt.scanner']
-  - //o[@base='Q.org.eolang.io.stdout']
+  - /object/metas/meta[head/text()='also' and tail='Φ.org.eolang.xyz' and part='Φ.org.eolang.xyz']
+  - /object/metas/meta[head/text()='decorate' and tail='string my foo' and part='Φ.org.eolang.xyz']
+  - //o[@base='Φ.org.eolang.txt.scanner']
+  - //o[@base='Φ.org.eolang.io.stdout']
   - //o[@base='and']
   - //o[@base='ξ']
   - //o[@base='ρ']
-  - //o[@base='Q.org.eolang.txt.regex']
-  - //o[@base='Q.org.d']
+  - //o[@base='Φ.org.eolang.txt.regex']
+  - //o[@base='Φ.org.d']
 input: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin

@@ -17,23 +17,23 @@
   The next metas will be added:
    <meta>
      <head>probe</head>
-     <tail>Q.org</tail>
-     <part>Q.org</part>
+     <tail>Φ.org</tail>
+     <part>Φ.org</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number</tail>
-     <part>Q.org.number</part>
+     <tail>Φ.org.number</tail>
+     <part>Φ.org.number</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number.edf</tail>
-     <part>Q.org.number.edf</part>
+     <tail>Φ.org.number.edf</tail>
+     <part>Φ.org.number.edf</part>
    </meta>
    <meta>
      <head>probe</head>
-     <tail>Q.org.number.edf.abc</tail>
-     <part>Q.org.number.edf.abc</part>
+     <tail>Φ.org.number.edf.abc</tail>
+     <part>Φ.org.number.edf.abc</part>
    </meta>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -62,7 +62,7 @@
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     </xsl:variable>
-    <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Q')]"/>
+    <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:if test="not(empty($probes))">
@@ -81,7 +81,7 @@
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Q')]">
+      <xsl:for-each select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]">
         <xsl:copy-of select="eo:meta(.)"/>
       </xsl:for-each>
     </xsl:copy>

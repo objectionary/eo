@@ -46,8 +46,8 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="tail">
-      <xsl:if test="not(starts-with($last, 'Q.'))">
-        <xsl:text>Q.</xsl:text>
+      <xsl:if test="not(starts-with($last, 'Φ.')) and not(starts-with($last, 'Φ̇.'))">
+        <xsl:text>Φ.</xsl:text>
       </xsl:if>
       <xsl:value-of select="$last"/>
     </xsl:variable>

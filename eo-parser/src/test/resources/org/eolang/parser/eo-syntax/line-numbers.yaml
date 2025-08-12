@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[@base='Q.org.eolang.foo' and @line='1' and @pos='0']
-  - //o[@base='Q.org.eolang.bar' and @line='2' and @pos='2']
-  - //o[@base='Q.org.eolang.number' and @line='3' and @pos='4']
+  - //o[@base='Φ.org.eolang.foo' and @line='1' and @pos='0']
+  - //o[@base='Φ.org.eolang.bar' and @line='2' and @pos='2']
+  - //o[@base='Φ.org.eolang.number' and @line='3' and @pos='4']
 input: |
   foo > baz
     bar

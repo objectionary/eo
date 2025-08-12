@@ -80,6 +80,8 @@
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <antlr.version>4.13.2</antlr.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
     <skipUTs/>
     <!-- This is the flag that allows to skip integration tests run by maven-failsafe-plugin -->
