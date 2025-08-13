@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='app' and o[@base='Q.org.eolang.stdout' and @name='φ']]
+  - //o[not(@base) and @name='app' and o[@base='Φ.org.eolang.stdout' and @name='φ']]
 input: |
   [] > app
     stdout "Hello, world!" > @
