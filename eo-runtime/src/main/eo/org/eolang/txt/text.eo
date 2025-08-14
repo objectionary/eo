@@ -30,7 +30,7 @@
   # Returns `text` trimmed from both sides.
   if. > trimmed
     0.eq origin.as-bytes.size
-    $
+    text origin
     trimmed-left.trimmed-right
 
   # Takes a piece of a `text` as another `text`.
