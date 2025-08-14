@@ -175,18 +175,16 @@
       # programmatically outside of `console` object.
       [] > output-block
         true > @
-        $ > self
 
         # Writes bytes contained in `buffer` to operation system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
-          self. > @
-            seq *
-              code.
-                win32
-                  "WriteFile"
-                  * win32.std-output-handle buffer buffer.size
-              output-block
+          seq * > @
+            code.
+              win32
+                "WriteFile"
+                * win32.std-output-handle buffer buffer.size
+            output-block
 
   # Prints a simple message to the console. We can't validate
   # the output, so we just run it and see if it crashes.
