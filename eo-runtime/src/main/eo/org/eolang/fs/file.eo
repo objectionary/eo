@@ -23,10 +23,9 @@
 
 # The file object in the filesystem.
 [path] > file
-  $.path > @
-  $ > as-file
+  path > @
   # Converts the `file` to a `path`.
-  (QQ.fs.path path).determined > as-path
+  (QQ.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
   [] > is-directory ?
@@ -38,13 +37,12 @@
   # If current file does not exist - create an empty file
   # in filesystem and returns it.
   [] > touched
-    as-file. > @
-      if.
-        exists
+    if. > @
+      exists
+      ^
+      seq *
+        touch
         ^
-        seq *
-          touch
-          ^
 
     # Creates new empty file and returns `org.eolang.true`.
     #
@@ -55,13 +53,12 @@
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
   [] > deleted
-    as-file. > @
-      if.
-        exists
-        seq *
-          delete
-          ^
+    if. > @
+      exists
+      seq *
+        delete
         ^
+      ^
 
     # Deletes the file and returns `org.eolang.true`.
     #
@@ -74,8 +71,8 @@
 
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
-    as-file. > @
-      file move
+    file > @
+      move
 
     # Tries to move file from `^.path` to `target`
     # and returns path of moved file as `org.eolang.string`.
@@ -117,32 +114,31 @@
   # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
   # closes the file stream and returns an original file object.
   [mode scope] > open
-    as-file. > @
+    if. > @
+      can-read.not.and can-write.not
+      error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        can-read.not.and can-write.not
-        error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+        exists.not
         if.
-          exists.not
-          if.
-            must-exists
-            error
-              sprintf
-                "File must exist for given access mod: '%s'"
-                * access
-            seq *
-              touched.touch
-              process-file
-              ^
-          if.
-            truncate
-            seq *
-              deleted.delete
-              touched.touch
-              process-file
-              ^
-            seq *
-              process-file
-              ^
+          must-exists
+          error
+            sprintf
+              "File must exist for given access mod: '%s'"
+              * access
+          seq *
+            touched.touch
+            process-file
+            ^
+        if.
+          truncate
+          seq *
+            deleted.delete
+            touched.touch
+            process-file
+            ^
+          seq *
+            process-file
+            ^
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
@@ -300,7 +296,7 @@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-an-error-on-touching-temp-file-in-absent-dir
-    (tmpdir.as-path.resolved "foo").as-dir.tmpfile > @
+    (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   # @todo #4096:30min Enable tests-resolves-and-touches unit test.
@@ -317,7 +313,7 @@
             joined.
               text path.separator
               * "foo" "bar"
-    (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
+    (tmpdir.as-path.resolved "foo/bar").@ > resolved
     resolved.tmpfile > f
 
   # This unit test is supposed to check the functionality of the corresponding object.
