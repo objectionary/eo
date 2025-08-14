@@ -175,11 +175,11 @@ This is how you iterate:
                     QQ.txt.sprintf
                       "%d x %d = %d\n"
                       *
-                        ^.x
-                        ^.x
-                        ^.x.as-number.times ^.x
-                  ^.x.put
-                    ^.x.as-number.plus 1
+                        x
+                        x
+                        x.as-number.times x
+                  x.put
+                    x.as-number.plus 1
           true
 ```
 
