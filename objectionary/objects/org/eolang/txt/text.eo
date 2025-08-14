@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.58.0
++version 0.58.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:24
@@ -387,7 +387,7 @@
           "Can't convert text %s to number"
           * origin
       scanned.head
-    (sscanf "%f" origin).as-tuple > scanned
+    (sscanf "%f" origin).@ > scanned
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
