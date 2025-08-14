@@ -81,7 +81,7 @@
     # Read `size` amount of bytes from operation system console.
     # Returns new instance of `input-block` with `buffer` read from console.
     [size] > read
-      ((input-block --).read size).self > @
+      ((input-block --).read size).@ > @
 
       # Posix console input block.
       #
@@ -89,15 +89,13 @@
       # programmatically outside of `console` object.
       [buffer] > input-block
         buffer > @
-        $ > self
 
         # Read `size` amount of bytes from operation system console.
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
-          self. > @
-            seq *
-              read-bytes
-              input-block read-bytes
+          seq * > @
+            read-bytes
+            input-block read-bytes
           output. > read-bytes!
             posix
               "read"
@@ -108,7 +106,7 @@
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
     [buffer] > write
-      (output-block.write buffer).self > @
+      (output-block.write buffer).@ > @
 
       # Posix console output block.
       #
@@ -116,18 +114,16 @@
       # programmatically outside of `console` object.
       [] > output-block
         true > @
-        $ > self
 
         # Writes bytes contained in `buffer` to operation system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
-          self. > @
-            seq *
-              code.
-                posix
-                  "write"
-                  * posix.stdout-fileno buffer buffer.size
-              output-block
+          seq * > @
+            code.
+              posix
+                "write"
+                * posix.stdout-fileno buffer buffer.size
+            output-block
 
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
