@@ -15,7 +15,6 @@
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
-  $ > as-i64
   times -1.as-i64 > neg
   as-i32.as-i16 > as-i16
 
@@ -193,21 +192,21 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-zero-eq-to-i64-zero
     eq. > @
-      0.as-i64
-      0.as-i64
+      0.@
+      0.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-eq-true
     eq. > @
-      123.as-i64
-      123.as-i64
+      123.@
+      123.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-eq-false
     not. > @
       eq.
-        123.as-i64
-        42.as-i64
+        123.@
+        42.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-one-plus-i64-one
