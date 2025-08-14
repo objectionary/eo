@@ -70,17 +70,14 @@
 # ```
 # That why it's better to use it sequentially.
 [] > console
-  platform. > @
-    if.
-      os.is-windows
-      windows-console
-      posix-console
+  if. > @
+    os.is-windows
+    windows-console
+    posix-console
 
   # Posix console.
   # It uses posix system calls to read/write standard inputs/outputs.
   [] > posix-console
-    $ > platform
-
     # Read `size` amount of bytes from operation system console.
     # Returns new instance of `input-block` with `buffer` read from console.
     [size] > read
@@ -135,8 +132,6 @@
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
   [] > windows-console
-    $ > platform
-
     # Read `size` amount of bytes from operation system console.
     # Returns new instance of `input-block` with `buffer` read from console.
     [size] > read
