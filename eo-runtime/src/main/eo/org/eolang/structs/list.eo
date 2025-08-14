@@ -21,7 +21,7 @@
   #  to eo-runtime this is the only method which does not work because it's quite
   #  hard to implement properly, especially after big changes in EO semantic.
   #  We need to get it done and write some tests for it.
-  $ > sorted
+  [] > sorted
 
   # Create a new list with this element added to the end of it.
   [x] > with
