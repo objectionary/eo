@@ -17,7 +17,6 @@
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
-  $ > as-number
   times -1 > neg
   as-i64.as-i32 > as-i32
   as-i32.as-i16 > as-i16
@@ -364,9 +363,8 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-to-bytes-and-backwards
     eq. > @
-      as-number.
-        as-bytes.
-          42
+      as-bytes.
+        42
       42
 
   # This unit test is supposed to check the functionality of the corresponding object.
