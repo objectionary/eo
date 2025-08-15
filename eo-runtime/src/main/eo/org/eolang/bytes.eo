@@ -19,7 +19,7 @@
 # and `float` encapsulate `bytes`.
 [data] > bytes
   data > @
-  $ > as-bytes
+  bytes data > as-bytes
   eq 01- > as-bool
   # Converts this chain of eight bytes into a number.
   # Returns an error if the byte count is not exactly eight.
