@@ -54,7 +54,7 @@
     uri > @
     "/" > separator
     file uri > as-file
-    dir (QQ.fs.file uri) > as-dir
+    dir (file uri) > as-dir
     # Returns `true` if current path is absolute - starts with '/' char.
     and. > is-absolute
       uri.length.gt 0
