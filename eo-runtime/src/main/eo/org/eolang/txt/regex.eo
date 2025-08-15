@@ -52,7 +52,7 @@
   # Here `serialized` is `bytes` which represents serialized structure in memory
   # that is built after compilation.
   [serialized] > pattern
-    $ > compiled
+    pattern serialized > compiled
 
     # Returns `true` of given `txt` matches against
     # the provided regular expression pattern.
