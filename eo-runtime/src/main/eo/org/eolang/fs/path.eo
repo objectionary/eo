@@ -262,8 +262,8 @@
     [uri] > validated
       uri > @
       ^.separator > separator
-      (file uri).@ > as-file
-      (dir (file uri)).@ > as-dir
+      file uri > as-file
+      dir (file uri) > as-dir
 
       # Returns `true` if given `uri` is drive relative which means it
       # starts with "X:" where 'X' - system drive name.
