@@ -54,7 +54,7 @@
       first.as-bytes.size.eq 0
       ""
       rec-read first --
-    (console.read 1).self > first
+    (console.read 1).@ > first
 
     # Recursive reading from console by one byte.
     #
@@ -74,4 +74,4 @@
           next
           buffer.concat char
       input.as-bytes > char
-      (input.read 1).self > next
+      (input.read 1).@ > next

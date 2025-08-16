@@ -32,7 +32,7 @@
       true.eq found.match
       found.head
       true
-  (rec-case cases).self > found
+  (rec-case cases).@ > found
 
   [tup] > rec-case
     if. > @
@@ -41,10 +41,9 @@
         previous.match
       previous
       [] >>
-        $ > self
         tup.head.tail.head > match!
         tup.head.head > head
-    (rec-case tup.tail).self > previous
+    (rec-case tup.tail).@ > previous
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-switch-simple-case

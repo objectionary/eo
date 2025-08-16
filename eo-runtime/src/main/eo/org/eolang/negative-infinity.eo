@@ -16,7 +16,6 @@
 # When dataized, it signifies an unbounded lower limit or an unreachable minimum value.
 [] > negative-infinity
   number FF-F0-00-00-00-00-00-00 > @
-  $ > floor
   positive-infinity > neg
   false > is-nan
   false > is-finite
@@ -506,7 +505,7 @@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-negative-infinity-floor-is-equal-to-self
-    negative-infinity.floor.eq negative-infinity > @
+    negative-infinity.@.eq negative-infinity > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-negative-infinity-is-not-nan

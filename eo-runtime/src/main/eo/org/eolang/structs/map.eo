@@ -25,35 +25,33 @@
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 [pairs] > map
-  this. > @
-    [] >>
-      initialized > @
+  [] > @
+    initialized > @
+      if.
+        pairs.length.eq 0
+        *
+        entries.
+          rec-rebuild
+            pairs
+
+    [entries hashes] > couple
+
+    [tup] > rec-rebuild
+      if. > @
+        tup.length.eq 0
+        couple * (list *)
         if.
-          pairs.length.eq 0
-          *
-          entries.
-            rec-rebuild
-              pairs
-
-      [entries hashes] > couple
-        $ > this
-
-      [tup] > rec-rebuild
-        if. > @
-          tup.length.eq 0
-          couple * (list *)
-          if.
-            prev.hashes.contains hash
-            prev
-            couple
-              prev.entries.with
-                [] >>
-                  tup.head.key > key
-                  tup.head.value > value
-                  ^.hash > hash
-              prev.hashes.with hash
-        hash-code-of tup.head.key > hash!
-        (rec-rebuild tup.tail).this > prev
+          prev.hashes.contains hash
+          prev
+          couple
+            prev.entries.with
+              [] >>
+                tup.head.key > key
+                tup.head.value > value
+                ^.hash > hash
+            prev.hashes.with hash
+      hash-code-of tup.head.key > hash!
+      (rec-rebuild tup.tail).@ > prev
 
   # Hash map entry.
   # Here 'key' is an object which is used to find `value` is hash map.
@@ -64,7 +62,6 @@
 
   # Initialized hash map with rebuilt entries.
   [entries] > initialized
-    $ > this
     entries.length > size
     # Returns `list` of all keys in hash map.
     # Keys order is not guaranteed.
@@ -116,14 +113,12 @@
             if.
               tup.head.hash.eq hash
               [] >>
-                $ > this
                 true > exists
                 tup.head.value > get
               not-found
-        (rec-key-search tup.tail).this > prev
+        (rec-key-search tup.tail).@ > prev
 
       [] > not-found
-        $ > this
         false > exists
         error > get
           sprintf
@@ -133,28 +128,26 @@
     # Returns the new `map` with added object
     # Replaces if there was one before.
     [key value] > with
-      this. > @
-        map.initialized
-          with.
-            origin.
-              filtered.
-                list entries
-                (hash.eq entry.hash).not > [entry] >>
-            [] >>
-              ^.key > key
-              ^.value > value
-              ^.hash > hash
+      map.initialized > @
+        with.
+          origin.
+            filtered.
+              list entries
+              (hash.eq entry.hash).not > [entry] >>
+          [] >>
+            ^.key > key
+            ^.value > value
+            ^.hash > hash
       hash-code-of key > hash!
 
     # Returns a new `map`, without element with the given `key`
     # Returns the `map` itself, if there was no item with this `key`.
     [key] > without
-      this. > @
-        map.initialized
-          origin.
-            filtered.
-              list entries
-              (hash.eq entry.hash).not > [entry] >>
+      map.initialized > @
+        origin.
+          filtered.
+            list entries
+            (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!
 
   # This unit test is supposed to check the functionality of the corresponding object.

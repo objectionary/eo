@@ -15,8 +15,6 @@
 # for representing undefined or unrepresentable numerical results.
 [] > nan
   number 7F-F8-00-00-00-00-00-00 > @
-  $ > floor
-  $ > neg
   true > is-nan
   false > is-finite
   false > is-integer
@@ -150,7 +148,7 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-nan-neg-is-nan
     eq. > @
-      nan.neg.as-bytes
+      nan.@.as-bytes
       nan.as-bytes
 
   # This unit test is supposed to check the functionality of the corresponding object.

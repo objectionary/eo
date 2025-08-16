@@ -18,12 +18,12 @@
   # Converts this from radians to degrees.
   angle > in-degrees
     div.
-      $.times 180.0
+      times 180.0
       pi
   # Converts this from degrees to radians.
   angle > in-radians
     div.
-      $.times pi
+      times pi
       180.0
 
   # Calculates sine of current angle and returns it as `org.eolang.number`.

@@ -28,7 +28,7 @@
       a 42
       42
     [x] > a
-      $.x > @
+      x > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-takes-parent-object
@@ -57,10 +57,9 @@
       [] > @
         [] > @
           eq. > @
-            this.x
+            x
             42
     42 > x
-    $ > this
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-when-applies-to-closed-object
