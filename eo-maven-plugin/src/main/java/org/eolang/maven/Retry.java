@@ -48,13 +48,13 @@ public final class Retry<T> implements Scalar<T> {
         try {
             res = origin.value();
         } catch (final Exception exception) {
-            if (tried <= this.count) {
+            if (tried < this.count) {
                 Logger.debug(
                     this,
                     "Failed to execute scalar delegate. Try '%s' of '%s' trys",
                     tried, this.count
                 );
-                res = this.tried(+tried);
+                res = this.tried(tried + 1);
             } else {
                 throw new IOException(
                     String.format(
