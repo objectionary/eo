@@ -22,7 +22,7 @@ install: |
   gem install texqc:0.6.0
 merge:
   script: |
-    mvn clean install -Pqulice --errors -Dstyle.color=never
+    mvn clean install -DskipTests -Pqulice --errors -Dstyle.color=never
 release:
   pre: false
   script: |-
