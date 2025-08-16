@@ -34,13 +34,35 @@ final class ChText implements CommitHash {
     private final String tag;
 
     /**
-     * Production constructor.
+     * Production constructor with default 3 retrys.
      *
      * @param file Path to offline file with hashes and tags.
      * @param tag Lookup tag.
      */
     ChText(final Path file, final String tag) {
-        this(() -> new TextOf(new InputOf(file)).asString(), tag);
+        this(() -> new TextOf(new InputOf(file)).asString(), tag, 3);
+    }
+
+    /**
+     * Production constructor with custom number of retrys.
+     *
+     * @param file Path to offline file with hashes and tags.
+     * @param tag Lookup tag.
+     * @param retrys Number of retrys.
+     */
+    ChText(final Path file, final String tag, final Integer retrys) {
+        this(() -> new TextOf(new InputOf(file)).asString(), tag, retrys);
+    }
+
+    /**
+     * Constructs object that retry source invocations if fails.
+     *
+     * @param source Text source.
+     * @param tag Lookup tag.
+     * @param retrys Number of retrys.
+     */
+    ChText(final Scalar<String> source, final String tag, final Integer retrys) {
+        this(new Retry<>(source, retrys), tag);
     }
 
     /**
