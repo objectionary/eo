@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
 package org.eolang.maven;
 
 import java.io.IOException;
@@ -7,7 +11,12 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class RetryTest {
+/**
+ * Test case for {@link Retry}.
+ *
+ * @since 0.59.0
+ */
+final class RetryTest {
 
     @Test
     void failsAtReachingLimitsOfRetrys() {
@@ -20,7 +29,8 @@ class RetryTest {
                         () -> {
                             throw new IOException();
                         },
-                        2).value(),
+                        2
+                    ).value(),
                 "Exception has hot been thrown"
             ).getMessage(),
             Matchers.equalTo("Failed to execute scalar delegate after 2 trys")
@@ -45,7 +55,6 @@ class RetryTest {
             Matchers.equalTo(1)
         );
     }
-
 
     @Test
     void executesEventually() {

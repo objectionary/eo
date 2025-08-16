@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoChecked;
 
 /**
  * Retry of delegate scalar.
@@ -14,7 +19,8 @@ public final class Retry<T> implements Scalar<T> {
     /**
      * The delegate scalar.
      */
-    private final Scalar<T> origin;
+    private final Scalar<? extends T> origin;
+
     /**
      * Count of retrys possible.
      */
@@ -26,7 +32,7 @@ public final class Retry<T> implements Scalar<T> {
      * @param origin Scalar
      * @param count Retry count
      */
-    public Retry(final Scalar<T> origin, final Integer count) {
+    public Retry(final Scalar<? extends T> origin, final Integer count) {
         this.origin = origin;
         this.count = count;
     }
@@ -46,8 +52,8 @@ public final class Retry<T> implements Scalar<T> {
     private T tried(final Integer tried) throws IOException {
         T res;
         try {
-            res = origin.value();
-        } catch (final Exception exception) {
+            res = new IoChecked<>(this.origin).value();
+        } catch (final IOException exception) {
             if (tried < this.count) {
                 Logger.debug(
                     this,
