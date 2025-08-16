@@ -45,7 +45,7 @@ public final class Retry<T> implements Scalar<T> {
     /**
      * Recursive retry func.
      *
-     * @param tried Already tryied
+     * @param tried Already tried
      * @return Res
      * @throws IOException If reached retry limit.
      */
@@ -57,14 +57,14 @@ public final class Retry<T> implements Scalar<T> {
             if (tried < this.count) {
                 Logger.debug(
                     this,
-                    "Failed to execute scalar delegate. Try '%s' of '%s' trys",
+                    "Failed to execute scalar delegate. Try '%s' of '%s' tries",
                     tried, this.count
                 );
                 res = this.tried(tried + 1);
             } else {
                 throw new IOException(
                     String.format(
-                        "Failed to execute scalar delegate after %s trys",
+                        "Failed to execute scalar delegate after %s tries",
                         tried
                     ),
                     exception

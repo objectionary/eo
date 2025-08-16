@@ -33,7 +33,7 @@ final class RetryTest {
                     ).value(),
                 "Exception has hot been thrown"
             ).getMessage(),
-            Matchers.equalTo("Failed to execute scalar delegate after 2 trys")
+            Matchers.equalTo("Failed to execute scalar delegate after 2 tries")
         );
     }
 
