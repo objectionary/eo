@@ -36,7 +36,7 @@ final class ChRemote implements CommitHash {
     @Override
     public String value() {
         try {
-            final String sha = new ChText(ChRemote.CACHE::asString, this.tag).value();
+            final String sha = new ChText(ChRemote.CACHE::asString, this.tag, 3).value();
             Logger.debug(this, "Git sha of %s is %s", this.tag, sha);
             return sha;
         } catch (final ChText.NotFound ex) {
