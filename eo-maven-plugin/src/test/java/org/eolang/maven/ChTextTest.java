@@ -27,6 +27,10 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @ExtendWith(MktmpResolver.class)
 final class ChTextTest {
+    /**
+     * Commit hash.
+     */
+    private static String commit;
 
     /**
      * Test file path in temp dir.
@@ -85,7 +89,7 @@ final class ChTextTest {
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"
             ).value(),
-            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+            Matchers.equalTo(ChTextTest.commit)
         );
     }
 
@@ -121,7 +125,7 @@ final class ChTextTest {
                 () -> "",
                 "434868a411b9741fdd4f8a38a5c576e8733345c9"
             ).value(),
-            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+            Matchers.equalTo(ChTextTest.commit)
         );
     }
 
@@ -160,7 +164,7 @@ final class ChTextTest {
                 ).value(),
                 "Exception has been thrown"
             ),
-            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+            Matchers.equalTo(ChTextTest.commit)
         );
     }
 
@@ -186,7 +190,7 @@ final class ChTextTest {
                 ).value(),
                 "Exception has been thrown"
             ),
-            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+            Matchers.equalTo(ChTextTest.commit)
         );
     }
 }
