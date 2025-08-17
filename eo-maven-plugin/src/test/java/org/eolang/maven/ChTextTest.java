@@ -30,7 +30,7 @@ final class ChTextTest {
     /**
      * Commit hash.
      */
-    private static String commit;
+    private static final String HASH = "434868a411b9741fdd4f8a38a5c576e8733345c9";
 
     /**
      * Test file path in temp dir.
@@ -89,7 +89,7 @@ final class ChTextTest {
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"
             ).value(),
-            Matchers.equalTo(ChTextTest.commit)
+            Matchers.equalTo(ChTextTest.HASH)
         );
     }
 
@@ -125,7 +125,7 @@ final class ChTextTest {
                 () -> "",
                 "434868a411b9741fdd4f8a38a5c576e8733345c9"
             ).value(),
-            Matchers.equalTo(ChTextTest.commit)
+            Matchers.equalTo(ChTextTest.HASH)
         );
     }
 
@@ -164,7 +164,7 @@ final class ChTextTest {
                 ).value(),
                 "Exception has been thrown"
             ),
-            Matchers.equalTo(ChTextTest.commit)
+            Matchers.equalTo(ChTextTest.HASH)
         );
     }
 
@@ -190,7 +190,7 @@ final class ChTextTest {
                 ).value(),
                 "Exception has been thrown"
             ),
-            Matchers.equalTo(ChTextTest.commit)
+            Matchers.equalTo(ChTextTest.HASH)
         );
     }
 }
