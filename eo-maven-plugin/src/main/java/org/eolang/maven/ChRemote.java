@@ -20,6 +20,11 @@ final class ChRemote implements CommitHash {
     private static final Text CACHE = new CommitHashesText();
 
     /**
+     * Count of retries possible.
+     */
+    private static final Integer RETRIES = 3;
+
+    /**
      * Tag.
      */
     private final String tag;
@@ -36,7 +41,11 @@ final class ChRemote implements CommitHash {
     @Override
     public String value() {
         try {
-            final String sha = new ChText(ChRemote.CACHE::asString, this.tag, 3).value();
+            final String sha = new ChText(
+                ChRemote.CACHE::asString,
+                this.tag,
+                ChRemote.RETRIES
+            ).value();
             Logger.debug(this, "Git sha of %s is %s", this.tag, sha);
             return sha;
         } catch (final ChText.NotFound ex) {

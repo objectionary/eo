@@ -22,7 +22,7 @@ public final class Retry<T> implements Scalar<T> {
     private final Scalar<? extends T> origin;
 
     /**
-     * Count of retrys possible.
+     * Count of retries possible.
      */
     private final Integer count;
 
