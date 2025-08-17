@@ -9,7 +9,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -137,13 +137,13 @@ final class ChTextTest {
                     "",
                     1
                 ).value(),
-            "Exception has hot been thrown at reaching retry limit"
+            "Exception has not been thrown upon reaching the retry limit"
         );
     }
 
     @Test
     void executesExactlyOnceAtNoError() {
-        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        final AtomicInteger count = new AtomicInteger(0);
         new ChText(
             () -> {
                 count.set(1 + count.get());
@@ -161,7 +161,7 @@ final class ChTextTest {
 
     @Test
     void executesNotAtTagMatchesHash() {
-        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        final AtomicInteger count = new AtomicInteger(0);
         new ChText(
             () -> {
                 count.set(1 + count.get());
@@ -179,7 +179,7 @@ final class ChTextTest {
 
     @Test
     void executesEventually() {
-        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        final AtomicInteger count = new AtomicInteger(0);
         new ChText(
             () -> {
                 count.set(1 + count.get());
