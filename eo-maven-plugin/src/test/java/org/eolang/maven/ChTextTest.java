@@ -7,7 +7,9 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicReference;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -119,6 +121,71 @@ final class ChTextTest {
                 () -> "",
                 "434868a411b9741fdd4f8a38a5c576e8733345c9"
             ).value(),
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+        );
+    }
+
+    @Test
+    void failsAtReachingLimitsOfRetries() {
+        Assertions.assertThrows(
+            UncheckedIOException.class,
+            () ->
+                new ChText(
+                    () -> {
+                        throw new IOException();
+                    },
+                    "",
+                    1
+                ).value(),
+            "Exception has hot been thrown at reaching retry limit"
+        );
+    }
+
+    @Test
+    void executesExactlyOnceAtNoError() {
+        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 1 execution",
+            Assertions.assertDoesNotThrow(
+                () -> new ChText(
+                    () -> {
+                        count.set(1 + count.get());
+                        return String.format(
+                            "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.%s",
+                            count.get()
+                        );
+                    },
+                    "0.1.1",
+                    3
+                ).value(),
+                "Exception has been thrown"
+            ),
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+        );
+    }
+
+    @Test
+    void executesEventually() {
+        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 2 executions",
+            Assertions.assertDoesNotThrow(
+                () -> new ChText(
+                    () -> {
+                        count.set(1 + count.get());
+                        if (2 > count.get()) {
+                            throw new IOException();
+                        }
+                        return String.format(
+                            "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.%s",
+                            count.get()
+                        );
+                    },
+                    "0.1.2",
+                    3
+                ).value(),
+                "Exception has been thrown"
+            ),
             Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
         );
     }
