@@ -27,10 +27,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @ExtendWith(MktmpResolver.class)
 final class ChTextTest {
-    /**
-     * Commit hash.
-     */
-    private static final String HASH = "434868a411b9741fdd4f8a38a5c576e8733345c9";
 
     /**
      * Test file path in temp dir.
@@ -89,7 +85,7 @@ final class ChTextTest {
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"
             ).value(),
-            Matchers.equalTo(ChTextTest.HASH)
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
         );
     }
 
@@ -125,7 +121,7 @@ final class ChTextTest {
                 () -> "",
                 "434868a411b9741fdd4f8a38a5c576e8733345c9"
             ).value(),
-            Matchers.equalTo(ChTextTest.HASH)
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
         );
     }
 
@@ -148,49 +144,57 @@ final class ChTextTest {
     @Test
     void executesExactlyOnceAtNoError() {
         final AtomicReference<Integer> count = new AtomicReference<>(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                return "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.1";
+            },
+            "0.1.1",
+            3
+        ).value();
         MatcherAssert.assertThat(
             "Number of executions is not equal with expected 1 execution",
-            Assertions.assertDoesNotThrow(
-                () -> new ChText(
-                    () -> {
-                        count.set(1 + count.get());
-                        return String.format(
-                            "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.%s",
-                            count.get()
-                        );
-                    },
-                    "0.1.1",
-                    3
-                ).value(),
-                "Exception has been thrown"
-            ),
-            Matchers.equalTo(ChTextTest.HASH)
+            count.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void executesNotAtTagMatchesHash() {
+        final AtomicReference<Integer> count = new AtomicReference<>(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                return "";
+            },
+            "434868a411b9741fdd4f8a38a5c576e8733345c9",
+            3
+        ).value();
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 1 execution",
+            count.get(),
+            Matchers.equalTo(0)
         );
     }
 
     @Test
     void executesEventually() {
         final AtomicReference<Integer> count = new AtomicReference<>(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                if (2 > count.get()) {
+                    throw new IOException();
+                }
+                return "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.1";
+            },
+            "0.1.1",
+            3
+        ).value();
         MatcherAssert.assertThat(
-            "Number of executions is not equal with expected 2 executions",
-            Assertions.assertDoesNotThrow(
-                () -> new ChText(
-                    () -> {
-                        count.set(1 + count.get());
-                        if (2 > count.get()) {
-                            throw new IOException();
-                        }
-                        return String.format(
-                            "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.%s",
-                            count.get()
-                        );
-                    },
-                    "0.1.2",
-                    3
-                ).value(),
-                "Exception has been thrown"
-            ),
-            Matchers.equalTo(ChTextTest.HASH)
+            "Number of executions is not equal with expected 1 execution",
+            count.get(),
+            Matchers.equalTo(2)
         );
     }
 }
