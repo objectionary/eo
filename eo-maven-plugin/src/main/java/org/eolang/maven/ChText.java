@@ -11,6 +11,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.scalar.FirstOf;
 import org.cactoos.scalar.Mapped;
+import org.cactoos.scalar.Retry;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Flattened;
 import org.cactoos.text.Split;
@@ -41,6 +42,17 @@ final class ChText implements CommitHash {
      */
     ChText(final Path file, final String tag) {
         this(() -> new TextOf(new InputOf(file)).asString(), tag);
+    }
+
+    /**
+     * Constructs an object that retries source invocations on failure.
+     *
+     * @param source Text source.
+     * @param tag Lookup tag.
+     * @param retries Number of retries (max attempts).
+     */
+    ChText(final Scalar<String> source, final String tag, final Integer retries) {
+        this(new Retry<>(source, retries), tag);
     }
 
     /**

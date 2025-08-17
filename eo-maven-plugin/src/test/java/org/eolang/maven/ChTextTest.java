@@ -7,7 +7,9 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -120,6 +122,79 @@ final class ChTextTest {
                 "434868a411b9741fdd4f8a38a5c576e8733345c9"
             ).value(),
             Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+        );
+    }
+
+    @Test
+    void failsAtReachingLimitsOfRetries() {
+        Assertions.assertThrows(
+            UncheckedIOException.class,
+            () ->
+                new ChText(
+                    () -> {
+                        throw new IOException();
+                    },
+                    "",
+                    1
+                ).value(),
+            "Exception has not been thrown upon reaching the retry limit"
+        );
+    }
+
+    @Test
+    void executesExactlyOnceAtNoError() {
+        final AtomicInteger count = new AtomicInteger(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                return "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.1";
+            },
+            "0.1.1",
+            3
+        ).value();
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 1 execution",
+            count.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void executesNotAtTagMatchesHash() {
+        final AtomicInteger count = new AtomicInteger(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                return "";
+            },
+            "434868a411b9741fdd4f8a38a5c576e8733345c9",
+            3
+        ).value();
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 1 execution",
+            count.get(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void executesEventually() {
+        final AtomicInteger count = new AtomicInteger(0);
+        new ChText(
+            () -> {
+                count.set(1 + count.get());
+                if (2 > count.get()) {
+                    throw new IOException();
+                }
+                return "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.1";
+            },
+            "0.1.1",
+            3
+        ).value();
+        MatcherAssert.assertThat(
+            "Number of executions is not equal with expected 1 execution",
+            count.get(),
+            Matchers.equalTo(2)
         );
     }
 }
