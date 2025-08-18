@@ -13,15 +13,18 @@ concurrency:
 jobs:
   zerocracy:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
-      - uses: zerocracy/judges-action@0.15.14
+      - uses: zerocracy/judges-action@0.15.15
         with:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
           repositories: objectionary/*
           factbase: objectionary.fb
+          timeout: 30
+          lifetime: 40
+          cycles: 1
           options: |
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
       - uses: zerocracy/pages-action@0.2.0
