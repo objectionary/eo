@@ -13,7 +13,7 @@ concurrency:
 jobs:
   zerocracy:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v5
       - uses: zerocracy/judges-action@0.15.15
