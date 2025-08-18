@@ -85,6 +85,11 @@
       # - `next`          - to get next matched block
       # - `text`          - to get matched subsequence as `string`
       # - `group {index}` - to get string subsequence captured by `index`-th group.
+      # @todo #4411:35min Replace all left usages of `$ > oname`.
+      #  We should remove all the usages like `$ > matched` from the syntax, and
+      #  from the runtime objects. Currently, it is not possible because syntax sugar for object
+      #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
+      #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
         $ > matched
         groups.length > groups-count
