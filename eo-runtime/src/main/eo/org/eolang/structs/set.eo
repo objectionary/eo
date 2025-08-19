@@ -11,34 +11,30 @@
 
 # Set - is an unordered `list` of unique objects.
 [lst] > set
-  this. > @
-    initialized
-      map
-        list
-          lst
-        .mapped
-          map.entry item true > [item]
-        .origin
+  initialized > @
+    map
+      list
+        lst
+      .mapped
+        map.entry item true > [item]
+      .origin
 
   # Initialized set with rebuilt unique sequence.
   [mp] > initialized
     mp.keys > @
-    $ > this
     mp.size > size
 
     # Append new `item` to set. It must be possible to get
     # hash code of `item` so `item` must be dataizable.
     [item] > with
-      this. > @
-        set.initialized
-          mp.with item true
+      set.initialized > @
+        mp.with item true
 
     # Remove `item` from `set`. If `item` is not present,
     # the set won't be changed.
     [item] > without
-      this. > @
-        set.initialized
-          mp.without item
+      set.initialized > @
+        mp.without item
 
     # Check if given `item` exists in set.
     mp.has item > [item] > has

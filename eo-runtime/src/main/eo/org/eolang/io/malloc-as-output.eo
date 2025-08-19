@@ -29,8 +29,8 @@
   # Writes bytes contained in `buffer` to the operating system console.
   # Returns new instance of `output-block` ready to write again.
   [buffer] > write
-    self. > @
-      (output-block 0).write buffer
+    (output-block 0).write > @
+      buffer
 
     # Malloc output block.
     #
@@ -40,16 +40,14 @@
     # Here `offset` is the offset to write to allocated block in memory with.
     [offset] > output-block
       true > @
-      $ > self
 
       # Writes bytes contained in `buffer` to the operating system console.
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
-        self. > @
-          seq *
-            allocated.write offset buffer
-            output-block
-              offset.plus buffer.size
+        seq * > @
+          allocated.write offset buffer
+          output-block
+            offset.plus buffer.size
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-makes-an-output-from-malloc-and-writes

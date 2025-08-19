@@ -43,7 +43,7 @@
 
   [code output] > return
     output > @
-    $ > called
+    return code output > called
 
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time

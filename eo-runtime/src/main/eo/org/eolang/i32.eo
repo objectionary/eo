@@ -15,7 +15,6 @@
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i32
   as-bytes > @
-  $ > as-i32
   times -1.as-i64.as-i32 > neg
   as-i64.as-number > as-number
 

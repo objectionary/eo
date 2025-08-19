@@ -14,7 +14,6 @@
   # Empty tuple.
   # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   [] > empty
-    $ > empty
     0 > length
     error "Can't get tail from the empty tuple" > tail
     error "Can't get head from the empty tuple" > head

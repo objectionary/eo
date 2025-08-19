@@ -16,7 +16,6 @@
 # When dataized, it signifies an unbounded upper limit or an unreachable maximum value.
 [] > positive-infinity
   number 7F-F0-00-00-00-00-00-00 > @
-  $ > floor
   negative-infinity > neg
   false > is-nan
   false > is-finite
@@ -519,7 +518,7 @@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-positive-infinity-floor-is-equal-to-self
-    positive-infinity.floor.eq positive-infinity > @
+    positive-infinity.@.eq positive-infinity > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-positive-infinity-is-not-nan
