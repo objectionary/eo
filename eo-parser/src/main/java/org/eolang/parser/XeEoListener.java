@@ -1142,7 +1142,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.objects.start(ctx).leave();
+        return this.objects.start(ctx).start(ctx).prop("base", "ξ.xi🌵").leave().leave();
     }
 
     /**

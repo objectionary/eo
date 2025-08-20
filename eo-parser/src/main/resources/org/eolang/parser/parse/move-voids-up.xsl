@@ -24,7 +24,7 @@
       <xsl:for-each select="o[eo:void(.)]">
         <xsl:copy-of select="."/>
       </xsl:for-each>
-      <xsl:for-each select="o[not(eo:void(.))] and not(@base='ξ.xi🌵')">
+      <xsl:for-each select="o[not(eo:void(.)) and not(@base='ξ.xi🌵')]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
     </xsl:element>
