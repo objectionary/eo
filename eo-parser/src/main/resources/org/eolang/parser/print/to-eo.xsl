@@ -66,7 +66,7 @@
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[not(eo:void(.))]">
+    <xsl:apply-templates select="o[not(eo:void(.)) and not(@base='ξ.xi🌵')]">
       <xsl:with-param name="indent" select="concat('  ', $indent)"/>
     </xsl:apply-templates>
   </xsl:template>
