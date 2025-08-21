@@ -515,7 +515,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="o and not(count(o)=1 and o[@base='ξ.xi🌵'])">
+      <xsl:when test="o and not(count(o)=1 and eo:idempotent(.))">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>
