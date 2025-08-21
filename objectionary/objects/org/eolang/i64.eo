@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.1
++rt jvm org.eolang:eo-runtime:0.58.2
 +rt node eo2js-runtime:0.0.0
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -15,7 +15,6 @@
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
-  $ > as-i64
   times -1.as-i64 > neg
   as-i32.as-i16 > as-i16
 
@@ -193,21 +192,21 @@
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-zero-eq-to-i64-zero
     eq. > @
-      0.as-i64
-      0.as-i64
+      0.@
+      0.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-eq-true
     eq. > @
-      123.as-i64
-      123.as-i64
+      123.@
+      123.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-eq-false
     not. > @
       eq.
-        123.as-i64
-        42.as-i64
+        123.@
+        42.@
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-i64-one-plus-i64-one

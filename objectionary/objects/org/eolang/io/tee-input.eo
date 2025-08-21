@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:43
@@ -28,7 +28,8 @@
   # Returns new instance of `input-block` with set
   # `input` ready to be read, `output` ready to be written and bytes `buffer`.
   [size] > read
-    ((input-block input output --).read size).self > @
+    (input-block input output --).read > @
+      size
 
     # Tee-input block.
     #
@@ -40,19 +41,17 @@
     # `buffer` is a sequence of bytes that got from previous reading.
     [input output buffer] > input-block
       buffer > @
-      $ > self
 
       # Read `size` amount of bytes from `input`.
       # Returns new instance of `input-block` with set
       # `input` ready to be read, `output` ready to be written and bytes `buffer`.
       [size] > read
-        self. > @
-          seq *
+        seq * > @
+          written-bytes
+          input-block
+            read-bytes
             written-bytes
-            input-block
-              read-bytes
-              written-bytes
-              read-bytes.as-bytes
+            read-bytes.as-bytes
         (input.read size).read.^ > read-bytes
         (output.write read-bytes).write.^ > written-bytes
 

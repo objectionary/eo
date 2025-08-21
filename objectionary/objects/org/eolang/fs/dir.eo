@@ -3,9 +3,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.58.1
++rt jvm org.eolang:eo-runtime:0.58.2
 +rt node eo2js-runtime:0.0.0
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -14,20 +14,18 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 [file] > dir
-  $.file > @
-  $ > as-dir
+  file > @
   true > is-directory
 
   # Makes a directory together with all required
   # parent directories and returns the created directory.
   [] > made
-    as-dir. > @
-      if.
-        ^.exists
+    if. > @
+      ^.exists
+      ^
+      seq *
+        mkdir
         ^
-        seq *
-          mkdir
-          ^
 
     # Makes a directory together with all required
     # parent directories.
@@ -45,13 +43,12 @@
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
   [] > deleted
-    as-dir. > @
-      if.
-        ^.exists
-        seq *
-          rec-delete (walk "**").@
-          ^
+    if. > @
+      ^.exists
+      seq *
+        rec-delete (walk "**").@
         ^
+      ^
 
     # Deletes files and directories in the current directory recursively.
     # Returns `true`.
@@ -68,15 +65,14 @@
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile
-    as-file. > @
-      if.
-        ^.exists
-        QQ.fs.file
-          touch.as-bytes
-        error
-          sprintf
-            "Directory %s does not exist, can't create temporary file"
-            * file
+    if. > @
+      ^.exists
+      QQ.fs.file
+        touch.as-bytes
+      error
+        sprintf
+          "Directory %s does not exist, can't create temporary file"
+          * file
 
     # Creates an empty temporary file in the current directory and
     # returns absolute path to it as `org.eolang.string`.

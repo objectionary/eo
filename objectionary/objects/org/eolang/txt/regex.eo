@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.58.1
++rt jvm org.eolang:eo-runtime:0.58.2
 +rt node eo2js-runtime:0.0.0
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:55
@@ -52,7 +52,7 @@
   # Here `serialized` is `bytes` which represents serialized structure in memory
   # that is built after compilation.
   [serialized] > pattern
-    $ > compiled
+    pattern serialized > compiled
 
     # Returns `true` of given `txt` matches against
     # the provided regular expression pattern.
@@ -85,6 +85,11 @@
       # - `next`          - to get next matched block
       # - `text`          - to get matched subsequence as `string`
       # - `group {index}` - to get string subsequence captured by `index`-th group.
+      # @todo #4411:35min Replace all left usages of `$ > oname`.
+      #  We should remove all the usages like `$ > matched` from the syntax, and
+      #  from the runtime objects. Currently, it is not possible because syntax sugar for object
+      #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
+      #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
         $ > matched
         groups.length > groups-count

@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.58.1
++rt jvm org.eolang:eo-runtime:0.58.2
 +rt node eo2js-runtime:0.0.0
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:28
@@ -33,7 +33,7 @@
   -1 > inaddr-none
   [code output] > return
     output > @
-    $ > called
+    return code output > called
 
   # Timeval structure for "gettimeofday" syscall.
   # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.

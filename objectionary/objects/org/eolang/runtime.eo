@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint decorated-formation
@@ -28,7 +28,7 @@
       a 42
       42
     [x] > a
-      $.x > @
+      x > @
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-takes-parent-object
@@ -57,10 +57,9 @@
       [] > @
         [] > @
           eq. > @
-            this.x
+            x
             42
     42 > x
-    $ > this
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> throws-when-applies-to-closed-object

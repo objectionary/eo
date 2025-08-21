@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:24
@@ -30,7 +30,7 @@
   # Returns `text` trimmed from both sides.
   if. > trimmed
     0.eq origin.as-bytes.size
-    $
+    text origin
     trimmed-left.trimmed-right
 
   # Takes a piece of a `text` as another `text`.

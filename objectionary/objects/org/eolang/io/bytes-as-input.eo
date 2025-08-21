@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:47
@@ -33,7 +33,7 @@
   # Returns new instance of `input-block` with set
   # sliced `data` and `buffer`.
   [size] > read
-    ((input-block bts --).read size).self > @
+    ((input-block bts --).read size).@ > @
 
     # Bytes-as-input block.
     #
@@ -44,24 +44,22 @@
     # `buffer` is a sequence of bytes that got from previous reading.
     [data buffer] > input-block
       buffer > @
-      $ > self
 
       # Read `size` amount of bytes from `data`.
       # Returns new instance of `input-block` with set
       # sliced `data` and `buffer`.
       [size] > read
-        self. > @
-          if.
-            available.eq 0
-            input-block -- --
-            input-block
-              as-bytes.
-                data.slice
-                  next
-                  (number available).minus
-                    number next
-              as-bytes.
-                data.slice 0 next
+        if. > @
+          available.eq 0
+          input-block -- --
+          input-block
+            as-bytes.
+              data.slice
+                next
+                (number available).minus
+                  number next
+            as-bytes.
+              data.slice 0 next
         size > to-read!
         data.size > available!
         if. > next!

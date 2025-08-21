@@ -4,7 +4,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+version 0.58.1
++version 0.58.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:20
@@ -17,7 +17,6 @@
   div. > @
     seed.as-number
     00-20-00-00-00-00-00-00.as-i64.as-number
-  $ > fixed
   # Next random.
   # Formula is based on linear congruential pseudorandom number generator, as defined by
   # D. H. Lehmer and described by Donald E. Knuth in The Art of Computer Programming, Volume 2,
@@ -25,16 +24,15 @@
   # Magic numbers are taken from Java implementation. 48 lower bits are considered.
   # `next` = (`seed` * 25214903917 + 11) & ((1 << 48) - 1).
   # Here `00-0F-FF-FF-FF-FF-FF-FF` is pre calculated `(1 << 48) - 1`.
-  fixed. > next
-    random
-      as-number.
-        as-i64.
-          and.
-            as-i64.
-              plus.
-                seed.times 25214903917
-                11
-            00-0F-FF-FF-FF-FF-FF-FF
+  random > next
+    as-number.
+      as-i64.
+        and.
+          as-i64.
+            plus.
+              seed.times 25214903917
+              11
+          00-0F-FF-FF-FF-FF-FF-FF
 
   # New random with pseudo-random seed.
   [] > pseudo
@@ -95,7 +93,7 @@
       and.
         rand.next.next.lt 1
         (rand.next.next.lt 0).not
-    (random 123).fixed > rand
+    (random 123).next > rand
 
   # This unit test is supposed to check the functionality of the corresponding object.
   [] +> tests-two-random-numbers-not-equal
