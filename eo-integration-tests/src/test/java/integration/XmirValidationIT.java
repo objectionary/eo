@@ -33,9 +33,7 @@ final class XmirValidationIT {
                 xmir -> {
                     try {
                         Assertions.assertDoesNotThrow(
-                            new StrictXmir(
-                                new XMLDocument(xmir)
-                            )::inner,
+                            new StrictXmir(new XMLDocument(xmir))::inner,
                             "validation should pass as normal"
                         );
                     } catch (final FileNotFoundException exception) {

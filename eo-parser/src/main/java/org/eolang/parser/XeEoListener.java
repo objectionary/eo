@@ -316,7 +316,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             name = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            name = ctx.PHI().getText();
+            name = "φ";
         } else {
             name = "";
         }
