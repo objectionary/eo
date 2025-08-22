@@ -19,6 +19,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-parser</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <!--
       This dependency is required by the javadoc plugin. In the eo-runtime,
       we use classes from this JAR, but can't have it as a normal dependency.
