@@ -233,7 +233,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
         this.objects.enter()
-            .start(ctx.getStart().getLine(), ctx.getStop().getCharPositionInLine() - 1)
+            .start(ctx.getStart().getLine(), 0)
             .prop("name", "λ")
             .leave()
             .leave();
@@ -963,7 +963,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterTname(final EoParser.TnameContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {
-            this.objects.prop("name", ctx.PHI().getText());
+            this.objects.prop("name", "φ");
         } else if (ctx.NAME() != null) {
             this.objects.prop(
                 "name",
