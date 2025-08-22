@@ -5,6 +5,8 @@
 package integration;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.MayBeSlow;
+import com.yegor256.WeAreOnline;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,23 +14,28 @@ import java.nio.file.Paths;
 import org.eolang.parser.StrictXmir;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test for checking validity of parsed EO as XMIR documents.
  *
  * @since 0.58.3
  */
-final class XmirValidationIT {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class XmirIT {
 
     @Test
-    void checksWithXsd() throws IOException {
+    @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MayBeSlow.class)
+    void validatesWithXsd() throws IOException {
         Files.walk(
-                Paths.get("").toAbsolutePath().getParent()
-                    .resolve("eo-runtime")
-                    .resolve("target")
-                    .resolve("eo")
-                    .resolve("1-parse")
-            ).filter(Files::isRegularFile)
+            Paths.get("").toAbsolutePath().getParent()
+                .resolve("eo-runtime")
+                .resolve("target")
+                .resolve("eo")
+                .resolve("1-parse")
+            )
+            .filter(Files::isRegularFile)
             .forEach(
                 xmir -> {
                     try {
