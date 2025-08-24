@@ -33,7 +33,7 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@base and @name='φ' and ancestor::o[contains(@name,'ap🌵')]]">
-    <xsl:variable name="inner" select="descendant::o[@base = current()/@base][1]"/>
+    <xsl:variable name="inner" select="o[@base = current()/@base][1]"/>
     <xsl:choose>
       <xsl:when test="$inner">
         <xsl:apply-templates select="$inner" mode="promote">
