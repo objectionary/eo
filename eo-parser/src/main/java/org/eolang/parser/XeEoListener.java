@@ -1196,7 +1196,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
         this.startAbstract(ctx)
-            .enter().prop("name", new AutoName(ctx).asString())
+            .enter().prop("name", new AutoName(ctx, "p").asString())
             .start(ctx)
             .prop("base", String.format("ξ.ρ.%s", application))
             .prop("name", "φ");
