@@ -23,5 +23,5 @@
       # Returns new instance of `output-block`.
       output-block > [buffer] > write
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that dead-output can write bytes to nowhere without errors.
   dead-output.write 01-02-03 > [] +> writes-bytes-to-nowhere

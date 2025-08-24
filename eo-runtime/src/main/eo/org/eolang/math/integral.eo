@@ -51,7 +51,7 @@
                 a.plus b
           fun b
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that integral calculation works correctly for linear function.
   [] +> tests-calculates-lineal-integral
     close-to > @
       as-number.
@@ -77,7 +77,7 @@
           value
           value.neg
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that integral calculation works correctly for quadratic function.
   [] +> tests-calculates-quadratic-integral
     close-to > @
       as-number.
@@ -103,7 +103,7 @@
           value
           value.neg
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that integral calculation works correctly for cubic function.
   [] +> tests-calculates-cube-integral
     close-to > @
       as-number.

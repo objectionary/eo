@@ -79,7 +79,7 @@ public final class PhVoid implements Phi {
         if (!this.object.compareAndSet(null, phi)) {
             throw new ExReadOnly(
                 String.format(
-                    "This void attribute \"%s\" is already set, can't reset",
+                    "Void attribute \"%s\" is already set, can't reset",
                     this.name
                 )
             );
@@ -91,7 +91,7 @@ public final class PhVoid implements Phi {
         if (!this.object.compareAndSet(null, phi)) {
             throw new ExReadOnly(
                 String.format(
-                    "This void attribute \"%s\" is already set, can't reset",
+                    "Void attribute \"%s\" is already set, can't reset",
                     this.name
                 )
             );

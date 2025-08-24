@@ -59,7 +59,7 @@
         sin-addr.size
       sin-zero.size
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the inet_addr Win32 function returns the correct network address for localhost (127.0.0.1).
   [] +> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not

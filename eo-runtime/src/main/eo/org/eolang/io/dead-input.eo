@@ -24,7 +24,7 @@
       # Returns new instance of `input-block`.
       input-block > [size] > read
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that dead-input always returns empty bytes regardless of requested size.
   [] +> tests-reads-empty-bytes
     and. > @
       i1.eq --
