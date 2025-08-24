@@ -11,9 +11,9 @@
 +unlint redundant-object:103
 
 # Range - create a `list` containing a range of elements
-# Here `start` must be a abstract object that must have an object `next` to get
+# Here `start` must be an abstract object that must have an object `next` to get
 # next element and object `lt` to compare with the `end` object.
-# Every next element also must have an objects `next` and `lt`.
+# Every next element also must have objects `next` and `lt`.
 # The first object in the chain must have a default value
 # e.g.:
 #

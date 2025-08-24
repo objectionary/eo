@@ -213,7 +213,7 @@
         # don't use the object programmatically outside of `file` object.
         [size] > read-bytes ?
 
-      # Write given `buffer` to file output stream.
+      # Writes the given `buffer` to file output stream.
       # Here `buffer` is either a sequence of bytes or an object that can be
       # dataized via `as-bytes` object.
       # Returns new instance of `output-block` ready to write again, or
@@ -228,7 +228,7 @@
         [] > output-block
           true > @
 
-          # Write given `buffer` to file output stream.
+          # Writes the given `buffer` to file output stream.
           # Here `buffer` is either a sequence of bytes or an object that can be
           # dataized via `as-bytes` object.
           # Returns new instance of `output-block` ready to write again, or

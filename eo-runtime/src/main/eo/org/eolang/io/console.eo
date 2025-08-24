@@ -101,7 +101,7 @@
               "read"
               * posix.stdin-fileno size
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
@@ -115,7 +115,7 @@
       [] > output-block
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           seq * > @
@@ -151,7 +151,7 @@
               "ReadFile"
               * win32.std-input-handle size
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
@@ -165,7 +165,7 @@
       [] > output-block
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           seq * > @

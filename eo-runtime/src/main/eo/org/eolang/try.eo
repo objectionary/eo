@@ -17,7 +17,7 @@
 # its `finally` attribute and returns the result of dataization of `main` or `catch`
 # attribute as `org.eolang.bytes`.
 [main catch finally] > try ?
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception
     try > @
       slice.
@@ -27,7 +27,7 @@
       true > [e]
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that nested try-catch blocks work correctly with exception propagation.
   [] +> tests-two-nested-try-blocks
     try > @
       try
@@ -40,7 +40,7 @@
       true > [e]
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try block executes normally when no exception occurs.
   [] +> tests-try-without-error-block
     eq. > @
       try
@@ -49,7 +49,7 @@
         true
       32
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try-catch preserves memory state when exception occurs during malloc operations.
   [] +> tests-try-malloc-update-catch
     eq. > @
       malloc.of

@@ -32,7 +32,7 @@
         (dataized tup.head).as-bool.eq --
         tup.length.eq last-index
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq correctly processes steps and returns the last value when used with float comparison (less than).
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
       1
@@ -48,7 +48,7 @@
                     m.as-number
                 1.1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq correctly processes steps and returns the last value when used with float comparison (greater than).
   [] +> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
@@ -64,7 +64,7 @@
                     m.as-number
                 0.9
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than).
   [] +> tests-seq-single-dataization-int-less
     malloc.of > @
       1
@@ -80,7 +80,7 @@
                     m.as-number
                 2
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than or equal).
   [] +> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
       1
@@ -145,7 +145,7 @@
           true
           true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq correctly handles multiple memory operations and returns the last value when used with equality comparison.
   [] +> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
       1
@@ -162,7 +162,7 @@
                     m.as-number
                 1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq handles memory caching correctly when accessing array elements and performing operations.
   [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
       1
@@ -181,7 +181,7 @@
                     m
                 1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq dataizes all steps except the last one and returns the last step's value.
   [] +> tests-seq-calculates-and-returns
     eq. > @
       1
@@ -190,7 +190,7 @@
           0
           1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that seq works correctly with object values (strings) as the final step.
   [] +> tests-seq-calculates-and-returns-object
     eq. > @
       "Hello!"
