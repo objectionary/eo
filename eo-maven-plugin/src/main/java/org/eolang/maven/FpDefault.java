@@ -13,16 +13,17 @@ import org.cactoos.io.InputOf;
  * Default footprint that covers all the scenarios of updating target
  * from source using cache.
  * <p>General statements:
- * 1) if target older than source - target is not updated
- * 2) if target younger than source or does not exist - it will be created and filled up.
- *    It can be created from source, or from global cache if it exists and cacheable and
- *    older than source.
- * 3) the cache is updated if it's cacheable (it does not exist or if it's younger than source)
+ * 1) if target is newer than source - target is not updated
+ * 2) if target is older than source or does not exist - it will be created and filled.
+ *    It can be created from source, or from global cache if cache exists, is cacheable, and
+ *    is newer than source.
+ * 3) the cache is updated if it is cacheable (it does not exist or if it is older than source)
  * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the target is always
  *    regenerated and cache is not touched at all.
  * </p>
  *
- * <p>Excluding any type of errors there are 4 possible scenarios of this {@link Footprint} work:
+ * <p>Excluding any type of errors there are 4 possible scenarios
+ * of this {@link Footprint} work:
  * 1) do nothing and just return target file.
  * 2) update target from source and return target.
  * 3) update target from source, update cache from target and return target.
