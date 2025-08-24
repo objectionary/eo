@@ -19,7 +19,7 @@
 # ```
 # try
 #   risky-operation    # main
-#   error-handler      # catch  
+#   error-handler      # catch
 #   cleanup-action     # finally
 # ```
 [main catch finally] > try ?
