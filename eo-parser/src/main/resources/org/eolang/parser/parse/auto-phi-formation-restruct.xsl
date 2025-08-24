@@ -57,6 +57,6 @@
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <!-- Remove redundant ξ.X for void atributes, located inside the auto-phi formation -->
+  <!-- Remove redundant ξ.X for void attributes, located inside the auto-phi formation -->
   <xsl:template match="o[starts-with(@base,'ξ.') and ancestor::o[contains(@name,'ap🌵')][descendant::o[@base='∅' and @name=substring-after(current()/@base,'ξ.')]]]"/>
 </xsl:stylesheet>
