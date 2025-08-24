@@ -63,7 +63,7 @@
       49.5
       0.0000001
 
-    # Checks where given `value` is close to `operand` with given precision `err`.
+    # Checks whether given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
       lte. > @
         minus.
@@ -89,7 +89,7 @@
       333
       0.0000001
 
-    # Checks where given `value` is close to `operand` with given precision `err`.
+    # Checks whether given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
       lte. > @
         minus.
@@ -115,7 +115,7 @@
       2499.75
       0.0000001
 
-    # Checks where given `value` is close to `operand` with given precision `err`.
+    # Checks whether given `value` is close to `operand` with given precision `err`.
     [value operand err] > close-to
       lte. > @
         minus.

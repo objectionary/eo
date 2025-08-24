@@ -190,7 +190,7 @@
         0.as-i64.as-i32.as-i16
         10.as-i64.as-i32.as-i16
 
-  # Tests that i16 zero equals to another i16 zero.
+  # Tests that i16 zero equals another i16 zero.
   [] +> tests-i16-zero-eq-to-i16-zero
     eq. > @
       0.as-i64.as-i32.as-i16

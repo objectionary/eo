@@ -74,7 +74,7 @@
       # Here:
       # - `position`      - sequence number of matched block,
       # - `start`         - matched region start index.
-      #   If equals to -1 - block was not matched
+      #   If equal to -1 - block was not matched
       # - `from`          - index where matched string sequence starts
       # - `to`            - index where matched string sequence ends
       # - `groups`        - tuple of identified matched groups

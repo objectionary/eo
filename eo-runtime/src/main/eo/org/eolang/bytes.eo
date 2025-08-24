@@ -14,9 +14,16 @@
 +unlint redundant-object:53
 +unlint redundant-object:62
 
-# The object encapsulates a chain of bytes, adding a few
-# convenient operations to it. Objects like `int`, `string`,
-# and `float` encapsulate `bytes`.
+# The object encapsulates a chain of bytes, providing bitwise operations,
+# numeric conversions, and byte manipulation methods. Objects like `number`, `string`,
+# and integer types (`i16`, `i32`, `i64`) use `bytes` as their internal representation.
+#
+# Usage examples:
+# ```
+# bytes 01-02-03       # Creates a 3-byte sequence
+# FF-FF.and 00-FF      # Bitwise AND operation
+# as-bytes.as-number   # Convert 8-byte sequence to number
+# ```
 [data] > bytes
   data > @
   bytes data > as-bytes
@@ -67,7 +74,7 @@
         "Can't convert non 2 length bytes to i16, bytes are %x"
         * as-bytes
 
-  # Returns `org.eolang.true` if current sequence of bytes equals to another object.
+  # Returns `org.eolang.true` if current sequence of bytes equals another object.
   # Before the actual comparison the object `b` is dataized.
   [b] > eq ?
 

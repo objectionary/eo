@@ -189,7 +189,7 @@
         0.as-i64
         10.as-i64
 
-  # Tests that i64 zero equals to another i64 zero.
+  # Tests that i64 zero equals another i64 zero.
   [] +> tests-i64-zero-eq-to-i64-zero
     eq. > @
       0.@
@@ -223,14 +223,13 @@
   # Tests that i64 division by zero throws an error.
   2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
 
-  # Checks that division by one returns the dividend.
+  # Tests that i64 division by one returns the original value.
   [] +> tests-i64-div-by-i64-one
     eq. > @
       dividend.div 1.as-i64
       dividend
     -235.as-i64 > dividend
 
-  # Checks div with remainder
   # Tests that i64 division with remainder works correctly.
   [] +> tests-i64-div-with-remainder
     eq. > @

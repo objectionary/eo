@@ -10,11 +10,18 @@
 +unlint redundant-object:24
 
 # List implements basic operations on collections like reducing, mapping, filtering, etc.
-# Decorates and extends `tuple`.
+# Decorates and extends `tuple` to provide functional programming operations.
+#
+# Usage examples:
+# ```
+# list (* 1 2 3)           # Create list from tuple
+# list.is-empty            # Check if empty
+# list.map [x] (x.plus 1)  # Map operation
+# list.filter [x] (x.gt 0) # Filter elements
+# ```
 [origin] > list
   origin > @
-  # Is it empty?.
-  # A check to determine if an object contains no elements or data.
+  # Checks if the list contains no elements.
   0.eq origin.length > is-empty
   # Returns a new list sorted via `.lt` method.
   # @todo #3251:30min The object does not work. After moving `list` object

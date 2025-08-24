@@ -34,10 +34,10 @@
   # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
   [] > as-i64 ?
 
-  # Returns true if `$` = `x` in terms of bytes.
-  # Here `x` can be a `number` or any other object which
-  # can be converted to `bytes` via `as-bytes` object.
-  # According to IEEE 754 float -0.0 and 0.0 are equal.
+  # Returns true if this number equals `x` when compared as byte sequences.
+  # The parameter `x` can be a `number` or any object convertible to `bytes`
+  # via the `as-bytes` method. Follows IEEE 754 standard where negative zero
+  # (-0.0) and positive zero (0.0) are considered equal.
   [x] > eq
     if. > @
       or.

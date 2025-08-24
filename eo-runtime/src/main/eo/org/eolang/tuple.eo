@@ -67,7 +67,7 @@
       *.length
       0
 
-  # Check that an empty tuples .length equals to zero.
+  # Check that an empty tuple's .length equals zero.
   [] +> tests-empty-tuple-length
     eq. > @
       (arr *).elements.length

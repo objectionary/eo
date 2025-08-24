@@ -26,9 +26,9 @@
 #     dataized "Iteration 4\n"
 # ```
 #
-# Here only first three strings are dataized meanwhile the last one
-# is returned and attached to `last` object.
-# The example with `while` object would behave the same way.
+# Only the first three strings are dataized for side effects while the last one
+# is returned as the result value assigned to the `last` object.
+# The `while` loop example produces identical behavior.
 [condition body] > while
   if. > @
     (condition 0).as-bool

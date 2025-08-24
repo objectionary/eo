@@ -5,9 +5,17 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Sequence.
-# The object, when being dataized, dataizes all provided
-# "steps" (except the last one) and returns the last one.
+# Sequential execution object that dataizes all provided steps in order
+# and returns the value of the final step. All steps are dataized for
+# their side effects, while only the last step's value is returned.
+#
+# Usage example:
+# ```
+# seq *             # Execute operations sequentially
+#   operation1      # Executed for side effects
+#   operation2      # Executed for side effects
+#   final-value     # Executed and returned
+# ```
 [steps] > seq
   if. > @
     steps.length.eq 0

@@ -47,28 +47,30 @@
 #
 # Here `"Hello, world!".as-bytes` bytes are printed to console.
 # The object `write` is an output block.
-# It dataizes given argument, converts it to string,
-# prints it to operation system console and returns next output block
+# It dataizes the given argument, converts it to string,
+# prints it to the operating system console and returns the next output block
 # ready to `write` again.
 #
-# Console is platform dependent, which means the internal algorithm is different for
-# Posix and Windows. Defining the console happens every time you "touch" `console` object.
-# If you use it as input/output:
+# Console operations are platform-specific, with different implementations
+# for POSIX and Windows systems. Each access to the `console` object creates
+# a new console instance, so reusing returned input/output blocks improves
+# performance by maintaining the same console session:
+#
+# Efficient (recommended):
 # ```
 # console.read 2 > i1
 # i1.read 2 > i2
 # i2.read 2 > i3
-# ...
 # ```
 #
-# it works faster than:
+# Less efficient (creates new console each time):
 # ```
 # console.read 2 > i1
 # console.read 2 > i2
 # console.read 2 > i3
-# ...
 # ```
-# That why it's better to use it sequentially.
+#
+# Sequential reuse maintains the console state across operations.
 [] > console
   if. > @
     os.is-windows

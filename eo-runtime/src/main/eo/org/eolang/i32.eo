@@ -215,7 +215,7 @@
         0.as-i64.as-i32
         10.as-i64.as-i32
 
-  # Tests that i32 zero equals to another i32 zero.
+  # Tests that i32 zero equals another i32 zero.
   [] +> tests-i32-zero-eq-to-i32-zero
     eq. > @
       0.as-i64.as-i32
@@ -264,7 +264,6 @@
   # Tests that converting i32 to i16 throws error when out of bounds.
   247483647.as-i64.as-i32.as-i16 > [] +> throws-on-converting-to-i16-if-out-of-bounds
 
-  # Checks that division by one returns the dividend.
   # Tests that i32 division by one returns the original value.
   [] +> tests-i32-div-by-i32-one
     eq. > @
@@ -272,7 +271,6 @@
       dividend
     -235.as-i64.as-i32 > dividend
 
-  # Checks div with remainder
   # Tests that i32 division with remainder works correctly.
   [] +> tests-i32-div-with-remainder
     eq. > @

@@ -8,8 +8,18 @@
 +unlint redundant-object:94
 +unlint redundant-object:110
 
-# The `string` object is an abstraction of a text string, which
-# internally is a chain of bytes.
+# The `string` object represents UTF-8 encoded text strings stored internally
+# as byte sequences. It provides Unicode-aware operations for text manipulation
+# including slicing, length calculation, and character-level access.
+# Unicode characters may occupy 1-4 bytes each, so byte length differs from
+# character length for non-ASCII text.
+#
+# Usage examples:
+# ```
+# string "Hello, 世界!"  # Unicode string creation
+# "text".length         # Character count (not bytes)
+# "text".slice 0 2      # Character-based slicing
+# ```
 [as-bytes] > string
   as-bytes > @
 
@@ -134,7 +144,7 @@
           cause
 
     # The object recursively calculates `index` of bytes representation of the string
-    # where `accum` equals to provided `result`.
+    # where `accum` equals provided `result`.
     # The `cause` here is the description of the error which is thrown when `index` reaches the end
     # of the bytes but `accum` does not reach the `result`.
     # Also it checks how many bytes (B) must contain character on the current step and tries to
@@ -176,13 +186,13 @@
       "€ друг".as-bytes
       E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-  # Tests that byte sequence equals to string with Cyrillic characters.
+  # Tests that byte sequence equals string with Cyrillic characters.
   [] +> tests-bytes-equal-to-string
     eq. > @
       D0-B4-D1-80-D1-83-D0-B3
       "друг"
 
-  # Tests that string with Cyrillic characters equals to byte sequence.
+  # Tests that string with Cyrillic characters equals byte sequence.
   [] +> tests-string-equals-to-bytes
     eq. > @
       "друг"
@@ -242,7 +252,7 @@
         negative-infinity
         "друг"
 
-  # Tests that single-line text block equals to regular string.
+  # Tests that single-line text block equals regular string.
   [] +> tests-text-block-one-line
     eq. > @
       """
@@ -321,7 +331,7 @@
       "\n"
       "\012"
 
-  # Tests that Unicode escape sequence equals to actual Unicode character.
+  # Tests that Unicode escape sequence equals actual Unicode character.
   [] +> tests-supports-escape-sequences-unicode
     eq. > @
       "\u0424"
