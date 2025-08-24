@@ -50,7 +50,7 @@
   <xsl:template match="o" mode="promote">
     <xsl:param name="outer-name"/>
     <xsl:copy>
-      <xsl:copy-of select="@*[name()!='name']"/>
+      <xsl:copy-of select="@* except (@name, @as)"/>
       <xsl:attribute name="name">
         <xsl:value-of select="$outer-name"/>
       </xsl:attribute>
