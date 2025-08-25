@@ -4,7 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/o[count(o)=3]
+  - /object/o[count(o)=4]
+  - //o[@base='ξ.xi🌵']
 input: |
   # Main.
   [] > main

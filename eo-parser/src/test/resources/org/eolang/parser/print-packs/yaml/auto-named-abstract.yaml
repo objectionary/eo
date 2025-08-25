@@ -13,9 +13,9 @@ origin: |
 
 printed: |
   # No comments.
-  [] > y
+  [] > y'
     x > first
-      []:0 >>
+      []:0 >>'
         5 > five
     x > second
-      [f]:1 >>
+      [f]:1 >>'

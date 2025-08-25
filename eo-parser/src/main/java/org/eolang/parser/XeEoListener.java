@@ -251,7 +251,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterTformation(final EoParser.TformationContext ctx) {
-        this.startAbstract(ctx);
+        this.startTest(ctx);
     }
 
     @Override
@@ -1142,6 +1142,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
+        return this.objects.start(ctx).start(ctx).prop("base", "ξ.xi🌵").leave().leave();
+    }
+
+    private Objects startTest(final ParserRuleContext ctx) {
         return this.objects.start(ctx).leave();
     }
 

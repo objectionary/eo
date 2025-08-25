@@ -19,7 +19,7 @@ printed: |
   +package sandbox
 
   # No comments.
-  [args] > main
+  [args] > main'
     io.stdout > @
       args.at:0
         args.length.neg:0

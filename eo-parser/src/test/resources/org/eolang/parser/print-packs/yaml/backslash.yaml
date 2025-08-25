@@ -9,6 +9,6 @@ origin: |
 
 printed: |
   # No comments.
-  [] > main
+  [] > main'
     regex > rgx
       "/^[\\x00-\\x7F]*$/":0

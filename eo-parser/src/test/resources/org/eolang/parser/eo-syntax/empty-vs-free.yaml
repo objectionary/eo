@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='foo' and count(o)=2]
+  - //o[@name='foo' and count(o)=3 and o[1][@base='ξ.xi🌵']]
   - //o[@name='x']
   - //o[@name='y' and not(@base)]
 input: |

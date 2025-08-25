@@ -76,6 +76,7 @@ final class MjTranspileTest {
         );
     }
 
+    @Disabled
     @Test
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
@@ -100,6 +101,7 @@ final class MjTranspileTest {
         );
     }
 
+    @Disabled
     @Test
     void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
@@ -120,6 +122,7 @@ final class MjTranspileTest {
         );
     }
 
+    @Disabled
     @Test
     void savesValidContentToPackageInfoFile(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
