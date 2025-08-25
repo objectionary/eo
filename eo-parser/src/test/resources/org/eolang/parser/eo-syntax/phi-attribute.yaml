@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.is-nan' and @name="φ"]
+  - //o[not(@name='@')]
+input: |
+  # Real.
+  [] > real
+    [] +> tests-sqrt-check-nan-input
+      is-nan. +> @
+        sqrt.
+          real nan
