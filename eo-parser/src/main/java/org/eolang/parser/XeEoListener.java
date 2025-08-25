@@ -157,7 +157,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterBound(final EoParser.BoundContext ctx) {
-        // Nothing here
+        if (ctx.just() != null && ctx.aphi() != null) {
+            if (ctx.just().finisher() != null) {
+                this.startAutoPhiFormation(ctx, ctx.just().finisher().getText());
+            }
+        }
     }
 
     @Override
