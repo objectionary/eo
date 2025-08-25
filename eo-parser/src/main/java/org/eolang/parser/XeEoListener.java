@@ -164,7 +164,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitBound(final EoParser.BoundContext ctx) {
-        // Nothing here
+        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
+            this.objects.leave().leave();
+        }
     }
 
     @Override
