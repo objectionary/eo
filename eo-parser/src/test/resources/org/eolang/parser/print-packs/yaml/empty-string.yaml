@@ -10,7 +10,7 @@ origin: |
 
 printed: |
   # No comments.
-  [] > app
+  [] > app'
     io.stdout > @
       txt.sprintf:0
         "":0

@@ -18,10 +18,13 @@
   <xsl:template match="o[o[not(eo:void(.))]/following-sibling::o[eo:void(.)]]" mode="with-diff-attrs">
     <xsl:element name="o">
       <xsl:apply-templates select="@*"/>
+      <xsl:for-each select="o[@base='ξ.xi🌵']">
+        <xsl:copy-of select="."/>
+      </xsl:for-each>
       <xsl:for-each select="o[eo:void(.)]">
         <xsl:copy-of select="."/>
       </xsl:for-each>
-      <xsl:for-each select="o[not(eo:void(.))]">
+      <xsl:for-each select="o[not(eo:void(.)) and not(@base='ξ.xi🌵')]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
     </xsl:element>

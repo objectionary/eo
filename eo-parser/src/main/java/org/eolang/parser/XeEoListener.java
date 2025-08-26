@@ -157,12 +157,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterBound(final EoParser.BoundContext ctx) {
-        // Nothing here
+        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
+            this.startAutoPhiFormation(ctx, ctx.just().finisher().getText());
+        }
     }
 
     @Override
     public void exitBound(final EoParser.BoundContext ctx) {
-        // Nothing here
+        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
+            this.objects.leave().leave();
+        }
     }
 
     @Override
@@ -233,7 +237,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
         this.objects.enter()
-            .start(ctx.getStart().getLine(), ctx.getStop().getCharPositionInLine() - 1)
+            .start(ctx.getStart().getLine(), 0)
             .prop("name", "λ")
             .leave()
             .leave();
@@ -251,7 +255,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterTformation(final EoParser.TformationContext ctx) {
-        this.startAbstract(ctx);
+        this.startTest(ctx);
     }
 
     @Override
@@ -316,7 +320,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             name = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            name = ctx.PHI().getText();
+            name = "φ";
         } else {
             name = "";
         }
@@ -963,7 +967,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterTname(final EoParser.TnameContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {
-            this.objects.prop("name", ctx.PHI().getText());
+            this.objects.prop("name", "φ");
         } else if (ctx.NAME() != null) {
             this.objects.prop(
                 "name",
@@ -1142,6 +1146,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
+        return this.objects.start(ctx).start(ctx).prop("base", "ξ.xi🌵").leave().leave();
+    }
+
+    private Objects startTest(final ParserRuleContext ctx) {
         return this.objects.start(ctx).leave();
     }
 

@@ -23,7 +23,7 @@
         (index.plus 1).as-number
       tup
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes are correctly converted to an array.
   [] +> tests-converts-bytes-to-array
     eq. > @
       list
@@ -31,7 +31,7 @@
           20-1F-EE-B5-FF
       * 20- 1F- EE- B5- FF-
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a single byte is correctly converted to an array.
   [] +> tests-single-byte-to-array
     eq. > @
       list
@@ -39,7 +39,7 @@
           1F-
       * 1F-
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that zero bytes are correctly converted to an empty array.
   [] +> tests-zero-bytes-to-array
     eq. > @
       list

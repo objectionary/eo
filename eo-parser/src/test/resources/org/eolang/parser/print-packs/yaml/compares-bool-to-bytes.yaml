@@ -10,7 +10,7 @@ origin: |
       false.eq 00-
 printed: |
   # No comments.
-  [] > compares-bool-to-bytes
+  [] > compares-bool-to-bytes'
     and. > @
       true.eq
         01-:0

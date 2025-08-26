@@ -6,7 +6,8 @@ sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/stars-to-tuples.xsl
 asserts:
-  - /object/o[count(o)=8]
+  - /object/o[count(o)=9]
+  - /object/o[@name='main' and o[1][@base='ξ.xi🌵']]
   - /object/o[count(//o[@star])=0]
   # first
   - //o[@base='Φ.org.eolang.tuple.empty' and @line=3 and @name='xs']

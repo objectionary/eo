@@ -28,36 +28,36 @@
       end
     error "Some of the arguments are not integers"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that simple range of integers from one to ten works correctly.
   [] +> tests-simple-range-of-ints-from-one-to-ten
     eq. > @
       range-of-ints 1 10
       * 1 2 3 4 5 6 7 8 9
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range of integers from ten to ten is empty.
   [] +> tests-range-of-ints-from-ten-to-ten-is-empty
     is-empty. > @
       range-of-ints 10 10
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range of descending integers is empty.
   [] +> tests-range-of-descending-ints-is-empty
     is-empty. > @
       range-of-ints 10 1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range of negative integers works correctly.
   [] +> tests-range-of-negative-ints-works-as-well
     eq. > @
       range-of-ints -5 0
       * -5 -4 -3 -2 -1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range throws error with non-integer start.
   [] +> throws-on-range-of-ints-with-non-int-start
     range-of-ints 1.2 3 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range throws error with non-integer end.
   [] +> throws-on-range-of-ints-with-not-int-end
     range-of-ints 1 2.5 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that range throws error when neither start nor end are integers.
   [] +> throws-on-range-of-not-ints
     range-of-ints 1.5 5.2 > @

@@ -6,8 +6,6 @@ extend-exclude = [
     "eo-runtime/src/main/java/EOorg/EOeolang/EOfs/EOfile$EOis_directory.java",
     "eo-parser/src/test/resources/org/eolang/parser/benchmark/native.xmir"
 ]
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
-# SPDX-License-Identifier: MIT
 
 [default]
 extend-ignore-identifiers-re = [

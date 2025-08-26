@@ -28,7 +28,7 @@ asserts:
   - //o[@base='.and']/o[1][@base='.eq']/o[2][@base='Φ.org.eolang.true']
   - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Φ.org.eolang.bytes']/o[text()!='']
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Φ.org.eolang.false']
-  - //o[@name='bts']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Φ.org.eolang.bytes']/o[1][@base='Φ.org.eolang.bytes']/o[text()!='']
+  - //o[@name='bts']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Φ.org.eolang.bytes']/o[1][@base='Φ.org.eolang.bytes']/o[text()!='']
 input: |
   # Main.
   [] > main

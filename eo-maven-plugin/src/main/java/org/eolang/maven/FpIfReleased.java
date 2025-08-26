@@ -58,14 +58,20 @@ final class FpIfReleased extends FpEnvelope {
                     if (cacheable) {
                         Logger.debug(
                             FpIfReleased.class,
-                            "Cache with version '%s' and hash '%s' is cacheable, using it",
-                            semver, hsh
+                            "The version '%s' and hash '%s' are good, using cache for %[file]s",
+                            semver, hsh, target
+                        );
+                    } else if (hsh.isEmpty()) {
+                        Logger.debug(
+                            FpIfReleased.class,
+                            "The version is '%s' but hash is absent, not using cache for %[file]s",
+                            semver, target
                         );
                     } else {
                         Logger.debug(
                             FpIfReleased.class,
-                            "Cache with version '%s' and hash '%s' is not cacheable, skipping it",
-                            semver, hsh
+                            "The version is '%s' and the hash is '%s', not using cache for %[file]s",
+                            semver, hsh, target
                         );
                     }
                     return cacheable;

@@ -69,7 +69,7 @@
           to-read
           available
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes-as-input can create an input from bytes and read portions sequentially.
   [] +> tests-makes-an-input-from-bytes-and-reads
     and. > @
       and.

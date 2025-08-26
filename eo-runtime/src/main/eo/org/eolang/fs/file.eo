@@ -213,7 +213,7 @@
         # don't use the object programmatically outside of `file` object.
         [size] > read-bytes ?
 
-      # Write given `buffer` to file output stream.
+      # Writes the given `buffer` to file output stream.
       # Here `buffer` is either a sequence of bytes or an object that can be
       # dataized via `as-bytes` object.
       # Returns new instance of `output-block` ready to write again, or
@@ -228,7 +228,7 @@
         [] > output-block
           true > @
 
-          # Write given `buffer` to file output stream.
+          # Writes the given `buffer` to file output stream.
           # Here `buffer` is either a sequence of bytes or an object that can be
           # dataized via `as-bytes` object.
           # Returns new instance of `output-block` ready to write again, or
@@ -251,49 +251,49 @@
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes ?
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
     (file ".").is-directory > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a non-existent file is properly detected as not existing.
   [] +> tests-check-if-absent-file-does-not-exist
     (file "absent.txt").exists.not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the file object returns itself after deletion operation.
   [] +> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
     tmpdir.tmpfile > temp
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the file object returns itself after touch operation.
   [] +> tests-returns-self-after-touching
     temp.deleted.touched.path.eq temp.path > @
     tmpdir.tmpfile > temp
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a file no longer exists after being deleted.
   [] +> tests-checks-file-does-not-exist-after-deleting
     tmpdir.tmpfile.deleted.exists.not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that touching a file creates it and makes it exist.
   [] +> tests-touches-a-file
     tmpdir.tmpfile.deleted.touched.exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a newly touched file has zero size.
   [] +> tests-measures-empty-file-after-touching
     tmpdir.tmpfile.deleted.touched.size.eq 0 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that touching a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-touching
     tmpdir.tmpfile.deleted.touched.touched.exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that deleting a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-deleting
     tmpdir.tmpfile.deleted.deleted.exists.not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that attempting to touch a file in a non-existent directory throws an error.
   [] +> throws-an-error-on-touching-temp-file-in-absent-dir
     (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that resolving nested paths and touching files works correctly.
   # @todo #4096:30min Enable tests-resolves-and-touches unit test.
   #  Now its disabled because of: "Can't #take("path"), the attribute is absent among other test 34
   #  attrs. After we fix it, we should enable the test.
@@ -311,14 +311,14 @@
     (tmpdir.as-path.resolved "foo/bar").@ > resolved
     resolved.tmpfile > f
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that moving a file to a new location works correctly.
   [] +> tests-moves-a-file
     and. > @
       (temp.moved (sprintf "%s.dest" (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a file with an invalid mode throws an error.
   [] +> throws-on-opening-with-wrong-mode
     tmpdir
     .tmpfile
@@ -326,7 +326,7 @@
       "x"
       f > [f]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in read mode throws an error.
   [] +> throws-on-reading-from-not-existed-file
     tmpdir
     .tmpfile
@@ -335,7 +335,7 @@
       "r"
       f > [f]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in read-write mode throws an error.
   [] +> throws-on-reading-or-writing-from-not-existed-file
     tmpdir
     .tmpfile
@@ -344,7 +344,7 @@
       "r+"
       f > [f]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in write mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing
     tmpdir
     .tmpfile
@@ -354,7 +354,7 @@
       true > [f]
     .exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in append mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-appending
     tmpdir
     .tmpfile
@@ -364,7 +364,7 @@
       true > [f]
     .exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in write-read mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -374,7 +374,7 @@
       true > [f]
     .exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening a non-existent file in read-append mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-reading-or-appending
     tmpdir
     .tmpfile
@@ -384,7 +384,7 @@
       true > [f]
     .exists > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that writing data to a file updates the file size correctly.
   [] +> tests-writes-data-to-file
     tmpdir
     .tmpfile
@@ -394,7 +394,7 @@
     .size
     .eq 12 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that appending data to an existing file increases the file size.
   [] +> tests-appending-data-to-file
     tmpdir
     .tmpfile
@@ -407,7 +407,7 @@
     .size
     .eq 13 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening an existing file in write mode truncates it to zero size.
   [] +> tests-truncates-file-opened-for-writing
     tmpdir
     .tmpfile
@@ -420,7 +420,7 @@
     .size
     .eq 0 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening an existing file in write-read mode truncates it to zero size.
   [] +> tests-truncates-file-opened-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -433,7 +433,7 @@
     .size
     .eq 0 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening an existing file in append mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-appending
     tmpdir
     .tmpfile
@@ -446,7 +446,7 @@
     .size
     .eq 12 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening an existing file in read-append mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-reading-or-appending
     tmpdir
     .tmpfile
@@ -459,7 +459,7 @@
     .size
     .eq 12 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that opening an existing file in read mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-reading
     tmpdir
     .tmpfile
@@ -472,7 +472,7 @@
     .size
     .eq 12 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that attempting to write to a file opened in read-only mode throws an error.
   [] +> throws-on-writing-with-wrong-mode
     tmpdir
     .tmpfile
@@ -480,7 +480,7 @@
       "r"
       f.write "Hello" > [f]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that reading data from a file returns the correct content.
   [] +> tests-reads-from-file
     malloc
     .of
@@ -501,7 +501,7 @@
             m
     .eq "Hello, world" > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that attempting to read from a file opened in write-only mode throws an error.
   [] +> throws-on-reading-from-file-with-wrong-mode
     tmpdir
     .tmpfile
@@ -509,7 +509,7 @@
       "w"
       f.read 12 > [f]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that reading from a file using different file instances works correctly.
   [] +> tests-reads-from-file-from-different-instances
     seq * > @
       temp.open
@@ -530,7 +530,7 @@
     tmpdir.tmpfile > temp
     temp.path > src
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that writing to a file using different file instances works correctly.
   [] +> tests-writes-to-file-from-different-instances
     seq > @
       *
@@ -559,7 +559,7 @@
     tmpdir.tmpfile > temp
     temp.path > src
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sequential reading from a file advances the position correctly.
   [] +> tests-reads-from-file-sequentially
     malloc
     .of
@@ -580,7 +580,7 @@
             m
     .eq "world" > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sequential writing to a file appends data correctly.
   [] +> tests-writes-to-file-sequentially
     tmpdir
     .tmpfile

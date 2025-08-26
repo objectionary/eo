@@ -38,7 +38,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) onameOrTname) EOL)
+    : commentOptional (application | ((method | just) (onameOrTname | aphi)) EOL)
     ;
 
 tbound

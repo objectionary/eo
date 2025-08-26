@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-origin: |
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='a🌵32' and o[@name='φ' and @base='ξ.ρ.true']]
+input: |
   # No comments.
   [] > main
-    regex "/^[\\x00-\\x7F]*$/" > rgx
-
-printed: |
-  # No comments.
-  [] > main'
-    regex > rgx
-      "/^[\\x00-\\x7F]*$/":0
+    true >> [x]
