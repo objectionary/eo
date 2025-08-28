@@ -257,6 +257,9 @@ final class MjParseTest {
             .execute(new FakeMaven.Parse())
             .result().get(String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR))
             .toFile();
+        Files.setLastModifiedTime(
+            parsed.toPath(), FileTime.fromMillis(System.currentTimeMillis() + 60_000L)
+        );
         final long before = parsed.lastModified();
         maven.execute(new FakeMaven.Parse());
         final long after = parsed.lastModified();
