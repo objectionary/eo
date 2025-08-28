@@ -67,3 +67,17 @@
       2
       [m]
         (malloc-as-output m).write 01-02-03 > @
+
+  # @todo #4475:35min Enable `writes-larger-data-than-provided-block` test after resizing will be implemented.
+  #  If the provided memory block is not large enough for the data to write, a runtime error
+  #  happens, however we can use `malloc.of.allocated.resized` to increase the size of the block.
+  [] +> writes-larger-data-than-provided-block
+    eq. > @
+      malloc.of
+        2
+        [mem]
+          seq > @
+            *
+              (malloc-as-output mem).write 01-02-03
+              mem
+      01-02-03
