@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='a🌵78' and o[1][@base='ξ.xi🌵'] and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
-  - //o[not(@base) and @name='a🌵88' and o[1][@base='ξ.xi🌵'] and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
+  - //o[not(@base) and @name='a🌵78' and o[1][@name='xi🌵'] and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
+  - //o[not(@base) and @name='a🌵88' and o[1][@name='xi🌵'] and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
   - //o[@base='Φ.org.eolang.while' and o[@base='ξ.a🌵78']]
   - //o[@base='Φ.org.eolang.while' and o[@base='ξ.a🌵88']]
 input: |
