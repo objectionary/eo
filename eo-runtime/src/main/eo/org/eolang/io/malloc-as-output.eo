@@ -71,7 +71,7 @@
   # @todo #4475:35min Enable `writes-larger-data-than-provided-block` test after resizing will be implemented.
   #  If the provided memory block is not large enough for the data to write, a runtime error
   #  happens, however we can use `malloc.of.allocated.resized` to increase the size of the block.
-  [] +> writes-larger-data-than-provided-block
+  [] > writes-larger-data-than-provided-block
     eq. > @
       malloc.of
         2
