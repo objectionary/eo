@@ -269,7 +269,8 @@ final class MjParseTest {
                 "[] > foo",
                 "  boom > @"
             ),
-            "foo"
+            "foo",
+            "foo/x/foo.eo"
         ).execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
             "Parser re-parsed sources, but it should not",
