@@ -249,6 +249,39 @@ final class MjParseTest {
         );
     }
 
+    @Test
+    void parsesWithTargetCache(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final File parsed = maven
+            .withHelloWorld()
+            .execute(new FakeMaven.Parse())
+            .result().get(String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR))
+            .toFile();
+        Files.setLastModifiedTime(
+            parsed.toPath(), FileTime.fromMillis(System.currentTimeMillis() + 60_000L)
+        );
+        final long before = parsed.lastModified();
+        maven.execute(new FakeMaven.Parse());
+        final long after = parsed.lastModified();
+        maven.withProgram(
+            String.join(
+                "\n",
+                "[] > foo",
+                "  boom > @"
+            ),
+            "foo",
+            "foo/x/foo.eo"
+        ).execute(new FakeMaven.Parse());
+        MatcherAssert.assertThat(
+            "Parser re-parsed sources, but it should not",
+            parsed.lastModified(),
+            Matchers.allOf(
+                Matchers.equalTo(before),
+                Matchers.equalTo(after)
+            )
+        );
+    }
+
     /**
      * The mojo that does nothing, but executes infinitely.
      * @since 0.29
