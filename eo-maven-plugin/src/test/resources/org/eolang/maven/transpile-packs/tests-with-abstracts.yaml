@@ -18,6 +18,7 @@ asserts:
   - /object/class/java[contains(text(), 'private static class EOΦabcφα1 extends PhDefault')]
   - /object/class/tests[contains(text(), '((PhDefault) rr).add("φ",')]
   - /object/class/tests[contains(text(), '((PhDefault) r).add("c",')]
+  - /object/class/tests[not(contains(text(), '((PhDefault) r).add("xi🌵",'))]
   - /object/class/tests[contains(text(), 'this.add("b"')]
   - /object/class/tests[contains(text(), 'PhDefault rrr1 = new EOΦabcφα0();')]
   - /object/class/tests[contains(text(), 'PhDefault rrr2 = new EOΦabcφα1();')]

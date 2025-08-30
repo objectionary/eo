@@ -187,8 +187,8 @@ final class EoSyntaxTest {
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
                 "/object/o[count(o)=3]",
-                "/object/o[@name='base' and o[1][@base='ξ.xi\uD83C\uDF35']]",
-                "/object/o[@name='base' and o[3][@name='f' and o[1][@base='ξ.xi\uD83C\uDF35']]]"
+                "/object/o[@name='base' and o[1][@base='ξ' and @name='xi\uD83C\uDF35']]",
+                "/object/o[@name='base' and o[3][@name='f' and o[1][@base='ξ' and @name='xi\uD83C\uDF35']]]"
             )
         );
     }

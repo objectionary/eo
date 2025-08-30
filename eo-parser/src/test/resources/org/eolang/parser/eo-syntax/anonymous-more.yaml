@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object/o[count(o)=4]
-  - //o[@base='ξ.xi🌵']
+  - //o[@base='ξ' and @name='xi🌵']
 input: |
   # Main.
   [] > main

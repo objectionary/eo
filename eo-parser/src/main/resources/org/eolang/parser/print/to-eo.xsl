@@ -66,12 +66,12 @@
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[not(eo:void(.)) and not(@base='ξ.xi🌵')]">
+    <xsl:apply-templates select="o[not(eo:void(.)) and not(eo:idempotent(.))]">
       <xsl:with-param name="indent" select="concat('  ', $indent)"/>
     </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[@base and not(@base='ξ.xi🌵') and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[@base and not(eo:idempotent(.)) and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -160,7 +160,7 @@
       <xsl:if test="eo:atom(.)">
         <xsl:text> ?</xsl:text>
       </xsl:if>
-      <xsl:if test="eo:idempotent(.)">
+      <xsl:if test="o[1][eo:idempotent(.)]">
         <xsl:text>'</xsl:text>
       </xsl:if>
     </xsl:if>
