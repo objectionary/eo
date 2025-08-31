@@ -1001,7 +1001,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("name", ctx.NAME().getText());
         }
         if (ctx.APOSTROPHE() != null) {
-            this.objects.start(ctx).prop("base", "ξ.xi🌵").leave();
+            this.objects.start(ctx).prop("base", "ξ").prop("name", "xi🌵").leave();
         }
     }
 
@@ -1146,7 +1146,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.objects.start(ctx).start(ctx).prop("base", "ξ.xi🌵").leave().leave();
+        return this.objects.start(ctx).start(ctx)
+            .prop("base", "ξ")
+            .prop("name", "xi🌵")
+            .leave().leave();
     }
 
     private Objects startTest(final ParserRuleContext ctx) {
