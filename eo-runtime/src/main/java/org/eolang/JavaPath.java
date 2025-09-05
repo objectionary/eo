@@ -1,42 +1,34 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
+
+import java.util.regex.Pattern;
 
 /**
  * Java path.
  *
  * <p>The class converts object path in eolang notation to java notation.
  * For example
- * - "org.eolang" -> "EOorg.EOeolang"
- * - "org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
- * - "org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
+ * - "Φ.org.eolang" -> "EOorg.EOeolang"
+ * - "Φ.org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
+ * - "Φ.org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
  * Since EOLANG allows using dashes in object names, they are converted to
  * underscores for Java.</p>
  *
  * @since 0.29
  */
 final class JavaPath {
+    /**
+     * Phi pattern.
+     */
+    private static final Pattern PHI = Pattern.compile("^Φ\\.?");
+
+    /**
+     * Dots pattern.
+     */
+    private static final Pattern DOTS = Pattern.compile("(^|\\.)([^.]+)");
 
     /**
      * Object name in eolang notation.
@@ -53,8 +45,8 @@ final class JavaPath {
 
     @Override
     public String toString() {
-        return this.object
-            .replaceAll("(^|\\.)([^.]+)", "$1EO$2")
+        return DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
+            .replaceAll("$1EO$2")
             .replace("$", "$EO")
             .replace("-", "_");
     }

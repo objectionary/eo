@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - //o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
+input: |
+  # No comments.
+  [] > aliases
+    # No comments.
+    [] > foo
+      # No comments.
+      [y] > with
+        42 > @
+    # No comments.
+    [] > bar
+      # No comments.
+      [x] > with
+        foo > @
+    # No comments.
+    [] > foobar
+      # No comments.
+      [z d] > with
+        bar > @
+    eq. > @
+      ((foobar.with 1 2).with 3).with 4
+      42

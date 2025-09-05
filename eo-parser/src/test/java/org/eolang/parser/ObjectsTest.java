@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -37,13 +18,13 @@ final class ObjectsTest {
 
     @Test
     void parsesOneObject() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(9, 10);
         objs.prop("x", "y");
         objs.data("xxx");
         objs.leave();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to parse object: expected /o with line=9, pos=10, x='y', text='xxx'",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -57,7 +38,7 @@ final class ObjectsTest {
 
     @Test
     void parsesNestedObjects() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(1, 2);
         objs.start(3, 4);
         objs.prop("x", "y");
@@ -65,7 +46,7 @@ final class ObjectsTest {
         objs.leave();
         objs.leave();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to parse nested objects: expected text 'yyy' under /o/o",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -76,7 +57,7 @@ final class ObjectsTest {
 
     @Test
     void parsesObjectsWithEnteringPrevious() {
-        final Objects objs = new Objects.ObjXembly();
+        final Objects objs = new Objects();
         objs.start(5, 6);
         objs.start(7, 8);
         objs.leave();
@@ -84,7 +65,7 @@ final class ObjectsTest {
         objs.enter();
         objs.prop("z", "a");
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "Failed to re-enter previous object and set property 'z=a' on root <o>",
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o/o",

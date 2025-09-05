@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors[count(*)=2]
+  - /object/errors/error[@check='cti']
+  - /object/errors/error[@severity='warning']
+  - /object/errors/error[text()='This method is deprecated!']
+
+input: |
+  +package org.eolang
+  +version 0.0.0
+
+  # Main.
+  [] > main
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] > just-prints-warning
+      eq. > @
+        cti
+          2.times 2
+          "warning"
+          "This method is deprecated!"
+        4
+
+    # No comments.
+    [] > foo
+      cti > @
+        2.times 2
+        "warning"
+        "This method is deprecated!"
+
+    # No comments.
+    [] > app
+      QQ.io.stdout > @
+        QQ.txt.sprintf
+          "The result is %d\n"
+          foo

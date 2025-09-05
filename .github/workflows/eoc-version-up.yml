@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: eoc-version-up
+'on':
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+concurrency:
+  group: eoc-version-up-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  eoc-version-up:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: |
+          latest=$(git ls-remote --tags https://github.com/objectionary/eoc.git | \
+            grep -o 'refs/tags/[0-9]\+\.[0-9]\+\.[0-9]\+' | \
+            sed 's/refs\/tags\///' | \
+            sort -V | \
+            tail -n1)
+          echo "LATEST=$latest" >> "$GITHUB_ENV"
+      - run: |
+          current=$(grep -o 'npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+' README.md | \
+            sed 's/npm install -g eolang@//')
+          echo "CURRENT=$current" >> "$GITHUB_ENV"
+      - id: check
+        run: |
+          if [ "${{ env.LATEST }}" = "${{ env.CURRENT }}" ]; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          else
+            sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${{ env.LATEST }}/g" README.md
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          sign-commits: true
+          branch: eoc-version-up
+          commit-message: "new eoc version ${{ env.LATEST }} in README"
+          delete-branch: true
+          title: "New eoc version ${{ env.LATEST }} in README"
+          assignees: yegor256
+          base: master

@@ -1,33 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-The MIT License (MIT)
-
-Copyright (c) 2016-2025 Objectionary.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.68.0</version>
+    <version>0.69.6</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -38,6 +19,7 @@ SOFTWARE.
     <module>eo-parser</module>
     <module>eo-maven-plugin</module>
     <module>eo-runtime</module>
+    <module>eo-integration-tests</module>
   </modules>
   <description>EO Language Compiler and Runtime</description>
   <url>https://github.com/objectionary/eo</url>
@@ -98,6 +80,8 @@ SOFTWARE.
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <antlr.version>4.13.2</antlr.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
     <skipUTs/>
     <!-- This is the flag that allows to skip integration tests run by maven-failsafe-plugin -->
@@ -110,12 +94,12 @@ SOFTWARE.
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.56.1</version>
+        <version>0.57.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
-        <version>0.32.1</version>
+        <version>0.32.2</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -128,32 +112,32 @@ SOFTWARE.
       <dependency>
         <groupId>com.github.volodya-lombrozo</groupId>
         <artifactId>xnav</artifactId>
-        <version>0.1.4</version>
+        <version>0.1.18</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.17.0</version>
+        <version>3.18.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.13.0</version>
+        <version>1.14.0</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.18.0</version>
+        <version>2.20.0</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.22.1</version>
+        <version>0.23.1</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.11.4</version>
+        <version>5.13.2</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
@@ -188,7 +172,7 @@ SOFTWARE.
         -->
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.3</version>
+        <version>2.5</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -199,18 +183,18 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-manifests</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.0</version>
       </dependency>
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>12.5</version>
+        <version>12.8</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.33.3</version>
+        <version>0.35.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -220,7 +204,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>jaxec</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.1</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
@@ -237,7 +221,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.16</version>
+        <version>2.0.17</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -256,6 +240,11 @@ SOFTWARE.
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+      <dependency>
         <groupId>org.eolang</groupId>
         <artifactId>jucs</artifactId>
         <version>0.2.0</version>
@@ -270,7 +259,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>farea</artifactId>
-        <version>0.14.2</version>
+        <version>0.15.4</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -303,13 +292,13 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>5.0.0-alpha-12</version>
+      <version>5.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>5.0.0-alpha-12</version>
+      <version>5.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -323,7 +312,7 @@ SOFTWARE.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.5.0</version>
+        <version>2.6.0</version>
         <executions>
           <execution>
             <id>check-licenses</id>
@@ -337,13 +326,30 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.7.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>groovy-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>3.6.1</version>
           <executions>
             <execution>
               <id>enforce-java</id>
@@ -402,6 +408,16 @@ SOFTWARE.
             </properties>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <skipTests>${skipITs}</skipTests>
+            <forkCount>1.0C</forkCount>
+            <reuseForks>true</reuseForks>
+            <excludedGroups>snippets</excludedGroups>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -441,13 +457,35 @@ SOFTWARE.
       </properties>
     </profile>
     <profile>
+      <id>snippets</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <skipUTs>true</skipUTs>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <skipTests>${skipITs}</skipTests>
+              <forkCount>1.0C</forkCount>
+              <reuseForks>true</reuseForks>
+              <excludedGroups>!snippets</excludedGroups>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>qulice</id>
       <build>
         <plugins>
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.23.0</version>
+            <version>0.24.0</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>
@@ -456,17 +494,9 @@ SOFTWARE.
             </configuration>
           </plugin>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <!--In order to include slow tests too-->
-              <excludedGroups>nothing-to-exclude</excludedGroups>
-            </configuration>
-          </plugin>
-          <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>1.3.4</version>
+            <version>1.3.5</version>
             <configuration>
               <ignoreGeneratedTests>true</ignoreGeneratedTests>
             </configuration>
@@ -481,7 +511,6 @@ SOFTWARE.
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <execution>
                 <id>project-validate</id>
@@ -498,17 +527,17 @@ SOFTWARE.
               <dependency>
                 <groupId>com.jcabi</groupId>
                 <artifactId>jcabi-xml</artifactId>
-                <version>0.33.3</version>
+                <version>0.35.0</version>
               </dependency>
               <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>3.0.23</version>
+                <version>3.0.25</version>
               </dependency>
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>12.5</version>
+                <version>12.8</version>
               </dependency>
             </dependencies>
           </plugin>

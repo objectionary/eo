@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
 
@@ -44,7 +25,7 @@ final class PhWithTest {
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should be equal to itself, but it didn't",
             dummy, Matchers.equalTo(dummy)
         );
     }
@@ -52,7 +33,7 @@ final class PhWithTest {
     @Test
     void takesMethod() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should preserve inner method result from Dataized string, but it didn't",
             new Dataized(
                 new Data.ToPhi("Hello, world!")
             ).asString(),
@@ -64,7 +45,7 @@ final class PhWithTest {
     void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "PhWith should pass attribute to sub-object and calculate correctly, but it didn't",
             new Dataized(
                 new PhWith(
                     new PhCopy(new PhMethod(dummy, "plus")),
@@ -85,7 +66,7 @@ final class PhWithTest {
             new Together<>(
                 thread -> {
                     MatcherAssert.assertThat(
-                        AtCompositeTest.TO_ADD_MESSAGE,
+                        "Attribute 'foo' should return the same string that was passed to Phi, but it didn't",
                         new Dataized(ref.take(attr)).asString(),
                         Matchers.is(data)
                     );
@@ -100,7 +81,7 @@ final class PhWithTest {
     void hasTheSameFormaWithBoundAttribute() {
         final Phi dummy = new DummyWithAtFree("x");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "forma of PhWith with bound attribute should be same as forma of original, but it didn't",
             dummy.forma(),
             Matchers.equalTo(
                 new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()
@@ -120,7 +101,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
-            this.add(attr, new AtVoid(attr));
+            this.add(attr, new PhVoid(attr));
         }
     }
 
@@ -135,7 +116,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new PhComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
 }

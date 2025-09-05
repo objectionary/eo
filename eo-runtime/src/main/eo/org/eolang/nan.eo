@@ -1,36 +1,20 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:18
++unlint redundant-object:19
++unlint redundant-object:20
++unlint redundant-object:21
++unlint redundant-object:22
++unlint redundant-object:23
 
 # The `not a number` object is an abstraction
 # for representing undefined or unrepresentable numerical results.
 [] > nan
   number 7F-F8-00-00-00-00-00-00 > @
-  $ > floor
-  $ > neg
   true > is-nan
   false > is-finite
   false > is-integer
@@ -62,3 +46,134 @@
 
   # Quotient of the division of $ by x.
   ^ > [x] > div
+
+  # Tests that NaN is not equal to a number.
+  [] +> tests-nan-not-eq-number
+    not. > @
+      eq.
+        nan
+        42
+
+  # Tests that NaN is not equal to NaN.
+  [] +> tests-nan-not-eq-nan
+    not. > @
+      eq.
+        nan
+        nan
+
+  # Tests that NaN is not less than a number.
+  [] +> tests-nan-not-lt-number
+    eq. > @
+      nan.lt 42
+      false
+
+  # Tests that NaN is not less than NaN.
+  [] +> tests-nan-not-lt-nan
+    eq. > @
+      nan.lt nan
+      false
+
+  # Tests that NaN is not less than or equal to a number.
+  [] +> tests-nan-not-lte-number
+    eq. > @
+      nan.lte 42
+      false
+
+  # Tests that NaN is not less than or equal to NaN.
+  [] +> tests-nan-not-lte-nan
+    eq. > @
+      nan.lte nan
+      false
+
+  # Tests that NaN is not greater than a number.
+  [] +> tests-nan-not-gt-number
+    eq. > @
+      nan.gt 42
+      false
+
+  # Tests that NaN is not greater than NaN.
+  [] +> tests-nan-not-gt-nan
+    eq. > @
+      nan.gt nan
+      false
+
+  # Tests that NaN is not greater than or equal to a number.
+  [] +> tests-nan-not-gte-number
+    eq. > @
+      nan.gte 42
+      false
+
+  # Tests that NaN is not greater than or equal to NaN.
+  [] +> tests-nan-not-gte-nan
+    eq. > @
+      nan.gte nan
+      false
+
+  # Tests that NaN multiplied by a number returns NaN.
+  [] +> tests-nan-times-number-is-nan
+    eq. > @
+      (nan.times 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN multiplied by NaN returns NaN.
+  [] +> tests-nan-times-nan-is-nan
+    eq. > @
+      (nan.times nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN divided by a number returns NaN.
+  [] +> tests-nan-div-number-is-nan
+    eq. > @
+      (nan.div 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN divided by NaN returns NaN.
+  [] +> tests-nan-div-nan-is-nan
+    eq. > @
+      (nan.div nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN plus a number returns NaN.
+  [] +> tests-nan-plus-number-is-nan
+    eq. > @
+      (nan.plus 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN plus NaN returns NaN.
+  [] +> tests-nan-plus-nan-is-nan
+    eq. > @
+      (nan.plus nan).as-bytes
+      nan.as-bytes
+
+  # Tests that negation of NaN returns NaN.
+  [] +> tests-nan-neg-is-nan
+    eq. > @
+      nan.@.as-bytes
+      nan.as-bytes
+
+  # Tests that NaN minus a number returns NaN.
+  [] +> tests-nan-minus-number-is-nan
+    eq. > @
+      (nan.minus 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN minus NaN returns NaN.
+  [] +> tests-nan-minus-nan-is-nan
+    eq. > @
+      (nan.minus nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN as bytes equals the bytes of zero divided by zero.
+  [] +> tests-nan-as-bytes-is-bytes-of-zero-div-zero
+    eq. > @
+      nan.as-bytes
+      (0.0.div 0.0).as-bytes
+
+  # Tests that NaN is detected as NaN.
+  nan.is-nan > [] +> nan-is-nan
+
+  # Tests that NaN is not finite.
+  nan.is-finite.not > [] +> nan-is-not-finite
+
+  # Tests that NaN is not an integer.
+  nan.is-integer.not > [] +> nan-is-not-integer

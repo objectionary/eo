@@ -1,88 +1,84 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import org.w3c.dom.Node;
 
 /**
- * This {@link Shift} turns hex data inside XMIR
+ * This {@link Shift} turns hex data inside XMIR.
  * into EO-printable data.
  *
  * @since 0.29.0
  */
 final class StUnhex extends StEnvelope {
+    /**
+     * Xpath for finding bytes.
+     */
+    private static final String BYTES =
+        "//o[@base='Φ.org.eolang.bytes' and o[1][string-length(normalize-space(text()))>0]]";
+
+    /**
+     * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
+     */
+    static final Shift XNAV = new StSequence(
+        StUnhex.class.getSimpleName(),
+        new StXnav(
+            StUnhex.BYTES,
+            xnav -> xnav.node().setTextContent(
+                xnav.element("o").text().orElse("")
+            )
+        ),
+        new StXnav(
+            StUnhex.elements("number"),
+            xnav -> {
+                final double number = StUnhex.buffer(
+                    StUnhex.undash(xnav.element("o").text().orElse(""))
+                ).getDouble();
+                final Node node = xnav.node();
+                if (!Double.isNaN(number) && !Double.isInfinite(number)) {
+                    node.setTextContent(StUnhex.number(number));
+                }
+            }
+        ),
+        new StXnav(
+            StUnhex.elements("string"),
+            xnav -> xnav.node().setTextContent(
+                String.format(
+                    "\"%s\"",
+                    StringEscapeUtils.escapeJava(
+                        new String(
+                            StUnhex.buffer(
+                                StUnhex.undash(xnav.element("o").text().orElse(""))
+                            ).array(),
+                            StandardCharsets.UTF_8
+                        )
+                    )
+                )
+            )
+        )
+    );
 
     /**
      * Ctor.
      */
     StUnhex() {
-        super(
-            new StEndless(
-                new StSequence(
-                    StUnhex.class.getSimpleName(),
-                    new StXPath(
-                        StUnhex.xpath("number"),
-                        xml -> {
-                            final double number = StUnhex.buffer(
-                                StUnhex.undash(xml.xpath("./o/text()").get(0))
-                            ).getDouble();
-                            final Iterable<Directive> dirs;
-                            if (Double.isNaN(number) || Double.isInfinite(number)) {
-                                dirs = new Directives().attr("skip", "");
-                            } else {
-                                dirs = StUnhex.append(StUnhex.number(number));
-                            }
-                            return dirs;
-                        }
-                    ),
-                    new StXPath(
-                        StUnhex.xpath("string"),
-                        xml -> StUnhex.append(
-                            String.format(
-                                "\"%s\"",
-                                StringEscapeUtils.escapeJava(
-                                    new String(
-                                        StUnhex.buffer(
-                                            StUnhex.undash(xml.xpath("./o/text()").get(0))
-                                        ).array(),
-                                        StandardCharsets.UTF_8
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        );
+        this(StUnhex.XNAV);
+    }
+
+    /**
+     * Base ctor.
+     * @param origin Original shift
+     */
+    StUnhex(final Shift origin) {
+        super(origin);
     }
 
     /**
@@ -142,23 +138,14 @@ final class StUnhex extends StEnvelope {
     }
 
     /**
-     * Make XPath.
+     * Find elements by XPath for the given type.
      * @param type The type to match
      * @return XPath
      */
-    private static String xpath(final String type) {
+    private static String elements(final String type) {
         return String.format(
-            "(//o[(@base='%s' or @base='org.eolang.%1$s') and(not(@skip)) and o[not(o) and string-length(normalize-space(text()))>0 and (@base='bytes' or @base='org.eolang.bytes')]])[1]",
+            "//o[@base='Φ.org.eolang.%s' and o[1][@base='Φ.org.eolang.bytes' and string-length(normalize-space(text()))>0]]",
             type
         );
-    }
-
-    /**
-     * Append Xemply instructions.
-     * @param after Value after
-     * @return Dirs
-     */
-    private static Iterable<Directive> append(final String after) {
-        return new Directives().set(after);
     }
 }

@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - //o[@base='ξ.foo' and count(o)=1]
+input: |
+  # No comments.
+  [] > aliases
+    # No comments.
+    [x] > foo
+      # No comments.
+      [y] > @
+        42 > @
+    eq. > @
+      (foo 1).@ 2
+      42

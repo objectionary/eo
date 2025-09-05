@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
 
@@ -50,16 +31,11 @@ public class PhDefault implements Phi, Cloneable {
      * Attribute name matcher.
      */
     private static final Pattern SORTABLE = Pattern.compile(
-        String.format("^([a-z].*)|%s$", Attr.PHI)
+        String.format("^([a-z].*)|%s$", Phi.PHI)
     );
 
     /**
      * Attributes nesting level.
-     *
-     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
-     *  {@link PhDefault#NESTING} to prevent memory leaks. We should either find a place where this
-     *  variable can be removed, or, if this is not possible
-     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
@@ -83,7 +59,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Attributes.
      */
-    private Map<String, Attr> attrs;
+    private Map<String, Phi> attrs;
 
     /**
      * Default ctor.
@@ -116,8 +92,8 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final Map<String, Phi> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Phi> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -131,7 +107,7 @@ public class PhDefault implements Phi, Cloneable {
     public boolean hasRho() {
         boolean has = true;
         try {
-            this.attrs.get(Attr.RHO).get();
+            this.attrs.get(Phi.RHO).take(0);
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -140,7 +116,16 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.put(this.attr(pos), object);
+        final String name = this.attr(pos);
+        if (!(((PhWithRho) this.attrs.get(name)).origin() instanceof PhVoid)) {
+            throw new ExReadOnly(
+                String.format(
+                    "Can't put attribute with position %d because it's not void one",
+                    pos
+                )
+            );
+        }
+        this.put(name, object);
     }
 
     @Override
@@ -153,45 +138,58 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.attrs.get(name).put(object);
+        this.attrs.get(name).put(name, object);
     }
 
     @Override
     public Phi take(final String name) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
-        final Phi object;
-        if (this.attrs.containsKey(name)) {
-            object = this.attrs.get(name).get();
-        } else if (name.equals(Attr.LAMBDA)) {
-            object = new AtomSafe(this).lambda();
-        } else if (this instanceof Atom) {
-            object = this.take(Attr.LAMBDA).take(name);
-        } else if (this.attrs.containsKey(Attr.PHI)) {
-            object = this.take(Attr.PHI).take(name);
-        } else {
-            throw new ExUnset(
+        try {
+            final Phi object;
+            if (this.attrs.containsKey(name)) {
+                object = this.attrs.get(name).take(0);
+            } else if (name.equals(Phi.LAMBDA)) {
+                object = new AtomSafe(this).lambda();
+            } else if (this instanceof Atom) {
+                object = this.take(Phi.LAMBDA).take(name);
+            } else if (this.attrs.containsKey(Phi.PHI)) {
+                object = this.take(Phi.PHI).take(name);
+            } else {
+                throw new ExUnset(
+                    String.format(
+                        "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                        name,
+                        this.attrs.size(),
+                        this.forma(),
+                        String.join(", ", this.attrs.keySet()),
+                        Phi.PHI,
+                        Phi.LAMBDA
+                    )
+                );
+            }
+            PhDefault.debug(
                 String.format(
-                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                    "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                    PhDefault.padding(),
                     name,
-                    this.attrs.size(),
-                    this.forma(),
-                    String.join(", ", this.attrs.keySet()),
-                    Attr.PHI,
-                    Attr.LAMBDA
+                    this,
+                    object
                 )
             );
+            return object;
+        } finally {
+            final int current = PhDefault.NESTING.get();
+            if (current > 0) {
+                PhDefault.NESTING.set(current - 1);
+            } else {
+                PhDefault.NESTING.set(0);
+            }
         }
-        PhDefault.debug(
-            String.format(
-                "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                PhDefault.padding(),
-                name,
-                this,
-                object
-            )
-        );
-        PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
-        return object;
+    }
+
+    @Override
+    public Phi take(final int pos) {
+        return this.take(this.attr(pos));
     }
 
     @Override
@@ -200,9 +198,9 @@ public class PhDefault implements Phi, Cloneable {
         if (this.data.isPresent()) {
             bytes = this.data.get();
         } else if (this instanceof Atom) {
-            bytes = this.take(Attr.LAMBDA).delta();
-        } else if (this.attrs.containsKey(Attr.PHI)) {
-            bytes = this.take(Attr.PHI).delta();
+            bytes = this.take(Phi.LAMBDA).delta();
+        } else if (this.attrs.containsKey(Phi.PHI)) {
+            bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
                 String.format(
@@ -221,17 +219,26 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public String forma() {
-        final StringBuilder ret = new StringBuilder(0);
-        ret.append(
-            PhDefault.TO_FORMA.matcher(
-                this.getClass().getPackageName()
-            ).replaceAll("$1")
-        );
-        if (ret.length() > 0) {
-            ret.append('.');
+        final String name = this.oname();
+        final String form;
+        if (PhDefault.class.getSimpleName().equals(name)) {
+            form = "[]";
+        } else {
+            form = String.join(
+                ".",
+                PhPackage.GLOBAL,
+                PhDefault.TO_FORMA.matcher(
+                    this.getClass().getPackageName()
+                ).replaceAll("$1"),
+                name
+            );
         }
-        ret.append(this.oname());
-        return ret.toString();
+        return form;
+    }
+
+    @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
     }
 
     /**
@@ -239,16 +246,16 @@ public class PhDefault implements Phi, Cloneable {
      *
      * <p>This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
-     * protected. Not the brightest design, I admit.</p>
+     * protected.</p>
      *
      * @param name The name
      * @param attr The attr
      */
-    public final void add(final String name, final Attr attr) {
+    public final void add(final String name, final Phi attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, new AtWithRho(attr, this));
+        this.attrs.put(name, new PhWithRho(attr, this));
     }
 
     /**
@@ -306,9 +313,9 @@ public class PhDefault implements Phi, Cloneable {
      * Default attributes hash map with RHO attribute put.
      * @return Default attributes hash map
      */
-    private static Map<String, Attr> defaults() {
-        final Map<String, Attr> attrs = new HashMap<>(0);
-        attrs.put(Attr.RHO, new AtRho());
+    private static Map<String, Phi> defaults() {
+        final Map<String, Phi> attrs = new HashMap<>(0);
+        attrs.put(Phi.RHO, new PhRho());
         return attrs;
     }
 
@@ -332,4 +339,5 @@ public class PhDefault implements Phi, Cloneable {
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
+
 }

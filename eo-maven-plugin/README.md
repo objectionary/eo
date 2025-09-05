@@ -1,7 +1,7 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
-[![Javadoc](http://www.javadoc.io/badge/org.eolang/eo-maven-plugin.svg)](http://www.javadoc.io/doc/org.eolang/eo-maven-plugin)
+[![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-maven-plugin.svg)](https://www.javadoc.io/doc/org.eolang/eo-maven-plugin)
 
 This is a Maven plugin for EO.
 
@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.50.2</version>
+        <version>0.58.3</version>
         <executions>
           <execution>
             <goals>
@@ -100,7 +100,7 @@ one after another:
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
 * **Compilation**.
-    The class `org.eolang.maven.TranspileMojo` in the `eo-maven-plugin` module is responsible
+    The class `org.eolang.maven.MjTranspile` in the `eo-maven-plugin` module is responsible
     for taking parsed and optimized XMIRs and then transforming
     the XML document into a collection of `.java` files. There are a number
     of transformations that do this, they all exist in `.xsl` files.
@@ -133,48 +133,6 @@ mvn clean install -Pqulice -Dstack-size=1M
 
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
 
-## PHI and UNPHI Transformations
-
-`eo-maven-plugin` supports PHI/UNPHI transformations.
-To transform your XMIR files, you need to add the following plugin configuration to your `pom.xml`:
-
-```xml
-<plugin>
-  <groupId>org.eolang</groupId>
-  <artifactId>eo-maven-plugin</artifactId>
-  <version>0.50.2</version>
-  <executions>
-    <execution>
-      <id>xmir-to-phi</id>
-      <phase>process-classes</phase>
-      <goals>
-        <goal>xmir-to-phi</goal>
-      </goals>
-      <configuration>
-        <phiInputDir>${eo.xmir.files}</phiInputDir>
-        <phiOutputDir>${eo.phi.files}</phiOutputDir>
-      </configuration>
-    </execution>
-    <execution>
-      <id>phi-to-xmir</id>
-      <phase>process-classes</phase>
-      <goals>
-        <goal>phi-to-xmir</goal>
-      </goals>
-      <configuration>
-        <unphiInputDir>${eo.phi.files}</unphiInputDir>
-        <unphiOutputDir>${eo.xmir.files}</unphiOutputDir>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-```
-
-Pay attention, that `PHI/UNPHI` transformations don't support `metas` objects
-in the current version of the plugin.
-This might lead to possible loss of information about an object's metadata.
-You can read more about it [here](https://github.com/objectionary/eo/issues/3812#issuecomment-2589728681).
-
 ## How To Build Plugin
 
 To build the plugin and install it locally, run the following command under the `eo-maven-plugin` directory:
@@ -199,8 +157,8 @@ Here `fibonacci` is the name of the desired integration test, `-DskipTests` is u
 
 ### How to disable Integration Tests
 
-It is sometime necessary to temporarily disable the integration tests (for example for introducing
-braking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`
+It is sometimes necessary to temporarily disable the integration tests (for example for introducing
+breaking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`
 using profile:
 
 ```shell

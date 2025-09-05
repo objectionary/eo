@@ -1,25 +1,3 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.sys.os
 +alias org.eolang.sys.posix
 +alias org.eolang.sys.win32
@@ -27,6 +5,14 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.io
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:82
++unlint redundant-object:95
++unlint redundant-object:122
++unlint redundant-object:138
++unlint redundant-object:151
++unlint redundant-object:178
 
 # The `console` object is basic I/O object that allows to
 # interact with operation system console.
@@ -61,143 +47,138 @@
 #
 # Here `"Hello, world!".as-bytes` bytes are printed to console.
 # The object `write` is an output block.
-# It dataizes given argument, converts it to string,
-# prints it to operation system console and returns next output block
+# It dataizes the given argument, converts it to string,
+# prints it to the operating system console and returns the next output block
 # ready to `write` again.
 #
-# Console is platform dependent, which means the internal algorithm is different for
-# Posix and Windows. Defining the console is happen every time you "touch" `console` object.
-# If you use it as input/output:
+# Console operations are platform-specific, with different implementations
+# for POSIX and Windows systems. Each access to the `console` object creates
+# a new console instance, so reusing returned input/output blocks improves
+# performance by maintaining the same console session:
+#
+# Efficient (recommended):
 # ```
 # console.read 2 > i1
 # i1.read 2 > i2
 # i2.read 2 > i3
-# ...
 # ```
 #
-# it works faster than:
+# Less efficient (creates new console each time):
 # ```
 # console.read 2 > i1
 # console.read 2 > i2
 # console.read 2 > i3
-# ...
 # ```
-# That why it's better to use it sequentially.
+#
+# Sequential reuse maintains the console state across operations.
 [] > console
-  platform. > @
-    if.
-      os.is-windows
-      windows-console
-      posix-console
+  if. > @
+    os.is-windows
+    windows-console
+    posix-console
 
   # Posix console.
   # It uses posix system calls to read/write standard inputs/outputs.
   [] > posix-console
-    $ > platform
-
     # Read `size` amount of bytes from operation system console.
     # Returns new instance of `input-block` with `buffer` read from console.
     [size] > read
-      ((input-block --).read size).self > @
+      ((input-block --).read size).@ > @
 
       # Posix console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
-        $ > self
         buffer > @
 
         # Read `size` amount of bytes from operation system console.
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
+          seq * > @
+            read-bytes
+            input-block read-bytes
           output. > read-bytes!
             posix
               "read"
               * posix.stdin-fileno size
-          self. > @
-            seq *
-              read-bytes
-              input-block read-bytes
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
     [buffer] > write
-      (output-block.write buffer).self > @
+      (output-block.write buffer).@ > @
 
       # Posix console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
-        $ > self
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
-          self. > @
-            seq *
-              code.
-                posix
-                  "write"
-                  * posix.stdout-fileno buffer buffer.size
-              output-block
+          seq * > @
+            code.
+              posix
+                "write"
+                * posix.stdout-fileno buffer buffer.size
+            output-block
 
   # Windows console.
   # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
   [] > windows-console
-    $ > platform
-
     # Read `size` amount of bytes from operation system console.
     # Returns new instance of `input-block` with `buffer` read from console.
     [size] > read
-      ((input-block --).read size).self > @
+      ((input-block --).read size).@ > @
 
       # Windows console input block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [buffer] > input-block
-        $ > self
         buffer > @
 
         # Read `size` amount of bytes from operation system console.
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
+          seq * > @
+            read-bytes
+            input-block read-bytes
           output. > read-bytes!
             win32
               "ReadFile"
               * win32.std-input-handle size
-          self. > @
-            seq *
-              read-bytes
-              input-block read-bytes
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
     [buffer] > write
-      (output-block.write buffer).self > @
+      (output-block.write buffer).@ > @
 
       # Windows console output block.
       #
-      # Attention! The object is for internal usage only, please don't use the object
+      # Note: This object is intended for internal use only. Please do not use this object
       # programmatically outside of `console` object.
       [] > output-block
-        $ > self
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
-          self. > @
-            seq *
-              code.
-                win32
-                  "WriteFile"
-                  * win32.std-output-handle buffer buffer.size
-              output-block
+          seq * > @
+            code.
+              win32
+                "WriteFile"
+                * win32.std-output-handle buffer buffer.size
+            output-block
+
+  # Prints a simple message to the console. We can't validate
+  # the output, so we just run it and see if it crashes.
+  [] +> tests-writes-to-console
+    console.write > @
+      "Hello, console-test!\n"

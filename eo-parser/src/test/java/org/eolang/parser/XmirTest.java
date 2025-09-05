@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -34,10 +15,10 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
@@ -47,67 +28,45 @@ import org.xembly.Xembler;
  */
 final class XmirTest {
 
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
+    void printsToEo(final String pack) throws IOException {
+        final Xtory xtory = new XtSticky(new XtYaml(pack));
+        final Xmir xmir = this.asXmir((String) xtory.map().get("origin"));
+        MatcherAssert.assertThat(
+            String.format(
+                "Result EO should be equal to original EO, XMIR is:\n%s",
+                xmir
+            ),
+            xmir.toEO(),
+            Matchers.equalTo(xtory.map().get("printed"))
+        );
+    }
+
     @Test
-    void failsOnDispatchingAlphaAttributes() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
+    void restoresApostropheForIdempotency() throws ImpossibleModificationException {
+        MatcherAssert.assertThat(
+            "Apostrophe is not restored, but should be",
             new Xmir(
                 new XMLDocument(
                     new Xembler(
-                        new Directives(new DrProgram("foo"))
-                            .add("objects")
-                            .add("o").attr("name", "foo")
-                            .add("o").attr("base", ".α0").attr("name", "self")
-                            .add("o").attr("base", "$")
-                    ).xmlQuietly()
+                        new Directives()
+                            .add("object")
+                            .add("o")
+                            .attr("base", "Φ.org.eolang.start")
+                            .attr("name", "φ")
+                            .add("o")
+                            .attr("base", "Φ.org.eolang.random")
+                            .attr("name", "r")
+                            .add("o")
+                            .attr("base", "ξ")
+                            .attr("name", "xi🌵")
+                    ).xml()
                 )
-            )::toEO,
-            "XMIR with alpha dispatch should fail on converting to EO"
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
-    void printsToEoStraight(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        MatcherAssert.assertThat(
-            "Result EO should be equal to original EO",
-            this.asXmir((String) xtory.map().get("origin")).toEO(),
-            Matchers.equalTo(xtory.map().get("straight"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
-    void printsToEoReversed(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        MatcherAssert.assertThat(
-            "Result EO should be equal to original EO in reverse notation",
-            this.asXmir((String) xtory.map().get("origin")).toReversedEO(),
-            Matchers.equalTo(xtory.map().get("reversed"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToSweetPhi(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        final boolean conservative = xtory.map().containsKey("conservative");
-        MatcherAssert.assertThat(
-            "Result PHI should be equal to provided PHI with syntax sugar",
-            this.asXmir((String) xtory.map().get("input")).toPhi(conservative),
-            Matchers.equalTo(xtory.map().get("sweet"))
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/phi-packs", glob = "**.yaml")
-    void convertsToSaltyPhi(final String pack) throws IOException {
-        final Xtory xtory = new XtSticky(new XtYaml(pack));
-        MatcherAssert.assertThat(
-            "Result PHI should be equal to provided PHI with syntax sugar",
-            this.asXmir((String) xtory.map().get("input")).toSaltyPhi(),
-            Matchers.equalTo(xtory.map().get("salty"))
+            ).toEO(),
+            Matchers.containsString(
+                "random > r'"
+            )
         );
     }
 
@@ -117,7 +76,7 @@ final class XmirTest {
      * @return XMIR
      */
     private Xmir asXmir(final String program) throws IOException {
-        final XML xml = new EoSyntax("test", new InputOf(program)).parsed();
+        final XML xml = new EoSyntax(new InputOf(program)).parsed();
         MatcherAssert.assertThat(
             "Original EO should be parsed without errors",
             xml,

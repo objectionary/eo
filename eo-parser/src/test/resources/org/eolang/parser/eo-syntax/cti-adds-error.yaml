@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors[count(*)=1]
+  - /object/errors/error[@check='cti']
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[text()='This method is deprecated!']
+
+input: |
+  # Main.
+  [] > main
+    # No comments.
+    [] > foo
+      cti > @
+        2.times 2
+        "error"
+        "This method is deprecated!"
+
+    # No comments.
+    [] > app
+      QQ.io.stdout > @
+        QQ.txt.sprintf
+          "The result is %d\n"
+          foo

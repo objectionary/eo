@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 4
+message: |-
+  [4:18] error: 'Invalid object declaration'
+      5.plus 5 >> [] +> test
+                    ^
+input: |-
+  # No comments.
+  [] > x
+    start > @
+      5.plus 5 >> [] +> test

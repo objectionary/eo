@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -36,16 +17,6 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 final class EoIndentLexerTest {
-    /**
-     * Empty message for JUnit Assertions.
-     *
-     * @todo #2297:60m Replace all appearances of {@link EoIndentLexerTest#TO_ADD_MESSAGE} field in
-     *  eo-parser with meaningful assert messages. Don't forget to remove
-     *  {@link EoIndentLexerTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
-     *  no longer need.
-     */
-    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
-
     @Test
     void emitsTabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(
@@ -114,6 +85,19 @@ final class EoIndentLexerTest {
             "We expect the lexer to return EOF token when the input is empty",
             new EoIndentLexer(new TextOf("")).nextToken().getType(),
             Matchers.is(EoParser.EOF)
+        );
+    }
+
+    @Test
+    void emitsTabWithCorrectLine() throws IOException {
+        MatcherAssert.assertThat(
+            "We expect the token to be a tab indentation with line 2",
+            new EoIndentLexer(new TextOf("1.add 1 > x\n  (1.add 1) > y")).getAllTokens()
+                .stream().filter(token -> token.getType() == EoParser.TAB)
+                .findFirst()
+                .orElseThrow()
+                .getLine(),
+            Matchers.equalTo(2)
         );
     }
 }

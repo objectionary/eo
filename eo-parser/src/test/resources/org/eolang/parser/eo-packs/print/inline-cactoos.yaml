@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/print/inline-cactoos.xsl
+asserts:
+  - /object[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=0]
+  - /object/o[@name='foo']/o[@name='y']/o[not(@base) and @name='a🌵47']
+  - /object/o[@name='foo']/o[@name='bar']/o/o/o/o[not(@base) and @name='a🌵915']
+  - /object/o[@name='foo']/o[@name='z']/o[@as and starts-with(@name, 'a🌵')]
+input: |
+  # No comments.
+  [] > foo
+    x > y
+      [] >>
+      [] > bar
+        a > b
+          c
+            d
+              [] >>
+    x > z
+      []:1 >>

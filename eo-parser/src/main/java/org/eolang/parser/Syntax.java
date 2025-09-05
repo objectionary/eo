@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -27,14 +8,31 @@ import com.jcabi.xml.XML;
 import java.io.IOException;
 
 /**
- * Syntax parser, to XMIR, using ANTLR4.
+ * Core interface for syntax parsers that transform source code into the XMIR
+ * (XML-based Intermediate Representation) format using ANTLR4.
+ *
+ * <p>This interface abstracts the parsing process for different syntaxes in the
+ * EO ecosystem, such as EO language. Implementations typically perform lexical analysis,
+ * syntax parsing, and XMIR generation through a series of XSL transformations to produce canonical
+ * XML output.</p>
+ *
+ * <p>The interface is designed to be lightweight with a single method {@code parsed()}
+ * that handles the entire conversion process.</p>
+ *
+ * @see org.eolang.parser.EoSyntax Implementation for EO language
  * @since 0.34.0
  */
 interface Syntax {
     /**
-     * Parse it to XML.
-     * @return Parsed XML
-     * @throws IOException If fails
+     * Parses the source input and transforms it into XMIR format.
+     *
+     * <p>This method handles the complete parsing workflow: lexical analysis,
+     * syntax analysis, and transformation to XML. The resulting XML follows the
+     * canonical XMIR structure defined by the EO project.</p>
+     *
+     * @return Parsed XMIR document representing the input source
+     * @throws IOException If parsing fails due to syntax errors, I/O issues,
+     *  or transformation problems
      */
     XML parsed() throws IOException;
 }

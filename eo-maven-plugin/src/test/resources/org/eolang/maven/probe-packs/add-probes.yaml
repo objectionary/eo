@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+probes:
+  - 'org'
+  - 'org.eolang'
+  - 'org.eolang.txt'
+  - 'org.eolang.txt.sprintf'
+  - 'org.eolang.txt.text'
+  - 'org.eolang.car'
+  - 'org.eolang.car.engine'
+  - 'org.eolang.car.engine.start'
+  - 'org.eolang.stdout.and'
+  - 'org.eolang.stdout.and.or'
+  - 'org.eolang.string'
+  - 'org.eolang.bytes'
+  - 'org.eolang.stdout'
+  - 'org.eolang.sprintf'
+  - 'org.eolang.n'
+  - 'org.eolang.true'
+  - 'org.eolang.number'
+  - 'org.eolang.memory'
+  - 'org.eolang.fibonacci'
+eo: |
+  +home https://github.com/objectionary/eo
+  +package org.eolang.custom
+  +version 0.0.0
+
+  # No comments.
+  [] > app
+    QQ.txt.text.^.q > s
+    QQ.txt.sprintf > @
+      "Hello, world!\n"
+    start. > a
+      engine.
+        QQ.car
+    or. > fib
+      and.
+        stdout
+          sprintf
+            "%dth Fibonacci number is %d\n"
+            n
+            fibonacci n > f
+        true
+
+    # No comments.
+    [i] > other
+      stdout > @
+        sprintf
+          "%i"
+    $.other 1 > one
+    memory 0 > price
+
+    # No comments.
+    [p] > set-price
+      ^.price.write p > @

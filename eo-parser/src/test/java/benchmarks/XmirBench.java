@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package benchmarks;
 
@@ -36,9 +17,12 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
- * Benchmark for XMIR to EO and to Phi transformations.
+ * Benchmark for XMIR to EO transformations.
  *
  * @since 0.41
  * @checkstyle DesignForExtensionCheck (100 lines)
@@ -58,23 +42,26 @@ public class XmirBench {
      */
     private static final XML XMIR = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
 
+    /**
+     * This main method allows to run the benchmark from IDE.
+     * To run benchmarks using Maven, use the command:
+     * <p>{@code
+     *   mvn jmh:benchmark
+     * }</p>
+     * @param args Arguments.
+     * @throws RunnerException If something goes wrong.
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static void main(final String[] args) throws RunnerException {
+        new Runner(
+            new OptionsBuilder()
+                .include(XmirBench.class.getSimpleName())
+                .build()
+        ).run();
+    }
+
     @Benchmark
     public void xmirToEO() {
         new Xmir(XmirBench.XMIR).toEO();
-    }
-
-    @Benchmark
-    public void xmirToReversedEo() {
-        new Xmir(XmirBench.XMIR).toReversedEO();
-    }
-
-    @Benchmark
-    public void xmirToPhi() {
-        new Xmir(XmirBench.XMIR).toPhi();
-    }
-
-    @Benchmark
-    public void xmirToSaltyPhi() {
-        new Xmir(XmirBench.XMIR).toSaltyPhi();
     }
 }

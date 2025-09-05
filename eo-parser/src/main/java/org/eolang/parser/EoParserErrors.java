@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -70,13 +51,7 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
     }
 
     // @checkstyle ParameterNumberCheck (20 lines)
-    // @checkstyle CyclomaticComplexityCheck (100 lines)
-    // @todo #3744:30min Simplify {@link EoParserErrors#syntaxError} method.
-    //  The method is too complex and has a high cognitive complexity. We need to simplify it.
-    //  Don't forget to remove the @checkstyle CyclomaticComplexityCheck annotation and
-    //  the @SuppressWarnings("PMD.CognitiveComplexity") annotation.
     @Override
-    @SuppressWarnings("PMD.CognitiveComplexity")
     public void syntaxError(
         final Recognizer<?, ?> recognizer,
         final Object symbol,
@@ -92,66 +67,97 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
                 )
             );
         }
-        final List<String> msgs = new ArrayList<>(0);
+        final String result;
+        final String underlined;
         if (error instanceof NoViableAltException) {
-            final Token token = (Token) symbol;
-            final Parser parser = (Parser) recognizer;
-            final String rule = parser.getRuleInvocationStack().get(0);
-            final String[] names = parser.getRuleNames();
-            final String detailed;
-            if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed = "Invalid object list declaration";
-            } else if (names[EoParser.RULE_metas].equals(rule)) {
-                detailed = "Invalid meta declaration";
-            } else if (names[EoParser.RULE_program].equals(rule)) {
-                detailed = "Invalid program declaration";
-            } else if (names[EoParser.RULE_slave].equals(rule)) {
-                detailed = "Invalid objects declaration that may be used inside abstract object";
-            } else if (names[EoParser.RULE_object].equals(rule)) {
-                detailed = "Invalid object declaration";
-            } else {
-                detailed = "no viable alternative at input";
-            }
-            msgs.add(new MsgLocated(line, position, detailed).formatted());
-            msgs.add(
-                new MsgUnderlined(
-                    this.lines.line(line),
-                    position,
-                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-                ).formatted()
-            );
+            result = EoParserErrors.impasse((Parser) recognizer);
+            underlined = this.underlined(symbol, line, position);
         } else if (error instanceof InputMismatchException) {
-            final Token token = (Token) symbol;
-            final Parser parser = (Parser) recognizer;
-            final String rule = parser.getRuleInvocationStack().get(0);
-            final String detailed;
-            final String[] names = parser.getRuleNames();
-            if (names[EoParser.RULE_program].equals(rule)) {
-                detailed =
-                    "We expected the program to end here but encountered something unexpected";
-            } else if (names[EoParser.RULE_objects].equals(rule)) {
-                detailed =
-                    "We expected a list of objects here but encountered something unexpected";
-            } else {
-                detailed = msg;
-            }
-            msgs.add(new MsgLocated(line, position, detailed).formatted());
-            msgs.add(
-                new MsgUnderlined(
-                    this.lines.line(line),
-                    position,
-                    Math.max(token.getStopIndex() - token.getStartIndex(), 1)
-                ).formatted()
-            );
+            result = EoParserErrors.mismatch((Parser) recognizer, msg);
+            underlined = this.underlined(symbol, line, position);
         } else {
-            msgs.add(new MsgLocated(line, position, msg).formatted());
-            msgs.add(this.lines.line(line));
+            result = msg;
+            underlined = this.lines.line(line);
         }
-        this.errors.add(new ParsingException(error, line, msgs));
+        this.errors.add(
+            new ParsingException(
+                error,
+                line,
+                List.of(
+                    new MsgLocated(line, position, result).formatted(),
+                    underlined
+                )
+            )
+        );
     }
 
     @Override
     public Iterator<ParsingException> iterator() {
         return this.errors.iterator();
+    }
+
+    /**
+     * Get a detailed message for {@link NoViableAltException}.
+     * @param parser The source of the error context
+     * @return The detailed message
+     */
+    private static String impasse(final Parser parser) {
+        final String rule = parser.getRuleInvocationStack().get(0);
+        final String[] names = parser.getRuleNames();
+        final String detailed;
+        if (names[EoParser.RULE_metas].equals(rule)) {
+            detailed = "Invalid meta declaration";
+        } else if (names[EoParser.RULE_program].equals(rule)) {
+            detailed = "Invalid program declaration";
+        } else if (names[EoParser.RULE_bound].equals(rule)) {
+            detailed = "Invalid bound object declaration";
+        } else if (names[EoParser.RULE_object].equals(rule)) {
+            detailed = "Invalid object declaration";
+        } else {
+            detailed = "no viable alternative at input";
+        }
+        return detailed;
+    }
+
+    /**
+     * Get a detailed message for {@link InputMismatchException}.
+     * @param parser The source of the error context
+     * @param msg The default message
+     * @return The detailed message
+     */
+    private static String mismatch(final Parser parser, final String msg) {
+        final String rule = parser.getRuleInvocationStack().get(0);
+        final String[] names = parser.getRuleNames();
+        final String detailed;
+        if (names[EoParser.RULE_program].equals(rule)) {
+            detailed =
+                "Expected a valid program definition (one or more meta declarations followed by an object list), but encountered unexpected construct";
+        } else if (names[EoParser.RULE_object].equals(rule)) {
+            detailed =
+                "We expected a object here but encountered something unexpected";
+        } else {
+            detailed = msg;
+        }
+        return detailed;
+    }
+
+    /**
+     * Create a message from {@link MsgUnderlined}.
+     * @param symbol The offending token
+     * @param line The line number with the error
+     * @param position The character position with the error
+     * @return The formatted message of {@link MsgUnderlined}
+     */
+    private String underlined(
+        final Object symbol,
+        final int line,
+        final int position
+    ) {
+        final Token token = (Token) symbol;
+        return new MsgUnderlined(
+            this.lines.line(line),
+            position,
+            Math.max(token.getStopIndex() - token.getStartIndex(), 1)
+        ).formatted();
     }
 }

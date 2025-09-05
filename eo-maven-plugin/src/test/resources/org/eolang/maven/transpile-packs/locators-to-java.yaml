@@ -1,49 +1,35 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets:
+  - /org/eolang/maven/transpile/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 3, 2, "Φ.foo.φ")')]
-  - //java[contains(text(), 'new PhSafe(rrb, "scenario", 6, 4, "Φ.foo.other.φ.ρ")')]
-  - //java[contains(text(), 'new PhSafe(rr, "scenario", 6, 6, "Φ.foo.other.φ")')]
-  - //java[contains(text(), 'new PhSafe(rr1, "scenario", 6, 12, "Φ.foo.other.φ.α0")')]
-  - //java[contains(text(), 'new PhSafe(rb, "scenario", 10, 2, "Φ.bar.φ.ρ")')]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 10, 4, "Φ.bar.φ")')]
-  - //java[contains(text(), 'new PhSafe(r1, "scenario", 10, 10, "Φ.bar.φ.α0")')]
-  - //java[contains(text(), 'new PhSafe(r, "scenario", 11, 2, "Φ.bar.five")')]
+  - /object[not(errors)]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 5, 4, "Φ.main.foo.φ", "main.foo.φ")')]
+  - //java[contains(text(), 'new PhSafe(rrrb, "main", 8, 6, "Φ.main.foo.other.φ.ρ", "main.foo.other.φ.ρ")')]
+  - //java[contains(text(), 'new PhSafe(rrr, "main", 8, 8, "Φ.main.foo.other.φ", "main.foo.other.φ")')]
+  - //java[contains(text(), 'new PhSafe(rrr1, "main", 8, 14, "Φ.main.foo.other.φ.α0", "main.foo.other.φ.α0")')]
+  - //java[contains(text(), 'new PhSafe(rrb, "main", 12, 4, "Φ.main.bar.φ.ρ", "main.bar.φ.ρ")')]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 12, 6, "Φ.main.bar.φ", "main.bar.φ")')]
+  - //java[contains(text(), 'new PhSafe(rr1, "main", 12, 12, "Φ.main.bar.φ.α0", "main.bar.φ.α0")')]
+  - //java[contains(text(), 'new PhSafe(rr, "main", 13, 4, "Φ.main.bar.five", "main.bar.five")')]
 input: |
-  # No comments.
-  [] > foo
-    42 > @
+  # Main.
+  [] > main
     # No comments.
-    [y] > other
-      43.plus y > @
+    [] > foo
+      42 > @
+      # No comments.
+      [y] > other
+        43.plus y > @
 
-  # No comments.
-  [] > bar
-    42.plus 43 > @
-    int 5 > five
+    # No comments.
+    [] > bar
+      42.plus 43 > @
+      int 5 > five

@@ -1,31 +1,12 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.io.console
 +alias org.eolang.sys.line-separator
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
 +version 0.0.0
++unlint unit-test-missing
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # The `stdin` object is a convenient wrapper on `console` object
 # which is used as input only and allows to read the data from console.
@@ -45,7 +26,7 @@
   all-lines > @
 
   # Consumes all lines from the standard input stream.
-  # There's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > all-lines
     rec-read next-line -- true > @
     line-separator > separator!
@@ -67,21 +48,19 @@
           false
 
   # Consumes only one line from the standard input stream.
-  # If there's no line to consume - returns an empty string.
+  # If there's no line to consume, it returns an empty string.
   [] > next-line
-    (console.read 1).self > first
     if. > @
       first.as-bytes.size.eq 0
       ""
       rec-read first --
+    (console.read 1).@ > first
 
     # Recursive reading from console by one byte.
     #
     # Attention. The object is for internal usage only, please
     # don't use the object programmatically outside of `stdin` object.
     [input buffer] > rec-read
-      input.as-bytes > char
-      (input.read 1).self > next
       if. > @
         or.
           char.eq --
@@ -94,3 +73,5 @@
         rec-read
           next
           buffer.concat char
+      input.as-bytes > char
+      (input.read 1).@ > next

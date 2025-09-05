@@ -1,105 +1,85 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.txt.sprintf
++alias org.eolang.fs.tmpdir
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:18
++unlint redundant-object:19
 
 # Directory in the file system.
 # Apparently every directory is a file.
 [file] > dir
-  $ > as-dir
-  $.file > @
+  file > @
   true > is-directory
 
   # Makes a directory together with all required
   # parent directories and returns the created directory.
   [] > made
-    as-dir. > @
-      if.
-        ^.exists
+    if. > @
+      ^.exists
+      ^
+      seq *
+        mkdir
         ^
-        seq *
-          mkdir
-          ^
 
     # Makes a directory together with all required
     # parent directories.
+    # Returns `org.eolang.true` object.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use it programmatically outside of `dir` object.
-    [] > mkdir /org.eolang.true
+    [] > mkdir ?
 
-  # Goes though all files in the directory, recursively
+  # Goes through all files in the directory, recursively
   # finding them with the `glob` provided.
-  # Returns `tuple` of all files in the directory.
-  [glob] > walk /org.eolang.tuple
+  # Returns `org.eolang.tuple` of all files in the directory.
+  [glob] > walk ?
 
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
   [] > deleted
-    as-dir. > @
-      if.
-        ^.exists
-        seq *
-          rec-delete (walk "**").as-tuple
-          ^
+    if. > @
+      ^.exists
+      seq *
+        rec-delete (walk "**").@
         ^
+      ^
 
-    # Deletes files and directories in current directory recursively.
+    # Deletes files and directories in the current directory recursively.
     # Returns `true`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `dir` object.
     [tup] > rec-delete
       if. > @
         tup.length.eq 0
         true
         seq *
-          tup.value.deleted
-          rec-delete tup.prev
+          tup.head.deleted
+          rec-delete tup.tail
 
   # Creates an empty temporary file in the current directory.
   [] > tmpfile
-    as-file. > @
-      if.
-        ^.exists
-        QQ.fs.file
-          touch.as-bytes
-        error
-          sprintf
-            "Directory %s does not exist, can't create temporary file"
-            * file
+    if. > @
+      ^.exists
+      QQ.fs.file
+        touch.as-bytes
+      error
+        sprintf
+          "Directory %s does not exist, can't create temporary file"
+          * file
 
     # Creates an empty temporary file in the current directory and
-    # returns absolute path to it as `string`.
+    # returns absolute path to it as `org.eolang.string`.
     #
-    # Attention! The object is for internal usage only, please
+    # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `dir` object.
-    [] > touch /org.eolang.string
+    [] > touch ?
 
   # Opens the file for I/O operations.
   # Since current file is a directory - returns an `error`.
@@ -108,3 +88,73 @@
       sprintf
         "The file %s is a directory, can't open for I/O operations"
         * file
+
+  # Tests that creating a new directory works and the directory exists.
+  [] +> tests-makes-new-directory
+    and. > @
+      d.exists
+      d.is-directory
+    (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
+
+  # Tests that deleting an empty directory removes it from the filesystem.
+  [] +> tests-deletes-empty-directory
+    tmpdir
+    .tmpfile
+    .deleted
+    .as-path
+    .resolved
+      "bar-empty"
+    .as-dir
+    .made
+    .deleted
+    .exists
+    .not > @
+
+  # Tests that attempting to open a directory for I/O operations throws an error.
+  [] +> throws-on-opening-directory
+    tmpdir.open > @
+      "w"
+      true > [d]
+
+  # Tests that deleting a directory recursively removes all contained files.
+  [] +> tests-deletes-directory-with-files-recursively
+    and. > @
+      and.
+        and.
+          and.
+            first.exists
+            second.exists
+          d.deleted.exists.not
+        first.exists.not
+      second.exists.not
+    (dir tmpdir.tmpfile.deleted).made > d
+    d.tmpfile > first
+    d.tmpfile > second
+
+  # Tests that deleting a directory recursively removes both files and subdirectories.
+  [] +> tests-deletes-directory-with-file-and-dir
+    and. > @
+      and.
+        and.
+          and.
+            and.
+              inner.is-directory
+              inner.exists
+            f.exists
+          d.deleted.exists.not
+        inner.exists.not
+      f.exists.not
+    (dir tmpdir.tmpfile.deleted).made > d
+    (dir d.tmpfile.deleted).made > inner
+    d.tmpfile > f
+
+  # Tests that walking through a directory tree with a glob pattern finds matching files.
+  [] +> tests-walks-recursively
+    seq > @
+      *
+        (d.resolved "foo/bar").as-dir.made
+        (d.resolved "foo/bar/test.txt").as-file.touched
+        (d.resolved "x/y/z").as-dir.made
+        (d.resolved "x/y/z/a.txt").as-file.touched
+        (d.as-dir.walk "**/*.txt").length.eq 2
+    (dir tmpdir.tmpfile.deleted).made.as-path > d

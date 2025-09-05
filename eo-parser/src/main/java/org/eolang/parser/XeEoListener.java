@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
@@ -35,8 +16,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.Joined;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -56,11 +35,6 @@ import org.xembly.Directives;
     "PMD.GodClass"
 })
 final class XeEoListener implements EoListener, Iterable<Directive> {
-    /**
-     * The name of it.
-     */
-    private final String name;
-
     /**
      * Xembly directives we are building (mutable).
      */
@@ -83,28 +57,28 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     /**
      * Ctor.
-     *
-     * @param name The name of it
      */
-    XeEoListener(final String name) {
-        this.name = name;
+    XeEoListener() {
         this.dirs = new Directives();
         this.errors = new ArrayList<>(0);
-        this.objects = new Objects.ObjXembly();
+        this.objects = new Objects();
         this.start = System.nanoTime();
     }
 
     @Override
     public void enterProgram(final EoParser.ProgramContext ctx) {
         this.dirs
-            .append(new DrProgram(this.name))
+            .append(new DrProgram())
             .append(new DrListing(ctx))
-            .xpath("/program").strict(1);
+            .xpath("/object")
+            .strict(1);
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
-        this.dirs.xpath("/program").strict(1);
+        this.dirs.xpath("/object")
+            .strict(1)
+            .append(this.objects);
         if (!this.errors.isEmpty()) {
             this.dirs.append(new DrErrors(this.errors));
         }
@@ -124,24 +98,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterLicense(final EoParser.LicenseContext ctx) {
-        this.dirs.addIf("license").set(
-            new Joined(
-                "\n",
-                new Mapped<>(
-                    cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENTARY()
-                )
-            )
-        ).up();
-    }
-
-    @Override
-    public void exitLicense(final EoParser.LicenseContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterMetas(final EoParser.MetasContext ctx) {
         this.dirs.addIf("metas");
         for (final TerminalNode node : ctx.META()) {
@@ -152,9 +108,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 .add("head").set(head).up()
                 .add("tail");
             if (pair.length > 1) {
-                this.dirs.set(pair[1].trim()).up();
+                this.dirs.set(XeEoListener.qqToGlobalPhi(pair[1].trim())).up();
                 for (final String part : pair[1].trim().split(" ")) {
-                    this.dirs.add("part").set(part).up();
+                    this.dirs.add("part").set(XeEoListener.qqToGlobalPhi(part)).up();
                 }
             } else {
                 this.dirs.up();
@@ -167,16 +123,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitMetas(final EoParser.MetasContext ctx) {
         // Nothing here
-    }
-
-    @Override
-    public void enterObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.add("objects");
-    }
-
-    @Override
-    public void exitObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.append(this.objects).up();
     }
 
     @Override
@@ -200,16 +146,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        this.putComment(ctx.comment(), ctx.getStop());
-    }
-
-    @Override
-    public void exitCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterObject(final EoParser.ObjectContext ctx) {
         // Nothing here
     }
@@ -220,22 +156,36 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterSlave(final EoParser.SlaveContext ctx) {
+    public void enterBound(final EoParser.BoundContext ctx) {
+        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
+            this.startAutoPhiFormation(ctx, ctx.just().finisher().getText());
+        }
+    }
+
+    @Override
+    public void exitBound(final EoParser.BoundContext ctx) {
+        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
+            this.objects.leave().leave();
+        }
+    }
+
+    @Override
+    public void enterTbound(final EoParser.TboundContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitSlave(final EoParser.SlaveContext ctx) {
+    public void exitTbound(final EoParser.TboundContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMaster(final EoParser.MasterContext ctx) {
+    public void enterTsubMaster(final EoParser.TsubMasterContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMaster(final EoParser.MasterContext ctx) {
+    public void exitTsubMaster(final EoParser.TsubMasterContext ctx) {
         // Nothing here
     }
 
@@ -260,6 +210,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTmasterBody(final EoParser.TmasterBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTmasterBody(final EoParser.TmasterBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterJust(final EoParser.JustContext ctx) {
         // Nothing here
     }
@@ -270,31 +230,17 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitJustNamed(final EoParser.JustNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterAtom(final EoParser.AtomContext ctx) {
-        final EoParser.TypeFqnContext fqn = ctx.type().typeFqn();
-        if (fqn == null) {
-            this.errors.add(XeEoListener.error(ctx, "Atom must have a type"));
-            this.startObject(ctx).leave();
-        } else {
-            this.startObject(ctx)
-                .prop("atom", fqn.getText())
-                .leave();
-        }
+        this.startAbstract(ctx);
     }
 
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
-        // Nothing here
+        this.objects.enter()
+            .start(ctx.getStart().getLine(), 0)
+            .prop("name", "λ")
+            .leave()
+            .leave();
     }
 
     @Override
@@ -304,6 +250,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitFormation(final EoParser.FormationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTformation(final EoParser.TformationContext ctx) {
+        this.startTest(ctx);
+    }
+
+    @Override
+    public void exitTformation(final EoParser.TformationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTestsOrEol(final EoParser.TestsOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTestsOrEol(final EoParser.TestsOrEolContext ctx) {
         // Nothing here
     }
 
@@ -328,6 +294,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTests(final EoParser.TestsContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitTests(final EoParser.TestsContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
     public void enterVoids(final EoParser.VoidsContext ctx) {
         this.objects.enter();
     }
@@ -339,12 +315,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVoid(final EoParser.VoidContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String name;
         if (ctx.NAME() != null) {
             name = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            name = ctx.PHI().getText();
+            name = "φ";
         } else {
             name = "";
         }
@@ -360,26 +336,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterType(final EoParser.TypeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitType(final EoParser.TypeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterTypeFqn(final EoParser.TypeFqnContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitTypeFqn(final EoParser.TypeFqnContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterApplication(final EoParser.ApplicationContext ctx) {
         // Nothing here
     }
@@ -390,12 +346,42 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTapplication(final EoParser.TapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTapplication(final EoParser.TapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        this.startAutoPhiFormation(ctx, ctx.happlicationHeadExtended().getText());
+    }
+
+    @Override
+    public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
+        this.objects.leave().leave();
+    }
+
+    @Override
+    public void enterAphi(final EoParser.AphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitAphi(final EoParser.AphiContext ctx) {
         // Nothing here
     }
 
@@ -415,7 +401,17 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitHapplication(final EoParser.HapplicationContext ctx) {
+        public void exitHapplication(final EoParser.HapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationReversedHead(final EoParser.HapplicationReversedHeadContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationReversedHead(final EoParser.HapplicationReversedHeadContext ctx) {
         // Nothing here
     }
 
@@ -446,15 +442,15 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterApplicable(final EoParser.ApplicableContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String base;
         if (ctx.STAR() != null) {
-            base = "tuple";
+            base = "Φ.org.eolang.tuple";
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            base = "@";
+            base = "φ";
         } else {
             base = "";
         }
@@ -470,6 +466,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHapplicationArgUnbound(final EoParser.HapplicationArgUnboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationArgUnbound(final EoParser.HapplicationArgUnboundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationTailScoped(final EoParser.HapplicationTailScopedContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHapplicationTailScoped(final EoParser.HapplicationTailScopedContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
     public void enterHapplicationTail(final EoParser.HapplicationTailContext ctx) {
         this.objects.enter();
     }
@@ -480,26 +496,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationTailReversedFirst(
-        final EoParser.HapplicationTailReversedFirstContext ctx
+    public void enterHapplicationReversedFirst(
+        final EoParser.HapplicationReversedFirstContext ctx
     ) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTailReversedFirst(
-        final EoParser.HapplicationTailReversedFirstContext ctx
-    ) {
+    public void exitHapplicationReversedFirst(final EoParser.HapplicationReversedFirstContext ctx) {
         this.objects.leave();
     }
 
@@ -514,12 +518,32 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHapplicationArgScoped(final EoParser.HapplicationArgScopedContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitHapplicationArgScoped(final EoParser.HapplicationArgScopedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplication(final EoParser.VapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitVapplication(final EoParser.VapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterTvapplication(final EoParser.TvapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTvapplication(final EoParser.TvapplicationContext ctx) {
         // Nothing here
     }
 
@@ -538,41 +562,31 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final int count;
         if (ctx.INT() != null) {
             final String num = ctx.INT().getText();
+            final int number = Integer.parseInt(num);
             if (num.charAt(0) == '+'
                 || num.charAt(0) == '-'
                 || num.length() > 1 && num.charAt(0) == '0'
-                || Integer.parseInt(num) < 0
+                || number < 0
             ) {
                 this.errors.add(
-                    XeEoListener.error(
+                    new ParsingError(
                         ctx,
                         "Index after '*' must be a positive integer without leading zero or arithmetic signs"
-                    )
+                    ).cause()
                 );
             }
-            final int number = Integer.parseInt(num);
             count = Math.max(number, 0);
         } else {
             count = 0;
         }
-        this.startObject(ctx)
-            .prop("base", ctx.NAME().getText())
+        this.objects.start(ctx)
+            .prop("base", new CompactArrayFqn(ctx).asString())
             .prop("before-star", count);
     }
 
     @Override
     public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -631,7 +645,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
-        // Nothing here
+        if (ctx.commentOptional() != null && ctx.voids() != null) {
+            this.startAbstract(ctx);
+        }
     }
 
     @Override
@@ -641,12 +657,26 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.enter();
+        if (ctx.aphi() != null) {
+            final EoParser.VapplicationArgUnboundCurrentContext vertical =
+                ctx.vapplicationArgUnboundCurrent();
+            if (vertical.just() != null || vertical.method() != null) {
+                this.startAutoPhiFormation(ctx, XeEoListener.verticalApplicationBase(vertical));
+            }
+        } else {
+            this.objects.enter();
+        }
     }
 
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        this.objects.leave();
+        if (ctx.aphi() != null
+            && (ctx.vapplicationArgUnboundCurrent().just() != null
+            || ctx.vapplicationArgUnboundCurrent().method() != null)) {
+            this.objects.leave().leave();
+        } else {
+            this.objects.leave();
+        }
     }
 
     @Override
@@ -678,128 +708,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgHapplicationBound(
-        final EoParser.VapplicationArgHapplicationBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHapplicationBound(
-        final EoParser.VapplicationArgHapplicationBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHapplicationUnbound(
-        final EoParser.VapplicationArgHapplicationUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHapplicationUnbound(
-        final EoParser.VapplicationArgHapplicationUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationHeadAs(
-        final EoParser.VapplicationHeadAsContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadAs(final EoParser.VapplicationHeadAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterFormationNameless(final EoParser.FormationNamelessContext ctx) {
+    public void enterFormationNamed(final EoParser.FormationNamedContext ctx) {
         this.startAbstract(ctx);
     }
 
     @Override
-    public void exitFormationNameless(final EoParser.FormationNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgVanonymBound(
-        final EoParser.VapplicationArgVanonymBoundContext ctx
-    ) {
-        this.startAbstract(ctx);
-    }
-
-    @Override
-    public void exitVapplicationArgVanonymBound(
-        final EoParser.VapplicationArgVanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterAttributesAs(final EoParser.AttributesAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAttributesAs(final EoParser.AttributesAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymBoundBody(
-        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymBoundBody(
-        final EoParser.VapplicationArgHanonymBoundBodyContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymBound(
-        final EoParser.VapplicationArgHanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymBound(
-        final EoParser.VapplicationArgHanonymBoundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgHanonymUnbound(
-        final EoParser.VapplicationArgHanonymUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgHanonymUnbound(
-        final EoParser.VapplicationArgHanonymUnboundContext ctx
-    ) {
+    public void exitFormationNamed(final EoParser.FormationNamedContext ctx) {
         // Nothing here
     }
 
@@ -835,7 +749,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
-        this.objects.enter().prop("name", "@").leave().leave();
+        this.objects.enter().prop("name", "φ").leave().leave();
     }
 
     @Override
@@ -864,32 +778,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterHmethod(final EoParser.HmethodContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitHmethod(final EoParser.HmethodContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHmethodHead(final EoParser.HmethodHeadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHmethodHead(final EoParser.HmethodHeadContext ctx) {
         // Nothing here
     }
 
@@ -910,16 +804,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVmethodHead(final EoParser.VmethodHeadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
         // Nothing here
     }
 
@@ -949,7 +833,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTail(final EoParser.MethodTailContext ctx) {
-        // Nothing here
+        if (ctx.INT() != null) {
+            this.objects.start(ctx)
+                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
+                .leave();
+        }
     }
 
     @Override
@@ -965,18 +853,18 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBeginner(final EoParser.BeginnerContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         if (ctx.data() == null) {
             final String base;
             if (ctx.XI() != null) {
-                base = "$";
+                base = "ξ";
             } else if (ctx.STAR() != null) {
-                base = "tuple";
+                base = "Φ.org.eolang.tuple";
                 this.objects.prop("star");
             } else if (ctx.ROOT() != null) {
-                base = "Q";
+                base = "Φ";
             } else if (ctx.HOME() != null) {
-                base = "QQ";
+                base = "Φ̇";
             } else {
                 base = "";
             }
@@ -994,14 +882,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterFinisher(final EoParser.FinisherContext ctx) {
-        this.startObject(ctx);
+        this.objects.start(ctx);
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
         } else if (ctx.PHI() != null) {
-            base = "@";
+            base = "φ";
         } else if (ctx.RHO() != null) {
-            base = "^";
+            base = "ρ";
         } else {
             base = "";
         }
@@ -1017,7 +905,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterReversed(final EoParser.ReversedContext ctx) {
-        // Nothing here
+        if (ctx.INT() != null) {
+            this.objects.start(ctx)
+                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
+                .leave();
+        }
     }
 
     @Override
@@ -1027,21 +919,35 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects
-            .enter()
-            .prop(
-                "name",
-                String.format(
-                    "auto-named-attr-at-%d-%d",
-                    ctx.getStart().getLine(),
-                    ctx.getStart().getCharPositionInLine()
-                )
-            )
-            .leave();
+        this.objects.enter().prop("name", new AutoName(ctx).asString());
+        if (ctx.CONST() != null) {
+            this.objects.prop("const");
+        }
+        this.objects.leave();
     }
 
     @Override
     public void exitAname(final EoParser.AnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFname(final EoParser.FnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitFname(final EoParser.FnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnameOrTname(final EoParser.OnameOrTnameContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitOnameOrTname(final EoParser.OnameOrTnameContext ctx) {
         // Nothing here
     }
 
@@ -1058,13 +964,44 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterTname(final EoParser.TnameContext ctx) {
+        this.objects.enter();
+        if (ctx.PHI() != null) {
+            this.objects.prop("name", "φ");
+        } else if (ctx.NAME() != null) {
+            this.objects.prop(
+                "name",
+                String.format("%s%s", ctx.tarrow().PLUS().getText(), ctx.NAME().getText())
+            );
+        }
+    }
+
+    @Override
+    public void exitTname(final EoParser.TnameContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterTarrow(final EoParser.TarrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitTarrow(final EoParser.TarrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final EoParser.SuffixContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {
-            this.objects.prop("name", ctx.PHI().getText());
+            this.objects.prop("name", "φ");
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
+        }
+        if (ctx.APOSTROPHE() != null) {
+            this.objects.start(ctx).prop("base", "ξ").prop("name", "xi🌵").leave();
         }
     }
 
@@ -1074,12 +1011,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+    public void enterArrow(final EoParser.ArrowContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+    public void exitArrow(final EoParser.ArrowContext ctx) {
         // Nothing here
     }
 
@@ -1101,11 +1038,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         if (ctx.NAME() != null) {
             has = ctx.NAME().getText();
         } else {
-            final int index = Integer.parseInt(ctx.INT().getText());
-            if (index < 0) {
-                this.errors.add(XeEoListener.error(ctx, "Object binding can't be negative"));
-            }
-            has = String.format("α%d", index);
+            has = this.alphaAttr(ctx, "Object binding can't be negative");
         }
         this.objects.prop("as", has);
     }
@@ -1118,45 +1051,57 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
-        final Supplier<String> data;
-        final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
-            base = "bytes";
-            data = () -> text.replaceAll("\\s+", "").trim();
-        } else if (ctx.FLOAT() != null || ctx.INT() != null) {
-            base = "number";
-            data = new BytesToHex(
-                ByteBuffer
-                    .allocate(Double.BYTES)
-                    .putDouble(Double.parseDouble(text))
-                    .array()
-            );
-        } else if (ctx.HEX() != null) {
-            base = "number";
-            data = new BytesToHex(
-                ByteBuffer
-                    .allocate(Double.BYTES)
-                    .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
-                    .array()
-            );
-        } else if (ctx.STRING() != null) {
-            base = "string";
-            data = new BytesToHex(
-                StringEscapeUtils.unescapeJava(
-                    text.substring(1, text.length() - 1)
-                ).getBytes(StandardCharsets.UTF_8)
-            );
+            this.objects
+                .prop("base", "Φ.org.eolang.bytes")
+                .start(ctx)
+                .data(text.replaceAll("\\s+", "").trim())
+                .leave();
         } else {
-            base = "string";
-            final int indent = ctx.getStart().getCharPositionInLine();
-            data = new BytesToHex(
-                StringEscapeUtils.unescapeJava(
-                    XeEoListener.trimMargin(text, indent)
-                ).getBytes(StandardCharsets.UTF_8)
-            );
+            final Supplier<String> data;
+            final String base;
+            if (ctx.FLOAT() != null || ctx.INT() != null) {
+                base = "Φ.org.eolang.number";
+                data = new BytesToHex(
+                    ByteBuffer
+                        .allocate(Double.BYTES)
+                        .putDouble(Double.parseDouble(text))
+                        .array()
+                );
+            } else if (ctx.HEX() != null) {
+                base = "Φ.org.eolang.number";
+                data = new BytesToHex(
+                    ByteBuffer
+                        .allocate(Double.BYTES)
+                        .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
+                        .array()
+                );
+            } else if (ctx.STRING() != null) {
+                base = "Φ.org.eolang.string";
+                data = new BytesToHex(
+                    StringEscapeUtils.unescapeJava(
+                        text.substring(1, text.length() - 1)
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+            } else {
+                base = "Φ.org.eolang.string";
+                final int indent = ctx.getStart().getCharPositionInLine();
+                data = new BytesToHex(
+                    StringEscapeUtils.unescapeJava(
+                        XeEoListener.trimMargin(text, indent)
+                    ).getBytes(StandardCharsets.UTF_8)
+                );
+            }
+            this.objects
+                .prop("base", base)
+                .start(ctx)
+                .prop("base", "Φ.org.eolang.bytes")
+                .start(ctx)
+                .data(data.get())
+                .leave()
+                .leave();
         }
-        this.objects.prop("base", base).data(data.get());
     }
 
     @Override
@@ -1195,26 +1140,20 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Start object.
-     *
-     * @param ctx Context.
-     * @return Started object.
-     */
-    private Objects startObject(final ParserRuleContext ctx) {
-        return this.objects.start(
-            ctx.getStart().getLine(),
-            ctx.getStart().getCharPositionInLine()
-        );
-    }
-
-    /**
      * Start abstract object.
      *
      * @param ctx Context
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.startObject(ctx).leave();
+        return this.objects.start(ctx).start(ctx)
+            .prop("base", "ξ")
+            .prop("name", "xi🌵")
+            .leave().leave();
+    }
+
+    private Objects startTest(final ParserRuleContext ctx) {
+        return this.objects.start(ctx).leave();
     }
 
     /**
@@ -1224,12 +1163,54 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
         if (!comment.isEmpty()) {
-            this.dirs.push().xpath("/program").addIf("comments").add("comment").set(
+            this.dirs.push().xpath("/object").addIf("comments").add("comment").set(
                 comment.stream().map(
-                    context -> context.COMMENTARY().getText().substring(1).trim()
+                    context -> {
+                        final String result;
+                        final String text = context.COMMENTARY().getText();
+                        if (text.isEmpty()) {
+                            result = "";
+                        } else {
+                            final int sub;
+                            if (text.length() > 1 && text.charAt(1) == ' ') {
+                                sub = 2;
+                            } else {
+                                sub = 1;
+                            }
+                            result = context.COMMENTARY().getText().substring(sub);
+                        }
+                        return result;
+                    }
                 ).collect(Collectors.joining("\\n"))
             ).attr("line", stop.getLine() + 1).pop();
         }
+    }
+
+    /**
+     * Extract positive integer from context and convert to alpha attribute.
+     * @param ctx Context
+     * @param msg Error message for the case if number is not positive
+     * @return Formatted alpha attribute
+     */
+    private String alphaAttr(final ParserRuleContext ctx, final String msg) {
+        final int index = Integer.parseInt(ctx.getToken(EoParser.INT, 0).getText());
+        if (index < 0) {
+            this.errors.add(new ParsingError(ctx, msg).cause());
+        }
+        return String.format("α%d", index);
+    }
+
+    /**
+     * Start new Auto Phi formation, from an application.
+     * @param ctx Context
+     * @param application Application base
+     */
+    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        this.startAbstract(ctx)
+            .enter().prop("name", new AutoName(ctx).asString())
+            .start(ctx)
+            .prop("base", String.format("ξ.ρ.%s", application))
+            .prop("name", "φ");
     }
 
     /**
@@ -1258,46 +1239,36 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Create parsing exception from given context.
+     * Vertical application base.
      * @param ctx Context
-     * @param msg Error message
-     * @return Parsing exception from the current context
+     * @return The base of vertical application
      */
-    private static ParsingException error(final ParserRuleContext ctx, final String msg) {
-        return new ParsingException(
-            ctx.getStart().getLine(),
-            new MsgLocated(
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine(),
-                msg
-            ).formatted(),
-            new MsgUnderlined(
-                XeEoListener.line(ctx),
-                ctx.getStart().getCharPositionInLine(),
-                ctx.getText().length()
-            ).formatted()
-        );
+    private static String verticalApplicationBase(
+        final EoParser.VapplicationArgUnboundCurrentContext ctx
+    ) {
+        final String result;
+        if (ctx.method() != null) {
+            result = ctx.method().getText();
+        } else {
+            result = ctx.just().getText();
+        }
+        return result;
     }
 
     /**
-     * Get line from context.
-     * @param ctx Context
-     * @return Line
+     * Translate FQN starting with `Q` or `QQ` to the one starting with a global Phi object.
+     * @param fqn FQN
+     * @return Translated FQN.
      */
-    private static String line(final ParserRuleContext ctx) {
-        final Token token = ctx.start;
-        final int number = token.getLine();
-        final String[] lines = token.getInputStream().toString().split("\n");
-        if (number > 0 && number <= lines.length) {
-            return lines[number - 1];
+    private static String qqToGlobalPhi(final String fqn) {
+        final String result;
+        if (fqn.startsWith("QQ")) {
+            result = String.format("Φ̇%s", fqn.substring(2));
+        } else if (!fqn.startsWith("QQ") && !fqn.isEmpty() && fqn.charAt(0) == 'Q') {
+            result = String.format("Φ%s", fqn.substring(1));
         } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Line number '%s' out of bounds, total lines: %d",
-                    number,
-                    lines.length
-                )
-            );
+            result = fqn;
         }
+        return result;
     }
 }

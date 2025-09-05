@@ -1,37 +1,19 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 architect:
   - yegor256
 ec2:
   type: t2.2xlarge
 docker:
-  image: yegor256/rultor-image:1.23.1
+  image: yegor256/rultor-image:1.24.0
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
   secring.gpg: yegor256/objectionary-secrets#secring.gpg
 install: |
-  sudo apt-get install -y python3-pygments
+  sudo apt-get install --yes python3-pygments
   sudo pip3 install pygments
   javac -version
   pdd --file=/dev/null
@@ -40,20 +22,21 @@ install: |
   gem install texqc:0.6.0
 merge:
   script: |
-    mvn clean install -Pqulice --errors -Dstyle.color=never
+    mvn clean install -DskipTests -Pqulice --errors -Dstyle.color=never
 release:
   pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
 
+    mvn flatten:flatten
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
+    sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
     mvn clean install -DskipTests -Dinvoker.skip
     mvn clean deploy -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
     mkdir /tmp/objectionary
     cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
-    cp -R eo-runtime/src/test/eo /tmp/objectionary/tests
     cp eo-parser/target/classes/XMIR.xsd /tmp
     branch=$(git rev-parse --abbrev-ref HEAD)
     git checkout gh-pages

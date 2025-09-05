@@ -1,34 +1,75 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
-# Try, catch and finally. This object helps catch errors created by the
-# `error` object. When being dataized, such objects will crash the problem.
-# Decorate them with `try` and errors will be caught by the `catch`
-# abstract object here and the enclosure of the `error` will be passed to it.
-[main catch finally] > try /org.eolang.bytes
+# Exception handling mechanism that catches errors during dataization.
+# When `try` is dataized, it attempts to dataize the `main` attribute first.
+# If an error occurs during `main` dataization, the error is caught and the
+# `catch` attribute is dataized instead, receiving the error as its parameter.
+# The `finally` attribute is always dataized after either `main` or `catch`
+# completes, regardless of success or failure. Returns the result of `main`
+# or `catch` dataization as `org.eolang.bytes`.
+#
+# Usage example:
+# ```
+# try
+#   risky-operation    # main
+#   error-handler      # catch
+#   cleanup-action     # finally
+# ```
+[main catch finally] > try ?
+  # Tests that try-catch mechanism catches simple exceptions from string slice operations.
+  [] +> tests-catches-simple-exception
+    try > @
+      slice.
+        "some string"
+        7
+        5
+      true > [e]
+      false
+
+  # Tests that nested try-catch blocks work correctly with exception propagation.
+  [] +> tests-two-nested-try-blocks
+    try > @
+      try
+        slice.
+          "some string"
+          7
+          5
+        error e > [e]
+        false
+      true > [e]
+      false
+
+  # Tests that try block executes normally when no exception occurs.
+  [] +> tests-try-without-error-block
+    eq. > @
+      try
+        30.plus 2
+        e > [e]
+        true
+      32
+
+  # Tests that try-catch preserves memory state when exception occurs during malloc operations.
+  [] +> tests-try-malloc-update-catch
+    eq. > @
+      malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 1
+              try
+                seq
+                  *
+                    5.div 0
+                    m.put (m.plus 1)
+                e > [e]
+                false
+              m
+      1

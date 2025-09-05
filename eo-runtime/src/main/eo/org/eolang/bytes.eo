@@ -1,25 +1,3 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -27,102 +5,523 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:22
++unlint redundant-object:23
++unlint redundant-object:26
++unlint redundant-object:44
++unlint redundant-object:53
++unlint redundant-object:62
 
-# The object encapsulates a chain of bytes, adding a few
-# convenient operations to it. Objects like `int`, `string`,
-# and `float` encapsulate `bytes`.
+# The object encapsulates a chain of bytes, providing bitwise operations,
+# numeric conversions, and byte manipulation methods. Objects like `number`, `string`,
+# and integer types (`i16`, `i32`, `i64`) use `bytes` as their internal representation.
+#
+# Usage examples:
+# ```
+# bytes 01-02-03       # Creates a 3-byte sequence
+# FF-FF.and 00-FF      # Bitwise AND operation
+# as-bytes.as-number   # Convert 8-byte sequence to number
+# ```
 [data] > bytes
   data > @
-  $ > as-bytes
+  bytes data > as-bytes
   eq 01- > as-bool
-
-  # Turn this chain of eight bytes into a number.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
-  [] > as-number
-    if. > @
-      eq nan.as-bytes
-      nan
+  # Converts this chain of eight bytes into a number.
+  # Returns an error if the byte count is not exactly eight.
+  if. > as-number
+    eq nan.as-bytes
+    nan
+    if.
+      eq positive-infinity.as-bytes
+      positive-infinity
       if.
-        eq positive-infinity.as-bytes
-        positive-infinity
+        eq negative-infinity.as-bytes
+        negative-infinity
         if.
-          eq negative-infinity.as-bytes
-          negative-infinity
-          if.
-            size.eq 8
-            number ^
-            error
-              sprintf
-                "Can't convert non 8 length bytes to a number, bytes are %x"
-                * ^
+          size.eq 8
+          number as-bytes
+          error
+            sprintf
+              "Can't convert non 8 length bytes to a number, bytes are %x"
+              * as-bytes
+  # Converts this chain of eight bytes into an i64 number.
+  # Returns an error if the byte count is not exactly eight.
+  if. > as-i64
+    size.eq 8
+    i64 as-bytes
+    error
+      sprintf
+        "Can't convert non 8 length bytes to i64, bytes are %x"
+        * as-bytes
+  # Converts this chain of four bytes into an i32 number.
+  # Returns an error if the byte count is not exactly four.
+  if. > as-i32
+    size.eq 4
+    i32 as-bytes
+    error
+      sprintf
+        "Can't convert non 4 length bytes to i32, bytes are %x"
+        * as-bytes
+  # Converts this chain of two bytes into an i16 number.
+  # Returns an error if the byte count is not exactly two.
+  if. > as-i16
+    size.eq 2
+    i16 as-bytes
+    error
+      sprintf
+        "Can't convert non 2 length bytes to i16, bytes are %x"
+        * as-bytes
 
-  # Equals to another object.
-  # A condition where two objects have the same value or content.
-  [b] > eq /org.eolang.bool
+  # Returns `org.eolang.true` if current sequence of bytes equals another object.
+  # Before the actual comparison the object `b` is dataized.
+  [b] > eq ?
 
-  # Total number of bytes.
-  # The complete count of bytes used to represent data.
-  [] > size /org.eolang.number
+  # Returns total amount of current bytes as `org.eolang.number`.
+  [] > size ?
 
-  # Represents a sub-sequence inside the current one.
-  [start len] > slice /org.eolang.bytes
+  # Represents a sub-sequence of `org.eolang.bytes` inside the current one.
+  [start len] > slice ?
 
-  # Turn this chain of eight bytes into a i64 number.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
-  [] > as-i64
-    if. > @
-      size.eq 8
-      i64 ^
-      error
-        sprintf
-          "Can't convert non 8 length bytes to i64, bytes are %x"
-          * ^
+  # Calculates the bitwise AND operation and returns result as `org.eolang.bytes`.
+  [b] > and ?
 
-  # Turn this chain of four bytes into a i32 number.
-  # If there are less or more than four bytes, there will
-  # be an error returned.
-  [] > as-i32
-    if. > @
-      size.eq 4
-      i32 ^
-      error
-        sprintf
-          "Can't convert non 4 length bytes to i32, bytes are %x"
-          * ^
+  # Calculates the bitwise OR operation and returns result as `org.eolang.bytes`.
+  [b] > or ?
 
-  # Turn this chain of two bytes into a i16 number.
-  # If there are less or more than two bytes, there will
-  # be an error returned.
-  [] > as-i16
-    if. > @
-      size.eq 2
-      i16 ^
-      error
-        sprintf
-          "Can't convert non 2 length bytes to i16, bytes are %x"
-          * ^
+  # Calculates the bitwise XOR operation and returns result as `org.eolang.bytes`.
+  [b] > xor ?
 
-  # Calculate the bitwise and operation.
-  [b] > and /org.eolang.bytes
+  # Calculates the bitwise NOT operation and returns result as `org.eolang.bytes`.
+  [] > not ?
 
-  # Calculate the bitwise or operation.
-  [b] > or /org.eolang.bytes
-
-  # Calculate the bitwise xor operation.
-  [b] > xor /org.eolang.bytes
-
-  # Calculate the bitwise not operation.
-  [] > not /org.eolang.bytes
-
-  # Calculate the bitwise left shift.
+  # Calculates the bitwise left shift.
   right x.neg > [x] > left
 
-  # Calculate the bitwise right shift.
-  [x] > right /org.eolang.bytes
+  # Calculates the bitwise right shift and returns result as `org.eolang.bytes`.
+  [x] > right ?
 
-  # Concatenation of two byte sequences:
-  # the current and the provided one,
-  # as a new sequence.
-  [b] > concat /org.eolang.bytes
+  # Concatenation of two byte sequences and returns result as `org.eolang.bytes`.
+  [b] > concat ?
+
+  # Tests that a slice of bytes can be extracted from a larger byte sequence.
+  [] +> tests-takes-part-of-bytes
+    eq. > @
+      slice.
+        20-1F-EE-B5-90
+        1
+        3
+      1F-EE-B5
+
+  # Tests that the size of a byte slice is calculated correctly.
+  [] +> tests-size-of-part-is-correct
+    eq. > @
+      size.
+        slice.
+          20-1F-EE-B5-90-EE-BB
+          2
+          3
+      3
+
+  # Tests that the byte sequence size is correctly calculated.
+  [] +> tests-counts-size-of-bytes
+    eq. > @
+      size.
+        F1-20-5F-EC-B5-90-32
+      7
+
+  # Tests that bytes can be converted to string representation.
+  [] +> tests-turns-bytes-into-a-string
+    eq. > @
+      string
+        E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
+      "你好, друг!"
+
+  # Tests the left shift operation with zero value.
+  [] +> tests-left-zero
+    not. > @
+      eq.
+        0.as-bytes.left 1
+        -1.as-bytes
+
+  # Tests the left shift operation with zero shift amount.
+  [] +> tests-left-with-zero
+    not. > @
+      eq.
+        2.as-bytes.left 0
+        -3.as-bytes
+
+  # Tests left shift operation with odd negative numbers.
+  [] +> tests-left-with-odd-neg
+    not. > @
+      eq.
+        -17.as-bytes.left 1
+        33.as-bytes
+
+  # Tests left shift operation with negative one value.
+  [] +> tests-left-with-minus-one
+    eq. > @
+      eq.
+        -1.as-bytes.left 3
+        7.as-bytes
+      false
+
+  # Tests left shift operation with even negative numbers.
+  # (-18.left 2).eq 71.not.
+  [] +> tests-left-with-even-neg
+    eq. > @
+      FF-FF-FF-FF-FF-FF-FF-EE.left 2
+      00-00-00-00-00-00-00-47.not
+
+  # Tests left shift operation with even positive numbers.
+  [] +> tests-left-with-even-plus
+    not. > @
+      eq.
+        4.as-bytes.left 3
+        -33.as-bytes
+
+  # Tests left shift operation with odd positive numbers.
+  [] +> tests-left-with-odd-plus
+    not. > @
+      eq.
+        5.as-bytes.left 3
+        -41.as-bytes
+
+  # Tests the right shift operation with zero value.
+  [] +> tests-right-with-zero
+    not. > @
+      eq.
+        0.as-bytes.right 2
+        -1.as-bytes
+
+  # Tests right shift operation with odd negative numbers.
+  [] +> tests-right-with-odd-neg
+    not. > @
+      eq.
+        -37.as-bytes.right 3
+        4.as-bytes
+
+  # Tests right shift operation with negative one value.
+  [] +> tests-right-with-minus-one
+    not. > @
+      eq.
+        -1.as-bytes.right 4
+        0.as-bytes
+
+  # Tests right shift operation with even negative numbers.
+  [] +> tests-right-with-even-neg
+    not. > @
+      eq.
+        -38.as-bytes.right 1
+        18.as-bytes
+
+  # Tests right shift operation with even positive numbers.
+  [] +> tests-right-with-even-plus
+    eq. > @
+      eq.
+        36.as-bytes.right 2
+        -10.as-bytes
+      false
+
+  # Tests right shift operation with odd positive numbers.
+  [] +> tests-right-with-odd-plus
+    not. > @
+      eq.
+        37.as-bytes.right 3
+        -5.as-bytes
+
+  # Tests bitwise AND operation with zero value.
+  [] +> tests-and-with-zero
+    not. > @
+      eq.
+        and.
+          0.as-bytes
+          32.as-bytes
+        -1.as-bytes
+
+  # Tests bitwise AND operation with two negative numbers.
+  [] +> tests-and-with-two-neg
+    not. > @
+      eq.
+        -6.as-bytes.and -4.as-bytes
+        7.as-bytes
+
+  # Tests bitwise AND operation with two positive numbers.
+  [] +> tests-and-with-two-plus
+    not. > @
+      eq.
+        and.
+          5.as-bytes
+          10.as-bytes
+        -1.as-bytes
+
+  # Tests bitwise AND operation with one negative and one positive number.
+  [] +> tests-and-with-one-neg-one-plus
+    not. > @
+      eq.
+        -7.as-bytes.and 7.as-bytes
+        -2.as-bytes
+
+  # Tests bitwise OR operation with zero value.
+  [] +> tests-or-with-zero
+    not. > @
+      eq.
+        -11.as-bytes.or 0.as-bytes
+        10.as-bytes
+
+  # Tests bitwise OR operation with two negative numbers.
+  [] +> tests-or-with-two-neg
+    not. > @
+      eq.
+        -27.as-bytes.or -13.as-bytes
+        8.as-bytes
+
+  # Tests bitwise OR operation with two positive numbers.
+  [] +> tests-or-with-two-plus
+    not. > @
+      eq.
+        5.as-bytes.or 14.as-bytes
+        -16.as-bytes
+
+  # Tests bitwise OR operation with one negative and one positive number.
+  [] +> tests-or-with-one-neg-one-plus
+    not. > @
+      eq.
+        -7.as-bytes.or 23.as-bytes
+        0.as-bytes
+
+  # Tests bitwise XOR operation with zero value.
+  [] +> tests-xor-with-zero
+    not. > @
+      eq.
+        0.as-bytes.xor 29.as-bytes
+        -30.as-bytes
+
+  # Tests bitwise XOR operation with two negative numbers.
+  [] +> tests-xor-with-two-neg
+    not. > @
+      eq.
+        -1.as-bytes.xor -123.as-bytes
+        -123.as-bytes
+
+  # Tests bitwise XOR operation with two positive numbers.
+  [] +> tests-xor-with-two-plus
+    not. > @
+      eq.
+        53.as-bytes.xor 24.as-bytes
+        -46.as-bytes
+
+  # Tests bitwise XOR operation with one negative and one positive number.
+  [] +> tests-xor-with-one-neg-one-plus
+    not. > @
+      eq.
+        -36.as-bytes.xor 43.as-bytes
+        8.as-bytes
+
+  # Tests bitwise NOT operation with zero value.
+  [] +> tests-not-with-zero
+    not. > @
+      eq.
+        0.as-bytes
+        0.as-bytes.not
+
+  # Tests bitwise NOT operation with negative number.
+  [] +> tests-not-with-neg
+    not. > @
+      eq.
+        -1.as-bytes
+        -1.as-bytes.not
+
+  # Tests bitwise NOT operation with positive number.
+  [] +> tests-not-with-plus
+    not. > @
+      eq.
+        53.as-bytes
+        53.as-bytes.not
+
+  # Tests the AND conjunction operation between two byte sequences.
+  [] +> tests-conjunction-of-bytes
+    eq. > @
+      a.and b
+      02-23-C0-05-5E-70-10
+    02-EF-D4-05-5E-78-3A > a
+    12-33-C1-B5-5E-71-55 > b
+
+  # Tests that bytes written across multiple lines are processed correctly.
+  [] +> tests-written-in-several-lines
+    eq. > @
+      size.
+        CA-FE-
+        BE-BE
+      4
+
+  # Tests that basic bitwise operations function correctly.
+  [] +> tests-bitwise-works
+    eq. > @
+      as-number.
+        and.
+          1.as-bytes
+          1.as-bytes
+      1
+
+  # Tests that bytes can be converted to boolean values.
+  [] +> tests-convertible-to-bool
+    not. > @
+      eq.
+        01-.as-bool
+        00-.as-bool
+
+  # Tests that bitwise operations work correctly with negative numbers.
+  # (-127.or 127).eq -1.
+  [] +> tests-bitwise-works-negative
+    eq. > @
+      as-number.
+        or.
+          FF-FF-FF-FF-FF-FF-FF-81.as-bytes
+          00-00-00-00-00-00-00-7F.as-bytes
+      FF-FF-FF-FF-FF-FF-FF-FF
+
+  # Tests that two byte sequences can be concatenated together.
+  [] +> tests-concatenation-of-bytes
+    eq. > @
+      a.concat b
+      02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
+    02-EF-D4-05-5E-78-3A > a
+    12-33-C1-B5-5E-71-55 > b
+
+  # Tests concatenation of boolean values as byte sequences.
+  [] +> tests-concat-bools-as-bytes
+    eq. > @
+      concat.
+        true.as-bytes
+        false.as-bytes
+      01-00
+
+  # Tests concatenation of bytes with empty sequence.
+  [] +> tests-concat-with-empty
+    eq. > @
+      concat.
+        05-5E-78
+        --
+      05-5E-78
+
+  # Tests concatenation of empty sequence with bytes.
+  [] +> tests-concat-empty-with
+    eq. > @
+      concat.
+        --
+        05-5E-78
+      05-5E-78
+
+  # Tests concatenation of two empty sequences.
+  [] +> tests-concat-empty
+    eq. > @
+      concat.
+        --
+        --
+      --
+
+  # Tests concatenation of string representations as bytes.
+  [] +> tests-concat-strings
+    eq. > @
+      string
+        concat.
+          "hello ".as-bytes
+          "world".as-bytes
+      "hello world"
+
+  # Tests that XOR operation produces correct results.
+  # (2397719729.xor 4294967295).eq 1897247566.
+  [] +> tests-xor-works
+    eq. > @
+      00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
+      00-00-00-00-71-15-B3-4E
+
+  # Tests XOR operation of one with itself returns zero as number.
+  [] +> tests-one-xor-one-as-number
+    eq. > @
+      (1.as-bytes.xor 1.as-bytes).as-number
+      0
+
+  # Tests OR operation with negative bytes having leading zeros.
+  # (2397719729.or -4294967296).eq -1897247567.
+  [] +> tests-or-neg-bytes-with-leading-zeroes
+    eq. > @
+      00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+      FF-FF-FF-FF-8E-EA-4C-B1
+
+  # Tests AND operation with negative bytes as number with leading zeros.
+  # (2397719729.and -4294967296).eq 0.
+  [] +> tests-and-neg-bytes-as-number-with-leading-zeroes
+    eq. > @
+      (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
+      0
+
+  # Tests XOR operation with negative bytes having leading zeros.
+  # (2397719729.xor -4294967296).eq -1897247567.
+  [] +> tests-xor-neg-bytes-with-leading-zeroes
+    eq. > @
+      00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
+      FF-FF-FF-FF-8E-EA-4C-B1
+
+  # Tests OR operation with negative bytes without leading zeros.
+  # (4294967295.or -4294967296).eq -1.
+  [] +> tests-or-neg-bytes-without-leading-zeroes
+    eq. > @
+      00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
+      FF-FF-FF-FF-FF-FF-FF-FF
+
+  # Tests AND operation with negative bytes as number without leading zeros.
+  # (4294967295.and -4294967296).eq 0.
+  [] +> tests-and-neg-bytes-as-number-without-leading-zeroes
+    eq. > @
+      (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
+      0
+
+  # Tests XOR operation with negative bytes as number without leading zeros.
+  # (4294967295.xor -4294967296).eq -1.
+  [] +> tests-xor-neg-bytes-as-number-without-leading-zeroes
+    eq. > @
+      (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
+      FF-FF-FF-FF-FF-FF-FF-FF
+
+  # Tests OR operation of negative bytes as number with zero.
+  [] +> tests-or-neg-bytes-as-number-with-zero
+    eq. > @
+      (-4294967296.as-bytes.or 0.as-bytes).as-number
+      -4294967296
+
+  # Tests OR operation of negative bytes with one.
+  # (-4294967296L.or 1).eq -4294967295L.
+  [] +> tests-or-neg-bytes-with-one
+    eq. > @
+      FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+      FF-FF-FF-FF-00-00-00-01
+
+  # Tests that conversion to number throws error for wrong-sized bytes.
+  [] +> throws-on-bytes-of-wrong-size-as-number
+    01-01-01-01.as-number > @
+
+  # Tests that conversion to i64 throws error for wrong-sized bytes.
+  [] +> throws-on-bytes-of-wrong-size-as-i64
+    01-01-01-01.as-i64 > @
+
+  # Tests that bytes can be correctly converted to i64 integer.
+  [] +> tests-bytes-converts-to-i64
+    eq. > @
+      00-00-00-00-00-00-00-2A.as-i64
+      42.as-i64
+
+  # Tests that bytes converted to i64 and back remain unchanged.
+  [] +> tests-bytes-converts-to-i64-and-back
+    eq. > @
+      00-00-00-00-00-00-00-33.as-i64.as-bytes
+      00-00-00-00-00-00-00-33
+
+  # Tests that i64 bytes representation differs from number bytes representation.
+  [] +> tests-bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
+    not. > @
+      eq.
+        00-00-00-00-00-00-00-2A.as-i64.as-bytes
+        42.as-bytes

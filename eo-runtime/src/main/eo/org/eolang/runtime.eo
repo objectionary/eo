@@ -1,0 +1,450 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint decorated-formation
++unlint cti
++unlint incorrect-unlint
++unlint unlint-non-existing-defect
++unlint redundant-object
+
+# Runtime.
+#
+# The runtime object provides a collection of test cases that verify
+# core EO language functionality and behavior.
+#
+# @todo #4235:35min Move all tests from `runtime.eo` to other objects.
+#  For now runtime is just a set of runtime tests. Instead of having this, let's move its tests
+#  to the other objects, which tests are most suitable for.
+[] > runtime
+  # This unit test is supposed to check the globals bound objects work as tests.
+  true +> global-test
+
+  # Tests that the runtime understands 'this' reference correctly.
+  [] +> tests-understands-this-correctly
+    eq. > @
+      a 42
+      42
+    [x] > a
+      x > @
+
+  # Tests that the runtime takes parent objects correctly.
+  [] +> tests-takes-parent-object
+    eq. > @
+      a 42
+      42
+    [x] > a
+      take > @
+      [] > take
+        ^.x > @
+
+  # Tests that the runtime makes objects into constants correctly.
+  [] +> tests-makes-object-a-constant
+    eq. > @
+      f
+      f
+    [] > foo
+      times. > @
+        50
+        50
+    foo.@ > f!
+
+  # Tests that the runtime takes parent through attribute access.
+  [] +> tests-takes-parent-through-attribute
+    [] > @
+      [] > @
+        [] > @
+          eq. > @
+            x
+            42
+    42 > x
+
+  # Tests that the runtime throws an error when applying to closed objects.
+  [] +> throws-when-applies-to-closed-object
+    closed true > @
+    [x] > a
+      x > @
+    a false > closed
+
+  # Tests that the runtime makes deep objects recursively.
+  [] +> tests-makes-deep-object-recursively
+    eq. > @
+      x 5
+      0
+    [i] > x
+      if. > @
+        i.lt 0
+        0
+        x
+          i.minus 1
+
+  # Tests that the runtime calculates expressions only once.
+  [] +> tests-calculates-only-once
+    eq. > @
+      malloc.for
+        0
+        [m] > x
+          seq > @
+            *
+              a.neg.neg.neg.neg.eq 42
+              m
+          [] > a
+            seq > @
+              *
+                ^.m.put (^.m.as-number.plus 1)
+                42
+      1
+
+  # Tests that the runtime handles recursion without arguments.
+  [] +> tests-recursion-without-arguments
+    eq. > @
+      malloc.for 4 [m]>>
+        func m > @
+      0
+    [n] > func
+      if. > @
+        n.as-number.gt 0
+        seq
+          *
+            n.put (n.as-number.minus 1)
+            ^.func n
+        n
+
+  # Tests that the runtime unescapes slashes in strings.
+  [] +> tests-unescapes-slashes
+    eq. > @
+      "x\\b\\f\\u\\r\\t\\n\\'"
+      78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
+
+  # Tests that the runtime unescapes symbols in strings.
+  [] +> tests-unescapes-symbols
+    eq. > @
+      "\b\f\n\r\t\u27E6"
+      08-0C-0A-0D-09-E2-9F-A6
+
+  # Tests that the runtime compiles correctly with long duplicate names.
+  [] +> tests-compiles-correctly-with-long-duplicate-names
+    true > @
+    [] > long-object-name
+      [] > long-object-name
+        [] > long-object-name
+          [] > long-object-name
+            [] > long-object-name
+              42 > x
+
+  # Tests that the runtime handles named inner abstract objects.
+  [] +> tests-named-inner-abstract-object
+    seq > @
+      *
+        [] > b
+          false > @
+        [] > a
+          true > @
+
+  # Tests that the runtime handles applications that call functions.
+  [] +> tests-app-that-calls-func
+    eq. > @
+      output
+      2
+    [] > app
+      f > @
+        * 1 2 3
+      [args] > f
+        2 > @
+        1 > a
+    app > output
+
+  # Tests that the runtime directly accesses objects from root namespace.
+  [] +> tests-directly-accesses-objects-from-root
+    eq. > @
+      Q.org.eolang.malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 42
+              m.put
+                m.as-number.minus 2
+      40
+
+  # Tests that the runtime directly accesses objects from standard root namespace.
+  [] +> tests-directly-accesses-objects-from-standard-root
+    eq. > @
+      QQ.malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 42
+              m.put
+                m.as-number.minus 2
+      40
+
+  # Tests that the runtime handles standard root and root namespaces.
+  [] +> tests-standard-root-and-root
+    eq. > @
+      root
+      stand-root
+    QQ.sys.os > stand-root
+    Q.org.eolang.sys.os > root
+
+  # Tests that the runtime extracts attributes from decoratees.
+  [] +> tests-extract-attribute-from-decoratee
+    eq. > @
+      a.foo
+      43
+    [foo] > return
+    [] > a
+      ^.return > @
+        plus.
+          42
+          1
+
+  # Tests that the runtime constants defend against side effects.
+  [] +> tests-constant-defends-against-side-effects
+    eq. > @
+      malloc.for 7 [m]>>
+        m.put > @
+          times.
+            num
+            num
+        number > num
+          ^.inc m > n!
+      64
+    [x] > inc
+      seq > @
+        *
+          x.put
+            x.as-number.plus 1
+          x.as-number
+
+  # Tests that the runtime handles parent access in vertical notation.
+  [] +> tests-parent-in-vertical-notation
+    eq. > @
+      value
+      5
+    5 > m
+    [] > value
+      [] > @
+        m. > @
+          ^.
+            ^
+
+  # Tests that the runtime handles parent access in horizontal notation.
+  [] +> tests-parent-in-horizontal-notation
+    eq. > @
+      value
+      5
+    5 > m
+    [] > value
+      [] > @
+        ^.^.m > @
+
+  # Tests that the runtime handles phi access in vertical notation.
+  [] +> tests-phi-in-vertical-notation
+    eq. > @
+      @.
+        value
+      100
+    [] > value
+      [] > @
+        100 > @
+
+  # Tests that the runtime handles phi access in horizontal notation.
+  [] +> tests-phi-in-horizontal-notation
+    eq. > @
+      value.@
+      100
+    [] > value
+      [] > @
+        100 > @
+
+  # Tests that the runtime uses object hierarchy correctly.
+  [] +> tests-right-way-to-use-hierarchy
+    ((pyint 1).add (pyint 3)).eq (pyint 4) > @
+    [value] > pybool
+      value > @
+    [value] > pyint
+      [x] > eq
+        ^.^.pybool (^.value.eq x.value) > @
+      [x] > add
+        ^.^.pyint (^.value.plus x.value) > @
+
+  # Tests that the runtime checks triple quoted strings correctly.
+  [] +> tests-check-triple-quotes
+    eq. > @
+      """
+      Hello
+
+      Hello
+      """
+      "Hello\n\nHello"
+
+  # Tests that the runtime correctly handles same name attributes in simplified form.
+  [] +> tests-correctly-handles-same-name-attrs-simplified
+    eq. > @
+      calc
+        []
+          build 1 > @
+          [x] > build
+            x > @
+        []
+          build 2 > @
+          [y] > build
+            y > @
+      3
+    [first second] > calc
+      plus. > @
+        first
+        second
+
+  # Tests that the runtime correctly handles same name attributes.
+  [] +> tests-correctly-handles-same-name-attrs
+    eq. > @
+      calc
+        []
+          build 1 > @
+          [x] > build
+            x.plus 1 > @
+            ^.build > next
+              plus.
+                x
+                1
+        []
+          build 2 > @
+          [y] > build
+            y.plus 2 > @
+            ^.build > next
+              plus.
+                y
+                2
+      9
+    [f s] > calc
+      plus. > @
+        f.next
+        s.next
+
+  # Tests that the runtime works with void phi.
+  [] +> tests-with-void-phi
+    and. > @
+      (five.plus 5).eq 10
+      five.hello.eq "Hello"
+    [@] > x
+      "Hello" > hello
+    x 5 > five
+
+  # Tests that the runtime handles complex horizontal notation.
+  [] (seq (* (five.eq 5) true) > @) (5 > five) +> complex-horizontal
+
+  # Tests that the runtime handles vertical bound methods.
+  [] +> tests-vertical-bound-method
+    eq. > @
+      if.
+        true
+        "second":1
+        "first"
+        .as-bytes:0
+      "first"
+
+  # Tests that the runtime handles methods accessed by position.
+  [] +> tests-methods-by-position
+    and. > @
+      bound.~0.eq 1
+      bound.~1.eq "Hey"
+    [first second] > obj
+    obj 1 "Hey" > bound
+
+  # Tests that the runtime handles deep nesting of objects.
+  [] +> tests-nesting-blah-test
+    blah0 > @
+    [] > blah0
+      blah1 > @
+      [] > blah1
+        blah2 > @
+        [] > blah2
+          blah3 > @
+          [] > blah3
+            blah4 > @
+            [] > blah4
+              blah5 > @
+              [] > blah5
+                blah6 > @
+                [] > blah6
+                  blah7 > @
+                  [] > blah7
+                    blah8 > @
+                    [] > blah8
+                      blah9 > @
+                      [] > blah9
+                        blah10 > @
+                        [] > blah10
+                          blah11 > @
+                          [] > blah11
+                            blah12 > @
+                            [] > blah12
+                              blah13 > @
+                              [] > blah13
+                                blah14 > @
+                                [] > blah14
+                                  blah15 > @
+                                  [] > blah15
+                                    blah16 > @
+                                    [] > blah16
+                                      blah17 > @
+                                      [] > blah17
+                                        blah18 > @
+                                        [] > blah18
+                                          blah19 > @
+                                          [] > blah19
+                                            blah20 > @
+                                            [] > blah20
+                                              blah21 > @
+                                              [] > blah21
+                                                blah22 > @
+                                                [] > blah22
+                                                  blah23 > @
+                                                  [] > blah23
+                                                    blah24 > @
+                                                    [] > blah24
+                                                      blah25 > @
+                                                      [] > blah25
+                                                        blah26 > @
+                                                        [] > blah26
+                                                          blah27 > @
+                                                          [] > blah27
+                                                            blah28 > @
+                                                            [] > blah28
+                                                              blah29 > @
+                                                              [] > blah29
+                                                                blah30 > @
+                                                                [] > blah30
+                                                                  blah31 > @
+                                                                  [] > blah31
+                                                                    blah32 > @
+                                                                    [] > blah32
+                                                                      blah33 > @
+                                                                      [] > blah33
+                                                                        blah34 > @
+                                                                        [] > blah34
+                                                                          blah35 > @
+                                                                          [] > blah35
+                                                                            blah36 > @
+                                                                            [] > blah36
+                                                                              blah37 > @
+                                                                              [] > blah37
+                                                                                blah38 > @
+                                                                                [] > blah38
+                                                                                  blah39 > @
+                                                                                  [] > blah39
+                                                                                    true > @
+
+  # Tests that the runtime just prints warnings for deprecated methods.
+  [] +> tests-tests-just-prints-warning
+    eq. > @
+      cti
+        2.times 2
+        "warning"
+        "This method is deprecated!"
+      4

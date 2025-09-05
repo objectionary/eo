@@ -1,11 +1,11 @@
-<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
+# Pure Object-Oriented Language, Experimental
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![DevOps By Rultor.com](http://www.rultor.com/b/objectionary/eo)](http://www.rultor.com/p/objectionary/eo)
+[![DevOps By Rultor.com](https://www.rultor.com/b/objectionary/eo)](https://www.rultor.com/p/objectionary/eo)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
 [![mvn-linux](https://github.com/objectionary/eo/actions/workflows/mvn.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/mvn.yml)
-[![PDD status](http://www.0pdd.com/svg?name=objectionary/eo)](http://www.0pdd.com/p?name=objectionary/eo)
+[![PDD status](https://www.0pdd.com/svg?name=objectionary/eo)](https://www.0pdd.com/p?name=objectionary/eo)
 [![Maintainability](https://api.codeclimate.com/v1/badges/eaede7d027b1d9411a76/maintainability)](https://codeclimate.com/github/objectionary/eo/maintainability)
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 [![codecov](https://codecov.io/gh/objectionary/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo)
@@ -17,20 +17,11 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/objectionary/eo/badge.svg)](https://snyk.io/test/github/objectionary/eo)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.objectionary%3Aeo&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=com.objectionary%3Aeo)
 
-**EO** (stands for
-[Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
-ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
-is an object-oriented programming language based on
-[𝜑-calculus](https://arxiv.org/abs/2111.13384).
+**EO** (stands for [Elegant Objects][book] or ISO 639-1 code of [Esperanto])
+is an object-oriented programming language based on [𝜑-calculus].
 We're aware of popular semi-OOP languages and we don't think
-they are good enough, including:
-[Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
-[C++](https://en.wikipedia.org/wiki/C%2B%2B),
-[Smalltalk](https://en.wikipedia.org/wiki/Smalltalk),
-[Python](https://en.wikipedia.org/wiki/Python_%28programming_language%29),
-[PHP](https://en.wikipedia.org/wiki/PHP),
-[C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
+  they are good enough, including: [Java], [Ruby], [C++],
+  [Smalltalk], [Python], [PHP], [C#].
 All of them have something **we don't tolerate**:
 
 * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
@@ -57,17 +48,15 @@ All of them have something **we don't tolerate**:
 * traits and mixins
   ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
 * flow control statements (`for`, `while`, `if`, etc)
-* [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar)
-  ([why?](https://github.com/objectionary/eo/issues/51))
 
 ## Quick Start
 
-First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Then, you install [eoc](https://github.com/objectionary/eoc):
+First, install [Java SE] and [npm].
+
+Then, install [eoc]:
 
 ```bash
-npm install -g eolang@0.28.0
+npm install -g eolang@0.32.1
 ```
 
 Then, start with a simple EO program in the `app.eo` file:
@@ -95,28 +84,26 @@ You should see "Hello, world!" printed.
 
 ## Simple Tutorial
 
-In the example above, we create a new
-[abstract object](https://www.yegor256.com/2020/12/01/abstract-objects.html)
-named `app`, which has got a single attribute named `@`. The object
+In the example above, we create a new [abstract object][abstract objects]
+named `app`, which has a single attribute named `@`. The object
 attached to the attribute `@` is a copy of the object `stdout` with
 a single argument `"Hello, world!"`. The object
-`stdout` is also
-[abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+`stdout` is also [abstract][abstract objects].
 It can't be used directly, a copy of it has to be created,
-with a few requirement arguments provided.
+with a few required arguments provided.
 This is how a copy of the object `stdout` is made:
 
-```eo
+```text
 QQ.io.stdout
   "Hello, world!\n"
 ```
 
 The indentation in EO is important, just like in Python.
-There have to be two spaces
+There must be two spaces
 in front of the line in order to go to the deeper level of nesting.
 This code can also be written in a "horizontal" notation:
 
-```eo
+```text
 QQ.io.stdout "Hello, world!"
 ```
 
@@ -134,8 +121,7 @@ argument: a copy of the object `sprintf`:
       * "Jeffrey"
 ```
 
-Here, the object `sprintf` is also
-[abstract](https://www.yegor256.com/2020/12/01/abstract-objects.html).
+Here, the object `sprintf` is also [abstract][abstract objects].
 It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
@@ -145,11 +131,11 @@ This program can be written using horizontal notation:
 
 # Also says hello to Jeff.
 [] > app
-  (stdout (sprintf "Hello, %s!" (* "Jeffrey"))) > @
+  stdout (sprintf "Hello, %s!" (* "Jeffrey")) > @
 ```
 
 The special attribute `@` denotes an object that is being
-[decorated](https://www.yegor256.com/2015/02/26/composable-decorators.html).
+[decorated][composable decorators].
 In this example, the object `app` decorates the copy of the
 object `stdout` and through this starts to behave like
 the object `stdout`: all attributes of `stdout` become the
@@ -172,29 +158,24 @@ Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
 This is how you iterate:
 
 ```eo
-# Multiplication table.
 [args] > app
   malloc.for > @
     0
     [x] >>
-      seq > @
-        *
-          x.put 2
-          while
-            x.as-number.lt 6 > [i] >>
-            [i] >>
-              seq > @
-                *
-                  QQ.io.stdout
-                    QQ.txt.sprintf
-                      "%d x %d = %d\n"
-                      *
-                        ^.x
-                        ^.x
-                        ^.x.as-number.times ^.x
-                  ^.x.put
-                    ^.x.as-number.plus 1
-          true
+      seq * > @
+        x.put 2
+        while
+          x.as-number.lt 6 > [i] >>
+          [i] >>
+            seq * > @
+              QQ.io.stdout
+                QQ.txt.sprintf *1
+                  "%d x %1$d = %d\n"
+                  x
+                  x.as-number.times x
+              x.put
+                x.as-number.plus 1
+        true
 ```
 
 This code will print this:
@@ -210,80 +191,53 @@ Got the idea?
 
 ## Backus-Naur Form
 
-This is our
-[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form),
-of EO language:
+This is our [EBNF] of EO language:
 
-<img alt="ENBF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
+![Grammar][EO-Grammar]
 
-This is the
-[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
-of 𝜑-calculus:
-
-<img alt="ENBF of 𝜑-calculus" src="https://www.eolang.org/ebnf/Phi.png" width="100%" />
-
-The images were
+The PNG image was
 [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
-It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg)
-and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
+It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg).
 
 ## What's Next?
 
-Join [our Telegram group](https://t.me/polystat_org).
+Join [our Telegram group](https://t.me/eolang_org).
 
 Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) about EOLANG basics.
 
-Read [our blog](https://news.eolang.org), especially the section with
-[recently published papers](https://news.eolang.org/papers.html).
+Read [our blog], especially the section with
+  [recently published papers][papers].
 
-Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html),
-a dialect of XML, which we use to
-represent EO program:
-XSD is [here](https://www.eolang.org/XMIR.xsd),
-full specification is [here](https://www.eolang.org/XMIR.html).
+Learn [XMIR], a dialect of XML, which we use to represent EO program:
+  [XSD] and [spec][XMIR HTML].
 
-See the full collection of canonical objects:
-[objectionary](https://github.com/objectionary/home).
+See the full collection of canonical objects: [objectionary][home].
 
-Take a look how we use EO as an Intermediary Representation (IR) in
-[Polystat](https://www.polystat.org), a polyglot static analyzer.
-
-Play with more examples [here](https://github.com/objectionary/sandbox).
-
-Read about integration with Maven,
-[here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
+Read more about integration [with Maven][eo-maven-plugin].
 
 ## Benchmark
 
-This is how many milliseconds were spent on different
-XSL stylesheets during the execution of `mvn install` of
-the `eo-runtime` module:
+This is how many milliseconds were spent on different XSL stylesheets
+  during the execution of `mvn install` of the `eo-runtime` module:
 
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl              32861  23.09%
-classes.xsl              15303  10.75%
-set-locators.xsl         12365  8.69%
-build-fqns.xsl           10813  7.60%
-package.xsl              6737   4.73%
-resolve-aliases.xsl      6107   4.29%
-add-probes.xsl           5795   4.07%
-explicit-data.xsl        5668   3.98%
-attrs.xsl                5559   3.91%
-data.xsl                 5410   3.80%
-vars-float-up.xsl        5273   3.71%
-add-default-package.xsl  4874   3.42%
-cti-adds-errors.xsl      4839   3.40%
-tests.xsl                4680   3.29%
-anonymous-to-nested.xsl  4462   3.14%
-blank-xsd-schema.xsl     4009   2.82%
+to-java.xsl              78929  41.08%
+classes.xsl              60946  31.72%
+set-locators.xsl         14251  7.42%
+set-original-names.xsl   9729   5.06%
+attrs.xsl                7444   3.87%
+data.xsl                 6765   3.52%
+package.xsl              4721   2.46%
+anonymous-to-nested.xsl  4702   2.45%
+tests.xsl                4639   2.41%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2025-01-27 at 10:11,
+on 2025-08-21 at 17:15,
 on Linux with 4 CPUs.
-The total is 142320 milliseconds.
+The total is 192126 milliseconds.
 We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
@@ -300,28 +254,61 @@ Then, to generate the report:
 ```shell
 awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
  printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
- eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+ eo-runtime/measures.csv | sort -g -k 2 | tail -16 | column -t | head "-16"
 ```
 
 ## How to Contribute
 
-Fork repository, make changes, then send us
-a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+Fork repository, make changes, then send us a [pull request][guidelines].
 We will review your changes and apply them to the `master` branch shortly,
-provided they don't violate our quality standards. To avoid frustration,
-before sending us your pull request please run full Maven build:
+  provided they don't violate our quality standards.
+To avoid frustration, before sending us your pull request
+  please run full [Maven] build:
 
 ```bash
 mvn clean install -Pqulice
 ```
 
-You will need [Maven 3.3+](https://maven.apache.org) and Java 11+ installed.
+You will need [Maven] 3.3+ and [Java] 11+ installed.
+Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
+
+## Contributors
+
+[![contributors](https://contributors-img.web.app/image?repo=objectionary/eo)](https://github.com/objectionary/eo/graphs/contributors)
 
 ## Special thanks
 
-We are using the [YourKit Java Profiler](https://www.yourkit.com/java/profiler)
+We are using the [YourKit Java Profiler]
 to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/12986508714
+[abstract objects]: https://www.yegor256.com/2020/12/01/abstract-objects.html
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/17133812805
+[C#]: https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29
+[C++]: https://en.wikipedia.org/wiki/C%2B%2B
+[composable decorators]: https://www.yegor256.com/2015/02/26/composable-decorators.html
+[EBNF]: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form
+[eo-maven-plugin]: https://github.com/objectionary/eo/tree/master/eo-maven-plugin
+[eoc]: https://github.com/objectionary/eoc
+[guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
+[home]: https://github.com/objectionary/home
+[Java SE]: https://www.oracle.com/java/technologies/downloads/
+[Java]: https://en.wikipedia.org/wiki/Java_%28programming_language%29
+[Maven]: https://maven.apache.org
+[npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+[our blog]: https://news.eolang.org
+[papers]: https://news.eolang.org/papers.html
+[PHP]: https://en.wikipedia.org/wiki/PHP
+[Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
+[Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
+[Smalltalk]: https://en.wikipedia.org/wiki/Smalltalk
+[xcop]: https://github.com/yegor256/xcop
+[XMIR HTML]: https://www.eolang.org/XMIR.html
+[XMIR]: https://news.eolang.org/2022-11-25-xmir-guide.html
+[XSD]: https://www.eolang.org/XMIR.xsd
+[YourKit Java Profiler]: https://www.yourkit.com/java/profiler
+[book]: http://www.yegor256.com/elegant-objects.html
+[𝜑-calculus]: https://arxiv.org/abs/2111.13384
+[Esperanto]: https://en.wikipedia.org/wiki/Esperanto
+[EO-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Eo.png

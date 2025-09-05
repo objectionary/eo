@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.maven;
 
@@ -53,12 +34,6 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.tojos.PlacedTojos;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Home;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
@@ -73,12 +48,12 @@ import org.eolang.maven.util.Home;
     "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
-public final class FakeMaven {
+final class FakeMaven {
 
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
-    private final Home workspace;
+    private final Path workspace;
 
     /**
      * Mojos params.
@@ -102,7 +77,7 @@ public final class FakeMaven {
      *
      * @param workspace Test temporary directory.
      */
-    public FakeMaven(final Path workspace) {
+    FakeMaven(final Path workspace) {
         this(workspace, true);
     }
 
@@ -114,7 +89,7 @@ public final class FakeMaven {
      */
     private FakeMaven(final Path workspace, final boolean defaults) {
         this(
-            new HmBase(workspace),
+            workspace,
             new HashMap<>(),
             new AtomicInteger(0),
             defaults
@@ -130,7 +105,7 @@ public final class FakeMaven {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
-        final Home workspace,
+        final Path workspace,
         final Map<String, Object> params,
         final AtomicInteger current,
         final boolean defaults
@@ -148,7 +123,7 @@ public final class FakeMaven {
      * @param value Parameter value
      * @return The same maven instance.
      */
-    public FakeMaven with(final String param, final Object value) {
+    FakeMaven with(final String param, final Object value) {
         this.params.put(param, value);
         return this;
     }
@@ -162,7 +137,7 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      * @throws IOException If some problem with filesystem is happened.
      */
-    public FakeMaven execute(final Iterable<Class<? extends AbstractMojo>> mojo)
+    FakeMaven execute(final Iterable<Class<? extends AbstractMojo>> mojo)
         throws IOException {
         for (final Class<? extends AbstractMojo> clazz : mojo) {
             this.execute(clazz);
@@ -175,7 +150,7 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current eo-foreign.file.
      */
-    public TjSmart foreign() {
+    TjSmart foreign() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.foreignPath())
         );
@@ -191,78 +166,39 @@ public final class FakeMaven {
      * @checkstyle ExecutableStatementCountCheck (100 lines)
      * @checkstyle JavaNCSSCheck (100 lines)
      */
-    public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
+    <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            final Path transpiled = Paths.get("transpiled");
             final Path placed = Paths.get("placed.json");
-            this.workspace.save(new TextOf(""), transpiled);
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures",
-                this.targetPath().resolve("measures.csv").toFile()
+                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
-            this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
-            this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
+            this.params.putIfAbsent("resolveInCentral", false);
+            this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
-                "sourcesDir",
-                this.workspace.absolute(Paths.get(".")).toFile()
+                "sourcesDir", this.workspace.resolve(".").toFile()
             );
             this.params.putIfAbsent(
-                "outputDir",
-                this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
+                "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
-            this.params.putIfAbsent(
-                "cache",
-                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed").toFile()
-            );
-            this.params.putIfAbsent("generateSodgXmlFiles", true);
-            this.params.putIfAbsent("generateXemblyFiles", true);
-            this.params.putIfAbsent("generateGraphFiles", true);
-            this.params.putIfAbsent("generateDotFiles", true);
-            this.params.putIfAbsent("generateDotFiles", true);
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionary", new Objectionary.Fake());
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("phiNoSugar", false);
-            this.params.putIfAbsent("phiSkipFailed", false);
-            this.params.putIfAbsent("conservative", false);
-            this.params.putIfAbsent(
-                "phiInputDir",
-                this.workspace.absolute(
-                    Paths.get(String.format("target/%s", ParseMojo.DIR))
-                ).toFile()
-            );
-            this.params.putIfAbsent(
-                "phiOutputDir",
-                this.workspace.absolute(Paths.get("target/phi")).toFile()
-            );
-            this.params.putIfAbsent(
-                "unphiInputDir",
-                this.workspace.absolute(Paths.get("target/phi")).toFile()
-            );
-            this.params.putIfAbsent(
-                "unphiOutputDir",
-                this.workspace.absolute(
-                    Paths.get(String.format("target/%s", ParseMojo.DIR))
-                ).toFile()
-            );
-            this.params.putIfAbsent(
-                "classesDir",
-                this.workspace.absolute(Paths.get("target/classes")).toFile()
-            );
+            this.params.putIfAbsent("classesDir", this.classesPath().toFile());
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -278,7 +214,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    public FakeMaven withProgram(final Input input) throws IOException {
+    FakeMaven withProgram(final Input input) throws IOException {
         return this.withProgram(new UncheckedText(new TextOf(input)).asString());
     }
 
@@ -286,24 +222,32 @@ public final class FakeMaven {
      * Path to compilation target directory.
      * @return Path to target dir.
      */
-    public Path targetPath() {
-        return this.workspace.absolute(Paths.get("target"));
+    Path targetPath() {
+        return this.workspace.resolve("target");
     }
 
     /**
      * Path to generated directory.
      * @return Path to generated dir.
      */
-    public Path generatedPath() {
+    Path generatedPath() {
         return this.targetPath().resolve("generated");
+    }
+
+    /**
+     * Path to classes directory.
+     * @return Path to classes directory
+     */
+    Path classesPath() {
+        return this.targetPath().resolve("classes");
     }
 
     /**
      * Foreign tojos for eo-foreign.* file.
      * @return Foreign tojos.
      */
-    ForeignTojos foreignTojos() {
-        return new ForeignTojos(
+    TjsForeign foreignTojos() {
+        return new TjsForeign(
             () -> Catalogs.INSTANCE.make(this.foreignPath()),
             this::scope
         );
@@ -328,7 +272,10 @@ public final class FakeMaven {
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram(
             "+alias stdout org.eolang.io.stdout",
-            "+package f\n",
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "",
             "# No comments.",
             "[x] > main",
             "  (stdout \"Hello!\" x).print > @"
@@ -366,20 +313,36 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final String content, final String object)
-        throws IOException {
-        final Path path = Paths.get(
+    FakeMaven withProgram(
+        final String content, final String object
+    ) throws IOException {
+        return this.withProgram(
+            content,
+            object,
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
-        this.workspace.save(content, path);
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @param object Object name to save in tojos.
+     * @param source Source file name
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(
+        final String content, final String object, final String source
+    ) throws IOException {
+        final Path src = this.workspace.resolve(source);
+        new Saved(content, src).value();
         final String scope = this.scope();
         final String version = "0.25.0";
-        final Path source = this.workspace.absolute(path);
         this.foreignTojos()
             .add(object)
             .withScope(scope)
             .withVersion(version)
-            .withSource(source);
+            .withSource(src);
         this.current.incrementAndGet();
         return this;
     }
@@ -407,7 +370,7 @@ public final class FakeMaven {
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
-        return this.workspace.absolute(Paths.get("eo-foreign.csv"));
+        return this.workspace.resolve("eo-foreign.csv");
     }
 
     /**
@@ -415,8 +378,8 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current placed.json file.
      */
-    PlacedTojos placed() {
-        return new PlacedTojos(this.workspace.absolute(Paths.get("placed.json")));
+    TjsPlaced placed() {
+        return new TjsPlaced(this.workspace.resolve("placed.json"));
     }
 
     /**
@@ -427,7 +390,7 @@ public final class FakeMaven {
      * @throws IOException If some problem with filesystem have happened.
      */
     Map<String, Path> result() throws IOException {
-        final Path root = this.workspace.absolute(Paths.get(""));
+        final Path root = this.workspace.resolve("");
         return Files.walk(root).collect(
             Collectors.toMap(
                 p -> String.join(
@@ -443,7 +406,7 @@ public final class FakeMaven {
      * Retrieve the entry of the last program in the eo-foreign.csv file.
      * @return Tojo entry.
      */
-    ForeignTojo programTojo() {
+    TjForeign programTojo() {
         return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
@@ -468,21 +431,9 @@ public final class FakeMaven {
         if (index == 0) {
             suffix = "";
         } else {
-            suffix = String.format("_%d", index);
+            suffix = String.format("-%d", index);
         }
         return suffix;
-    }
-
-    /**
-     * Plugin descriptor with test version.
-     * @return Plugin descriptor.
-     */
-    static PluginDescriptor pluginDescriptor() {
-        final PluginDescriptor descriptor = new PluginDescriptor();
-        descriptor.setGroupId("org.eolang");
-        descriptor.setArtifactId("eo-maven-plugin");
-        descriptor.setVersion(FakeMaven.pluginVersion());
-        return descriptor;
     }
 
     /**
@@ -520,6 +471,18 @@ public final class FakeMaven {
     }
 
     /**
+     * Plugin descriptor with test version.
+     * @return Plugin descriptor.
+     */
+    private static PluginDescriptor pluginDescriptor() {
+        final PluginDescriptor descriptor = new PluginDescriptor();
+        descriptor.setGroupId("org.eolang");
+        descriptor.setArtifactId("eo-maven-plugin");
+        descriptor.setVersion(FakeMaven.pluginVersion());
+        return descriptor;
+    }
+
+    /**
      * Looks for all declared fields for mojo and its parents.
      *
      * @param mojo Mojo or mojo parent.
@@ -547,7 +510,7 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Collections.<Class<? extends AbstractMojo>>singletonList(
-                ParseMojo.class
+                MjParse.class
             ).iterator();
         }
     }
@@ -561,24 +524,8 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LintMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Shake full pipeline.
-     *
-     * @since 0.35.0
-     */
-    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class
+                MjParse.class,
+                MjLint.class
             ).iterator();
         }
     }
@@ -593,9 +540,8 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LatexMojo.class
+                MjParse.class,
+                MjLatex.class
             ).iterator();
         }
     }
@@ -610,10 +556,9 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                LintMojo.class,
-                TranspileMojo.class
+                MjParse.class,
+                MjLint.class,
+                MjTranspile.class
             ).iterator();
         }
     }
@@ -628,24 +573,8 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ResolveMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Translates EO program to Phi-calculus expression.
-     *
-     * @since 0.33.0
-     */
-    static final class Phi implements Iterable<Class<? extends AbstractMojo>> {
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                PhiMojo.class
+                MjParse.class,
+                MjResolve.class
             ).iterator();
         }
     }
@@ -660,27 +589,9 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                ResolveMojo.class,
-                PlaceMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Sodg full pipeline.
-     *
-     * @since 0.29.0
-     */
-    static final class Sodg implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                SodgMojo.class
+                MjParse.class,
+                MjResolve.class,
+                MjPlace.class
             ).iterator();
         }
     }
@@ -693,7 +604,7 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                RegisterMojo.class
+                MjRegister.class
             ).iterator();
         }
     }
@@ -708,10 +619,8 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                DiscoverMojo.class,
-                ProbeMojo.class
+                MjParse.class,
+                MjProbe.class
             ).iterator();
         }
     }
@@ -726,28 +635,9 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                DiscoverMojo.class,
-                ProbeMojo.class,
-                PullMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Discovery pipeline.
-     *
-     * @since 0.31
-     */
-    static final class Discover implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                ShakeMojo.class,
-                DiscoverMojo.class
+                MjParse.class,
+                MjProbe.class,
+                MjPull.class
             ).iterator();
         }
     }
@@ -761,7 +651,7 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                PrintMojo.class
+                MjPrint.class
             ).iterator();
         }
     }
@@ -775,13 +665,10 @@ public final class FakeMaven {
     private static final class DummyCentral implements BiConsumer<Dependency, Path> {
 
         @Override
-        public void accept(
-            final Dependency dependency,
-            final Path path
-        ) {
+        public void accept(final Dependency dependency, final Path path) {
             try {
                 Files.createDirectories(path);
-                final String other = DummyCentral.jarName(dependency);
+                final String other = DummyCentral.className(dependency);
                 Files.createFile(path.resolve(other));
             } catch (final IOException ex) {
                 throw new IllegalStateException(
@@ -792,12 +679,12 @@ public final class FakeMaven {
         }
 
         /**
-         * Dependency jar name.
+         * Dependency class name.
          *
          * @param dependency Dependency
-         * @return Jar file name
+         * @return Class file name
          */
-        private static String jarName(final Dependency dependency) {
+        private static String className(final Dependency dependency) {
             final List<String> parts = new ArrayList<>(3);
             if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {
                 parts.add(dependency.getArtifactId());
@@ -808,7 +695,7 @@ public final class FakeMaven {
             if (dependency.getClassifier() != null && !dependency.getClassifier().isEmpty()) {
                 parts.add(dependency.getClassifier());
             }
-            return String.format("%s.jar", String.join("-", parts));
+            return String.format("%s.class", String.join("-", parts));
         }
     }
 }

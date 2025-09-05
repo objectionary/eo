@@ -1,29 +1,11 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
 import java.util.Iterator;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -31,7 +13,26 @@ import org.xembly.Directives;
  * Object tree.
  * @since 0.1
  */
-interface Objects extends Iterable<Directive> {
+final class Objects implements Iterable<Directive> {
+
+    /**
+     * Collected directives.
+     */
+    private final Directives dirs = new Directives();
+
+    @Override
+    public Iterator<Directive> iterator() {
+        return this.dirs.iterator();
+    }
+
+    /**
+     * Start new object.
+     * @param ctx Context
+     * @return Self.
+     */
+    Objects start(final ParserRuleContext ctx) {
+        return this.start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+    }
 
     /**
      * Start new object.
@@ -39,29 +40,40 @@ interface Objects extends Iterable<Directive> {
      * @param pos At position.
      * @return Self.
      */
-    Objects start(int line, int pos);
+    Objects start(final int line, final int pos) {
+        this.dirs.add("o");
+        return this.prop("line", line).prop("pos", pos);
+    }
 
     /**
      * Add data.
      * @param data Data.
      * @return Self.
      */
-    Objects data(String data);
+    Objects data(final String data) {
+        this.dirs.set(data);
+        return this;
+    }
 
     /**
      * Property.
      * @param key Key.
-     * @param value Value.
+     * @param type Type.
      * @return Self.
      */
-    Objects prop(String key, Object value);
+    Objects prop(final String key, final Object type) {
+        this.dirs.attr(key, type);
+        return this;
+    }
 
     /**
      * Empty property.
      * @param key Key.
      * @return Self.
      */
-    Objects prop(String key);
+    Objects prop(final String key) {
+        return this.prop(key, "");
+    }
 
     /**
      * Change property by given xpath.
@@ -69,75 +81,26 @@ interface Objects extends Iterable<Directive> {
      * @param xpath Xpath.
      * @return Self.
      */
-    Objects xprop(String key, Object xpath);
+    Objects xprop(final String key, final Object xpath) {
+        this.dirs.xattr(key, xpath);
+        return this;
+    }
 
     /**
      * Enter last object.
      * @return Self.
      */
-    Objects enter();
+    Objects enter() {
+        this.dirs.xpath("o[last()]").strict(1);
+        return this;
+    }
 
     /**
      * Leave current object.
      * @return Self.
      */
-    Objects leave();
-
-    /**
-     * Xembly object tree.
-     * @since 0.1
-     */
-    final class ObjXembly implements Objects {
-
-        /**
-         * Collected directives.
-         */
-        private final Directives dirs = new Directives();
-
-        @Override
-        public Objects start(final int line, final int pos) {
-            this.dirs.add("o");
-            return this.prop("line", line).prop("pos", pos);
-        }
-
-        @Override
-        public Objects data(final String data) {
-            this.dirs.set(data);
-            return this;
-        }
-
-        @Override
-        public Objects prop(final String key, final Object type) {
-            this.dirs.attr(key, type);
-            return this;
-        }
-
-        @Override
-        public Objects prop(final String key) {
-            return this.prop(key, "");
-        }
-
-        @Override
-        public Objects xprop(final String key, final Object xpath) {
-            this.dirs.xattr(key, xpath);
-            return this;
-        }
-
-        @Override
-        public Objects enter() {
-            this.dirs.xpath("o[last()]").strict(1);
-            return this;
-        }
-
-        @Override
-        public Objects leave() {
-            this.dirs.up();
-            return this;
-        }
-
-        @Override
-        public Iterator<Directive> iterator() {
-            return this.dirs.iterator();
-        }
+    Objects leave() {
+        this.dirs.up();
+        return this;
     }
 }

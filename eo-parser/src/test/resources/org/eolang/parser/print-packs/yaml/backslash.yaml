@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  # No comments.
+  [] > main
+    regex "/^[\\x00-\\x7F]*$/" > rgx
+
+printed: |
+  # No comments.
+  [] > main'
+    regex > rgx
+      "/^[\\x00-\\x7F]*$/":0

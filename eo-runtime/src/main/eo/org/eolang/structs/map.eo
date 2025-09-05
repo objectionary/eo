@@ -1,25 +1,3 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.structs.hash-code-of
 +alias org.eolang.structs.list
 +alias org.eolang.txt.sprintf
@@ -27,42 +5,53 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
-+unlint broken-ref
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:39
++unlint redundant-object:52
++unlint redundant-object:67
++unlint redundant-object:68
++unlint redundant-object:71
++unlint redundant-object:76
++unlint redundant-object:119
++unlint redundant-object:120
++unlint redundant-object:121
++unlint redundant-object:126
++unlint redundant-object:127
++unlint redundant-object:128
++unlint redundant-object:145
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 [pairs] > map
-  this. > @
-    [] >>
-      initialized > @
-        as-tuple.
-          if.
-            pairs.length.eq 0
-            *
-            entries.
-              rec-rebuild
-                pairs
+  [] > @
+    initialized > @
+      if.
+        pairs.length.eq 0
+        *
+        entries.
+          rec-rebuild
+            pairs
 
-      [entries hashes] > couple
-        $ > this
+    [entries hashes] > couple
 
-      [tup] > rec-rebuild
-        hash-code-of tup.value.key > hash!
-        (rec-rebuild tup.prev).this > prev
-        if. > @
-          tup.length.eq 0
-          couple * (list *)
-          if.
-            prev.hashes.contains hash
-            prev
-            couple
-              prev.entries.with
-                [] >>
-                  tup.value.key > key
-                  tup.value.value > value
-                  ^.hash > hash
-              prev.hashes.with hash
+    [tup] > rec-rebuild
+      if. > @
+        tup.length.eq 0
+        couple * (list *)
+        if.
+          prev.hashes.contains hash
+          prev
+          couple
+            prev.entries.with
+              [] >>
+                tup.head.key > key
+                tup.head.value > value
+                ^.hash > hash
+            prev.hashes.with hash
+      hash-code-of tup.head.key > hash!
+      (rec-rebuild tup.tail).@ > prev
 
   # Hash map entry.
   # Here 'key' is an object which is used to find `value` is hash map.
@@ -73,7 +62,6 @@
 
   # Initialized hash map with rebuilt entries.
   [entries] > initialized
-    $ > this
     entries.length > size
     # Returns `list` of all keys in hash map.
     # Keys order is not guaranteed.
@@ -109,14 +97,13 @@
     #  implemented in other programming languages. Then we'll get O(1) on
     #  `found` operation.
     [key] > found
-      hash-code-of key > hash!
       if. > @
         size.eq 0
         not-found
         rec-key-search entries
+      hash-code-of key > hash!
 
       [tup] > rec-key-search
-        (rec-key-search tup.prev).this > prev
         if. > @
           tup.length.eq 0
           not-found
@@ -124,15 +111,14 @@
             prev.exists
             prev
             if.
-              tup.value.hash.eq hash
+              tup.head.hash.eq hash
               [] >>
-                $ > this
                 true > exists
-                tup.value.value > get
+                tup.head.value > get
               not-found
+        (rec-key-search tup.tail).@ > prev
 
       [] > not-found
-        $ > this
         false > exists
         error > get
           sprintf
@@ -142,26 +128,152 @@
     # Returns the new `map` with added object
     # Replaces if there was one before.
     [key value] > with
-      hash-code-of key > hash!
-      this. > @
-        map.initialized
-          with.
-            origin.
-              filtered.
-                list entries
-                (hash.eq entry.hash).not > [entry] >>
-            [] >>
-              ^.key > key
-              ^.value > value
-              ^.hash > hash
-
-    # Returns a new `map`, without element with the given `key`
-    # Returns the `map` itself, if there was no item with this `key`.
-    [key] > without
-      hash-code-of key > hash!
-      this. > @
-        map.initialized
+      map.initialized > @
+        with.
           origin.
             filtered.
               list entries
               (hash.eq entry.hash).not > [entry] >>
+          [] >>
+            ^.key > key
+            ^.value > value
+            ^.hash > hash
+      hash-code-of key > hash!
+
+    # Returns a new `map`, without element with the given `key`
+    # Returns the `map` itself, if there was no item with this `key`.
+    [key] > without
+      map.initialized > @
+        origin.
+          filtered.
+            list entries
+            (hash.eq entry.hash).not > [entry] >>
+      hash-code-of key > hash!
+
+  # Tests that map automatically removes duplicate entries during initialization.
+  [] +> tests-map-rebuilds-itself
+    2.eq mp.size > @
+    map > mp
+      *
+        map.entry 1 1
+        map.entry 1 1
+        map.entry 2 1
+        map.entry 2 1
+
+  # Tests that map rebuilding happens only once during initialization.
+  [] +> tests-map-rebuilds-itself-only-once
+    eq. > @
+      1
+      malloc.for
+        0
+        [m]
+          seq > @
+            *
+              (mp.found 1).exists
+              (mp.found 1).exists
+              m
+          map > mp
+            *
+              map.entry
+                m.put (m.as-number.plus 1)
+                1
+
+  # Tests that extracting all keys from a map returns the correct list.
+  [] +> tests-returns-list-of-keys
+    eq. > @
+      keys.
+        map
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
+      * 1 2 3
+
+  # Tests that extracting all values from a map returns the correct list.
+  [] +> tests-returns-list-of-values
+    eq. > @
+      values.
+        map
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
+      * 2 3 4
+
+  # Tests that finding an element by key in a map works correctly.
+  [] +> tests-finds-element-by-key-in-map
+    2.eq found.get > @
+    map > mp
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+        map.entry "three" 3
+    mp.found "two" > found
+
+  # Tests that searching for non-existent key returns false exists flag.
+  [] +> tests-does-not-find-element-by-key-in-hash-map
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .found "three"
+    .exists
+    .not > @
+
+  # Tests that checking if map has an existing key returns true.
+  [] +> tests-has-element-with-key-in-hash-map
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .has "two" > @
+
+  # Tests that checking if map has non-existent key returns false.
+  [] +> tests-does-not-have-element-by-key-in-hash-map
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .has "three"
+    .not > @
+
+  # Tests that removing non-existent key does not change the map size.
+  [] +> tests-does-not-change-map-without-non-existed-element
+    map
+      *
+        map.entry "one" 1
+    .without "two"
+    .size
+    .eq 1 > @
+
+  # Tests that removing an existing key from map works correctly.
+  [] +> tests-removes-element-from-map-by-key
+    and. > @
+      1.eq mp.size
+      (mp.has "one").not
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .without "one" > mp
+
+  # Tests that adding a new key-value pair to map works correctly.
+  [] +> tests-adds-new-pair-to-hash-map
+    and. > @
+      2.eq mp.size
+      mp.has "two"
+    map
+      *
+        map.entry "one" 1
+    .with "two" 2 > mp
+
+  # Tests that updating value for existing key replaces the old value.
+  [] +> tests-replaces-value-if-pair-with-key-exists-in-map
+    and. > @
+      2.eq mp.size
+      3.eq (mp.found "two").get
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .with "two" 3 > mp

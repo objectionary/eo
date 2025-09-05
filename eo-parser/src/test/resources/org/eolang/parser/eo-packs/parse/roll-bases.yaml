@@ -1,0 +1,62 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+asserts:
+  - /object[count(o)=1]
+  - //o[@base='ξ.two.a' and @name='one']
+  - //o[@base='ξ.three.b' and @name='two']
+  - //o[@base='Φ.org.eolang.c' and @name='three']
+  - //o[@base='Φ.org.eolang.tuple']/o[@base='Φ.org.eolang.tuple' and o[@base='Φ.org.eolang.tuple.empty'] and o[@base='Φ.org.eolang.number']]
+  - //o[@base='Φ.org.eolang.true.if' and count(o)=2]
+  - //o[@base='.if' and count(o)=3]/o[1][@base='ξ.x']/o[1][@base='Φ.org.eolang.y']
+  - //o[@base='.and']/o[1][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Φ.org.eolang.bytes']/o[text()!='']
+  - //o[@base='.and']/o[1][@base='.eq']/o[2][@base='Φ.org.eolang.true']
+  - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Φ.org.eolang.bytes']/o[text()!='']
+  - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Φ.org.eolang.false']
+  - //o[@name='bts']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Φ.org.eolang.bytes']/o[1][@base='Φ.org.eolang.bytes']/o[text()!='']
+input: |
+  # Main.
+  [] > main
+    # No comment.
+    [x] > foo
+      a. > one
+        b. > two
+          c > three
+      * 1 2 > tup
+      if. true 1 2 > cond
+      if. > rev
+        x
+          y
+        2
+        1
+
+    # This unit test is supposed to check the functionality of the corresponding object.
+    [] > compares-bool-to-bytes-reverse
+      and. > @
+        01-.as-bytes.eq true
+        00-.as-bytes.eq false
+
+    # No comments.
+    [] > bts
+      eq. > @
+        as-bytes.
+          bytes.
+            eolang.
+              org.
+                Q
+            01-

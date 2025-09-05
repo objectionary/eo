@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - //object/o[count(o)=4]
+  - //o[@base='ξ' and @name='xi🌵']
+  - //o[@base='ξ.x.plus' and @name='a']
+  - //o[@base='Φ.org.eolang.number' and @name='φ' and o[@base="Φ.org.eolang.bytes"]/o[starts-with(text(), '40-14')]]
+input: |
+  # Main.
+  [] > main
+    # No comments.
+    [x] (x.plus 1 > a) (5 > @) > first
+
+    # No comments.
+    [a b] ((a.plus 6).plus b > inner) > second
+    foo
+    .o1 ([t] (t.hello 1 > hello))
+    .o2 > bar
+      [z] (((z.a 1).end 5).again 7 > again)

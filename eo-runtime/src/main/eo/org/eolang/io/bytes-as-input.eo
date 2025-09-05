@@ -1,29 +1,10 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:47
 
 # Makes an `input` from bytes.
 # Here `bts` is sequence of bytes or an object that can be dataized
@@ -52,7 +33,7 @@
   # Returns new instance of `input-block` with set
   # sliced `data` and `buffer`.
   [size] > read
-    ((input-block bts --).read size).self > @
+    ((input-block bts --).read size).@ > @
 
     # Bytes-as-input block.
     #
@@ -62,13 +43,23 @@
     # Here `data` is a sequence of bytes that can be read from,
     # `buffer` is a sequence of bytes that got from previous reading.
     [data buffer] > input-block
-      $ > self
       buffer > @
 
       # Read `size` amount of bytes from `data`.
       # Returns new instance of `input-block` with set
       # sliced `data` and `buffer`.
       [size] > read
+        if. > @
+          available.eq 0
+          input-block -- --
+          input-block
+            as-bytes.
+              data.slice
+                next
+                (number available).minus
+                  number next
+            as-bytes.
+              data.slice 0 next
         size > to-read!
         data.size > available!
         if. > next!
@@ -77,15 +68,16 @@
             to-read
           to-read
           available
-        self. > @
-          if.
-            available.eq 0
-            input-block -- --
-            input-block
-              as-bytes.
-                data.slice
-                  next
-                  (number available).minus
-                    number next
-              as-bytes.
-                data.slice 0 next
+
+  # Tests that bytes-as-input can create an input from bytes and read portions sequentially.
+  [] +> tests-makes-an-input-from-bytes-and-reads
+    and. > @
+      and.
+        and.
+          i1.eq 01-02-03-04
+          i2.eq 05-06-07-08
+        i3.eq F5-F6
+      (i3.read 2).eq --
+    (bytes-as-input 01-02-03-04-05-06-07-08-F5-F6).read 4 > i1
+    i1.read 4 > i2
+    i2.read 4 > i3

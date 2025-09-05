@@ -1,28 +1,10 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -103,9 +85,11 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "XSD location must be absolute",
             Paths.get(
-                new StrictXmir(StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp)
-                    .xpath("/program/@xsi:noNamespaceSchemaLocation")
-                    .get(0)
+                new Xnav(
+                    new StrictXmir(
+                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+                    ).inner()
+                ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
                     .substring("file:///".length())
             ).isAbsolute(),
             Matchers.is(true)
@@ -204,13 +188,15 @@ final class StrictXmirTest {
         return new XMLDocument(
             new Xembler(
                 new Directives()
-                    .append(new DrProgram("foo"))
-                    .xpath("/program")
+                    .append(new DrProgram())
+                    .xpath("/object")
+                    .attr("author", "noname")
                     .attr(
                         "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                         schema
                     )
-                    .add("objects")
+                    .add("o")
+                    .up()
             ).xmlQuietly()
         );
     }

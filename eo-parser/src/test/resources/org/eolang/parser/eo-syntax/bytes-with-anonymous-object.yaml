@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@base='Φ.org.eolang.bytes' and @name='app']/o[@base='Φ.org.eolang.bytes']/o[text()='00-00-00-00']
+input: |
+  # No comments.
+  bytes > app
+    00-00-00-00

@@ -1,28 +1,10 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOnumber;
 import com.yegor256.Together;
 import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
@@ -35,15 +17,17 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String PLUS_ATT = "plus";
 
     /**
      * Name of attribute.
+     * @since 0.1
      */
     private static final String VOID_ATT = "void";
 
@@ -79,8 +63,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Attr.RHO)
+            () -> phi.take(Phi.RHO),
+            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
         );
     }
 
@@ -88,8 +72,8 @@ final class PhDefaultTest {
     void setsRhoAfterDispatch() {
         final Phi kid = new PhDefaultTest.Int().take(PhDefaultTest.PLUS_ATT);
         Assertions.assertDoesNotThrow(
-            () -> kid.take(Attr.RHO),
-            String.format("Kid of should have %s attribute after dispatch", Attr.RHO)
+            () -> kid.take(Phi.RHO),
+            String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
         );
     }
 
@@ -98,8 +82,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.RHO),
-            String.format("Object should not give %s attribute after copying", Attr.RHO)
+            () -> phi.take(Phi.RHO),
+            String.format("Object should not give %s attribute after copying", Phi.RHO)
         );
     }
 
@@ -134,18 +118,18 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int().copy();
         final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
         Assertions.assertDoesNotThrow(
-            () -> plus.take(Attr.RHO),
+            () -> plus.take(Phi.RHO),
             String.format(
                 "Child object should get %s attribute after copying main object",
-                Attr.RHO
+                Phi.RHO
             )
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied child object should be equal to copied main object",
-                Attr.RHO
+                Phi.RHO
             ),
-            plus.take(Attr.RHO),
+            plus.take(Phi.RHO),
             Matchers.equalTo(phi)
         );
     }
@@ -170,17 +154,17 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             String.format(
-                "%s attribute of original object kid should refer to original object", Attr.RHO
+                "%s attribute of original object kid should refer to original object", Phi.RHO
             ),
-            phi.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO)))
+            phi.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
+            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
-                Attr.RHO
+                Phi.RHO
             ),
-            copy.take(PhDefaultTest.PLUS_ATT).take(Attr.RHO),
+            copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
             Matchers.equalTo(copy)
         );
     }
@@ -193,11 +177,11 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
-                Attr.RHO
+                Phi.RHO
             ),
-            first.take(Attr.RHO),
+            first.take(Phi.RHO),
             Matchers.equalTo(
-                second.take(Attr.RHO)
+                second.take(Phi.RHO)
             )
         );
     }
@@ -207,9 +191,9 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
         MatcherAssert.assertThat(
-            String.format("%s attributes should not be copied while dispatch", Attr.RHO),
-            plus.take(Attr.RHO),
-            Matchers.equalTo(plus.take(Attr.RHO))
+            String.format("%s attributes should not be copied while dispatch", Phi.RHO),
+            plus.take(Phi.RHO),
+            Matchers.equalTo(plus.take(Phi.RHO))
         );
     }
 
@@ -243,7 +227,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Void attribute should not be copied with rho, but it did",
             phi.take(PhDefaultTest.VOID_ATT),
             Matchers.equalTo(phi.take(PhDefaultTest.VOID_ATT))
         );
@@ -251,11 +235,11 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCopyContextAttributeWithRho() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = this.phiWithContextAttribute("context-doesNotCopyContextAttributeWithRho");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            phi.take("context"),
-            Matchers.equalTo(phi.take("context"))
+            "Context attribute should not be copied with rho, but it did",
+            phi.take("context-doesNotCopyContextAttributeWithRho"),
+            Matchers.equalTo(phi.take("context-doesNotCopyContextAttributeWithRho"))
         );
     }
 
@@ -264,13 +248,13 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Attr.PHI),
-            AtCompositeTest.TO_ADD_MESSAGE
+            () -> phi.take(Phi.PHI),
+            "Phi should not be accessible without setting void attribute, but it did"
         );
         phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
-            () -> phi.take(Attr.PHI),
-            AtCompositeTest.TO_ADD_MESSAGE
+            () -> phi.take(Phi.PHI),
+            "Phi should be accessible after setting void attribute, but it didn't"
         );
     }
 
@@ -278,10 +262,10 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context").take(Attr.RHO),
+            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
-                Attr.RHO
+                Phi.RHO
             )
         );
     }
@@ -290,7 +274,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Object should have a hashCode greater then 0, but it didn't",
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -316,7 +300,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Accessing a missing attribute should fail, but it didn't"
         );
     }
 
@@ -327,7 +311,7 @@ final class PhDefaultTest {
         phi.put(0, new Data.ToPhi(data));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Copied Phi should contain the same data, but it didn't",
             new Dataized(copy).asString(),
             Matchers.equalTo(data)
         );
@@ -341,7 +325,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExReadOnly.class,
             () -> phi.put(0, num),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Setting void attribute more than once should fail, but it didn't"
         );
     }
 
@@ -350,7 +334,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.EndlessRecursion();
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -361,7 +345,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -372,7 +356,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew();
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Does not cache phi via new recursively",
             new Dataized(phi).asNumber(),
             Matchers.equalTo(0.0)
         );
@@ -386,7 +370,7 @@ final class PhDefaultTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Phi should not be read multiple times, but it was",
             new Dataized(new PhMethod(phi, "count")).asNumber(),
             Matchers.equalTo(1.0)
         );
@@ -395,9 +379,18 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithBoundedData() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Bounded data objects should have the same forma, but they didn't",
             new Data.ToPhi(5L).forma(),
             Matchers.equalTo(new Data.ToPhi(6).forma())
+        );
+    }
+
+    @Test
+    void rendersFormaOnAnonymousAbstract() {
+        MatcherAssert.assertThat(
+            "Anonymous abstract object should be rendered without scopes",
+            new PhDefault().forma(),
+            Matchers.equalTo("[]")
         );
     }
 
@@ -406,7 +399,7 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "forma of 'number' is the full name of the 'number' object",
             new Data.ToPhi(42L).forma(),
-            Matchers.equalTo("org.eolang.number")
+            Matchers.equalTo("Φ.org.eolang.number")
         );
     }
 
@@ -414,7 +407,7 @@ final class PhDefaultTest {
     void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Phi and bounded method result should have different formas, but they were the same",
             five.forma(),
             Matchers.not(
                 Matchers.equalTo(
@@ -431,7 +424,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Similar Phis with different data should have the same forma, but they didn't",
             new PhWith(
                 new Data.ToPhi(5L).take(PhDefaultTest.PLUS_ATT).copy(),
                 "x",
@@ -473,10 +466,125 @@ final class PhDefaultTest {
             0, new Data.ToPhi(1.2)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Random value should be the same on second access, but it wasn't",
             new Dataized(rnd).asNumber(),
             Matchers.equalTo(new Dataized(rnd).asNumber())
         );
+    }
+
+    @Test
+    void failsCorrectlyWhenTooManyAttributesPut() {
+        MatcherAssert.assertThat(
+            "the message explains what's going on",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new EOnumber().put(1, new Data.ToPhi(1)),
+                "fails when trying to set attribute with too big position"
+            ).getMessage(),
+            Matchers.equalTo("Can't put attribute with position 1 because it's not void one")
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalNesting() {
+        final Phi phi = this.phiWithContextAttribute("context-verifiesThreadLocalNesting");
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-verifiesThreadLocalNesting"),
+            "Nesting should be properly managed without exceptions"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalNestingWithExceptions() {
+        final Phi phi = this.phiWithContextAttribute(
+            "context-verifiesThreadLocalNestingWithExceptions"
+        );
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> phi.take("non-existent-attribute"),
+            "Should throw exception for non-existent attribute"
+        );
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-verifiesThreadLocalNestingWithExceptions"),
+            "Should still work after exception"
+        );
+    }
+
+    @Test
+    void worksAfterCleanup() {
+        final Phi phi = this.phiWithContextAttribute("context-worksAfterCleanup");
+        phi.take("context-worksAfterCleanup");
+        cleansUpNesting();
+        Assertions.assertDoesNotThrow(
+            () -> phi.take("context-worksAfterCleanup"),
+            "Should work after cleanup"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalInMultipleThreads() {
+        final int threads = 10;
+        final int cnt = 100;
+        final boolean[] res = new boolean[threads];
+        final Thread[] pool = new Thread[threads];
+        for (int idx = 0; idx < threads; idx += 1) {
+            final int id = idx;
+            pool[idx] = new Thread(
+                () -> {
+                    final Phi phi = this.phiWithContextAttribute(
+                        "context-verifiesThreadLocalInMultipleThreads"
+                    );
+                    try {
+                        for (int iter = 0; iter < cnt; iter += 1) {
+                            phi.take("context-verifiesThreadLocalInMultipleThreads");
+                        }
+                        res[id] = true;
+                    } catch (final IllegalStateException ex) {
+                        res[id] = false;
+                    } finally {
+                        cleansUpNesting();
+                    }
+                }
+            );
+            pool[idx].start();
+        }
+        this.joinsThreads(pool);
+        for (int idx = 0; idx < threads; idx += 1) {
+            Assertions.assertTrue(
+                res[idx],
+                String.format("Thread %d should have completed successfully", idx)
+            );
+        }
+    }
+
+    private void joinsThreads(final Thread... threads) {
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Thread interrupted", ex);
+            }
+        }
+    }
+
+    private Phi phiWithContextAttribute(final String attribute) {
+        final PhDefault phi = new PhDefault();
+        phi.add(attribute, new PhSimple(new Data.ToPhi(42)));
+        return phi;
+    }
+
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+    private static void cleansUpNesting() {
+        try {
+            final java.lang.reflect.Field field =
+                Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
+            field.setAccessible(true);
+            final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);
+            nesting.remove();
+        } catch (final ReflectiveOperationException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**
@@ -491,7 +599,7 @@ final class PhDefaultTest {
         Rnd() {
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     self -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )
@@ -509,21 +617,21 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            this.add(PhDefaultTest.VOID_ATT, new AtVoid(PhDefaultTest.VOID_ATT));
-            this.add(PhDefaultTest.PLUS_ATT, new AtSimple(new PhDefault()));
+            this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
+            this.add(PhDefaultTest.PLUS_ATT, new PhSimple(new PhDefault()));
             this.add(
-                Attr.PHI,
-                new AtOnce(
-                    new AtComposite(
+                Phi.PHI,
+                new PhCached(
+                    new PhComposite(
                         this,
                         rho -> rho.take(PhDefaultTest.VOID_ATT)
                     )
                 )
             );
             this.add(
-                "context",
-                new AtOnce(
-                    new AtComposite(
+                "context-hasContextedChildWithSetRhoWhenFormed",
+                new PhCached(
+                    new PhComposite(
                         this,
                         rho -> {
                             final Phi plus = new Data.ToPhi(5L).take(
@@ -548,9 +656,9 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Foo() {
-            this.add("x", new AtVoid("x"));
-            this.add("kid", new AtSimple(new PhDefaultTest.Kid()));
-            this.add("φ", new AtSimple(new Data.ToPhi(5L)));
+            this.add("x", new PhVoid("x"));
+            this.add("kid", new PhSimple(new PhDefaultTest.Kid()));
+            this.add("φ", new PhSimple(new Data.ToPhi(5L)));
         }
     }
 
@@ -564,7 +672,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         WithVoidPhi() {
-            this.add(Attr.PHI, new AtVoid(Attr.PHI));
+            this.add(Phi.PHI, new PhVoid(Phi.PHI));
         }
     }
 
@@ -584,9 +692,9 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Counter() {
             this.add(
-                Attr.PHI,
-                new AtOnce(
-                    new AtComposite(
+                Phi.PHI,
+                new PhCached(
+                    new PhComposite(
                         this,
                         rho -> {
                             ++this.count;
@@ -595,7 +703,7 @@ final class PhDefaultTest {
                     )
                 )
             );
-            this.add("count", new AtComposite(this, rho -> new Data.ToPhi(this.count)));
+            this.add("count", new PhComposite(this, rho -> new Data.ToPhi(this.count)));
         }
     }
 
@@ -609,8 +717,8 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
-            this.add("z", new AtVoid("z"));
-            this.add(Attr.PHI, new AtSimple(new Data.ToPhi(true)));
+            this.add("z", new PhVoid("z"));
+            this.add(Phi.PHI, new PhSimple(new Data.ToPhi(true)));
         }
     }
 
@@ -630,8 +738,8 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         EndlessRecursion() {
             this.add(
-                Attr.PHI,
-                new AtComposite(
+                Phi.PHI,
+                new PhComposite(
                     this,
                     self -> {
                         --PhDefaultTest.EndlessRecursion.count;
@@ -665,7 +773,7 @@ final class PhDefaultTest {
         RecursivePhi() {
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     rho -> {
                         --PhDefaultTest.RecursivePhi.count;
@@ -699,7 +807,7 @@ final class PhDefaultTest {
         RecursivePhiViaNew() {
             this.add(
                 "φ",
-                new AtComposite(
+                new PhComposite(
                     this,
                     rho -> {
                         --PhDefaultTest.RecursivePhiViaNew.count;

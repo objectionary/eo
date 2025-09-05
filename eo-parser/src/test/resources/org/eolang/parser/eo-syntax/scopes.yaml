@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - //o[not(@base) and count(o)=2 and @name='aliases' and o[1][@base='ξ' and @name='xi🌵']]
+input: |
+  # No comments.
+  [] > aliases
+    a (b (c d)) > scopes

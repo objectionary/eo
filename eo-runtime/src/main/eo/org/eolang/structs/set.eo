@@ -1,62 +1,69 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +alias org.eolang.structs.list
 +alias org.eolang.structs.map
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:26
++unlint redundant-object:27
 
 # Set - is an unordered `list` of unique objects.
 [lst] > set
-  this. > @
-    initialized
-      map
-        list
-          lst
-        .mapped
-          map.entry item true > [item]
-        .origin
+  initialized > @
+    map
+      list
+        lst
+      .mapped
+        map.entry item true > [item]
+      .origin
 
   # Initialized set with rebuilt unique sequence.
   [mp] > initialized
-    $ > this
     mp.keys > @
     mp.size > size
 
     # Append new `item` to set. It must be possible to get
     # hash code of `item` so `item` must be dataizable.
     [item] > with
-      this. > @
-        set.initialized
-          mp.with item true
+      set.initialized > @
+        mp.with item true
 
     # Remove `item` from `set`. If `item` is not present,
-    # the set wont be changed.
+    # the set won't be changed.
     [item] > without
-      this. > @
-        set.initialized
-          mp.without item
+      set.initialized > @
+        mp.without item
 
     # Check if given `item` exists in set.
     mp.has item > [item] > has
+
+  # Tests that set rebuilds itself removing duplicates.
+  [] +> tests-set-rebuilds-itself
+    eq. > @
+      set
+        * 1 2 2
+      * 1 2
+
+  # Tests that set does not append an existing item.
+  [] +> tests-does-not-append-existed-item-to-set
+    set
+      * 1 2
+    .with 1
+    .size
+    .eq 2 > @
+
+  # Tests that set appends a new item.
+  [] +> tests-appends-new-item-to-set
+    set
+      * 1 2
+    .with 3
+    .has 3 > @
+
+  # Tests that empty set has size of zero.
+  [] +> tests-empty-set-has-size-of-zero
+    set
+      *
+    .size
+    .eq 0 > @

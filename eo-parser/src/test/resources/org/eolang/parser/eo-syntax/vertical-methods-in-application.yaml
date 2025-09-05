@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+input: |
+  # Main.
+  [] > main
+    x > first
+      a
+      .b
+    y > second
+      a
+      .b:0
+      c
+      .d
+      .e:1
+    Q
+    .org
+    .eolang
+    .io
+    .stdout > third
+      Q
+      .org
+      .eolang
+      .string:0
+        Q
+        .org
+        .eolang
+        .bytes
+          00-42-23

@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-The MIT License (MIT)
-
-Copyright (c) 2016-2025 Objectionary.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -42,7 +23,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.0.26</version>
+      <version>0.0.56</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -88,15 +69,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
-      <version>1.9.22.1</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <!-- version from parent POM -->
-      <!-- We need Saxon library in compile time
-      in order to use XPath 2.0 specific features -->
-      <scope>compile</scope>
+      <version>1.9.24</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -106,19 +79,19 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.9.9</version>
+      <version>3.9.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.9.9</version>
+      <version>3.9.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.9.9</version>
+      <version>3.9.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -136,13 +109,18 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.9.9</version>
+      <version>3.9.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.twdata.maven</groupId>
       <artifactId>mojo-executor</artifactId>
-      <version>2.4.0</version>
+      <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
@@ -194,12 +172,16 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>mktmp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.volodya-lombrozo</groupId>
+      <artifactId>xnav</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.18.4</version>
+      <version>0.18.5</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -216,18 +198,13 @@ SOFTWARE.
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>5.10</version>
+      <version>5.12.0</version>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.17.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
-      <version>2.0.16</version>
+      <version>2.0.17</version>
       <scope>provided</scope>
       <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
@@ -240,7 +217,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.0.4</version>
+      <version>4.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -284,7 +261,13 @@ SOFTWARE.
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>maybeslow</artifactId>
+      <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -435,7 +418,6 @@ SOFTWARE.
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1.1</version>
         <executions>
           <execution>
             <id>project-validate</id>
@@ -452,9 +434,23 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.23</version>
+            <version>3.0.25</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>assemble-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -539,8 +535,8 @@ SOFTWARE.
                 <exclude>pmd:/src/it.*</exclude>
                 <exclude>pmd:/src/test/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
-                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml
-                </exclude>
+                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
+                <exclude>dependencies:org.hamcrest:hamcrest-core:jar:1.3:compile</exclude>
               </excludes>
             </configuration>
           </plugin>

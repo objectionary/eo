@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/decorate.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@base='.with' and @name='φ' and o[1][@base='.joined']/o[@base='Φ.org.eolang.foo']/o[@base='Φ.org.eolang.string' and not(@name)] and o[2][@base='Φ.org.eolang.bytes']]
+  - /object/o[@name='main']/o[@base='.unsafe' and @name='num' and o[1][@base='Φ.org.eolang.bar']/o[@base='Φ.org.eolang.number'] and o[2][@base='Φ.org.eolang.bytes']]
+  - /object/o[@name='main']/o[@base='.string' and @name='str']/o[@base='Φ.org.eolang']/o[@base='Φ.org.eolang.bytes']
+  - /object/o[@name='main']/o[@base='Φ.org.eolang.baz' and @name='abc']/o[@base='Φ.org.eolang.bar' and @as='α0']/o[@base='Φ.org.eolang.number' and not(@as)]
+input: |
+  +decorate string foo
+  +decorate number bar
+
+  # No comments.
+  [] > main
+    Q.org.eolang.string.joined.with 11- > @
+    5.unsafe FF- > num
+    (Q.org.eolang 00-).string > str
+    baz > abc
+      5:0

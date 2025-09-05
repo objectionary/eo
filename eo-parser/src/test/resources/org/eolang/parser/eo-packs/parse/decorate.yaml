@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-qqs.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/decorate.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='φ' and @base='Φ.org.eolang.foo']/o[@base='Φ.org.eolang.txt.text']/o[@base='Φ.org.eolang.string' and not(@name)]
+  - /object/o[@name='main']/o[@name='num' and @base='Φ.org.eolang.number']
+  - /object/o[@name='main']/o[@name='x' and @base='Φ.org.eolang.bar']/o[@base='Φ.org.eolang.bool' and @as='f']/o[@base='Φ.org.eolang.true' and not(@as)]
+  - /object/o[@name='main']/o[@name='tt' and @base='Φ.org.eolang.xyz']/o[@base='Φ.org.eolang.first']/o[@base='Φ.org.eolang.abc' and @as='y']/o[@base='Φ.org.eolang.second' and not(@as)]
+input: |
+  +decorate string txt.text foo
+  +decorate number
+  +decorate true bool
+  +decorate first xyz
+  +decorate second abc
+
+  # No comments.
+  [] > main
+    "Hello" > @
+    5 > num
+    bar > x
+      true:f
+    first > tt
+      second:y

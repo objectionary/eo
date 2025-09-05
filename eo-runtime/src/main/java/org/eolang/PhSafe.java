@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 package org.eolang;
@@ -71,6 +52,11 @@ public final class PhSafe implements Phi, Atom {
     private final String location;
 
     /**
+     * The original name.
+     */
+    private final String oname;
+
+    /**
      * Ctor.
      *
      * @param phi The object
@@ -90,7 +76,7 @@ public final class PhSafe implements Phi, Atom {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhSafe(final Phi phi, final String prg, final int lne, final int pos) {
-        this(phi, prg, lne, pos, "?");
+        this(phi, prg, lne, pos, "?", "?");
     }
 
     /**
@@ -101,15 +87,17 @@ public final class PhSafe implements Phi, Atom {
      * @param lne Line
      * @param pos Position
      * @param loc Location
+     * @param oname Original name
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhSafe(final Phi phi, final String prg, final int lne,
-        final int pos, final String loc) {
+        final int pos, final String loc, final String oname) {
         this.origin = phi;
         this.program = prg;
         this.line = lne;
         this.position = pos;
         this.location = loc;
+        this.oname = oname;
     }
 
     @Override
@@ -126,7 +114,7 @@ public final class PhSafe implements Phi, Atom {
     public Phi copy() {
         return new PhSafe(
             this.origin.copy(), this.program,
-            this.line, this.position, this.location
+            this.line, this.position, this.location, this.oname
         );
     }
 
@@ -138,6 +126,11 @@ public final class PhSafe implements Phi, Atom {
     @Override
     public Phi take(final String name) {
         return this.through(() -> this.origin.take(name));
+    }
+
+    @Override
+    public Phi take(final int pos) {
+        return this.through(() -> this.origin.take(pos));
     }
 
     @Override
@@ -157,7 +150,16 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public String forma() {
-        return this.through(this.origin::forma);
+        return String.join(
+            ".",
+            this.getClass().getPackageName(),
+            this.oname
+        );
+    }
+
+    @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
     }
 
     @Override

@@ -1,35 +1,21 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
@@ -46,7 +32,42 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Syntax parser, from EO to XMIR, using ANTLR4.
+ * Syntax parser that converts EO code to XMIR (XML-based Intermediate Representation) using ANTLR4.
+ * EoSyntax parses EO source code, generates a structured XML representation, and applies a series
+ * of transformations to produce canonical XMIR.
+ *
+ * <p>The parsing process includes lexical analysis, syntax analysis, and XML transformation:
+ * 1. EO code is first processed by the EoIndentLexer
+ * 2. Then parsed by ANTLR-generated parser
+ * 3. Finally transformed into XMIR through a series of XSL transformations</p>
+ *
+ * <p>Usage examples:</p>
+ *
+ * <p>1. Parse EO code from a string:</p>
+ * <pre>
+ * XML xmir = new EoSyntax("[args] > app\n  42 > @").parsed();
+ * </pre>
+ *
+ * <p>2. Parse EO code from a file:</p>
+ * <pre>
+ * XML xmir = new EoSyntax(
+ *     new InputOf(new File("src/main/eo/fibonacci.eo"))
+ * ).parsed();
+ * </pre>
+ *
+ * <p>3. Parse with custom transformations:</p>
+ * <pre>
+ * XML xmir = new EoSyntax(
+ *     "[x] > f\n  x > @",
+ *     new TrClasspath<>(
+ *         "/org/eolang/parser/pack/validation.xsl",
+ *         "/org/eolang/parser/pack/transform.xsl"
+ *     )
+ * ).parsed();
+ * </pre>
+ *
+ * <p>After parsing, errors can be found in the XML at the "/object/errors" XPath.
+ * If no errors are present, the parsed program is valid EO code.</p>
  *
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
@@ -54,28 +75,39 @@ import org.xembly.Xembler;
 public final class EoSyntax implements Syntax {
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
+     * @todo #3807:90min Refactor EoSyntax transformations to make them less coupled.
+     *  Currently most of these transformations are strongly coupled.
+     *  For example, `stars-to-tuples`, `StHex` and `explicit-data` are
+     *  dependent on each other. Moreover, the order of transformations
+     *  matters. We need to refactor these transformations to make them
+     *  more independent and order-agnostic if possible.
      */
-    private static final Xsline CANONICAL = new Xsline(
+    private static final Function<XML, XML> CANONICAL = new Xsline(
         new TrFull(
-            new TrClasspath<>(
-                "/org/eolang/parser/parse/move-voids-up.xsl",
-                "/org/eolang/parser/parse/validate-before-stars.xsl",
-                "/org/eolang/parser/parse/resolve-before-star.xsl",
-                "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                "/org/eolang/parser/parse/const-to-dataized.xsl",
-                "/org/eolang/parser/parse/stars-to-tuples.xsl"
-            ).back()
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/parser/parse/validate-before-stars.xsl",
+                    "/org/eolang/parser/parse/resolve-before-stars.xsl",
+                    "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                    "/org/eolang/parser/parse/const-to-dataized.xsl",
+                    "/org/eolang/parser/parse/stars-to-tuples.xsl",
+                    "/org/eolang/parser/parse/vars-float-up.xsl",
+                    "/org/eolang/parser/parse/move-voids-up.xsl",
+                    "/org/eolang/parser/parse/validate-objects-count.xsl",
+                    "/org/eolang/parser/parse/build-fqns.xsl",
+                    "/org/eolang/parser/parse/expand-qqs.xsl",
+                    "/org/eolang/parser/parse/expand-aliases.xsl",
+                    "/org/eolang/parser/parse/resolve-aliases.xsl",
+                    "/org/eolang/parser/parse/add-default-package.xsl",
+                    "/org/eolang/parser/parse/roll-bases.xsl",
+                    "/org/eolang/parser/parse/cti-adds-errors.xsl",
+                    "/org/eolang/parser/parse/decorate.xsl",
+                    "/org/eolang/parser/parse/add-as-attributes-inside-application.xsl"
+                ).back(),
+                new TrDefault<>(new StHex())
+            )
         )
-    );
-
-    /**
-     * The name of the EO program being parsed, usually the name of
-     * <tt>.eo</tt> file itself. This name will be present in the
-     * generated XML. This is done for the sake of traceability: it will
-     * always be possible to tell which XMIR file was generated from
-     * which EO program.
-     */
-    private final String name;
+    )::pass;
 
     /**
      * Text to parse.
@@ -83,41 +115,52 @@ public final class EoSyntax implements Syntax {
     private final Input input;
 
     /**
-     * Ctor.
-     *
-     * @param ipt The EO program to parse
+     * Transform XMIR after parsing.
      */
-    public EoSyntax(final Input ipt) {
-        this("unknown", ipt);
-    }
+    private final Function<XML, XML> transform;
 
     /**
      * Ctor.
      * @param ipt The EO program to parse
      */
     public EoSyntax(final String ipt) {
-        this("unknown", ipt);
+        this(new InputOf(ipt));
     }
 
     /**
      * Ctor.
-     *
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing
      */
-    public EoSyntax(final String nme, final String ipt) {
-        this(nme, new InputOf(ipt));
+    public EoSyntax(final String ipt, final Train<Shift> transform) {
+        this(new InputOf(ipt), transform);
     }
 
     /**
      * Ctor.
-     *
-     * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      */
-    public EoSyntax(final String nme, final Input ipt) {
-        this.name = nme;
+    public EoSyntax(final Input ipt) {
+        this(ipt, EoSyntax.CANONICAL);
+    }
+
+    /**
+     * Ctor for testing.
+     * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing train
+     */
+    EoSyntax(final Input ipt, final Train<Shift> transform) {
+        this(ipt, new Xsline(transform)::pass);
+    }
+
+    /**
+     * Ctor.
+     * @param ipt The EO program to parse
+     * @param transform Transform XMIR after parsing function
+     */
+    EoSyntax(final Input ipt, final Function<XML, XML> transform) {
         this.input = ipt;
+        this.transform = transform;
     }
 
     /**
@@ -125,7 +168,7 @@ public final class EoSyntax implements Syntax {
      *
      * <p>No exception will be thrown if the syntax is invalid. In any case, XMIR will
      * be generated and saved. Read it in order to find the errors,
-     * at <tt>/program/errors</tt> XPath.</p>
+     * at <tt>/object/errors</tt> XPath.</p>
      *
      * @return Parsed XML
      * @throws IOException If fails
@@ -142,9 +185,9 @@ public final class EoSyntax implements Syntax {
         parser.removeErrorListeners();
         final EoParserErrors eospy = new EoParserErrors(lines);
         parser.addErrorListener(eospy);
-        final XeEoListener xel = new XeEoListener(this.name);
+        final XeEoListener xel = new XeEoListener();
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = EoSyntax.CANONICAL.pass(
+        final XML dom = this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
@@ -156,13 +199,13 @@ public final class EoSyntax implements Syntax {
         if (errors == 0) {
             Logger.debug(
                 this,
-                "The %s program of %d EO lines compiled, no errors",
-                this.name, lines.size()
+                "The program of %d EO lines compiled, no errors",
+                lines.size()
             );
         } else {
             Logger.debug(
                 this, "The %s program of %d EO lines compiled with %d error(s)",
-                this.name, lines.size(), errors
+                lines.size(), errors
             );
         }
         return dom;

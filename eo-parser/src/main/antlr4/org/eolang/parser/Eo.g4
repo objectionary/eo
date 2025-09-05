@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 grammar Eo;
 
@@ -27,27 +8,16 @@ tokens { TAB, UNTAB }
 
 // Entry point
 program
-    : license? metas? objects EOF
+    : metas? object EOF
     ;
 
 // Double EOL
 eop : EOL EOL
     ;
 
-// Licence
-license
-    : (COMMENTARY EOL)* COMMENTARY eop
-    ;
-
 // Metas
 metas
     : (META EOL)* META eop
-    ;
-
-// Objects
-// Ends on the next line
-objects
-    : (object EOL?)+
     ;
 
 comment
@@ -58,27 +28,25 @@ commentOptional
     : comment*
     ;
 
-commentMandatory
-    : comment+
-    ;
-
 // Object
 // Ends on the next line
 object
-    : master
-    | slave
+    : commentOptional masterBody
+    | bound
     ;
 
 // Objects that may be used inside abstract object
 // Ends on the next line
-slave
-    : commentOptional (application | (methodNamed | justNamed) EOL)
+bound
+    : commentOptional (application | ((method | just) (onameOrTname | aphi)) EOL)
     ;
 
-// Indeprendent objects that may have slaves (except atom)
-// Ends on the next line
-master
-    : commentMandatory masterBody
+tbound
+    : commentOptional (tapplication | ((method | just) tname) EOL)
+    ;
+
+tsubMaster
+    : commentOptional tmasterBody
     ;
 
 subMaster
@@ -87,7 +55,12 @@ subMaster
 
 masterBody
     : formation
-    | (atom | hanonym oname) EOL
+    | (atom | hanonym onameOrTname EOL)
+    ;
+
+tmasterBody
+    : tformation
+    | (atom | hanonym (tname) EOL)
     ;
 
 // Just an object reference without name
@@ -95,21 +68,25 @@ just: beginner
     | finisher
     ;
 
-// Just object reference with optional name
-justNamed
-    : just oname?
-    ;
-
-// Atom - abstract object with mandatory name and type
+// Atom - abstract object with mandatory name
 // Can't contain inner objects
-atom: voids suffix type
+atom: voids suffix SPACE QUESTION testsOrEol
     ;
 
 // Formation - abstract object with mandatory name
 // Can contain inner objects
 // Ends on the next line
 formation
-    : voids oname innersOrEol
+    : voids onameOrTname innersOrEol
+    ;
+
+tformation
+    : voids tname innersOrEol
+    ;
+
+testsOrEol
+    : tests
+    | EOL
     ;
 
 // Inners object inside formation or EOL
@@ -124,7 +101,12 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
+    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    ;
+
+// Tests
+tests
+    : EOL TAB (tbound | tsubMaster) (tbound | EOL? tsubMaster)* UNTAB
     ;
 
 // Void attributes of an abstract object, atom or horizontal anonym object
@@ -137,22 +119,18 @@ void: NAME
     | PHI
     ;
 
-// Type of atom
-type: SPACE SLASH typeFqn
-    ;
-
-// Type FQN
-typeFqn
-    : NAME (DOT NAME)*
-    ;
-
 // Application
 // - horizontal
 // - vertical
 // Ends on the next line
 application
-    : happlicationExtended oname? EOL
+    : happlicationExtended onameOrTname EOL
     | vapplication
+    ;
+
+tapplication
+    : happlicationExtended tname EOL
+    | tvapplication
     ;
 
 // Horizontal application
@@ -163,6 +141,10 @@ happlication
     | happlicationReversed
     ;
 
+happlicationReversedHead
+    : reversed SPACE happlicationReversedFirst
+    ;
+
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
@@ -170,9 +152,19 @@ happlicationExtended
     | happlicationReversed
     ;
 
+// Application with auto-Phi formation
+onlyAphi
+    : happlicationHeadExtended happlicationTail aphi
+    ;
+
+// Auto-Phi formation
+aphi
+    : SPACE ARROW ARROW SPACE voids
+    ;
+
 // Reversed horizontal application
 happlicationReversed
-    : reversed happlicationTailReversed
+    : happlicationReversedHead happlicationTail?
     ;
 
 // Head of horizontal application
@@ -196,19 +188,25 @@ applicable
     | PHI
     ;
 
-// Horizontal application tail
-happlicationTail
-    : (SPACE happlicationArg as)+
-    | (SPACE happlicationArg)+
+// Horizontal application argument without binding
+happlicationArgUnbound
+    : SPACE happlicationArg
     ;
 
-happlicationTailReversed
-    : SPACE happlicationTailReversedFirst happlicationTail?
+// Tail for horizontal application with scoped object as the last argument
+happlicationTailScoped
+    : happlicationArgUnbound* SPACE happlicationArgScoped
+    ;
+
+// Horizontal application tail
+happlicationTail
+    : (happlicationArgUnbound as)+
+    | happlicationArgUnbound+
     ;
 
 // The rule is separated because we should enter to the last object
 // here, but don't do it on happlicationTail rule
-happlicationTailReversedFirst
+happlicationReversedFirst
     : happlicationArg
     ;
 
@@ -220,11 +218,20 @@ happlicationArg
     | scope
     ;
 
+happlicationArgScoped
+    : voids aname innersOrEol
+    ;
+
 // Vertical application
 // Ends on the next line
 vapplication
-    : vapplicationHeadNamed vapplicationArgs
-    | reversed oname? vapplicationArgsReversed
+    : vapplicationHead onameOrTname vapplicationArgs
+    | reversed onameOrTname vapplicationArgsReversed
+    ;
+
+tvapplication
+    : vapplicationHead tname vapplicationArgs
+    | reversed tname vapplicationArgsReversed
     ;
 
 // Vertical application head
@@ -237,17 +244,7 @@ vapplicationHead
 
 // Compact arrays
 compactArray
-    : NAME SPACE STAR INT?
-    ;
-
-// Vertical application head with optional name
-vapplicationHeadNamed
-    : vapplicationHead oname?
-    ;
-
-// Vertical application head with binding
-vapplicationHeadAs
-    : vapplicationHead as
+    : (XI | HOME | NAME) (DOT NAME)* SPACE STAR INT?
     ;
 
 // Vertical application arguments
@@ -278,86 +275,46 @@ vapplicationArgBound
 // Vertical application arguments with bindings
 // Ends on the current line
 vapplicationArgBoundCurrent
-    : vapplicationArgHapplicationBound // horizontal application
-    | vapplicationArgHanonymBound // horizontal anonym object
+    : LB happlicationExtended RB as oname? // horizontal application
+    | commentOptional LB hanonym RB as fname? // horizontal anonym object
     | (just | method) as oname? // just an object reference | method
     ;
 
 // Vertical application arguments with bindings
 // Ends on the next line
 vapplicationArgBoundNext
-    : vapplicationArgVanonymBound // vertical anonym object
-    | vapplicationHeadAs oname? vapplicationArgs // vertical application
+    : commentOptional voids as fname? innersOrEol // vertical anonym object
+    | vapplicationHead as oname? vapplicationArgs // vertical application
     | reversed as oname? vapplicationArgsReversed // reversed vertical application
     ;
 
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnbound
-    : vapplicationArgUnboundCurrent EOL
+    : onlyAphi EOL
+    | vapplicationArgUnboundCurrent aphi? EOL
     | vapplicationArgUnboundNext
     ;
 
 // Vertical application arguments without bindings
 // Ends on the current line
 vapplicationArgUnboundCurrent
-    : vapplicationArgHapplicationUnbound // horizontal application
-    | vapplicationArgHanonymUnbound // horizontal anonym object
-    | justNamed // just an object reference
-    | methodNamed // method
+    : happlicationExtended oname? // horizontal application
+    | commentOptional hanonym fname? // horizontal anonym object
+    | (just | method) oname? // just an object reference or method
     ;
 
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
-    : formationNamedOrNameless // vertical abstract object
-    | vapplicationHeadNamed vapplicationArgs // vertical application
+    : formationNamed // vertical abstract object
+    | vapplicationHead oname? vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
+    | (happlicationHead | happlicationReversedHead) happlicationTailScoped // scoped horizontal application
     ;
 
-// Horizontal application as argument of vertical application
-vapplicationArgHapplicationBound
-    : LB happlicationExtended RB as oname?
-    ;
-
-vapplicationArgHapplicationUnbound
-    : happlicationExtended oname?
-    ;
-
-formationNameless
-    : voids aname? innersOrEol
-    ;
-
-// Formation with or without name
-formationNamedOrNameless
-    : commentOptional formation
-    | formationNameless
-    ;
-
-// Bound vertical anonym abstract object as argument of vertical application argument
-// Ends on the next line
-vapplicationArgVanonymBound
-    : commentOptional attributesAs oname innersOrEol
-    | attributesAs aname? innersOrEol
-    ;
-
-attributesAs
-    : voids as
-    ;
-
-vapplicationArgHanonymBoundBody
-    : LB hanonym RB as
-    ;
-
-// Horizontal anonym abstract object as argument of vertical application
-vapplicationArgHanonymBound
-    : commentOptional vapplicationArgHanonymBoundBody oname
-    | vapplicationArgHanonymBoundBody aname?
-    ;
-
-vapplicationArgHanonymUnbound
-    : commentOptional hanonym oname
-    | hanonym aname?
+formationNamed
+    : commentOptional voids fname? innersOrEol
     ;
 
 // Horizontal formation
@@ -384,7 +341,7 @@ onlyphi
 
 // Tail of the unnamed abstract object with only @-bound attribute
 onlyphiTail
-    : spacedArrow voids
+    : arrow voids
     ;
 
 // Inner object of horizontal anonym object
@@ -399,22 +356,11 @@ method
     | vmethod
     ;
 
-// Method with optional name
-methodNamed
-    : method oname?
-    ;
-
 // Horizontal method
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
 hmethod
-    : hmethodHead methodTail+
-    ;
-
-// Head of horizontal method
-hmethodHead
-    : just
-    | scope
+    : (just | scope) methodTail+
     ;
 
 // Vertical method
@@ -433,14 +379,10 @@ vmethod
 // 5. unnamed abstract object with only @-bound attribute
 // Ends on the next line
 vmethodHead
-    : vmethodHead methodTailOptional vmethodHeadApplicationTail
+    : vmethodHead methodTail vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | hanonym oname?) EOL
-    | formationNamedOrNameless
-    ;
-
-methodTailOptional
-    : methodTail
+    | ((just | hanonym) oname?) EOL
+    | formationNamed
     ;
 
 vmethodHeadApplicationTail
@@ -457,7 +399,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisher
+    : DOT (finisher | TILDE INT)
     ;
 
 // Can be at the beginning of the statement
@@ -480,7 +422,23 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : finisher DOT
+    : (finisher | TILDE INT) DOT
+    ;
+
+// Auto object name
+aname
+    : ARROW ARROW CONST?
+    ;
+
+// Formation name
+fname
+    : oname
+    | SPACE aname
+    ;
+
+// Either object name or test name
+onameOrTname
+    : oname | tname
     ;
 
 // Object name
@@ -488,17 +446,20 @@ oname
     : suffix CONST?
     ;
 
-// Automatic name of the object
-aname
-    : SPACE ARROW ARROW
+tname
+    : tarrow (PHI | NAME)
+    ;
+
+tarrow
+    : SPACE PLUS ARROW SPACE
     ;
 
 // Suffix
 suffix
-    : spacedArrow (PHI | NAME)
+    : arrow (PHI | NAME) APOSTROPHE?
     ;
 
-spacedArrow
+arrow
     : SPACE ARROW SPACE
     ;
 
@@ -526,6 +487,7 @@ COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
+
 META: PLUS NAME (SPACE ~[\t\r\n ]+)*
     ;
 
@@ -537,9 +499,6 @@ STAR: '*'
     ;
 CONST
     : '!'
-    ;
-SLASH
-    : '/'
     ;
 COLON
     : ':'
@@ -576,7 +535,11 @@ RHO : '^'
     ;
 HASH: '#'
     ;
-BAR : '|'
+TILDE
+    : '~'
+    ;
+APOSTROPHE
+    : '\''
     ;
 
 fragment INDENT
@@ -636,7 +599,7 @@ FLOAT
 HEX : '0x' [0-9a-fA-F]+
     ;
 
-NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(]*
+NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(🌵]*
     ;
 
 fragment TEXT_MARK

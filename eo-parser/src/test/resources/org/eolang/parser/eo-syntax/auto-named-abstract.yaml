@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='a🌵47' and o[@name='five']]
+  - //o[not(@base) and @name='a🌵65' and o[@name='ten']]
+  - //o[not(@base) and @name='a🌵1013' and not(@as) and o[@name='eleven']]
+input: |
+  # Main.
+  [] > main
+    x > first
+      [] >>
+        5 > five
+    [] >>
+      10 > ten
+    .ten > second
+    y > z
+      []:hello >>
+        11 > eleven

@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.org.eolang.seq']/o[@base='Φ.org.eolang.x']
+  - //o[@base='Φ.org.eolang.seq']//o[@base='Φ.org.eolang.y']
+input: |
+  # No comments.
+  [] > app
+    QQ.seq *1 > @
+      x
+      y

@@ -1,37 +1,12 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
 
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import com.yegor256.Together;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,28 +27,57 @@ final class PhPackageTest {
     /**
      * Default test package.
      */
-    private static final String DEFAULT_PACKAGE = "org.eolang";
+    private static final String DEFAULT_PACKAGE = "Φ.org.eolang";
 
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org").take("eolang").take("seq"),
+            "Every take() should return new instance, but it didn't",
+            Phi.Φ.take("org.eolang.seq"),
             Matchers.not(
                 Matchers.equalTo(
-                    Phi.Φ.take("org").take("eolang").take("seq")
+                    Phi.Φ.take("org.eolang.seq")
                 )
             )
         );
     }
 
     @Test
+    void doesNotSetRhoToGlobalObject() {
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> Phi.Φ.take(Phi.RHO),
+            String.format(
+                "Global object '%s' must not have %s attribute",
+                PhPackage.GLOBAL, Phi.RHO
+            )
+        );
+    }
+
+    @Test
+    void setsRhoToPackage() {
+        final Phi org = Phi.Φ.take("org");
+        final Phi eolang = org.take("eolang");
+        MatcherAssert.assertThat(
+            String.format(
+                "The %s attribute must be set to package object on dispatch",
+                Phi.RHO
+            ),
+            eolang.take(Phi.RHO),
+            Matchers.equalTo(org)
+        );
+    }
+
+    @Test
     void setsRhoToObject() {
-        final Phi eolang = Phi.Φ.take("org").take("eolang");
+        final Phi eolang = Phi.Φ.take("org.eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            seq.take(Attr.RHO),
+            String.format(
+                "The %s attribute must be set to object inside package on dispatch",
+                Phi.RHO
+            ),
+            seq.take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
     }
@@ -81,10 +85,8 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            Phi.Φ.take("org")
-                .take("eolang")
-                .take("bytes$eq").copy(),
+            "Package should resolve class with '$' in the name, but it didn't",
+            Phi.Φ.take("org.eolang.bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }
@@ -95,7 +97,10 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            String.format(
+                "Attribute '%s' should be instance of %s, but it wasn't",
+                attribute, expected.getSimpleName()
+            ),
             actual,
             Matchers.instanceOf(expected)
         );
@@ -106,81 +111,54 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Should throw if object cannot be instantiated, but it was"
         );
     }
 
     @Test
-    void doesNotCopies() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy(),
-            AtCompositeTest.TO_ADD_MESSAGE
+    void returnsSelfOnCopy() {
+        final Phi pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        MatcherAssert.assertThat(
+            "Package object should return itself on copying",
+            pckg.copy(),
+            Matchers.is(pckg)
         );
     }
 
     @Test
-    void doesNotGetForma() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
-            AtCompositeTest.TO_ADD_MESSAGE
+    void returnsForma() {
+        MatcherAssert.assertThat(
+            "Should return valid forma",
+            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
+            Matchers.equalTo(PhPackageTest.DEFAULT_PACKAGE)
         );
     }
 
     @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "locator of the DEFAULT_PACKAGE must be ?:?:?, but is wasn't",
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
-            Matchers.equalTo("?:?")
+            Matchers.equalTo("?:?:?")
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.CloseResource")
-    void findsAttributesConcurrently() throws InterruptedException {
-        final int threads = Runtime.getRuntime().availableProcessors() + 10;
-        final ExecutorService service = Executors.newFixedThreadPool(threads);
+    void findsAttributesInThreads() {
         final PhPackage pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
-        final Set<Integer> basket = Collections.synchronizedSet(new HashSet<>(threads));
-        final CountDownLatch latch = new CountDownLatch(1);
-        Stream.generate(
-            () -> (Runnable) () -> {
-                try {
-                    latch.await();
-                    basket.add(System.identityHashCode(pckg.take("go")));
-                } catch (final InterruptedException exception) {
-                    Thread.currentThread().interrupt();
-                    throw new IllegalStateException(
-                        "The testing thread was interrupted, current basket size %d",
-                        exception
-                    );
-                }
-            }
-        ).limit(threads).forEach(service::submit);
-        latch.countDown();
-        service.shutdown();
-        if (service.awaitTermination(1, TimeUnit.SECONDS)) {
-            MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
-                basket.size(),
-                Matchers.equalTo(threads)
-            );
-        } else {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to wait for threads to finish. Current basket size %d, but expected %d",
-                    basket.size(),
-                    threads
-                )
-            );
-        }
+        MatcherAssert.assertThat(
+            "Should take an attribute in multiple threads",
+            new Together<>(
+                thread -> pckg.take("go") instanceof PhPackage
+            ),
+            Matchers.allOf(
+                Matchers.not(Matchers.hasItem(true))
+            )
+        );
     }
 
     private static Stream<Arguments> attributes() {
         return Stream.of(
-            Arguments.of("absent", PhPackage.class),
             Arguments.of("bytes$eq", EObytes$EOeq.class),
             Arguments.of("go", EOgo.class)
         );

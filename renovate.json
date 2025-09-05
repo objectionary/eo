@@ -4,7 +4,8 @@
     "config:base"
   ],
   "ignoreDeps": [
-    "org.apache.maven.plugins:maven-compiler-plugin"
+    "org.apache.maven.plugins:maven-compiler-plugin",
+    "xml-apis:xml-apis"
   ],
   "packageRules": [
     {

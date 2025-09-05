@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 /*
@@ -34,12 +15,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -70,19 +50,19 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         this.add(
             EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            new PhVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
         );
         this.add(
             EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            new PhVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         );
     }
 
     @Override
     public Phi lambda() {
-        final Phi match = this.take(Attr.RHO);
+        final Phi match = this.take(Phi.RHO);
         final InputStream bais = new ByteArrayInputStream(
-            new Dataized(match.take(Attr.RHO).take("serialized")).take()
+            new Dataized(match.take(Phi.RHO).take("serialized")).take()
         );
         final Matcher matcher;
         try {

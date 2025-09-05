@@ -1,50 +1,37 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 sheets:
+  - /org/eolang/maven/transpile/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
   - /org/eolang/maven/transpile/classes.xsl
   - /org/eolang/maven/transpile/attrs.xsl
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /program[not(errors)]
-  - //java[contains(text(), '        Phi rbbbb = Phi.Φ.take("org").take("eolang").take("tuple");')]
-  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
-  - //java[contains(text(), '        Phi rbbb = new PhMethod(rbbbb, "empty");')]
-  - //java[contains(text(), '        rbb = new PhWith(rbb, 0, rbb1);')]
-  - //java[contains(text(), '        Phi rb = new PhMethod(rbb, "with");')]
-  - //java[contains(text(), '        rb = new PhWith(rb, 0, rb1);')]
-  - //java[contains(text(), '        Phi r = new PhMethod(rb, "with");')]
+  - /object[not(errors)]
+  - //java[contains(text(), 'Phi rr11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), 'rr11 = new PhCopy(rr11);')]
+  - //java[contains(text(), '  Phi rr111 = Phi.Φ.take("org").take("eolang").take("tuple").take("empty");')]
+  - //java[contains(text(), '  Phi rr112 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), '  Phi rr113 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 0, rr111);')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 1, rr112);')]
+  - //java[contains(text(), 'rr11 = new PhWith(rr11, 2, rr113);')]
 input: |
   # No comments.
-  [] > foo
-    * 1 2 (* 3 4) > @
+  [] > tuples
+    # No comments.
+    [] > foo
+      * 1 2 (* 3 4) > @
 
-  # No comments.
-  [] > bar
-    zz 42 * > tt
+    # No comments.
+    [] > bar
+      zz 42 * > tt
 
-  # No comments.
-  [] > baz
-    """
-    абвгд
-    """ > @
+    # No comments.
+    [] > baz
+      """
+      абвгд
+      """ > @

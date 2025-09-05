@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 /*
@@ -29,11 +10,10 @@
 package EOorg.EOeolang; // NOPMD
 
 import java.util.function.Supplier;
-import org.eolang.AtComposite;
-import org.eolang.AtCompositeTest;
-import org.eolang.AtVoid;
 import org.eolang.ExFailure;
+import org.eolang.PhComposite;
 import org.eolang.PhDefault;
+import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -57,7 +37,7 @@ final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertDoesNotThrow(
             () -> HeapsTest.HEAPS.read(idx, 0, 10),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should successfully read from allocated memory, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -69,7 +49,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.malloc(phi, 10),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to allocate already allocated memory, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -78,7 +58,7 @@ final class HeapsTest {
     void allocatesAndReadsEmptyBytes() {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should return empty bytes after memory allocation, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
@@ -91,7 +71,7 @@ final class HeapsTest {
         final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should successfully read exactly same bytes that were written, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, bytes.length),
             Matchers.equalTo(bytes)
         );
@@ -103,7 +83,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(new HeapsTest.PhFake().hashCode(), 0, new byte[] {0x01}),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing to an unallocated block, but it didn't"
         );
     }
 
@@ -112,7 +92,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(new HeapsTest.PhFake().hashCode(), 0, 1),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on reading from an unallocated block, but it didn't"
         );
     }
 
@@ -122,7 +102,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 1, 3),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
     }
 
@@ -131,7 +111,7 @@ final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new HeapsTest.PhFake(), 5);
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should successfully read correct slice when reading with offset and length, but it didn't",
             HeapsTest.HEAPS.read(idx, 1, 3),
             Matchers.equalTo(new byte[] {2, 3, 4})
         );
@@ -144,7 +124,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 0, bytes),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing more bytes than allocated size, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -156,7 +136,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 1, bytes),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on writing past allocated block using offset, but it didn't"
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -167,7 +147,7 @@ final class HeapsTest {
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
         HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Heaps should return correct bytes after partial overwrite, but it didn't",
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
@@ -181,7 +161,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 0, 5),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on reading from a freed block, but it didn't"
         );
     }
 
@@ -190,7 +170,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.free(new HeapsTest.PhFake().hashCode()),
-            AtCompositeTest.TO_ADD_MESSAGE
+            "Heaps should throw an exception on attempting to free a non-existent block, but it didn't"
         );
     }
 
@@ -199,7 +179,7 @@ final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.size(new HeapsTest.PhFake().hashCode()),
-            "Heaps should throw an exception if trying to get size on an empty block, but it didn't"
+            "Heaps should throw an exception on trying to get size of an empty block, but it didn't"
         );
     }
 
@@ -295,8 +275,8 @@ final class HeapsTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhFake(final Supplier<Phi> sup) {
-            this.add("args", new AtVoid("args"));
-            this.add("φ", new AtComposite(this, rho -> sup.get()));
+            this.add("args", new PhVoid("args"));
+            this.add("φ", new PhComposite(this, rho -> sup.get()));
         }
     }
 }

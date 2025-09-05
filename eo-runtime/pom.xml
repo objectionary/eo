@@ -1,28 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-The MIT License (MIT)
-
-Copyright (c) 2016-2025 Objectionary.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:eo="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eolang</groupId>
@@ -47,25 +28,25 @@ SOFTWARE.
       -->
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.16.0</version>
+      <version>5.17.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.16</version>
+      <version>2.0.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.16</version>
+      <version>2.0.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.16</version>
+      <version>1.5.18</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -185,6 +166,7 @@ SOFTWARE.
       <groupId>io.github.artsok</groupId>
       <artifactId>rerunner-jupiter</artifactId>
       <version>2.1.6</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -225,61 +207,74 @@ SOFTWARE.
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>false</failOnWarning>
+          <failOnWarning>true</failOnWarning>
           <offline>true</offline>
-          <unphiOutputDir>${project.build.directory}/eo/unphi</unphiOutputDir>
+          <skipLinting>true</skipLinting>
         </configuration>
         <executions>
           <execution>
             <id>compile</id>
             <goals>
               <goal>register</goal>
-              <goal>deps</goal>
-              <goal>assemble</goal>
-              <goal>lint</goal>
+              <goal>compile</goal>
               <goal>transpile</goal>
-              <goal>xmir-to-phi</goal>
-              <goal>phi-to-xmir</goal>
-              <goal>copy</goal>
               <goal>unplace</goal>
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <removeBinaries>
-                <glob>EOorg/EOeolang/EOhamcrest/**</glob>
-                <glob>EOorg/EOeolang/EOmath/**</glob>
-                <glob>EOorg/EOeolang/EOfs/**</glob>
-              </removeBinaries>
-              <withRuntimeDependency>false</withRuntimeDependency>
-              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>register</goal>
-              <goal>deps</goal>
-              <goal>assemble</goal>
-              <goal>lint</goal>
-              <goal>xmir-to-phi</goal>
-              <goal>phi-to-xmir</goal>
-              <goal>transpile</goal>
-            </goals>
-            <configuration>
-              <scope>test</scope>
-              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
-              <targetDir>${project.build.directory}/eo-test</targetDir>
-              <phiInputDir>${project.build.directory}/eo-test/1-parse</phiInputDir>
-              <phiOutputDir>${project.build.directory}/eo-test/phi</phiOutputDir>
-              <unphiInputDir>${project.build.directory}/eo-test/phi</unphiInputDir>
-              <unphiOutputDir>${project.build.directory}/eo-test/unphi</unphiOutputDir>
-              <addSourcesRoot>false</addSourcesRoot>
-              <addTestSourcesRoot>true</addTestSourcesRoot>
-              <failOnWarning>false</failOnWarning>
-              <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
-              <withRuntimeDependency>false</withRuntimeDependency>
-              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+              <!--
+                @todo #4394:35min Lints after fixing Phi dependent lints.
+                 For now, `unit-test-without-phi`, `redundant-object check` for `@` attribute in
+                 the tests, which represents Phi. However, we changed the notation in the XMIR,
+                 and now the same Phi represented as 'φ'. Don't forget to enable these lints, after
+                 new version of lints with the fix will be available. The lint
+                 `unlint-non-existing-defect` should be also enabled, but now disabled due to
+                 massive local unlints of `redundant-object` lint, which is currently disabled.
+                 We decided to skip linting entirely, not just skipping individual lints, because
+                 of this issue: https://github.com/objectionary/lints/issues/699.
+                -->
+              <skipLinting>true</skipLinting>
+              <failOnWarning>true</failOnWarning>
+              <ignoreRuntime>true</ignoreRuntime>
+              <!--
+                @todo #4148:35min Enable `lintAsPackage` below and fix
+                 all warnings that will be reported (there will be many of them),
+                 so that we can enable it in the `test-compile` execution as well:
+              -->
+              <lintAsPackage>false</lintAsPackage>
+              <skipSourceLints>
+                <!-- Required to be skipped, since we in runtime origin library. -->
+                <lint>prohibited-package</lint>
+                <!--
+                  @todo #4148:35min Enable `unused-void-attr` lint.
+                   We should enable this lint after the following issue with magic
+                   voids will be resolved: https://github.com/objectionary/lints/issues/574.
+                   Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
+                -->
+                <lint>unused-void-attr</lint>
+                <!--
+                  @todo #4148:35min Enable `duplicate-names-in-diff-context` lint.
+                   For now its too pedantic. See this: https://github.com/objectionary/lints/issues/578.
+                   Also, we should fix the bug with false positives with lambda object names in the atoms,
+                   in order to enable this lint.
+                -->
+                <lint>duplicate-names-in-diff-context</lint>
+                <!--
+                  @todo #4096:35min Enable `sparse-decoration` lint.
+                   After we merged EO tests together with their source objects, and removed
+                   `+tests` meta, we have complains about sparse-decoration. Let's adjust and
+                   enable it.
+                -->
+                <lint>sparse-decoration</lint>
+              </skipSourceLints>
+              <keepBinaries>
+                <glob>EOorg/package-info.class</glob>
+                <glob>EOorg/EOeolang/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOfs/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOmath/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOsys/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOtxt/package-info.class</glob>
+              </keepBinaries>
             </configuration>
           </execution>
         </executions>
@@ -287,10 +282,6 @@ SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skipTests>${skipITs}</skipTests>
-        </configuration>
-        <version>3.5.2</version>
         <executions>
           <execution>
             <id>snippet-test</id>
@@ -385,6 +376,13 @@ SOFTWARE.
       <build>
         <plugins>
           <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>eo-maven-plugin</artifactId>
+            <configuration>
+              <skipLinting>false</skipLinting>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
@@ -396,7 +394,6 @@ SOFTWARE.
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <execution>
                 <id>project-validate</id>
@@ -413,7 +410,7 @@ SOFTWARE.
               <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>3.0.23</version>
+                <version>3.0.25</version>
               </dependency>
             </dependencies>
           </plugin>

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.org.eolang.true.if' and o[@base='Φ.org.eolang.string' and @as='α0']]
+  - //o[@base='Φ.org.eolang.true.if' and o[@base='Φ.org.eolang.string' and @as='α1']]
+  - //o[@base='Φ.org.eolang.false.if' and o[@base='Φ.org.eolang.number' and @as='a']]
+  - //o[@base='Φ.org.eolang.false.if' and o[@base='Φ.org.eolang.number' and @as='b']]
+input: |
+  # Main.
+  [] > main
+    if. > first
+      true
+      "TRUE":0
+      "FALSE":1
+    if. false 1:a 2:b > second

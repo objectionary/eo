@@ -1,25 +1,6 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 package org.eolang;
@@ -75,8 +56,7 @@ public final class Main {
      */
     public static void main(final String... args) throws Exception {
         Main.setup();
-        final List<String> opts = new ArrayList<>(args.length);
-        opts.addAll(Arrays.asList(args));
+        final List<String> opts = new ArrayList<>(Arrays.asList(args));
         while (!opts.isEmpty()) {
             final String opt = opts.get(0);
             if (Main.parse(opt)) {
@@ -170,33 +150,17 @@ public final class Main {
     /**
      * Run this opts.
      * @param opts The opts left
-     * @throws Exception If fails
      */
-    private static void run(final List<String> opts) throws Exception {
+    private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
             throw new IllegalArgumentException(
                 "The name of the object is an empty string, why?"
             );
         }
-        final String path = new JavaPath(obj).toString();
-        final Phi app;
-        try {
-            Main.LOGGER.fine(String.format("Loading class %s...", path));
-            app = (Phi) Class.forName(path)
-                .getConstructor()
-                .newInstance();
-        } catch (final ClassNotFoundException ex) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Can not find \"%s\" object (java path is \"%s\")",
-                    obj, path
-                ),
-                ex
-            );
-        }
+        final Phi app = Phi.Φ.take(obj);
         if (opts.size() > 1) {
-            Phi args = Phi.Φ.take("org.eolang.tuple");
+            Phi args = Phi.Φ.take("org.eolang.tuple").take("empty");
             for (int idx = 1; idx < opts.size(); ++idx) {
                 args = args.take("with");
                 args.put(0, new Data.ToPhi(opts.get(idx)));
@@ -221,13 +185,14 @@ public final class Main {
      * @throws IOException If fails
      */
     private static String version() throws IOException {
-        try (BufferedReader input =
-            new BufferedReader(
-                new InputStreamReader(
-                    Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
-                    StandardCharsets.UTF_8
+        try (
+            BufferedReader input =
+                new BufferedReader(
+                    new InputStreamReader(
+                        Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
+                        StandardCharsets.UTF_8
+                    )
                 )
-            )
         ) {
             return input.lines().findFirst().orElse("N/A");
         }

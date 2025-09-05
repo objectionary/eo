@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - //o[@base='ξ.foo' and count(o)=2]
+  - //o[@base='ξ.bar' and count(o)=2]
+  - //o[@base='ξ.foobar' and count(o)=2 and o[@base='ξ.foo' and count(o)=2]]
+input: |
+  # No comments.
+  [] > aliases
+    [x y] > foo
+      42 > @
+    [z k] > bar
+      43 > @
+    [i j] > foobar
+      44 > @
+    eq. > @
+      foobar (foo (bar 1 2) 3) 4
+      44

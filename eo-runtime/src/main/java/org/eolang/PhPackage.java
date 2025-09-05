@@ -1,32 +1,12 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,6 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
+    /**
+     * Global package.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     * @checkstyle StaticVariableNameCheck (3 lines)
+     */
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    public static final String GLOBAL = "Φ";
 
     /**
      * The name of the Java package.
@@ -43,9 +30,9 @@ final class PhPackage implements Phi {
     private final String pkg;
 
     /**
-     * All of them.
+     * Objects in the package.
      */
-    private final ThreadLocal<Map<String, Phi>> objects;
+    private final Map<String, Phi> objects;
 
     /**
      * Ctor.
@@ -53,28 +40,27 @@ final class PhPackage implements Phi {
      */
     PhPackage(final String name) {
         this.pkg = name;
-        this.objects = ThreadLocal.withInitial(
-            () -> new ConcurrentHashMap<>(0)
-        );
+        this.objects = new ConcurrentHashMap<>(0);
     }
 
     @Override
     public String locator() {
-        return "?:?";
+        return "?:?:?";
     }
 
     @Override
     public String forma() {
-        throw new ExFailure(
-            String.format("Can't #form() from package object \"%s\"", this.pkg)
-        );
+        return this.pkg;
+    }
+
+    @Override
+    public Phi copy(final Phi self) {
+        return this.copy();
     }
 
     @Override
     public Phi copy() {
-        throw new ExFailure(
-            String.format("Can't #copy() package object \"%s\"", this.pkg)
-        );
+        return this;
     }
 
     @Override
@@ -84,92 +70,100 @@ final class PhPackage implements Phi {
 
     @Override
     public Phi take(final String name) {
-        final String obj = this.eoPackage(name);
-        final String key = new JavaPath(obj).toString();
-        if (!this.objects.get().containsKey(key)) {
-            final Phi initialized = this.loadPhi(key).orElseGet(() -> new PhPackage(obj));
-            if (!(initialized instanceof PhPackage)) {
-                initialized.put(Attr.RHO, this);
+        final String fqn = String.join(".", this.pkg, name);
+        final Phi taken;
+        if (name.equals(Phi.RHO)) {
+            if (this.objects.containsKey(Phi.RHO)) {
+                taken = this.objects.get(Phi.RHO);
+            } else {
+                throw new ExUnset(
+                    String.format(
+                        "The %s attribute is absent in package object '%s'",
+                        Phi.RHO, this.pkg
+                    )
+                );
             }
-            this.objects.get().put(key, initialized);
+        } else if (this.objects.containsKey(fqn)) {
+            taken = this.objects.get(fqn).copy();
+        } else if (name.contains(".")) {
+            final String[] parts = name.split("\\.");
+            Phi next = this.take(parts[0]);
+            for (int idx = 1; idx < parts.length; ++idx) {
+                next = next.take(parts[idx]);
+            }
+            taken = next;
+        } else {
+            final Phi loaded = this.loadPhi(fqn);
+            loaded.put(Phi.RHO, this);
+            this.put(fqn, loaded);
+            taken = this.take(name);
         }
-        final Phi res = this.objects.get().get(key);
-        this.objects.remove();
-        return res;
+        return taken;
+    }
+
+    @Override
+    public Phi take(final int pos) {
+        throw new ExFailure(
+            "Can't #take(#d) from package object \"%s\"", pos, this.pkg
+        );
     }
 
     @Override
     public void put(final int pos, final Phi object) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #put(%d, %s) to package object \"%s\"",
-                pos, object, this.pkg
-            )
+        throw new ExFailure(
+            "Can't #put(%d, %s) to package object \"%s\"", pos, object, this.pkg
         );
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #put(%s, %s) to package object \"%s\"",
-                name, object, this.pkg
-            )
-        );
+        this.objects.put(name, object);
     }
 
     @Override
     public byte[] delta() {
-        throw new IllegalStateException(
-            String.format(
-                "Can't take #data() from package object \"%s\"",
-                this.pkg
-            )
-        );
-    }
-
-    /**
-     * Creates eo-package path by name.
-     * @param name The name of an en object.
-     * @return Eo-package path.
-     */
-    private String eoPackage(final String name) {
-        final StringBuilder abs = new StringBuilder(0).append(this.pkg);
-        if (abs.length() > 0) {
-            abs.append('.');
-        }
-        abs.append(name);
-        return abs.toString();
+        throw new ExFailure("Can't take #data() from package object \"%s\"", this.pkg);
     }
 
     /**
      * Load phi object by package name from ClassLoader.
-     * @param target The package name
+     * @param fqn FQN of the EO object
      * @return Phi
      */
-    private Optional<Phi> loadPhi(final String target) {
-        Optional<Phi> res;
+    @SuppressWarnings("PMD.PreserveStackTrace")
+    private Phi loadPhi(final String fqn) {
+        final String target = new JavaPath(fqn).toString();
+        Phi loaded;
         try {
-            res = Optional.of(
-                (Phi) Class.forName(target)
+            Class.forName(String.format("%s.package-info", target));
+            loaded = new PhPackage(fqn);
+        } catch (final ClassNotFoundException pckg) {
+            try {
+                loaded = (Phi) Class.forName(target)
                     .getConstructor()
-                    .newInstance()
-            );
-        } catch (final ClassNotFoundException notfound) {
-            res = Optional.empty();
-        } catch (final NoSuchMethodException
-            | InvocationTargetException
-            | InstantiationException
-            | IllegalAccessException ex
-        ) {
-            throw new ExFailure(
-                String.format(
-                    "Can't find Java object/package \"%s\" in EO package \"%s\"",
-                    target, this.pkg
-                ),
-                ex
-            );
+                    .newInstance();
+            } catch (final ClassNotFoundException phi) {
+                throw new ExFailure(
+                    String.format(
+                        "Couldn't find object '%s' because there's no class or package '%s'",
+                        fqn, target
+                    ),
+                    phi
+                );
+            } catch (final NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException ex
+            ) {
+                throw new ExFailure(
+                    String.format(
+                        "Couldn't build Java object \"%s\" in EO package \"%s\"",
+                        target, this.pkg
+                    ),
+                    ex
+                );
+            }
         }
-        return res;
+        return loaded;
     }
 }

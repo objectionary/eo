@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object[@version != '']
+  - /object[@time != '']
+  - //o[@base='Φ.org.eolang.a' and @line='3']
+  - //o[@base='Φ.org.eolang.b-друг' and @line='4']
+  - //o[@base='Φ.org.eolang.c4-5' and @line='5']
+input: |
+  +package test
+
+  a > abc
+    b-друг
+      c4-5

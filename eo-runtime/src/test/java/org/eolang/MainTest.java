@@ -1,30 +1,12 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2016-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 package org.eolang;
 
 import com.yegor256.Jaxec;
 import com.yegor256.Jhome;
+import com.yegor256.Result;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -60,7 +42,7 @@ final class MainTest {
     void printsVersion() {
         MatcherAssert.assertThat(
             "Prints its own version properly",
-            MainTest.exec("--version"),
+            MainTest.stderr("--version"),
             Matchers.allOf(
                 Matchers.containsString("."),
                 Matchers.not(Matchers.containsString(" "))
@@ -72,7 +54,7 @@ final class MainTest {
     void printsHelp() {
         MatcherAssert.assertThat(
             "Prints help summary properly",
-            MainTest.exec("--help"),
+            MainTest.stderr("--help"),
             Matchers.containsString("Usage: ")
         );
     }
@@ -81,7 +63,7 @@ final class MainTest {
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             "Incorrect output when dataizing \"true\" object",
-            MainTest.exec("org.eolang.true"),
+            MainTest.stderr("org.eolang.true"),
             Matchers.stringContainsInOrder(
                 String.format("%n---%n"),
                 "true",
@@ -94,7 +76,7 @@ final class MainTest {
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
             "Incorrect verbose output when dataizing \"false\" object",
-            MainTest.exec("--verbose", "org.eolang.false"),
+            MainTest.stderr("--verbose", "org.eolang.false"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
@@ -106,11 +88,8 @@ final class MainTest {
     void executesJvmFullRunWithDashedObject() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.exec("--verbose", "as-bytes"),
-            Matchers.allOf(
-                Matchers.containsString("Loading class EOas_bytes"),
-                Matchers.containsString("Can not find \"as-bytes\" object")
-            )
+            MainTest.stderr("--verbose", "as-bytes"),
+            Matchers.containsString("Couldn't find object 'Φ.as-bytes'")
         );
     }
 
@@ -118,11 +97,8 @@ final class MainTest {
     void executesJvmFullRinWithAttributeCall() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.exec("--verbose", "string$as-bytes"),
-            Matchers.allOf(
-                Matchers.containsString("Loading class EOstring$EOas_bytes"),
-                Matchers.containsString("Can not find \"string$as-bytes\" object")
-            )
+            MainTest.stderr("--verbose", "string$as-bytes"),
+            Matchers.containsString("Couldn't find object 'Φ.string$as-bytes'")
         );
     }
 
@@ -130,7 +106,7 @@ final class MainTest {
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.exec("--verbose", "org.eolang.io.stdout"),
+            MainTest.stderr("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString(
                 "Error in \"Φ.org.eolang.io.stdout.φ.Δ\" "
             )
@@ -141,8 +117,8 @@ final class MainTest {
     void executesWithObjectNotFoundException() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.exec("unavailable-name"),
-            Matchers.containsString("Can not find \"unavailable-name\" object")
+            MainTest.stderr("unavailable-name"),
+            Matchers.containsString("Couldn't find object 'Φ.unavailable-name'")
         );
     }
 
@@ -161,7 +137,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a non-empty line, but it didn't",
             reader.readLine().length(),
             Matchers.greaterThan(0)
         );
@@ -182,7 +158,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a line longer then 1 character, but it didn't",
             reader.readLine().length(),
             Matchers.greaterThan(1)
         );
@@ -191,7 +167,7 @@ final class MainTest {
     @Test
     void readsBytesCorrectly() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Reading stream should produce a byte of next character, but it didn't",
             new ByteArrayInputStream(
                 "··\uD835\uDD38➜Φ".getBytes(
                     StandardCharsets.UTF_8
@@ -201,8 +177,12 @@ final class MainTest {
         );
     }
 
-    private static String exec(final String... cmds) {
-        final String stdout = new Jaxec(
+    private static String stderr(final String... cmds) {
+        return MainTest.exec(cmds).stderr();
+    }
+
+    private static Result exec(final String... cmds) {
+        return new Jaxec(
             new Jhome().java().toString(),
             "-Dfile.encoding=UTF-8",
             "-Dsun.stdout.encoding=UTF-8",
@@ -210,14 +190,7 @@ final class MainTest {
             "-cp",
             System.getProperty("java.class.path"),
             Main.class.getCanonicalName()
-        ).with(cmds).withCheck(false).exec().stdout();
-        return stdout.replaceFirst(
-            String.format(
-                "Picked up .*%s",
-                System.lineSeparator()
-            ),
-            ""
-        );
+        ).with(cmds).withCheck(false).exec();
     }
 
 }

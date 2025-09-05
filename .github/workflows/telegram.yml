@@ -1,25 +1,7 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 name: telegram
 'on':
   push:
@@ -30,18 +12,20 @@ concurrency:
   cancel-in-progress: true
 jobs:
   telegram:
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: djdefi/cloc-action@7
         with:
           options: --json --report-file=cloc.json
-      - run: sudo apt-get update && sudo apt-get install --yes jq bc
+      - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: 3.3
+          bundler-cache: true
       - run: gem install hoc
       - run: |
           git fetch --tags --force
@@ -67,7 +51,7 @@ jobs:
               "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
             printf 'in the backlog, where your help is needed!\n\n'
             printf 'You may also be interested in helping us in these repositories:\n\n'
-            for r in jeo-maven-plugin lints eoc eo2js; do
+            for r in jeo-maven-plugin phino lints eoc; do
               printf '  - [%s](https://github.com/objectionary/%s) ' "${r}" "${r}"
               printf '([%d issues]' \
                 "$(curl --silent "https://api.github.com/repos/objectionary/${r}/issues?state=open&per_page=100&labels=help%20wanted" | jq length)"

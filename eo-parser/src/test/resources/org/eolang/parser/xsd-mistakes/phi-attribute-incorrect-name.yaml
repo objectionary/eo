@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+errors: 2
+document: |
+  <object author="eo-parser">
+    <o line="2" name="real" pos="0">
+      <o line="3" name="+tests-sqrt-check-nan-input" pos="2">
+         <o base=".is-nan" line="4" name="@" pos="4">
+            <o base=".sqrt" line="5" pos="6">
+               <o base="Φ.real" line="6" pos="8">
+                  <o as="α0" base="Φ.org.eolang.nan" line="6" pos="13"/>
+               </o>
+            </o>
+         </o>
+      </o>
+    </o>
+  </object>

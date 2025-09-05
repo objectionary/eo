@@ -1,32 +1,14 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:44
++unlint redundant-object:46
 
-# The object allows to choose right options according to cases conditions.
-# Parameter cases is the array of two dimensional array, which
+# The object allows choosing the right options according to case conditions.
+# Parameter `cases` is an array of two-dimensional arrays, which
 # consist of condition bool value and expected value, if this
 # condition is true. For example:
 #
@@ -41,24 +23,111 @@
 #       "this value will be skipped"
 # ```
 #
-# This object returns value of only first truly statement.
+# This object returns the value of the first true statement.
 [cases] > switch
-  cases.length > len!
   if. > @
-    len.eq 0
-    error "switch cases are empty"
-    case-at 0
-
-  # Take case by given index.
-  # If case key is true, return case value.
-  # Otherwise take next case.
-  [index] > case-at
-    cases.at index > case
-    if. > @
-      index.eq len
+    cases.length.eq 0
+    error "Switch cases are empty"
+    if.
+      true.eq found.match
+      found.head
       true
-      if.
-        case.at 0
-        case.at 1
-        case-at
-          index.plus 1
+  (rec-case cases).@ > found
+
+  [tup] > rec-case
+    if. > @
+      and.
+        tup.length.gt 1
+        previous.match
+      previous
+      [] >>
+        tup.head.tail.head > match!
+        tup.head.head > head
+    (rec-case tup.tail).@ > previous
+
+  # Tests that switch returns the value from the first true condition case.
+  [] +> tests-switch-simple-case
+    eq. > @
+      switch
+        *
+          *
+            false
+            "1"
+          *
+            true
+            "2"
+      "2"
+
+  # Tests that switch works correctly with string comparison conditions.
+  [] +> tests-switch-strings-case
+    eq. > @
+      switch
+        *
+          *
+            password.eq "swordfish"
+            "password is correct!"
+          *
+            password.eq ""
+            "empty password is not allowed"
+          *
+            false
+            "password is wrong"
+      "password is correct!"
+    "swordfish" > password
+
+  # Tests that switch returns the value from the first true case when multiple cases are true.
+  [] +> tests-switch-with-several-true-cases
+    eq. > @
+      switch
+        *
+          *
+            true
+            "TRUE1"
+          *
+            false
+            "FALSE"
+          *
+            true
+            "TRUE2"
+      "TRUE1"
+
+  # Tests that switch returns true when all cases are false.
+  [] +> tests-switch-with-all-false-cases
+    switch > @
+      *
+        *
+          false
+          "false1"
+        *
+          false
+          "false2"
+
+  # Tests that switch throws an error when given empty cases array.
+  [] +> throws-on-empty-switch
+    switch * > @
+
+  # Tests that switch works correctly with complex nested conditions and custom objects.
+  [] +> tests-switch-complex-case
+    eq. > @
+      switch
+        *
+          *
+            [] >>
+              c1 > @
+            22.0
+          *
+            [] >>
+              c2 > @
+            0.0
+          *
+            [] >>
+              c3 > @
+            []
+              "true case" > @
+      "true case"
+    [] > c1
+      false > @
+    [] > c2
+      "1".eq "2" > @
+    [] > c3
+      true > @

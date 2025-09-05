@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[count(o)=1]
+  - /object/o[@name='first']/o[@base='stdout' and @name='std']/o[@base='.x']/o[@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@base='.std']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@base='.std']/o[2][@base='.x']/o[1][@base='.ρ']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='Φ.org.eolang.number' and @name='x']/o[@base='Φ.org.eolang.bytes']/o[text()!='']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[1][@base='.x']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.plus']/o[2][@base='.y']/o[1][@base='.ρ']/o[1][@base='.ρ']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[1][@base='.ρ']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.std']/o[2][@base='qwe']
+  - /object/o[@name='first']/o[@name='second']/o[@name='third']/o[@base='.third']/o[1][@base='.ρ']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='Φ.org.eolang.string' and @name='inner']
+  - /object/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='outer']/o[1][@base='.ρ']/o[1][@base='ξ']
+  - /object/o[@name='first']/o[@name='second']/o[@name='fourth']/o[@base='.inner' and @name='self']/o[1][@base='ξ']
+input: |-
+  +package org.examples
+
+  # No comments.
+  [x y] > first
+    stdout x > std
+    [std] > second
+      std x > inner
+      [] > third
+        5 > x
+        x.plus y > sum
+        third bar > baz
+        std qwe > closest
+      [] > fourth
+        "some" > inner
+        ^.inner > outer
+        inner > self

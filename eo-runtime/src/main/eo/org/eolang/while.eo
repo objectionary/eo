@@ -1,29 +1,9 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
 # The `while` object is very similar to a loop with a pre-condition.
 # Here's how you can use it:
@@ -36,7 +16,7 @@
 #       * i
 # ```
 #
-# Here the behaviour of `while` would identical to:
+# Here the behaviour of `while` would be identical to:
 # ```
 # seq > last
 #   *
@@ -46,9 +26,9 @@
 #     dataized "Iteration 4\n"
 # ```
 #
-# Here only first three strings are dataized meanwhile the last one
-# is returned and attached to `last` object.
-# The example with `while` object would behave the same way.
+# Only the first three strings are dataized for side effects while the last one
+# is returned as the result value assigned to the `last` object.
+# The `while` loop example produces identical behavior.
 [condition body] > while
   if. > @
     (condition 0).as-bool
@@ -57,13 +37,180 @@
 
   # Recursive loop.
   #
-  # Attention! The object is for internal usage only. Please don't use
-  # the object programmatically outside of `while` object.
+  # Note: This object is intended for internal use only. Please do not use
+  # this object programmatically outside of the `while` object.
   [index] > loop
-    body index > current
     if. > @
       (condition (index.plus 1)).as-bool
       seq *
         current
         loop (index.plus 1)
       current
+    body index > current
+
+  # Tests that while loop dataizes only the first cycle when condition becomes false.
+  [] +> tests-while-dataizes-only-first-cycle
+    eq. > @
+      0
+      malloc.for
+        42
+        [m]
+          while > @
+            i.eq 0 > [i]
+            m.put i > [i] >>
+
+  # Tests that while loop returns false when condition is initially false.
+  [] +> tests-simple-while-with-false-first
+    not. > @
+      while
+        false > [i]
+        true > [i]
+
+  # Tests that while loop works with boolean expressions using malloc memory.
+  [] +> tests-simple-bool-expression-via-malloc-in-while
+    eq. > @
+      malloc.for
+        true
+        [m]
+          while > @
+            m > [i] >>
+            m.put false > [i] >>
+      false
+
+  # Tests that while loop returns the last dataized object when loop completes.
+  [] +> tests-last-while-dataization-object
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            2.gt m > [i] >>
+            m.put (m.as-number.plus 1) > [i] >>
+      3
+
+  # Tests that while loop returns false when condition evaluates to false initially.
+  [] +> tests-last-while-dataization-object-with-false-condition
+    not. > @
+      while
+        1.gt 2 > [i]
+        true > [i]
+
+  # Tests that while loop performs simple iteration and updates counter correctly.
+  [] +> tests-while-simple-iteration
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 10 > [i]
+            m.put i > [i] >>
+      9
+
+  # Tests that while loop can iterate over tuple elements using internal iterator.
+  [] +> tests-iterating-tuple-with-while-using-internal-iterator
+    data.eq arr.length > @
+    * 1 1 1 1 > arr
+    arr.length.plus -1 > max
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            if. > @
+              max.eq 0
+              acc.put
+                acc.as-number.plus
+                  arr.at 0
+              while
+                max.gt iter > [i] >>
+                [i] >>
+                  seq > @
+                    *
+                      acc.put
+                        acc.as-number.plus
+                          arr.at i
+                      iter.put
+                        iter.as-number.plus 1
+
+  # Tests that while loop can iterate over tuple elements using external iterator.
+  [] +> tests-iterating-tuple-with-while-using-external-iterator
+    data.eq arr.length > @
+    * 1 1 1 1 > arr
+    arr.length.plus -1 > max
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            while > @
+              max.gt iter > [i] >>
+              [i] >>
+                seq > @
+                  *
+                    acc.put
+                      acc.as-number.plus
+                        arr.at iter
+                    iter.put
+                      iter.as-number.plus 1
+
+  # Tests that while loop can iterate over multiple tuple elements without explicit body.
+  [] +> tests-iterating-tuple-with-while-without-body-multiple
+    data.eq arr.length > @
+    * 1 1 1 > arr
+    arr.length > max
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            seq > @
+              *
+                while
+                  [i] >>
+                    if. > @
+                      max.gt iter
+                      seq
+                        *
+                          acc.put
+                            acc.as-number.plus
+                              arr.at
+                                iter.as-number
+                          iter.put
+                            iter.as-number.plus 1
+                          true
+                      false
+                  true > [i]
+                acc
+
+  # Tests that while loop can iterate over single tuple element without explicit body.
+  [] +> tests-iterating-tuple-with-while-without-body-single
+    data.eq arr.length > @
+    * 1 > arr
+    arr.length > max
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            seq > @
+              *
+                while
+                  [i] >>
+                    if. > @
+                      max.gt iter
+                      seq
+                        *
+                          acc.put
+                            acc.as-number.plus
+                              arr.at
+                                iter.as-number
+                          iter.put
+                            iter.as-number.plus 1
+                          true
+                      false
+                  true > [i]
+                acc

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out:
+  - ".*Hello, Jeff.*"
+file: org/eolang/snippets/foo.eo
+args: ["org.eolang.snippets.foo"]
+eo: |
+  +alias org.eolang.io.stdout
+  +decorate string txt.text
+  +package org.eolang.snippets
+
+  # No comments.
+  [] > foo
+    stdout > @
+      joined.
+        ", "
+        "Hello Jeff".split " "

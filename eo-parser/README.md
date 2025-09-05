@@ -1,12 +1,12 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parser.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parser)
-[![Javadoc](http://www.javadoc.io/badge/org.eolang/eo-parser.svg)](http://www.javadoc.io/doc/org.eolang/eo-parser)
+[![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-parser.svg)](https://www.javadoc.io/doc/org.eolang/eo-parser)
 
 # How to Test
 
 This documentation provides a step-by-step guide to test the `EO` code in `eo-parser` package. There
-are two files provide testing `EO` files: `PacksTest` and `TypoTests`.
+are two files providing tests for `EO` files: `PacksTest` and `TyposTests`.
 
 The `PacksTest` class contains two test methods:
 
@@ -17,7 +17,7 @@ failures, the test is aborted.
 correctly. It reads YAML files from the `org/eolang/parser/xax/` directory and creates an XaxStory
 object. The test passes if the object is created successfully.
 
-`TypoTests` contains only `checksPacks()` method with same functionality as `parsesPacks()`. But it
+`TyposTests` contains only `checksPacks()` method with same functionality as `parsesPacks()`. But it
 takes YAML files from `org/eolang/parser/typos/` directory.
 
 To create YAML file, you can follow the following steps:
@@ -51,12 +51,12 @@ sheets:
   - /org/eolang/parser/resolve-aliases.xsl
   - /org/eolang/parser/add-default-package.xsl
 asserts:
-  - /program[not(errors)]
-  - /program/objects[count(o)=1]
+  - /object[not(errors)]
+  - /object[count(o)=1]
   - //o[@base='org.eolang.and' and @line='8']
   - //o[@base='foo']
-  - //o[@base='$']
-  - //o[@base='^']
+  - //o[@base='ξ']
+  - //o[@base='ρ']
   - //o[@base='Q']
 input: |
   +alias foo
@@ -98,13 +98,13 @@ the program.
 This section is used for defining the tests that will be run on the program. The following tests are
 defined in this section:
 
-- `/program[not(errors)]`: This test checks that there are no errors in the program.
-- `/program/objects[count(o)=1]`: This test checks that there is only one object in the program.
+- `/object[not(errors)]`: This test checks that there are no errors in the program.
+- `/object[count(o)=1]`: This test checks that there is only one object in the program.
 - `//o[@base='org.eolang.and' and @line='8']`: This test checks that there is an object with the
 base `org.eolang.and` and the line number `8`.
 - `//o[@base='foo']`: This test checks that there is an object with the base `foo`.
-- `//o[@base='$']`: This test checks that there is an object with the base `$`.
-- `//o[@base='^']`: This test checks that there is an object with the base `^`.
+- `//o[@base='ξ']`: This test checks that there is an object with the base `ξ`.
+- `//o[@base='ρ']`: This test checks that there is an object with the base `ρ`.
 - `//o[@base='Q']`: This test checks that there is an object with the base `Q`.
 
 #### eo

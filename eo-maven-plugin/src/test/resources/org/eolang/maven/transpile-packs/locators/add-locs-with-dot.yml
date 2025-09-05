@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/maven/shake/set-locators.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <program>
+    <objects>
+      <o base=".a" name="a">
+        <o base="b"/>
+        <o base="c"/>
+        <o base="d"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - /object/o[@loc='Φ.a' and @base='.a']
+  - /object/o/o[1][@loc='Φ.a.ρ' and @base='b']
+  - /object/o/o[2][@loc='Φ.a.α0' and @base='c']
+  - /object/o/o[3][@loc='Φ.a.α1' and @base='d']

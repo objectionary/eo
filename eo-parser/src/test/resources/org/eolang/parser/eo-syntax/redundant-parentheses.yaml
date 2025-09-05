@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+input: |
+  # Main.
+  [] > main
+    1.add (a.add 5) 4 > x
+    add. 1 (a.add 5) > x
+    add. 1 2 3 4 > x
+    add. 1 2 3 4 > x
+    add 1 2 3 4 > x
+    1.add 4 > x
+    (add 1).add 2 > x
+    1.add (1.add (1.add (1.add 1))) > x
+    (1.add 1).add (1.add 1) > x
+    add > x
+      1
+      1
+    1.with-text "(text) with parentheses a(n)..." > x
+    "=(" > x
+    "=)" > x
+    ")" > x
+    "(-_-)" > x
+    """
+    (-_-)
+    """ > x
+    # No comments.
+    [] > obj

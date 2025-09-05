@@ -1,54 +1,44 @@
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2025 Objectionary.com
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:20
++unlint redundant-object:21
++unlint redundant-object:22
++unlint redundant-object:23
++unlint redundant-object:25
++unlint redundant-object:28
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
-  $ > as-number
   times -1 > neg
   as-i64.as-i32 > as-i32
   as-i32.as-i16 > as-i16
   as-bytes.eq nan.as-bytes > is-nan
+  and. > is-integer
+    is-finite
+    eq floor
+  and. > is-finite
+    is-nan.not
+    not.
+      or.
+        eq positive-infinity
+        eq negative-infinity
 
-  # Convert this `number` to `i64` object.
-  [] > as-i64 /org.eolang.i64
+  # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
+  [] > as-i64 ?
 
-  # Returns true if `$` = `x` in terms of bytes.
-  # Here `x` can be a `number` or any other object which
-  # can be converted to `bytes` via `as-bytes` object.
-  # According to IEEE 754 float -0.0 and 0.0 are equal.
+  # Returns true if this number equals `x` when compared as byte sequences.
+  # The parameter `x` can be a `number` or any object convertible to `bytes`
+  # via the `as-bytes` method. Follows IEEE 754 standard where negative zero
+  # (-0.0) and positive zero (0.0) are considered equal.
   [x] > eq
-    x > x-as-bytes!
-    as-bytes > self-as-bytes
-    0.as-bytes > pos-zero-as-bytes
-    -0.as-bytes > neg-zero-as-bytes
     if. > @
       or.
         is-nan
@@ -63,77 +53,353 @@
             self-as-bytes.eq pos-zero-as-bytes
             self-as-bytes.eq neg-zero-as-bytes
         self-as-bytes.eq x-as-bytes
+    x > x-as-bytes!
+    as-bytes > self-as-bytes!
+    0.as-bytes > pos-zero-as-bytes
+    -0.as-bytes > neg-zero-as-bytes
 
   # Returns `true` if `$` < `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lt
-    x > value!
     0.gt > @
       minus
         number value
+    x > value!
 
   # Returns `true` if `$` <= `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lte
-    x > value!
     or. > @
       lt value
       eq value
+    x > value!
 
-  # Returns `true` if `$` > `x`.
+  # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > gt /org.eolang.bool
+  [x] > gt ?
 
-  # Returns `true` if `$` > `x`.
+  # Returns `true` if `$` >= `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gte
-    x > value!
     or. > @
       gt value
       eq value
+    x > value!
 
-  # Multiplication of `$` and `x`.
+  # Multiplication of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > times /org.eolang.number
+  [x] > times ?
 
-  # Sum of `$` and `x`.
+  # Sum of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > plus /org.eolang.number
+  [x] > plus ?
 
   # Difference between `$` and `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > minus
-    x > value!
     plus > @
       (number value).neg
+    x > value!
 
-  # Quotient of the division of `$` by `x`.
+  # Quotient of the division of `$` by `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > div /org.eolang.number
+  [x] > div ?
 
-  # The object rounds down the original `number`  to the nearest
-  # whole `number` that is less than or equal to the original one.
-  [] > floor /org.eolang.number
+  # The object rounds down the original `number` to the nearest
+  # whole `number` that is less than or equal to it
+  # and returns the result as `org.eolang.number`.
+  [] > floor ?
 
-  # Returns `true` if current number does not have a fractional component.
-  [] > is-integer
-    and. > @
-      is-finite
-      eq floor
+  # Tests that less-than comparison returns true when first number is smaller.
+  [] +> tests-int-less-true
+    lt. > @
+      10
+      50
 
-  # Returns `true` if current number is finite.
-  [] > is-finite
-    and. > @
-      is-nan.not
+  # Tests that less-than comparison returns false when numbers are equal.
+  [] +> tests-int-less-equal
+    eq. > @
       not.
-        or.
-          eq positive-infinity
-          eq negative-infinity
+        lt.
+          10
+          10
+      true
+
+  # Tests that less-than comparison returns false when first number is greater.
+  [] +> tests-int-less-false
+    eq. > @
+      not.
+        lt.
+          10
+          -5
+      true
+
+  # Tests that greater-than comparison returns true when first number is larger.
+  [] +> tests-int-greater-true
+    eq. > @
+      gt.
+        -200
+        -1000
+      true
+
+  # Tests that greater-than comparison returns false when first number is smaller.
+  [] +> tests-int-greater-false
+    eq. > @
+      not.
+        gt.
+          0
+          100
+      true
+
+  # Tests that greater-than comparison returns false when numbers are equal.
+  [] +> tests-int-greater-equal
+    eq. > @
+      not.
+        gt.
+          0
+          0
+      true
+
+  # Tests that less-than-or-equal comparison returns true when first number is smaller.
+  [] +> tests-int-leq-true
+    eq. > @
+      lte.
+        -200
+        -100
+      true
+
+  # Tests that less-than-or-equal comparison returns true when numbers are equal.
+  [] +> tests-int-leq-equal
+    eq. > @
+      lte.
+        50
+        50
+      true
+
+  # Tests that less-than-or-equal comparison returns false when first number is greater.
+  [] +> tests-int-leq-false
+    eq. > @
+      not.
+        lte.
+          0
+          -10
+      true
+
+  # Tests that greater-than-or-equal comparison returns true when first number is larger.
+  [] +> tests-int-gte-true
+    eq. > @
+      gte.
+        -1000
+        -1100
+      true
+
+  # Tests that greater-than-or-equal comparison returns true when numbers are equal.
+  [] +> tests-int-gte-equal
+    eq. > @
+      gte.
+        113
+        113
+      true
+
+  # Tests that greater-than-or-equal comparison returns false when first number is smaller.
+  [] +> tests-int-gte-false
+    eq. > @
+      not.
+        gte.
+          0
+          10
+      true
+
+  # Tests that equality comparison with NaN and infinity values returns false.
+  [] +> tests-int-equal-to-nan-and-infinites-is-false
+    eq. > @
+      and.
+        and.
+          and.
+            and.
+              and.
+                (0.eq nan).eq false
+                (0.eq positive-infinity).eq false
+              (0.eq negative-infinity).eq false
+            (42.eq nan).eq false
+          (42.eq positive-infinity).eq false
+        (42.eq negative-infinity).eq false
+      true
+
+  # Tests that zero equals zero.
+  [] +> tests-int-zero-eq-to-zero
+    eq. > @
+      eq.
+        0
+        0
+      true
+
+  # Tests that integer zero equals floating-point zero.
+  [] +> tests-int-zero-eq-to-float-zero
+    eq. > @
+      eq.
+        0
+        0.0
+      true
+
+  # Tests that equality comparison returns true for identical numbers.
+  [] +> tests-int-eq-true
+    eq. > @
+      eq.
+        123
+        123
+      true
+
+  # Tests that equality comparison returns false for different numbers.
+  [] +> tests-int-eq-false
+    eq. > @
+      not.
+        eq.
+          123
+          42
+      true
+
+  # Tests that addition works correctly with simple numbers.
+  [] +> tests-one-plus-one
+    eq. > @
+      1.plus 1
+      2
+
+  # Tests that subtraction works correctly with simple numbers.
+  [] +> tests-one-minus-one
+    eq. > @
+      1.minus 1
+      0
+
+  # Tests that equality comparison returns false for different data types.
+  [] +> tests-compares-two-different-number-types
+    eq. > @
+      68.eq "12345678"
+      false
+
+  # Tests that recursive Fibonacci calculation works correctly.
+  [] +> tests-calculates-fibonacci-number-with-recursion
+    eq. > @
+      fibo 4
+      3
+    [n] > fibo
+      if. > @
+        n.lt 3
+        1
+        plus.
+          fibo (n.minus 1)
+          fibo (n.minus 2)
+
+  # Tests that tail-recursive Fibonacci calculation works correctly.
+  [] +> tests-calculates-fibonacci-number-with-tail
+    eq. > @
+      fibonacci 4
+      3
+
+    [n] > fibonacci
+      if. > @
+        n.lt 3
+        small n
+        rec n 1 1
+
+      [n] > small
+        if. > @
+          n.eq 2
+          1
+          n
+
+      [n minus1 minus2] > rec
+        if. > @
+          n.eq 3
+          minus1.plus minus2
+          rec (n.minus 1) (minus1.plus minus2) minus1
+
+  # Checks that division by zero does not return an error object.
+  [] +> tests-zero-division
+    try > @
+      seq
+        *
+          2.div 0
+          true
+      false > [e]
+      false
+
+  # Checks that division by one returns the dividend.
+  [] +> tests-division-by-one
+    eq. > @
+      dividend.div 1
+      dividend
+    -235 > dividend
+
+  # Tests that division works properly with positive dividends.
+  [] +> tests-div-for-dividend-greater-than-zero
+    eq. > @
+      256.div 16
+      16
+
+  # Tests that division with remainder produces correct floor result.
+  [] +> tests-div-with-remainder
+    eq. > @
+      floor.
+        13.div -5
+      -2
+
+  # Tests that division result can be less than one.
+  [] +> tests-div-less-than-one
+    lt. > @
+      1.div 5
+      1
+
+  # Tests that number to bytes conversion works correctly.
+  [] +> tests-to-bytes-and-backwards
+    eq. > @
+      as-bytes.
+        42
+      42
+
+  # Tests that number equals its byte representation.
+  [] +> tests-as-bytes-equals-to-int
+    eq. > @
+      42
+      42.as-bytes
+
+  # Tests that byte representation equals original number.
+  [] +> tests-as-bytes-equals-to-int-backwards
+    eq. > @
+      42.as-bytes
+      42
+
+  # Tests that multiplication by zero returns zero.
+  [] +> tests-multiply-by-zero
+    eq. > @
+      1000.times 0
+      0
+
+  # Tests that a simple number is not NaN.
+  [] +> tests-simple-number-is-not-nan
+    42.5.is-nan.not > @
+
+  # Tests that an integer number is detected as integer.
+  32.is-integer > [] +> int-number-is-integer
+
+  # Tests that a floating-point number is not detected as integer.
+  32.5.is-integer.not > [] +> float-number-is-not-integer
+
+  # Tests that a simple number is finite.
+  32.is-finite > [] +> simple-number-is-finite
+
+  # Tests that a number created with NaN bytes is detected as NaN.
+  [] +> tests-number-with-nan-bytes-is-nan
+    (number nan.as-bytes).is-nan > @
+
+  # Tests that a number created with infinite bytes is not finite.
+  [] +> tests-number-with-infinite-bytes-is-not-finite
+    (number positive-infinity.as-bytes).is-finite.not > @
