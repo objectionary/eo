@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:19
@@ -22,13 +22,13 @@
   false > is-integer
   error "Can't convert negative infinity to i64" > as-i64
 
-  # Tests that the value $ is equal to x.
+  # Tests whether the value $ is equal to x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that the value $ less than x.
+  # Tests whether the value $ is less than x.
   [x] > lt
     not. > @
       or.
@@ -36,16 +36,16 @@
         eq value
     x > value!
 
-  # Tests that the value $ less or equal than x.
+  # Tests whether the value $ is less than or equal to x.
   [x] > lte
     not. > @
       (number value).is-nan
     x > value!
 
-  # Tests that the value $ greater than x.
+  # Tests whether the value $ is greater than x.
   false > [x] > gt
 
-  # Tests that the value $ greater or equal than x.
+  # Tests whether the value $ is greater than or equal to x.
   eq x > [x] > gte
 
   # Returns the result of the multiplication of $ and x.
@@ -99,40 +99,40 @@
     number value > num
 
   # Equal to.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity equals negative one divided by zero.
   [] +> tests-negative-infinity-is-equal-to-one-div-zero
     eq. > @
       negative-infinity
       -1.0.div 0.0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity equals negative infinity.
   [] +> tests-negative-infinity-eq-negative-infinity
     eq. > @
       negative-infinity
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not equal to positive infinity.
   [] +> tests-negative-infinity-not-eq-positive-infinity
     not. > @
       eq.
         negative-infinity
         positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not equal to NaN.
   [] +> tests-negative-infinity-not-eq-nan
     not. > @
       eq.
         negative-infinity
         nan
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not equal to an integer.
   [] +> tests-negative-infinity-not-eq-int
     not. > @
       eq.
         negative-infinity
         42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not equal to a float.
   [] +> tests-negative-infinity-not-eq-float
     not. > @
       eq.
@@ -140,381 +140,381 @@
         42.5
 
   # Less than.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not less than negative infinity.
   [] +> tests-negative-infinity-lt-negative-infinity
     eq. > @
       negative-infinity.lt negative-infinity
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than positive infinity.
   [] +> tests-negative-infinity-lt-positive-infinity
     eq. > @
       negative-infinity.lt positive-infinity
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not less than NaN.
   [] +> tests-negative-infinity-not-lt-nan
     eq. > @
       negative-infinity.lt nan
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than an integer.
   [] +> tests-negative-infinity-lt-int
     lt. > @
       negative-infinity
       42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than a float.
   [] +> tests-negative-infinity-lt-float
     lt. > @
       negative-infinity
       42.5
 
   # Less or equal than.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than or equal to negative infinity.
   [] +> tests-negative-infinity-lte-negative-infinity
     eq. > @
       negative-infinity.lte negative-infinity
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than or equal to positive infinity.
   [] +> tests-negative-infinity-lte-positive-infinity
     eq. > @
       negative-infinity.lte positive-infinity
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not less than or equal to NaN.
   [] +> tests-negative-infinity-not-lte-nan
     eq. > @
       negative-infinity.lte nan
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than or equal to an integer.
   [] +> tests-negative-infinity-lte-int
     eq. > @
       negative-infinity.lte 42
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is less than or equal to a float.
   [] +> tests-negative-infinity-lte-float
     eq. > @
       negative-infinity.lte 42.5
       true
 
   # Greater than.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than negative infinity.
   [] +> tests-negative-infinity-gt-negative-infinity
     not. > @
       gt.
         negative-infinity
         negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than positive infinity.
   [] +> tests-negative-infinity-not-gt-positive-infinity
     eq. > @
       negative-infinity.gt positive-infinity
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than NaN.
   [] +> tests-negative-infinity-not-gt-nan
     eq. > @
       negative-infinity.gt nan
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than an integer.
   [] +> tests-negative-infinity-not-gt-int
     eq. > @
       negative-infinity.gt 42
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than a float.
   [] +> tests-negative-infinity-not-gt-float
     eq. > @
       negative-infinity.gt 42.5
       false
 
   # Greater or equal than.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is greater than or equal to negative infinity.
   [] +> tests-negative-infinity-gte-negative-infinity
     eq. > @
       negative-infinity.gte negative-infinity
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than or equal to positive infinity.
   [] +> tests-negative-infinity-not-gte-positive-infinity
     eq. > @
       negative-infinity.gte positive-infinity
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than or equal to NaN.
   [] +> tests-negative-infinity-not-gte-nan
     eq. > @
       negative-infinity.gte nan
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than or equal to an integer.
   [] +> tests-negative-infinity-not-gte-int
     eq. > @
       negative-infinity.gte 42
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not greater than or equal to a float.
   [] +> tests-negative-infinity-not-gte-float
     eq. > @
       negative-infinity.gte 42.5
       false
 
   # Times.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times float zero returns NaN.
   [] +> tests-negative-infinity-times-float-zero
     eq. > @
       as-bytes.
         negative-infinity.times 0.0
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times negative float zero returns NaN.
   [] +> tests-negative-infinity-times-neg-float-zero
     eq. > @
       as-bytes.
         negative-infinity.times -0.0
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times integer zero returns NaN.
   [] +> tests-negative-infinity-times-int-zero
     eq. > @
       as-bytes.
         negative-infinity.times 0
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times NaN returns NaN.
   [] +> tests-negative-infinity-times-nan
     eq. > @
       as-bytes.
         negative-infinity.times nan
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times positive infinity returns negative infinity.
   [] +> tests-negative-infinity-times-positive-infinity
     eq. > @
       negative-infinity.times positive-infinity
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times negative infinity returns positive infinity.
   [] +> tests-negative-infinity-times-negative-infinity
     eq. > @
       negative-infinity.times negative-infinity
       positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times a positive float returns negative infinity.
   [] +> tests-negative-infinity-times-positive-float
     eq. > @
       negative-infinity.times 42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times a positive integer returns negative infinity.
   [] +> tests-negative-infinity-times-positive-int
     eq. > @
       negative-infinity.times 42
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times a negative float returns positive infinity.
   [] +> tests-negative-infinity-times-negative-float
     eq. > @
       negative-infinity.times -42.5
       positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity times a negative integer returns positive infinity.
   [] +> tests-negative-infinity-times-negative-int
     eq. > @
       negative-infinity.times -42
       positive-infinity
 
   # Plus.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus NaN returns NaN.
   [] +> tests-negative-infinity-plus-nan
     eq. > @
       as-bytes.
         negative-infinity.plus nan
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus positive infinity returns NaN.
   [] +> tests-negative-infinity-plus-positive-infinity
     eq. > @
       as-bytes.
         negative-infinity.plus positive-infinity
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus negative infinity returns negative infinity.
   [] +> tests-negative-infinity-plus-negative-infinity
     eq. > @
       negative-infinity
       negative-infinity.plus negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus a positive float returns negative infinity.
   [] +> tests-negative-infinity-plus-positive-float
     eq. > @
       negative-infinity.plus 42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus a positive integer returns negative infinity.
   [] +> tests-negative-infinity-plus-positive-int
     eq. > @
       negative-infinity.plus 42
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus a negative float returns negative infinity.
   [] +> tests-negative-infinity-plus-negative-float
     eq. > @
       negative-infinity.plus -42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity plus a negative integer returns negative infinity.
   [] +> tests-negative-infinity-plus-negative-int
     eq. > @
       negative-infinity.plus -42
       negative-infinity
 
   # Negation.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negation of negative infinity returns positive infinity.
   [] +> tests-negative-infinity-neg-is-positive-infinity
     eq. > @
       negative-infinity.neg
       positive-infinity
 
   # Minus.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus NaN returns NaN.
   [] +> tests-negative-infinity-minus-nan
     eq. > @
       as-bytes.
         negative-infinity.minus nan
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus negative infinity returns NaN.
   [] +> tests-negative-infinity-minus-negative-infinity
     eq. > @
       as-bytes.
         negative-infinity.minus negative-infinity
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus positive infinity returns negative infinity.
   [] +> tests-negative-infinity-minus-positive-infinity
     eq. > @
       negative-infinity.minus positive-infinity
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus a positive float returns negative infinity.
   [] +> tests-negative-infinity-minus-positive-float
     eq. > @
       negative-infinity.minus 42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus a positive integer returns negative infinity.
   [] +> tests-negative-infinity-minus-positive-int
     eq. > @
       negative-infinity.minus 42
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus a negative float returns negative infinity.
   [] +> tests-negative-infinity-minus-negative-float
     eq. > @
       negative-infinity.minus -42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity minus a negative integer returns negative infinity.
   [] +> tests-negative-infinity-minus-negative-int
     eq. > @
       negative-infinity.minus -42
       negative-infinity
 
   # Division.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by float zero returns negative infinity.
   [] +> tests-negative-infinity-div-float-zero
     eq. > @
       negative-infinity.div 0.0
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by negative float zero returns positive infinity.
   [] +> tests-negative-infinity-div-neg-float-zero
     eq. > @
       negative-infinity.div -0.0
       positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by integer zero returns negative infinity.
   [] +> tests-negative-infinity-div-int-zero
     eq. > @
       negative-infinity.div 0
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by negative integer zero returns positive infinity.
   [] +> tests-negative-infinity-div-neg-int-zero
     eq. > @
       negative-infinity.div -0
       positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by NaN returns NaN.
   [] +> tests-negative-infinity-div-nan
     eq. > @
       as-bytes.
         negative-infinity.div nan
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by positive infinity returns NaN.
   [] +> tests-negative-infinity-div-positive-infinity
     eq. > @
       as-bytes.
         negative-infinity.div positive-infinity
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by negative infinity returns NaN.
   [] +> tests-negative-infinity-div-negative-infinity
     eq. > @
       as-bytes.
         negative-infinity.div negative-infinity
       nan.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by a positive float returns negative infinity.
   [] +> tests-negative-infinity-div-positive-float
     eq. > @
       negative-infinity.div 42.5
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by a positive integer returns negative infinity.
   [] +> tests-negative-infinity-div-positive-int
     eq. > @
       negative-infinity.div 42
       negative-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by a negative float returns positive infinity.
   [] +> tests-negative-infinity-div-negative-float
     eq. > @
       negative-infinity.div -42.5
       positive-infinity
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity divided by a negative integer returns positive infinity.
   [] +> tests-negative-infinity-div-negative-int
     eq. > @
       negative-infinity.div -42
       positive-infinity
 
   # Bytes.
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity as bytes equals negative one divided by zero as bytes.
   [] +> tests-negative-infinity-as-bytes-is-valid
     eq. > @
       negative-infinity.as-bytes
       (-1.0.div 0.0).as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity floor equals itself.
   [] +> tests-negative-infinity-floor-is-equal-to-self
     negative-infinity.@.eq negative-infinity > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not NaN.
   [] +> tests-negative-infinity-is-not-nan
     negative-infinity.is-nan.not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not finite.
   [] +> tests-negative-infinity-is-not-finite
     negative-infinity.is-finite.not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative infinity is not an integer.
   [] +> tests-negative-infinity-is-not-integer
     negative-infinity.is-integer.not > @

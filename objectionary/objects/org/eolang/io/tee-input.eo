@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:43
@@ -55,7 +55,7 @@
         (input.read size).read.^ > read-bytes
         (output.write read-bytes).write.^ > written-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that tee-input can read from bytes input and simultaneously write to memory output.
   [] +> tests-reads-from-bytes-and-writes-to-memory
     eq. > @
       malloc.of
@@ -68,7 +68,7 @@
             5
       01-02-03-04-05
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that tee-input can read from bytes input and write to memory output in multiple portions.
   [] +> tests-reads-from-bytes-and-writes-to-memory-by-portions
     eq. > @
       malloc.of
@@ -85,7 +85,7 @@
               m
       01-02-03-04-05
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that tee-input can be chained to read from bytes input and write to two different memory blocks.
   [] +> tests-reads-from-bytes-and-writes-to-two-memory-blocks
     eq. > @
       malloc.of

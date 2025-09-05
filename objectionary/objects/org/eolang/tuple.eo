@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:17
@@ -55,19 +55,19 @@
       x
       (length.plus 1).as-number
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that tuple creation through special syntax (* 1 2) works correctly.
   [] +> tests-makes-tuple-through-special-syntax
     eq. > @
       (* 1 2).length
       2
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that empty tuple length can be obtained through special syntax (*.length).
   [] +> tests-gets-lengths-of-empty-tuple-through-special-syntax
     eq. > @
       *.length
       0
 
-  # Check that an empty tuples .length equals to zero.
+  # Check that an empty tuple's .length equals zero.
   [] +> tests-empty-tuple-length
     eq. > @
       (arr *).elements.length
@@ -84,14 +84,14 @@
       5
     [elements] > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a tuple bound as an attribute with size 0 has correct length.
   [] +> tests-tuple-as-a-bound-attribute-size-0
     eq. > @
       anArray.length
       0
     * > anArray
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a tuple bound as an attribute with size 1 allows element access.
   [] +> tests-tuple-as-a-bound-attribute-size-1
     eq. > @
       anArray.at 0
@@ -99,7 +99,7 @@
     * > anArray
       100
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a tuple bound as an attribute with size 2 allows access to both elements.
   [] +> tests-tuple-as-a-bound-attribute-size-2
     and. > @
       eq.
@@ -112,7 +112,7 @@
       1
       2
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the with method correctly adds an element to an existing tuple.
   [] +> tests-tuple-with
     and. > @
       and.
@@ -133,13 +133,13 @@
       * 1 2 3
       "with"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that accessing a tuple with an out-of-bounds index throws an error.
   [] +> throws-on-wrong-tuple-at
     at. > @
       * 1 2 3 4
       20
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that fluent chaining of with method works correctly for tuple construction.
   [] +> tests-tuple-fluent-with
     and. > @
       and.
@@ -154,7 +154,7 @@
         3
     ((*.with 1).with 2).with 3 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that fluent chaining of with method works correctly with indented syntax.
   [] +> tests-tuple-fluent-with-indented
     and. > @
       and.
@@ -172,41 +172,41 @@
     .with 2
     .with 3 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the length of an explicitly created empty tuple is zero.
   [] +> tests-gets-lengths-of-empty-tuple
     eq. > @
       a.length
       0
     tuple.empty > a
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the length of an empty tuple can be accessed directly without intermediate objects.
   [] +> tests-gets-lengths-of-empty-tuple-without-additional-obj
     eq. > @
       tuple.empty.length
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that adding a number to an empty tuple creates a tuple with that element.
   [] +> tests-creates-empty-tuple-with-number
     eq. > @
       a.at 0
       3
     tuple.empty.with 3 > a
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the at-fast method correctly retrieves the first element of a tuple.
   [] +> tests-at-fast-with-first-element
     eq. > @
       (arr.at 0).at-fast arr
       100
     * 100 101 102 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the at-fast method correctly retrieves the last element of a tuple.
   [] +> tests-at-fast-with-last-element
     eq. > @
       (arr.at 2).at-fast arr
       102
     * 100 101 102 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that fluent chaining starting from empty tuple works with indented keyword syntax.
   [] +> tests-tuple-empty-fluent-with-indented-keyword
     and. > @
       and.
@@ -225,21 +225,21 @@
     .with 2
     .with 3 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that using negative index -1 correctly retrieves the last element of the tuple.
   [] +> tests-tuple-with-negative-index-gets-last
     eq. > @
       arr.at -1
       4
     * 0 1 2 3 4 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that using negative index -5 correctly retrieves the first element of a 5-element tuple.
   [] +> tests-tuple-with-negative-index-gets-first
     eq. > @
       arr.at -5
       0
     * 0 1 2 3 4 > arr
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that accessing a tuple with an out-of-bounds negative index throws an error.
   [] +> throws-on-out-of-tuple-bounds-with-negative-index
     arr.at -6 > @
     * 0 1 2 3 4 > arr

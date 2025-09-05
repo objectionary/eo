@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:12
@@ -23,36 +23,36 @@
   # A logical operation that returns true if at least one of the given conditions is true.
   ^ > [x] > or
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that two boolean values can be compared for equality.
   [] +> tests-compares-two-bools
     eq. > @
       true
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the true value can be converted to boolean representation.
   [] +> tests-true-as-bool
     true.as-bool > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that boolean values cannot be equal to non-boolean types.
   [] +> tests-compares-two-different-bool-types
     not. > @
       eq.
         true
         42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that boolean values can be compared to their byte representations.
   [] +> tests-compares-bool-to-bytes
     and. > @
       true.eq 01-
       false.eq 00-
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that byte representations can be compared to boolean values.
   [] +> tests-compares-bool-to-bytes-reverse
     and. > @
       01-.as-bytes.eq true
       00-.as-bytes.eq false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the if statement chooses the correct branch when condition is true.
   [] +> tests-forks-on-true-condition
     eq. > @
       if.

@@ -2,14 +2,24 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:94
 +unlint redundant-object:110
 
-# The `string` object is an abstraction of a text string, which
-# internally is a chain of bytes.
+# The `string` object represents UTF-8 encoded text strings stored internally
+# as byte sequences. It provides Unicode-aware operations for text manipulation
+# including slicing, length calculation, and character-level access.
+# Unicode characters may occupy 1-4 bytes each, so byte length differs from
+# character length for non-ASCII text.
+#
+# Usage examples:
+# ```
+# string "Hello, 世界!"  # Unicode string creation
+# "text".length         # Character count (not bytes)
+# "text".slice 0 2      # Character-based slicing
+# ```
 [as-bytes] > string
   as-bytes > @
 
@@ -118,8 +128,8 @@
       bts-start
 
     # The object checks if `index` + `char-size` is not out of the string bounds.
-    # If not -  the new recursion circle is started with `index` is increased by `char-size` and
-    # `accum` is increased by 1.
+    # If not - the new recursion cycle is started with `index` increased by `char-size` and
+    # `accum` increased by 1.
     [index char-size accum result cause] > increase
       if. > @
         (index.plus char-size).gt size
@@ -134,7 +144,7 @@
           cause
 
     # The object recursively calculates `index` of bytes representation of the string
-    # where `accum` equals to provided `result`.
+    # where `accum` equals provided `result`.
     # The `cause` here is the description of the error which is thrown when `index` reaches the end
     # of the bytes but `accum` does not reach the `result`.
     # Also it checks how many bytes (B) must contain character on the current step and tries to
@@ -164,85 +174,85 @@
                       * byte
       as-bytes.slice index 1 > byte
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string length calculation works correctly for a single space character.
   [] +> tests-calculates-length-of-spaces-only
     eq. > @
       " ".length
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string can be converted to its byte representation with Unicode characters.
   [] +> tests-turns-string-into-bytes
     eq. > @
       "€ друг".as-bytes
       E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that byte sequence equals string with Cyrillic characters.
   [] +> tests-bytes-equal-to-string
     eq. > @
       D0-B4-D1-80-D1-83-D0-B3
       "друг"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string with Cyrillic characters equals byte sequence.
   [] +> tests-string-equals-to-bytes
     eq. > @
       "друг"
       D0-B4-D1-80-D1-83-D0-B3
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string length is calculated correctly for 2-byte UTF-8 characters.
   [] +> tests-reads-the-length-with-n2-byte-characters
     and. > @
       str.length.eq 12
       str.as-bytes.size.eq 16
     "Hello, друг!" > str
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string length is calculated correctly for 3-byte UTF-8 characters.
   [] +> tests-reads-the-length-with-n3-byte-characters
     and. > @
       str.length.eq 16
       str.as-bytes.size.eq 18
     "The अ devanagari" > str
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string length is calculated correctly for 4-byte UTF-8 characters.
   [] +> tests-reads-the-length-with-n4-byte-characters
     and. > @
       str.length.eq 11
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string length calculation throws error for incomplete 4-byte UTF-8 character.
   # The smile emoji is F0-9F-98-80 in bytes. Here we check if string.length fails if it faces
   # incomplete 4 byte character.
   [] +> throws-on-taking-length-of-incomplete-n4-byte-character
     (string F0-9F-98).length > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string comparison with different data type returns false.
   [] +> tests-compares-two-different-string-types
     not. > @
       eq.
         "Hello"
         42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string comparison with NaN value returns false.
   [] +> tests-compares-string-with-nan
     not. > @
       eq.
         nan
         "друг"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string comparison with positive infinity returns false.
   [] +> tests-compares-string-with-positive-infinity
     eq. > @
       positive-infinity.eq "друг"
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string comparison with negative infinity returns false.
   [] +> tests-compares-string-with-negative-infinity
     not. > @
       eq.
         negative-infinity
         "друг"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that single-line text block equals regular string.
   [] +> tests-text-block-one-line
     eq. > @
       """
@@ -250,7 +260,7 @@
       """
       "Abc"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that multi-line text block produces correct byte sequence.
   [] +> tests-text-block-tree-lines
     eq. > @
       """
@@ -260,7 +270,7 @@
       """.as-bytes
       65-0A-65-0A-65
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that text block preserves indentation and produces correct byte sequence.
   [] +> tests-text-block-with-margin
     eq. > @
       """
@@ -270,20 +280,20 @@
       """.as-bytes
       7A-0A-20-20-79-0A-20-78
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that comparison of two different strings returns false.
   [] +> tests-compares-two-different-strings
     not. > @
       eq.
         "Hello"
         "Good bye"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that Unicode escape sequences are correctly converted to characters.
   [] +> tests-supports-escape-sequences
     eq. > @
       "Hello, \u0434\u0440\u0443\u0433!\n"
       "Hello, друг!\n"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that Unicode escape sequences work correctly in text blocks.
   [] +> tests-supports-escape-sequences-in-text
     eq. > @
       """
@@ -291,7 +301,7 @@
       """
       "Hello, друг!\n"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that text blocks preserve indentation correctly.
   [] +> tests-preserves-indentation-in-text
     eq. > @
       """
@@ -301,7 +311,7 @@
       """
       "a\n b\n  c"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that comparison of two identical strings returns true.
   [] +> tests-compares-two-strings
     eq. > @
       eq.
@@ -309,55 +319,55 @@
         "x"
       true
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that single Unicode character string comparison works correctly.
   [] +> tests-one-symbol-string-compares
     eq. > @
       "Ф"
       "Ф"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that line break escape sequences are equivalent.
   [] +> tests-supports-escape-sequences-line-break
     eq. > @
       "\n"
       "\012"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that Unicode escape sequence equals actual Unicode character.
   [] +> tests-supports-escape-sequences-unicode
     eq. > @
       "\u0424"
       "Ф"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing from the beginning works correctly.
   [] +> tests-slice-from-start
     eq. > @
       "hello".slice 0 1
       "h"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing from middle position works correctly.
   [] +> tests-slice-in-the-middle
     eq. > @
       "hello".slice 2 3
       "llo"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing from near the end works correctly.
   [] +> tests-slice-from-the-end
     eq. > @
       "hello".slice 4 1
       "o"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing empty string returns empty string.
   [] +> tests-slice-empty-string
     eq. > @
       "".slice 0 0
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing with zero length returns empty string.
   [] +> tests-no-slice-string
     eq. > @
       "no slice".slice 0 0
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing line break escape sequence works correctly.
   [] +> tests-slice-escape-sequences-line-break
     eq. > @
       "\n".slice
@@ -365,7 +375,7 @@
         "\n".length
       "\012"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing Unicode escape sequence works correctly.
   [] +> tests-slice-escape-sequences-unicode
     eq. > @
       "\u0424".slice
@@ -373,25 +383,25 @@
         "\u0424".length
       "Ф"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing works correctly with 2-byte UTF-8 characters.
   [] +> tests-slice-with-n2-byte-characters
     eq. > @
       "привет".slice 1 2
       "ри"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing works correctly with 3-byte UTF-8 characters.
   [] +> tests-slice-with-n3-byte-characters
     eq. > @
       "The अ is अ".slice 1 6
       "he अ i"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing works correctly with 4-byte UTF-8 characters.
   [] +> tests-slice-with-n4-byte-characters
     eq. > @
       "One 😀 and 😀 another".slice 3 8
       " 😀 and 😀"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that string slicing works correctly with Chinese characters.
   [] +> tests-slice-foreign-literals
     eq. > @
       "hello, 大家!".slice
@@ -399,21 +409,21 @@
         1
       "大"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing throws error when start index is negative.
   [] +> throws-on-slicing-start-below-zero
     slice. > @
       "some string"
       -1
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing throws error when length is negative.
   [] +> throws-on-slicing-end-below-start
     slice. > @
       "some string"
       2
       -1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that slicing throws error when requested slice exceeds string bounds.
   [] +> throws-on-slicing-end-greater-actual
     slice. > @
       "some string"

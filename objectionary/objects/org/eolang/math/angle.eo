@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:19
@@ -52,37 +52,37 @@
       cos.div sine
     sin > sine!
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sine of zero angle equals zero.
   [] +> tests-sin-zero
     eq. > @
       (angle 0).sin
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sine of pi/2 radians equals 1.
   [] +> tests-sin-pi-div-2
     eq. > @
       (angle (pi.div 2)).sin
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sine of pi radians floored equals zero.
   [] +> tests-sin-pi-floored
     eq. > @
       (angle pi).sin.floor
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that cosine of zero angle equals 1.
   [] +> tests-cos-zero
     eq. > @
       (angle 0).cos
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that cosine of pi/2 radians floored equals zero.
   [] +> tests-cos-pi-div-2-floored
     eq. > @
       (angle (pi.div 2)).cos.floor
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that cosine of pi radians equals -1.
   [] +> tests-cos-pi
     eq. > @
       (angle pi).cos

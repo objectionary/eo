@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -68,7 +68,7 @@
       scope
 
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
-  # and the data are written into memory.
+  # and the data is written into memory.
   [object scope] > for
     malloc.of > @
       bts.size
@@ -121,7 +121,7 @@
           write 0 object
           get
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc.of can write data into allocated memory block and retrieve it
   [] +> tests-writes-into-memory-of
     mem.eq 10 > @
     malloc.of > mem
@@ -132,14 +132,14 @@
             m.write 0 10
             m
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc.for can allocate memory for an object and put new data into it
   [] +> tests-puts-into-memory-for
     mem.eq 10 > @
     malloc.for > mem
       0
       m.put 10 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc returns the correct size of allocated memory block from scope
   [] +> tests-returns-size-from-scope
     eq. > @
       malloc.of
@@ -147,7 +147,7 @@
         m.size > [m]
       5
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc scope can be dataized multiple times correctly
   [] +> tests-malloc-scope-is-dataized-twice
     eq. > @
       2
@@ -162,7 +162,7 @@
             1
             f.put (f.as-number.plus 1) > [s] >>
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc.for correctly writes the initial value provided during allocation
   [] +> tests-malloc-for-writes-first-init-value
     eq. > @
       malloc.for
@@ -170,7 +170,7 @@
         m > [m]
       42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc.put overwrites previous data starting from offset 0
   [] +> tests-malloc-puts-over-the-previous-data
     eq. > @
       42.as-bytes.concat
@@ -184,7 +184,7 @@
             m.put "Hello, world!"
             m.put 42
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can rewrite data and increment its own value in memory
   [] +> tests-malloc-rewrites-and-increments-itself
     mem.eq 6 > @
     malloc.of > mem
@@ -195,25 +195,25 @@
             m.write 0 1
             m.put (m.as-number.plus 5)
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that two separate malloc objects can store different values independently
   [] +> tests-writes-into-two-malloc-objects
     and. > @
       (malloc.of 8 (m.put 10 > [m])).eq 10
       (malloc.of 8 (m.put 20 > [m])).eq 20
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when trying to put data larger than allocated space for boolean
   [] +> throws-on-overflow-boolean-malloc
     malloc.for > @
       false
       m.put 86124867.88 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when trying to put a string larger than allocated space
   [] +> throws-on-overflow-string-malloc
     malloc.for > @
       "Hello"
       m.put "Much longer string!" > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc correctly handles integer values within the allocated memory size
   [] +> tests-malloc-is-strictly-sized-int
     eq. > @
       malloc.for
@@ -221,7 +221,7 @@
         m.put 2556 > [m]
       2556
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc correctly handles float values and maintains type consistency
   [] +> tests-malloc-is-strictly-typed-float
     eq. > @
       malloc.for
@@ -229,7 +229,7 @@
         m.put 82.22 > [m]
       82.22
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc handles string data within the allocated memory size constraints
   [] +> tests-memory-is-strictly-sized-string
     eq. > @
       malloc.for
@@ -237,19 +237,19 @@
         m.put "Prot" > [m]
       "Proto"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc correctly handles boolean values and type consistency
   [] +> tests-malloc-is-strictly-typed-bool
     malloc.for > @
       false
       m.put true > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc assigns a positive unique identifier to each allocated memory block
   [] +> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
       m.put (m.id.gt 0) > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc allocates memory blocks with the exact size specified
   [] +> tests-malloc-allocates-right-size-block
     malloc.of > @
       1
@@ -258,7 +258,7 @@
           10
           b.put (m.size.eq 10) > [m] >>
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can write data to specific offsets and read it back correctly
   [] +> tests-malloc-writes-and-reads
     malloc.of > @
       1
@@ -275,7 +275,7 @@
                     m.read 0 12
                     "Hello, Jeff!"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc correctly concatenates strings when writing with offset overwriting
   [] +> tests-malloc-concacts-strings-with-offset
     malloc.of > @
       1
@@ -290,13 +290,13 @@
                 b.put
                   (m.read 0 3).eq "XYX"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when writing beyond allocated memory bounds with offset
   [] +> throws-on-writing-more-than-allocated-to-malloc-with-offset
     malloc.of > @
       1
       m.write 1 true > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can read data from specific offset with specified length correctly
   [] +> tests-malloc-reads-with-offset-and-length
     malloc.of > @
       1
@@ -318,7 +318,7 @@
         0
         m.size > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can increase the allocated block size and preserve existing data
   [] +> tests-malloc-increases-block-size
     malloc.of > @
       1
@@ -331,7 +331,7 @@
                 (m.resized 6).size.eq 6
                 m.get.eq 01-02-03-04-00-00
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can decrease the allocated block size and truncate data accordingly
   [] +> tests-malloc-decreases-block-size
     malloc.of > @
       1
@@ -344,18 +344,18 @@
                 (m.resized 3).size.eq 3
                 m.get.eq 01-02-03
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when attempting to resize to negative size
   [] +> throws-on-changing-size-to-negative
     malloc.of > @
       1
       m.resized -1 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc.empty creates a memory block with zero size
   [] +> tests-malloc-empty-is-empty
     malloc.empty > @
       m.size.eq 0 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can copy data from one memory location to another within the same block
   [] +> tests-copies-data-inside-itself
     malloc.for > @
       01-02-03-04-05
@@ -364,7 +364,7 @@
           m.copy 1 2 2
           m.get.eq 01-02-02-03-05
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc can copy data from the beginning to the end of the memory block
   [] +> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
@@ -373,19 +373,19 @@
           m.copy 0 3 3
           m.get.eq 01-02-03-01-02-03
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when copying from an invalid source offset
   [] +> throws-on-copying-with-wrong-source
     malloc.for > @
       0
       m.copy 9 1 1 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when copying to an invalid target offset
   [] +> throws-on-copying-with-wrong-target
     malloc.for > @
       0
       m.copy 3 9 1 > [m]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that malloc throws an error when copying with an invalid length parameter
   [] +> throws-on-copying-with-wrong-length
     malloc.for > @
       0

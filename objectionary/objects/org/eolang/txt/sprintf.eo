@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint wrong-sprintf-arguments:58
@@ -21,7 +21,7 @@
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
 [format args] > sprintf ?
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats string with single %s placeholder.
   [] +> tests-prints-simple-string
     eq. > @
       "Hello, Jeffrey!"
@@ -29,7 +29,7 @@
         "Hello, %s!"
         * "Jeffrey"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats string with multiple placeholders including UTF characters.
   [] +> tests-prints-complex-string
     eq. > @
       "Привет 3.140000 Jeff X!"
@@ -37,7 +37,7 @@
         "Привет %f %s %s!"
         * 3.14 "Jeff" "X"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats bytes using %x placeholder as hexadecimal.
   [] +> tests-prints-bytes-string
     eq. > @
       "40-45-00-00-00-00-00-00"
@@ -45,7 +45,7 @@
         "%x"
         * 42.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats all supported data types in single string.
   [] +> tests-formats-all-objects
     eq. > @
       "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
@@ -53,13 +53,13 @@
         "string %s, bytes %x, float %f, int %d, bool %b"
         * "Jeff" "Jeff".as-bytes 42.3 14 false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf throws error when placeholders exceed provided arguments.
   [] +> throws-on-sprintf-with-arguments-that-does-not-match
     sprintf > @
       "%s%s"
       * "Jeff"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf ignores extra arguments beyond placeholders.
   [] +> tests-sprintf-does-not-fail-if-arguments-more-than-formats
     eq. > @
       "Hey"
@@ -67,11 +67,11 @@
         "%s"
         * "Hey" "Jeff"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf throws error for unsupported format specifiers.
   [] +> throws-on-sprintf-unsupported-format
     sprintf "%o" * > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf handles escaped percent signs in format string.
   [] +> tests-sprintf-prints-percents
     eq. > @
       "%Jeff"
@@ -79,7 +79,7 @@
         "%%%s"
         * "Jeff"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf does not directly format i64 values as numbers.
   [] +> tests-sprintf-does-not-print-i64
     not. > @
       eq.
@@ -88,7 +88,7 @@
           * 42.as-i64
         "42"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats i64 values when converted to number.
   [] +> tests-sprintf-prints-i64-as-number
     eq. > @
       "42"
@@ -96,7 +96,7 @@
         "%d"
         * 42.as-i64.as-number
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf supports numbered parameter references.
   [] +> formats-numbered-substitution
     eq. > @
       "Hello, Jeff! Bye, Jeff!"
@@ -104,7 +104,7 @@
         "Hello, %s! Bye, %1$s!"
         * "Jeff"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf handles mixed numbered and sequential parameters.
   [] +> formats-numbered-substitution-with-multiple-args
     eq. > @
       "This is the first; This is the first as well; The second; and the 3"
@@ -112,7 +112,7 @@
         "This is the %s; This is the %1$s as well; The %s; and the %d"
         * "first" "second" 3
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that sprintf formats with reordered numbered parameter references.
   [] +> formats-with-ordered-numbered-substitutions
     eq. > @
       "first second second is after first"

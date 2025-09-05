@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:44
@@ -23,7 +23,7 @@
 #       "this value will be skipped"
 # ```
 #
-# This object returns value of only first truly statement.
+# This object returns the value of the first true statement.
 [cases] > switch
   if. > @
     cases.length.eq 0
@@ -45,7 +45,7 @@
         tup.head.head > head
     (rec-case tup.tail).@ > previous
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch returns the value from the first true condition case.
   [] +> tests-switch-simple-case
     eq. > @
       switch
@@ -58,7 +58,7 @@
             "2"
       "2"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch works correctly with string comparison conditions.
   [] +> tests-switch-strings-case
     eq. > @
       switch
@@ -75,7 +75,7 @@
       "password is correct!"
     "swordfish" > password
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch returns the value from the first true case when multiple cases are true.
   [] +> tests-switch-with-several-true-cases
     eq. > @
       switch
@@ -91,7 +91,7 @@
             "TRUE2"
       "TRUE1"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch returns true when all cases are false.
   [] +> tests-switch-with-all-false-cases
     switch > @
       *
@@ -102,11 +102,11 @@
           false
           "false2"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch throws an error when given empty cases array.
   [] +> throws-on-empty-switch
     switch * > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that switch works correctly with complex nested conditions and custom objects.
   [] +> tests-switch-complex-case
     eq. > @
       switch

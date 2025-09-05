@@ -5,7 +5,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
@@ -28,12 +28,12 @@
 #     s.recv 12 > buff                    # receive 12 bytes from the socket, `buff` - received bytes
 #     s.as-input.read 5                   # make input from socket, `read` attribute is available
 #     s.as-output.write "Hi"              # make output from socket, `write` attribute is available
+# ```
 #
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
 # retrieved from scope dataization. The error is returned is any of the described steps failed.
 #
-# ```
 # To listen to the incoming connections as server you should do:
 #
 # ```
@@ -42,16 +42,12 @@
 #   8080
 # .listen
 #   [s]
-#     s.send "Hello, world" > sent         # same as in `socket.connect`
-#     s.recv 12 > buff                     # same as in `socket.connect`
-#     s.as-input.read 10                   # same as in `socket.connect`
-#     s.as-output.write "What's up"        # same as in `socket.connect`
 #     s.accept                             # accept incoming connection on socket,
 #       [client]                           # client is connected client socket
-#         client-sock.send "Hi, Jeff"      # returns client socket, that has all the attributes
-#         client-sock.recv 42              # of the scoped-socket (except "accept" attribute)
-#         client-sock.as-input.read 5      # same as in `socket.connect`
-#         client-sock.as-output.write "Hi" # same as in `socket.connect`
+#         client.send "Hi, Jeff"           # returns client socket, that has all the attributes
+#         client.recv 42                   # of the scoped-socket (except "accept" attribute)
+#         client.as-input.read 5           # same as in `socket.connect`
+#         client.as-output.write "Hi"      # same as in `socket.connect`
 # ```
 #
 # When you dataize `socket.listen`, it creates new socket, binds it to the given address and port,
@@ -182,7 +178,7 @@
           sent.eq -1
           error
             sprintf
-              "Failed to send message through the socket '%d', reason: %s"
+              "Failed to send message through the socket #%d, reason: %s"
               * sockfd strerror.code
           sent
         buffer > buff!
@@ -199,7 +195,7 @@
           received.code.eq -1
           error
             sprintf
-              "Failed to receive data from the socket '%d', reason: %s"
+              "Failed to receive data from the socket #%d, reason: %s"
               * sockfd strerror.code
           received.output
         called. > received
@@ -217,7 +213,7 @@
         closed.eq -1
         error
           sprintf
-            "Couldn't close a posix socket '%d', reason: '%s'"
+            "Couldn't close the socket #%d because '%s'"
             * sockfd strerror.code
         true
       code. > closed
@@ -234,7 +230,7 @@
         sd.eq -1
         error
           sprintf
-            "Couldn't create a posix socket, reason: '%s'"
+            "Couldn't create a socket because '%s'"
             * strerror.code
         try
           scope
@@ -251,7 +247,7 @@
             connected.eq -1
             error
               sprintf
-                "Couldn't connect to '%s:%d' on posix socket '%d', reason: '%s'"
+                "Couldn't connect to %s:%d on socket #%d because '%s'"
                 * sock.address sock.port sock.sd sock.strerror.code
             as-bytes.
               dataized
@@ -275,13 +271,13 @@
             bound.eq -1
             error
               sprintf
-                "Couldn't bind posix socket '%d' to '%s:%d', reason: '%s'"
+                "Couldn't bind the socket #%d to %s:%d because '%s'"
                 * sock.sd sock.address sock.port sock.strerror.code
             if.
               listened.eq -1
               error
                 sprintf
-                  "Failed to listen for connections to '%s:%d' on socket '%d', reason: '%s'"
+                  "Failed to listen to %s:%d on the socket #%d because '%s'"
                   * sock.address sock.port sock.sd sock.strerror.code
               as-bytes.
                 dataized
@@ -299,7 +295,7 @@
                             client-sockfd.eq -1
                             error
                               sprintf
-                                "Failed to accept a connection on posix socket '%d', reason: %s"
+                                "Failed to accept a connection on the socket #%d because '%s'"
                                 * sock.sd sock.strerror.code
                             as-bytes.
                               dataized
@@ -367,7 +363,7 @@
           sent.eq -1
           error
             sprintf
-              "Failed to send message through the socket '%d', WSA error code: %d"
+              "Failed to send message through the socket #%d, WSA error code is #%d"
               * sockfd last-error.code
           sent
         buffer > buff!
@@ -384,7 +380,7 @@
           received.code.eq -1
           error
             sprintf
-              "Failed to receive data from the socket '%d', WSA error code: %d"
+              "Failed to receive data from the socket #%d, WSA error code is #%d"
               * sockfd last-error.code
           received.output
         called. > received
@@ -402,7 +398,7 @@
         closed.eq win32.socket-error
         error
           sprintf
-            "Couldn't close a win32 socket '%d', WSA error code: %d"
+            "Couldn't close a Win32 the socket #%d, WSA error code is #%d"
             * sockfd last-error.code
         true
       code. > closed
@@ -427,7 +423,7 @@
             sd.eq -1
             error
               sprintf
-                "Couldn't create a win32 socket, WSA error code: %d"
+                "Couldn't create a Win32 socket, WSA error code: %d"
                 * last-error.code
             try
               scope
@@ -453,7 +449,7 @@
             connected.eq -1
             error
               sprintf
-                "Couldn't connect to '%s:%d' on win32 socket '%d', WSA error code: %d"
+                "Couldn't connect to '%s:%d' on Win32 socket #%d, WSA error code: %d"
                 * sock.address sock.port sock.sd sock.last-error.code
             as-bytes.
               dataized
@@ -477,13 +473,13 @@
             bound.eq -1
             error
               sprintf
-                "Couldn't bind win32 socket '%d' to '%s:%d', WSA error code: %d"
+                "Couldn't bind Win32 socket #%d to '%s:%d', WSA error code: %d"
                 * sock.sd sock.address sock.port sock.last-error.code
             if.
               listened.eq -1
               error
                 sprintf
-                  "Failed to listen for connections to '%s:%d' on socket '%d', WSA error code: %d"
+                  "Failed to listen for connections to '%s:%d' on socket #%d, WSA error code: %d"
                   * sock.address sock.port sock.sd sock.last-error.code
               as-bytes.
                 dataized
@@ -501,7 +497,7 @@
                             client-sockfd.eq -1
                             error
                               sprintf
-                                "Failed to accept a connection on win32 socket '%d', WSA error code: %d"
+                                "Failed to accept a connection on Win32 socket #%d, WSA error code: %d"
                                 * sock.sd sock.last-error.code
                             as-bytes.
                               dataized

@@ -3,9 +3,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -89,14 +89,14 @@
         "The file %s is a directory, can't open for I/O operations"
         * file
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that creating a new directory works and the directory exists.
   [] +> tests-makes-new-directory
     and. > @
       d.exists
       d.is-directory
     (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that deleting an empty directory removes it from the filesystem.
   [] +> tests-deletes-empty-directory
     tmpdir
     .tmpfile
@@ -110,13 +110,13 @@
     .exists
     .not > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that attempting to open a directory for I/O operations throws an error.
   [] +> throws-on-opening-directory
     tmpdir.open > @
       "w"
       true > [d]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that deleting a directory recursively removes all contained files.
   [] +> tests-deletes-directory-with-files-recursively
     and. > @
       and.
@@ -131,7 +131,7 @@
     d.tmpfile > first
     d.tmpfile > second
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that deleting a directory recursively removes both files and subdirectories.
   [] +> tests-deletes-directory-with-file-and-dir
     and. > @
       and.
@@ -148,7 +148,7 @@
     (dir d.tmpfile.deleted).made > inner
     d.tmpfile > f
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that walking through a directory tree with a glob pattern finds matching files.
   [] +> tests-walks-recursively
     seq > @
       *

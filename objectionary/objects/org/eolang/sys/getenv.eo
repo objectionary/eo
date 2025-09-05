@@ -4,13 +4,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
 
 # Get environment variable as `string`.
-# If return `string` is empty - the variable does not exist.
+# If the return `string` is empty - the variable does not exist.
 #
 # See https://man7.org/linux/man-pages/man3/getenv.3.html.
 [name] > getenv

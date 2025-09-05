@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:53
@@ -62,7 +62,7 @@
           jump
             res
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that goto jumps backwards correctly.
   [] +> tests-goto-jumps-backwards
     eq. > @
       malloc.of
@@ -83,7 +83,7 @@
               i
       10
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that goto jumps forward correctly.
   [] +> tests-goto-jumps-forward
     and. > @
       eq.
@@ -106,7 +106,7 @@
                     true
                   r.put (42.div x)
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that goto returns from method body correctly.
   [] +> tests-returns-from-method-body
     eq. > @
       max 7 42
@@ -122,7 +122,7 @@
                 true
               b
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that nested goto operations work correctly.
   [] +> tests-nested-goto
     eq. > @
       go.to

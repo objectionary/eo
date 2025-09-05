@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -26,9 +26,9 @@
 #     dataized "Iteration 4\n"
 # ```
 #
-# Here only first three strings are dataized meanwhile the last one
-# is returned and attached to `last` object.
-# The example with `while` object would behave the same way.
+# Only the first three strings are dataized for side effects while the last one
+# is returned as the result value assigned to the `last` object.
+# The `while` loop example produces identical behavior.
 [condition body] > while
   if. > @
     (condition 0).as-bool
@@ -48,7 +48,7 @@
       current
     body index > current
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop dataizes only the first cycle when condition becomes false.
   [] +> tests-while-dataizes-only-first-cycle
     eq. > @
       0
@@ -59,14 +59,14 @@
             i.eq 0 > [i]
             m.put i > [i] >>
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop returns false when condition is initially false.
   [] +> tests-simple-while-with-false-first
     not. > @
       while
         false > [i]
         true > [i]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop works with boolean expressions using malloc memory.
   [] +> tests-simple-bool-expression-via-malloc-in-while
     eq. > @
       malloc.for
@@ -77,7 +77,7 @@
             m.put false > [i] >>
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop returns the last dataized object when loop completes.
   [] +> tests-last-while-dataization-object
     eq. > @
       malloc.for
@@ -88,14 +88,14 @@
             m.put (m.as-number.plus 1) > [i] >>
       3
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop returns false when condition evaluates to false initially.
   [] +> tests-last-while-dataization-object-with-false-condition
     not. > @
       while
         1.gt 2 > [i]
         true > [i]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop performs simple iteration and updates counter correctly.
   [] +> tests-while-simple-iteration
     eq. > @
       malloc.for
@@ -106,7 +106,7 @@
             m.put i > [i] >>
       9
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop can iterate over tuple elements using internal iterator.
   [] +> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
@@ -133,7 +133,7 @@
                       iter.put
                         iter.as-number.plus 1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop can iterate over tuple elements using external iterator.
   [] +> tests-iterating-tuple-with-while-using-external-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
@@ -155,7 +155,7 @@
                     iter.put
                       iter.as-number.plus 1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop can iterate over multiple tuple elements without explicit body.
   [] +> tests-iterating-tuple-with-while-without-body-multiple
     data.eq arr.length > @
     * 1 1 1 > arr
@@ -185,7 +185,7 @@
                   true > [i]
                 acc
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that while loop can iterate over single tuple element without explicit body.
   [] +> tests-iterating-tuple-with-while-without-body-single
     data.eq arr.length > @
     * 1 > arr

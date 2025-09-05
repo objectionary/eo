@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:12
@@ -23,26 +23,26 @@
   # A logical operation that returns true if at least one of the given conditions is true.
   01-.eq x > [x] > or
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the negation of true equals false.
   [] +> tests-true-not-is-false
     eq. > @
       true.not
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that boolean values can be compared to their string representations.
   [] +> tests-compares-bool-to-string
     and. > @
       true.eq "\001"
       false.eq "\000"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that logical AND of true and false equals false.
   [] +> tests-true-and-false-is-false
     not. > @
       and.
         true
         false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the if statement chooses the correct branch when condition is false.
   [] +> tests-forks-on-false-condition
     eq. > @
       if.

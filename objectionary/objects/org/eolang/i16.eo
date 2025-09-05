@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:19
@@ -100,170 +100,168 @@
     bts.slice 2 2 > right
     00-00 > zero
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 number has correct byte representation.
   [] +> tests-i16-has-valid-bytes
     eq. > @
       42.as-i64.as-i32.as-i16.as-bytes
       00-2A
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that negative i16 number has correct byte representation.
   [] +> tests-negative-i16-has-valid-bytes
     eq. > @
       -200.as-i64.as-i32.as-i16.as-bytes
       FF-38
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than comparison returns true for smaller values.
   [] +> tests-i16-less-true
     lt. > @
       10.as-i64.as-i32.as-i16
       50.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than comparison returns false for equal values.
   [] +> tests-i16-less-equal
     not. > @
       lt.
         10.as-i64.as-i32.as-i16
         10.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than comparison returns false for larger values.
   [] +> tests-i16-less-false
     not. > @
       lt.
         10.as-i64.as-i32.as-i16
         -5.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than comparison returns true for larger values.
   [] +> tests-i16-greater-true
     gt. > @
       -200.as-i64.as-i32.as-i16
       -1000.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than comparison returns false for smaller values.
   [] +> tests-i16-greater-false
     not. > @
       gt.
         0.as-i64.as-i32.as-i16
         100.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than comparison returns false for equal values.
   [] +> tests-i16-greater-equal
     not. > @
       gt.
         0.as-i64.as-i32.as-i16
         0.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than-or-equal comparison returns true for smaller values.
   [] +> tests-i16-lte-true
     lte. > @
       -200.as-i64.as-i32.as-i16
       -100.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than-or-equal comparison returns true for equal values.
   [] +> tests-i16-lte-equal
     lte. > @
       50.as-i64.as-i32.as-i16
       50.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 less-than-or-equal comparison returns false for larger values.
   [] +> tests-i16-lte-false
     not. > @
       lte.
         0.as-i64.as-i32.as-i16
         -10.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than-or-equal comparison returns true for larger values.
   [] +> tests-i16-gte-true
     gte. > @
       -1000.as-i64.as-i32.as-i16
       -1100.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than-or-equal comparison returns true for equal values.
   [] +> tests-i16-gte-equal
     gte. > @
       113.as-i64.as-i32.as-i16
       113.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 greater-than-or-equal comparison returns false for smaller values.
   [] +> tests-i16-gte-false
     not. > @
       gte.
         0.as-i64.as-i32.as-i16
         10.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 zero equals another i16 zero.
   [] +> tests-i16-zero-eq-to-i16-zero
     eq. > @
       0.as-i64.as-i32.as-i16
       0.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 equality comparison returns true for identical values.
   [] +> tests-i16-eq-true
     eq. > @
       123.as-i64.as-i32.as-i16
       123.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 equality comparison returns false for different values.
   [] +> tests-i16-eq-false
     not. > @
       eq.
         123.as-i64.as-i32.as-i16
         42.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 addition works correctly.
   [] +> tests-i16-one-plus-i16-one
     eq. > @
       1.as-i64.as-i32.as-i16.plus 1.as-i64.as-i32.as-i16
       2.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 addition handles overflow correctly.
   [] +> tests-i16-plus-with-overflow
     eq. > @
       32767.as-i64.as-i32.as-i16.plus 1.as-i64.as-i32.as-i16
       -32768.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 subtraction works correctly.
   [] +> tests-i16-one-minus-i16-one
     eq. > @
       1.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
       0.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 subtraction handles overflow correctly.
   [] +> tests-i16-minus-with-overflow
     eq. > @
       -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
       32767.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 division by zero throws an error.
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] +> throws-on-division-i16-by-i16-zero
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  # Checks that division by one returns the dividend.
+  # Tests that i16 division by one returns the original value.
   [] +> tests-i16-div-by-i16-one
     eq. > @
       dividend.div 1.as-i64.as-i32.as-i16
       dividend
     -235.as-i64.as-i32.as-i16 > dividend
 
-  # This unit test is supposed to check the functionality of the corresponding object.
-  # Checks div with remainder.
+  # Tests that i16 division with remainder works correctly.
   [] +> tests-i16-div-with-remainder
     eq. > @
       13.as-i64.as-i32.as-i16.div -5.as-i64.as-i32.as-i16
       -2.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 division result can be less than one.
   [] +> tests-i16-div-less-than-i16-one
     lt. > @
       1.as-i64.as-i32.as-i16.div 5.as-i64.as-i32.as-i16
       1.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 multiplication by zero equals zero.
   [] +> tests-i16-multiply-by-zero
     eq. > @
       1000.as-i64.as-i32.as-i16.times 0.as-i64.as-i32.as-i16
       0.as-i64.as-i32.as-i16
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i16 multiplication handles overflow correctly.
   [] +> tests-i16-times-with-overflow
     eq. > @
       32767.as-i64.as-i32.as-i16.times 2.as-i64.as-i32.as-i16

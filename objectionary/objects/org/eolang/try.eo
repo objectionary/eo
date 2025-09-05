@@ -1,23 +1,29 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Try, catch and finally. This object helps catch errors created by the
-# `org.eolang.error` object. When being dataized, such objects will crash the program.
-# Decorate them with `try` and errors will be caught by the `catch`
-# abstract object here and the enclosure of the `error` will be passed to it.
-# When object `try` is dataized - it tries to dataize its `main` attribute.
-# If an error occurs during the dataization - it caches it and tries
-# to dataize its `catch` attribute. After one of the attributes is dataized - it just dataizes
-# its `finally` attribute and returns the result of dataization of `main` or `catch`
-# attribute as `org.eolang.bytes`.
+# Exception handling mechanism that catches errors during dataization.
+# When `try` is dataized, it attempts to dataize the `main` attribute first.
+# If an error occurs during `main` dataization, the error is caught and the
+# `catch` attribute is dataized instead, receiving the error as its parameter.
+# The `finally` attribute is always dataized after either `main` or `catch`
+# completes, regardless of success or failure. Returns the result of `main`
+# or `catch` dataization as `org.eolang.bytes`.
+#
+# Usage example:
+# ```
+# try
+#   risky-operation    # main
+#   error-handler      # catch
+#   cleanup-action     # finally
+# ```
 [main catch finally] > try ?
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception
     try > @
       slice.
@@ -27,7 +33,7 @@
       true > [e]
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that nested try-catch blocks work correctly with exception propagation.
   [] +> tests-two-nested-try-blocks
     try > @
       try
@@ -40,7 +46,7 @@
       true > [e]
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try block executes normally when no exception occurs.
   [] +> tests-try-without-error-block
     eq. > @
       try
@@ -49,7 +55,7 @@
         true
       32
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that try-catch preserves memory state when exception occurs during malloc operations.
   [] +> tests-try-malloc-update-catch
     eq. > @
       malloc.of

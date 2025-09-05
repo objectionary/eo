@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:24
@@ -115,7 +115,7 @@
 
   # Returns `text` repeated `times` times.
   # If `times` < 0, an error is returned.
-  # If `times` == 0, the original text is returned.
+  # If `times` == 0, empty text is returned.
   [times] > repeated
     if. > @
       0.gt amount
@@ -419,6 +419,49 @@
             start
             (current.plus 1).as-number
 
+  # Returns a `tuple` of `strings` split by `delimiter` with a maximum of `limit` parts.
+  # The last element contains the remainder of the string after splitting.
+  # If `limit` < 1, an error is returned.
+  [delimiter limit] > nsplit
+    if. > @
+      1.gt limit
+      error
+        sprintf
+          "Invalid limit %d for nsplit, must be at least 1"
+          * limit
+      if.
+        origin.size.eq 0
+        *
+        if.
+          1.eq limit
+          * origin
+          rec-nsplit * 0 0 0
+
+    [accum start current splits-made] > rec-nsplit
+      if. > @
+        origin.size.eq current
+        accum.with > with-substr
+          string
+            origin.slice
+              start
+              current.minus start
+        if.
+          and.
+            delimiter.eq
+              origin.slice current 1
+            (number splits-made).lt
+              (number limit).minus 1
+          rec-nsplit
+            with-substr
+            (current.plus 1).as-number
+            (current.plus 1).as-number
+            (splits-made.plus 1).as-number
+          rec-nsplit
+            accum
+            start
+            (current.plus 1).as-number
+            splits-made
+
   # Returns concatenation of all `other` strings.
   # Here `others` must be a `tuple` of `strings`.
   [others] > chained
@@ -432,119 +475,119 @@
             origin.as-bytes
             accum.concat str.as-bytes > [accum str]
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality slice method extracts a substring from specified position with given length.
   [] +> tests-text-slices-the-origin-string
     eq. > @
       (text "Hello, world!").slice 7 5
       "world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-left returns empty string when applied to empty text.
   [] +> tests-trimmed-left-empty-text
     eq. > @
       (text "").trimmed-left
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-left removes single leading space from text.
   [] +> tests-text-trimmed-left-one-space
     eq. > @
       (text " s").trimmed-left
       "s"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-left removes multiple leading spaces from text.
   [] +> tests-text-trimmed-left-many-spaces
     eq. > @
       (text "     some").trimmed-left
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-left returns empty string when text contains only spaces.
   [] +> tests-text-trimmed-left-only-spaces
     eq. > @
       (text "     ").trimmed-left
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-right returns empty string when applied to empty text.
   [] +> tests-trimmed-right-empty-text
     eq. > @
       (text "").trimmed-right
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-right removes single trailing space from text.
   [] +> tests-text-trimmed-right-one-space
     eq. > @
       (text "s ").trimmed-right
       "s"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-right removes multiple trailing spaces from text.
   [] +> tests-text-trimmed-right-many-spaces
     eq. > @
       (text "some     ").trimmed-right
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed-right returns empty string when text contains only spaces.
   [] +> tests-text-trimmed-right-only-spaces
     eq. > @
       (text "     ").trimmed-right
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed removes single leading space from text.
   [] +> tests-text-trimmed-one-space-left
     eq. > @
       (text " some").trimmed
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed removes single trailing space from text.
   [] +> tests-text-trimmed-one-space-right
     eq. > @
       (text "some ").trimmed
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed removes spaces from both sides of text.
   [] +> tests-text-trimmed-one-space-both
     eq. > @
       (text " some ").trimmed
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed removes multiple spaces from both sides of text.
   [] +> tests-text-trimmed-many-spaces
     eq. > @
       (text "    some     ").trimmed
       "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed returns empty string when applied to empty text.
   [] +> tests-text-trimmed-empty
     eq. > @
       (text "").trimmed
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality trimmed returns empty string when text contains only spaces.
   [] +> tests-text-trimmed-only-spaces
     eq. > @
       (text "        ").trimmed
       ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality at method returns first character at index 0.
   [] +> tests-returns-first-char
     eq. > @
       "s"
       (text "some").at 0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality at method returns character at specified index.
   [] +> tests-returns-third-char
     eq. > @
       "m"
       (text "some").at 2
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality at method supports negative indexing from end of text.
   [] +> tests-returns-char-at-negative-index
     eq. > @
       "m"
       (text "some").at -2
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality at method throws error when index exceeds text length.
   [] +> throws-on-text-at-index-more-than-length
     (text "some").at 10 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality chained method concatenates text with multiple other strings.
   [] +> tests-chains-with-other-strings
     eq. > @
       "Hello, world!"
@@ -555,7 +598,7 @@
           "world"
           "!"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality chained method returns original text when no strings provided.
   [] +> tests-returns-same-text-on-chaining-with-no-strings
     eq. > @
       "Some"
@@ -563,55 +606,55 @@
         text "Some"
         *
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality joined method returns empty string when joining empty tuple.
   [] +> tests-joined-no-strings
     eq. > @
       ""
       (text "-").joined *
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality joined method returns single string when joining one element.
   [] +> tests-joined-one-string
     eq. > @
       "some"
       (text "-").joined
         * "some"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality joined method joins multiple strings with delimiter.
   [] +> tests-joined-many-strings
     eq. > @
       "hello-world-dear-friend"
       (text "-").joined
         * "hello" "world" "dear" "friend"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality repeated method throws error when times is negative.
   [] +> throws-on-text-repeating-less-than-zero-times
     (text "").repeated -1 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality repeated method returns empty string when times is zero.
   [] +> tests-text-repeated-zero-times-is-empty
     eq. > @
       ""
       (text "some").repeated 0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality repeated method repeats text specified number of times.
   [] +> tests-text-repeated-five-times
     eq. > @
       "heyheyheyheyhey"
       (text "hey").repeated 5
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of returns -1 for non-existent substring longer than text.
   [] +> tests-index-of-non-existed-substring-with-more-length
     eq. > @
       -1
       (text "Hello").index-of "Somebody"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of returns -1 for non-existent substring of same length.
   [] +> tests-index-of-non-existed-substring-with-same-length
     eq. > @
       -1
       (text "Hello").index-of "world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of returns -1 for non-existent substring in UTF text.
   [] +> tests-index-of-non-existed-substring-with-utf
     eq. > @
       -1
@@ -619,7 +662,7 @@
         text "привет, друг!"
         "x"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of finds correct position of UTF character in text.
   [] +> tests-index-of-existed-substring-with-utf
     eq. > @
       3
@@ -627,7 +670,7 @@
         text "привет, друг!"
         "в"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of returns correct position of newline character.
   [] +> tests-returns-valid-index-of-substring
     eq. > @
       6
@@ -635,58 +678,58 @@
         text "Hello \n world"
         "\n"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality index-of finds substring located at end of text.
   [] +> tests-returns-valid-index-of-substring-in-the-end
     eq. > @
       6
       (text "Hello world").index-of "world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality starts-with returns true when text begins with given substring.
   [] +> tests-starts-with-substring
     (text "Hello, world").starts-with "Hello" > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality starts-with returns false when text does not begin with substring.
   [] +> tests-does-not-start-with-substring
     not. > @
       (text "Hello, world").starts-with "world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality ends-with returns true when text ends with given substring.
   [] +> tests-ends-with-substring
     (text "Hello world!").ends-with "world!" > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality ends-with returns false when text does not end with substring.
   [] +> tests-does-not-end-with-substring
     not. > @
       (text "Hello world!").ends-with "Hello"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality contains returns true when text includes given substring.
   [] +> tests-text-contains-substring
     (text "Hello, world!").contains "o, wo" > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality contains returns false when text does not include substring.
   [] +> tests-text-does-not-contain-substring
     not. > @
       (text "Hello, world!").contains "Hey"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
     eq. > @
       5
       (text "Hey, Hey, Hey").last-index-of "Hey,"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality last-index-of returns 0 when substring equals entire text.
   [] +> tests-finds-last-index-of-the-same-string
     eq. > @
       0
       (text "Hello").last-index-of "Hello"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality last-index-of returns -1 for non-existent substring.
   [] +> tests-last-index-of-non-existed-substring
     eq. > @
       -1
       (text "Hello, world").last-index-of "somebody"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality last-index-of returns -1 for non-existent substring in UTF text.
   [] +> tests-last-index-of-non-existed-substring-with-utf
     eq. > @
       -1
@@ -694,7 +737,7 @@
         text "привет, друг!"
         "x"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that last-index-of finds correct position of UTF character in text.
   [] +> tests-last-index-of-existed-substring-with-utf
     eq. > @
       3
@@ -702,27 +745,27 @@
         text "привет, друг!"
         "в"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that split method divides text into parts using dash delimiter.
   [] +> tests-splits-text-by-dash
     eq. > @
       list
         (text "a-b-c").split "-"
       * "a" "b" "c"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that split method handles empty strings between delimiters.
   [] +> tests-splits-text-with-empty-strings
     eq. > @
       list
         (text "-a-b-").split "-"
       * "" "a" "b" ""
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that up-cased converts lowercase text to uppercase.
   [] +> tests-converts-text-to-upper-case
     eq. > @
       "HELLO"
       (text "hello").up-cased
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that split returns proper string objects with correct length.
   [] +> tests-splits-and-returns-strings
     eq. > @
       length.
@@ -733,99 +776,163 @@
           1
       6
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that nsplit splits with limit 2 correctly.
+  [] +> tests-nsplit-with-limit-two
+    eq. > @
+      list
+        nsplit.
+          text "Cookie: a=1; b=2"
+          " "
+          2
+      * "Cookie:" "a=1; b=2"
+
+  # Tests that nsplit splits with limit 2 on dashes.
+  [] +> tests-nsplit-with-dashes-limit-two
+    eq. > @
+      list
+        nsplit.
+          text "a-b-c-d"
+          "-"
+          2
+      * "a" "b-c-d"
+
+  # Tests that nsplit with limit 1 returns entire string.
+  [] +> tests-nsplit-with-limit-one
+    eq. > @
+      list
+        nsplit.
+          text "a-b-c"
+          "-"
+          1
+      * "a-b-c"
+
+  # Tests that nsplit with limit greater than splits behaves like split.
+  [] +> tests-nsplit-with-high-limit
+    eq. > @
+      list
+        nsplit.
+          text "a-b-c"
+          "-"
+          10
+      * "a" "b" "c"
+
+  # Tests that nsplit throws error with limit 0.
+  [] +> throws-on-nsplit-with-limit-zero
+    nsplit. > @
+      text "text"
+      "-"
+      0
+
+  # Tests that nsplit throws error with negative limit.
+  [] +> throws-on-nsplit-with-negative-limit
+    nsplit. > @
+      text "text"
+      "-"
+      -1
+
+  # Tests that nsplit handles empty strings between delimiters.
+  [] +> tests-nsplit-with-empty-strings
+    eq. > @
+      list
+        nsplit.
+          text "-a-b-c"
+          "-"
+          3
+      * "" "a" "b-c"
+
+  # Tests that up-cased converts mixed case text to uppercase.
   [] +> tests-converts-text-with-upper-letters-to-upper-case
     eq. > @
       "HELLO"
       (text "HeLlO").up-cased
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case
     eq. > @
       "hello"
       (text "HELLO").low-cased
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that low-cased converts mixed case text to lowercase.
   [] +> tests-converts-text-with-low-letters-to-lower-case
     eq. > @
       "hello"
       (text "HeLlO").low-cased
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that as-number converts numeric string to number.
   [] +> tests-converts-text-to-number
     eq. > @
       5
       (text "5").as-number
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that as-number throws error when text is not numeric.
   [] +> throws-on-converting-text-to-number
     (text "Hello").as-number > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that as-number converts floating point string to number.
   [] +> tests-converts-float-text-to-number
     eq. > @
       3.14
       (text "3.14").as-number
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-ascii returns true for text containing only ASCII characters.
   [] +> tests-checks-if-text-is-ascii
     is-ascii. > @
       text
         "H311oW"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-ascii returns false for text containing emoji characters.
   [] +> tests-checks-if-emoji-is-not-ascii
     not. > @
       is-ascii.
         text
           "🌵"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-ascii returns true for text containing only numeric digits.
   [] +> tests-checks-if-string-of-numbers-is-ascii
     is-ascii. > @
       text
         "123"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-alphanumeric returns true for text containing only letters.
   [] +> tests-checks-if-simple-text-is-alphanumeric
     is-alphanumeric. > @
       text
         "eEo"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-alphanumeric returns true for text with letters and numbers.
   [] +> tests-checks-if-text-with-number-is-alphanumeric
     is-alphanumeric. > @
       text
         "ab3d"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-alphanumeric returns false for text containing special characters.
   [] +> tests-checks-if-text-with-dashes-is-not-alphanumeric
     not. > @
       is-alphanumeric.
         text
           "-w-"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests specific functionality is-alpha returns true for text containing only letters.
   [] +> tests-checks-if-simple-text-is-alpha
     is-alpha. > @
       text
         "eEo"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-alpha returns false for text containing numbers.
   [] +> tests-checks-if-text-with-number-is-not-alpha
     not. > @
       is-alpha.
         text
           "ab3d"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that is-alpha returns false for text containing special characters.
   [] +> tests-checks-if-text-with-dashes-is-not-alpha
     not. > @
       is-alpha.
         text
           "-w-"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that replaced returns original text when regex pattern not found.
   [] +> tests-does-not-replaces-if-regex-not-found
     text
       "Hello, world"
@@ -836,7 +943,7 @@
     .eq > @
       "Hello, world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that replaced substitutes digit characters with replacement string.
   [] +> tests-replaces-digits-with-string
     text
       "Hell0, w0rld"
@@ -847,7 +954,7 @@
     .eq > @
       "Hello, world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that replaced converts forward slashes to backslashes in path.
   [] +> tests-replaces-slashes-to-windows-separator
     text
       "C:\\Windows/foo\\bar/hello.txt"
@@ -858,7 +965,7 @@
     .eq > @
       "C:\\Windows\\foo\\bar\\hello.txt"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that replaced converts Windows path separators to forward slashes.
   [] +> tests-replaces-windows-path-with-slash
     text
       "C:\\Windows\\Users\\AppLocal\\shrek"
@@ -869,7 +976,7 @@
     .eq > @
       "C/Windows/Users/AppLocal/shrek"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that replaced removes invalid filename characters from path.
   [] +> tests-sanitizes-windows-path-with-regex
     text
       "foo\\bar<:>?*\"|baz\\asdf"

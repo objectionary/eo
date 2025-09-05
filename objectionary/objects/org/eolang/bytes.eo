@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.2
++rt jvm org.eolang:eo-runtime:0.58.3
 +rt node eo2js-runtime:0.0.0
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:22
@@ -14,9 +14,16 @@
 +unlint redundant-object:53
 +unlint redundant-object:62
 
-# The object encapsulates a chain of bytes, adding a few
-# convenient operations to it. Objects like `int`, `string`,
-# and `float` encapsulate `bytes`.
+# The object encapsulates a chain of bytes, providing bitwise operations,
+# numeric conversions, and byte manipulation methods. Objects like `number`, `string`,
+# and integer types (`i16`, `i32`, `i64`) use `bytes` as their internal representation.
+#
+# Usage examples:
+# ```
+# bytes 01-02-03       # Creates a 3-byte sequence
+# FF-FF.and 00-FF      # Bitwise AND operation
+# as-bytes.as-number   # Convert 8-byte sequence to number
+# ```
 [data] > bytes
   data > @
   bytes data > as-bytes
@@ -67,7 +74,7 @@
         "Can't convert non 2 length bytes to i16, bytes are %x"
         * as-bytes
 
-  # Returns `org.eolang.true` if current sequence of bytes equals to another object.
+  # Returns `org.eolang.true` if current sequence of bytes equals another object.
   # Before the actual comparison the object `b` is dataized.
   [b] > eq ?
 
@@ -77,28 +84,28 @@
   # Represents a sub-sequence of `org.eolang.bytes` inside the current one.
   [start len] > slice ?
 
-  # Calculate the bitwise AND operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise AND operation and returns result as `org.eolang.bytes`.
   [b] > and ?
 
-  # Calculate the bitwise OR operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise OR operation and returns result as `org.eolang.bytes`.
   [b] > or ?
 
-  # Calculate the bitwise XOR operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise XOR operation and returns result as `org.eolang.bytes`.
   [b] > xor ?
 
-  # Calculate the bitwise NOT operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise NOT operation and returns result as `org.eolang.bytes`.
   [] > not ?
 
-  # Calculate the bitwise left shift.
+  # Calculates the bitwise left shift.
   right x.neg > [x] > left
 
-  # Calculate the bitwise right shift and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise right shift and returns result as `org.eolang.bytes`.
   [x] > right ?
 
   # Concatenation of two byte sequences and returns result as `org.eolang.bytes`.
   [b] > concat ?
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that a slice of bytes can be extracted from a larger byte sequence.
   [] +> tests-takes-part-of-bytes
     eq. > @
       slice.
@@ -107,7 +114,7 @@
         3
       1F-EE-B5
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the size of a byte slice is calculated correctly.
   [] +> tests-size-of-part-is-correct
     eq. > @
       size.
@@ -117,42 +124,42 @@
           3
       3
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that the byte sequence size is correctly calculated.
   [] +> tests-counts-size-of-bytes
     eq. > @
       size.
         F1-20-5F-EC-B5-90-32
       7
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes can be converted to string representation.
   [] +> tests-turns-bytes-into-a-string
     eq. > @
       string
         E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
       "你好, друг!"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests the left shift operation with zero value.
   [] +> tests-left-zero
     not. > @
       eq.
         0.as-bytes.left 1
         -1.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests the left shift operation with zero shift amount.
   [] +> tests-left-with-zero
     not. > @
       eq.
         2.as-bytes.left 0
         -3.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests left shift operation with odd negative numbers.
   [] +> tests-left-with-odd-neg
     not. > @
       eq.
         -17.as-bytes.left 1
         33.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests left shift operation with negative one value.
   [] +> tests-left-with-minus-one
     eq. > @
       eq.
@@ -160,56 +167,56 @@
         7.as-bytes
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests left shift operation with even negative numbers.
   # (-18.left 2).eq 71.not.
   [] +> tests-left-with-even-neg
     eq. > @
       FF-FF-FF-FF-FF-FF-FF-EE.left 2
       00-00-00-00-00-00-00-47.not
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests left shift operation with even positive numbers.
   [] +> tests-left-with-even-plus
     not. > @
       eq.
         4.as-bytes.left 3
         -33.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests left shift operation with odd positive numbers.
   [] +> tests-left-with-odd-plus
     not. > @
       eq.
         5.as-bytes.left 3
         -41.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests the right shift operation with zero value.
   [] +> tests-right-with-zero
     not. > @
       eq.
         0.as-bytes.right 2
         -1.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests right shift operation with odd negative numbers.
   [] +> tests-right-with-odd-neg
     not. > @
       eq.
         -37.as-bytes.right 3
         4.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests right shift operation with negative one value.
   [] +> tests-right-with-minus-one
     not. > @
       eq.
         -1.as-bytes.right 4
         0.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests right shift operation with even negative numbers.
   [] +> tests-right-with-even-neg
     not. > @
       eq.
         -38.as-bytes.right 1
         18.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests right shift operation with even positive numbers.
   [] +> tests-right-with-even-plus
     eq. > @
       eq.
@@ -217,14 +224,14 @@
         -10.as-bytes
       false
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests right shift operation with odd positive numbers.
   [] +> tests-right-with-odd-plus
     not. > @
       eq.
         37.as-bytes.right 3
         -5.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise AND operation with zero value.
   [] +> tests-and-with-zero
     not. > @
       eq.
@@ -233,14 +240,14 @@
           32.as-bytes
         -1.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise AND operation with two negative numbers.
   [] +> tests-and-with-two-neg
     not. > @
       eq.
         -6.as-bytes.and -4.as-bytes
         7.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise AND operation with two positive numbers.
   [] +> tests-and-with-two-plus
     not. > @
       eq.
@@ -249,91 +256,91 @@
           10.as-bytes
         -1.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise AND operation with one negative and one positive number.
   [] +> tests-and-with-one-neg-one-plus
     not. > @
       eq.
         -7.as-bytes.and 7.as-bytes
         -2.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise OR operation with zero value.
   [] +> tests-or-with-zero
     not. > @
       eq.
         -11.as-bytes.or 0.as-bytes
         10.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise OR operation with two negative numbers.
   [] +> tests-or-with-two-neg
     not. > @
       eq.
         -27.as-bytes.or -13.as-bytes
         8.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise OR operation with two positive numbers.
   [] +> tests-or-with-two-plus
     not. > @
       eq.
         5.as-bytes.or 14.as-bytes
         -16.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise OR operation with one negative and one positive number.
   [] +> tests-or-with-one-neg-one-plus
     not. > @
       eq.
         -7.as-bytes.or 23.as-bytes
         0.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise XOR operation with zero value.
   [] +> tests-xor-with-zero
     not. > @
       eq.
         0.as-bytes.xor 29.as-bytes
         -30.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise XOR operation with two negative numbers.
   [] +> tests-xor-with-two-neg
     not. > @
       eq.
         -1.as-bytes.xor -123.as-bytes
         -123.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise XOR operation with two positive numbers.
   [] +> tests-xor-with-two-plus
     not. > @
       eq.
         53.as-bytes.xor 24.as-bytes
         -46.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise XOR operation with one negative and one positive number.
   [] +> tests-xor-with-one-neg-one-plus
     not. > @
       eq.
         -36.as-bytes.xor 43.as-bytes
         8.as-bytes
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise NOT operation with zero value.
   [] +> tests-not-with-zero
     not. > @
       eq.
         0.as-bytes
         0.as-bytes.not
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise NOT operation with negative number.
   [] +> tests-not-with-neg
     not. > @
       eq.
         -1.as-bytes
         -1.as-bytes.not
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests bitwise NOT operation with positive number.
   [] +> tests-not-with-plus
     not. > @
       eq.
         53.as-bytes
         53.as-bytes.not
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests the AND conjunction operation between two byte sequences.
   [] +> tests-conjunction-of-bytes
     eq. > @
       a.and b
@@ -341,7 +348,7 @@
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes written across multiple lines are processed correctly.
   [] +> tests-written-in-several-lines
     eq. > @
       size.
@@ -349,7 +356,7 @@
         BE-BE
       4
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that basic bitwise operations function correctly.
   [] +> tests-bitwise-works
     eq. > @
       as-number.
@@ -358,14 +365,14 @@
           1.as-bytes
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes can be converted to boolean values.
   [] +> tests-convertible-to-bool
     not. > @
       eq.
         01-.as-bool
         00-.as-bool
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bitwise operations work correctly with negative numbers.
   # (-127.or 127).eq -1.
   [] +> tests-bitwise-works-negative
     eq. > @
@@ -375,7 +382,7 @@
           00-00-00-00-00-00-00-7F.as-bytes
       FF-FF-FF-FF-FF-FF-FF-FF
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that two byte sequences can be concatenated together.
   [] +> tests-concatenation-of-bytes
     eq. > @
       a.concat b
@@ -383,7 +390,7 @@
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests concatenation of boolean values as byte sequences.
   [] +> tests-concat-bools-as-bytes
     eq. > @
       concat.
@@ -391,7 +398,7 @@
         false.as-bytes
       01-00
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests concatenation of bytes with empty sequence.
   [] +> tests-concat-with-empty
     eq. > @
       concat.
@@ -399,7 +406,7 @@
         --
       05-5E-78
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests concatenation of empty sequence with bytes.
   [] +> tests-concat-empty-with
     eq. > @
       concat.
@@ -407,7 +414,7 @@
         05-5E-78
       05-5E-78
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests concatenation of two empty sequences.
   [] +> tests-concat-empty
     eq. > @
       concat.
@@ -415,7 +422,7 @@
         --
       --
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests concatenation of string representations as bytes.
   [] +> tests-concat-strings
     eq. > @
       string
@@ -424,95 +431,95 @@
           "world".as-bytes
       "hello world"
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that XOR operation produces correct results.
   # (2397719729.xor 4294967295).eq 1897247566.
   [] +> tests-xor-works
     eq. > @
       00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
       00-00-00-00-71-15-B3-4E
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests XOR operation of one with itself returns zero as number.
   [] +> tests-one-xor-one-as-number
     eq. > @
       (1.as-bytes.xor 1.as-bytes).as-number
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests OR operation with negative bytes having leading zeros.
   # (2397719729.or -4294967296).eq -1897247567.
   [] +> tests-or-neg-bytes-with-leading-zeroes
     eq. > @
       00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
       FF-FF-FF-FF-8E-EA-4C-B1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests AND operation with negative bytes as number with leading zeros.
   # (2397719729.and -4294967296).eq 0.
   [] +> tests-and-neg-bytes-as-number-with-leading-zeroes
     eq. > @
       (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests XOR operation with negative bytes having leading zeros.
   # (2397719729.xor -4294967296).eq -1897247567.
   [] +> tests-xor-neg-bytes-with-leading-zeroes
     eq. > @
       00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
       FF-FF-FF-FF-8E-EA-4C-B1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests OR operation with negative bytes without leading zeros.
   # (4294967295.or -4294967296).eq -1.
   [] +> tests-or-neg-bytes-without-leading-zeroes
     eq. > @
       00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
       FF-FF-FF-FF-FF-FF-FF-FF
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests AND operation with negative bytes as number without leading zeros.
   # (4294967295.and -4294967296).eq 0.
   [] +> tests-and-neg-bytes-as-number-without-leading-zeroes
     eq. > @
       (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
       0
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests XOR operation with negative bytes as number without leading zeros.
   # (4294967295.xor -4294967296).eq -1.
   [] +> tests-xor-neg-bytes-as-number-without-leading-zeroes
     eq. > @
       (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
       FF-FF-FF-FF-FF-FF-FF-FF
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests OR operation of negative bytes as number with zero.
   [] +> tests-or-neg-bytes-as-number-with-zero
     eq. > @
       (-4294967296.as-bytes.or 0.as-bytes).as-number
       -4294967296
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests OR operation of negative bytes with one.
   # (-4294967296L.or 1).eq -4294967295L.
   [] +> tests-or-neg-bytes-with-one
     eq. > @
       FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
       FF-FF-FF-FF-00-00-00-01
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that conversion to number throws error for wrong-sized bytes.
   [] +> throws-on-bytes-of-wrong-size-as-number
     01-01-01-01.as-number > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that conversion to i64 throws error for wrong-sized bytes.
   [] +> throws-on-bytes-of-wrong-size-as-i64
     01-01-01-01.as-i64 > @
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes can be correctly converted to i64 integer.
   [] +> tests-bytes-converts-to-i64
     eq. > @
       00-00-00-00-00-00-00-2A.as-i64
       42.as-i64
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that bytes converted to i64 and back remain unchanged.
   [] +> tests-bytes-converts-to-i64-and-back
     eq. > @
       00-00-00-00-00-00-00-33.as-i64.as-bytes
       00-00-00-00-00-00-00-33
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that i64 bytes representation differs from number bytes representation.
   [] +> tests-bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
     not. > @
       eq.

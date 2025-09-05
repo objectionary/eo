@@ -4,7 +4,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:82
@@ -47,28 +47,30 @@
 #
 # Here `"Hello, world!".as-bytes` bytes are printed to console.
 # The object `write` is an output block.
-# It dataizes given argument, converts it to string,
-# prints it to operation system console and returns next output block
+# It dataizes the given argument, converts it to string,
+# prints it to the operating system console and returns the next output block
 # ready to `write` again.
 #
-# Console is platform dependent, which means the internal algorithm is different for
-# Posix and Windows. Defining the console happens every time you "touch" `console` object.
-# If you use it as input/output:
+# Console operations are platform-specific, with different implementations
+# for POSIX and Windows systems. Each access to the `console` object creates
+# a new console instance, so reusing returned input/output blocks improves
+# performance by maintaining the same console session:
+#
+# Efficient (recommended):
 # ```
 # console.read 2 > i1
 # i1.read 2 > i2
 # i2.read 2 > i3
-# ...
 # ```
 #
-# it works faster than:
+# Less efficient (creates new console each time):
 # ```
 # console.read 2 > i1
 # console.read 2 > i2
 # console.read 2 > i3
-# ...
 # ```
-# That why it's better to use it sequentially.
+#
+# Sequential reuse maintains the console state across operations.
 [] > console
   if. > @
     os.is-windows
@@ -101,7 +103,7 @@
               "read"
               * posix.stdin-fileno size
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
@@ -115,7 +117,7 @@
       [] > output-block
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           seq * > @
@@ -151,7 +153,7 @@
               "ReadFile"
               * win32.std-input-handle size
 
-    # Write given `buffer` to console.
+    # Writes the given `buffer` to console.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
     # Returns new instance of `output-block` ready to write again.
@@ -165,7 +167,7 @@
       [] > output-block
         true > @
 
-        # Writes bytes contained in `buffer` to operation system console.
+        # Writes bytes contained in `buffer` to the operating system console.
         # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           seq * > @

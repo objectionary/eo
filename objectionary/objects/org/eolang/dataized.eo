@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.2
++version 0.58.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -41,8 +41,7 @@
     error ex > [ex]
     01-
 
-  # This unit test is supposed to check the functionality of the
-  # corresponding object.
+  # Tests that dataized values are not recalculated on subsequent access.
   [] +> tests-dataized-does-not-do-recalculation
     eq. > @
       malloc.for
@@ -59,7 +58,7 @@
           (dataized func).as-bytes > cached
       1
 
-  # This unit test is supposed to check the functionality of the corresponding object.
+  # Tests that dataized bytes behave correctly when accessed with exclamation.
   [] +> tests-dataizes-as-bytes-behaves-as-exclamationed
     seq > @
       *
