@@ -266,6 +266,33 @@
     index > idx!
     origin.length.minus idx > start!
 
+  # Skip the first `index` elements and return the rest of the list.
+  [index] > skip
+    if. > @
+      0.gt idx
+      error
+        sprintf
+          "Can't skip negative number of elements: %d"
+          * idx
+      if.
+        idx.eq 0
+        ^
+        if.
+          (number idx).gte origin.length
+          list *
+          list
+            rec-skip origin 0
+    index > idx!
+
+    [tup n] > rec-skip
+      if. > @
+        n.eq idx
+        tup
+        if.
+          tup.length.eq 0
+          *
+          rec-skip tup.tail (n.plus 1)
+
   # Tests that a list with elements is not empty.
   [] +> tests-list-should-not-be-empty
     not. > @
@@ -772,3 +799,110 @@
           * 1 2 3 4 5
         10
       * 1 2 3 4 5
+
+  # Tests that skipping 2 elements from a list of strings works correctly.
+  [] +> tests-simple-skip
+    eq. > @
+      skip.
+        list
+          * "banana" "apple" "orange"
+        2
+      * "orange"
+
+  # Tests that skipping zero elements returns the entire list.
+  [] +> tests-skip-zero
+    eq. > @
+      skip.
+        list
+          * 1 2 3 4 5
+        0
+      * 1 2 3 4 5
+
+  # Tests that skipping negative number produces an error.
+  [] +> tests-skip-negative-error
+    try. > @
+      skip.
+        list
+          * "foo" "bar" "baz"
+        -1
+      [e]
+        true > @
+      false
+
+  # Tests that skipping all elements returns an empty list.
+  [] +> tests-skip-all
+    is-empty. > @
+      skip.
+        list
+          * 1 2 3
+        3
+
+  # Tests that skipping more than length returns an empty list.
+  [] +> tests-skip-more-than-length
+    is-empty. > @
+      skip.
+        list
+          * "a" "b"
+        5
+
+  # Tests that skipping from an empty list returns an empty list.
+  [] +> tests-skip-empty-list
+    is-empty. > @
+      skip.
+        list *
+        1
+
+  # Tests that skipping works with complex data types.
+  [] +> tests-skip-complex-types
+    eq. > @
+      skip.
+        list
+          * "text" 3.14 00-FF (* 1 2)
+        1
+      * 3.14 00-FF (* 1 2)
+
+  # Tests that skipping one element from a list works correctly.
+  [] +> tests-skip-one
+    eq. > @
+      skip.
+        list
+          * 10 20 30 40
+        1
+      * 20 30 40
+
+  # Tests that skipping from a single-element list returns empty.
+  [] +> tests-skip-single-element
+    is-empty. > @
+      skip.
+        list
+          * "only"
+        1
+
+  # Tests that skipping works with nested lists.
+  [] +> tests-skip-nested-lists
+    eq. > @
+      skip.
+        list
+          * (* 1 2) (* 3 4) (* 5 6)
+        2
+      * (* 5 6)
+
+  # Tests that skipping with large negative number produces an error.
+  [] +> tests-skip-large-negative-error
+    try. > @
+      skip.
+        list
+          * "a" "b" "c"
+        -100
+      [e]
+        true > @
+      false
+
+  # Tests that skipping exactly length minus one returns last element.
+  [] +> tests-skip-to-last
+    eq. > @
+      skip.
+        list
+          * "first" "second" "third" "fourth" "last"
+        4
+      * "last"
