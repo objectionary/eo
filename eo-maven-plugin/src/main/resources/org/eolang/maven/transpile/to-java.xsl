@@ -343,7 +343,7 @@
     <xsl:param name="indent"/>
     <xsl:param name="parent"/>
     <xsl:param name="context"/>
-    <xsl:if test="not(bound/o[@base='ξ.xi🌵'])">
+    <xsl:if test="not(bound/o[eo:idempotent(.)])">
       <xsl:variable name="name" select="eo:attr-name(@name, false())"/>
       <xsl:if test="not(@name)">
         <xsl:message terminate="yes">
@@ -515,7 +515,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="o and not(count(o)=1 and eo:idempotent(.))">
+      <xsl:when test="o and not(count(o)=1) and o[1][eo:idempotent(.)]">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>

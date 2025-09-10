@@ -42,10 +42,6 @@
 #   8080
 # .listen
 #   [s]
-#     s.send "Hello, world" > sent         # same as in `socket.connect`
-#     s.recv 12 > buff                     # same as in `socket.connect`
-#     s.as-input.read 10                   # same as in `socket.connect`
-#     s.as-output.write "What's up"        # same as in `socket.connect`
 #     s.accept                             # accept incoming connection on socket,
 #       [client]                           # client is connected client socket
 #         client.send "Hi, Jeff"           # returns client socket, that has all the attributes

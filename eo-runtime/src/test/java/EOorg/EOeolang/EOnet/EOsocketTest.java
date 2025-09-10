@@ -53,7 +53,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
     "PMD.CloseResource",
     "JTCOP.RuleAllTestsHaveProductionClass"
 })
-@Execution(ExecutionMode.SAME_THREAD)
 final class EOsocketTest {
     /**
      * Localhost IP.

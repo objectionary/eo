@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.io.InputOf;
@@ -45,10 +46,6 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  *
  * @since 0.1
- * @todo #4052:35min Replace XML.xpath() with Xnav.path().
- *  Currently, in {@link EoSyntaxTest#checksTypoPacks} its blocked by attribute parsing issue in
- *  Xnav. Please check <a href="https://github.com/volodya-lombrozo/xnav/issues/119">this</a> issue
- *  for more details. Once it will be resolved, we should proceed with the replacement.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
@@ -190,8 +187,8 @@ final class EoSyntaxTest {
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
                 "/object/o[count(o)=3]",
-                "/object/o[@name='base' and o[1][@base='ξ.xi\uD83C\uDF35']]",
-                "/object/o[@name='base' and o[3][@name='f' and o[1][@base='ξ.xi\uD83C\uDF35']]]"
+                "/object/o[@name='base' and o[1][@base='ξ' and @name='xi\uD83C\uDF35']]",
+                "/object/o[@name='base' and o[3][@name='f' and o[1][@base='ξ' and @name='xi\uD83C\uDF35']]]"
             )
         );
     }
@@ -250,14 +247,16 @@ final class EoSyntaxTest {
             )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
+        final Xnav after = new Xnav(story.after().inner());
         MatcherAssert.assertThat(
             "We expect the error with correct line number was found",
-            XhtmlMatchers.xhtml(story.after().toString()),
-            XhtmlMatchers.hasXPaths("/object/errors/error/@line")
+            after.path("/object/errors/error/@line").findAny().isPresent(),
+            Matchers.equalTo(true)
         );
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(story.after()).toString(),
-            story.after().xpath("/object/errors/error/@line"),
+            after.toString(),
+            after.path("/object/errors/error/@line").map(line -> line.text().get())
+                .collect(Collectors.toList()),
             Matchers.hasItem(story.map().get("line").toString())
         );
         final String msg = "message";
@@ -266,7 +265,8 @@ final class EoSyntaxTest {
                 XhtmlMatchers.xhtml(story.after()).toString(),
                 String.join(
                     "\n",
-                    story.after().xpath("/object/errors/error/text()")
+                    after.path("/object/errors/error").map(error -> error.text().get())
+                        .collect(Collectors.toList())
                 ).replaceAll("\r", ""),
                 Matchers.containsString(story.map().get(msg).toString())
             );

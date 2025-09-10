@@ -59,7 +59,8 @@ final class XmirTest {
                             .attr("base", "Φ.org.eolang.random")
                             .attr("name", "r")
                             .add("o")
-                            .attr("base", "ξ.xi🌵")
+                            .attr("base", "ξ")
+                            .attr("name", "xi🌵")
                     ).xml()
                 )
             ).toEO(),
