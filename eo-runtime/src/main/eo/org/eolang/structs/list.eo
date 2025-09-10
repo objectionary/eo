@@ -266,6 +266,42 @@
     index > idx!
     origin.length.minus idx > start!
 
+  # Slice.
+  [start end] > slice
+    if. > @
+      s.gte e
+      ^
+      list
+        reducedi
+          *
+          [accum item idx] >>
+            if. > @
+              and.
+                idx.gte s
+                idx.lt e
+              accum.with item
+              acum
+    if. > s!
+      start.gt 0
+      if.
+        start.gte origin.length
+        origin.length
+        start
+      if.
+        (number origin.legth).neg.lte start
+        start.plus origin.length
+        0
+    if. > e!
+      end.gt 0
+      if.
+        start.gte origin.length
+        origin.length
+        end
+      if.
+        (number origin.legth).neg.lte end
+        end.plus origin.length
+        0
+
   # Tests that a list with elements is not empty.
   [] +> tests-list-should-not-be-empty
     not. > @
@@ -772,3 +808,13 @@
           * 1 2 3 4 5
         10
       * 1 2 3 4 5
+
+  # Tests slice.
+  [] +> tests-slice
+    eq. > @
+      slice.
+        list
+          * 1 2 3 4 5
+        1
+        3
+      * 2 3
