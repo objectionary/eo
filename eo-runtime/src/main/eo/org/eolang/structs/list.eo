@@ -266,39 +266,39 @@
     index > idx!
     origin.length.minus idx > start!
 
-  # Slice.
+  # Get a sublist from `start` index to `end` index (not inclusive).
   [start end] > slice
     if. > @
-      s.gte e
-      ^
+      (number s).gte e
+      *
       list
         reducedi
           *
           [accum item idx] >>
             if. > @
               and.
-                idx.gte s
-                idx.lt e
+                (number idx).gte s
+                (number idx).lt e
               accum.with item
-              acum
+              accum
     if. > s!
       start.gt 0
       if.
-        start.gte origin.length
+        (number start).gte origin.length
         origin.length
         start
       if.
-        (number origin.legth).neg.lte start
+        (number origin.length).neg.lte start
         start.plus origin.length
         0
     if. > e!
       end.gt 0
       if.
-        start.gte origin.length
+        (number end).gte origin.length
         origin.length
         end
       if.
-        (number origin.legth).neg.lte end
+        (number origin.length).neg.lte end
         end.plus origin.length
         0
 
@@ -809,8 +809,8 @@
         10
       * 1 2 3 4 5
 
-  # Tests slice.
-  [] +> tests-slice
+  # Tests that slice works correctly.
+  [] +> tests-simple-slice
     eq. > @
       slice.
         list
@@ -818,3 +818,103 @@
         1
         3
       * 2 3
+
+  # Tests that slice with negative start index works correctly.
+  [] +> tests-slice-with-negative-start
+    eq. > @
+      slice.
+        list
+          * 8 76 -3 0 3 8 -12
+        -4
+        6
+      * 0 3 8
+
+  # Tests that slice with negative end index works correctly.
+  [] +> tests-slice-with-negative-end
+    eq. > @
+      slice.
+        list
+          * "a" 2 3.0 "xyz" 82.42 7
+        0
+        -1
+      * "a" 2 3.0 "xyz" 82.42
+
+  # Tests that slice with both negative start and end indices works correctly.
+  [] +> tests-slice-with-negative-start-and-end
+    eq. > @
+      slice.
+        list
+          * 8 23 0 0 "foo"
+        -4
+        -1
+      * 23 0 0
+
+  # Tests that slice with end grater than length works correctly.
+  [] +> tests-slice-with-end-gt-length
+    eq. > @
+      slice.
+        list
+          * "foo" "bar" "buzz"
+        1
+        10
+      * "bar" "buzz"
+
+  # Tests that slice with start less than negative length works correctly.
+  [] +> tests-slice-with-start-lt-negative-length
+    eq. > @
+      slice.
+        list
+          * 9 99 999 9999
+        -10
+        3
+      * 9 99 999
+
+  # Tests that slice with end less than negative length returns an empty list.
+  [] +> tests-slice-with-end-lt-negative-length
+    eq. > @
+      slice.
+        list
+          * "A" "b" "C" "d" "E"
+        2
+        -9
+      *
+
+  # Tests that slice with start grater than or equal end (both positive )returns an empty list.
+  [] +> tests-slice-with-start-gte-end-both-positive
+    eq. > @
+      slice.
+        list
+          * 3 "-5" 0 "foo"
+        2
+        0
+      *
+
+  # Tests that slice with start grater than or equal end (both negative) returns an empty list.
+  [] +> tests-slice-with-start-gte-end-both-negative
+    eq. > @
+      slice.
+        list
+          * 3 92 -423 0 22 943 -22
+        -3
+        -5
+      *
+
+  # Tests that slice with negative start grater than or equal end returns an empty list.
+  [] +> tests-slice-with-negative-start-gte-end-
+    eq. > @
+      slice.
+        list
+          * "f" 1 "b" 2 "b" 3
+        -1
+        3
+      *
+
+  # Tests that slice with start grater than or equal negative end returns an empty list.
+  [] +> tests-slice-with-start-gte-negative-end
+    eq. > @
+      slice.
+        list
+          * 8 -2 33-53 -1 33 "Y"
+        4
+        -5
+      *
