@@ -102,7 +102,8 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/roll-bases.xsl",
                     "/org/eolang/parser/parse/cti-adds-errors.xsl",
                     "/org/eolang/parser/parse/decorate.xsl",
-                    "/org/eolang/parser/parse/add-as-attributes-inside-application.xsl"
+                    "/org/eolang/parser/parse/add-as-attributes-inside-application.xsl",
+                    "/org/eolang/parser/parse/auto-phi-formation-restruct.xsl"
                 ).back(),
                 new TrDefault<>(new StHex())
             )
