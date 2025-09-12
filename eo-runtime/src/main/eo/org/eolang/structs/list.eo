@@ -849,7 +849,7 @@
         -1
       * 23 0 0
 
-  # Tests that slice with end grater than length works correctly.
+  # Tests that slice with end greater than length works correctly.
   [] +> tests-slice-with-end-gt-length
     eq. > @
       slice.
@@ -879,7 +879,7 @@
         -9
       list *
 
-  # Tests that slice with start grater than or equal end (both positive) returns an empty list.
+  # Tests that slice with start greater than or equal end (both positive) returns an empty list.
   [] +> tests-slice-with-start-gte-end-both-positive
     eq. > @
       slice.
@@ -889,7 +889,7 @@
         0
       list *
 
-  # Tests that slice with start grater than or equal end (both negative) returns an empty list.
+  # Tests that slice with start greater than or equal end (both negative) returns an empty list.
   [] +> tests-slice-with-start-gte-end-both-negative
     eq. > @
       slice.
@@ -899,7 +899,7 @@
         -5
       list *
 
-  # Tests that slice with negative start grater than or equal end returns an empty list.
+  # Tests that slice with negative start greater than or equal end returns an empty list.
   [] +> tests-slice-with-negative-start-gte-end
     eq. > @
       slice.
@@ -909,7 +909,7 @@
         3
       list *
 
-  # Tests that slice with start grater than or equal negative end returns an empty list.
+  # Tests that slice with start greater than or equal negative end returns an empty list.
   [] +> tests-slice-with-start-gte-negative-end
     eq. > @
       slice.
