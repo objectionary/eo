@@ -16,9 +16,9 @@
 #
 # Usage examples:
 # ```
-# string "Hello, 世界!"  # Unicode string creation
-# "text".length         # Character count (not bytes)
-# "text".slice 0 2      # Character-based slicing
+# string "Hello, \u4e16\u754c!"  # Unicode string creation
+# "text".length                  # Character count (not bytes)
+# "text".slice 0 2               # Character-based slicing
 # ```
 [as-bytes] > string
   as-bytes > @
