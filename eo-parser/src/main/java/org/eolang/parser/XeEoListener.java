@@ -697,7 +697,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterVapplicationArgUnboundNext(
         final EoParser.VapplicationArgUnboundNextContext ctx
     ) {
-        // Nothing here
+        if (ctx.aphi() != null) {
+            this.startAutoPhiFormation(
+                ctx, ctx.vapplicationHead().getText()
+            );
+        }
     }
 
     @Override
