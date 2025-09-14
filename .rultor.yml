@@ -56,6 +56,4 @@ release:
     find objectionary -name '*.eo' > objectionary.lst
     git add objectionary.lst
     git commit -am "objectionary ${tag}"
-    git pull origin gh-pages
-
     git checkout "${branch}"
