@@ -308,7 +308,7 @@ vapplicationArgUnboundCurrent
 // Ends on the next line
 vapplicationArgUnboundNext
     : formationNamed // vertical abstract object
-    | vapplicationHead oname? vapplicationArgs // vertical application
+    | vapplicationHead (oname | aphi)? vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
     | (happlicationHead | happlicationReversedHead) happlicationTailScoped // scoped horizontal application
     ;
