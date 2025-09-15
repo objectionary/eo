@@ -5,6 +5,11 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="auto-phi-formation-restruct" version="2.0">
   <!--
+    @todo #4444:90min Replace `ap🌵` with `a🌵` for Auto Phi formation names in XMIR.
+     Currently, we use it in order to locate objects with `ap🌵` attribute, here, in this
+     stylesheet. We should replace name with classic auto name attribute: `a🌵`, and, rewrite logic
+     from this stylesheet to Java (in XeEoListener.java). This will lead to simplification of
+     auto-phi formation processing on the parser level.
     Here, we're taking all the auto-phi formations, and transform from this structure:
     ```
     <o line="10" name="ap🌵108" pos="8">
