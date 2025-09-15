@@ -58,9 +58,11 @@ jobs:
           pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
           pdf2svg "${p}-cropped.pdf" "${p}.svg"
           convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
-          mkdir -p gh-pages/ebnf
-          cp "${p}.png" gh-pages/ebnf
-          cp "${p}.svg" gh-pages/ebnf
+          git fetch --no-tags origin gh-pages
+          git checkout -B update-gh-pages origin/gh-pages
+          mkdir -p ebnf
+          cp "${p}.png" ebnf/
+          cp "${p}.svg" ebnf/
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: peter-evans/create-pull-request@v7
         with:
