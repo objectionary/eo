@@ -1,0 +1,98 @@
++alias org.eolang.io.bytes-as-input
++alias org.eolang.io.dead-input
++alias org.eolang.io.dead-output
++alias org.eolang.io.input-length
++alias org.eolang.io.malloc-as-output
++alias org.eolang.io.tee-input
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.io
++version 0.58.6
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Copies all bytes from the provided `input` to the provided `output`
+# and returns the total number of bytes copied.
+#
+# Example usage:
+# ```
+# copied > total-bytes
+#   bytes-as-input 01-02-03-04-05
+#   malloc-as-output memory
+# ```
+# After dataization, `total-bytes` equals 5, and all bytes have been
+# copied from input to output.
+[input output] > copied
+  input-length > @
+    tee-input
+      input
+      output
+
+  # Tests that copied copies all bytes from input to output and returns the length.
+  [] +> tests-copies-all-bytes-and-returns-length
+    eq. > @
+      malloc.of
+        5
+        [m]
+          seq > @
+            *
+              copied
+                bytes-as-input 01-02-03-04-05
+                malloc-as-output m
+              m
+      01-02-03-04-05
+
+  # Tests that copied returns the correct byte count.
+  [] +> tests-returns-correct-byte-count
+    eq. > @
+      malloc.of
+        10
+        [m]
+          copied > @
+            bytes-as-input 01-02-03-04-05-06-07-08-09-10
+            malloc-as-output m
+      10
+
+  # Tests that copied handles empty input correctly.
+  [] +> tests-handles-empty-input
+    eq. > @
+      malloc.of
+        0
+        [m]
+          seq > @
+            *
+              copied
+                bytes-as-input --
+                malloc-as-output m
+              m
+      --
+
+  # Tests that copied returns 0 for empty input.
+  [] +> tests-returns-zero-for-empty-input
+    eq. > @
+      malloc.of
+        0
+        [m]
+          copied > @
+            bytes-as-input --
+            malloc-as-output m
+      0
+
+  # Tests that copied works with larger data.
+  [] +> tests-handles-large-data
+    eq. > @
+      20
+      malloc.of
+        20
+        [m]
+          copied > @
+            bytes-as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
+            malloc-as-output m
+
+  # Tests that copied handles dead input gracefully.
+  [] +> tests-handles-dead-input
+    eq. > @
+      copied
+        dead-input
+        dead-output
+      0

@@ -2,7 +2,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.3
++version 0.58.6
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:94
@@ -16,9 +16,9 @@
 #
 # Usage examples:
 # ```
-# string "Hello, 世界!"  # Unicode string creation
-# "text".length         # Character count (not bytes)
-# "text".slice 0 2      # Character-based slicing
+# string "Hello, \u4e16\u754c!"  # Unicode string creation
+# "text".length                  # Character count (not bytes)
+# "text".slice 0 2               # Character-based slicing
 # ```
 [as-bytes] > string
   as-bytes > @
