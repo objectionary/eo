@@ -61,10 +61,12 @@ jobs:
           mkdir -p gh-pages/ebnf
           cp "${p}.png" gh-pages/ebnf
           cp "${p}.svg" gh-pages/ebnf
-      - uses: peter-evans/create-pull-request@v7
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v7
         with:
           sign-commits: true
           branch: update-gh-pages
+          branch-suffix: timestamp
           commit-message: 'update gh-pages by ebnf'
           delete-branch: true
           title: 'Update gh-pages'
