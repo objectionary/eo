@@ -14,6 +14,9 @@ jobs:
   ebnf:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
@@ -55,12 +58,19 @@ jobs:
           pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
           pdf2svg "${p}-cropped.pdf" "${p}.svg"
           convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
-          mkdir -p gh-pages/ebnf
-          cp "${p}.png" gh-pages/ebnf
-          cp "${p}.svg" gh-pages/ebnf
-      - uses: JamesIves/github-pages-deploy-action@v4.7.3
+          git fetch --no-tags origin gh-pages
+          git checkout -B update-gh-pages origin/gh-pages
+          mkdir -p ebnf
+          cp "${p}.png" ebnf/
+          cp "${p}.svg" ebnf/
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v7
         with:
-          branch: gh-pages
-          folder: gh-pages
-          clean: false
-        if: github.ref == 'refs/heads/master'
+          sign-commits: true
+          branch: update-gh-pages
+          branch-suffix: timestamp
+          commit-message: 'update gh-pages by ebnf'
+          delete-branch: true
+          title: 'Update gh-pages'
+          assignees: yegor256
+          base: gh-pages
