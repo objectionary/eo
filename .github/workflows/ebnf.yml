@@ -58,9 +58,12 @@ jobs:
           mkdir -p gh-pages/ebnf
           cp "${p}.png" gh-pages/ebnf
           cp "${p}.svg" gh-pages/ebnf
-      - uses: JamesIves/github-pages-deploy-action@v4.7.3
+      - uses: peter-evans/create-pull-request@v7
         with:
-          branch: gh-pages
-          folder: gh-pages
-          clean: false
-        if: github.ref == 'refs/heads/master'
+          sign-commits: true
+          branch: update-gh-pages
+          commit-message: 'update gh-pages by ebnf'
+          delete-branch: true
+          title: 'Update gh-pages'
+          assignees: yegor256
+          base: gh-pages
