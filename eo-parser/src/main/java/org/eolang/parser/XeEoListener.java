@@ -40,7 +40,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
      * Application precedence.
      */
-    private static final Pattern APPLICATION_PRECEDENCE = Pattern.compile("\\([^()]*\\)\\.(\\w+)");
+    private static final Pattern A_PRECEDENCE = Pattern.compile("\\([^()]*\\)\\.(\\w+)");
 
     /**
      * Xembly directives we are building (mutable).
@@ -1217,7 +1217,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @param application Application base
      */
     private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
-        final Matcher matcher = XeEoListener.APPLICATION_PRECEDENCE.matcher(application);
+        final Matcher matcher = XeEoListener.A_PRECEDENCE.matcher(application);
         final String abase;
         if (matcher.find()) {
             abase = String.format(".%s", matcher.group(1));
