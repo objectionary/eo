@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -35,6 +37,11 @@ import org.xembly.Directives;
     "PMD.GodClass"
 })
 final class XeEoListener implements EoListener, Iterable<Directive> {
+    /**
+     * Application precedence.
+     */
+    private static final Pattern APPLICATION_PRECEDENCE = Pattern.compile("\\([^()]*\\)\\.(\\w+)");
+
     /**
      * Xembly directives we are building (mutable).
      */
@@ -1210,10 +1217,17 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @param application Application base
      */
     private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        final Matcher matcher = XeEoListener.APPLICATION_PRECEDENCE.matcher(application);
+        final String abase;
+        if (matcher.find()) {
+            abase = String.format(".%s", matcher.group(1));
+        } else {
+            abase = String.format("ξ.ρ.%s", application);
+        }
         this.startAbstract(ctx)
             .enter().prop("name", new AutoName(ctx, "p").asString())
             .start(ctx)
-            .prop("base", String.format("ξ.ρ.%s", application))
+            .prop("base", abase)
             .prop("name", "φ");
     }
 

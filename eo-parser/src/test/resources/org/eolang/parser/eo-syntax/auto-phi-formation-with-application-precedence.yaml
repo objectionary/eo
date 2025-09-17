@@ -5,13 +5,13 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='ap🌵46' and o[@name='φ' and @base='.contains']]
+  - //o[not(@base) and @name='ap🌵34' and o[@name='φ' and @base='.what']]
+  - //o[not(@base) and @name='ap🌵66' and o[@name='φ' and @base='.contains']]
 input: |
   [cont-list] > custom-map
+    foo > boom
+      ((text orgn).what b).ttt >> [y]
     mapped. > @
       cont-list
         (text orgn).contains x >> [x]
     origin > orgn!
-
-    [] > foo
-      ((text orgn).contains b).ttt >> [y]
