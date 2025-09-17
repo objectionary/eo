@@ -11,11 +11,16 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), 'Phi r1 = new PhMethod(h, "ap🌵44");')]
-  - //java[contains(text(), 'Phi r2 = new PhMethod(h, "ap🌵54");')]
+  - //java[contains(text(), 'Φ.custom-map.ap🌵46.φ')]
+  - //java[contains(text(), 'Φ.custom-map.ap🌵46.φ.ρ.ρ.α0')]
+  - //java[contains(text(), 'Phi rrbbb = Phi.Φ.take("org").take("eolang").take("text");')]
+  - //java[contains(text(), 'Phi rrbb1 = Phi.Φ.take("org").take("eolang").take("b");')]
+  - //java[contains(text(), 'rrbbb1 = new PhMethod(rrbbb1, "orgn");')]
+  - //java[contains(text(), 'Phi rrbb = new PhMethod(rrbbb, "what");')]
+  - //java[contains(text(), 'Phi rrb = new PhMethod(rrbb, "ttt");')]
 input: |
-  # Foo.
-  [] > main
-    foo > app
-      2.plus 3 >> [x]
-      1.plus 1 >> [y]
+  [cont-list] > custom-map
+    mapped. > @
+      cont-list
+        ((text orgn).what b).ttt >> [y]
+    origin > orgn!
