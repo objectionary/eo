@@ -475,7 +475,7 @@
             origin.as-bytes
             accum.concat str.as-bytes > [accum str]
 
-  # Tests specific functionality slice method extracts a substring from specified position with given length.
+  # Tests how slice extracts substrings from a given position and length.
   [] +> tests-text-slices-the-origin-string
     eq. > @
       (text "Hello, world!").slice 7 5

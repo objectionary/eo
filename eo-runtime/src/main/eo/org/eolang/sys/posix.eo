@@ -96,7 +96,7 @@
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  # Tests that the inet_addr POSIX function returns the correct network address for localhost (127.0.0.1).
+  # Tests POSIX inet_addr returns correct localhost (127.0.0.1) address.
   [] +> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @
       os.is-windows
