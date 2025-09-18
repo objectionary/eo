@@ -21,7 +21,7 @@
 #   risky-operation    # main
 #   error-handler      # catch
 #   cleanup-action     # finally
-# ```
+# ```.
 [main catch finally] > try ?
   # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception

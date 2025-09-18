@@ -121,7 +121,7 @@
           write 0 object
           get
 
-  # Tests that malloc.of can write data into allocated memory block and retrieve it
+  # Tests that malloc.of can write data into allocated memory block and retrieve it.
   [] +> tests-writes-into-memory-of
     mem.eq 10 > @
     malloc.of > mem
