@@ -166,6 +166,26 @@
         origin-bts.slice idx substring-size
         substring-bts
 
+  # Checks if current `text` contains all elements from `substrings`
+  [substrings] > contains-all
+    reduced. > @
+      mapped.
+        substrings
+        (text origin-bts).contains x > [x] >>
+      true
+      x.and a > [a x]
+    origin > origin-bts!
+
+  # Checks if current `text` contains any element from `substrings`
+  [substrings] > contains-any
+    reduced. > @
+      mapped.
+        substrings
+        (text origin-bts).contains x > [x] >>
+      false
+      x.or a > [a x]
+    origin > origin-bts!
+
   # Checks that current `text` ends with given `substring`.
   [substring] > ends-with
     and. > @
@@ -710,6 +730,54 @@
   [] +> tests-text-does-not-contain-substring
     not. > @
       (text "Hello, world!").contains "Hey"
+
+  # Tests successful contains-all
+  [] +> tests-successful-contains-all
+    (text "abcdefghijk").contains-all (list (* "abc" "ghi")) > @
+
+  # Tests not contains-all
+  [] +> tests-not-contains-all
+    not. > @
+      (text "qwerty").contains-all (list (* "qer" "ty" "abc"))
+
+  # Tests contains-all vertical
+  [] +> tests-contains-all-vert
+    contains-all. > @
+      text "Hello, world!"
+      list (* "ell" " " "," "d!")
+
+  # Tests contains-all without substrings
+  [] +> test-contains-all-without-substrings
+    (text "xyz").contains-all (list *) > @
+
+  # Tests contains-all for empty text and without substrings
+  [] +> tests-contains-all-for-empty-text-and-without-substrings
+    (text "").contains-all (list *) > @
+
+  # Tests successful contains-any
+  [] +> tests-successful-contains-any
+    (text "Good morning").contains-any (list (* "oo" "goo")) > @
+
+  # Tests not contains-any
+  [] +> tests-not-contains-any
+    not. > @
+      (text "xyzw").contains-any (list (* "yx" "zyx" "wx" "abc"))
+
+  # Tests contains-any vertical
+  [] +> tests-contains-any-vert
+    contains-any. > @
+      text "foo bar buzz"
+      list (* "bar" " " "o")
+
+  # Tests contains-any without substrings
+  [] +> test-contains-any-without-substrings
+    not. > @
+      (text "text").contains-any (list *)
+
+  # Tests contains-any for empty text and without substrings
+  [] +> tests-contains-any-for-empty-text-and-without-substrings
+    not. > @
+      (text "").contains-any (list *)
 
   # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
