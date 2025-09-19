@@ -3,17 +3,24 @@
 ---
 # yamllint disable rule:line-length
 out: []
-file: org/eolang/snippets/auto.eo
-args: ["org.eolang.snippets.auto"]
+file: org/eolang/snippets/foo.eo
+args: ["org.eolang.snippets.foo"]
 eo: |
   +alias org.eolang.io.stdout
+  +alias org.eolang.txt.text
+  +alias org.eolang.structs.list
   +package org.eolang.snippets
 
-  # No comments.
-  [] > auto
-    malloc.of > @
-      8
-      [m]
-        while > @
-          m.get.eq 42 >> [i]
-          m.put 42 >> [i]
+  [] > foo
+    "abcdefghijk" > origin
+    origin > @
+    [cont-list] > custom-map
+      mapped. > @
+        cont-list
+        (text orgn).contains x >> [x]
+      origin > orgn!
+
+    [] +> test-custom-map
+      eq. > @
+        list (* true true)
+        foo.custom-map (list (* "abc" "ghi"))
