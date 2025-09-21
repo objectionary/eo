@@ -10,6 +10,9 @@ name: ebnf
   pull_request:
     branches:
       - master
+concurrency:
+  group: ebnf-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   ebnf:
     timeout-minutes: 15
@@ -49,6 +52,9 @@ jobs:
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          git fetch --no-tags origin gh-pages
+          git checkout gh-pages
+          mkdir -p ebnf
           convert --version
           convert --help | grep Delegates
           pdfcrop --version
@@ -58,19 +64,15 @@ jobs:
           pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
           pdf2svg "${p}-cropped.pdf" "${p}.svg"
           convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
-          git fetch --no-tags origin gh-pages
-          git checkout -B update-gh-pages origin/gh-pages
-          mkdir -p ebnf
           cp "${p}.png" ebnf/
           cp "${p}.svg" ebnf/
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: peter-evans/create-pull-request@v7
         with:
           sign-commits: true
-          branch: update-gh-pages
-          branch-suffix: timestamp
-          commit-message: 'update gh-pages by ebnf'
+          branch: ebnf-gh-pages
+          commit-message: 'update gh-pages with new EBNF'
           delete-branch: true
-          title: 'Update gh-pages'
+          title: 'Update gh-pages with new EBNF'
           assignees: yegor256
           base: gh-pages

@@ -13,10 +13,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - uses: zauguin/install-texlive@v4.0.0
-        with:
-          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
-          texlive_version: 2025
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
