@@ -59,7 +59,7 @@ jobs:
           pdf2svg "${p}-cropped.pdf" "${p}.svg"
           convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
           git fetch --no-tags origin gh-pages
-          git checkout -B update-gh-pages origin/gh-pages
+          git checkout gh-pages
           mkdir -p ebnf
           cp "${p}.png" ebnf/
           cp "${p}.svg" ebnf/
