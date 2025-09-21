@@ -1,9 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
   - "eo-runtime/src/test/java/integration/JarIT.java"
