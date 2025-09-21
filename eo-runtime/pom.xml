@@ -420,7 +420,7 @@
     <profile>
       <id>hone</id>
       <properties>
-        <hone.version>0.0.24</hone.version>
+        <hone.version>0.17.0</hone.version>
       </properties>
       <build>
         <plugins>
@@ -432,12 +432,9 @@
               <execution>
                 <goals>
                   <goal>pull</goal>
-                  <goal>shake</goal>
+                  <goal>optimize</goal>
                   <goal>rmi</goal>
                 </goals>
-                <configuration>
-                  <image>yegor256/hone:${hone.version}</image>
-                </configuration>
               </execution>
             </executions>
           </plugin>
