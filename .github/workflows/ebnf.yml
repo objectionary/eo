@@ -10,6 +10,9 @@ name: ebnf
   pull_request:
     branches:
       - master
+concurrency:
+  group: ebnf-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   ebnf:
     timeout-minutes: 15
