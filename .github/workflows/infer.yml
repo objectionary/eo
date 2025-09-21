@@ -20,4 +20,4 @@ jobs:
         with:
           infer_version: v1.0.0
       - run: infer --version
-      - run: infer run --fail-on-issue --no-progress-bar -- mvn test
+      - run: infer run --fail-on-issue --no-progress-bar -- mvn install
