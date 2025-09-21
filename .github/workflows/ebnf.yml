@@ -52,6 +52,9 @@ jobs:
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          git fetch --no-tags origin gh-pages
+          git checkout gh-pages
+          mkdir -p ebnf
           convert --version
           convert --help | grep Delegates
           pdfcrop --version
@@ -61,9 +64,6 @@ jobs:
           pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
           pdf2svg "${p}-cropped.pdf" "${p}.svg"
           convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
-          git fetch --no-tags origin gh-pages
-          git checkout gh-pages
-          mkdir -p ebnf
           cp "${p}.png" ebnf/
           cp "${p}.svg" ebnf/
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'

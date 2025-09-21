@@ -419,15 +419,12 @@
     </profile>
     <profile>
       <id>hone</id>
-      <properties>
-        <hone.version>0.17.0</hone.version>
-      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>${hone.version}</version>
+            <version>0.18.0</version>
             <executions>
               <execution>
                 <goals>
