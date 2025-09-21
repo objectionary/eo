@@ -71,9 +71,8 @@ jobs:
         with:
           sign-commits: true
           branch: update-gh-pages
-          branch-suffix: timestamp
-          commit-message: 'update gh-pages by ebnf'
+          commit-message: 'update gh-pages with new EBNF'
           delete-branch: true
-          title: 'Update gh-pages'
+          title: 'Update gh-pages with new EBNF'
           assignees: yegor256
           base: gh-pages
