@@ -85,7 +85,7 @@
               m
       01-02-03-04-05
 
-  # Tests that tee-input can be chained to read from bytes input and write to two different memory blocks.
+  # Tests that tee-input can be chained to read from bytes input and write to 2 different memory blocks.
   [] +> tests-reads-from-bytes-and-writes-to-two-memory-blocks
     eq. > @
       malloc.of

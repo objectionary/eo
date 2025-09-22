@@ -234,7 +234,7 @@
         (42.eq negative-infinity).eq false
       true
 
-  # Tests that zero equals zero.
+  # Tests that one zero value equals another zero value.
   [] +> tests-int-zero-eq-to-zero
     eq. > @
       eq.

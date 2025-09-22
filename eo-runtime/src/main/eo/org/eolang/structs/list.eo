@@ -18,7 +18,7 @@
 # list.is-empty            # Check if empty
 # list.map [x] (x.plus 1)  # Map operation
 # list.filter [x] (x.gt 0) # Filter elements
-# ```
+# ```.
 [origin] > list
   origin > @
   # Checks if the list contains no elements.
