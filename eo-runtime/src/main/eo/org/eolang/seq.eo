@@ -15,7 +15,8 @@
 #   operation1      # Executed for side effects
 #   operation2      # Executed for side effects
 #   final-value     # Executed and returned
-# ```.
+# ```
+# .
 [steps] > seq
   if. > @
     steps.length.eq 0
