@@ -24,29 +24,42 @@ import org.cactoos.io.InputWithFallback;
 final class OyRemote implements Objectionary {
 
     /**
-     * The address template.
+     * The address template to program.
      */
-    private final UrlOy template;
+    private final UrlOy program;
+
+    /**
+     * The address template to directory.
+     */
+    private final UrlOy directory;
 
     /**
      * Constructor.
      * @param hash Commit hash
      */
     OyRemote(final CommitHash hash) {
-        this.template = new UrlOy(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+        this.program = new UrlOy(
+            "https://github.com/objectionary/home/tree/%s/objects/%s.eo",
+            hash
+        );
+        this.directory = new UrlOy(
+            "https://github.com/objectionary/home/tree/%s/objects/%s",
             hash
         );
     }
 
     @Override
     public String toString() {
-        return this.template.toString();
+        return String.format(
+            "Program template: %s\nDirectory template: %s",
+            this.program,
+            this.directory
+        );
     }
 
     @Override
     public Input get(final String name) throws MalformedURLException {
-        final URL url = this.template.value(name);
+        final URL url = this.program.value(name);
         Logger.debug(
             this, "The object '%s' will be pulled from %s...",
             name, url
@@ -67,10 +80,21 @@ final class OyRemote implements Objectionary {
     }
 
     @Override
-    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     public boolean contains(final String name) throws IOException {
-        final int code = ((HttpURLConnection) this.template.value(name).openConnection())
-            .getResponseCode();
+        final URL file = this.program.value(name);
+        final URL dir = this.directory.value(name);
+        return exists(file) || exists(dir);
+    }
+
+    @Override
+    public boolean isDirectory(final String name) throws IOException {
+        final URL url = this.directory.value(name);
+        return exists(url);
+    }
+
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private static boolean exists(final URL url) throws IOException {
+        final int code = ((HttpURLConnection) url.openConnection()).getResponseCode();
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
@@ -79,8 +103,10 @@ final class OyRemote implements Objectionary {
      *
      * <p>Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
-     * 2nd for program name, for
-     * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">example</a>.</p>
+     * 2nd for program or directory name, for
+     * <a href="https://github.com/objectionary/home/tree/%s/objects/%s.eo">programExample</a>
+     * or
+     * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
      *
      * @since 0.1.0
      */
@@ -91,8 +117,10 @@ final class OyRemote implements Objectionary {
          *
          * <p>Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
-         * 2nd for program name, for
-         * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">example</a>.</p>
+         * 2nd for program or directory name, for
+         * <a href="https://github.com/objectionary/home/tree/%s/objects/%s.eo">programExample</a>
+         * or
+         * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
          */
         private final String template;
 
@@ -121,8 +149,8 @@ final class OyRemote implements Objectionary {
         }
 
         /**
-         * URL for the program.
-         * @param name Fully qualified EO program name as specified by {@link Place}
+         * URL for the program or directory.
+         * @param name Fully qualified EO program as specified by {@link Place} or directory name
          * @return URL
          * @throws MalformedURLException in case of incorrect URL
          */
