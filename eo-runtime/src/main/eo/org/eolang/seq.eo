@@ -15,7 +15,7 @@
 #   operation1      # Executed for side effects
 #   operation2      # Executed for side effects
 #   final-value     # Executed and returned
-# ```
+# ```.
 [steps] > seq
   if. > @
     steps.length.eq 0
@@ -170,7 +170,7 @@
                     m.as-number
                 1
 
-  # Tests that seq handles memory caching correctly when accessing array elements and performing operations.
+  # Tests that seq properly caches memory when processing array elements.
   [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
       1
