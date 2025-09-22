@@ -73,4 +73,24 @@ final class OyIndexedTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void checksIsDirectoryForObject() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed must contain stdout object, but it doesn't",
+            new OyIndexed(new Objectionary.Fake()).isDirectory(OyIndexedTest.STDOUT_OBJECT),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void checksIsDirectoryForDirectory() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed must not contain directory, but it does",
+            new OyIndexed(new Objectionary.Fake()).isDirectory("xxx"),
+            Matchers.is(false)
+        );
+    }
 }

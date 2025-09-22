@@ -22,38 +22,64 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class OyRemoteTest {
 
     @Test
-    void buildsCorrectUrl() throws Exception {
+    void buildsCorrectUrlForProgram() throws Exception {
         MatcherAssert.assertThat(
-            "OyRemove.UrlOy generates correct URL",
+            "OyRemove.UrlOy generates correct URL for program",
             new OyRemote.UrlOy(
-                "https://raw/objectionary/home/%s/objects/%s.eo",
+                "https://github.com/objectionary/home/tree/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app"),
             Matchers.is(
-                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
+                new URL("https://github.com/objectionary/home/tree/abcde/objects/org/eolang/app.eo")
             )
         );
     }
 
     @Test
-    void throwsExceptionOnInvalidUrl() {
+    void buildsCorrectUrlForDirectory() throws Exception {
+        MatcherAssert.assertThat(
+            "OyRemove.UrlOy generates correct URL for directory",
+            new OyRemote.UrlOy(
+                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                "abcde"
+            ).value("org.eolang.test"),
+            Matchers.is(
+                new URL("https://github.com/objectionary/home/tree/abcde/objects/org/eolang/test")
+            )
+        );
+    }
+
+    @Test
+    void throwsExceptionOnInvalidUrlForProgram() {
         Assertions.assertThrows(
             MalformedURLException.class,
             () -> new OyRemote.UrlOy(
-                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-                "abcde"
+                "hts:github.com/objectionary/home/tree/%s/objects/%s.eo",
+                "xyz"
             ).value("org.eolang.app"),
             "Expected MalformedURLException when the URL format is invalid"
         );
     }
 
     @Test
+    void throwsExceptionOnInvalidUrlForDirectory() {
+        Assertions.assertThrows(
+            MalformedURLException.class,
+            () -> new OyRemote.UrlOy(
+                "hts:github.com/objectionary/home/tree/%s/objects/%s",
+                "xyz"
+            ).value("org.eolang.dir"),
+            "Expected MalformedURLException when the URL format is invalid"
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
-    void checksPresenceOfObject() throws IOException {
+    void checksPresenceOfProgram() throws IOException {
         final CommitHash hash = new ChRemote("master");
         final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
-            "OyRemote positively checks the presence of the object in Objectionary",
+            "OyRemote positively checks the presence of the program in Objectionary",
             objectionary.contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );
@@ -61,11 +87,41 @@ final class OyRemoteTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    void checksPresenceOfObjectWithNarrowHash() throws IOException {
+    void checksPresenceOfDirectory() throws IOException {
+        final CommitHash hash = new ChRemote("master");
+        final Objectionary objectionary = new OyRemote(hash);
+        MatcherAssert.assertThat(
+            "OyRemote positively checks the presence of the directory in Objectionary",
+            objectionary.contains("org.eolang.math"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void checksPresenceOfProgramWithNarrowHash() throws IOException {
         final String stdout = "org.eolang.io.stdout";
         MatcherAssert.assertThat(
             String.format(
-                "OyRemote with narrow hash should have contained object %s, but it didn't",
+                "OyRemote with narrow hash should have contained program %s, but it didn't",
+                stdout
+            ),
+            new OyRemote(
+                new ChNarrow(
+                    new ChRemote("master")
+                )
+            ).contains(stdout),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void checksPresenceOfDirectoryWithNarrowHash() throws IOException {
+        final String stdout = "org.eolang.structs";
+        MatcherAssert.assertThat(
+            String.format(
+                "OyRemote with narrow hash should have contained directory %s, but it didn't",
                 stdout
             ),
             new OyRemote(
