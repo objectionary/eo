@@ -132,7 +132,7 @@
             m.write 0 10
             m
 
-  # Tests that malloc.for can allocate memory for an object and put new data into it
+  # Tests that malloc.for can allocate memory for an object and put new data into it.
   [] +> tests-puts-into-memory-for
     mem.eq 10 > @
     malloc.for > mem

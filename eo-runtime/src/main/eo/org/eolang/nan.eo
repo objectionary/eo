@@ -172,7 +172,7 @@
   # Tests that NaN is detected as NaN.
   nan.is-nan > [] +> nan-is-nan
 
-  # Tests that NaN is not finite.
+  # Tests that NaN is not a finite value.
   nan.is-finite.not > [] +> nan-is-not-finite
 
   # Tests that NaN is not an integer.
