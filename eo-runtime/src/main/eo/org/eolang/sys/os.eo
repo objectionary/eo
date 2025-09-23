@@ -26,7 +26,7 @@
   # Returns the name of the current operation system as `org.eolang.string`.
   [] > name ?
 
-  # Tests that the operating system belongs to the supported OS families (Windows, macOS or Linux).
+  # Tests that the operating system belongs to the supported OS families (Windows, macOS, or Linux).
   [] +> tests-checks-os-family
     or. > @
       or.
