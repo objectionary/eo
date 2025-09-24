@@ -41,7 +41,7 @@
         (dataized tup.head).as-bool.eq --
         tup.length.eq last-index
 
-  # Tests that seq correctly processes steps and returns the last value when less than comparison.
+  # Tests that seq step processing and final value return with float greater than comparison.
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
       1
@@ -57,7 +57,7 @@
                     m.as-number
                 1.1
 
-  # Tests that seq correctly processes steps and returns the last value when used with float comparison (greater than).
+  # Tests that seq step processing and final value return with float greater than comparison.
   [] +> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
@@ -73,7 +73,7 @@
                     m.as-number
                 0.9
 
-  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than).
+  # Tests that seq step processing and final value return with integer less than comparison.
   [] +> tests-seq-single-dataization-int-less
     malloc.of > @
       1
@@ -89,7 +89,7 @@
                     m.as-number
                 2
 
-  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than or equal).
+  # Tests that seq step processing and final value return with integer than or equal comparison.
   [] +> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
       1
