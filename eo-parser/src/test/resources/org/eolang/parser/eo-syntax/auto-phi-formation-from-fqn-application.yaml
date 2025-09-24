@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='ap🌵34' and o[2][@name='x' and @base='∅' and not(@as)] and o[3][@name='φ' and @base='ξ.ρ.boom']/o[1][@base='Φ.a.bca.eaa.boom']]
+  - //o[not(@base) and @name='ap🌵34' and o[2][@name='x' and @base='∅' and not(@as)] and o[3][@name='φ' and @base='Φ.a.bca.eaa.boom']/o[1][@base='Φ.org.eolang.number']]
 input: |
   [] > foo
     start > @
-      Q.a.bca.eaa.boom >> [x]
+      Q.a.bca.eaa.boom 42 >> [x]

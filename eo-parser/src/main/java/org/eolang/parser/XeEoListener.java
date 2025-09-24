@@ -1223,14 +1223,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             do {
                 abase = String.format(".%s", matcher.group(1));
             } while (matcher.find());
+        } else if (application.startsWith("Q.")) {
+            abase = application.replace("Q.", "Φ.");
         } else {
-            if (application.startsWith("Q.")) {
-                abase = String.format(
-                    "ξ.ρ.%s", application.substring(application.lastIndexOf('.') + 1)
-                );
-            } else {
-                abase = String.format("ξ.ρ.%s", application);
-            }
+            abase = String.format("ξ.ρ.%s", application);
         }
         this.startAbstract(ctx)
             .enter().prop("name", new AutoName(ctx, "p").asString())
