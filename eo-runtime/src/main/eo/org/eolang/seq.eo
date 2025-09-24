@@ -41,7 +41,7 @@
         (dataized tup.head).as-bool.eq --
         tup.length.eq last-index
 
-  # Tests that seq step processing and final value return with float greater than comparison.
+  # Tests that seq step processing and final value return with float less than comparison.
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
       1
