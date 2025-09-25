@@ -1227,11 +1227,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
         final Matcher matcher = XeEoListener.LAST_APPLICATION.matcher(application);
-        String abase;
+        final String abase;
         if (matcher.find()) {
-            do {
-                abase = String.format(".%s", matcher.group(1));
-            } while (matcher.find());
+            abase = String.format(".%s", matcher.group(1));
         } else {
             abase = application;
         }
