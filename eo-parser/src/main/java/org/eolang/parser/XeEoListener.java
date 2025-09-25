@@ -40,7 +40,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
      * Last application.
      */
-    private static final Pattern LAST_APPLICATION = Pattern.compile("\\)\\.([a-zA-Z_]\\w*)$");
+    private static final Pattern LAST_APPLICATION = Pattern.compile("\\)\\.(\\p{L}[\\p{L}\\p{N}-]*)$");
 
     /**
      * Xembly directives we are building (mutable).
