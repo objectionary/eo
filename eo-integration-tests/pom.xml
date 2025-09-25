@@ -23,14 +23,6 @@
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!--
-      This dependency is required by eo-parser's XML processing libraries.
-    -->
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <!-- version from parent POM -->
-    </dependency>
     <dependency>
       <!--
       This dependency is required by the javadoc plugin. In the eo-runtime,

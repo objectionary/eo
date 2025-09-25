@@ -204,7 +204,8 @@ final class MjParseTest {
                         MjParse.DIR,
                         FakeMaven.suffix(program),
                         MjAssemble.XMIR
-                    ))
+                    )
+                )
             );
         }
     }
