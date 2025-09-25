@@ -28,11 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 
-    /**
-     * The default folder for placed binaries.
-     */
-    private static final String TARGET_CLASSES = "target/classes";
-
     @Test
     void placesBinaries(@Mktmp final Path temp) throws Exception {
         MjPlaceTest.saveBinary(temp, "EObar/x.bin");
@@ -64,7 +59,7 @@ final class MjPlaceTest {
                 "PlaceMojo must skip already placed binaries, but it doesn't",
                 new FakeMaven(temp)
                         .withPlacedBinary(
-                                temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary)
+                                temp.resolve("target/classes").resolve(binary)
                         )
                         .execute(MjPlace.class)
                         .result()
@@ -102,12 +97,12 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
                 String.format(
                         "PlaceMojo must not place binaries from %s",
-                        MjPlaceTest.TARGET_CLASSES
+                        "target/classes"
                 ),
                 new FakeMaven(temp)
                         .execute(MjPlace.class)
                         .result(),
-                Matchers.not(Matchers.hasKey(MjPlaceTest.TARGET_CLASSES))
+                Matchers.not(Matchers.hasKey("target/classes"))
         );
     }
 
@@ -120,7 +115,7 @@ final class MjPlaceTest {
                         .with("ignoreRuntime", true)
                         .execute(new FakeMaven.Place())
                         .result()
-                        .get(MjPlaceTest.TARGET_CLASSES),
+                        .get("target/classes"),
                 new ContainsFiles("**/jna-*.class")
         );
     }
@@ -134,12 +129,12 @@ final class MjPlaceTest {
                                 "PlaceMojo must not place binaries from %s",
                                 "if the resolve directory does not exist"
                         ),
-                        MjPlaceTest.TARGET_CLASSES
+                        "target/classes"
                 ),
                 new FakeMaven(temp)
                         .execute(MjPlace.class)
                         .result(),
-                Matchers.not(Matchers.hasKey(MjPlaceTest.TARGET_CLASSES))
+                Matchers.not(Matchers.hasKey("target/classes"))
         );
     }
 
@@ -179,7 +174,7 @@ final class MjPlaceTest {
                         .with("resolveJna", false)
                         .execute(new FakeMaven.Place())
                         .result()
-                        .get(MjPlaceTest.TARGET_CLASSES),
+                        .get("target/classes"),
                 new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
@@ -199,7 +194,7 @@ final class MjPlaceTest {
                         .with("resolveJna", false)
                         .execute(new FakeMaven.Place())
                         .result()
-                        .get(MjPlaceTest.TARGET_CLASSES),
+                        .get("target/classes"),
                 Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
@@ -302,7 +297,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
                 content,
-                temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary)
+                temp.resolve("target/classes").resolve(binary)
         ).value();
     }
 
@@ -314,6 +309,6 @@ final class MjPlaceTest {
      * @return Path to the placed binary.
      */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
-        return temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary);
+        return temp.resolve("target/classes").resolve(binary);
     }
 }
