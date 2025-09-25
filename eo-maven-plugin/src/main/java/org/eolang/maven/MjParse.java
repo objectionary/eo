@@ -9,6 +9,8 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,6 +22,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.text.TextOf;
 import org.eolang.parser.EoSyntax;
@@ -113,6 +116,7 @@ public final class MjParse extends MjSafe {
                 this.cacheEnabled
             ).apply(source, target)
         ).withVersion(MjParse.version(target, refs));
+        this.optimized(target);
         final List<Xnav> errors = new Xnav(target)
             .element("object")
             .element("errors")
@@ -132,6 +136,39 @@ public final class MjParse extends MjSafe {
             }
         }
         return 1;
+    }
+
+    private Path optimized(final Path source) throws Exception {
+        final XML transformed = new XSLDocument(
+            new ResourceOf(
+                "org/eolang/maven/parse/locals-to-aliases.xsl"
+            ).stream()
+        ).transform(new XMLDocument(source));
+        System.out.println(transformed);
+        // 3. get reserved.csv from lints' classpath
+        // 4. we should supply all home objects to variable
+
+
+
+
+//        final Xnav xmir = new Xnav(source);
+//        final String pkg = xmir.strict("/object/metas/meta[head='package']/tail", 1)
+//            .findFirst()
+//            .get()
+//            .text()
+//            .get();
+//        xmir.path("//o[@base and starts-with(@base, 'Φ.')]").forEach(
+//            new Consumer<Xnav>() {
+//                @Override
+//                public void accept(final Xnav o) {
+//                    final String base = o.attribute("base").text().get();
+//                    // if not QQ, then check the presence in the local package
+//                    System.out.println(pkg);
+//                    System.out.println(base.substring(base.lastIndexOf('.') + 1));
+//                }
+//            }
+//        );
+        return null;
     }
 
     /**
