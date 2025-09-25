@@ -20,6 +20,7 @@
 # "text".length                  # Character count (not bytes)
 # "text".slice 0 2               # Character-based slicing
 # ```
+# .
 [as-bytes] > string
   as-bytes > @
 

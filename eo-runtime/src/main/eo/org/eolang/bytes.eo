@@ -23,7 +23,8 @@
 # bytes 01-02-03       # Creates a 3-byte sequence
 # FF-FF.and 00-FF      # Bitwise AND operation
 # as-bytes.as-number   # Convert 8-byte sequence to number
-# ```.
+# ```
+# .
 [data] > bytes
   data > @
   bytes data > as-bytes
