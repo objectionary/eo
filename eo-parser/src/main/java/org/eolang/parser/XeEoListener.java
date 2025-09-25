@@ -1248,7 +1248,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     private static String eoApplicationToXmir(final String application) {
         final String transformed = application.replace("^.", "ρ.");
         final String base;
-        if (transformed.startsWith("Q.")) {
+        if (transformed.startsWith("QQ.")) {
+            base = transformed.replace("QQ", "Φ.org.eolang");
+        } else if (transformed.startsWith("Q.")) {
             base = transformed.replace("Q.", "Φ.");
         } else {
             base = transformed;
