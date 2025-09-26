@@ -26,11 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class FpDefaultTest {
 
-    /**
-     * Snapshot.
-     */
-    private static final String SNAPSHOT = "SNAPSHOT";
-
     @Test
     void failsIfSourcePathNotExists() {
         Assertions.assertThrows(
@@ -80,7 +75,7 @@ final class FpDefaultTest {
         new FpDefault(
             src -> "Footprint content",
             temp,
-            FpDefaultTest.SNAPSHOT,
+            "SNAPSHOT",
             "",
             Paths.get("cache1.txt")
         ).apply(source, target);
@@ -91,7 +86,7 @@ final class FpDefaultTest {
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
-            temp.resolve(FpDefaultTest.SNAPSHOT).resolve("cache.txt").toFile().exists(),
+            temp.resolve("SNAPSHOT").resolve("cache.txt").toFile().exists(),
             Matchers.equalTo(false)
         );
     }
@@ -106,7 +101,7 @@ final class FpDefaultTest {
         new FpDefault(
             src -> "Footprint content",
             temp,
-            FpDefaultTest.SNAPSHOT,
+            "SNAPSHOT",
             "",
             Paths.get("cache2.txt")
         ).apply(source, target);
@@ -117,7 +112,7 @@ final class FpDefaultTest {
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
-            temp.resolve(FpDefaultTest.SNAPSHOT).resolve("cache.txt").toFile().exists(),
+            temp.resolve("SNAPSHOT").resolve("cache.txt").toFile().exists(),
             Matchers.equalTo(false)
         );
     }
