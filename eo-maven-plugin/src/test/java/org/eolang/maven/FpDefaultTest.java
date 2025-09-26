@@ -27,11 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpDefaultTest {
 
     /**
-     * Target content.
-     */
-    private static final String TARGET_CONTENT = "Target content";
-
-    /**
      * Cache content.
      */
     private static final String CACHE_CONTENT = "Cache content";
@@ -76,7 +71,7 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "The content of target file has not to be changed",
             new TextOf(target).asString(),
-            Matchers.equalTo(FpDefaultTest.TARGET_CONTENT)
+            Matchers.equalTo("Target content")
         );
     }
 
@@ -364,7 +359,7 @@ final class FpDefaultTest {
      */
     private static Path existedTarget(final Path temp) throws IOException {
         final Path source = FpDefaultTest.notExistedTarget(temp);
-        return FpDefaultTest.existedFile(source, FpDefaultTest.TARGET_CONTENT);
+        return FpDefaultTest.existedFile(source, "Target content");
     }
 
     /**
