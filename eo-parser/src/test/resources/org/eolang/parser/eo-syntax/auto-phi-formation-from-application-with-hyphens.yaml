@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='ap🌵34' and o[@name='φ' and @base='.as-j']/o[@base='.as-i']/o[@base='Φ.org.eolang.text']/o[@base='ξ.ρ.args']]
+  - //o[@base='.as-i' and not(@name)]/o[2][@base='Φ.org.eolang.as-bar.b']
+input: |
+  [args] > foo
+    bar > i
+      ((text args).as-i as-bar.b).as-j >> [x]
