@@ -27,11 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpDefaultTest {
 
     /**
-     * Cache content.
-     */
-    private static final String CACHE_CONTENT = "Cache content";
-
-    /**
      * Snapshot.
      */
     private static final String SNAPSHOT = "SNAPSHOT";
@@ -225,12 +220,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
+            Matchers.equalTo("Cache content")
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
+            Matchers.equalTo("Cache content")
         );
     }
 
@@ -248,12 +243,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
+            Matchers.equalTo("Cache content")
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
+            Matchers.equalTo("Cache content")
         );
     }
 
@@ -278,7 +273,7 @@ final class FpDefaultTest {
             new TextOf(target).asString(),
             Matchers.allOf(
                 Matchers.equalTo("Footprint content"),
-                Matchers.not(Matchers.equalTo(FpDefaultTest.CACHE_CONTENT))
+                Matchers.not(Matchers.equalTo("Cache content"))
             )
         );
     }
@@ -401,7 +396,7 @@ final class FpDefaultTest {
      */
     private static Cache existedCache(final Path temp) throws IOException {
         final Cache cache = FpDefaultTest.notExistedCache(temp);
-        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.CACHE_CONTENT);
+        FpDefaultTest.existedFile(cache.path(), "Cache content");
         return cache;
     }
 
