@@ -304,8 +304,9 @@ final class MjParseTest {
                     .result()
                     .get("target/1-parse/foo/x.xmir")
             ),
-            XhtmlMatchers.hasXPath(
-                "/object/metas/meta[head='alias' and part='foo.bar' and tail='foo.bar']"
+            XhtmlMatchers.hasXPaths(
+                "/object/metas/meta[head='alias' and part='bar' and part='foo.bar' and tail='bar foo.bar']",
+                "//o[@base='foo.bar']/o[1][@base='Φ.org.eolang.number']/o[1][@base='Φ.org.eolang.bytes']"
             )
         );
     }
