@@ -20,12 +20,6 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
 
-    /**
-     * Name of attribute.
-     * @since 0.1
-     */
-    private static final String VOID_ATT = "void";
-
     @Test
     void comparesTwoObjects() {
         final Phi phi = new PhDefaultTest.Int();
@@ -198,7 +192,7 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> copy.take(PhDefaultTest.VOID_ATT),
+            () -> copy.take("void"),
             "Unset void attribute should be copied with unset value"
         );
     }
@@ -206,13 +200,13 @@ final class PhDefaultTest {
     @Test
     void copiesSetVoidAttributeOnCopy() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put("void", new Data.ToPhi(10L));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
-            phi.take(PhDefaultTest.VOID_ATT),
+            phi.take("void"),
             Matchers.not(
-                Matchers.equalTo(copy.take(PhDefaultTest.VOID_ATT))
+                Matchers.equalTo(copy.take("void"))
             )
         );
     }
@@ -220,11 +214,11 @@ final class PhDefaultTest {
     @Test
     void doesNotCopySetVoidAttributeWithRho() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put("void", new Data.ToPhi(10L));
         MatcherAssert.assertThat(
             "Void attribute should not be copied with rho, but it did",
-            phi.take(PhDefaultTest.VOID_ATT),
-            Matchers.equalTo(phi.take(PhDefaultTest.VOID_ATT))
+            phi.take("void"),
+            Matchers.equalTo(phi.take("void"))
         );
     }
 
@@ -246,7 +240,7 @@ final class PhDefaultTest {
             () -> phi.take(Phi.PHI),
             "Phi should not be accessible without setting void attribute, but it did"
         );
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put("void", new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
             "Phi should be accessible after setting void attribute, but it didn't"
@@ -612,14 +606,14 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
+            this.add("void", new PhVoid("void"));
             this.add("plus", new PhSimple(new PhDefault()));
             this.add(
                 Phi.PHI,
                 new PhCached(
                     new PhComposite(
                         this,
-                        rho -> rho.take(PhDefaultTest.VOID_ATT)
+                        rho -> rho.take("void")
                     )
                 )
             );
