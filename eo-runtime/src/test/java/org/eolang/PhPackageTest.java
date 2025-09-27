@@ -24,11 +24,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 @SuppressWarnings("PMD.TooManyMethods")
 final class PhPackageTest {
 
-    /**
-     * Default test package.
-     */
-    private static final String DEFAULT_PACKAGE = "Φ.org.eolang";
-
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
@@ -94,7 +89,7 @@ final class PhPackageTest {
     @ParameterizedTest
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
-        final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        final Phi parent = new PhPackage("Φ.org.eolang");
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
             String.format(
@@ -110,14 +105,14 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
+            () -> new PhPackage("Φ.org.eolang").take("failed"),
             "Should throw if object cannot be instantiated, but it was"
         );
     }
 
     @Test
     void returnsSelfOnCopy() {
-        final Phi pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        final Phi pckg = new PhPackage("Φ.org.eolang");
         MatcherAssert.assertThat(
             "Package object should return itself on copying",
             pckg.copy(),
@@ -129,8 +124,8 @@ final class PhPackageTest {
     void returnsForma() {
         MatcherAssert.assertThat(
             "Should return valid forma",
-            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
-            Matchers.equalTo(PhPackageTest.DEFAULT_PACKAGE)
+            new PhPackage("Φ.org.eolang").forma(),
+            Matchers.equalTo("Φ.org.eolang")
         );
     }
 
@@ -138,14 +133,14 @@ final class PhPackageTest {
     void returnsLocator() {
         MatcherAssert.assertThat(
             "locator of the DEFAULT_PACKAGE must be ?:?:?, but is wasn't",
-            new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
+            new PhPackage("Φ.org.eolang").locator(),
             Matchers.equalTo("?:?:?")
         );
     }
 
     @Test
     void findsAttributesInThreads() {
-        final PhPackage pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        final PhPackage pckg = new PhPackage("Φ.org.eolang");
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
