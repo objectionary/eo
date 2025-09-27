@@ -55,11 +55,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 })
 final class EOsocketTest {
 
-    /**
-     * Random.
-     */
-    private static final Random RANDOM = new Random();
-
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
@@ -138,7 +133,7 @@ final class EOsocketTest {
     private static int randomPort() {
         final int min = 10_000;
         final int max = 20_000;
-        return EOsocketTest.RANDOM.nextInt((max - min) + 1) + min;
+        return new Random().nextInt((max - min) + 1) + min;
     }
 
     /**
