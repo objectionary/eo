@@ -19,11 +19,6 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
-    /**
-     * Name of attribute.
-     * @since 0.1
-     */
-    private static final String PLUS_ATT = "plus";
 
     /**
      * Name of attribute.
@@ -70,7 +65,7 @@ final class PhDefaultTest {
 
     @Test
     void setsRhoAfterDispatch() {
-        final Phi kid = new PhDefaultTest.Int().take(PhDefaultTest.PLUS_ATT);
+        final Phi kid = new PhDefaultTest.Int().take("plus");
         Assertions.assertDoesNotThrow(
             () -> kid.take(Phi.RHO),
             String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
@@ -90,8 +85,8 @@ final class PhDefaultTest {
     @Test
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.take(PhDefaultTest.PLUS_ATT);
-        final Phi second = phi.copy().take(PhDefaultTest.PLUS_ATT);
+        final Phi first = phi.take("plus");
+        final Phi second = phi.copy().take("plus");
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
             first,
@@ -106,9 +101,9 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             "Child attributes should be copied on every dispatch",
-            phi.take(PhDefaultTest.PLUS_ATT),
+            phi.take("plus"),
             Matchers.not(
-                Matchers.equalTo(phi.take(PhDefaultTest.PLUS_ATT))
+                Matchers.equalTo(phi.take("plus"))
             )
         );
     }
@@ -116,7 +111,7 @@ final class PhDefaultTest {
     @Test
     void hasKidWithSetRhoAfterCopying() {
         final Phi phi = new PhDefaultTest.Int().copy();
-        final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi plus = phi.take("plus");
         Assertions.assertDoesNotThrow(
             () -> plus.take(Phi.RHO),
             String.format(
@@ -141,9 +136,9 @@ final class PhDefaultTest {
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
-            first.take(PhDefaultTest.PLUS_ATT),
+            first.take("plus"),
             Matchers.not(
-                Matchers.equalTo(second.take(PhDefaultTest.PLUS_ATT))
+                Matchers.equalTo(second.take("plus"))
             )
         );
     }
@@ -156,15 +151,15 @@ final class PhDefaultTest {
             String.format(
                 "%s attribute of original object kid should refer to original object", Phi.RHO
             ),
-            phi.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO)))
+            phi.take("plus").take(Phi.RHO),
+            Matchers.not(Matchers.equalTo(copy.take("plus").take(Phi.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
                 Phi.RHO
             ),
-            copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
+            copy.take("plus").take(Phi.RHO),
             Matchers.equalTo(copy)
         );
     }
@@ -172,7 +167,7 @@ final class PhDefaultTest {
     @Test
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi first = phi.take("plus");
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format(
@@ -189,7 +184,7 @@ final class PhDefaultTest {
     @Test
     void doesNotCopyRhoWhileDispatch() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi plus = phi.take("plus");
         MatcherAssert.assertThat(
             String.format("%s attributes should not be copied while dispatch", Phi.RHO),
             plus.take(Phi.RHO),
@@ -412,7 +407,7 @@ final class PhDefaultTest {
             Matchers.not(
                 Matchers.equalTo(
                     new PhWith(
-                        five.take(PhDefaultTest.PLUS_ATT).copy(),
+                        five.take("plus").copy(),
                         "x",
                         new Data.ToPhi(5)
                     ).forma()
@@ -426,13 +421,13 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "Similar Phis with different data should have the same forma, but they didn't",
             new PhWith(
-                new Data.ToPhi(5L).take(PhDefaultTest.PLUS_ATT).copy(),
+                new Data.ToPhi(5L).take("plus").copy(),
                 "x",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhWith(
-                    new Data.ToPhi(6L).take(PhDefaultTest.PLUS_ATT).copy(),
+                    new Data.ToPhi(6L).take("plus").copy(),
                     "x",
                     new Data.ToPhi(6L)
                 ).forma()
@@ -457,11 +452,11 @@ final class PhDefaultTest {
             new PhMethod(
                 new PhWith(
                     new PhMethod(
-                        new Rnd(), PhDefaultTest.PLUS_ATT
+                        new Rnd(), "plus"
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
-                PhDefaultTest.PLUS_ATT
+                "plus"
             ),
             0, new Data.ToPhi(1.2)
         );
@@ -618,7 +613,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
             this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
-            this.add(PhDefaultTest.PLUS_ATT, new PhSimple(new PhDefault()));
+            this.add("plus", new PhSimple(new PhDefault()));
             this.add(
                 Phi.PHI,
                 new PhCached(
@@ -635,7 +630,7 @@ final class PhDefaultTest {
                         this,
                         rho -> {
                             final Phi plus = new Data.ToPhi(5L).take(
-                                PhDefaultTest.PLUS_ATT
+                                "plus"
                             ).copy();
                             plus.put(0, new Data.ToPhi(6L));
                             return plus;
