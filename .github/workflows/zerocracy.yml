@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   zerocracy:
+    if: github.repository_owner == 'objectionary'
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
