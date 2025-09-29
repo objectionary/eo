@@ -6,13 +6,11 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,15 +32,15 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "org/eolang/f/x.a.class");
         MjPlaceTest.saveBinary(temp, "org/eolang/t.txt");
         MatcherAssert.assertThat(
-                "PlaceMojo have to place binaries, but it doesn't",
-                new FakeMaven(temp)
-                        .execute(MjPlace.class)
-                        .result(),
-                Matchers.allOf(
-                        Matchers.hasKey("target/classes/EObar/x.bin"),
-                        Matchers.hasKey("target/classes/org/eolang/f/x.a.class"),
-                        Matchers.hasKey("target/classes/org/eolang/t.txt")
-                )
+        "PlaceMojo have to place binaries, but it doesn't",
+        new FakeMaven(temp)
+            .execute(MjPlace.class)
+            .result(),
+            Matchers.allOf(
+                Matchers.hasKey("target/classes/EObar/x.bin"),
+                Matchers.hasKey("target/classes/org/eolang/f/x.a.class"),
+                Matchers.hasKey("target/classes/org/eolang/t.txt")
+            )
         );
     }
 
@@ -52,21 +50,21 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, binary);
         MjPlaceTest.saveAlreadyPlacedBinary(temp, binary);
         final long before = MjPlaceTest.pathToPlacedBinary(
-                temp,
-                binary
+            temp,
+            binary
         ).toFile().lastModified();
         MatcherAssert.assertThat(
-                "PlaceMojo must skip already placed binaries, but it doesn't",
-                new FakeMaven(temp)
-                        .withPlacedBinary(
-                                temp.resolve("target/classes").resolve(binary)
-                        )
-                        .execute(MjPlace.class)
-                        .result()
-                        .get("target/classes/org/eolang/f/x.a.class")
-                        .toFile()
-                        .lastModified(),
-                Matchers.equalTo(before)
+        "PlaceMojo must skip already placed binaries, but it doesn't",
+        new FakeMaven(temp)
+            .withPlacedBinary(
+                temp.resolve("target/classes").resolve(binary)
+            )
+            .execute(MjPlace.class)
+            .result()
+            .get("target/classes/org/eolang/f/x.a.class")
+            .toFile()
+            .lastModified(),
+            Matchers.equalTo(before)
         );
     }
 
