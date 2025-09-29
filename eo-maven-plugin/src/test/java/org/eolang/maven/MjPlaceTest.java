@@ -32,7 +32,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "org/eolang/f/x.a.class");
         MjPlaceTest.saveBinary(temp, "org/eolang/t.txt");
         MatcherAssert.assertThat(
-        "PlaceMojo have to place binaries, but it doesn't",
+            "PlaceMojo have to place binaries, but it doesn't",
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
@@ -93,46 +93,46 @@ final class MjPlaceTest {
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
         Files.createDirectories(temp.resolve("target").resolve(MjResolve.DIR));
         MatcherAssert.assertThat(
-                String.format(
-                        "PlaceMojo must not place binaries from %s",
-                        "target/classes"
-                ),
-                new FakeMaven(temp)
-                        .execute(MjPlace.class)
-                        .result(),
-                Matchers.not(Matchers.hasKey("target/classes"))
+            String.format(
+                "PlaceMojo must not place binaries from %s",
+                "target/classes"
+            ),
+            new FakeMaven(temp)
+                .execute(MjPlace.class)
+                .result(),
+            Matchers.not(Matchers.hasKey("target/classes"))
         );
     }
 
     @Test
     void placesDefaultJnaBinaries(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-                "PlaceMojo have to place default Jna binary",
-                new FakeMaven(temp)
-                        .withHelloWorld()
-                        .with("ignoreRuntime", true)
-                        .execute(new FakeMaven.Place())
-                        .result()
-                        .get("target/classes"),
-                new ContainsFiles("**/jna-*.class")
+            "PlaceMojo have to place default Jna binary",
+            new FakeMaven(temp)
+                .withHelloWorld()
+                .with("ignoreRuntime", true)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            new ContainsFiles("**/jna-*.class")
         );
     }
 
     @Test
     void placesWithoutResolveDirectory(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-                String.format(
-                        String.join(
-                                " ",
-                                "PlaceMojo must not place binaries from %s",
-                                "if the resolve directory does not exist"
-                        ),
-                        "target/classes"
+            String.format(
+                String.join(
+                    " ",
+                    "PlaceMojo must not place binaries from %s",
+                    "if the resolve directory does not exist"
                 ),
-                new FakeMaven(temp)
-                        .execute(MjPlace.class)
-                        .result(),
-                Matchers.not(Matchers.hasKey("target/classes"))
+                "target/classes"
+            ),
+            new FakeMaven(temp)
+                .execute(MjPlace.class)
+                .result(),
+            Matchers.not(Matchers.hasKey("target/classes"))
         );
     }
 
@@ -144,14 +144,14 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, second);
         MjPlaceTest.saveAlreadyPlacedBinary(temp, first);
         MatcherAssert.assertThat(
-                "The first binary file must be placed, but it was not",
-                new FakeMaven(temp)
-                        .execute(MjPlace.class)
-                        .result(),
-                Matchers.allOf(
-                        Matchers.hasValue(MjPlaceTest.pathToPlacedBinary(temp, first)),
-                        Matchers.hasValue(MjPlaceTest.pathToPlacedBinary(temp, second))
-                )
+            "The first binary file must be placed, but it was not",
+            new FakeMaven(temp)
+                .execute(MjPlace.class)
+                .result(),
+            Matchers.allOf(
+                Matchers.hasValue(MjPlaceTest.pathToPlacedBinary(temp, first)),
+                Matchers.hasValue(MjPlaceTest.pathToPlacedBinary(temp, second))
+            )
         );
     }
 
@@ -167,18 +167,18 @@ final class MjPlaceTest {
     void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-                "PlaceMojo have to place the runtime file, but doesn't",
-                maven.withHelloWorld()
-                        .with("resolveJna", false)
-                        .execute(new FakeMaven.Place())
-                        .result()
-                        .get("target/classes"),
-                new ContainsFiles("**/eo-runtime-*.class")
+            "PlaceMojo have to place the runtime file, but doesn't",
+            maven.withHelloWorld()
+                .with("resolveJna", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
-                "PlaceMojo have to place class file, but doesn't",
-                maven.placed().classes().size(),
-                Matchers.is(1)
+            "PlaceMojo have to place class file, but doesn't",
+            maven.placed().classes().size(),
+            Matchers.is(1)
         );
     }
 
