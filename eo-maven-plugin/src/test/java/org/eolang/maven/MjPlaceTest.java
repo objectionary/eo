@@ -186,14 +186,14 @@ final class MjPlaceTest {
     void placesWithoutEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-                "PlaceMojo have not to place the runtime file, but doesn't",
-                maven.withHelloWorld()
-                        .with("ignoreRuntime", true)
-                        .with("resolveJna", false)
-                        .execute(new FakeMaven.Place())
-                        .result()
-                        .get("target/classes"),
-                Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
+            "PlaceMojo have not to place the runtime file, but doesn't",
+            maven.withHelloWorld()
+                .with("ignoreRuntime", true)
+                .with("resolveJna", false)
+                .execute(new FakeMaven.Place())
+                .result()
+                .get("target/classes"),
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
 
@@ -207,9 +207,9 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "new content", binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-                "The binary file must not be replaced with new content, but it was not",
-                new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
-                Matchers.equalTo(old)
+            "The binary file must not be replaced with new content, but it was not",
+            new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(old)
         );
     }
 
@@ -224,9 +224,9 @@ final class MjPlaceTest {
         maven.placed().unplaceAll();
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-                "The binary file must be replaced with new content, but it was not",
-                new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
-                Matchers.equalTo(updated)
+            "The binary file must be replaced with new content, but it was not",
+            new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(updated)
         );
     }
 
@@ -252,15 +252,15 @@ final class MjPlaceTest {
      * @throws IOException In case of error.
      */
     private static void saveBinary(
-            final Path temp,
-            final String content,
-            final String binary
+        final Path temp,
+        final String content,
+        final String binary
     ) throws IOException {
         new Saved(
-                content,
-                temp.resolve("target").resolve(MjResolve.DIR).resolve(
-                        Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
-                )
+            content,
+            temp.resolve("target").resolve(MjResolve.DIR).resolve(
+                Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
+            )
         ).value();
     }
 
@@ -273,8 +273,8 @@ final class MjPlaceTest {
      * @throws IOException In case of error.
      */
     private static void saveAlreadyPlacedBinary(
-            final Path temp,
-            final String binary
+        final Path temp,
+        final String binary
     ) throws IOException {
         MjPlaceTest.saveAlreadyPlacedBinary(temp, UUID.randomUUID().toString(), binary);
     }
