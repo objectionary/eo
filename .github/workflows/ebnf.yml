@@ -7,9 +7,6 @@ name: ebnf
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 concurrency:
   group: ebnf-${{ github.ref }}
   cancel-in-progress: true

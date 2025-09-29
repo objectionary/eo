@@ -12,11 +12,12 @@ concurrency:
   cancel-in-progress: false
 jobs:
   zerocracy:
+    if: github.repository_owner == 'objectionary'
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@v5
-      - uses: zerocracy/judges-action@0.15.44
+      - uses: zerocracy/judges-action@0.15.48
         with:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
