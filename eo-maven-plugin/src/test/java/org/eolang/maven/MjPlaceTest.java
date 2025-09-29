@@ -47,6 +47,7 @@ final class MjPlaceTest {
     @Test
     void skipsAlreadyPlacedBinaries(@Mktmp final Path temp) throws IOException {
         final String binary = "org/eolang/f/x.a.class";
+        final String targets = "target/classes";
         MjPlaceTest.saveBinary(temp, binary);
         MjPlaceTest.saveAlreadyPlacedBinary(temp, binary);
         final long before = MjPlaceTest.pathToPlacedBinary(
@@ -57,7 +58,7 @@ final class MjPlaceTest {
             "PlaceMojo must skip already placed binaries, but it doesn't",
             new FakeMaven(temp)
                 .withPlacedBinary(
-                    temp.resolve("target/classes").resolve(binary)
+                    temp.resolve(targets).resolve(binary)
                 )
             .execute(MjPlace.class)
             .result()
@@ -91,21 +92,23 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
+        final String targets = "target/classes";
         Files.createDirectories(temp.resolve("target").resolve(MjResolve.DIR));
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
-                "target/classes"
+                targets
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey("target/classes"))
+            Matchers.not(Matchers.hasKey(targets))
         );
     }
 
     @Test
     void placesDefaultJnaBinaries(@Mktmp final Path temp) throws Exception {
+        final String targets = "target/classes";
         MatcherAssert.assertThat(
             "PlaceMojo have to place default Jna binary",
             new FakeMaven(temp)
@@ -113,13 +116,14 @@ final class MjPlaceTest {
                 .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get("target/classes"),
+                .get(targets),
             new ContainsFiles("**/jna-*.class")
         );
     }
 
     @Test
     void placesWithoutResolveDirectory(@Mktmp final Path temp) throws IOException {
+        final String targets = "target/classes";
         MatcherAssert.assertThat(
             String.format(
                 String.join(
@@ -127,12 +131,12 @@ final class MjPlaceTest {
                     "PlaceMojo must not place binaries from %s",
                     "if the resolve directory does not exist"
                 ),
-                "target/classes"
+                targets
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey("target/classes"))
+            Matchers.not(Matchers.hasKey(targets))
         );
     }
 
@@ -166,13 +170,14 @@ final class MjPlaceTest {
     @Test
     void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final String targets = "target/classes";
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
             maven.withHelloWorld()
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get("target/classes"),
+                .get(targets),
             new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
@@ -185,6 +190,7 @@ final class MjPlaceTest {
     @Test
     void placesWithoutEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final String targets = "target/classes";
         MatcherAssert.assertThat(
             "PlaceMojo have not to place the runtime file, but doesn't",
             maven.withHelloWorld()
@@ -192,7 +198,7 @@ final class MjPlaceTest {
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get("target/classes"),
+                .get(targets),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
@@ -293,9 +299,10 @@ final class MjPlaceTest {
         final String content,
         final String binary
     ) throws IOException {
+        final String targets = "target/classes";
         new Saved(
             content,
-            temp.resolve("target/classes").resolve(binary)
+            temp.resolve(targets).resolve(binary)
         ).value();
     }
 
