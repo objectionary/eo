@@ -33,9 +33,9 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "org/eolang/t.txt");
         MatcherAssert.assertThat(
         "PlaceMojo have to place binaries, but it doesn't",
-        new FakeMaven(temp)
-            .execute(MjPlace.class)
-            .result(),
+            new FakeMaven(temp)
+                .execute(MjPlace.class)
+                .result(),
             Matchers.allOf(
                 Matchers.hasKey("target/classes/EObar/x.bin"),
                 Matchers.hasKey("target/classes/org/eolang/f/x.a.class"),
@@ -54,11 +54,11 @@ final class MjPlaceTest {
             binary
         ).toFile().lastModified();
         MatcherAssert.assertThat(
-        "PlaceMojo must skip already placed binaries, but it doesn't",
-        new FakeMaven(temp)
-            .withPlacedBinary(
-                temp.resolve("target/classes").resolve(binary)
-            )
+            "PlaceMojo must skip already placed binaries, but it doesn't",
+            new FakeMaven(temp)
+                .withPlacedBinary(
+                    temp.resolve("target/classes").resolve(binary)
+                )
             .execute(MjPlace.class)
             .result()
             .get("target/classes/org/eolang/f/x.a.class")
@@ -78,14 +78,14 @@ final class MjPlaceTest {
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
         maven.placed().unplaceAll();
         MatcherAssert.assertThat(
-                "PlaceMojo have to process the file",
-                maven.execute(MjPlace.class).result(),
-                Matchers.hasValue(path)
+            "PlaceMojo have to process the file",
+            maven.execute(MjPlace.class).result(),
+            Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
-                "The file must be updated, but it was not",
-                content,
-                Matchers.is(new TextOf(path).asString())
+            "The file must be updated, but it was not",
+            content,
+            Matchers.is(new TextOf(path).asString())
         );
     }
 
