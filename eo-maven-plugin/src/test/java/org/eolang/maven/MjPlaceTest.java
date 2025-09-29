@@ -289,13 +289,13 @@ final class MjPlaceTest {
      * @throws IOException In case of error.
      */
     private static void saveAlreadyPlacedBinary(
-            final Path temp,
-            final String content,
-            final String binary
+        final Path temp,
+        final String content,
+        final String binary
     ) throws IOException {
         new Saved(
-                content,
-                temp.resolve("target/classes").resolve(binary)
+            content,
+            temp.resolve("target/classes").resolve(binary)
         ).value();
     }
 
