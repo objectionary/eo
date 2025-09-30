@@ -600,7 +600,7 @@
       "C:"
 
   # Tests that Windows path normalization replaces forward slashes with backslashes.
-  [] +> tests-normalizes-win32-path-with-replacing-slashes
+  [] > tests-normalizes-win32-path-with-replacing-slashes
     eq. > @
       (path.win32 "/var/www/../html/").normalized
       "\\var\\html\\"
