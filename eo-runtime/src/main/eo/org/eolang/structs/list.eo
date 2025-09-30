@@ -934,7 +934,7 @@
         list
           * 8 2 3 4 5
         2
-      list * 3 4 5
+      * 3 4 5
   
   # Tests that shifted will work if the shift parameter is greater than the list length.
   [] +> tests-shifted-with-shift-greater-than-length
@@ -943,4 +943,4 @@
         list
           * 8 2 3 4 5
         6
-      list *
+      *
