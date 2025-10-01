@@ -49,7 +49,7 @@ eo: |
       stdout > @
         sprintf
           "%i"
-    $.other 1 > one
+    other 1 > one
     memory 0 > price
 
     # No comments.
