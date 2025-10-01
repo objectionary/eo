@@ -92,7 +92,7 @@
       #  `tests-replaces-slashes-to-windows-separator`,
       #  `tests-regex-returns-valid-second-matched-block`,
       #  `tests-normalizes-win32-path-with-replacing-slashes`,
-      #  since idempotency attrribute `xi🌵` is not available in runtime for Phi.take("xi🌵").
+      #  since idempotency attribute `xi🌵` is not available in runtime for Phi.take("xi🌵").
       #  We need to correctly model it in runtime first, then enable tests.
       [position start from to groups] > matched
         groups.length > groups-count
