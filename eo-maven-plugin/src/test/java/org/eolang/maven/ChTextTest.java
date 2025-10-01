@@ -65,6 +65,10 @@ final class ChTextTest {
         final String hash,
         final String tag
     ) {
+        new Saved(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            dir.resolve("tags.txt")
+        ).value();
         MatcherAssert.assertThat(
             "ChText should read the correct hash by tag from the file, but it didn't",
             new ChText(dir.resolve("tags.txt"), tag).value(),
