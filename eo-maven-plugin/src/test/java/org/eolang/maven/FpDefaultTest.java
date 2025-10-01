@@ -31,6 +31,11 @@ final class FpDefaultTest {
      */
     private final String footprint = "Footprint content";
 
+    /**
+     * The cache content.
+     */
+    private final String cached = "Cache content";
+
     @Test
     void failsIfSourcePathNotExists() {
         Assertions.assertThrows(
@@ -220,12 +225,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo("Cache content")
+            Matchers.equalTo(this.cached)
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo("Cache content")
+            Matchers.equalTo(this.cached)
         );
     }
 
@@ -243,12 +248,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo("Cache content")
+            Matchers.equalTo(this.cached)
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo("Cache content")
+            Matchers.equalTo(this.cached)
         );
     }
 
@@ -273,7 +278,7 @@ final class FpDefaultTest {
             new TextOf(target).asString(),
             Matchers.allOf(
                 Matchers.equalTo(this.footprint),
-                Matchers.not(Matchers.equalTo("Cache content"))
+                Matchers.not(Matchers.equalTo(this.cached))
             )
         );
     }
