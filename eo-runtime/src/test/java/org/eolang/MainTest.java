@@ -94,7 +94,7 @@ final class MainTest {
     }
 
     @Test
-    void executesJvmFullRinWithAttributeCall() {
+    void executesJvmFullRunWithAttributeCall() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
             MainTest.stderr("--verbose", "string$as-bytes"),
