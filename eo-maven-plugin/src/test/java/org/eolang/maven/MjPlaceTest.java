@@ -26,11 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 
-    /**
-     * The path to target classes.
-     */
-    private final String targets = "target/classes";
-
     @Test
     void placesBinaries(@Mktmp final Path temp) throws Exception {
         MjPlaceTest.saveBinary(temp, "EObar/x.bin");
@@ -62,7 +57,7 @@ final class MjPlaceTest {
             "PlaceMojo must skip already placed binaries, but it doesn't",
             new FakeMaven(temp)
                 .withPlacedBinary(
-                    temp.resolve(this.targets).resolve(binary)
+                    temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
             .result()
@@ -100,12 +95,12 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
-                this.targets
+                this.targetClasses()
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey(this.targets))
+            Matchers.not(Matchers.hasKey(this.targetClasses()))
         );
     }
 
@@ -118,7 +113,7 @@ final class MjPlaceTest {
                 .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(this.targets),
+                .get(this.targetClasses()),
             new ContainsFiles("**/jna-*.class")
         );
     }
@@ -132,12 +127,12 @@ final class MjPlaceTest {
                     "PlaceMojo must not place binaries from %s",
                     "if the resolve directory does not exist"
                 ),
-                this.targets
+                this.targetClasses()
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey(this.targets))
+            Matchers.not(Matchers.hasKey(this.targetClasses()))
         );
     }
 
@@ -177,7 +172,7 @@ final class MjPlaceTest {
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(this.targets),
+                .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
@@ -197,7 +192,7 @@ final class MjPlaceTest {
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(this.targets),
+                .get(this.targetClasses()),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
@@ -233,6 +228,13 @@ final class MjPlaceTest {
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(updated)
         );
+    }
+
+    /**
+     * Returns the target classes.
+     */
+    private String targetClasses() {
+        return "target/classes";
     }
 
     /**
