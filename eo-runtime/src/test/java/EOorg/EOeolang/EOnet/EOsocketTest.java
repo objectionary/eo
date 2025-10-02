@@ -60,7 +60,7 @@ final class EOsocketTest {
         final RandomServer server = new RandomServer().started();
         try {
             final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
-            socket.put(0, new Data.ToPhi("127.0.0.1"));
+            socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
             connected.put(0, new Simple());
@@ -89,7 +89,7 @@ final class EOsocketTest {
         final Thread server = new Thread(
             () -> {
                 final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
-                socket.put(0, new Data.ToPhi("127.0.0.1"));
+                socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
                 listened.put(0, new Server(msg.length()));
@@ -99,7 +99,7 @@ final class EOsocketTest {
         server.start();
         Thread.sleep(2000);
         final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
-        socket.put(0, new Data.ToPhi("127.0.0.1"));
+        socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
         connected.put(0, new Client(msg));
@@ -115,6 +115,13 @@ final class EOsocketTest {
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
         );
+    }
+
+    /**
+     * Returns the localhost address.
+     */
+    private String localhost() {
+        return "127.0.0.1";
     }
 
     /**
