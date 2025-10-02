@@ -192,7 +192,7 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> copy.take("void"),
+            () -> copy.take(this.getVoid()),
             "Unset void attribute should be copied with unset value"
         );
     }
@@ -200,13 +200,13 @@ final class PhDefaultTest {
     @Test
     void copiesSetVoidAttributeOnCopy() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put("void", new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
-            phi.take("void"),
+            phi.take(this.getVoid()),
             Matchers.not(
-                Matchers.equalTo(copy.take("void"))
+                Matchers.equalTo(copy.take(this.getVoid()))
             )
         );
     }
@@ -214,11 +214,11 @@ final class PhDefaultTest {
     @Test
     void doesNotCopySetVoidAttributeWithRho() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put("void", new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         MatcherAssert.assertThat(
             "Void attribute should not be copied with rho, but it did",
-            phi.take("void"),
-            Matchers.equalTo(phi.take("void"))
+            phi.take(this.getVoid()),
+            Matchers.equalTo(phi.take(this.getVoid()))
         );
     }
 
@@ -240,7 +240,7 @@ final class PhDefaultTest {
             () -> phi.take(Phi.PHI),
             "Phi should not be accessible without setting void attribute, but it did"
         );
-        phi.put("void", new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
             "Phi should be accessible after setting void attribute, but it didn't"
@@ -568,6 +568,13 @@ final class PhDefaultTest {
      */
     private String plus() {
         return "plus";
+    }
+
+    /**
+     * Returns the 'void' literal.
+     */
+    private String getVoid() {
+        return "void";
     }
 
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
