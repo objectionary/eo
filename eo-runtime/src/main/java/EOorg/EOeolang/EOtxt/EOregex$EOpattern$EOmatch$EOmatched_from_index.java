@@ -61,12 +61,12 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     @Override
     public Phi lambda() {
         final Phi match = this.take(Phi.RHO);
-        final InputStream bais = new ByteArrayInputStream(
+        final InputStream stream = new ByteArrayInputStream(
             new Dataized(match.take(Phi.RHO).take("serialized")).take()
         );
         final Matcher matcher;
         try {
-            matcher = ((Pattern) new ObjectInputStream(bais).readObject()).matcher(
+            matcher = ((Pattern) new ObjectInputStream(stream).readObject()).matcher(
                 new Dataized(match.take("txt")).asString()
             );
         } catch (final IOException | ClassNotFoundException ex) {
