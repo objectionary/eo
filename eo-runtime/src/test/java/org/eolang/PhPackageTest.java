@@ -89,7 +89,7 @@ final class PhPackageTest {
     @ParameterizedTest
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
-        final Phi parent = new PhPackage("Φ.org.eolang");
+        final Phi parent = new PhPackage(this.phiPackageName());
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
             String.format(
@@ -105,14 +105,14 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage("Φ.org.eolang").take("failed"),
+            () -> new PhPackage(this.phiPackageName()).take("failed"),
             "Should throw if object cannot be instantiated, but it was"
         );
     }
 
     @Test
     void returnsSelfOnCopy() {
-        final Phi pckg = new PhPackage("Φ.org.eolang");
+        final Phi pckg = new PhPackage(this.phiPackageName());
         MatcherAssert.assertThat(
             "Package object should return itself on copying",
             pckg.copy(),
@@ -124,8 +124,8 @@ final class PhPackageTest {
     void returnsForma() {
         MatcherAssert.assertThat(
             "Should return valid forma",
-            new PhPackage("Φ.org.eolang").forma(),
-            Matchers.equalTo("Φ.org.eolang")
+            new PhPackage(this.phiPackageName()).forma(),
+            Matchers.equalTo(this.phiPackageName())
         );
     }
 
@@ -133,14 +133,14 @@ final class PhPackageTest {
     void returnsLocator() {
         MatcherAssert.assertThat(
             "locator of the DEFAULT_PACKAGE must be ?:?:?, but is wasn't",
-            new PhPackage("Φ.org.eolang").locator(),
+            new PhPackage(this.phiPackageName()).locator(),
             Matchers.equalTo("?:?:?")
         );
     }
 
     @Test
     void findsAttributesInThreads() {
-        final PhPackage pckg = new PhPackage("Φ.org.eolang");
+        final PhPackage pckg = new PhPackage(this.phiPackageName());
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
@@ -150,6 +150,13 @@ final class PhPackageTest {
                 Matchers.not(Matchers.hasItem(true))
             )
         );
+    }
+
+    /**
+     * Returns the phi package name.
+     */
+    private String phiPackageName() {
+        return "Φ.org.eolang";
     }
 
     private static Stream<Arguments> attributes() {
