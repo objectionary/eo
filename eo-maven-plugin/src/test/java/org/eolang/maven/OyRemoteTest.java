@@ -26,11 +26,11 @@ final class OyRemoteTest {
         MatcherAssert.assertThat(
             "OyRemove.UrlOy generates correct URL for program",
             new OyRemote.UrlOy(
-                "https://github.com/objectionary/home/tree/%s/objects/%s.eo",
+                "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app"),
             Matchers.is(
-                new URL("https://github.com/objectionary/home/tree/abcde/objects/org/eolang/app.eo")
+                new URL("https://raw.githubusercontent.com/objectionary/home/abcde/objects/org/eolang/app.eo")
             )
         );
     }
@@ -54,7 +54,7 @@ final class OyRemoteTest {
         Assertions.assertThrows(
             MalformedURLException.class,
             () -> new OyRemote.UrlOy(
-                "hts:github.com/objectionary/home/tree/%s/objects/%s.eo",
+                "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "xyz"
             ).value("org.eolang.app"),
             "Expected MalformedURLException when the URL format is invalid"

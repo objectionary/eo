@@ -39,7 +39,7 @@ final class OyRemote implements Objectionary {
      */
     OyRemote(final CommitHash hash) {
         this.program = new UrlOy(
-            "https://github.com/objectionary/home/tree/%s/objects/%s.eo",
+            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash
         );
         this.directory = new UrlOy(
@@ -104,7 +104,7 @@ final class OyRemote implements Objectionary {
      * <p>Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
      * 2nd for program or directory name, for
-     * <a href="https://github.com/objectionary/home/tree/%s/objects/%s.eo">programExample</a>
+     * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
      * or
      * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
      *
@@ -118,7 +118,7 @@ final class OyRemote implements Objectionary {
          * <p>Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
          * 2nd for program or directory name, for
-         * <a href="https://github.com/objectionary/home/tree/%s/objects/%s.eo">programExample</a>
+         * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
          * or
          * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
          */
