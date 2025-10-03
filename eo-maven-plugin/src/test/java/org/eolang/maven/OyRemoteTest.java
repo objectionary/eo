@@ -26,11 +26,11 @@ final class OyRemoteTest {
         MatcherAssert.assertThat(
             "OyRemove.UrlOy generates correct URL for program",
             new OyRemote.UrlOy(
-                "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+                "https://raw/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app"),
             Matchers.is(
-                new URL("https://raw.githubusercontent.com/objectionary/home/abcde/objects/org/eolang/app.eo")
+                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
             )
         );
     }
