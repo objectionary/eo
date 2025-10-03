@@ -117,7 +117,7 @@ final class OyCachedTest {
     }
 
     @Test
-    void checksIsDirectoryWithNotExisingInCache() throws IOException {
+    void checksIsDirectoryWithNotExistingInCache() throws IOException {
         final String key = "jeff";
         final Input value = new InputOf("[] > jeff");
         final Map<String, Input> programs = new MapOf<>();
@@ -126,7 +126,7 @@ final class OyCachedTest {
             "The directory should not be found in cache, but it was",
             new OyCached(
                 new Objectionary.Fake(nme -> value), programs, dirs
-            ).isDirectory("key"),
+            ).isDirectory("not-in-cache"),
             Matchers.is(false)
         );
     }

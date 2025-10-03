@@ -62,7 +62,7 @@ final class OyCached implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        final Input obj = this.programs.computeIfAbsent(
+        return this.programs.computeIfAbsent(
             name, key -> {
                 try {
                     return this.origin.get(name);
@@ -74,15 +74,12 @@ final class OyCached implements Objectionary {
                 }
             }
         );
-        if (obj != null) {
-            this.directories.put(name, false);
-        }
-        return obj;
     }
 
     @Override
     public boolean contains(final String name) throws IOException {
-        return this.programs.containsKey(name) || this.directories.containsKey(name)
+        return this.programs.containsKey(name)
+            || Boolean.TRUE.equals(this.directories.get(name))
             || this.origin.contains(name);
     }
 

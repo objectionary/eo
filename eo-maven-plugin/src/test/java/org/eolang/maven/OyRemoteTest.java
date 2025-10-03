@@ -38,7 +38,7 @@ final class OyRemoteTest {
     @Test
     void buildsCorrectUrlForDirectory() throws Exception {
         MatcherAssert.assertThat(
-            "OyRemove.UrlOy generates correct URL for directory",
+            "OyRemote.UrlOy generates correct URL for directory",
             new OyRemote.UrlOy(
                 "https://github.com/objectionary/home/tree/%s/objects/%s",
                 "abcde"
