@@ -69,7 +69,7 @@ final class ChTextTest {
     void readsCorrectHashByTagFromFile(
         final String hash,
         final String tag
-    ) throws IOException {
+    ) {
         new Saved(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             dir.resolve("tags.txt")
