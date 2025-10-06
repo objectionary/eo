@@ -28,12 +28,18 @@ import org.junit.jupiter.params.provider.CsvSource;
 @ExtendWith(MktmpResolver.class)
 final class ChTextTest {
 
+    /**
+     * Test file path in temp dir.
+     */
+    private static Path file;
+
     @BeforeAll
     @ExtendWith(MktmpResolver.class)
     static void setUp(@Mktmp final Path dir) throws IOException {
+        ChTextTest.file = dir.resolve("tags.txt");
         new Saved(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            dir.resolve("tags.txt")
+            ChTextTest.file
         ).value();
     }
 
@@ -61,7 +67,6 @@ final class ChTextTest {
         "be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9"
     })
     void readsCorrectHashByTagFromFile(
-        @Mktmp final Path dir,
         final String hash,
         final String tag
     ) throws IOException {
@@ -71,7 +76,7 @@ final class ChTextTest {
         ).value();
         MatcherAssert.assertThat(
             "ChText should read the correct hash by tag from the file, but it didn't",
-            new ChText(dir.resolve("tags.txt"), tag).value(),
+            new ChText(ChTextTest.file, tag).value(),
             Matchers.equalTo(hash)
         );
     }
