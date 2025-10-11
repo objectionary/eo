@@ -16,15 +16,13 @@ asserts:
   - //java[contains(text(), '((PhDefault) rr).add("φ",')]
   - //java[contains(text(), 'Phi rrr = rrh.take("ρ")')]
   - //java[contains(text(), 'rrr = rrr.take("ρ")')]
-  - //java[contains(text(), 'rrr = new PhMethod(rrr, "this")')]
   - //java[contains(text(), 'rrr = new PhMethod(rrr, "x")')]
   - //java[contains(text(), 'return rrr;')]
 input: |
   # No comments.
   [x] > foo
-    $ > this
     # No comments.
     [] > xyz
       # No comments.
       [] > bar
-        this.x > @
+        x > @

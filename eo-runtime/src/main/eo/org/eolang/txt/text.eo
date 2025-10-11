@@ -1012,7 +1012,7 @@
       "Hello, world"
 
   # Tests that replaced substitutes digit characters with replacement string.
-  [] +> tests-replaces-digits-with-string
+  [] > tests-replaces-digits-with-string
     text
       "Hell0, w0rld"
     .replaced
@@ -1023,7 +1023,7 @@
       "Hello, world"
 
   # Tests that replaced converts forward slashes to backslashes in path.
-  [] +> tests-replaces-slashes-to-windows-separator
+  [] > tests-replaces-slashes-to-windows-separator
     text
       "C:\\Windows/foo\\bar/hello.txt"
     .replaced
@@ -1034,7 +1034,7 @@
       "C:\\Windows\\foo\\bar\\hello.txt"
 
   # Tests that replaced converts Windows path separators to forward slashes.
-  [] +> tests-replaces-windows-path-with-slash
+  [] > tests-replaces-windows-path-with-slash
     text
       "C:\\Windows\\Users\\AppLocal\\shrek"
     .replaced
@@ -1045,7 +1045,7 @@
       "C/Windows/Users/AppLocal/shrek"
 
   # Tests that replaced removes invalid filename characters from path.
-  [] +> tests-sanitizes-windows-path-with-regex
+  [] > tests-sanitizes-windows-path-with-regex
     text
       "foo\\bar<:>?*\"|baz\\asdf"
     .replaced

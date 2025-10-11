@@ -860,9 +860,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.start(ctx);
         if (ctx.data() == null) {
             final String base;
-            if (ctx.XI() != null) {
-                base = "ξ";
-            } else if (ctx.STAR() != null) {
+            if (ctx.STAR() != null) {
                 base = "Φ.org.eolang.tuple";
                 this.objects.prop("star");
             } else if (ctx.ROOT() != null) {

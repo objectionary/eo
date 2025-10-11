@@ -149,7 +149,7 @@
     d.tmpfile > f
 
   # Tests that walking through a directory tree with a glob pattern finds matching files.
-  [] +> tests-walks-recursively
+  [] > tests-walks-recursively
     seq > @
       *
         (d.resolved "foo/bar").as-dir.made

@@ -36,7 +36,7 @@ input: |
     and > @
       (scanner stdin).next-line > line!
       (stdout "You entered" line).print
-      $
+      and.@
       ^.i
       foo
       Q.org.eolang.random
