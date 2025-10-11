@@ -69,6 +69,9 @@ public final class MjPull extends MjSafe {
         final String hsh = this.hash.value();
         for (final TjForeign tojo : tojos) {
             final String object = tojo.identifier();
+            if (this.objectionary.isDirectory(object)) {
+                continue;
+            }
             try {
                 tojo.withSource(this.pulled(object, base, hsh))
                     .withHash(new ChNarrow(this.hash));

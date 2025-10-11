@@ -66,4 +66,23 @@ final class OyIndexed implements Objectionary {
         }
         return result;
     }
+
+    // @checkstyle IllegalCatchCheck (7 line)
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @Override
+    public boolean isDirectory(final String name) throws IOException {
+        boolean result;
+        try {
+            result = !this.index.contains(name) && this.delegate.isDirectory(name);
+        } catch (final Exception ex) {
+            Logger.warn(
+                this,
+                "Failed to check object %s in objectionary index: %[exception]s",
+                name,
+                ex
+            );
+            result = this.delegate.isDirectory(name);
+        }
+        return result;
+    }
 }

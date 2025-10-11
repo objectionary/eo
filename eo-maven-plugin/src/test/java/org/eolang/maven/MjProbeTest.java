@@ -51,7 +51,7 @@ final class MjProbeTest {
     @Test
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
         final String tag = "0.50.0";
-        final String expected = "6";
+        final String expected = "10";
         final String found = new FakeMaven(temp)
             .with("tag", tag)
             .with("objectionary", new OyRemote(new ChRemote(tag)))
