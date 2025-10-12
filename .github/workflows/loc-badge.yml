@@ -20,10 +20,14 @@ jobs:
         with:
           debug: true
           directory: .
-          badge: target/loc-badge.svg
-      - uses: JamesIves/github-pages-deploy-action@v4.7.3
+          badge: gh-pages/loc-badge.svg
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v7
         with:
-          branch: gh-pages
-          folder: target
-          clean: false
-        if: github.ref == 'refs/heads/master'
+          sign-commits: true
+          branch: loc-badge
+          commit-message: 'new LoC badge'
+          delete-branch: true
+          title: 'Update LoC badge'
+          assignees: yegor256
+          base: gh-pages
