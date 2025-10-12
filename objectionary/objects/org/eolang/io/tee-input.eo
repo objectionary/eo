@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+version 0.58.6
++version 0.58.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:43
@@ -85,7 +85,7 @@
               m
       01-02-03-04-05
 
-  # Tests that tee-input can be chained to read from bytes input and write to two different memory blocks.
+  # Tests that tee-input can be chained to read from bytes input and write to 2 different memory blocks.
   [] +> tests-reads-from-bytes-and-writes-to-two-memory-blocks
     eq. > @
       malloc.of

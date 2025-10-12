@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.58.6
++version 0.58.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -16,6 +16,7 @@
 #   operation2      # Executed for side effects
 #   final-value     # Executed and returned
 # ```
+# .
 [steps] > seq
   if. > @
     steps.length.eq 0
@@ -40,7 +41,7 @@
         (dataized tup.head).as-bool.eq --
         tup.length.eq last-index
 
-  # Tests that seq correctly processes steps and returns the last value when used with float comparison (less than).
+  # Tests that seq step processing and final value return with float less than comparison.
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
       1
@@ -56,7 +57,7 @@
                     m.as-number
                 1.1
 
-  # Tests that seq correctly processes steps and returns the last value when used with float comparison (greater than).
+  # Tests that seq step processing and final value return with float greater than comparison.
   [] +> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
@@ -72,7 +73,7 @@
                     m.as-number
                 0.9
 
-  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than).
+  # Tests that seq step processing and final value return with integer less than comparison.
   [] +> tests-seq-single-dataization-int-less
     malloc.of > @
       1
@@ -88,7 +89,7 @@
                     m.as-number
                 2
 
-  # Tests that seq correctly processes steps and returns the last value when used with integer comparison (less than or equal).
+  # Tests that seq step processing and final value return with integer than or equal comparison.
   [] +> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
       1
@@ -170,7 +171,7 @@
                     m.as-number
                 1
 
-  # Tests that seq handles memory caching correctly when accessing array elements and performing operations.
+  # Tests that seq properly caches memory when processing array elements.
   [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
       1

@@ -2,9 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.58.6
++rt jvm org.eolang:eo-runtime:0.58.8
 +rt node eo2js-runtime:0.0.0
-+version 0.58.6
++version 0.58.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint many-void-attributes:49
@@ -59,7 +59,7 @@
         sin-addr.size
       sin-zero.size
 
-  # Tests that the inet_addr Win32 function returns the correct network address for localhost (127.0.0.1).
+  # Tests Win32 inet_addr returns correct localhost (127.0.0.1) address.
   [] +> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not

@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.58.6
++rt jvm org.eolang:eo-runtime:0.58.8
 +rt node eo2js-runtime:0.0.0
-+version 0.58.6
++version 0.58.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -22,6 +22,7 @@
 #   error-handler      # catch
 #   cleanup-action     # finally
 # ```
+# .
 [main catch finally] > try ?
   # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception

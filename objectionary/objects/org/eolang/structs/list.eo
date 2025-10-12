@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+version 0.58.6
++version 0.58.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -19,6 +19,7 @@
 # list.map [x] (x.plus 1)  # Map operation
 # list.filter [x] (x.gt 0) # Filter elements
 # ```
+# .
 [origin] > list
   origin > @
   # Checks if the list contains no elements.
@@ -301,6 +302,13 @@
         origin.length.neg.lte end
         end.plus origin.length
         0
+
+  # Create a new list without the first `shift` elements.
+  [shift] > shifted
+    slice. > @
+      ^
+      shift
+      origin.length
 
   # Tests that a list with elements is not empty.
   [] +> tests-list-should-not-be-empty
@@ -918,3 +926,21 @@
         4
         -5
       list *
+
+  # Tests that shifted will work if the shift parameter is less than the list length.
+  [] +> tests-shifted-with-shift-less-than-length
+    eq. > @
+      shifted.
+        list
+          * 8 2 3 4 5
+        2
+      * 3 4 5
+  
+  # Tests that shifted will work if the shift parameter is greater than the list length.
+  [] +> tests-shifted-with-shift-greater-than-length
+    eq. > @
+      shifted.
+        list
+          * 8 2 3 4 5
+        6
+      *
