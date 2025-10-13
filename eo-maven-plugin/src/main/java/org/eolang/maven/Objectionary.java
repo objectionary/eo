@@ -65,7 +65,7 @@ interface Objectionary {
         /**
          * Function that emulates 'isDirectory' method in {@link Objectionary}.
          */
-        private final Func<? super String, Boolean> checker;
+        private final Func<? super String, Boolean> directories;
 
         /**
          * Ctor.
@@ -100,16 +100,16 @@ interface Objectionary {
          *
          * @param gett Lambda func for get()
          * @param cont Lambda func for contains()
-         * @param chckr Lambda func for isDirectory()
+         * @param dirs Lambda func for isDirectory()
          */
         Fake(
             final Func<? super String, ? extends Input> gett,
             final Func<? super String, Boolean> cont,
-            final Func<? super String, Boolean> chckr
+            final Func<? super String, Boolean> dirs
         ) {
             this.getter = gett;
             this.container = cont;
-            this.checker = chckr;
+            this.directories = dirs;
         }
 
         @Override
@@ -124,7 +124,7 @@ interface Objectionary {
 
         @Override
         public boolean isDirectory(final String name) {
-            return new Unchecked<>(() -> this.checker.apply(name)).value();
+            return new Unchecked<>(() -> this.directories.apply(name)).value();
         }
 
         @Override
