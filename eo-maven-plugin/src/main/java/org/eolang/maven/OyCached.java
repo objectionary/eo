@@ -91,7 +91,10 @@ final class OyCached implements Objectionary {
                     return this.origin.isDirectory(name);
                 } catch (final IOException exception) {
                     throw new IllegalStateException(
-                        String.format("Failed to fetch object %s from the origin objectionary", name),
+                        String.format(
+                            "Failed to fetch object %s from the origin objectionary",
+                            name
+                        ),
                         exception
                     );
                 }
