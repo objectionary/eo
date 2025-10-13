@@ -77,7 +77,7 @@ final class OyIndexed implements Objectionary {
         } catch (final Exception ex) {
             Logger.warn(
                 this,
-                "Failed to check object %s in objectionary index: %[exception]s",
+                "Failed to check object %s in objectionary index: %[exception]s. Try to check via delegate",
                 name,
                 ex
             );
