@@ -83,13 +83,13 @@ final class OyRemote implements Objectionary {
     public boolean contains(final String name) throws IOException {
         final URL file = this.program.value(name);
         final URL dir = this.directory.value(name);
-        return exists(file) || exists(dir);
+        return OyRemote.exists(file) || OyRemote.exists(dir);
     }
 
     @Override
     public boolean isDirectory(final String name) throws IOException {
         final URL url = this.directory.value(name);
-        return exists(url);
+        return OyRemote.exists(url);
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
