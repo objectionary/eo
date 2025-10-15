@@ -74,7 +74,7 @@ final class OyIndexedTest {
     void checksIsDirectoryForObject() throws IOException {
         MatcherAssert.assertThat(
             "OyIndexed must contain stdout object, but it doesn't",
-            new OyIndexed(new Objectionary.Fake()).isDirectory(OyIndexedTest.STDOUT_OBJECT),
+            new OyIndexed(new Objectionary.Fake()).isDirectory("org.eolang.io.stdout"),
             Matchers.is(false)
         );
     }
