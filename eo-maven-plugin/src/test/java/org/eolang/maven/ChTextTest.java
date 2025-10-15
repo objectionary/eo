@@ -67,14 +67,9 @@ final class ChTextTest {
         "be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9"
     })
     void readsCorrectHashByTagFromFile(
-        @Mktmp final Path dir,
         final String hash,
         final String tag
-    ) throws IOException {
-        new Saved(
-            new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            dir.resolve("tags.txt")
-        ).value();
+    ) {
         MatcherAssert.assertThat(
             "ChText should read the correct hash by tag from the file, but it didn't",
             new ChText(ChTextTest.file, tag).value(),
