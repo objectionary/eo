@@ -20,8 +20,13 @@ jobs:
             "eo-parser/src/main/xs3p/xs3p.xsl" \
             "eo-parser/src/main/resources/XMIR.xsd" \
             > "gh-pages/xsd/XMIR-${{github.ref_name}}.html"
-      - uses: JamesIves/github-pages-deploy-action@v4.7.3
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v7
         with:
-          branch: gh-pages
-          folder: gh-pages
-          clean: false
+          sign-commits: true
+          branch: xsd-documentation
+          commit-message: 'new XMIR XSD documetation'
+          delete-branch: true
+          title: 'Update XMIR XSD documentation'
+          assignees: yegor256
+          base: gh-pages

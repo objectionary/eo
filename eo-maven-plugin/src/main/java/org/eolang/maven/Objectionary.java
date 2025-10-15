@@ -35,6 +35,15 @@ interface Objectionary {
     boolean contains(String name) throws IOException;
 
     /**
+     * Checks whether a provided object is a directory.
+     *
+     * @param name Object name.
+     * @return Boolean: "true" if directory, "false" if not.
+     * @throws IOException If fails to fetch.
+     */
+    boolean isDirectory(String name) throws IOException;
+
+    /**
      * Objectionary with lambda-function Ctor-s for testing.
      *
      * @since 0.28.11
@@ -52,6 +61,11 @@ interface Objectionary {
          * Function that emulates 'contains()' method in {@link Objectionary}.
          */
         private final Func<? super String, Boolean> container;
+
+        /**
+         * Function that emulates 'isDirectory' method in {@link Objectionary}.
+         */
+        private final Func<? super String, Boolean> directories;
 
         /**
          * Ctor.
@@ -76,7 +90,8 @@ interface Objectionary {
         Fake(final Func<? super String, ? extends Input> gett) {
             this(
                 gett,
-                s -> true
+                s -> true,
+                s -> false
             );
         }
 
@@ -85,13 +100,16 @@ interface Objectionary {
          *
          * @param gett Lambda func for get()
          * @param cont Lambda func for contains()
+         * @param dirs Lambda func for isDirectory()
          */
         Fake(
             final Func<? super String, ? extends Input> gett,
-            final Func<? super String, Boolean> cont
+            final Func<? super String, Boolean> cont,
+            final Func<? super String, Boolean> dirs
         ) {
             this.getter = gett;
             this.container = cont;
+            this.directories = dirs;
         }
 
         @Override
@@ -102,6 +120,11 @@ interface Objectionary {
         @Override
         public boolean contains(final String name) {
             return new Unchecked<>(() -> this.container.apply(name)).value();
+        }
+
+        @Override
+        public boolean isDirectory(final String name) {
+            return new Unchecked<>(() -> this.directories.apply(name)).value();
         }
 
         @Override

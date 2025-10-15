@@ -89,4 +89,45 @@ final class OyCachedTest {
             Matchers.equalTo(expected)
         );
     }
+
+    @Test
+    void checksIsDirectoryWithEmptyCache() throws IOException {
+        MatcherAssert.assertThat(
+            "The directory should not be found in origin, but it was",
+            new OyCached(
+                new Objectionary.Fake(), new MapOf<>()
+            ).isDirectory("xxx"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void checksIsDirectoryWithExistingInCache() throws IOException {
+        final String key = "abc";
+        final Input value = new InputOf("[] > abc");
+        final Map<String, Input> programs = new MapOf<>();
+        final Map<String, Boolean> dirs = new MapOf<>(key, true);
+        MatcherAssert.assertThat(
+            "The directory should be found in cache, but it was not",
+            new OyCached(
+                new Objectionary.Fake(nme -> value), programs, dirs
+            ).isDirectory(key),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void checksIsDirectoryWithNotExistingInCache() throws IOException {
+        final String key = "jeff";
+        final Input value = new InputOf("[] > jeff");
+        final Map<String, Input> programs = new MapOf<>();
+        final Map<String, Boolean> dirs = new MapOf<>(key, true);
+        MatcherAssert.assertThat(
+            "The directory should not be found in cache, but it was",
+            new OyCached(
+                new Objectionary.Fake(nme -> value), programs, dirs
+            ).isDirectory("not-in-cache"),
+            Matchers.is(false)
+        );
+    }
 }
