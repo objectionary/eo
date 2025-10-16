@@ -1,13 +1,13 @@
 +alias org.eolang.fs.dir
 +alias org.eolang.fs.file
-+alias org.eolang.sys.os
-+alias org.eolang.structs.list
-+alias org.eolang.txt.regex
-+alias org.eolang.txt.text
++alias org.eolang.sm.os
++alias org.eolang.ss.list
++alias org.eolang.tt.regex
++alias org.eolang.tt.text
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.58.8
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:56

@@ -1,11 +1,11 @@
-+alias org.eolang.structs.list
-+alias org.eolang.txt.sprintf
++alias org.eolang.ss.list
++alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.58.8
++package org.eolang.tt
++rt jvm org.eolang:eo-runtime:0.59.0
 +rt node eo2js-runtime:0.0.0
-+version 0.58.8
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 

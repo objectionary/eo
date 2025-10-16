@@ -1,11 +1,11 @@
-+alias org.eolang.txt.sprintf
++alias org.eolang.tt.sprintf
 +alias org.eolang.fs.tmpdir
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.58.8
++rt jvm org.eolang:eo-runtime:0.59.0
 +rt node eo2js-runtime:0.0.0
-+version 0.58.8
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:18
@@ -153,8 +153,8 @@
     seq > @
       *
         (d.resolved "foo/bar").as-dir.made
-        (d.resolved "foo/bar/test.txt").as-file.touched
+        (d.resolved "foo/bar/test.tt").as-file.touched
         (d.resolved "x/y/z").as-dir.made
-        (d.resolved "x/y/z/a.txt").as-file.touched
-        (d.as-dir.walk "**/*.txt").length.eq 2
+        (d.resolved "x/y/z/a.tt").as-file.touched
+        (d.as-dir.walk "**/*.tt").length.eq 2
     (dir tmpdir.tmpfile.deleted).made.as-path > d

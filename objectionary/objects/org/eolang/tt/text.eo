@@ -1,12 +1,12 @@
-+alias org.eolang.structs.bytes-as-array
-+alias org.eolang.structs.list
-+alias org.eolang.txt.regex
-+alias org.eolang.txt.sprintf
-+alias org.eolang.txt.sscanf
++alias org.eolang.ss.bytes-as-array
++alias org.eolang.ss.list
++alias org.eolang.tt.regex
++alias org.eolang.tt.sprintf
++alias org.eolang.tt.sscanf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.txt
-+version 0.58.8
++package org.eolang.tt
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:24
@@ -366,14 +366,14 @@
       idx
 
   # Returns `text` where all regex target changed to replacement.
-  # Here `target` must be a `org.eolang.txt.regex` object.
+  # Here `target` must be a `org.eolang.tt.regex` object.
   # The `replacement` here is a `string` that would be pasted instead of
   # matched text in original one.
   [target replacement] > replaced
     if. > @
       matched.exists.not
-      QQ.txt.text reinit
-      QQ.txt.text
+      QQ.tt.text reinit
+      QQ.tt.text
         rec-replaced matched "" matched.start
     origin > self-as-bytes!
     string self-as-bytes > reinit

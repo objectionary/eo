@@ -1,11 +1,11 @@
-+alias org.eolang.sys.os
-+alias org.eolang.sys.posix
-+alias org.eolang.sys.win32
-+alias org.eolang.txt.sprintf
++alias org.eolang.sm.os
++alias org.eolang.sm.posix
++alias org.eolang.sm.win32
++alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.net
-+version 0.58.8
++package org.eolang.nk
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing

@@ -1,10 +1,10 @@
-+alias org.eolang.sys.os
++alias org.eolang.sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.58.8
++package org.eolang.sm
++rt jvm org.eolang:eo-runtime:0.59.0
 +rt node eo2js-runtime:0.0.0
-+version 0.58.8
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint many-void-attributes:49
@@ -29,7 +29,7 @@
 # WriteFile, etc.
 [name args] > win32
   # Makes an actual function call to operating system
-  # Returns `org.eolang.sys.win32.return` object.
+  # Returns `org.eolang.sm.win32.return` object.
   [] > @ ?
   -10 > std-input-handle
   -11 > std-output-handle

@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.58.8
++package org.eolang.tt
++rt jvm org.eolang:eo-runtime:0.59.0
 +rt node eo2js-runtime:0.0.0
-+version 0.58.8
++version 0.59.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:55
@@ -19,7 +19,7 @@
 # Also it can be specified by the flag option,
 # e.g.
 # ```
-# (`QQ.txt.regex "/(word)/i").compiled.matches "WORD"
+# (`QQ.tt.regex "/(word)/i").compiled.matches "WORD"
 # ```
 # Supported flags:
 # /d - Enables Unix lines mode.
@@ -45,7 +45,7 @@
   # ptn2.matches "hey"                  # compiles regex
   # ptn2.matches "hello"                # doesn't recompile regex
   # ```
-  # Returns `org.eolang.txt.regex.pattern` object.
+  # Returns `org.eolang.tt.regex.pattern` object.
   [] > @ ?
 
   # Regular expression compiled into pattern.
@@ -63,8 +63,8 @@
       (matched-from-index 1 0).matched > next
 
       # Get `position`-th block matched from `start` position.
-      # If string subsequence is found - returns `org.eolang.txt.regex.pattern.match.matched`
-      # object, returns `org.eolang.txt.regex.pattern.match.not-matched` otherwise.
+      # If string subsequence is found - returns `org.eolang.tt.regex.pattern.match.matched`
+      # object, returns `org.eolang.tt.regex.pattern.match.not-matched` otherwise.
       #
       # Attention! The object is for internal usage only, please
       # don't use the object programmatically outside of `regex` object.
