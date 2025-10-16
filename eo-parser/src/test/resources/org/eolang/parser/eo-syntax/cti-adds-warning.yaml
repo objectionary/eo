@@ -34,6 +34,6 @@ input: |
     # No comments.
     [] > app
       QQ.io.stdout > @
-        QQ.txt.sprintf
+        QQ.tt.sprintf
           "The result is %d\n"
           foo

@@ -11,7 +11,7 @@
 # while > last
 #   i.lt 5 > [i]
 #   [i]
-#     QQ.txt.sprintf > @
+#     QQ.t.sprintf > @
 #       "Iteration %d\n"
 #       * i
 # ```

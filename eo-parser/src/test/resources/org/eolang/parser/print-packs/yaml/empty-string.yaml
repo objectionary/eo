@@ -6,11 +6,11 @@ origin: |
   # No comments.
   [] > app
     QQ.io.stdout > @
-      QQ.txt.sprintf ""
+      QQ.tt.sprintf ""
 
 printed: |
   # No comments.
   [] > app'
     io.stdout > @
-      txt.sprintf:0
+      tt.sprintf:0
         "":0

@@ -23,7 +23,7 @@ asserts:
 input: |
   # Foo.
   [name] > foo
-    QQ.txt.sprintf "Hello, %s!" (* name) > @
+    QQ.tt.sprintf "Hello, %s!" (* name) > @
     [] +> formats-name
       eq. > @
         foo "Bar"

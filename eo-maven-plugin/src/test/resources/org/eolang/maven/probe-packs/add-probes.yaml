@@ -5,9 +5,9 @@
 probes:
   - 'org'
   - 'org.eolang'
-  - 'org.eolang.txt'
-  - 'org.eolang.txt.sprintf'
-  - 'org.eolang.txt.text'
+  - 'org.eolang.tt'
+  - 'org.eolang.tt.sprintf'
+  - 'org.eolang.tt.text'
   - 'org.eolang.car'
   - 'org.eolang.car.engine'
   - 'org.eolang.car.engine.start'
@@ -29,8 +29,8 @@ eo: |
 
   # No comments.
   [] > app
-    QQ.txt.text.^.q > s
-    QQ.txt.sprintf > @
+    QQ.tt.text.^.q > s
+    QQ.tt.sprintf > @
       "Hello, world!\n"
     start. > a
       engine.
