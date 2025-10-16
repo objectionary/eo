@@ -36,7 +36,7 @@ final class OyIndexedTest {
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
             "OyIndexed must contain stdout object, but it doesn't",
-            new OyIndexed(new Objectionary.Fake()).contains("org.eolang.io.stdout"),
+            new OyIndexed(new Objectionary.Fake()).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -47,8 +47,8 @@ final class OyIndexedTest {
             "OyIndexed with fake index must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
-                new ObjectsIndex(() -> Collections.singleton("org.eolang.io.stdout"))
-            ).contains("org.eolang.io.stdout"),
+                new ObjectsIndex(() -> Collections.singleton(this.stdout()))
+            ).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -64,7 +64,7 @@ final class OyIndexedTest {
                         throw new IllegalStateException("Fake exception");
                     }
                 )
-            ).contains("org.eolang.io.stdout"),
+            ).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -74,7 +74,7 @@ final class OyIndexedTest {
     void checksIsDirectoryForObject() throws IOException {
         MatcherAssert.assertThat(
             "OyIndexed must contain stdout object, but it doesn't",
-            new OyIndexed(new Objectionary.Fake()).isDirectory("org.eolang.io.stdout"),
+            new OyIndexed(new Objectionary.Fake()).isDirectory(this.stdout()),
             Matchers.is(false)
         );
     }
@@ -87,5 +87,12 @@ final class OyIndexedTest {
             new OyIndexed(new Objectionary.Fake()).isDirectory("xxx"),
             Matchers.is(false)
         );
+    }
+
+    /**
+     * Returns the stdout path.
+     */
+    private String stdout() {
+        return "org.eolang.io.stdout";
     }
 }
