@@ -1,0 +1,946 @@
++alias org.eolang.ss.list
++alias org.eolang.tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ss
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:18
++unlint redundant-object:24
+
+# List implements basic operations on collections like reducing, mapping, filtering, etc.
+# Decorates and extends `tuple` to provide functional programming operations.
+#
+# Usage examples:
+# ```
+# list (* 1 2 3)           # Create list from tuple
+# list.is-empty            # Check if empty
+# list.map [x] (x.plus 1)  # Map operation
+# list.filter [x] (x.gt 0) # Filter elements
+# ```
+# .
+[origin] > list
+  origin > @
+  # Checks if the list contains no elements.
+  0.eq origin.length > is-empty
+  # Returns a new list sorted via `.lt` method.
+  # @todo #3251:30min The object does not work. After moving `list` object
+  #  to eo-runtime this is the only method which does not work because it's quite
+  #  hard to implement properly, especially after big changes in EO semantic.
+  #  We need to get it done and write some tests for it.
+  origin > sorted
+
+  # Create a new list with this element added to the end of it.
+  [x] > with
+    list > @
+      origin.with x
+
+  # Create a new list with an element inserted by the provided index.
+  [index item] > withi
+    concat. > @
+      with.
+        front index
+        item
+      back
+        origin.length.minus index
+
+  # Reduce with index from "start" using the function "func".
+  # Here "func" must be an abstract object with three free attributes.
+  # The first one for the accumulator, the second one
+  # for the element of the collection and the third one for the index.
+  [start func] > reducedi
+    if. > @
+      is-empty
+      start
+      rec-reducedi origin
+
+    [tup] > rec-reducedi
+      if. > @
+        tup.length.eq 1
+        func
+          start
+          tup.head
+          0
+        func
+          rec-reducedi tup.tail
+          tup.head
+          tup.tail.length
+
+  # Reduce from "start" using the function "func".
+  # Here "func" must be an abstract object with two free attributes.
+  # The first one for the accumulator, the second one for the element
+  # of the collection.
+  [start func] > reduced
+    reducedi > @
+      start
+      func accum item > [accum item idx] >>
+
+  # Map with index. Here "func" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the collection, the second one
+  # for the index.
+  [func] > mappedi
+    list > @
+      reducedi
+        *
+        [accum item idx] >>
+          accum.with > @
+            func item idx
+
+  # Map without index. Here "func" must be an abstract
+  # object with one free attribute, for the element
+  # of the collection.
+  [func] > mapped
+    mappedi > @
+      func item > [item idx] >>
+
+  # For each collection element dataize the object
+  # Here "func" must be an abstract object with
+  # two free attributes: the element of the
+  # collection and its index.
+  # The result of `func` must be dataizable.
+  [func] > eachi
+    reducedi > @
+      true
+      [acc item index] >>
+        seq * > @
+          acc
+          func item index
+
+  # For each collection element dataize the object
+  # Here "func" must be an abstract object with
+  # one free attribute, the element of the collection.
+  [func] > each
+    eachi > @
+      func item > [item index] >>
+
+  # Create a new list without the i-th element.
+  [i] > withouti
+    list > @
+      reducedi
+        *
+        [accum item idx] >>
+          if. > @
+            i.eq idx
+            accum
+            accum.with item
+
+  # Create a new list without the `element` which is `.eq` to given one.
+  [element] > without
+    list > @
+      reduced
+        *
+        [accum item] >>
+          if. > @
+            element.eq item
+            accum
+            accum.with item
+
+  # Checks if all elements of the current list are `.eq`
+  # to the all elements of given collection.
+  [other] > eq
+    and. > @
+      eq.
+        origin.length
+        other.length
+      rec-eq origin other
+
+    [first second] > rec-eq
+      if. > @
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          rec-eq first.tail second.tail
+
+  # Concatenates current list with given one.
+  [passed] > concat
+    (list passed).reducedi > @
+      ^
+      accum.with item > [accum item index]
+
+  # Returns index of the first particular item in list.
+  # If the list has no this item, index-of returns -1.
+  [wanted] > index-of
+    number > @
+      rec-index-of origin
+
+    [tup] > rec-index-of
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          next.eq -1
+          if.
+            tup.head.eq wanted
+            tup.tail.length
+            -1
+          next
+      rec-index-of tup.tail > next!
+
+  # Returns index of the last particular item in list.
+  # If the list has no this item, returns -1.
+  [wanted] > last-index-of
+    rec-last-index-of origin > @
+
+    [tup] > rec-last-index-of
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          tup.head.eq wanted
+          tup.tail.length
+          rec-last-index-of tup.tail
+
+  # Returns `true` if the list contains `element`.
+  # Otherwise, `false`.
+  [element] > contains
+    not. > @
+      eq.
+        -1
+        index-of element
+
+  # Filter list with index with the function `func`.
+  # Here `func` must be an abstract
+  # object with two attributes. The first
+  # one for the element, the second one
+  # for the index. The result of dataization
+  # the `func` should be boolean, that is `true` or `false`.
+  [func] > filteredi
+    list > @
+      rec-filteredi origin
+
+    [tup] > rec-filteredi
+      if. > @
+        tup.length.eq 0
+        *
+        if.
+          func tup.head tup.tail.length
+          next.with tup.head
+          next
+      rec-filteredi tup.tail > next
+
+  # Filter list without index with the function `func`.
+  # Here `func` must be an abstract object
+  # with one attribute for the element.
+  # The result of dataization the `func`
+  # should be boolean, that is `true` or `false`.
+  [func] > filtered
+    filteredi > @
+      func item > [item index] >>
+
+  # Get the first `index` elements from the start of the list.
+  [index] > front
+    if. > @
+      idx.eq 0
+      list *
+      if.
+        0.gt idx
+        back (number idx).neg
+        if.
+          (number idx).gte origin.length
+          ^
+          list
+            rec-head origin
+    index > idx!
+
+    [tup] > rec-head
+      if. > @
+        tup.length.eq idx
+        tup
+        rec-head tup.tail
+
+  # Get the last `index` elements from the end of the list.
+  [index] > back
+    if. > @
+      0.gt start
+      ^
+      list
+        reducedi
+          *
+          [accum item idx] >>
+            if. > @
+              idx.gte start
+              accum.with item
+              accum
+    index > idx!
+    origin.length.minus idx > start!
+
+  # Get a sublist from `start` index to `end` index (not inclusive).
+  [start end] > slice
+    if. > @
+      (number s).gte e
+      list *
+      list
+        reducedi
+          *
+          [accum item idx] >>
+            if. > @
+              and.
+                idx.gte s
+                idx.lt e
+              accum.with item
+              accum
+    if. > s!
+      start.gte 0
+      if.
+        start.gte origin.length
+        origin.length
+        start
+      if.
+        origin.length.neg.lte start
+        start.plus origin.length
+        0
+    if. > e!
+      end.gte 0
+      if.
+        end.gte origin.length
+        origin.length
+        end
+      if.
+        origin.length.neg.lte end
+        end.plus origin.length
+        0
+
+  # Create a new list without the first `shift` elements.
+  [shift] > shifted
+    slice. > @
+      ^
+      shift
+      origin.length
+
+  # Tests that a list with elements is not empty.
+  [] +> tests-list-should-not-be-empty
+    not. > @
+      is-empty.
+        list
+          * 1 2
+
+  # Tests that an empty list is empty.
+  (list *).is-empty > [] +> list-should-be-empty
+
+  # Tests that a list with three anonymous objects is not empty.
+  [] +> tests-list-should-not-be-empty-with-three-objects
+    (list xs).is-empty.not > @
+    * > xs
+      [x]
+      [y]
+      [z]
+
+  # Tests that a list with one anonymous object is not empty.
+  [] +> tests-list-should-not-be-empty-with-one-anon-object
+    (list xs).is-empty.not > @
+    * > xs
+      [f]
+
+  # Tests that adding an element to the end of a list works correctly.
+  [] +> tests-list-simple-with
+    eq. > @
+      with.
+        list
+          * 1 2
+        3
+      * 1 2 3
+
+  # Tests that inserting an element at a specific index works correctly.
+  [] +> tests-simple-insert
+    eq. > @
+      withi.
+        list
+          * 1 2 3 4 5
+        3
+        "hello"
+      * 1 2 3 "hello" 4 5
+
+  # Tests that inserting an element at index zero prepends it to the list.
+  [] +> tests-insert-with-zero-index
+    eq. > @
+      withi.
+        list
+          * 1 2 3 4 5
+        0
+        "hello"
+      * "hello" 1 2 3 4 5
+
+  # Tests that reducing a list with index access works correctly.
+  [] +> tests-reduce-list-with-index
+    eq. > @
+      6
+      reducedi.
+        list
+          * 1 1
+        0
+        [a x i] >>
+          plus. > @
+            x
+            a.plus
+              (* 2 2).at i
+
+  # Tests that reducing a long array of integers with index works correctly.
+  [] +> tests-list-reducedi-long-int-array
+    eq. > @
+      reducedi.
+        list
+          * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+        0
+        x.plus a > [a x i]
+      1
+
+  # Tests that reducing an array of boolean values with index works correctly.
+  [] +> tests-list-reducedi-bools-array
+    not. > @
+      reducedi.
+        list
+          * true true false
+        true
+        x.and a > [a x i]
+
+  # Tests that reducing with nested functions and conditional logic works correctly.
+  [] +> tests-list-reducedi-nested-functions
+    eq. > @
+      reducedi.
+        list
+          * 10 500
+        0
+        [acc x i]
+          check x > @
+          [el] > check
+            if. > @
+              ^.x.lt 100
+              ^.acc.plus x
+              ^.acc.minus x
+      plus.
+        10
+        0.minus 500
+
+  # Tests that reducing a list without index access works correctly.
+  [] +> tests-list-reduce-without-index
+    eq. > @
+      reduced.
+        list
+          * 1 2 3 4
+        -1
+        a.times x > [a x]
+      -24
+
+  # Tests that reducing a list to create a formatted string works correctly.
+  [] +> tests-list-reduced-printing
+    eq. > @
+      reduced.
+        list
+          * 0 1
+        ""
+        [acc item]
+          acc.concat > @
+            sprintf
+              "%d"
+              * item
+      "01"
+
+  # Tests that comparing complex nested lists works correctly.
+  [] +> tests-complex-objects-list-comparison
+    list
+      *
+        list (* 0 1)
+        list (* 4 0)
+        list (* 7 3)
+    .eq > @
+      *
+        * 0 1
+        * 4 0
+        * 7 3
+
+  # Tests that mapping with index access transforms elements correctly.
+  [] +> tests-list-mappedi-should-work
+    eq. > @
+      mappedi.
+        list
+          * 1 2 3 4
+        i.times x > [x i]
+      * 0 2 6 12
+
+  # Tests that mapping without index transforms elements correctly.
+  [] +> tests-simple-list-mapping
+    eq. > @
+      mapped.
+        list
+          * 1 2 3
+        x.times 2 > [x]
+      * 2 4 6
+
+  # Tests that iterating over elements with index access works correctly.
+  [] +> tests-iterates-with-eachi
+    eq. > @
+      malloc.for
+        0
+        [m]
+          list
+            * 1 2 3
+          .eachi > @
+            [item index] >>
+              ^.m.put > @
+                plus.
+                  ^.m.as-number.plus item
+                  index
+      9
+
+  # Tests that iterating over elements without index access works correctly.
+  [] +> tests-iterates-with-each
+    eq. > @
+      malloc.for
+        0
+        [m]
+          list
+            * 1 2 3
+          .each > @
+            ^.m.put (^.m.as-number.plus i) > [i] >>
+      6
+
+  # Tests that removing an element by index works correctly.
+  [] +> tests-list-withouti
+    eq. > @
+      withouti.
+        list
+          * 1 2 3
+        1
+      * 1 3
+
+  # Tests that removing an element by index works in complex scenarios.
+  [] +> tests-list-withouti-complex-case
+    eq. > @
+      foo
+        * 1 "text" "f"
+      * "text" "f"
+    [a] > foo
+      withouti. > @
+        list a
+        0
+
+  # Tests that removing an element by index works with nested arrays.
+  [] +> tests-list-withouti-nested-array
+    eq. > @
+      withouti.
+        list
+          * "smthg" 27 (* 3 2 1)
+        2
+      * "smthg" 27
+
+  # Tests that removing all occurrences of a value works correctly.
+  [] +> tests-list-without
+    eq. > @
+      without.
+        list
+          * 1 2 1 2 1 5
+        2
+      * 1 1 1 5
+
+  # Tests that list equality comparison works correctly for equal lists.
+  [] +> tests-equality-test
+    eq. > @
+      list
+        * 1 2 3
+      * 1 2 3
+
+  # Tests that list equality comparison works correctly for unequal lists.
+  [] +> tests-not-equality-test
+    not. > @
+      eq.
+        list
+          * 1 2 3
+        * 3 2 1
+
+  # Tests that concatenating two lists works correctly.
+  [] +> tests-concatenates-lists
+    and. > @
+      eq.
+        1
+        list3.at 0
+      eq.
+        list3
+        * 1 2 3
+    withouti. > list3
+      concat.
+        list (* 0 1)
+        list (* 2 3)
+      0
+
+  # Tests that concatenating a list with a tuple works correctly.
+  [] +> tests-concatenates-with-tuple
+    eq. > @
+      concat.
+        list
+          * 0 1
+        * 2 4
+      * 0 1 2 4
+
+  # Tests that finding the index of an element works correctly.
+  [] +> tests-returns-index-of
+    eq. > @
+      1
+      index-of.
+        list
+          * 1 2 3
+        2
+
+  # Tests that finding the first index of a duplicated element works correctly.
+  [] +> tests-returns-first-index-of-element
+    eq. > @
+      0
+      index-of.
+        list
+          * -1 2 -1
+        -1
+
+  # Tests that index-of returns -1 for non-existent elements.
+  [] +> tests-does-not-find-index-of
+    eq. > @
+      -1
+      index-of.
+        list
+          * "qwerty" 2 3
+        7
+
+  # Tests that finding the index of a string element works correctly.
+  [] +> tests-finds-index-of-string
+    eq. > @
+      1
+      index-of.
+        list
+          * "asdfgh" "qwerty" 3
+        "qwerty"
+
+  # Tests that finding the last index of an element works correctly.
+  [] +> tests-finds-last-index-of
+    eq. > @
+      1
+      last-index-of.
+        list
+          * "qwerty" 2 3
+        2
+
+  # Tests that finding the last index of a repeated element works correctly.
+  [] +> tests-finds-last-index-of-repeated
+    eq. > @
+      2
+      last-index-of.
+        list
+          * 24 42 24
+        24
+
+  # Tests that last-index-of returns -1 for non-existent elements.
+  [] +> tests-last-index-of-not-found
+    eq. > @
+      -1
+      last-index-of.
+        list
+          * 1 2 3
+        0
+
+  # Tests that last-index-of returns -1 for empty lists.
+  [] +> tests-last-index-of-empty
+    eq. > @
+      -1
+      last-index-of.
+        list *
+        "abc"
+
+  # Tests that finding the last index of unicode strings works correctly.
+  [] +> tests-last-index-of-unicode
+    eq. > @
+      3
+      last-index-of.
+        list
+          * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+        "Привет"
+
+  # Tests that checking if a list contains a string works correctly.
+  [] +> tests-list-contains-string
+    contains. > @
+      list
+        * "qwerty" "asdfgh" 3 "qwerty"
+      "qwerty"
+
+  # Tests that checking if a list contains a number works correctly.
+  [] +> tests-list-contains-number
+    contains. > @
+      list
+        * "qwerty" "asdfgh" 3 "qwerty"
+      3
+
+  # Tests that checking if a list does not contain an element works correctly.
+  [] +> tests-list-does-not-contain
+    not. > @
+      contains.
+        list
+          * "Привет" "asdfgh" 3 "qwerty"
+        "Hi"
+
+  # Tests that filtering with index using less-than comparison works correctly.
+  [] +> tests-filteredi-with-lt
+    eq. > @
+      filteredi.
+        list
+          * 3 1 4 2 5
+        v.lt 3 > [v i]
+      * 1 2
+
+  # Tests that filtering with index based on string length works correctly.
+  [] +> tests-filteredi-with-string-length
+    eq. > @
+      filteredi.
+        list
+          * "Hello" "Name" "EO" "List"
+        v.length.gt 4 > [v i]
+      * "Hello"
+
+  # Tests that filtering an empty list with index returns an empty list.
+  [] +> tests-filteredi-with-empty-list
+    is-empty. > @
+      filteredi.
+        list
+          *
+        v.lt 3 > [v i]
+
+  # Tests that filtering elements by their index position works correctly.
+  [] +> tests-filteredi-by-index
+    eq. > @
+      filteredi.
+        list
+          * 3 1 4
+        i.gt 0 > [v i]
+      * 1 4
+
+  # Tests that filtering boolean values with index works correctly.
+  [] +> tests-filteredi-with-bools
+    eq. > @
+      filteredi.
+        list
+          * true false true
+        v.not > [v i]
+      * false
+
+  # Tests that filtering without index using greater-than comparison works correctly.
+  [] +> tests-simple-filtered
+    eq. > @
+      filtered.
+        list
+          * 3 1 4 2 5
+        v.gt 2 > [v]
+      * 3 4 5
+
+  # Tests that filtering boolean values without index works correctly.
+  [] +> tests-filtered-with-bools
+    eq. > @
+      filtered.
+        list
+          * true false true
+        v.not > [v]
+      * false
+
+  # Tests that getting the first element from a list works correctly.
+  [] +> tests-simple-front
+    eq. > @
+      front.
+        list
+          * 1 2 3 4 5
+        1
+      * 1
+
+  # Tests that getting front with zero index returns an empty list.
+  [] +> tests-list-front-with-zero-index
+    is-empty. > @
+      front.
+        list
+          * 1 2 3
+        0
+
+  # Tests that getting front with length index returns the entire list.
+  [] +> tests-list-front-with-length-index
+    eq. > @
+      front.
+        list
+          * 1 2 3
+        3
+      * 1 2 3
+
+  # Tests that getting front elements works correctly with complex data types.
+  [] +> tests-complex-front
+    eq. > @
+      front.
+        list
+          * "foo" 2.2 00-01 "bar"
+        2
+      * "foo" 2.2
+
+  # Tests that getting front with negative index returns elements from the end.
+  [] +> tests-front-with-negative
+    eq. > @
+      front.
+        list
+          * 1 2 3
+        -1
+      * 3
+
+  # Tests that getting front with negative index works with complex data types.
+  [] +> tests-complex-front-with-negative
+    eq. > @
+      front.
+        list
+          * "foo" 2.2 00-01 "bar"
+        -3
+      * 2.2 00-01 "bar"
+
+  # Tests that getting the last elements from a list works correctly.
+  [] +> tests-simple-back
+    eq. > @
+      back.
+        list
+          * 1 2 3 4 5
+        2
+      * 4 5
+
+  # Tests that getting back with zero index returns an empty list.
+  [] +> tests-zero-index-in-back
+    is-empty. > @
+      back.
+        list
+          * 1 2 3 4 5
+        0
+
+  # Tests that getting back with large index returns the entire list.
+  [] +> tests-large-index-in-back
+    eq. > @
+      back.
+        list
+          * 1 2 3 4 5
+        10
+      * 1 2 3 4 5
+
+  # Tests that slice works correctly.
+  [] +> tests-simple-slice
+    eq. > @
+      slice.
+        list
+          * 1 2 3 4 5
+        1
+        5
+      * 2 3 4 5
+
+  # Tests that slice with negative start index works correctly.
+  [] +> tests-slice-with-negative-start
+    eq. > @
+      slice.
+        list
+          * 8 76 -3 0 3 8 -12
+        -4
+        6
+      * 0 3 8
+
+  # Tests that slice with negative end index works correctly.
+  [] +> tests-slice-with-negative-end
+    eq. > @
+      slice.
+        list
+          * "a" 2 3.0 "xyz" 82.42 7
+        0
+        -1
+      * "a" 2 3.0 "xyz" 82.42
+
+  # Tests that slice with both negative start and end indices works correctly.
+  [] +> tests-slice-with-negative-start-and-end
+    eq. > @
+      slice.
+        list
+          * 8 23 0 0 "foo"
+        -4
+        -1
+      * 23 0 0
+
+  # Tests that slice with end greater than length works correctly.
+  [] +> tests-slice-with-end-gt-length
+    eq. > @
+      slice.
+        list
+          * "foo" "bar" "buzz"
+        1
+        10
+      * "bar" "buzz"
+
+  # Tests that slice with start less than negative length works correctly.
+  [] +> tests-slice-with-start-lt-negative-length
+    eq. > @
+      slice.
+        list
+          * 9 99 999 9999
+        -10
+        3
+      * 9 99 999
+
+  # Tests that slice with end less than negative length returns an empty list.
+  [] +> tests-slice-with-end-lt-negative-length
+    eq. > @
+      slice.
+        list
+          * "A" "b" "C" "d" "E"
+        2
+        -9
+      list *
+
+  # Tests that slice with start greater than or equal end (both positive) returns an empty list.
+  [] +> tests-slice-with-start-gte-end-both-positive
+    eq. > @
+      slice.
+        list
+          * 3 "-5" 0 "foo"
+        2
+        0
+      list *
+
+  # Tests that slice with start greater than or equal end (both negative) returns an empty list.
+  [] +> tests-slice-with-start-gte-end-both-negative
+    eq. > @
+      slice.
+        list
+          * 3 92 -423 0 22 943 -22
+        -3
+        -5
+      list *
+
+  # Tests that slice with negative start greater than or equal end returns an empty list.
+  [] +> tests-slice-with-negative-start-gte-end
+    eq. > @
+      slice.
+        list
+          * "f" 1 "b" 2 "b" 3
+        -1
+        3
+      list *
+
+  # Tests that slice with start greater than or equal negative end returns an empty list.
+  [] +> tests-slice-with-start-gte-negative-end
+    eq. > @
+      slice.
+        list
+          * 8 -2 33-53 -1 33 "Y"
+        4
+        -5
+      list *
+
+  # Tests that shifted will work if the shift parameter is less than the list length.
+  [] +> tests-shifted-with-shift-less-than-length
+    eq. > @
+      shifted.
+        list
+          * 8 2 3 4 5
+        2
+      * 3 4 5
+  
+  # Tests that shifted will work if the shift parameter is greater than the list length.
+  [] +> tests-shifted-with-shift-greater-than-length
+    eq. > @
+      shifted.
+        list
+          * 8 2 3 4 5
+        6
+      *

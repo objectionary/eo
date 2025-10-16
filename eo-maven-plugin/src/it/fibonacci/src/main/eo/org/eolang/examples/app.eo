@@ -4,20 +4,20 @@
 +package org.eolang.examples
 +alias org.eolang.examples.fibonacci
 +alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
-+alias org.eolang.txt.sscanf
++alias org.eolang.tt.sprintf
++alias org.eolang.tt.sscanf
 +architect yegor256@gmail.com
 
 # Application.
 [args] > app
   number > n
     at. > nn!
-      QQ.txt.sscanf
+      QQ.tt.sscanf
         "%d"
         args.at 0
       0
   at. > e!
-    QQ.txt.sscanf
+    QQ.tt.sscanf
       "%d"
       args.at 1
     0

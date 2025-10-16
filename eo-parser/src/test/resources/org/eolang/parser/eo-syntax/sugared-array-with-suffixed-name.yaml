@@ -5,11 +5,11 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.org.eolang.txt.sprintf']/o[@base='Φ.org.eolang.x']
-  - //o[@base='Φ.org.eolang.txt.sprintf']//o[@base='Φ.org.eolang.y']
+  - //o[@base='Φ.org.eolang.tt.sprintf']/o[@base='Φ.org.eolang.x']
+  - //o[@base='Φ.org.eolang.tt.sprintf']//o[@base='Φ.org.eolang.y']
 input: |
   # No comments.
   [] > app
-    QQ.txt.sprintf *1 > @
+    QQ.tt.sprintf *1 > @
       x
       y

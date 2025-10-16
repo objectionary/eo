@@ -22,7 +22,7 @@ asserts:
   - /object/metas/meta[head='decorate' and tail='string QQ.number foo.bar' and part='Φ.org.eolang.string' and part='Φ.org.eolang.number' and part='Φ.org.eolang.foo.bar']
 input: |
   +alias foo
-  +alias scanner org.eolang.txt.scanner
+  +alias scanner org.eolang.tt.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
   +foo Some other meta

@@ -8,7 +8,7 @@ file: org/eolang/snippets/fibo.eo
 args: ["org.eolang.snippets.fibo"]
 eo: |
   +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
+  +alias org.eolang.tt.sprintf
   +package org.eolang.snippets
 
   # No comments.

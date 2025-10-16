@@ -41,7 +41,7 @@ public final class MjUnspile extends MjSafe {
      * Inner auto generated classes.
      * <p>These globs are used for inner classes which may look like:
      * - EOorg/EOeolang/EOnumber$1$2$4.class
-     * - EOorg/EOeolang/EOsys/EOsocket$EOΦorgeolangsyssocketα0ρ.class</p>
+     * - EOorg/EOeolang/EOsm/EOsocket$EOΦorgeolangsyssocketα0ρ.class</p>
      */
     private static final Collection<String> INNER = List.of(
         "**/EO*$[1-9]*.class", "**/*$EOΦ*.class"

@@ -60,7 +60,7 @@ asserts:
   - //o[@base='Q']
 input: |
   +alias foo
-  +alias scanner org.eolang.txt.scanner
+  +alias scanner org.eolang.tt.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
   +foo Some other meta

@@ -116,7 +116,7 @@ argument: a copy of the object `sprintf`:
 # Says hello to Jeff.
 [] > app
   QQ.io.stdout > @
-    QQ.txt.sprintf
+    QQ.tt.sprintf
       "Hello, %s!"
       * "Jeffrey"
 ```
@@ -127,7 +127,7 @@ This program can be written using horizontal notation:
 
 ```eo
 +alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
++alias org.eolang.tt.sprintf
 
 # Also says hello to Jeff.
 [] > app
@@ -148,7 +148,7 @@ inside `app` and use it to build the output string:
 [] > app
   QQ.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    QQ.txt.sprintf "Hello, %s!" (* name) > @
+    QQ.tt.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
@@ -169,7 +169,7 @@ This is how you iterate:
           [i] >>
             seq * > @
               QQ.io.stdout
-                QQ.txt.sprintf *1
+                QQ.tt.sprintf *1
                   "%d x %1$d = %d\n"
                   x
                   x.as-number.times x

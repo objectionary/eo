@@ -9,14 +9,14 @@ List<String> expected = [
   'eo/5-transpile/org/eolang/malloc.xmir',
   'eo/5-transpile/org/eolang/runtime.xmir',
   'generated-sources/EOorg/EOeolang/EOdataized.java',
-  'generated-sources/EOorg/EOeolang/EOnet/EOsocket.java',
+  'generated-sources/EOorg/EOeolang/EOnk/EOsocket.java',
   'generated-test-sources/EOorg/EOeolang/EOtryEOAtomTest.java',
   'classes/EOorg/package-info.class',
   'classes/EOorg/EOeolang/package-info.class',
-  'classes/EOorg/EOeolang/EOsys/package-info.class',
-  'classes/EOorg/EOeolang/EOmath/package-info.class',
+  'classes/EOorg/EOeolang/EOsm/package-info.class',
+  'classes/EOorg/EOeolang/EOms/package-info.class',
   'classes/EOorg/EOeolang/EOfs/package-info.class',
-  'classes/EOorg/EOeolang/EOtxt/package-info.class',
+  'classes/EOorg/EOeolang/EOtt/package-info.class',
 ]
 
 for (path in expected) {

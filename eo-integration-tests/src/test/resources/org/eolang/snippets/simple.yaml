@@ -12,7 +12,7 @@ args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
   +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
+  +alias org.eolang.tt.sprintf
 
   # No comments.
   [args] > simple
