@@ -40,7 +40,7 @@ final class EOwin32Test {
             new Dataized(
                 new PhWith(
                     new PhWith(
-                        Phi.Φ.take("org.eolang.sys.win32").copy(),
+                        Phi.Φ.take("org.eolang.sm.win32").copy(),
                         "name",
                         new Data.ToPhi("GetCurrentProcessId")
                     ),
