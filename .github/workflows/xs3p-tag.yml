@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v5
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes xsltproc
       - run: |
-          mkdir gh-pages
+          mkdir -p gh-pages/xsd
           xsltproc \
             "eo-parser/src/main/xs3p/xs3p.xsl" \
             "eo-parser/src/main/resources/XMIR.xsd" \
