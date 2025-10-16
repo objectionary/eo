@@ -19,17 +19,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
+ * @todo #4533:15min Enable integration tests that depend on released EO version.\
+ *  For now these tests fail, since they fetch old objects with `$` removed syntax:
+ *  `JarIT#runsProgramFromJar`, `SnippetIT#runsAllSnippets`,
+ *  `ReadmeSnippetsIT#validatesReadmeSnippets`. We need to release new EO version without `$`
+ *  (`\xi`) syntax, and then enable tests. They all should pass.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
 
+    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)

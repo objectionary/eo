@@ -48,9 +48,9 @@ input: |
         "Jeff"
       x > @
       second > hello
-        $.plus.@ 5 > i
+        plus.@ 5 > i
         third > x!
-          $
+          x.@
           z.
             z
           f
@@ -85,8 +85,7 @@ input: |
           ^.
             c
         a.
-          b.
-            $
+          b
         @.
           b
       oops > spoo
