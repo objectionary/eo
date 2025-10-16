@@ -271,9 +271,9 @@
                 <glob>EOorg/package-info.class</glob>
                 <glob>EOorg/EOeolang/package-info.class</glob>
                 <glob>EOorg/EOeolang/EOfs/package-info.class</glob>
-                <glob>EOorg/EOeolang/EOmath/package-info.class</glob>
-                <glob>EOorg/EOeolang/EOsys/package-info.class</glob>
-                <glob>EOorg/EOeolang/EOtxt/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOms/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOsm/package-info.class</glob>
+                <glob>EOorg/EOeolang/EOtt/package-info.class</glob>
               </keepBinaries>
             </configuration>
           </execution>
@@ -424,7 +424,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.20.2</version>
+            <version>0.20.3</version>
             <executions>
               <execution>
                 <goals>

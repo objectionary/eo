@@ -8,7 +8,7 @@ file: org/eolang/snippets/foo.eo
 args: ["org.eolang.snippets.foo"]
 eo: |
   +alias org.eolang.io.stdout
-  +decorate string txt.text
+  +decorate string tt.text
   +package org.eolang.snippets
 
   # No comments.

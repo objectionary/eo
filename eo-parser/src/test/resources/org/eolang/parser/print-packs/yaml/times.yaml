@@ -6,7 +6,7 @@ origin: |
   # No comments.
   [] > app
     QQ.io.stdout > @
-      QQ.txt.sprintf
+      QQ.tt.sprintf
         "result is %d\n"
         -1.times 228
 
@@ -14,7 +14,7 @@ printed: |
   # No comments.
   [] > app'
     io.stdout > @
-      txt.sprintf:0
+      tt.sprintf:0
         "result is %d\n":0
         times.:1
           -1

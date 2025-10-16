@@ -276,7 +276,7 @@ final class TjsForeign implements Closeable {
          * {@code
          * [] > main
          *   QQ.io.stdout > @
-         *     QQ.txt.sprintf "I am %d years old"
+         *     QQ.tt.sprintf "I am %d years old"
          *       plus.
          *         1337
          *         228
@@ -285,9 +285,9 @@ final class TjsForeign implements Closeable {
          * <p>In this code there are 5 objects that were probed:</p>
          *  - "org.eolang"
          *  - "org.eolang.io"
-         *  - "org.eolang.txt"
+         *  - "org.eolang.tt"
          *  - "org.eolang.io.stdout"
-         *  - "org.eolang.txt.sprintf"
+         *  - "org.eolang.tt.sprintf"
          * <p>For more info see {@link MjProbe}. </p>
          */
         PROBED("probed"),

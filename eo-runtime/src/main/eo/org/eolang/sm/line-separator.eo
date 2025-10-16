@@ -1,0 +1,18 @@
++alias org.eolang.sm.os
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.sm
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint unit-test-missing
+
+# Returns the system-dependent line separator string.
+# On UNIX systems, it returns "\n";
+# on Microsoft Windows systems it returns "\r\n".
+string > line-separator
+  as-bytes.
+    if.
+      os.is-windows
+      "\r\n"
+      "\n"
