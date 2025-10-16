@@ -38,12 +38,12 @@ final class MjPullTest {
     void pullsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(this.stdout())
             .withVersion("*.*.*");
         maven.with("skip", false).execute(MjPull.class);
         MatcherAssert.assertThat(
             "PullMojo should have pulled stdout object, but didn't",
-            MjPullTest.exists(temp, "org.eolang.io.stdout"),
+            MjPullTest.exists(temp, this.stdout()),
             Matchers.is(true)
         );
     }
@@ -62,7 +62,7 @@ final class MjPullTest {
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "PullMojo should have pulled from probes, but it didn't",
-            MjPullTest.exists(temp, "org.eolang.io.stdout"),
+            MjPullTest.exists(temp, this.stdout()),
             Matchers.is(true)
         );
     }
@@ -75,7 +75,7 @@ final class MjPullTest {
         ).value();
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(this.stdout())
             .withVersion("*.*.*");
         maven.with("skip", false)
             .with(
@@ -94,7 +94,7 @@ final class MjPullTest {
     void pullsUsingOfflineHash(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(this.stdout())
             .withVersion("*.*.*");
         maven.with("skip", false)
             .with(
@@ -113,14 +113,14 @@ final class MjPullTest {
     void skipsPullMojo(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(this.stdout())
             .withScope("compile")
             .withVersion("*.*.*");
         maven.with("skip", true)
             .execute(MjPull.class);
         MatcherAssert.assertThat(
             "PullMojo must skip pulling, but it doesn't",
-            MjPullTest.exists(temp, "org.eolang.io.stdout"),
+            MjPullTest.exists(temp, this.stdout()),
             Matchers.is(false)
         );
     }
@@ -236,6 +236,13 @@ final class MjPullTest {
             ).asString(),
             Matchers.is(cached)
         );
+    }
+
+    /**
+     * Returns the stdout path.
+     */
+    private String stdout() {
+        return "org.eolang.io.stdout";
     }
 
     /**
