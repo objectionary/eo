@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 55
     steps:
       - uses: actions/checkout@v5
-      - uses: zerocracy/judges-action@0.15.51
+      - uses: zerocracy/judges-action@0.15.52
         with:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
@@ -28,7 +28,7 @@ jobs:
           cycles: 1
           options: |
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
-      - uses: zerocracy/pages-action@0.5.0
+      - uses: zerocracy/pages-action@0.5.2
         with:
           factbase: objectionary.fb
           output: pages
