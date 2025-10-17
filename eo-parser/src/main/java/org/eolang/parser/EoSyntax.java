@@ -99,8 +99,6 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/expand-aliases.xsl",
                     "/org/eolang/parser/parse/resolve-aliases.xsl",
                     "/org/eolang/parser/parse/resolve-compacts.xsl",
-                    "/org/eolang/parser/parse/validate-before-stars.xsl",
-                    "/org/eolang/parser/parse/resolve-before-stars.xsl",
                     "/org/eolang/parser/parse/add-default-package.xsl",
                     "/org/eolang/parser/parse/roll-bases.xsl",
                     "/org/eolang/parser/parse/cti-adds-errors.xsl",
