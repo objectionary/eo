@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.org.eolang.tt.sprintf']
+input: |
+  +alias org.eolang.io.stdout
+  +package org.eolang.snippets
+  
+  [args] > program
+    io.stdout > @
+      tt.sprintf *1
+        "Hello, %s\n"
+        args.at 0
