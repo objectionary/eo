@@ -18,7 +18,7 @@
   <xsl:template match="@base[starts-with(., '@compact:')]">
     <xsl:variable name="q" select="substring-after(., '@compact:')"/>
     <xsl:variable name="head" select="substring-before(concat($q, '.'), '.')"/>
-    <xsl:variable name="alias" select="/object/metas/meta[head='alias' and part[1]=$head]/part[2]"/>
+    <xsl:variable name="alias" select="/object/metas/meta[head='alias' and part[1]=$head]/part[last()]"/>
     <xsl:choose>
       <xsl:when test="parent::o/parent::o/o[@name = $head]">
         <xsl:attribute name="base">
