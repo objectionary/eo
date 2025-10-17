@@ -9,7 +9,7 @@ asserts:
 input: |
   +alias org.eolang.io.stdout
   +package org.eolang.snippets
-  
+
   [args] > program
     io.stdout > @
       tt.sprintf *1
