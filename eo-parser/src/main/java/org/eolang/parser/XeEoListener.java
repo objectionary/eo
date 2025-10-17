@@ -7,8 +7,6 @@ package org.eolang.parser;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
@@ -584,27 +582,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.start(ctx)
             .prop("base", new CompactArrayFqn(ctx).asString())
             .prop("before-star", count);
-    }
-
-    private static List<String> aliases(final EoParser.ProgramContext program) {
-        final List<String> result;
-        if (program.metas() == null) {
-            result = Collections.emptyList();
-        } else {
-            result = Arrays.stream(program.metas().getText().split("\n"))
-                .filter(m -> m.startsWith("+alias"))
-                .map(a -> a.replace("+alias", ""))
-                .collect(Collectors.toList());
-        }
-        return result;
-    }
-
-    private static EoParser.ProgramContext programContext(final ParserRuleContext ctx) {
-        ParserRuleContext p = ctx;
-        while (p.getParent() != null) {
-            p = (ParserRuleContext) p.getParent();
-        }
-        return (EoParser.ProgramContext) p;
     }
 
     @Override
