@@ -92,7 +92,7 @@ final class OyRemoteTest {
         final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
             "OyRemote positively checks the presence of the directory in Objectionary",
-            objectionary.contains("org.eolang.math"),
+            objectionary.contains("org.eolang.ms"),
             Matchers.is(true)
         );
     }
@@ -118,7 +118,7 @@ final class OyRemoteTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfDirectoryWithNarrowHash() throws IOException {
-        final String stdout = "org.eolang.structs";
+        final String stdout = "org.eolang.ss";
         MatcherAssert.assertThat(
             String.format(
                 "OyRemote with narrow hash should have contained directory %s, but it didn't",
