@@ -7,7 +7,8 @@
   <!--
     Here we go through all `@compact:oname` bases and resolve it's FQN:
     1. If `oname` is defined in the current scope => `oname`
-    2. Otherwise => `Φ.org.eolang.oname`
+    2. Else if an alias exists for `oname` => use FQN from alias
+    3. Otherwise => `Φ.org.eolang.oname`
   -->
   <xsl:template match="@*|node()">
     <xsl:copy>
