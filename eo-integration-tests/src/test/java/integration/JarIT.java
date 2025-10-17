@@ -19,24 +19,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
- * @todo #4530:20min Enable JarIT#runsProgramFromJar after new EO package names will be released.
- *  Now, in test, we still trying to run it on previous package names: `sys`, `txt`, and so on,
- *  however, we refactored package names to be more compact: `sm`, `tt`, etc. Once it will be
- *  released, we must enable this test, it should pass. These tests should be enabled as well:
- *  `SnippetIT#runsAllSnippets`, `ReadmeSnippetsIT#validatesReadmeSnippets`.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
 
-    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
