@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-compacts" version="2.0">
   <!--
     Here we go through all `@compact:oname` bases and resolve it's FQN:
@@ -13,7 +17,6 @@
   <xsl:template match="@base[starts-with(., '@compact:')]">
     <xsl:variable name="q" select="substring-after(., '@compact:')"/>
     <xsl:variable name="head" select="substring-before(concat($q, '.'), '.')"/>
-    <xsl:variable name="tail" select="substring-after($q, concat($head, '.'))"/>
     <xsl:variable name="alias" select="/object/metas/meta[head='alias' and part[1]=$head]/part[2]"/>
     <xsl:choose>
       <xsl:when test="parent::o/parent::o/o[@name = $head]">
