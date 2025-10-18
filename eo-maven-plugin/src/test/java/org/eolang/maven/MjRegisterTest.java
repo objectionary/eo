@@ -22,15 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class MjRegisterTest {
-    /**
-     * Parameter for source directory.
-     */
-    private static final String PARAM = "sourcesDir";
-
-    /**
-     * Source directory.
-     */
-    private static final String SOURCES = "src/eo";
 
     @Test
     void registersOkNames(@Mktmp final Path temp) throws IOException {
@@ -39,7 +30,7 @@ final class MjRegisterTest {
             temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
         ).value();
         final FakeMaven maven = new FakeMaven(temp)
-            .with(MjRegisterTest.PARAM, temp.resolve(MjRegisterTest.SOURCES).toFile())
+            .with("sourcesDir", temp.resolve("src/eo").toFile())
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             "The resource must exist, but it doesn't",
@@ -55,7 +46,7 @@ final class MjRegisterTest {
             temp.resolve("src/eo/org/eolang/maven/.abc.eo")
         ).value();
         final FakeMaven maven = new FakeMaven(temp)
-            .with(MjRegisterTest.PARAM, temp.resolve(MjRegisterTest.SOURCES).toFile())
+            .with("sourcesDir", temp.resolve("src/eo").toFile())
             .with("strictFileNames", false)
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(

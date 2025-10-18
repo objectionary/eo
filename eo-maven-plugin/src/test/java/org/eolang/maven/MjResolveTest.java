@@ -28,16 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class MjResolveTest {
 
-    /**
-     * The message that the .class file must exist.
-     */
-    private static final String CLASS_MUST_EXIST = "The class file must exist, but it doesn't";
-
-    /**
-     * The message that the .class file must not exist.
-     */
-    private static final String CLASS_NOT_EXIST = "The class file must not exist, but it doesn't";
-
     @Test
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
@@ -58,7 +48,7 @@ final class MjResolveTest {
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             path.resolve("eo-runtime-0.7.0.class").toFile(),
             FileMatchers.anExistingFile()
         );
@@ -99,7 +89,7 @@ final class MjResolveTest {
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             path,
             new ContainsFiles("**/eo-runtime-*.class")
         );
@@ -110,7 +100,7 @@ final class MjResolveTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.class")
         );
@@ -123,7 +113,7 @@ final class MjResolveTest {
             .with("ignoreRuntime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_NOT_EXIST,
+            "The class file must not exist, but it doesn't",
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
@@ -140,7 +130,7 @@ final class MjResolveTest {
             "[] > main"
         ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.22.1.class")
         );
@@ -157,7 +147,7 @@ final class MjResolveTest {
             "[] > main"
         ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_NOT_EXIST,
+            "The class file must not exist, but it doesn't",
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
@@ -176,7 +166,7 @@ final class MjResolveTest {
             .with("project", project)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.7.0.class")
         );
@@ -193,7 +183,7 @@ final class MjResolveTest {
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.class")
         );
@@ -277,7 +267,7 @@ final class MjResolveTest {
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            MjResolveTest.CLASS_MUST_EXIST,
+            "The class file must exist, but it doesn't",
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.class")
         );

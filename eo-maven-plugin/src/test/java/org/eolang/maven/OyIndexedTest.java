@@ -20,11 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 final class OyIndexedTest {
 
-    /**
-     * Object name for stdout.
-     */
-    private static final String STDOUT_OBJECT = "org.eolang.io.stdout";
-
     @Test
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
@@ -41,7 +36,7 @@ final class OyIndexedTest {
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
             "OyIndexed must contain stdout object, but it doesn't",
-            new OyIndexed(new Objectionary.Fake()).contains(OyIndexedTest.STDOUT_OBJECT),
+            new OyIndexed(new Objectionary.Fake()).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -52,8 +47,8 @@ final class OyIndexedTest {
             "OyIndexed with fake index must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
-                new ObjectsIndex(() -> Collections.singleton(OyIndexedTest.STDOUT_OBJECT))
-            ).contains(OyIndexedTest.STDOUT_OBJECT),
+                new ObjectsIndex(() -> Collections.singleton(this.stdout()))
+            ).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -69,7 +64,7 @@ final class OyIndexedTest {
                         throw new IllegalStateException("Fake exception");
                     }
                 )
-            ).contains(OyIndexedTest.STDOUT_OBJECT),
+            ).contains(this.stdout()),
             Matchers.is(true)
         );
     }
@@ -79,7 +74,7 @@ final class OyIndexedTest {
     void checksIsDirectoryForObject() throws IOException {
         MatcherAssert.assertThat(
             "OyIndexed must contain stdout object, but it doesn't",
-            new OyIndexed(new Objectionary.Fake()).isDirectory(OyIndexedTest.STDOUT_OBJECT),
+            new OyIndexed(new Objectionary.Fake()).isDirectory(this.stdout()),
             Matchers.is(false)
         );
     }
@@ -92,5 +87,12 @@ final class OyIndexedTest {
             new OyIndexed(new Objectionary.Fake()).isDirectory("xxx"),
             Matchers.is(false)
         );
+    }
+
+    /**
+     * Returns the stdout path.
+     */
+    private String stdout() {
+        return "org.eolang.io.stdout";
     }
 }
