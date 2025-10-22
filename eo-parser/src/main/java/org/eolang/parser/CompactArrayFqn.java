@@ -47,7 +47,7 @@ final class CompactArrayFqn implements Text {
             .collect(Collectors.joining("."));
         final String fqn;
         if (this.context.HOME() == null && this.context.XI() == null) {
-            fqn = String.format("@compact:%s", name);
+            fqn = name;
         } else if (this.context.HOME() != null && this.context.XI() == null) {
             fqn = String.format("Φ.org.eolang.%s", name);
         } else {

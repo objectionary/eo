@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 sheets:
-  - /org/eolang/parser/parse/resolve-compacts.xsl
   - /org/eolang/parser/parse/validate-before-stars.xsl
   - /org/eolang/parser/parse/resolve-before-stars.xsl
 asserts:
@@ -11,27 +10,27 @@ asserts:
   - //o[@name='first' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
   - //o[@name='second' and count(o)=2]/o[position()=2 and @base='Φ.org.eolang.tuple' and @star and count(o)=2]
   - //o[@name='third' and count(o)=3]/o[position()=3 and @base='Φ.org.eolang.tuple' and @star and count(o)=1]
-  - //o[@name='fourth' and count(o)=2]/o[@base='Φ.org.eolang.sprintf' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
+  - //o[@name='fourth' and count(o)=2]/o[@base='Φ.org.eolang.tt.sprintf' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
   - //o[@name='fourth']/o[@base='Φ.org.eolang.tuple' and @star and count(o)=1]
   - /object[count(//o[@before-star])=0]
 input: |
   # No comments.
   [] > foo
-    sprintf *2 > with-error
+    QQ.tt.sprintf *2 > with-error
       x
-    sprintf * > first
-      x
-      y
-    sprintf *1 > second
+    QQ.tt.sprintf * > first
       x
       y
-      z
-    sprintf *2 > third
+    QQ.tt.sprintf *1 > second
       x
       y
       z
-    sprintf *1 > fourth
-      sprintf *
+    QQ.tt.sprintf *2 > third
+      x
+      y
+      z
+    QQ.tt.sprintf *1 > fourth
+      QQ.tt.sprintf *
         x
         y
       z
