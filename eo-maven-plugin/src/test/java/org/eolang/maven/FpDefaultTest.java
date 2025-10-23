@@ -31,12 +31,12 @@ final class FpDefaultTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FpDefault(
-                src -> this.footprintContent(),
-                Paths.get(""),
+                src -> FpDefaultTest.LAMBDA_CONTENT,
+                Paths.get("/file-doesnt-exist"),
                 "",
                 "",
-                Paths.get("")
-            ).apply(Paths.get(""), Paths.get("")),
+                Paths.get("/also-doesnt-exist")
+            ).apply(Paths.get("/is-absent"), Paths.get("/not-found")),
             "FpDefault should fail if source path does not exist"
         );
     }
