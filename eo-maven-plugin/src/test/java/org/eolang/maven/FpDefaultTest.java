@@ -51,11 +51,11 @@ final class FpDefaultTest {
             IllegalStateException.class,
             () -> new FpDefault(
                 src -> FpDefaultTest.LAMBDA_CONTENT,
-                Paths.get(""),
+                Paths.get("/file-doesnt-exist"),
                 "",
                 "",
-                Paths.get("")
-            ).apply(Paths.get(""), Paths.get("")),
+                Paths.get("/also-doesnt-exist")
+            ).apply(Paths.get("/is-absent"), Paths.get("/not-found")),
             "FpDefault should fail if source path does not exist"
         );
     }

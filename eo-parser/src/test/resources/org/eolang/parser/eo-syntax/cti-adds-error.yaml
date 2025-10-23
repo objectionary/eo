@@ -7,7 +7,7 @@ asserts:
   - /object/errors[count(*)=1]
   - /object/errors/error[@check='cti']
   - /object/errors/error[@severity='error']
-  - /object/errors/error[text()='This method is deprecated!']
+  - /object/errors/error[text()='intentional error, ignore it']
 
 input: |
   # Main.
@@ -17,7 +17,7 @@ input: |
       cti > @
         2.times 2
         "error"
-        "This method is deprecated!"
+        "intentional error, ignore it"
 
     # No comments.
     [] > app

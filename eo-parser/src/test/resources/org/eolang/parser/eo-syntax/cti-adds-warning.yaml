@@ -7,7 +7,7 @@ asserts:
   - /object/errors[count(*)=2]
   - /object/errors/error[@check='cti']
   - /object/errors/error[@severity='warning']
-  - /object/errors/error[text()='This method is deprecated!']
+  - /object/errors/error[text()='intentional error, ignore it']
 
 input: |
   +package org.eolang
@@ -21,7 +21,7 @@ input: |
         cti
           2.times 2
           "warning"
-          "This method is deprecated!"
+          "intentional error, ignore it"
         4
 
     # No comments.
@@ -29,7 +29,7 @@ input: |
       cti > @
         2.times 2
         "warning"
-        "This method is deprecated!"
+        "intentional error, ignore it"
 
     # No comments.
     [] > app
