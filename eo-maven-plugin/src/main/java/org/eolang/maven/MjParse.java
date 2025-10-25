@@ -9,6 +9,9 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -21,6 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.OnDefault;
@@ -41,6 +45,32 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 public final class MjParse extends MjSafe {
+    /**
+     * Reserved object bases from QQ.
+     */
+    private static final String QQS = String.join(
+        ",",
+        new ListOf<>(
+            "Φ.org.eolang.number",
+            "Φ.org.eolang.bytes"
+        )
+    );
+
+    /**
+     * Optimization line.
+     */
+    private static final Xsline OPTIMIZATION_LINE = new Xsline(
+        new TrDefault<>(
+            new StClasspath(
+                "/org/eolang/maven/parse/locals-to-aliases.xsl",
+                "name reserved",
+                String.format(
+                    "reserved %s",
+                    MjParse.QQS
+                )
+            )
+        )
+    );
 
     /**
      * Zero version.
@@ -104,7 +134,7 @@ public final class MjParse extends MjSafe {
                 src -> {
                     final Node node = this.parsed(src, name);
                     refs.add(node);
-                    return new XMLDocument(node).toString();
+                    return MjParse.OPTIMIZATION_LINE.pass(new XMLDocument(node)).toString();
                 },
                 this.cache.toPath().resolve(MjParse.CACHE),
                 this.plugin.getVersion(),
