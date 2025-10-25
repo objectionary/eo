@@ -185,6 +185,34 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!--
+    Here we go through all bases that match pattern: `foo.bar`, and resolve it's FQN:
+    1. If `oname` is defined in the current scope => `oname`
+    2. Else if an alias exists for `oname` => use FQN from alias
+    3. Otherwise => `Φ.org.eolang.oname`
+  -->
+  <xsl:template match="@base[matches(., '^\w+(?:\.\w+)+$') and not(starts-with(., 'Φ.')) and not(starts-with(., 'ξ'))]">
+    <xsl:variable name="q" select="."/>
+    <xsl:variable name="head" select="substring-before(concat($q, '.'), '.')"/>
+    <xsl:variable name="alias" select="/object/metas/meta[head='alias' and part[1]=$head]/part[last()]"/>
+    <xsl:choose>
+      <xsl:when test="parent::o/parent::o/o[@name = $head]">
+        <xsl:attribute name="base">
+          <xsl:value-of select="$q"/>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:when test="string-length($alias) &gt; 0">
+        <xsl:attribute name="base">
+          <xsl:value-of select="$alias"/>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="base">
+          <xsl:value-of select="concat('Φ.org.eolang.', $q)"/>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <!-- ENTRY POINT -->
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
