@@ -31,7 +31,7 @@ final class FpDefaultTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FpDefault(
-                src -> FpDefaultTest.LAMBDA_CONTENT,
+                src -> this.footprintContent(),
                 Paths.get("/file-doesnt-exist"),
                 "",
                 "",
