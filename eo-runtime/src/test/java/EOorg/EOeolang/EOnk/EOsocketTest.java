@@ -59,7 +59,7 @@ final class EOsocketTest {
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
         try {
-            final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
+            final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
@@ -88,7 +88,7 @@ final class EOsocketTest {
         final int port = random.port;
         final Thread server = new Thread(
             () -> {
-                final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
+                final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
