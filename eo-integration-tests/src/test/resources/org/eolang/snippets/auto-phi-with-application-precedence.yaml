@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out: []
+file: org/eolang/snippets/foo.eo
+args: ["org.eolang.snippets.foo"]
+eo: |
+  +alias org.eolang.io.stdout
+  +alias org.eolang.txt.text
+  +alias org.eolang.structs.list
+  +package org.eolang.snippets
+
+  [] > foo
+    "abcdefghijk" > origin
+    origin > @
+    [cont-list] > custom-map
+      mapped. > @
+        cont-list
+        (text orgn).contains x >> [x]
+      origin > orgn!
+
+    [] +> test-custom-map
+      eq. > @
+        list (* true true)
+        foo.custom-map (list (* "abc" "ghi"))
