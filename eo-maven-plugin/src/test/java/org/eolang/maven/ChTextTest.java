@@ -14,7 +14,7 @@ import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,15 +31,14 @@ final class ChTextTest {
     /**
      * Test file path in temp dir.
      */
-    private static Path file;
+    private Path file;
 
-    @BeforeAll
-    @ExtendWith(MktmpResolver.class)
-    static void setUp(@Mktmp final Path dir) throws IOException {
-        ChTextTest.file = dir.resolve("tags.txt");
+    @BeforeEach
+    void setUp(@Mktmp final Path dir) throws IOException {
+        this.file = dir.resolve("tags.txt");
         new Saved(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            ChTextTest.file
+            this.file
         ).value();
     }
 
@@ -72,7 +71,7 @@ final class ChTextTest {
     ) {
         MatcherAssert.assertThat(
             "ChText should read the correct hash by tag from the file, but it didn't",
-            new ChText(ChTextTest.file, tag).value(),
+            new ChText(this.file, tag).value(),
             Matchers.equalTo(hash)
         );
     }

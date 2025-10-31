@@ -19,17 +19,6 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhDefaultTest {
-    /**
-     * Name of attribute.
-     * @since 0.1
-     */
-    private static final String PLUS_ATT = "plus";
-
-    /**
-     * Name of attribute.
-     * @since 0.1
-     */
-    private static final String VOID_ATT = "void";
 
     @Test
     void comparesTwoObjects() {
@@ -70,7 +59,7 @@ final class PhDefaultTest {
 
     @Test
     void setsRhoAfterDispatch() {
-        final Phi kid = new PhDefaultTest.Int().take(PhDefaultTest.PLUS_ATT);
+        final Phi kid = new PhDefaultTest.Int().take(this.plus());
         Assertions.assertDoesNotThrow(
             () -> kid.take(Phi.RHO),
             String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
@@ -90,8 +79,8 @@ final class PhDefaultTest {
     @Test
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.take(PhDefaultTest.PLUS_ATT);
-        final Phi second = phi.copy().take(PhDefaultTest.PLUS_ATT);
+        final Phi first = phi.take(this.plus());
+        final Phi second = phi.copy().take(this.plus());
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
             first,
@@ -106,9 +95,9 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             "Child attributes should be copied on every dispatch",
-            phi.take(PhDefaultTest.PLUS_ATT),
+            phi.take(this.plus()),
             Matchers.not(
-                Matchers.equalTo(phi.take(PhDefaultTest.PLUS_ATT))
+                Matchers.equalTo(phi.take(this.plus()))
             )
         );
     }
@@ -116,7 +105,7 @@ final class PhDefaultTest {
     @Test
     void hasKidWithSetRhoAfterCopying() {
         final Phi phi = new PhDefaultTest.Int().copy();
-        final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi plus = phi.take(this.plus());
         Assertions.assertDoesNotThrow(
             () -> plus.take(Phi.RHO),
             String.format(
@@ -141,9 +130,9 @@ final class PhDefaultTest {
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
-            first.take(PhDefaultTest.PLUS_ATT),
+            first.take(this.plus()),
             Matchers.not(
-                Matchers.equalTo(second.take(PhDefaultTest.PLUS_ATT))
+                Matchers.equalTo(second.take(this.plus()))
             )
         );
     }
@@ -156,15 +145,15 @@ final class PhDefaultTest {
             String.format(
                 "%s attribute of original object kid should refer to original object", Phi.RHO
             ),
-            phi.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO)))
+            phi.take(this.plus()).take(Phi.RHO),
+            Matchers.not(Matchers.equalTo(copy.take(this.plus()).take(Phi.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
                 Phi.RHO
             ),
-            copy.take(PhDefaultTest.PLUS_ATT).take(Phi.RHO),
+            copy.take(this.plus()).take(Phi.RHO),
             Matchers.equalTo(copy)
         );
     }
@@ -172,7 +161,7 @@ final class PhDefaultTest {
     @Test
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi first = phi.take(this.plus());
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format(
@@ -189,7 +178,7 @@ final class PhDefaultTest {
     @Test
     void doesNotCopyRhoWhileDispatch() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
+        final Phi plus = phi.take(this.plus());
         MatcherAssert.assertThat(
             String.format("%s attributes should not be copied while dispatch", Phi.RHO),
             plus.take(Phi.RHO),
@@ -203,7 +192,7 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> copy.take(PhDefaultTest.VOID_ATT),
+            () -> copy.take(this.getVoid()),
             "Unset void attribute should be copied with unset value"
         );
     }
@@ -211,13 +200,13 @@ final class PhDefaultTest {
     @Test
     void copiesSetVoidAttributeOnCopy() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
-            phi.take(PhDefaultTest.VOID_ATT),
+            phi.take(this.getVoid()),
             Matchers.not(
-                Matchers.equalTo(copy.take(PhDefaultTest.VOID_ATT))
+                Matchers.equalTo(copy.take(this.getVoid()))
             )
         );
     }
@@ -225,11 +214,11 @@ final class PhDefaultTest {
     @Test
     void doesNotCopySetVoidAttributeWithRho() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         MatcherAssert.assertThat(
             "Void attribute should not be copied with rho, but it did",
-            phi.take(PhDefaultTest.VOID_ATT),
-            Matchers.equalTo(phi.take(PhDefaultTest.VOID_ATT))
+            phi.take(this.getVoid()),
+            Matchers.equalTo(phi.take(this.getVoid()))
         );
     }
 
@@ -251,7 +240,7 @@ final class PhDefaultTest {
             () -> phi.take(Phi.PHI),
             "Phi should not be accessible without setting void attribute, but it did"
         );
-        phi.put(PhDefaultTest.VOID_ATT, new Data.ToPhi(10L));
+        phi.put(this.getVoid(), new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
             "Phi should be accessible after setting void attribute, but it didn't"
@@ -412,7 +401,7 @@ final class PhDefaultTest {
             Matchers.not(
                 Matchers.equalTo(
                     new PhWith(
-                        five.take(PhDefaultTest.PLUS_ATT).copy(),
+                        five.take(this.plus()).copy(),
                         "x",
                         new Data.ToPhi(5)
                     ).forma()
@@ -426,13 +415,13 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "Similar Phis with different data should have the same forma, but they didn't",
             new PhWith(
-                new Data.ToPhi(5L).take(PhDefaultTest.PLUS_ATT).copy(),
+                new Data.ToPhi(5L).take(this.plus()).copy(),
                 "x",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhWith(
-                    new Data.ToPhi(6L).take(PhDefaultTest.PLUS_ATT).copy(),
+                    new Data.ToPhi(6L).take(this.plus()).copy(),
                     "x",
                     new Data.ToPhi(6L)
                 ).forma()
@@ -457,11 +446,11 @@ final class PhDefaultTest {
             new PhMethod(
                 new PhWith(
                     new PhMethod(
-                        new Rnd(), PhDefaultTest.PLUS_ATT
+                        new Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
-                PhDefaultTest.PLUS_ATT
+                this.plus()
             ),
             0, new Data.ToPhi(1.2)
         );
@@ -574,6 +563,20 @@ final class PhDefaultTest {
         return phi;
     }
 
+    /**
+     * Returns the 'plus' literal.
+     */
+    private String plus() {
+        return "plus";
+    }
+
+    /**
+     * Returns the 'void' literal.
+     */
+    private String getVoid() {
+        return "void";
+    }
+
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static void cleansUpNesting() {
         try {
@@ -617,14 +620,14 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            this.add(PhDefaultTest.VOID_ATT, new PhVoid(PhDefaultTest.VOID_ATT));
-            this.add(PhDefaultTest.PLUS_ATT, new PhSimple(new PhDefault()));
+            this.add("void", new PhVoid("void"));
+            this.add("plus", new PhSimple(new PhDefault()));
             this.add(
                 Phi.PHI,
                 new PhCached(
                     new PhComposite(
                         this,
-                        rho -> rho.take(PhDefaultTest.VOID_ATT)
+                        rho -> rho.take("void")
                     )
                 )
             );
@@ -635,7 +638,7 @@ final class PhDefaultTest {
                         this,
                         rho -> {
                             final Phi plus = new Data.ToPhi(5L).take(
-                                PhDefaultTest.PLUS_ATT
+                                "plus"
                             ).copy();
                             plus.put(0, new Data.ToPhi(6L));
                             return plus;

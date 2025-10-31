@@ -26,16 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 
-    /**
-     * The default folder for placed binaries.
-     */
-    private static final String TARGET_CLASSES = "target/classes";
-
-    /**
-     * Test library for all binaries.
-     */
-    private static final String LIBRARY = "foo/hello/-/0.1";
-
     @Test
     void placesBinaries(@Mktmp final Path temp) throws Exception {
         MjPlaceTest.saveBinary(temp, "EObar/x.bin");
@@ -67,13 +57,13 @@ final class MjPlaceTest {
             "PlaceMojo must skip already placed binaries, but it doesn't",
             new FakeMaven(temp)
                 .withPlacedBinary(
-                    temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary)
+                    temp.resolve(this.targetClasses()).resolve(binary)
                 )
-                .execute(MjPlace.class)
-                .result()
-                .get("target/classes/org/eolang/f/x.a.class")
-                .toFile()
-                .lastModified(),
+            .execute(MjPlace.class)
+            .result()
+            .get("target/classes/org/eolang/f/x.a.class")
+            .toFile()
+            .lastModified(),
             Matchers.equalTo(before)
         );
     }
@@ -105,12 +95,12 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
-                MjPlaceTest.TARGET_CLASSES
+                this.targetClasses()
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey(MjPlaceTest.TARGET_CLASSES))
+            Matchers.not(Matchers.hasKey(this.targetClasses()))
         );
     }
 
@@ -123,7 +113,7 @@ final class MjPlaceTest {
                 .with("ignoreRuntime", true)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(MjPlaceTest.TARGET_CLASSES),
+                .get(this.targetClasses()),
             new ContainsFiles("**/jna-*.class")
         );
     }
@@ -137,12 +127,12 @@ final class MjPlaceTest {
                     "PlaceMojo must not place binaries from %s",
                     "if the resolve directory does not exist"
                 ),
-                MjPlaceTest.TARGET_CLASSES
+                this.targetClasses()
             ),
             new FakeMaven(temp)
                 .execute(MjPlace.class)
                 .result(),
-            Matchers.not(Matchers.hasKey(MjPlaceTest.TARGET_CLASSES))
+            Matchers.not(Matchers.hasKey(this.targetClasses()))
         );
     }
 
@@ -182,7 +172,7 @@ final class MjPlaceTest {
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(MjPlaceTest.TARGET_CLASSES),
+                .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
         );
         MatcherAssert.assertThat(
@@ -202,7 +192,7 @@ final class MjPlaceTest {
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
-                .get(MjPlaceTest.TARGET_CLASSES),
+                .get(this.targetClasses()),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
         );
     }
@@ -241,10 +231,17 @@ final class MjPlaceTest {
     }
 
     /**
+     * Returns the target classes.
+     */
+    private String targetClasses() {
+        return "target/classes";
+    }
+
+    /**
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
      *
-     * @param temp Temp test directory.
+     * @param temp   Temp test directory.
      * @param binary Binary name.
      * @throws IOException In case of error.
      */
@@ -256,9 +253,9 @@ final class MjPlaceTest {
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
      *
-     * @param temp Temp test directory.
+     * @param temp    Temp test directory.
      * @param content Content of the binary.
-     * @param binary Binary name.
+     * @param binary  Binary name.
      * @throws IOException In case of error.
      */
     private static void saveBinary(
@@ -269,7 +266,7 @@ final class MjPlaceTest {
         new Saved(
             content,
             temp.resolve("target").resolve(MjResolve.DIR).resolve(
-                Paths.get(String.format("%s/%s", MjPlaceTest.LIBRARY, binary))
+                Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();
     }
@@ -278,7 +275,7 @@ final class MjPlaceTest {
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
      *
-     * @param temp Temp test directory.
+     * @param temp   Temp test directory.
      * @param binary Binary name.
      * @throws IOException In case of error.
      */
@@ -293,9 +290,9 @@ final class MjPlaceTest {
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
      *
-     * @param temp Temp test directory.
+     * @param temp    Temp test directory.
      * @param content Content of the binary.
-     * @param binary Binary name.
+     * @param binary  Binary name.
      * @throws IOException In case of error.
      */
     private static void saveAlreadyPlacedBinary(
@@ -303,19 +300,21 @@ final class MjPlaceTest {
         final String content,
         final String binary
     ) throws IOException {
+        final String targets = "target/classes";
         new Saved(
             content,
-            temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary)
+            temp.resolve(targets).resolve(binary)
         ).value();
     }
 
     /**
      * Path to the placed binary.
-     * @param temp Temp test directory
+     *
+     * @param temp   Temp test directory
      * @param binary Binary name.
      * @return Path to the placed binary.
      */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
-        return temp.resolve(MjPlaceTest.TARGET_CLASSES).resolve(binary);
+        return temp.resolve("target/classes").resolve(binary);
     }
 }

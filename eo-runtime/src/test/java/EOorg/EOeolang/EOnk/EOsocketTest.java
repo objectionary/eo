@@ -54,22 +54,13 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
     "JTCOP.RuleAllTestsHaveProductionClass"
 })
 final class EOsocketTest {
-    /**
-     * Localhost IP.
-     */
-    private static final String LOCALHOST = "127.0.0.1";
-
-    /**
-     * Random.
-     */
-    private static final Random RANDOM = new Random();
 
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
         try {
             final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
-            socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
+            socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
             connected.put(0, new Simple());
@@ -98,7 +89,7 @@ final class EOsocketTest {
         final Thread server = new Thread(
             () -> {
                 final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
-                socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
+                socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
                 listened.put(0, new Server(msg.length()));
@@ -108,7 +99,7 @@ final class EOsocketTest {
         server.start();
         Thread.sleep(2000);
         final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
-        socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
+        socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
         connected.put(0, new Client(msg));
@@ -127,6 +118,13 @@ final class EOsocketTest {
     }
 
     /**
+     * Returns the localhost address.
+     */
+    private String localhost() {
+        return "127.0.0.1";
+    }
+
+    /**
      * Convert port number from host to network byte order (htons).
      * @param port Port number
      * @return Port number in network byte order
@@ -142,7 +140,7 @@ final class EOsocketTest {
     private static int randomPort() {
         final int min = 10_000;
         final int max = 20_000;
-        return EOsocketTest.RANDOM.nextInt((max - min) + 1) + min;
+        return new Random().nextInt((max - min) + 1) + min;
     }
 
     /**
@@ -500,7 +498,7 @@ final class EOsocketTest {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
                 EOsocketTest.htons(port),
-                this.inetAddr(EOsocketTest.LOCALHOST)
+                this.inetAddr("127.0.0.1")
             );
         }
     }
@@ -793,7 +791,7 @@ final class EOsocketTest {
             return new SockaddrIn(
                 (short) CStdLib.AF_INET,
                 EOsocketTest.htons(port),
-                this.inetAddr(EOsocketTest.LOCALHOST)
+                this.inetAddr("127.0.0.1")
             );
         }
     }
@@ -824,7 +822,7 @@ final class EOsocketTest {
                 try {
                     this.socket = new ServerSocket();
                     this.socket.setReuseAddress(true);
-                    this.socket.bind(new InetSocketAddress(EOsocketTest.LOCALHOST, this.port));
+                    this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
                     bound = true;
                     Logger.debug(this, "Server started on port %d", this.port);
                 } catch (final IOException exception) {
