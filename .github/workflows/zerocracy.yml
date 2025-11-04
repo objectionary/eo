@@ -34,7 +34,7 @@ jobs:
           output: pages
           logo: https://www.objectionary.com/cactus.svg
           github-token: ${{ secrets.ZEROCRACY_GITHUB_PAT }}
-      - uses: JamesIves/github-pages-deploy-action@v4.7.3
+      - uses: JamesIves/github-pages-deploy-action@v4.7.4
         with:
           branch: gh-pages
           folder: pages
