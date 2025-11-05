@@ -90,29 +90,6 @@
           index.plus 1
       bts.slice index 1 > char!
 
-  # Joins `items`, which is a `tuple` of strings, using current `string`
-  # as a delimiter.
-  [items] > joined
-    text > @
-      string joined-bts
-    origin > delimiter!
-    if. > joined-bts!
-      items.length.eq 0
-      --
-      with-delimiter items.head items.tail
-
-    [acc tup] > with-delimiter
-      if. > @
-        tup.length.eq 0
-        acc
-        with-delimiter
-          concat.
-            concat.
-              dataized tup.head
-              delimiter
-            acc
-          tup.tail
-
   # Returns `text` repeated `times` times.
   # If `times` < 0, an error is returned.
   # If `times` == 0, empty text is returned.
@@ -625,26 +602,6 @@
       chained.
         text "Some"
         *
-
-  # Tests specific functionality joined method returns empty string when joining empty tuple.
-  [] +> tests-joined-no-strings
-    eq. > @
-      ""
-      (text "-").joined *
-
-  # Tests specific functionality joined method returns single string when joining one element.
-  [] +> tests-joined-one-string
-    eq. > @
-      "some"
-      (text "-").joined
-        * "some"
-
-  # Tests specific functionality joined method joins multiple strings with delimiter.
-  [] +> tests-joined-many-strings
-    eq. > @
-      "hello-world-dear-friend"
-      (text "-").joined
-        * "hello" "world" "dear" "friend"
 
   # Tests specific functionality repeated method throws error when times is negative.
   [] +> throws-on-text-repeating-less-than-zero-times
