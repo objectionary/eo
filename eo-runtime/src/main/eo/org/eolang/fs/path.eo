@@ -44,7 +44,7 @@
         posix joined-path
     string > joined-path
       as-bytes.
-        joined.
+        QQ.tt.joined
           text separator
           paths
 
@@ -79,7 +79,7 @@
             uri-as-bytes.size.plus -1
             1
           separator
-      joined. > path
+      QQ.tt.joined > path
         text separator
         reduced.
           list
@@ -331,7 +331,7 @@
               uri-as-bytes.size.plus -1
               1
             separator
-        joined. > path!
+        QQ.tt.joined > path!
           text separator
           reduced.
             list

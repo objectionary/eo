@@ -48,7 +48,7 @@
   # Tests specific functionality joined method joins multiple strings with delimiter.
   [] +> tests-joined-many-strings
     eq. > @
-      "hello-world-dearfriend"
+      "hello-world-dear-friend"
       joined
         "-"
         * "hello" "world" "dear" "friend"
