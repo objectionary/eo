@@ -87,33 +87,6 @@
           index.plus 1
       bts.slice index 1 > char!
 
-  # Returns `text` repeated `times` times.
-  # If `times` < 0, an error is returned.
-  # If `times` == 0, empty text is returned.
-  [times] > repeated
-    if. > @
-      0.gt amount
-      error
-        sprintf
-          "Can't repeat text %d times"
-          * amount
-      text
-        string repeated-bytes
-    origin > bts!
-    times > amount!
-    if. > repeated-bytes!
-      0.eq amount
-      --
-      rec-repeated bts 1
-
-    [accum index] > rec-repeated
-      if. > @
-        amount.eq index
-        accum
-        rec-repeated
-          accum.concat bts
-          (index.plus 1).as-number
-
   # Checks if current `text` contains given `substring`.
   [substring] > contains
     and. > @
@@ -599,22 +572,6 @@
       chained.
         text "Some"
         *
-
-  # Tests specific functionality repeated method throws error when times is negative.
-  [] +> throws-on-text-repeating-less-than-zero-times
-    (text "").repeated -1 > @
-
-  # Tests specific functionality repeated method returns empty string when times is zero.
-  [] +> tests-text-repeated-zero-times-is-empty
-    eq. > @
-      ""
-      (text "some").repeated 0
-
-  # Tests specific functionality repeated method repeats text specified number of times.
-  [] +> tests-text-repeated-five-times
-    eq. > @
-      "heyheyheyheyhey"
-      (text "hey").repeated 5
 
   # Tests specific functionality index-of returns -1 for non-existent substring longer than text.
   [] +> tests-index-of-non-existed-substring-with-more-length

@@ -1,0 +1,53 @@
++alias org.eolang.tt.text
++alias org.eolang.tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns `str` repeated `times` times.
+# If `times` < 0, an error is returned.
+# If `times` == 0, empty text is returned.
+[str times] > repeated
+  if. > @
+    0.gt amount
+    error
+      sprintf
+        "Can't repeat text %d times"
+        * amount
+    text
+      string repeated-bytes
+  str > bts!
+  times > amount!
+  if. > repeated-bytes!
+    0.eq amount
+    --
+    rec-repeated bts 1
+
+  [accum index] > rec-repeated
+    if. > @
+      amount.eq index
+      accum
+      rec-repeated
+        accum.concat bts
+        (index.plus 1).as-number
+
+  # Tests specific functionality repeated method throws error when times is negative.
+  [] +> throws-on-text-repeating-less-than-zero-times
+    repeated > @
+      text ""
+      -1
+
+  # Tests specific functionality repeated method returns empty string when times is zero.
+  [] +> tests-text-repeated-zero-times-is-empty
+    eq. > @
+      ""
+      repeated (text "some") 0
+
+  # Tests specific functionality repeated method repeats text specified number of times.
+  [] +> tests-text-repeated-five-times
+    eq. > @
+      "heyheyheyheyhey"
+      repeated (text "hey") 5
