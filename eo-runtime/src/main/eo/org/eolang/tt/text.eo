@@ -19,9 +19,6 @@
 # A sequence of characters representing words, sentences, or data.
 [origin] > text
   origin > @
-  # Check that all signs in string are numbers or letters.
-  # Works only for english letters.
-  (regex "/^[A-Za-z0-9]+$/").matches origin > is-alphanumeric
   # Check that all signs in string are letters.
   # Works only for english letters.
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
@@ -917,25 +914,6 @@
     is-ascii. > @
       text
         "123"
-
-  # Tests that is-alphanumeric returns true for text containing only letters.
-  [] +> tests-checks-if-simple-text-is-alphanumeric
-    is-alphanumeric. > @
-      text
-        "eEo"
-
-  # Tests that is-alphanumeric returns true for text with letters and numbers.
-  [] +> tests-checks-if-text-with-number-is-alphanumeric
-    is-alphanumeric. > @
-      text
-        "ab3d"
-
-  # Tests that is-alphanumeric returns false for text containing special characters.
-  [] +> tests-checks-if-text-with-dashes-is-not-alphanumeric
-    not. > @
-      is-alphanumeric.
-        text
-          "-w-"
 
   # Tests specific functionality is-alpha returns true for text containing only letters.
   [] +> tests-checks-if-simple-text-is-alpha
