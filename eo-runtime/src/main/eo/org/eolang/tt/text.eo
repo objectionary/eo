@@ -24,11 +24,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-  # Returns `text` trimmed from both sides.
-  if. > trimmed
-    0.eq origin.as-bytes.size
-    text origin
-    trimmed-left.trimmed-right
 
   # Takes a piece of a `text` as another `text`.
   # Here `start` must be an integer index to start slicing from,
@@ -36,56 +31,6 @@
   [start len] > slice
     text > @
       origin.slice start len
-
-  # Returns `text` trimmed from left side.
-  [] > trimmed-left
-    if. > @
-      0.eq len
-      ^
-      text
-        string
-          bts.slice
-            idx
-            (number len).minus idx
-    origin > bts!
-    bts.size > len!
-    first-non-space-index 0 > idx!
-    20- > space
-
-    [index] > first-non-space-index
-      if. > @
-        len.eq index
-        index
-        if.
-          char.eq space
-          first-non-space-index (index.plus 1).as-number
-          index
-      bts.slice index 1 > char!
-
-  # Returns `text` trimmed from right side.
-  [] > trimmed-right
-    if. > @
-      0.eq len
-      ^
-      text
-        string
-          bts.slice
-            0
-            first-non-space-index
-              (number len).plus -1
-    origin > bts!
-    bts.size > len!
-    20- > space
-
-    [index] > first-non-space-index
-      if. > @
-        -1.eq index
-        0
-        if.
-          char.eq space
-          first-non-space-index (index.plus -1).as-number
-          index.plus 1
-      bts.slice index 1 > char!
 
   # Checks if current `text` contains given `substring`.
   [substring] > contains
@@ -447,90 +392,6 @@
     eq. > @
       (text "Hello, world!").slice 7 5
       "world"
-
-  # Tests specific functionality trimmed-left returns empty string when applied to empty text.
-  [] +> tests-trimmed-left-empty-text
-    eq. > @
-      (text "").trimmed-left
-      ""
-
-  # Tests specific functionality trimmed-left removes single leading space from text.
-  [] +> tests-text-trimmed-left-one-space
-    eq. > @
-      (text " s").trimmed-left
-      "s"
-
-  # Tests specific functionality trimmed-left removes multiple leading spaces from text.
-  [] +> tests-text-trimmed-left-many-spaces
-    eq. > @
-      (text "     some").trimmed-left
-      "some"
-
-  # Tests specific functionality trimmed-left returns empty string when text contains only spaces.
-  [] +> tests-text-trimmed-left-only-spaces
-    eq. > @
-      (text "     ").trimmed-left
-      ""
-
-  # Tests specific functionality trimmed-right returns empty string when applied to empty text.
-  [] +> tests-trimmed-right-empty-text
-    eq. > @
-      (text "").trimmed-right
-      ""
-
-  # Tests specific functionality trimmed-right removes single trailing space from text.
-  [] +> tests-text-trimmed-right-one-space
-    eq. > @
-      (text "s ").trimmed-right
-      "s"
-
-  # Tests specific functionality trimmed-right removes multiple trailing spaces from text.
-  [] +> tests-text-trimmed-right-many-spaces
-    eq. > @
-      (text "some     ").trimmed-right
-      "some"
-
-  # Tests specific functionality trimmed-right returns empty string when text contains only spaces.
-  [] +> tests-text-trimmed-right-only-spaces
-    eq. > @
-      (text "     ").trimmed-right
-      ""
-
-  # Tests specific functionality trimmed removes single leading space from text.
-  [] +> tests-text-trimmed-one-space-left
-    eq. > @
-      (text " some").trimmed
-      "some"
-
-  # Tests specific functionality trimmed removes single trailing space from text.
-  [] +> tests-text-trimmed-one-space-right
-    eq. > @
-      (text "some ").trimmed
-      "some"
-
-  # Tests specific functionality trimmed removes spaces from both sides of text.
-  [] +> tests-text-trimmed-one-space-both
-    eq. > @
-      (text " some ").trimmed
-      "some"
-
-  # Tests specific functionality trimmed removes multiple spaces from both sides of text.
-  [] +> tests-text-trimmed-many-spaces
-    eq. > @
-      (text "    some     ").trimmed
-      "some"
-
-  # Tests specific functionality trimmed returns empty string when applied to empty text.
-  [] +> tests-text-trimmed-empty
-    eq. > @
-      (text "").trimmed
-      ""
-
-  # Tests specific functionality trimmed returns empty string when text contains only spaces.
-  [] +> tests-text-trimmed-only-spaces
-    eq. > @
-      (text "        ").trimmed
-      ""
 
   # Tests specific functionality at method returns first character at index 0.
   [] +> tests-returns-first-char
