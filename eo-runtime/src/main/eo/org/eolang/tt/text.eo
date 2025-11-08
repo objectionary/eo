@@ -26,21 +26,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Checks that current `text` ends with given `substring`.
-  [substring] > ends-with
-    and. > @
-      (number substring-size).lte origin-size
-      eq.
-        slice
-          origin-bts
-          (number origin-size).minus substring-size
-          substring-size
-        substring-bts
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-
   # Checks that current `text` starts with given `substring`.
   [substring] > starts-with
     and. > @
@@ -429,15 +414,6 @@
   [] +> tests-does-not-start-with-substring
     not. > @
       (text "Hello, world").starts-with "world"
-
-  # Tests specific functionality ends-with returns true when text ends with given substring.
-  [] +> tests-ends-with-substring
-    (text "Hello world!").ends-with "world!" > @
-
-  # Tests specific functionality ends-with returns false when text does not end with substring.
-  [] +> tests-does-not-end-with-substring
-    not. > @
-      (text "Hello world!").ends-with "Hello"
 
   # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
