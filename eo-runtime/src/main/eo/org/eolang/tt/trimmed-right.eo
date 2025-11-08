@@ -10,7 +10,7 @@
 [str] > trimmed-right
   if. > @
     0.eq len
-    ^
+    str
     text
       string
         bts.slice
