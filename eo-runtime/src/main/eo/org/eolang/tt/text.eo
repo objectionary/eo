@@ -3,6 +3,7 @@
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.sprintf
 +alias org.eolang.tt.sscanf
++alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -24,13 +25,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-
-  # Takes a piece of a `text` as another `text`.
-  # Here `start` must be an integer index to start slicing from,
-  # `len` must be an integer which shows how much symbols should be sliced.
-  [start len] > slice
-    text > @
-      origin.slice start len
 
   # Checks if current `text` contains given `substring`.
   [substring] > contains
@@ -55,7 +49,7 @@
           includes
           rec-contains (idx.plus 1).as-number
       eq. > includes
-        origin-bts.slice idx substring-size
+        slice origin-bts idx substring-size
         substring-bts
 
   # Checks if current `text` contains all elements from `substrings`
@@ -83,7 +77,8 @@
     and. > @
       (number substring-size).lte origin-size
       eq.
-        origin-bts.slice
+        slice
+          origin-bts
           (number origin-size).minus substring-size
           substring-size
         substring-bts
@@ -96,7 +91,7 @@
   [substring] > starts-with
     and. > @
       (number substring-size).lte origin-size
-      (origin-bts.slice 0 substring-size).eq substring-bts
+      (slice origin-bts 0 substring-size).eq substring-bts
     origin > origin-bts!
     substring > substring-bts!
     origin-bts.size > origin-size!
@@ -116,7 +111,7 @@
       -1
       length.
         string
-          origin-bts.slice 0 found
+          slice origin-bts 0 found
     origin > origin-bts!
     substring > substring-bts!
     origin-bts.size > origin-size!
@@ -136,7 +131,7 @@
           idx
           rec-index-of (idx.plus 1).as-number
       eq. > includes
-        origin-bts.slice idx substring-size
+        slice origin-bts idx substring-size
         substring-bts
 
   # Returns last index of `substring` in current `text`.
@@ -153,7 +148,7 @@
       -1
       length.
         string
-          origin-bts.slice 0 found
+          slice origin-bts 0 found
     origin > origin-bts!
     substring > substring-bts!
     origin-bts.size > origin-size!
@@ -173,7 +168,7 @@
           idx
           rec-index-of (idx.plus -1).as-number
       eq. > includes
-        origin-bts.slice idx substring-size
+        slice origin-bts idx substring-size
         substring-bts
 
   # Returns the `text` in upper case.
@@ -249,7 +244,7 @@
         sprintf
           "Given index %d is out of text bounds"
           * index
-      slice index 1
+      slice origin index 1
     ^.length > len!
     i > idx!
     if. > index!
@@ -316,12 +311,13 @@
         len.eq current
         accum.with > with-substr
           string
-            self-as-bytes.slice
+            slice
+              self-as-bytes
               start
               current.minus start
         if.
           delim.eq
-            self-as-bytes.slice current 1
+            slice self-as-bytes current 1
           rec-split
             with-substr
             (current.plus 1).as-number
@@ -354,13 +350,14 @@
         origin.size.eq current
         accum.with > with-substr
           string
-            origin.slice
+            slice
+              origin
               start
               current.minus start
         if.
           and.
             delimiter.eq
-              origin.slice current 1
+              slice origin current 1
             (number splits-made).lt
               (number limit).minus 1
           rec-nsplit
@@ -386,12 +383,6 @@
             list others
             origin.as-bytes
             accum.concat str.as-bytes > [accum str]
-
-  # Tests how slice extracts substrings from a given position and length.
-  [] +> tests-text-slices-the-origin-string
-    eq. > @
-      (text "Hello, world!").slice 7 5
-      "world"
 
   # Tests specific functionality at method returns first character at index 0.
   [] +> tests-returns-first-char
