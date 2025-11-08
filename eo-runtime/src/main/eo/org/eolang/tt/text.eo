@@ -4,6 +4,7 @@
 +alias org.eolang.tt.sprintf
 +alias org.eolang.tt.sscanf
 +alias org.eolang.tt.slice
++alias org.eolang.tt.contains
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -26,38 +27,12 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Checks if current `text` contains given `substring`.
-  [substring] > contains
-    and. > @
-      (number origin-size).gte substring-size
-      or.
-        and.
-          origin-size.eq substring-size
-          origin-bts.eq substring-bts
-        rec-contains 0
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-    (number origin-size).minus substring-size > end!
-
-    [idx] > rec-contains
-      if. > @
-        end.eq idx
-        includes
-        or.
-          includes
-          rec-contains (idx.plus 1).as-number
-      eq. > includes
-        slice origin-bts idx substring-size
-        substring-bts
-
   # Checks if current `text` contains all elements from `substrings`
   [substrings] > contains-all
     reduced. > @
       mapped.
         substrings
-        (text origin-bts).contains x > [x] >>
+        contains (text origin-bts) x > [x] >>
       true
       x.and a > [a x]
     origin > origin-bts!
@@ -67,7 +42,7 @@
     reduced. > @
       mapped.
         substrings
-        (text origin-bts).contains x > [x] >>
+        contains (text origin-bts) x > [x] >>
       false
       x.or a > [a x]
     origin > origin-bts!
@@ -484,15 +459,6 @@
   [] +> tests-does-not-end-with-substring
     not. > @
       (text "Hello world!").ends-with "Hello"
-
-  # Tests specific functionality contains returns true when text includes given substring.
-  [] +> tests-text-contains-substring
-    (text "Hello, world!").contains "o, wo" > @
-
-  # Tests specific functionality contains returns false when text does not include substring.
-  [] +> tests-text-does-not-contain-substring
-    not. > @
-      (text "Hello, world!").contains "Hey"
 
   # Tests successful contains-all
   [] +> tests-successful-contains-all
