@@ -27,16 +27,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Checks if current `text` contains all elements from `substrings`
-  [substrings] > contains-all
-    reduced. > @
-      mapped.
-        substrings
-        contains (text origin-bts) x > [x] >>
-      true
-      x.and a > [a x]
-    origin > origin-bts!
-
   # Checks if current `text` contains any element from `substrings`
   [substrings] > contains-any
     reduced. > @
@@ -459,29 +449,6 @@
   [] +> tests-does-not-end-with-substring
     not. > @
       (text "Hello world!").ends-with "Hello"
-
-  # Tests successful contains-all
-  [] +> tests-successful-contains-all
-    (text "abcdefghijk").contains-all (list (* "abc" "ghi")) > @
-
-  # Tests not contains-all
-  [] +> tests-not-contains-all
-    not. > @
-      (text "qwerty").contains-all (list (* "qer" "ty" "abc"))
-
-  # Tests contains-all vertical
-  [] +> tests-contains-all-vert
-    contains-all. > @
-      text "Hello, world!"
-      list (* "ell" " " "," "d!")
-
-  # Tests contains-all without substrings
-  [] +> test-contains-all-without-substrings
-    (text "xyz").contains-all (list *) > @
-
-  # Tests contains-all for empty text and without substrings
-  [] +> tests-contains-all-for-empty-text-and-without-substrings
-    (text "").contains-all (list *) > @
 
   # Tests successful contains-any
   [] +> tests-successful-contains-any
