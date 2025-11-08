@@ -4,7 +4,6 @@
 +alias org.eolang.tt.sprintf
 +alias org.eolang.tt.sscanf
 +alias org.eolang.tt.slice
-+alias org.eolang.tt.contains
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -26,16 +25,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-
-  # Checks if current `text` contains any element from `substrings`
-  [substrings] > contains-any
-    reduced. > @
-      mapped.
-        substrings
-        contains (text origin-bts) x > [x] >>
-      false
-      x.or a > [a x]
-    origin > origin-bts!
 
   # Checks that current `text` ends with given `substring`.
   [substring] > ends-with
@@ -449,31 +438,6 @@
   [] +> tests-does-not-end-with-substring
     not. > @
       (text "Hello world!").ends-with "Hello"
-
-  # Tests successful contains-any
-  [] +> tests-successful-contains-any
-    (text "Good morning").contains-any (list (* "oo" "goo")) > @
-
-  # Tests not contains-any
-  [] +> tests-not-contains-any
-    not. > @
-      (text "xyzw").contains-any (list (* "yx" "zyx" "wx" "abc"))
-
-  # Tests contains-any vertical
-  [] +> tests-contains-any-vert
-    contains-any. > @
-      text "foo bar buzz"
-      list (* "bar" " " "o")
-
-  # Tests contains-any without substrings
-  [] +> test-contains-any-without-substrings
-    not. > @
-      (text "text").contains-any (list *)
-
-  # Tests contains-any for empty text and without substrings
-  [] +> tests-contains-any-for-empty-text-and-without-substrings
-    not. > @
-      (text "").contains-any (list *)
 
   # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
