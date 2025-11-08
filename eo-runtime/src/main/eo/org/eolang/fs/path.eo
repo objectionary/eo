@@ -4,6 +4,7 @@
 +alias org.eolang.ss.list
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.text
++alias org.eolang.tt.index-of
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
@@ -280,7 +281,7 @@
       # Replaces slashes '/' with valid windows separator '\'.
       [uri] > separated-correctly
         if. > @
-          (pth.index-of path.posix.separator).eq -1
+          (index-of pth path.posix.separator).eq -1
           string uri-as-bytes
           string replaced
         uri > uri-as-bytes!
