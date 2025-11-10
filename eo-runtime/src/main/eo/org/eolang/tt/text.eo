@@ -26,25 +26,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Retrieve symbol by given index as `text`.
-  # If 0 > index >= ^.length - the error will be returned.
-  [i] > at
-    if. > @
-      or.
-        0.gt index
-        (number index).gte len
-      error
-        sprintf
-          "Given index %d is out of text bounds"
-          * index
-      slice origin index 1
-    ^.length > len!
-    i > idx!
-    if. > index!
-      0.gt idx
-      (number len).plus idx
-      idx
-
   # Returns `text` where all regex target changed to replacement.
   # Here `target` must be a `org.eolang.tt.regex` object.
   # The `replacement` here is a `string` that would be pasted instead of
@@ -176,28 +157,6 @@
             list others
             origin.as-bytes
             accum.concat str.as-bytes > [accum str]
-
-  # Tests specific functionality at method returns first character at index 0.
-  [] +> tests-returns-first-char
-    eq. > @
-      "s"
-      (text "some").at 0
-
-  # Tests specific functionality at method returns character at specified index.
-  [] +> tests-returns-third-char
-    eq. > @
-      "m"
-      (text "some").at 2
-
-  # Tests specific functionality at method supports negative indexing from end of text.
-  [] +> tests-returns-char-at-negative-index
-    eq. > @
-      "m"
-      (text "some").at -2
-
-  # Tests specific functionality at method throws error when index exceeds text length.
-  [] +> throws-on-text-at-index-more-than-length
-    (text "some").at 10 > @
 
   # Tests specific functionality chained method concatenates text with multiple other strings.
   [] +> tests-chains-with-other-strings
