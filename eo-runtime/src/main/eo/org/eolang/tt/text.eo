@@ -4,6 +4,7 @@
 +alias org.eolang.tt.sprintf
 +alias org.eolang.tt.sscanf
 +alias org.eolang.tt.slice
++alias org.eolang.tt.up-cased
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -26,42 +27,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Returns the `text` in upper case.
-  [] > up-cased
-    text > @
-      string
-        reduced.
-          list
-            bytes-as-array
-              origin.as-bytes
-          --
-          [accum byte] >>
-            accum.concat > @
-              if.
-                and.
-                  ascii-bte.lte ascii-z
-                  ascii-bte.gte ascii-a
-                slice.
-                  as-bytes.
-                    as-i64.
-                      ascii-bte.minus distance
-                  7
-                  1
-                byte
-            ascii byte > ascii-bte
-    ascii "z" > ascii-z!
-    ascii "a" > ascii-a!
-    minus. > distance
-      number ascii-a
-      ascii "A"
-
-    [char] > ascii
-      as-number. > @
-        as-i64.
-          concat.
-            00-00-00-00-00-00-00
-            char.as-bytes
-
   # Returns the `text` in lower case.
   [] > low-cased
     text > @
@@ -80,13 +45,13 @@
                 slice.
                   as-bytes.
                     as-i64.
-                      ascii-bte.plus up-cased.distance
+                      ascii-bte.plus (up-cased origin).distance
                   7
                   1
                 byte
-            up-cased.ascii byte > ascii-bte
-    up-cased.ascii "Z" > ascii-z
-    up-cased.ascii "A" > ascii-a
+            (up-cased origin).ascii byte > ascii-bte
+    (up-cased origin).ascii "Z" > ascii-z
+    (up-cased origin).ascii "A" > ascii-a
 
   # Retrieve symbol by given index as `text`.
   # If 0 > index >= ^.length - the error will be returned.
@@ -294,12 +259,6 @@
         (text "-a-b-").split "-"
       * "" "a" "b" ""
 
-  # Tests that up-cased converts lowercase text to uppercase.
-  [] +> tests-converts-text-to-upper-case
-    eq. > @
-      "HELLO"
-      (text "hello").up-cased
-
   # Tests that split returns proper string objects with correct length.
   [] +> tests-splits-and-returns-strings
     eq. > @
@@ -374,12 +333,6 @@
           "-"
           3
       * "" "a" "b-c"
-
-  # Tests that up-cased converts mixed case text to uppercase.
-  [] +> tests-converts-text-with-upper-letters-to-upper-case
-    eq. > @
-      "HELLO"
-      (text "HeLlO").up-cased
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case
