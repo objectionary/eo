@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -10,16 +9,15 @@
 # Returns `text` repeated `times` times.
 # If `times` < 0, an error is returned.
 # If `times` == 0, empty text is returned.
-[str times] > repeated
+[text times] > repeated
   if. > @
     0.gt amount
     error
       sprintf
         "Can't repeat text %d times"
         * amount
-    text
-      string repeated-bytes
-  str > bts!
+    string repeated-bytes
+  text > bts!
   times > amount!
   if. > repeated-bytes!
     0.eq amount
@@ -37,17 +35,17 @@
   # Tests specific functionality repeated method throws error when times is negative.
   [] +> throws-on-text-repeating-less-than-zero-times
     repeated > @
-      text ""
+      ""
       -1
 
   # Tests specific functionality repeated method returns empty string when times is zero.
   [] +> tests-text-repeated-zero-times-is-empty
     eq. > @
       ""
-      repeated (text "some") 0
+      repeated "some" 0
 
   # Tests specific functionality repeated method repeats text specified number of times.
   [] +> tests-text-repeated-five-times
     eq. > @
       "heyheyheyheyhey"
-      repeated (text "hey") 5
+      repeated "hey" 5

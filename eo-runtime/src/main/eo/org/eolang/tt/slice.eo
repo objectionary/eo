@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -9,12 +8,11 @@
 # Takes a piece of a `text` as another `text`.
 # Here `start` must be an integer index to start slicing from,
 # `len` must be an integer which shows how much symbols should be sliced.
-[txt start len] > slice
-  text > @
-    txt.slice start len
+[text start len] > slice
+  text.slice start len > @
 
   # Tests how slice extracts substrings from a given position and length.
   [] +> tests-text-slices-the-origin-string
     eq. > @
-      slice (text "Hello, world!") 7 5
+      slice "Hello, world!" 7 5
       "world"

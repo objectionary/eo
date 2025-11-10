@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +alias org.eolang.tt.sprintf
 +alias org.eolang.ss.list
@@ -9,10 +8,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns a `tuple` of `strings` split by `delimiter` with a maximum of `limit` parts.
+# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
 # If `limit` < 1, an error is returned.
-[txt delimiter limit] > nsplit
+[text delimiter limit] > nsplit
   if. > @
     1.gt limit
     error
@@ -20,26 +19,26 @@
         "Invalid limit %d for nsplit, must be at least 1"
         * limit
     if.
-      txt.size.eq 0
+      text.size.eq 0
       *
       if.
         1.eq limit
-        * txt
+        * text
         rec-nsplit * 0 0 0
 
   [accum start current splits-made] > rec-nsplit
     if. > @
-      txt.size.eq current
+      text.size.eq current
       accum.with > with-substr
         string
           slice
-            txt
+            text
             start
             current.minus start
       if.
         and.
           delimiter.eq
-            slice txt current 1
+            slice text current 1
           (number splits-made).lt
             (number limit).minus 1
         rec-nsplit
@@ -58,7 +57,7 @@
     eq. > @
       list
         nsplit
-          text "Cookie: a=1; b=2"
+          "Cookie: a=1; b=2"
           " "
           2
       * "Cookie:" "a=1; b=2"
@@ -68,7 +67,7 @@
     eq. > @
       list
         nsplit
-          text "a-b-c-d"
+          "a-b-c-d"
           "-"
           2
       * "a" "b-c-d"
@@ -78,7 +77,7 @@
     eq. > @
       list
         nsplit
-          text "a-b-c"
+          "a-b-c"
           "-"
           1
       * "a-b-c"
@@ -88,7 +87,7 @@
     eq. > @
       list
         nsplit
-          text "a-b-c"
+          "a-b-c"
           "-"
           10
       * "a" "b" "c"
@@ -96,14 +95,14 @@
   # Tests that nsplit throws error with limit 0.
   [] +> throws-on-nsplit-with-limit-zero
     nsplit > @
-      text "text"
+      "text"
       "-"
       0
 
   # Tests that nsplit throws error with negative limit.
   [] +> throws-on-nsplit-with-negative-limit
     nsplit > @
-      text "text"
+      "text"
       "-"
       -1
 
@@ -112,7 +111,7 @@
     eq. > @
       list
         nsplit
-          text "-a-b-c"
+          "-a-b-c"
           "-"
           3
       * "" "a" "b-c"

@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.up-cased
 +alias org.eolang.ss.list
 +alias org.eolang.ss.bytes-as-array
@@ -10,39 +9,38 @@
 +spdx SPDX-License-Identifier: MIT
 
 # Returns the `text` in lower case.
-[txt] > low-cased
-  text > @
-    string
-      reduced.
-        list
-          bytes-as-array
-            txt.as-bytes
-        --
-        [accum byte] >>
-          accum.concat > @
-            if.
-              and.
-                ascii-bte.lte ascii-z
-                ascii-bte.gte ascii-a
-              slice.
-                as-bytes.
-                  as-i64.
-                    ascii-bte.plus (up-cased txt).distance
-                7
-                1
-              byte
-          (up-cased txt).ascii byte > ascii-bte
-  (up-cased txt).ascii "Z" > ascii-z
-  (up-cased txt).ascii "A" > ascii-a
+[text] > low-cased
+  string > @
+    reduced.
+      list
+        bytes-as-array
+          text.as-bytes
+      --
+      [accum byte] >>
+        accum.concat > @
+          if.
+            and.
+              ascii-bte.lte ascii-z
+              ascii-bte.gte ascii-a
+            slice.
+              as-bytes.
+                as-i64.
+                  ascii-bte.plus (up-cased text).distance
+              7
+              1
+            byte
+        (up-cased text).ascii byte > ascii-bte
+  (up-cased text).ascii "Z" > ascii-z
+  (up-cased text).ascii "A" > ascii-a
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case
     eq. > @
       "hello"
-      low-cased (text "HELLO")
+      low-cased "HELLO"
 
   # Tests that low-cased converts mixed case text to lowercase.
   [] +> tests-converts-text-with-low-letters-to-lower-case
     eq. > @
       "hello"
-      low-cased (text "HeLlO")
+      low-cased "HeLlO"

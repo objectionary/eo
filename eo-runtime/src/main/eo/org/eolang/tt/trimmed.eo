@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.trimmed-left
 +alias org.eolang.tt.trimmed-right
 +architect yegor256@gmail.com
@@ -9,46 +8,46 @@
 +spdx SPDX-License-Identifier: MIT
 
 # Returns `text` trimmed from both sides.
-[str] > trimmed
+[text] > trimmed
   if. > @
-    0.eq str.as-bytes.size
-    text str
+    0.eq text.as-bytes.size
+    text
     trimmed-left
       trimmed-right
-        str
+        text
 
   # Tests specific functionality trimmed removes single leading space from text.
   [] +> tests-text-trimmed-one-space-left
     eq. > @
-      trimmed (text " some")
+      trimmed " some"
       "some"
 
   # Tests specific functionality trimmed removes single trailing space from text.
   [] +> tests-text-trimmed-one-space-right
     eq. > @
-      trimmed (text "some ")
+      trimmed "some "
       "some"
 
   # Tests specific functionality trimmed removes spaces from both sides of text.
   [] +> tests-text-trimmed-one-space-both
     eq. > @
-      trimmed (text " some ")
+      trimmed " some "
       "some"
 
   # Tests specific functionality trimmed removes multiple spaces from both sides of text.
   [] +> tests-text-trimmed-many-spaces
     eq. > @
-      trimmed (text "    some     ")
+      trimmed "    some     "
       "some"
 
   # Tests specific functionality trimmed returns empty string when applied to empty text.
   [] +> tests-text-trimmed-empty
     eq. > @
-      trimmed (text "")
+      trimmed ""
       ""
 
   # Tests specific functionality trimmed returns empty string when text contains only spaces.
   [] +> tests-text-trimmed-only-spaces
     eq. > @
-      trimmed (text "        ")
+      trimmed "        "
       ""

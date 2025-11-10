@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
@@ -10,7 +9,7 @@
 
 # Retrieve symbol by given index as `text`.
 # If 0 > index >= ^.length - the error will be returned.
-[txt i] > at
+[text i] > at
   if. > @
     or.
       0.gt index
@@ -19,8 +18,8 @@
       sprintf
         "Given index %d is out of text bounds"
         * index
-    slice txt index 1
-  txt.length > len!
+    slice text index 1
+  text.length > len!
   i > idx!
   if. > index!
     0.gt idx
@@ -31,20 +30,20 @@
   [] +> tests-returns-first-char
     eq. > @
       "s"
-      at (text "some") 0
+      at "some" 0
 
   # Tests specific functionality at method returns character at specified index.
   [] +> tests-returns-third-char
     eq. > @
       "m"
-      at (text "some") 2
+      at "some" 2
 
   # Tests specific functionality at method supports negative indexing from end of text.
   [] +> tests-returns-char-at-negative-index
     eq. > @
       "m"
-      at (text "some") -2
+      at "some" -2
 
   # Tests specific functionality at method throws error when index exceeds text length.
   [] +> throws-on-text-at-index-more-than-length
-    at (text "some") 10 > @
+    at "some" 10 > @

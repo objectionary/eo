@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +alias org.eolang.ss.list
 +architect yegor256@gmail.com
@@ -8,14 +7,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns a `tuple` of `strings`, separated by a given `delimiter`.
-[txt delimiter] > split
+# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+[text delimiter] > split
   if. > @
     len.eq 0
     *
     rec-split * 0 0
   delimiter > delim!
-  txt > self-as-bytes!
+  text > self-as-bytes!
   self-as-bytes.size > len!
 
   [accum start current] > rec-split
@@ -43,14 +42,14 @@
   [] +> tests-splits-text-by-dash
     eq. > @
       list
-        split (text "a-b-c") "-"
+        split "a-b-c" "-"
       * "a" "b" "c"
 
   # Tests that split method handles empty strings between delimiters.
   [] +> tests-splits-text-with-empty-strings
     eq. > @
       list
-        split (text "-a-b-") "-"
+        split "-a-b-" "-"
       * "" "a" "b" ""
 
   # Tests that split returns proper string objects with correct length.
@@ -59,7 +58,7 @@
       length.
         at.
           split
-            text "hello world!"
+            "hello world!"
             " "
           1
       6

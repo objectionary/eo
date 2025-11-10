@@ -1,6 +1,4 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.regex
-+alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -12,13 +10,12 @@
 # Here `target` must be a `org.eolang.tt.regex` object.
 # The `replacement` here is a `string` that would be pasted instead of
 # matched text in original one.
-[txt target replacement] > replaced
+[text target replacement] > replaced
   if. > @
     matched.exists.not
-    text reinit
-    text
-      rec-replaced matched "" matched.start
-  txt > self-as-bytes!
+    reinit
+    rec-replaced matched "" matched.start
+  text > self-as-bytes!
   string self-as-bytes > reinit
   (target.match reinit).next > matched
 
@@ -44,8 +41,7 @@
   # Tests that replaced returns original text when regex pattern not found.
   [] +> tests-does-not-replaces-if-regex-not-found
     replaced
-      text
-        "Hello, world"
+      "Hello, world"
       regex
         "/[0-9]+/"
       "12345"
@@ -55,8 +51,7 @@
   # Tests that replaced substitutes digit characters with replacement string.
   [] +> tests-replaces-digits-with-string
     replaced
-      text
-        "Hell0, w0rld"
+      "Hell0, w0rld"
       regex
         "/[0-9]+/"
       "o"
@@ -66,8 +61,7 @@
   # Tests that replaced converts forward slashes to backslashes in path.
   [] +> tests-replaces-slashes-to-windows-separator
     replaced
-      text
-        "C:\\Windows/foo\\bar/hello.txt"
+      "C:\\Windows/foo\\bar/hello.txt"
       regex
         "/\\//"
       "\\"
@@ -77,8 +71,7 @@
   # Tests that replaced converts Windows path separators to forward slashes.
   [] +> tests-replaces-windows-path-with-slash
     replaced
-      text
-        "C:\\Windows\\Users\\AppLocal\\shrek"
+      "C:\\Windows\\Users\\AppLocal\\shrek"
       regex
         "/[\\\\:]+/"
       "/"
@@ -88,8 +81,7 @@
   # Tests that replaced removes invalid filename characters from path.
   [] +> tests-sanitizes-windows-path-with-regex
     replaced
-      text
-        "foo\\bar<:>?*\"|baz\\asdf"
+      "foo\\bar<:>?*\"|baz\\asdf"
       regex
         "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
       ""

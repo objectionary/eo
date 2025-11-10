@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,20 +6,20 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Checks if current `text` contains given `substring`.
-[txt substring] > contains
+# Checks if `text` contains `substring`.
+[text substring] > contains
   and. > @
-    (number txt-size).gte substring-size
+    (number text-size).gte substring-size
     or.
       and.
-        txt-size.eq substring-size
-        txt-bts.eq substring-bts
+        text-size.eq substring-size
+        text-bts.eq substring-bts
       rec-contains 0
-  txt > txt-bts!
+  text > text-bts!
   substring > substring-bts!
-  txt-bts.size > txt-size!
+  text-bts.size > text-size!
   substring-bts.size > substring-size!
-  (number txt-size).minus substring-size > end!
+  (number text-size).minus substring-size > end!
 
   [idx] > rec-contains
     if. > @
@@ -30,14 +29,14 @@
         includes
         rec-contains (idx.plus 1).as-number
     eq. > includes
-      slice txt-bts idx substring-size
+      slice text-bts idx substring-size
       substring-bts
 
   # Tests specific functionality contains returns true when text includes given substring.
   [] +> tests-text-contains-substring
-    contains (text "Hello, world!") "o, wo" > @
+    contains "Hello, world!" "o, wo" > @
 
   # Tests specific functionality contains returns false when text does not include substring.
   [] +> tests-text-does-not-contain-substring
     not. > @
-      contains (text "Hello, world!") "Hey"
+      contains "Hello, world!" "Hey"

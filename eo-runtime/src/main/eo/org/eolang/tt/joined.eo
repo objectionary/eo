@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -6,12 +5,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Joins `items`, which is a `tuple` of strings, using current `string`
+# Joins `items`, which is a `tuple` of strings, using current `text`
 # as a delimiter.
-[dlmtr items] > joined
-  text > @
-    string joined-bts
-  dlmtr > delimiter!
+[text items] > joined
+  string joined-bts > @
+  text > delimiter!
   if. > joined-bts!
     items.length.eq 0
     --

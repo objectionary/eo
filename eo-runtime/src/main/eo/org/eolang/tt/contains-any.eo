@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.contains
 +alias org.eolang.ss.list
 +architect yegor256@gmail.com
@@ -8,37 +7,37 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Checks if current `text` contains any element from `substrings`
-[txt substrings] > contains-any
+# Checks if `text` contains any element from `substrings`
+[text substrings] > contains-any
   reduced. > @
     mapped.
       substrings
-      contains (text txt-bts) x > [x] >>
+      contains text-bts x > [x] >>
     false
     x.or a > [a x]
-  txt > txt-bts!
+  text > text-bts!
 
   # Tests successful contains-any
   [] +> tests-successful-contains-any
-    contains-any (text "Good morning") (list (* "oo" "goo")) > @
+    contains-any "Good morning" (list (* "oo" "goo")) > @
 
   # Tests not contains-any
   [] +> tests-not-contains-any
     not. > @
-      contains-any (text "xyzw") (list (* "yx" "zyx" "wx" "abc"))
+      contains-any "xyzw" (list (* "yx" "zyx" "wx" "abc"))
 
   # Tests contains-any vertical
   [] +> tests-contains-any-vert
     contains-any > @
-      text "foo bar buzz"
+      "foo bar buzz"
       list (* "bar" " " "o")
 
   # Tests contains-any without substrings
   [] +> test-contains-any-without-substrings
     not. > @
-      contains-any (text "text") (list *)
+      contains-any "text" (list *)
 
   # Tests contains-any for empty text and without substrings
   [] +> tests-contains-any-for-empty-text-and-without-substrings
     not. > @
-      contains-any (text "") (list *)
+      contains-any "" (list *)

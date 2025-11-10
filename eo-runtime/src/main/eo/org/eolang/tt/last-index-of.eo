@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,27 +6,27 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns last index of `substring` in current `text`.
+# Returns last index of `substring` in `text`.
 # If no element was found, it returns -1.
-[txt substring] > last-index-of
+[text substring] > last-index-of
   if. > @
     or.
       or.
-        (number substring-size).gt txt-size
+        (number substring-size).gt text-size
         and.
-          substring-size.eq txt-size
-          (substring-bts.eq txt-bts).not
+          substring-size.eq text-size
+          (substring-bts.eq text-bts).not
       found.eq -1
     -1
     length.
       string
-        slice txt-bts 0 found
-  txt > txt-bts!
+        slice text-bts 0 found
+  text > text-bts!
   substring > substring-bts!
-  txt-bts.size > txt-size!
+  text-bts.size > text-size!
   substring-bts.size > substring-size!
   rec-index-of > found!
-    (number txt-size).minus substring-size
+    (number text-size).minus substring-size
 
   [idx] > rec-index-of
     if. > @
@@ -41,33 +40,33 @@
         idx
         rec-index-of (idx.plus -1).as-number
     eq. > includes
-      slice txt-bts idx substring-size
+      slice text-bts idx substring-size
       substring-bts
 
   # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
     eq. > @
       5
-      last-index-of (text "Hey, Hey, Hey") "Hey,"
+      last-index-of "Hey, Hey, Hey" "Hey,"
 
   # Tests specific functionality last-index-of returns 0 when substring equals entire text.
   [] +> tests-finds-last-index-of-the-same-string
     eq. > @
       0
-      last-index-of (text "Hello") "Hello"
+      last-index-of "Hello" "Hello"
 
   # Tests specific functionality last-index-of returns -1 for non-existent substring.
   [] +> tests-last-index-of-non-existed-substring
     eq. > @
       -1
-      last-index-of (text "Hello, world") "somebody"
+      last-index-of "Hello, world" "somebody"
 
   # Tests specific functionality last-index-of returns -1 for non-existent substring in UTF text.
   [] +> tests-last-index-of-non-existed-substring-with-utf
     eq. > @
       -1
       last-index-of
-        text "привет, друг!"
+        "привет, друг!"
         "x"
 
   # Tests that last-index-of finds correct position of UTF character in text.
@@ -75,5 +74,5 @@
     eq. > @
       3
       last-index-of
-        text "привет, друг!"
+        "привет, друг!"
         "в"

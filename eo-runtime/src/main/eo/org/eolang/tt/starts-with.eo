@@ -1,4 +1,3 @@
-+alias org.eolang.tt.text
 +alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,21 +6,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Checks that current `text` starts with given `substring`.
-[txt substring] > starts-with
+# Checks that `text` starts with `substring`.
+[text substring] > starts-with
   and. > @
-    (number substring-size).lte txt-size
-    (slice txt-bts 0 substring-size).eq substring-bts
-  txt > txt-bts!
+    (number substring-size).lte text-size
+    (slice text-bts 0 substring-size).eq substring-bts
+  text > text-bts!
   substring > substring-bts!
-  txt-bts.size > txt-size!
+  text-bts.size > text-size!
   substring-bts.size > substring-size!
 
   # Tests specific functionality starts-with returns true when text begins with given substring.
   [] +> tests-starts-with-substring
-    starts-with (text "Hello, world") "Hello" > @
+    starts-with "Hello, world" "Hello" > @
 
   # Tests specific functionality starts-with returns false when text does not begin with substring.
   [] +> tests-does-not-start-with-substring
     not. > @
-      starts-with (text "Hello, world") "world"
+      starts-with "Hello, world" "world"
