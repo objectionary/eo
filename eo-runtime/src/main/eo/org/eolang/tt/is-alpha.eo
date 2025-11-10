@@ -1,0 +1,34 @@
++alias org.eolang.tt.text
++alias org.eolang.tt.regex
++alias org.eolang.ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Check that all signs in string are letters.
+# Works only for english letters.
+[txt] > is-alpha
+  (regex "/^[a-zA-Z]+$/").matches txt > @
+
+  # Tests specific functionality is-alpha returns true for text containing only letters.
+  [] +> tests-checks-if-simple-text-is-alpha
+    is-alpha > @
+      text
+        "eEo"
+
+  # Tests that is-alpha returns false for text containing numbers.
+  [] +> tests-checks-if-text-with-number-is-not-alpha
+    not. > @
+      is-alpha
+        text
+          "ab3d"
+
+  # Tests that is-alpha returns false for text containing special characters.
+  [] +> tests-checks-if-text-with-dashes-is-not-alpha
+    not. > @
+      is-alpha
+        text
+          "-w-"

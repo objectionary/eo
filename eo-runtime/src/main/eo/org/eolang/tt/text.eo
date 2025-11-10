@@ -1,4 +1,3 @@
-+alias org.eolang.ss.list
 +alias org.eolang.tt.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -16,9 +15,6 @@
 # A sequence of characters representing words, sentences, or data.
 [origin] > text
   origin > @
-  # Check that all signs in string are letters.
-  # Works only for english letters.
-  (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
@@ -40,23 +36,3 @@
     is-ascii. > @
       text
         "123"
-
-  # Tests specific functionality is-alpha returns true for text containing only letters.
-  [] +> tests-checks-if-simple-text-is-alpha
-    is-alpha. > @
-      text
-        "eEo"
-
-  # Tests that is-alpha returns false for text containing numbers.
-  [] +> tests-checks-if-text-with-number-is-not-alpha
-    not. > @
-      is-alpha.
-        text
-          "ab3d"
-
-  # Tests that is-alpha returns false for text containing special characters.
-  [] +> tests-checks-if-text-with-dashes-is-not-alpha
-    not. > @
-      is-alpha.
-        text
-          "-w-"
