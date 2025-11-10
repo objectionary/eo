@@ -1,8 +1,5 @@
-+alias org.eolang.ss.bytes-as-array
 +alias org.eolang.ss.list
 +alias org.eolang.tt.regex
-+alias org.eolang.tt.sprintf
-+alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -24,38 +21,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-
-  # Returns concatenation of all `other` strings.
-  # Here `others` must be a `tuple` of `strings`.
-  [others] > chained
-    if. > @
-      0.eq others.length
-      ^
-      text
-        string
-          reduced.
-            list others
-            origin.as-bytes
-            accum.concat str.as-bytes > [accum str]
-
-  # Tests specific functionality chained method concatenates text with multiple other strings.
-  [] +> tests-chains-with-other-strings
-    eq. > @
-      "Hello, world!"
-      chained.
-        text "Hello"
-        *
-          ", "
-          "world"
-          "!"
-
-  # Tests specific functionality chained method returns original text when no strings provided.
-  [] +> tests-returns-same-text-on-chaining-with-no-strings
-    eq. > @
-      "Some"
-      chained.
-        text "Some"
-        *
 
   # Tests that is-ascii returns true for text containing only ASCII characters.
   [] +> tests-checks-if-text-is-ascii
