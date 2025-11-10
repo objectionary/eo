@@ -2,7 +2,6 @@
 +alias org.eolang.ss.list
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.sprintf
-+alias org.eolang.tt.sscanf
 +alias org.eolang.tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -25,17 +24,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-
-  # Returns the original `text` as `number`.
-  [] > as-number
-    if. > @
-      scanned.length.eq 0
-      error
-        sprintf
-          "Can't convert text %s to number"
-          * origin
-      scanned.head
-    (sscanf "%f" origin).@ > scanned
 
   # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
@@ -232,22 +220,6 @@
           "-"
           3
       * "" "a" "b-c"
-
-  # Tests that as-number converts numeric string to number.
-  [] +> tests-converts-text-to-number
-    eq. > @
-      5
-      (text "5").as-number
-
-  # Tests that as-number throws error when text is not numeric.
-  [] +> throws-on-converting-text-to-number
-    (text "Hello").as-number > @
-
-  # Tests that as-number converts floating point string to number.
-  [] +> tests-converts-float-text-to-number
-    eq. > @
-      3.14
-      (text "3.14").as-number
 
   # Tests that is-ascii returns true for text containing only ASCII characters.
   [] +> tests-checks-if-text-is-ascii
