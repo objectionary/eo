@@ -26,39 +26,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Returns `text` where all regex target changed to replacement.
-  # Here `target` must be a `org.eolang.tt.regex` object.
-  # The `replacement` here is a `string` that would be pasted instead of
-  # matched text in original one.
-  [target replacement] > replaced
-    if. > @
-      matched.exists.not
-      QQ.tt.text reinit
-      QQ.tt.text
-        rec-replaced matched "" matched.start
-    origin > self-as-bytes!
-    string self-as-bytes > reinit
-    (target.match reinit).next > matched
-
-    [block accum start] > rec-replaced
-      if. > @
-        block.exists
-        rec-replaced
-          block.next
-          concat.
-            concat.
-              accum
-              reinit.slice
-                start
-                block.from.minus start
-            replacement
-          block.to
-        string
-          accum.concat
-            reinit.slice
-              start
-              reinit.length.minus start
-
   # Returns the original `text` as `number`.
   [] > as-number
     if. > @
@@ -320,58 +287,3 @@
       is-alpha.
         text
           "-w-"
-
-  # Tests that replaced returns original text when regex pattern not found.
-  [] +> tests-does-not-replaces-if-regex-not-found
-    text
-      "Hello, world"
-    .replaced
-      regex
-        "/[0-9]+/"
-      "12345"
-    .eq > @
-      "Hello, world"
-
-  # Tests that replaced substitutes digit characters with replacement string.
-  [] +> tests-replaces-digits-with-string
-    text
-      "Hell0, w0rld"
-    .replaced
-      regex
-        "/[0-9]+/"
-      "o"
-    .eq > @
-      "Hello, world"
-
-  # Tests that replaced converts forward slashes to backslashes in path.
-  [] +> tests-replaces-slashes-to-windows-separator
-    text
-      "C:\\Windows/foo\\bar/hello.txt"
-    .replaced
-      regex
-        "/\\//"
-      "\\"
-    .eq > @
-      "C:\\Windows\\foo\\bar\\hello.txt"
-
-  # Tests that replaced converts Windows path separators to forward slashes.
-  [] +> tests-replaces-windows-path-with-slash
-    text
-      "C:\\Windows\\Users\\AppLocal\\shrek"
-    .replaced
-      regex
-        "/[\\\\:]+/"
-      "/"
-    .eq > @
-      "C/Windows/Users/AppLocal/shrek"
-
-  # Tests that replaced removes invalid filename characters from path.
-  [] +> tests-sanitizes-windows-path-with-regex
-    text
-      "foo\\bar<:>?*\"|baz\\asdf"
-    .replaced
-      regex
-        "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
-      ""
-    .eq > @
-      "foo\\barbaz\\asdf"

@@ -6,6 +6,7 @@
 +alias org.eolang.tt.text
 +alias org.eolang.tt.index-of
 +alias org.eolang.tt.last-index-of
++alias org.eolang.tt.replaced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
@@ -284,11 +285,12 @@
         if. > @
           (index-of pth path.posix.separator).eq -1
           string uri-as-bytes
-          string replaced
+          string replaced-slash
         uri > uri-as-bytes!
         text > pth
           string uri-as-bytes
-        pth.replaced > replaced!
+        replaced > replaced-slash!
+          pth
           regex "/\\//"
           separator
 
