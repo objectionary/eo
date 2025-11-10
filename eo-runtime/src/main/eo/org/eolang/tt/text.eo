@@ -26,43 +26,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Returns last index of `substring` in current `text`.
-  # If no element was found, it returns -1.
-  [substring] > last-index-of
-    if. > @
-      or.
-        or.
-          (number substring-size).gt origin-size
-          and.
-            substring-size.eq origin-size
-            (substring-bts.eq origin-bts).not
-        found.eq -1
-      -1
-      length.
-        string
-          slice origin-bts 0 found
-    origin > origin-bts!
-    substring > substring-bts!
-    origin-bts.size > origin-size!
-    substring-bts.size > substring-size!
-    rec-index-of > found!
-      (number origin-size).minus substring-size
-
-    [idx] > rec-index-of
-      if. > @
-        0.eq idx
-        if.
-          includes
-          idx
-          -1
-        if.
-          includes
-          idx
-          rec-index-of (idx.plus -1).as-number
-      eq. > includes
-        slice origin-bts idx substring-size
-        substring-bts
-
   # Returns the `text` in upper case.
   [] > up-cased
     text > @
@@ -316,40 +279,6 @@
       chained.
         text "Some"
         *
-
-  # Tests specific functionality last-index-of finds last occurrence of repeated substring.
-  [] +> tests-finds-last-index-of-substring
-    eq. > @
-      5
-      (text "Hey, Hey, Hey").last-index-of "Hey,"
-
-  # Tests specific functionality last-index-of returns 0 when substring equals entire text.
-  [] +> tests-finds-last-index-of-the-same-string
-    eq. > @
-      0
-      (text "Hello").last-index-of "Hello"
-
-  # Tests specific functionality last-index-of returns -1 for non-existent substring.
-  [] +> tests-last-index-of-non-existed-substring
-    eq. > @
-      -1
-      (text "Hello, world").last-index-of "somebody"
-
-  # Tests specific functionality last-index-of returns -1 for non-existent substring in UTF text.
-  [] +> tests-last-index-of-non-existed-substring-with-utf
-    eq. > @
-      -1
-      last-index-of.
-        text "привет, друг!"
-        "x"
-
-  # Tests that last-index-of finds correct position of UTF character in text.
-  [] +> tests-last-index-of-existed-substring-with-utf
-    eq. > @
-      3
-      last-index-of.
-        text "привет, друг!"
-        "в"
 
   # Tests that split method divides text into parts using dash delimiter.
   [] +> tests-splits-text-by-dash

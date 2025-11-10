@@ -5,6 +5,7 @@
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.text
 +alias org.eolang.tt.index-of
++alias org.eolang.tt.last-index-of
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
@@ -180,7 +181,7 @@
       text > txt
         string pth
       plus. > slice-start-idx!
-        txt.last-index-of separator
+        last-index-of txt separator
         1
 
     # Takes the extension part from the provided `path`, for example:
@@ -212,7 +213,7 @@
       basename > base!
       text > txt
         string base
-      txt.last-index-of "." > slice-start-idx!
+      last-index-of txt "." > slice-start-idx!
 
     # Takes the directory name from the provided `path`, for example:
     # |------------------------------|--------------------|
@@ -242,7 +243,7 @@
       uri > pth!
       text > txt
         string pth
-      txt.last-index-of separator > len!
+      last-index-of txt separator > len!
 
   # Windows specified path.
   # Here `uri` is file system URI which may contain forward slashes '/'.
@@ -457,7 +458,7 @@
         text > txt
           string pth
         plus. > slice-start-idx!
-          txt.last-index-of separator
+          last-index-of txt separator
           1
 
       # Takes the extension part from the provided `path`, for example:
@@ -489,7 +490,7 @@
         basename > base!
         text > txt
           string base
-        txt.last-index-of "." > slice-start-idx!
+        last-index-of txt "." > slice-start-idx!
 
       # Takes the directory name from the provided `path`, for example:
       # |------------------------------|--------------------|
@@ -515,7 +516,7 @@
         uri > pth!
         text > txt
           string pth
-        txt.last-index-of separator > len!
+        last-index-of txt separator > len!
 
   # Tests that the path separator is determined correctly based on the operating system.
   [] +> tests-determines-separator-depending-on-os
