@@ -25,37 +25,6 @@
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
 
-  # Returns a `tuple` of `strings`, separated by a given `delimiter`.
-  [delimiter] > split
-    if. > @
-      len.eq 0
-      *
-      rec-split * 0 0
-    delimiter > delim!
-    origin > self-as-bytes!
-    self-as-bytes.size > len!
-
-    [accum start current] > rec-split
-      if. > @
-        len.eq current
-        accum.with > with-substr
-          string
-            slice
-              self-as-bytes
-              start
-              current.minus start
-        if.
-          delim.eq
-            slice self-as-bytes current 1
-          rec-split
-            with-substr
-            (current.plus 1).as-number
-            (current.plus 1).as-number
-          rec-split
-            accum
-            start
-            (current.plus 1).as-number
-
   # Returns a `tuple` of `strings` split by `delimiter` with a maximum of `limit` parts.
   # The last element contains the remainder of the string after splitting.
   # If `limit` < 1, an error is returned.
@@ -131,31 +100,6 @@
       chained.
         text "Some"
         *
-
-  # Tests that split method divides text into parts using dash delimiter.
-  [] +> tests-splits-text-by-dash
-    eq. > @
-      list
-        (text "a-b-c").split "-"
-      * "a" "b" "c"
-
-  # Tests that split method handles empty strings between delimiters.
-  [] +> tests-splits-text-with-empty-strings
-    eq. > @
-      list
-        (text "-a-b-").split "-"
-      * "" "a" "b" ""
-
-  # Tests that split returns proper string objects with correct length.
-  [] +> tests-splits-and-returns-strings
-    eq. > @
-      length.
-        at.
-          split.
-            text "hello world!"
-            " "
-          1
-      6
 
   # Tests that nsplit splits with limit 2 correctly.
   [] +> tests-nsplit-with-limit-two

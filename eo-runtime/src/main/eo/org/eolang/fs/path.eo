@@ -7,6 +7,7 @@
 +alias org.eolang.tt.index-of
 +alias org.eolang.tt.last-index-of
 +alias org.eolang.tt.replaced
++alias org.eolang.tt.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
@@ -86,7 +87,7 @@
         text separator
         reduced.
           list
-            split.
+            split
               text uri
               separator
           *
@@ -339,7 +340,7 @@
           text separator
           reduced.
             list
-              split.
+              split
                 text driveless
                 ^.separator
             *
