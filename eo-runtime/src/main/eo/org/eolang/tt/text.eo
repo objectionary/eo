@@ -4,7 +4,6 @@
 +alias org.eolang.tt.sprintf
 +alias org.eolang.tt.sscanf
 +alias org.eolang.tt.slice
-+alias org.eolang.tt.up-cased
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -26,32 +25,6 @@
   (regex "/^[a-zA-Z]+$/").matches origin > is-alpha
   # Check that all signs in string are ASCII characters.
   (regex "/^[\\x00-\\x7F]*$/").matches origin > is-ascii
-
-  # Returns the `text` in lower case.
-  [] > low-cased
-    text > @
-      string
-        reduced.
-          list
-            bytes-as-array
-              origin.as-bytes
-          --
-          [accum byte] >>
-            accum.concat > @
-              if.
-                and.
-                  ascii-bte.lte ascii-z
-                  ascii-bte.gte ascii-a
-                slice.
-                  as-bytes.
-                    as-i64.
-                      ascii-bte.plus (up-cased origin).distance
-                  7
-                  1
-                byte
-            (up-cased origin).ascii byte > ascii-bte
-    (up-cased origin).ascii "Z" > ascii-z
-    (up-cased origin).ascii "A" > ascii-a
 
   # Retrieve symbol by given index as `text`.
   # If 0 > index >= ^.length - the error will be returned.
@@ -333,18 +306,6 @@
           "-"
           3
       * "" "a" "b-c"
-
-  # Tests that low-cased converts uppercase text to lowercase.
-  [] +> tests-converts-text-to-lower-case
-    eq. > @
-      "hello"
-      (text "HELLO").low-cased
-
-  # Tests that low-cased converts mixed case text to lowercase.
-  [] +> tests-converts-text-with-low-letters-to-lower-case
-    eq. > @
-      "hello"
-      (text "HeLlO").low-cased
 
   # Tests that as-number converts numeric string to number.
   [] +> tests-converts-text-to-number
