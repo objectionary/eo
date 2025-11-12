@@ -2,7 +2,6 @@
 +alias org.eolang.fs.path
 +alias org.eolang.fs.tmpdir
 +alias org.eolang.tt.sprintf
-+alias org.eolang.tt.text
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
@@ -304,9 +303,9 @@
         and.
           f.exists
           contains.
-            text f.path
+            f.path
             joined.
-              text path.separator
+              path.separator
               * "foo" "bar"
     (tmpdir.as-path.resolved "foo/bar").@ > resolved
     resolved.tmpfile > f
