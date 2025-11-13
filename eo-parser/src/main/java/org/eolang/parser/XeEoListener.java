@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -35,6 +37,11 @@ import org.xembly.Directives;
     "PMD.GodClass"
 })
 final class XeEoListener implements EoListener, Iterable<Directive> {
+    /**
+     * Last application.
+     */
+    private static final Pattern LAST_APPLICATION = Pattern.compile("\\)\\.(\\p{L}[\\p{L}\\p{N}-]*)$");
+
     /**
      * Xembly directives we are building (mutable).
      */
@@ -158,7 +165,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void enterBound(final EoParser.BoundContext ctx) {
         if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
-            this.startAutoPhiFormation(ctx, ctx.just().finisher().getText());
+            this.startAutoPhiFormation(
+                ctx, XeEoListener.eoApplicationToXmir(ctx.just().finisher().getText())
+            );
         }
     }
 
@@ -367,7 +376,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        this.startAutoPhiFormation(ctx, ctx.happlicationHeadExtended().getText());
+        this.startAutoPhiFormation(
+            ctx, XeEoListener.eoApplicationToXmir(ctx.happlicationHeadExtended().getText())
+        );
     }
 
     @Override
@@ -661,7 +672,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             final EoParser.VapplicationArgUnboundCurrentContext vertical =
                 ctx.vapplicationArgUnboundCurrent();
             if (vertical.just() != null || vertical.method() != null) {
-                this.startAutoPhiFormation(ctx, XeEoListener.verticalApplicationBase(vertical));
+                this.startAutoPhiFormation(
+                    ctx,
+                    XeEoListener.eoApplicationToXmir(
+                        XeEoListener.verticalApplicationBase(vertical)
+                    )
+                );
             }
         } else {
             this.objects.enter();
@@ -699,7 +715,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     ) {
         if (ctx.aphi() != null) {
             this.startAutoPhiFormation(
-                ctx, ctx.vapplicationHead().getText()
+                ctx, XeEoListener.eoApplicationToXmir(ctx.vapplicationHead().getText())
             );
         }
     }
@@ -1210,11 +1226,42 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @param application Application base
      */
     private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
+        final Matcher matcher = XeEoListener.LAST_APPLICATION.matcher(application);
+        final String abase;
+        if (matcher.find()) {
+            abase = String.format(".%s", matcher.group(1));
+        } else {
+            abase = application;
+        }
         this.startAbstract(ctx)
             .enter().prop("name", new AutoName(ctx, "p").asString())
             .start(ctx)
-            .prop("base", String.format("ξ.ρ.%s", application))
+            .prop("base", abase)
             .prop("name", "φ");
+    }
+
+    /**
+     * EO application to XMIR base.
+     * @param application Application to transform
+     * @return Application base in XMIR format
+     */
+    private static String eoApplicationToXmir(final String application) {
+        final String transformed = application.replace("^.", "ρ.");
+        final String base;
+        if (transformed.startsWith("QQ.")) {
+            base = transformed.replace("QQ", "Φ.org.eolang");
+        } else if (transformed.startsWith("Q.")) {
+            base = transformed.replace("Q.", "Φ.");
+        } else {
+            base = transformed;
+        }
+        final String result;
+        if (base.startsWith("ρ.") || base.startsWith("Φ.")) {
+            result = base;
+        } else {
+            result = String.format("ξ.ρ.%s", base);
+        }
+        return result;
     }
 
     /**

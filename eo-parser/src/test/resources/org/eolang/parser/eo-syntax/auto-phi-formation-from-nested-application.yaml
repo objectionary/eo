@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# @todo #4559:60min Enable the test after auto-phi formations under nested abstracts will be parsed
+#  correctly. For now, we just appending `ξ.ρ` to the application `@base`. We should not do this,
+#  instead, we keep it as `@base`, allowing XSL transformations resolve the scope correctly. This
+#  puzzle depends on this issue: https://github.com/objectionary/eo/issues/4557
+skip: true
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='ap🌵68' and o[@name='φ' and @base='ξ.ρ.ρ.ρ.ρ.x.some']]
+input: |
+  [] > foo
+    5 > x
+    [] > bar
+      [] > baz
+        [] > bus
+          start > nested
+            x.some >> []

@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[not(@base) and @name='ap🌵34' and o[@name='φ' and @base='.ttt']/o[@base='.what']/o[@base='Φ.org.eolang.text']/o[@base='ξ.ρ.orgn']]
+  - //o[not(@base) and @name='ap🌵54' and o[@name='φ' and @base='.g']/o[@base='.e']/o[@base='.c']]
+  - //o[not(@base) and @name='ap🌵86' and o[@name='φ' and @base='.contains']/o[@base='Φ.org.eolang.text']/o[@base='ξ.ρ.orgn']]
+  - //o[not(@base) and @name='ap🌵86' and o[@name='φ' and @base='.contains']/o[@base='ξ.x']]
+input: |
+  [cont-list] > custom-map
+    foo > boom
+      ((text orgn).what b).ttt >> [y]
+    bar > dummy
+      (((a b).c d).e f).g >> [v]
+    mapped. > @
+      cont-list
+        (text orgn).contains x >> [x]
+    origin > orgn!

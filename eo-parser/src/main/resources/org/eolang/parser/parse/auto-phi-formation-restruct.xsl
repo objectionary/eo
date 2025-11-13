@@ -63,5 +63,5 @@
     </xsl:copy>
   </xsl:template>
   <!-- Remove redundant ξ.X for void attributes, located inside the auto-phi formation -->
-  <xsl:template match="o[starts-with(@base,'ξ.') and ancestor::o[contains(@name,'ap🌵')][descendant::o[@base='∅' and @name=substring-after(current()/@base,'ξ.')]]]"/>
+  <xsl:template match="o[starts-with(@base,'ξ.') and not(@pos) and ancestor::o[contains(@name,'ap🌵')][descendant::o[@base='∅' and @name=substring-after(current()/@base,'ξ.')]]]"/>
 </xsl:stylesheet>
