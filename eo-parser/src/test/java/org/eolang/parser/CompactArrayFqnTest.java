@@ -20,6 +20,7 @@ final class CompactArrayFqnTest {
     @CsvSource(
         {
             "foo *1,foo",
+            "tt.x *55,tt.x",
             "QQ.foo.bar *42,Φ.org.eolang.foo.bar",
             "QQ.nan *52,Φ.org.eolang.nan",
             "$.seq *1,ξ.seq"

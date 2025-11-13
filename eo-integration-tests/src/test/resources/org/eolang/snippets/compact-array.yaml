@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out:
+  - ".*Hello, 上海.*"
+file: program.eo
+args: ["org.eolang.snippets.program", "上海"]
+target: "eoc"
+eo: |
+  +alias org.eolang.io.stdout
+  +package org.eolang.snippets
+
+  [args] > program
+    io.stdout > @
+      tt.sprintf *1
+        "Hello, %s\n"
+        args.at 0

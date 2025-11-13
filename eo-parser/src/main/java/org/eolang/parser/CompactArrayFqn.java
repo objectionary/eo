@@ -46,17 +46,13 @@ final class CompactArrayFqn implements Text {
             .map(ParseTree::getText)
             .collect(Collectors.joining("."));
         final String fqn;
-        if (this.context.HOME() == null) {
+        if (this.context.HOME() == null && this.context.XI() == null) {
             fqn = name;
-        } else {
+        } else if (this.context.HOME() != null && this.context.XI() == null) {
             fqn = String.format("Φ.org.eolang.%s", name);
-        }
-        final String base;
-        if (this.context.XI() == null) {
-            base = fqn;
         } else {
-            base = String.format("ξ.%s", fqn);
+            fqn = String.format("ξ.%s", name);
         }
-        return base;
+        return fqn;
     }
 }
