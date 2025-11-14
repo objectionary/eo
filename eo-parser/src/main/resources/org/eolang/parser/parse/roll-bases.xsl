@@ -7,10 +7,10 @@
   <!--
 
   - <o base=".org">
-      <o base="Φ"/>  => <o base="org"/>
+      <o base="Φ"/>  => <o base="Φ.org"/>
     </o>
   - <o base=".instructions">
-      <o base="$"/>  => <o base="instructions"/>
+      <o base="$"/>  => <o base="$.instructions"/>
     </o>
   - <o base=".eolang">
       <o base="org"/>  => <o base="org.eolang"/>

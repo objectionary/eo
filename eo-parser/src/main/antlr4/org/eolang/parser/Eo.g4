@@ -38,7 +38,7 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) (onameOrTname | aphi)) EOL)
+    : commentOptional (application | ((method | just) onameOrTname) EOL)
     ;
 
 tbound
@@ -152,16 +152,6 @@ happlicationExtended
     | happlicationReversed
     ;
 
-// Application with auto-Phi formation
-onlyAphi
-    : happlicationHeadExtended happlicationTail aphi
-    ;
-
-// Auto-Phi formation
-aphi
-    : SPACE ARROW ARROW SPACE voids
-    ;
-
 // Reversed horizontal application
 happlicationReversed
     : happlicationReversedHead happlicationTail?
@@ -244,7 +234,7 @@ vapplicationHead
 
 // Compact arrays
 compactArray
-    : (XI | HOME | NAME) (DOT NAME)* SPACE STAR INT?
+    : (hmethod | applicable) SPACE STAR INT?
     ;
 
 // Vertical application arguments
@@ -291,8 +281,7 @@ vapplicationArgBoundNext
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnbound
-    : onlyAphi EOL
-    | vapplicationArgUnboundCurrent aphi? EOL
+    : vapplicationArgUnboundCurrent EOL
     | vapplicationArgUnboundNext
     ;
 
@@ -308,7 +297,7 @@ vapplicationArgUnboundCurrent
 // Ends on the next line
 vapplicationArgUnboundNext
     : formationNamed // vertical abstract object
-    | vapplicationHead (oname | aphi)? vapplicationArgs // vertical application
+    | vapplicationHead oname? vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
     | (happlicationHead | happlicationReversedHead) happlicationTailScoped // scoped horizontal application
     ;

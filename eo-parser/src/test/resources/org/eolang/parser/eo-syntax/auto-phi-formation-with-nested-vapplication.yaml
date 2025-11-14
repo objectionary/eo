@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+skip: true
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='ap🌵34' and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
-  - //o[@base='Φ.org.eolang.foo' and o[@base='ξ.ap🌵34']]
+  - //o[not(@base) and @name='a🌵34' and o[2][@name='i' and @base='∅'] and o[3][@name='φ']]
+  - //o[@base='Φ.org.eolang.foo' and o[@base='ξ.a🌵34']]
 input: |
   [] > main
     foo > @

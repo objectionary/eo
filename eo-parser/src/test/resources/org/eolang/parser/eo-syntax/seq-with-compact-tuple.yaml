@@ -5,10 +5,8 @@
 skip: true
 sheets: []
 asserts:
-  - /object[not(errors)]
-  - //o[@base='Φ.org.eolang.foo.xi🌵' and @name='f']
+  - //o[not(@base) and count(o)=2 and @name='aliases' and o[1][@base='ξ' and @name='xi🌵']]
 input: |
-  # No comments.
-  [] > main
-    start > @
-      foo > f'
+  foo > app
+    seq * >> [x]
+      42

@@ -91,8 +91,7 @@ final class Objects implements Iterable<Directive> {
      * @return Self.
      */
     Objects enter() {
-        this.dirs.xpath("o[last()]").strict(1);
-        return this;
+        return this.path("o[last()]");
     }
 
     /**
@@ -101,6 +100,16 @@ final class Objects implements Iterable<Directive> {
      */
     Objects leave() {
         this.dirs.up();
+        return this;
+    }
+
+    /**
+     * Enter object by xpath.
+     * @param xpath Xpath
+     * @return Self
+     */
+    Objects path(final String xpath) {
+        this.dirs.xpath(xpath).strict(1);
         return this;
     }
 }
