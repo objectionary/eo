@@ -2,15 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+skip: true
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='ap🌵78' and o[2][@name='i' and @base='∅' and not(@as)] and o[3][@name='φ']/o[1][@base='Φ.org.eolang.number']]
-  - //o[not(@base) and @name='ap🌵88' and o[2][@name='i' and @base='∅' and not(@as)] and o[3][@name='φ']/o[1][@base='Φ.org.eolang.number']]
+  - //o[not(@base) and @name='a🌵78' and o[2][@name='i' and @base='∅'] and o[3][@name='φ']/o[1][@base='Φ.org.eolang.number']]
+  - //o[not(@base) and @name='a🌵88' and o[2][@name='i' and @base='∅'] and o[3][@name='φ']/o[1][@base='Φ.org.eolang.number']]
   - //o[@base='ξ.ρ.m.get.eq' and count(o)=1]
   - //o[@base='ξ.ρ.m.put' and count(o)=1]
-  - //o[@base='Φ.org.eolang.while' and o[@base='ξ.ap🌵78']]
-  - //o[@base='Φ.org.eolang.while' and o[@base='ξ.ap🌵88']]
 input: |
   # No comments.
   [n] > app

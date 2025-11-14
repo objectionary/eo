@@ -160,9 +160,6 @@
       <xsl:if test="eo:atom(.)">
         <xsl:text> ?</xsl:text>
       </xsl:if>
-      <xsl:if test="o[1][eo:idempotent(.)]">
-        <xsl:text>'</xsl:text>
-      </xsl:if>
     </xsl:if>
   </xsl:template>
   <!-- DATA -->

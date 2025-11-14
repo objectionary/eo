@@ -10,7 +10,7 @@ origin: |
 
 printed: |
   # No comments.
-  [] > app'
+  [] > app
     io.stdout > @
-      tt.sprintf:0
-        "":0
+      tt.sprintf
+        ""

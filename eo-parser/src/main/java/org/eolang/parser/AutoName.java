@@ -24,30 +24,25 @@ final class AutoName implements Text {
     private final int position;
 
     /**
-     * Extra symbol.
+     * Ctor.
+     * @param context Context
      */
-    private final String extra;
-
-    AutoName(final int lne, final int pos) {
-        this(lne, pos, "");
-    }
-
     AutoName(final ParserRuleContext context) {
-        this(context, "");
+        this(context.getStart().getLine(), context.getStart().getCharPositionInLine());
     }
 
-    AutoName(final ParserRuleContext context, final String extra) {
-        this(context.getStart().getLine(), context.getStart().getCharPositionInLine(), extra);
-    }
-
-    AutoName(final int lne, final int pos, final String extr) {
+    /**
+     * Ctor.
+     * @param lne Line number
+     * @param pos Position number
+     */
+    AutoName(final int lne, final int pos) {
         this.line = lne;
         this.position = pos;
-        this.extra = extr;
     }
 
     @Override
     public String asString() {
-        return String.format("a%s\uD83C\uDF35%d%d", this.extra, this.line, this.position);
+        return String.format("a\uD83C\uDF35%d%d", this.line, this.position);
     }
 }

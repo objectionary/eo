@@ -12,10 +12,10 @@ origin: |
 
 printed: |
   # No comments.
-  [] > app'
+  [] > app
     io.stdout > @
-      tt.sprintf:0
-        "result is %d\n":0
-        times.:1
+      tt.sprintf
+        "result is %d\n"
+        times.
           -1
           228

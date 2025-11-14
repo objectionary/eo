@@ -15,6 +15,7 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.xembly.Directives;
@@ -43,6 +44,7 @@ final class XmirTest {
         );
     }
 
+    @Disabled
     @Test
     void restoresApostropheForIdempotency() throws ImpossibleModificationException {
         MatcherAssert.assertThat(

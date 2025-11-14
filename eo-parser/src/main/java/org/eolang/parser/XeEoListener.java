@@ -157,16 +157,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterBound(final EoParser.BoundContext ctx) {
-        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
-            this.startAutoPhiFormation(ctx, ctx.just().finisher().getText());
-        }
+        // Nothing here
     }
 
     @Override
     public void exitBound(final EoParser.BoundContext ctx) {
-        if (ctx.just() != null && ctx.aphi() != null && ctx.just().finisher() != null) {
-            this.objects.leave().leave();
-        }
+        // Nothing here
     }
 
     @Override
@@ -366,26 +362,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        this.startAutoPhiFormation(ctx, ctx.happlicationHeadExtended().getText());
-    }
-
-    @Override
-    public void exitOnlyAphi(final EoParser.OnlyAphiContext ctx) {
-        this.objects.leave().leave();
-    }
-
-    @Override
-    public void enterAphi(final EoParser.AphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAphi(final EoParser.AphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterHapplicationReversed(final EoParser.HapplicationReversedContext ctx) {
         // Nothing here
     }
@@ -401,7 +377,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-        public void exitHapplication(final EoParser.HapplicationContext ctx) {
+    public void exitHapplication(final EoParser.HapplicationContext ctx) {
         // Nothing here
     }
 
@@ -559,6 +535,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCompactArray(final EoParser.CompactArrayContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
         final int count;
         if (ctx.INT() != null) {
             final String num = ctx.INT().getText();
@@ -579,14 +560,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else {
             count = 0;
         }
-        this.objects.start(ctx)
-            .prop("base", new CompactArrayFqn(ctx).asString())
-            .prop("before-star", count);
-    }
-
-    @Override
-    public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
-        this.objects.leave();
+        this.objects.enter().prop("before-star", count).leave();
     }
 
     @Override
@@ -657,26 +631,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        if (ctx.aphi() != null) {
-            final EoParser.VapplicationArgUnboundCurrentContext vertical =
-                ctx.vapplicationArgUnboundCurrent();
-            if (vertical.just() != null || vertical.method() != null) {
-                this.startAutoPhiFormation(ctx, XeEoListener.verticalApplicationBase(vertical));
-            }
-        } else {
-            this.objects.enter();
-        }
+        this.objects.enter();
     }
 
     @Override
     public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
-        if (ctx.aphi() != null
-            && (ctx.vapplicationArgUnboundCurrent().just() != null
-            || ctx.vapplicationArgUnboundCurrent().method() != null)) {
-            this.objects.leave().leave();
-        } else {
-            this.objects.leave();
-        }
+        this.objects.leave();
     }
 
     @Override
@@ -697,11 +657,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterVapplicationArgUnboundNext(
         final EoParser.VapplicationArgUnboundNextContext ctx
     ) {
-        if (ctx.aphi() != null) {
-            this.startAutoPhiFormation(
-                ctx, ctx.vapplicationHead().getText()
-            );
-        }
+        // Nothing here
     }
 
     @Override
@@ -1004,9 +960,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
         }
-        if (ctx.APOSTROPHE() != null) {
-            this.objects.start(ctx).prop("base", "ξ").prop("name", "xi🌵").leave();
-        }
     }
 
     @Override
@@ -1150,10 +1103,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
-        return this.objects.start(ctx).start(ctx)
+        return this.objects.start(ctx)
+            .start(ctx)
             .prop("base", "ξ")
             .prop("name", "xi🌵")
-            .leave().leave();
+            .leave()
+            .leave();
     }
 
     private Objects startTest(final ParserRuleContext ctx) {
@@ -1162,6 +1117,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     /**
      * Build comment from context.
+     *
      * @param comment As they come from the parser
      * @param stop Stop line of the comment
      */
@@ -1192,6 +1148,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     /**
      * Extract positive integer from context and convert to alpha attribute.
+     *
      * @param ctx Context
      * @param msg Error message for the case if number is not positive
      * @return Formatted alpha attribute
@@ -1205,22 +1162,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Start new Auto Phi formation, from an application.
-     * @param ctx Context
-     * @param application Application base
-     */
-    private void startAutoPhiFormation(final ParserRuleContext ctx, final String application) {
-        this.startAbstract(ctx)
-            .enter().prop("name", new AutoName(ctx, "p").asString())
-            .start(ctx)
-            .prop("base", String.format("ξ.ρ.%s", application))
-            .prop("name", "φ");
-    }
-
-    /**
      * Trim margin from text block.
      *
-     * @param text Text block.
+     * @param text   Text block.
      * @param indent Indentation level.
      * @return Trimmed text.
      */
@@ -1243,24 +1187,8 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     /**
-     * Vertical application base.
-     * @param ctx Context
-     * @return The base of vertical application
-     */
-    private static String verticalApplicationBase(
-        final EoParser.VapplicationArgUnboundCurrentContext ctx
-    ) {
-        final String result;
-        if (ctx.method() != null) {
-            result = ctx.method().getText();
-        } else {
-            result = ctx.just().getText();
-        }
-        return result;
-    }
-
-    /**
      * Translate FQN starting with `Q` or `QQ` to the one starting with a global Phi object.
+     *
      * @param fqn FQN
      * @return Translated FQN.
      */

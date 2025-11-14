@@ -39,25 +39,25 @@ printed: |
   +architect yegor256@gmail.com
 
   # No comments.
-  [] > main'
+  [] > main
     # No comments.
-    [] > base'
+    [] > base
       memory > x
-        0:0
+        0
       # No comments.
-      [self v] > f'
+      [self v] > f
         ^.x.write > @
-          v:0
+          v
       # No comments.
-      [self v] > g'
+      [self v] > g
         self.f > @
-          self:0
-          v:1
+          self
+          v
     # No comments.
-    [] > derived'
+    [] > derived
       ^.base > @
       # No comments.
-      [self v] > f'
+      [self v] > f
         self.g > @
-          self:0
-          v:1
+          self
+          v
