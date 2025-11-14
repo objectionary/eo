@@ -1119,7 +1119,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * Build comment from context.
      *
      * @param comment As they come from the parser
-     * @param stop    Stop line of the comment
+     * @param stop Stop line of the comment
      */
     private void putComment(final List<EoParser.CommentContext> comment, final Token stop) {
         if (!comment.isEmpty()) {
