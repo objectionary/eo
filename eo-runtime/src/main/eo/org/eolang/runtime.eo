@@ -348,14 +348,6 @@
         .as-bytes:0
       "first"
 
-  # Tests that the runtime handles methods accessed by position.
-  [] +> tests-methods-by-position
-    and. > @
-      bound.~0.eq 1
-      bound.~1.eq "Hey"
-    [first second] > obj
-    obj 1 "Hey" > bound
-
   # Tests that the runtime handles deep nesting of objects.
   [] +> tests-nesting-blah-test
     blah0 > @

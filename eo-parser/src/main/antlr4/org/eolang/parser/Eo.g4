@@ -388,7 +388,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT (finisher | TILDE INT)
+    : DOT finisher
     ;
 
 // Can be at the beginning of the statement
@@ -411,7 +411,7 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : (finisher | TILDE INT) DOT
+    : finisher DOT
     ;
 
 // Auto object name
