@@ -793,11 +793,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTail(final EoParser.MethodTailContext ctx) {
-        if (ctx.INT() != null) {
-            this.objects.start(ctx)
-                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
-                .leave();
-        }
+        // Nothing here
     }
 
     @Override
@@ -865,11 +861,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterReversed(final EoParser.ReversedContext ctx) {
-        if (ctx.INT() != null) {
-            this.objects.start(ctx)
-                .prop("base", this.alphaAttr(ctx, "Position of taken object can't be negative"))
-                .leave();
-        }
+        // Nothing here
     }
 
     @Override
