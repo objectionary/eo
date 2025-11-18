@@ -14,8 +14,6 @@ import java.util.stream.Stream;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
-import org.eolang.PhCached;
-import org.eolang.PhComposite;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -100,7 +98,7 @@ final class EOerrorTest {
             this.add(
                 "φ",
                 new PhCached(
-                    new PhComposite(
+                    new PhOnce(
                         this,
                         rho -> new PhWith(
                             new PhCopy(

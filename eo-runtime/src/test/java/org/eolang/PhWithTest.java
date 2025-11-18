@@ -116,7 +116,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("φ", new PhComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new PhOnce(this, self -> new Data.ToPhi(1L)));
         }
     }
 }

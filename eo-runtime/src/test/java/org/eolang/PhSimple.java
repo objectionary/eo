@@ -31,6 +31,6 @@ final class PhSimple extends PhEnvelope {
      * @param object Object that attribute keeps
      */
     PhSimple(final Phi object) {
-        super(new PhComposite(object, arg -> object));
+        super(new PhOnce(object, arg -> object));
     }
 }

@@ -97,19 +97,17 @@ final class PhMethodTest {
         Dummy() {
             this.add(
                 "φ",
-                new PhCached(
-                    new PhComposite(
-                        this,
-                        self -> {
-                            this.count += 1;
-                            return new Data.ToPhi(1L);
-                        }
-                    )
+                new PhOnce(
+                    this,
+                    self -> {
+                        this.count += 1;
+                        return new Data.ToPhi(1L);
+                    }
                 )
             );
             this.add(
                 "foo",
-                new PhComposite(
+                new PhOnce(
                     this,
                     self -> {
                         this.count += 1;

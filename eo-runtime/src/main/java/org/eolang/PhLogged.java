@@ -37,11 +37,8 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        System.out.printf("%d.hasRho()...\n", this.hashCode());
-        final boolean ret = this.origin.hasRho();
-        System.out.printf("%d.hasRho()! -> %b\n", this.hashCode(), ret);
-        return ret;
+    public Phi copy(final Phi self) {
+        return this.copy();
     }
 
     @Override
@@ -85,8 +82,19 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return this.copy();
+    public boolean hasRho() {
+        System.out.printf("%d.hasRho()...\n", this.hashCode());
+        final boolean ret = this.origin.hasRho();
+        System.out.printf("%d.hasRho()! -> %b\n", this.hashCode(), ret);
+        return ret;
+    }
+
+    @Override
+    public byte[] delta() {
+        System.out.printf("%d.delta()...\n", this.hashCode());
+        final byte[] data = this.origin.delta();
+        System.out.printf("%d.delta()!\n", this.hashCode());
+        return data;
     }
 
     @Override
@@ -97,13 +105,5 @@ public final class PhLogged implements Phi {
     @Override
     public int hashCode() {
         return this.origin.hashCode();
-    }
-
-    @Override
-    public byte[] delta() {
-        System.out.printf("%d.delta()...\n", this.hashCode());
-        final byte[] data = this.origin.delta();
-        System.out.printf("%d.delta()!\n", this.hashCode());
-        return data;
     }
 }

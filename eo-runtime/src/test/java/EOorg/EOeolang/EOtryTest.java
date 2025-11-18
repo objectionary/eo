@@ -12,7 +12,6 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.PhComposite;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
 import org.eolang.PhVoid;
@@ -125,7 +124,7 @@ final class EOtryTest {
             super();
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new PhOnce(
                     this,
                     rho -> {
                         ++this.count;
@@ -149,7 +148,7 @@ final class EOtryTest {
         Main() {
             this.add(
                 "φ",
-                new PhComposite(
+                new PhOnce(
                     this,
                     self -> new Data.ToPhi(
                         new Dataized(new Data.ToPhi(42L)).take()
@@ -171,7 +170,7 @@ final class EOtryTest {
         Broken() {
             this.add(
                 "φ",
-                new PhComposite(
+                new PhOnce(
                     this,
                     self -> {
                         throw new ExFailure("it is broken");
@@ -194,7 +193,7 @@ final class EOtryTest {
             this.add("ex", new PhVoid("ex"));
             this.add(
                 "φ",
-                new PhComposite(
+                new PhOnce(
                     this,
                     self -> self.take("ex")
                 )

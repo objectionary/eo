@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
  *
  * <p>The class is thread-safe.</p>
  *
- * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
+ * @since 0.1
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public class PhDefault implements Phi, Cloneable {
@@ -47,6 +47,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Data.
+     *
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final Optional<byte[]> data;
@@ -70,6 +71,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor.
+     *
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
@@ -104,42 +106,10 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public boolean hasRho() {
-        boolean has = true;
-        try {
-            this.attrs.get(Phi.RHO).take(0);
-        } catch (final ExUnset exception) {
-            has = false;
-        }
-        return has;
+    public Phi copy(final Phi self) {
+        return this.copy();
     }
 
-    @Override
-    public void put(final int pos, final Phi object) {
-        final String name = this.attr(pos);
-        if (!(((PhWithRho) this.attrs.get(name)).origin() instanceof PhVoid)) {
-            throw new ExReadOnly(
-                String.format(
-                    "Can't put attribute with position %d because it's not void one",
-                    pos
-                )
-            );
-        }
-        this.put(name, object);
-    }
-
-    @Override
-    public void put(final String name, final Phi object) {
-        if (!this.attrs.containsKey(name)) {
-            throw new ExUnset(
-                String.format(
-                    "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
-                    name, object, this
-                )
-            );
-        }
-        this.attrs.get(name).put(name, object);
-    }
 
     @Override
     public Phi take(final String name) {
@@ -147,7 +117,13 @@ public class PhDefault implements Phi, Cloneable {
         try {
             final Phi object;
             if (this.attrs.containsKey(name)) {
-                object = this.attrs.get(name).take(0);
+                final Phi taken = this.attrs.get(name);
+                if (!taken.hasRho()) {
+                    object = taken.copy();
+                    object.put(Phi.RHO, this);
+                } else {
+                    object = taken;
+                }
             } else if (name.equals(Phi.LAMBDA)) {
                 object = new AtomSafe(this).lambda();
             } else if (this instanceof Atom) {
@@ -193,23 +169,30 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public byte[] delta() {
-        final byte[] bytes;
-        if (this.data.isPresent()) {
-            bytes = this.data.get();
-        } else if (this instanceof Atom) {
-            bytes = this.take(Phi.LAMBDA).delta();
-        } else if (this.attrs.containsKey(Phi.PHI)) {
-            bytes = this.take(Phi.PHI).delta();
-        } else {
-            throw new ExFailure(
+    public void put(final int pos, final Phi object) {
+        this.put(this.attr(pos), object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        if (!this.attrs.containsKey(name)) {
+            throw new ExUnset(
                 String.format(
-                    "There's no \"Δ\" in the object of \"%s\"",
-                    this.forma()
+                    "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
+                    name, object, this
                 )
             );
         }
-        return bytes;
+        final Phi attr = this.attrs.get(name);
+        if (!(attr instanceof PhVoid)) {
+            throw new ExReadOnly(
+                String.format(
+                    "Can't put attribute with name '%s' because it's not void one",
+                    name
+                )
+            );
+        }
+        ((PhVoid) attr).set(object);
     }
 
     @Override
@@ -237,8 +220,28 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return this.copy();
+    public boolean hasRho() {
+        return ((PhVoid) this.attrs.get(Phi.RHO)).isSet();
+    }
+
+    @Override
+    public byte[] delta() {
+        final byte[] bytes;
+        if (this.data.isPresent()) {
+            bytes = this.data.get();
+        } else if (this instanceof Atom) {
+            bytes = this.take(Phi.LAMBDA).delta();
+        } else if (this.attrs.containsKey(Phi.PHI)) {
+            bytes = this.take(Phi.PHI).delta();
+        } else {
+            throw new ExFailure(
+                String.format(
+                    "There's no \"Δ\" in the object of \"%s\"",
+                    this.forma()
+                )
+            );
+        }
+        return bytes;
     }
 
     /**
@@ -255,11 +258,12 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, new PhWithRho(attr, this));
+        this.attrs.put(name, attr);
     }
 
     /**
      * Get attribute name by position.
+     *
      * @param pos Position of the attribute
      * @return Attribute name
      */
@@ -295,6 +299,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Get its object name, as in source code.
+     *
      * @return The name
      */
     private String oname() {
@@ -311,16 +316,18 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Default attributes hash map with RHO attribute put.
+     *
      * @return Default attributes hash map
      */
     private static Map<String, Phi> defaults() {
         final Map<String, Phi> attrs = new HashMap<>(0);
-        attrs.put(Phi.RHO, new PhRho());
+        attrs.put(Phi.RHO, new PhVoid(Phi.RHO));
         return attrs;
     }
 
     /**
      * Log debug message for PhDefault.
+     *
      * @param msg Message to log
      */
     private static void debug(final String msg) {
@@ -334,6 +341,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Padding according to current {@link #NESTING} level.
+     *
      * @return Padding string.
      */
     private static String padding() {

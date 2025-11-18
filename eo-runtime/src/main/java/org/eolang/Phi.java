@@ -51,10 +51,15 @@ public interface Phi extends Data {
     Phi copy();
 
     /**
-     * Returns true if object has bound rho attribute.
-     * @return True if object has rho bound attribute
+     * Copy self object.
+     * @param self Self
+     * @return Copy of self
+     * @todo #3480:45min Remove Phi.copy(Phi) method from the interface.
+     *  Currently, we use this method in {@link PhDefault#copy()} in order to copy the attributes
+     *  correctly. However, not all Phi implementations need this type of copying. It should be
+     *  possible to remove this method, and use only {@link Phi#copy()}.
      */
-    boolean hasRho();
+    Phi copy(Phi self);
 
     /**
      * Take object by name of the attribute.
@@ -97,13 +102,8 @@ public interface Phi extends Data {
     String forma();
 
     /**
-     * Copy self object.
-     * @param self Self
-     * @return Copy of self
-     * @todo #3480:45min Remove Phi.copy(Phi) method from the interface.
-     *  Currently, we use this method in {@link PhDefault#copy()} in order to copy the attributes
-     *  correctly. However, not all Phi implementations need this type of copying. It should be
-     *  possible to remove this method, and use only {@link Phi#copy()}.
+     * Returns true if object has bound rho attribute.
+     * @return True if object has rho bound attribute
      */
-    Phi copy(Phi self);
+    boolean hasRho();
 }

@@ -12,7 +12,6 @@ package EOorg.EOeolang; // NOPMD
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
-import org.eolang.PhComposite;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhVoid;
@@ -95,7 +94,7 @@ final class EOmallocTest {
             this.add("m", new PhVoid("m"));
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new PhOnce(
                     this,
                     rho -> {
                         this.id = new Dataized(
@@ -126,7 +125,7 @@ final class EOmallocTest {
             this.add("m", new PhVoid("m"));
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new PhOnce(
                     this,
                     rho -> {
                         this.id = new Dataized(
