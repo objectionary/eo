@@ -5,7 +5,7 @@
 name: pr-size
 on: pull_request
 jobs:
-  check_pr_size:
+  pr-size:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
