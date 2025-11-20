@@ -71,9 +71,7 @@ public final class AtVoid implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        if (this.object.get() == null) {
-            this.object.set(phi);
-        } else {
+        if (!this.object.compareAndSet(null, phi)) {
             throw new ExReadOnly(
                 String.format(
                     "This void attribute \"%s\" is already set, can't reset",
