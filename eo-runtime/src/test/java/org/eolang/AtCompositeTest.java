@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtVoid}.
- * @since 0.16
+ * Test case for {@link AtComposite}.
+ * @since 0.59.0
  */
 final class AtCompositeTest {
     @Test
