@@ -17,7 +17,7 @@ final class AtVoidTest {
     @Test
     void copiesWithoutStateAndException() {
         Assertions.assertDoesNotThrow(
-            () -> new PhVoid("void").copy(new PhDefault()),
+            () -> new AtVoid("void").copy(new PhDefault()),
             "AtVoid without state must be copied successfully without exception"
         );
     }
