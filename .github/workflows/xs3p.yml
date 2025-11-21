@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes xsltproc
       - run: |
           mkdir -p gh-pages/xsd
