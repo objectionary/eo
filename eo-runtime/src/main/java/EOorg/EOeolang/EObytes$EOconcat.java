@@ -36,7 +36,7 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final byte[] current = new Dataized(this.take(Phi.RHO)).take();
+        final byte[] current = new Dataized(this.take(Attr.RHO)).take();
         final byte[] provided = new Dataized(this.take("b")).take();
         final byte[] dest = new byte[current.length + provided.length];
         System.arraycopy(current, 0, dest, 0, current.length);

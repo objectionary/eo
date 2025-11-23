@@ -28,7 +28,7 @@ public final class EObytes$EOnot extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Dataized(this.take(Phi.RHO)).asBytes().not().take()
+            new Dataized(this.take(Attr.RHO)).asBytes().not().take()
         );
     }
 }

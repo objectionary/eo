@@ -31,7 +31,7 @@ public final class EOdir$EOmade$EOmkdir extends PhDefault implements Atom {
         return new Data.ToPhi(
             Paths.get(
                 new Dataized(
-                    this.take(Phi.RHO).take(Phi.RHO).take("file").take("path")
+                    this.take(Attr.RHO).take(Attr.RHO).take("file").take("path")
                 ).asString()
             ).toFile().mkdirs()
         );

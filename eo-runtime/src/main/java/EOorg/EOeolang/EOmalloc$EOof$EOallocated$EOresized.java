@@ -35,7 +35,7 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Phi.RHO);
+        final Phi rho = this.take(Attr.RHO);
         final int id = Expect.at(rho, "id")
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")

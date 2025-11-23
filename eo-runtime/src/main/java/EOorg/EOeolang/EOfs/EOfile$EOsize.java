@@ -30,7 +30,7 @@ public final class EOfile$EOsize extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             new File(
-                new Dataized(this.take(Phi.RHO).take("path")).asString()
+                new Dataized(this.take(Attr.RHO).take("path")).asString()
             ).length()
         );
     }

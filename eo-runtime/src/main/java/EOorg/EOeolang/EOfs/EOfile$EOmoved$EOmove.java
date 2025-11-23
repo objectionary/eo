@@ -31,12 +31,12 @@ import org.eolang.XmirObject;
 public final class EOfile$EOmoved$EOmove extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Phi.RHO);
+        final Phi rho = this.take(Attr.RHO);
         final Path target = Paths.get(
             new Dataized(rho.take("target")).asString()
         );
         final Path from = Paths.get(
-            new Dataized(rho.take(Phi.RHO).take("path")).asString()
+            new Dataized(rho.take(Attr.RHO).take("path")).asString()
         );
         try {
             Files.move(from, target);

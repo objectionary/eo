@@ -31,7 +31,7 @@ public final class EOfile$EOis_directory extends PhDefault implements Atom {
         return new Data.ToPhi(
             Paths.get(
                 new Dataized(
-                    this.take(Phi.RHO).take("path")
+                    this.take(Attr.RHO).take("path")
                 ).asString()
             ).toFile().isDirectory()
         );

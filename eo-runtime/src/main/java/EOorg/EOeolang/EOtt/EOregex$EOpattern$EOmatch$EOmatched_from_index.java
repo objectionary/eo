@@ -60,9 +60,9 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
 
     @Override
     public Phi lambda() {
-        final Phi match = this.take(Phi.RHO);
+        final Phi match = this.take(Attr.RHO);
         final InputStream stream = new ByteArrayInputStream(
-            new Dataized(match.take(Phi.RHO).take("serialized")).take()
+            new Dataized(match.take(Attr.RHO).take("serialized")).take()
         );
         final Matcher matcher;
         try {

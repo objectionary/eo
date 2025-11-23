@@ -27,7 +27,7 @@ public final class EOreal$EOacos extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.acos(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.acos(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

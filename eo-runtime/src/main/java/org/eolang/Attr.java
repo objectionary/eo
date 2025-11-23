@@ -12,6 +12,11 @@ package org.eolang;
  */
 public interface Attr {
     /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to

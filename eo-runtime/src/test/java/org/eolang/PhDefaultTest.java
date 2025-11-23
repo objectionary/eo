@@ -52,8 +52,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Phi.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
+            () -> phi.take(Attr.RHO),
+            String.format("Object should not have %s attribute when it's just formed", Attr.RHO)
         );
     }
 
@@ -61,8 +61,8 @@ final class PhDefaultTest {
     void setsRhoAfterDispatch() {
         final Phi kid = new PhDefaultTest.Int().take(this.plus());
         Assertions.assertDoesNotThrow(
-            () -> kid.take(Phi.RHO),
-            String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
+            () -> kid.take(Attr.RHO),
+            String.format("Kid of should have %s attribute after dispatch", Attr.RHO)
         );
     }
 
@@ -71,8 +71,8 @@ final class PhDefaultTest {
         final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Phi.RHO),
-            String.format("Object should not give %s attribute after copying", Phi.RHO)
+            () -> phi.take(Attr.RHO),
+            String.format("Object should not give %s attribute after copying", Attr.RHO)
         );
     }
 
@@ -107,18 +107,18 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int().copy();
         final Phi plus = phi.take(this.plus());
         Assertions.assertDoesNotThrow(
-            () -> plus.take(Phi.RHO),
+            () -> plus.take(Attr.RHO),
             String.format(
                 "Child object should get %s attribute after copying main object",
-                Phi.RHO
+                Attr.RHO
             )
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied child object should be equal to copied main object",
-                Phi.RHO
+                Attr.RHO
             ),
-            plus.take(Phi.RHO),
+            plus.take(Attr.RHO),
             Matchers.equalTo(phi)
         );
     }
@@ -143,17 +143,17 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             String.format(
-                "%s attribute of original object kid should refer to original object", Phi.RHO
+                "%s attribute of original object kid should refer to original object", Attr.RHO
             ),
-            phi.take(this.plus()).take(Phi.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(this.plus()).take(Phi.RHO)))
+            phi.take(this.plus()).take(Attr.RHO),
+            Matchers.not(Matchers.equalTo(copy.take(this.plus()).take(Attr.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
-                Phi.RHO
+                Attr.RHO
             ),
-            copy.take(this.plus()).take(Phi.RHO),
+            copy.take(this.plus()).take(Attr.RHO),
             Matchers.equalTo(copy)
         );
     }
@@ -166,11 +166,11 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
-                Phi.RHO
+                Attr.RHO
             ),
-            first.take(Phi.RHO),
+            first.take(Attr.RHO),
             Matchers.equalTo(
-                second.take(Phi.RHO)
+                second.take(Attr.RHO)
             )
         );
     }
@@ -180,9 +180,9 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         final Phi plus = phi.take(this.plus());
         MatcherAssert.assertThat(
-            String.format("%s attributes should not be copied while dispatch", Phi.RHO),
-            plus.take(Phi.RHO),
-            Matchers.equalTo(plus.take(Phi.RHO))
+            String.format("%s attributes should not be copied while dispatch", Attr.RHO),
+            plus.take(Attr.RHO),
+            Matchers.equalTo(plus.take(Attr.RHO))
         );
     }
 
@@ -251,10 +251,10 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Phi.RHO),
+            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Attr.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
-                Phi.RHO
+                Attr.RHO
             )
         );
     }

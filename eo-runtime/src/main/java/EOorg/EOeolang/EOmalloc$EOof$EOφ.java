@@ -26,7 +26,7 @@ import org.eolang.XmirObject;
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Phi.RHO);
+        final Phi rho = this.take(Attr.RHO);
         final int identifier = Heaps.INSTANCE.malloc(
             this, new Dataized(rho.take("size")).asNumber().intValue()
         );

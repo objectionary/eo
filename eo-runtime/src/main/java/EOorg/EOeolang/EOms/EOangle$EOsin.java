@@ -28,7 +28,7 @@ public final class EOangle$EOsin extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Math.sin(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.sin(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

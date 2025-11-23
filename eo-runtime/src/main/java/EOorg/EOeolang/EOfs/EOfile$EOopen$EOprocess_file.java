@@ -30,9 +30,9 @@ import org.eolang.XmirObject;
 public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        final Phi open = this.take(Phi.RHO);
+        final Phi open = this.take(Attr.RHO);
         final Path path = Paths.get(
-            new Dataized(open.take(Phi.RHO).take("path")).asString()
+            new Dataized(open.take(Attr.RHO).take("path")).asString()
         );
         try {
             Files.INSTANCE.open(path.toString());

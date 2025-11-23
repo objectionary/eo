@@ -45,7 +45,7 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
-                this.take(Phi.RHO).take("file").take("path")
+                this.take(Attr.RHO).take("file").take("path")
             ).asString()
         ).toAbsolutePath();
         final String glob = new Dataized(

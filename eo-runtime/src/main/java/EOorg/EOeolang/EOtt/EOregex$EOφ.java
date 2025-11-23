@@ -32,7 +32,7 @@ import org.eolang.XmirObject;
 public final class EOregex$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        final Phi regex = this.take(Phi.RHO);
+        final Phi regex = this.take(Attr.RHO);
         final String expression = new Dataized(regex.take("expression")).asString();
         if (!expression.startsWith("/")) {
             throw new ExFailure("Wrong regex syntax: \"/\" is missing");

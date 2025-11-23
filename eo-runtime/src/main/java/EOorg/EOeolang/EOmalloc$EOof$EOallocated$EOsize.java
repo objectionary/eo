@@ -28,7 +28,7 @@ public final class EOmalloc$EOof$EOallocated$EOsize extends PhDefault implements
     public Phi lambda() {
         return new Data.ToPhi(
             Heaps.INSTANCE.size(
-                new Dataized(this.take(Phi.RHO).take("id")).asNumber().intValue()
+                new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue()
             )
         );
     }

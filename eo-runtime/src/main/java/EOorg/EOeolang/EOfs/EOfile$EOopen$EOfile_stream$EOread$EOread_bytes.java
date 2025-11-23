@@ -43,10 +43,10 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
-                this.take(Phi.RHO)
-                    .take(Phi.RHO)
-                    .take(Phi.RHO)
-                    .take(Phi.RHO)
+                this.take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
                     .take("path")
             ).asString()
         );

@@ -28,7 +28,7 @@ public final class EOangle$EOcos extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Math.cos(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.cos(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

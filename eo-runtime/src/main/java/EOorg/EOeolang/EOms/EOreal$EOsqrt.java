@@ -27,7 +27,7 @@ public final class EOreal$EOsqrt extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.sqrt(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.sqrt(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

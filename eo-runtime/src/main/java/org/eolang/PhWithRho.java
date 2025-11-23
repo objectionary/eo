@@ -49,7 +49,7 @@ final class PhWithRho implements Phi {
         Phi ret = this.original.take(name);
         if (!ret.hasRho()) {
             ret = ret.copy();
-            ret.put(Phi.RHO, this.rho);
+            ret.put(Attr.RHO, this.rho);
         }
         return ret;
     }
@@ -59,7 +59,7 @@ final class PhWithRho implements Phi {
         Phi ret = this.original.take(pos);
         if (!ret.hasRho()) {
             ret = ret.copy();
-            ret.put(Phi.RHO, this.rho);
+            ret.put(Attr.RHO, this.rho);
         }
         return ret;
     }

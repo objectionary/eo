@@ -155,10 +155,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(true)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to Number"
@@ -177,10 +177,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(true)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to Integer"
@@ -199,10 +199,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(42.23)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to Integer"
@@ -221,10 +221,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(true)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to NonNegativeInteger"
@@ -243,10 +243,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(42.23)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to NonNegativeInteger"
@@ -265,10 +265,10 @@ final class ExpectTest {
                     Expect.at(
                         new PhWith(
                             new PhDefault(),
-                            Phi.RHO,
+                            Attr.RHO,
                             new Data.ToPhi(-42)
                         ),
-                        Phi.RHO
+                        Attr.RHO
                     )
                 ).it(),
                 "fails with correct error message while transform Phi to NonNegativeInteger"

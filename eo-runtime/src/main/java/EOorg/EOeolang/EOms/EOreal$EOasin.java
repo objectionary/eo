@@ -27,7 +27,7 @@ public final class EOreal$EOasin extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.asin(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.asin(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

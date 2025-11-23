@@ -18,7 +18,6 @@ package org.eolang;
  * @since 0.1
  */
 public interface Phi extends Data {
-
     /**
      * Lambda attribute.
      */
@@ -29,11 +28,6 @@ public interface Phi extends Data {
      */
     @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
     String PHI = "φ";
-
-    /**
-     * Rho attribute.
-     */
-    String RHO = "ρ";
 
     /**
      * The global scope object, which owns all other objects.

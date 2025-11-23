@@ -32,7 +32,7 @@ public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Expect.Number(Expect.at(this, Phi.RHO)).it().longValue()
+                    new Expect.Number(Expect.at(this, Attr.RHO)).it().longValue()
                 ).take()
             )
         );

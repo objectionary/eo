@@ -33,7 +33,7 @@ public final class EOfile$EOdeleted$EOdelete extends PhDefault implements Atom {
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
-                this.take(Phi.RHO).take(Phi.RHO).take("path")
+                this.take(Attr.RHO).take(Attr.RHO).take("path")
             ).asString()
         );
         try {

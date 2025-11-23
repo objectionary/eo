@@ -72,14 +72,14 @@ final class PhPackage implements Phi {
     public Phi take(final String name) {
         final String fqn = String.join(".", this.pkg, name);
         final Phi taken;
-        if (name.equals(Phi.RHO)) {
-            if (this.objects.containsKey(Phi.RHO)) {
-                taken = this.objects.get(Phi.RHO);
+        if (name.equals(Attr.RHO)) {
+            if (this.objects.containsKey(Attr.RHO)) {
+                taken = this.objects.get(Attr.RHO);
             } else {
                 throw new ExUnset(
                     String.format(
                         "The %s attribute is absent in package object '%s'",
-                        Phi.RHO, this.pkg
+                        Attr.RHO, this.pkg
                     )
                 );
             }
@@ -94,7 +94,7 @@ final class PhPackage implements Phi {
             taken = next;
         } else {
             final Phi loaded = this.loadPhi(fqn);
-            loaded.put(Phi.RHO, this);
+            loaded.put(Attr.RHO, this);
             this.put(fqn, loaded);
             taken = this.take(name);
         }

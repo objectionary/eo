@@ -27,7 +27,7 @@ public final class EOreal$EOln extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.log(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.log(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

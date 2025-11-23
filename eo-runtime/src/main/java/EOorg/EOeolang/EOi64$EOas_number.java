@@ -27,7 +27,7 @@ public final class EOi64$EOas_number extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Dataized(this.take(Phi.RHO)).take(Long.class).doubleValue()
+            new Dataized(this.take(Attr.RHO)).take(Long.class).doubleValue()
         );
     }
 }

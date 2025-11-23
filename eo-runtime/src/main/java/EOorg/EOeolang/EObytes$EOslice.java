@@ -59,7 +59,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .it();
         return new Data.ToPhi(
             Arrays.copyOfRange(
-                new Dataized(this.take(Phi.RHO)).take(),
+                new Dataized(this.take(Attr.RHO)).take(),
                 start, start + length
             )
         );
