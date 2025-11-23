@@ -30,6 +30,11 @@ public interface Phi extends Data {
     String PHI = "φ";
 
     /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
      * The global scope object, which owns all other objects.
      *
      * @checkstyle ConstantNameCheck (5 lines)
