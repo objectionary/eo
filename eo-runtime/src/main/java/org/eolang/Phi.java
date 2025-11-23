@@ -18,6 +18,7 @@ package org.eolang;
  * @since 0.1
  */
 public interface Phi extends Data {
+
     /**
      * Lambda attribute.
      */
