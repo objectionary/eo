@@ -49,7 +49,7 @@ final class PhRho implements Phi {
     public Phi take(final String name) {
         if (this.rho.get() == null) {
             throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Attr.RHO)
+                String.format("The \"%s\" attribute is not set", Phi.RHO)
             );
         }
         return this.rho.get();
@@ -59,7 +59,7 @@ final class PhRho implements Phi {
     public Phi take(final int pos) {
         if (this.rho.get() == null) {
             throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Attr.RHO)
+                String.format("The \"%s\" attribute is not set", Phi.RHO)
             );
         }
         return this.rho.get();

@@ -107,7 +107,7 @@ public class PhDefault implements Phi, Cloneable {
     public boolean hasRho() {
         boolean has = true;
         try {
-            this.attrs.get(Attr.RHO).take(0);
+            this.attrs.get(Phi.RHO).take(0);
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -315,7 +315,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     private static Map<String, Phi> defaults() {
         final Map<String, Phi> attrs = new HashMap<>(0);
-        attrs.put(Attr.RHO, new PhRho());
+        attrs.put(Phi.RHO, new PhRho());
         return attrs;
     }
 

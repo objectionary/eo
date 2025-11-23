@@ -41,10 +41,10 @@ final class PhPackageTest {
     void doesNotSetRhoToGlobalObject() {
         Assertions.assertThrows(
             ExUnset.class,
-            () -> Phi.Φ.take(Attr.RHO),
+            () -> Phi.Φ.take(Phi.RHO),
             String.format(
                 "Global object '%s' must not have %s attribute",
-                PhPackage.GLOBAL, Attr.RHO
+                PhPackage.GLOBAL, Phi.RHO
             )
         );
     }
@@ -56,9 +56,9 @@ final class PhPackageTest {
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to package object on dispatch",
-                Attr.RHO
+                Phi.RHO
             ),
-            eolang.take(Attr.RHO),
+            eolang.take(Phi.RHO),
             Matchers.equalTo(org)
         );
     }
@@ -70,9 +70,9 @@ final class PhPackageTest {
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to object inside package on dispatch",
-                Attr.RHO
+                Phi.RHO
             ),
-            seq.take(Attr.RHO),
+            seq.take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
     }

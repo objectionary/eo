@@ -37,7 +37,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Dataized(this.take(Attr.RHO))
+            new Dataized(this.take(Phi.RHO))
                 .asBytes()
                 .shift(new Dataized(this.take("x")).asNumber().intValue())
                 .take()
