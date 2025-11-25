@@ -20,12 +20,12 @@ final class AtWithRhoTest {
         final Phi rho = new PhDefault();
         final Phi phi = new AtWithRho(attr, rho).get();
         MatcherAssert.assertThat(
-            "AtWithRho must set RHO is it is not set before",
+            "AtWithRho must set RHO if it is not set before",
             phi.take(Phi.RHO),
             Matchers.is(rho)
         );
         MatcherAssert.assertThat(
-            "AtWithRho must copy original object is RHO is not set",
+            "AtWithRho must copy original object if RHO is not set",
             phi,
             Matchers.not(Matchers.is(obj))
         );

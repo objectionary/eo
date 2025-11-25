@@ -13,7 +13,14 @@ package org.eolang;
  *  This class does not do anything useful right now, it is not used anywhere.
  *  The class is added as part of the task where Attr and its classes are returned
  *  to eo-runtime. When all other classes are returned - this class must replace
- *  AtWithRho everywhere.
+ *  PhWithRho everywhere.
+ * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
+ *  call get() concurrently when the underlying object lacks RHO, each thread will:
+ *  1. Pass the !ret.hasRho() check
+ *  2.Create its own copy via ret.copy()
+ *  3. Attempt to set RHO on its copy
+ *  This results in different threads receiving different copies, violating the expectation
+ *  that get() returns a consistent view of the attribute's value
  */
 final class AtWithRho implements Attr {
     /**
