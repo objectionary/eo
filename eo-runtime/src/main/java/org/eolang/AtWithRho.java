@@ -10,12 +10,6 @@ package org.eolang;
  * This attribute is NOT thread safe!
  *
  * @since 0.36.0
- * @todo #4673:30min Replace all PhWithRho occurrences with AtWithRho when all other
- *  Attr classes are returned to eo-runtime.
- *  This class does not do anything useful right now, it is not used anywhere.
- *  The class is added as part of the task where Attr and its classes are returned
- *  to eo-runtime. When all other classes are returned - this class must replace
- *  PhWithRho everywhere.
  * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
  *  call get() concurrently when the underlying object lacks RHO, each thread will:
  *  1. Pass the !ret.hasRho() check

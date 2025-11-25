@@ -13,12 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>The attribute can be set only once, and it ignores all other puts.</p>
  *
  * @since 0.36.0
- * @todo #4673:30min Replace all PhRho occurrences with AtRho when all other
- *  Attr classes are returned to eo-runtime.
- *  This class does not do anything useful right now, it is not used anywhere.
- *  The class is added as part of the task where Attr and its classes are returned
- *  to eo-runtime. When all other classes are returned - this class must replace
- *  PhRho everywhere.
  */
 final class AtRho implements Attr {
     /**
