@@ -559,7 +559,7 @@ final class PhDefaultTest {
 
     private Phi phiWithContextAttribute(final String attribute) {
         final PhDefault phi = new PhDefault();
-        phi.add(attribute, new PhSimple(new Data.ToPhi(42)));
+        phi.add(attribute, new AtComposite(phi, rho -> new Data.ToPhi(42)));
         return phi;
     }
 
@@ -602,7 +602,7 @@ final class PhDefaultTest {
         Rnd() {
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )
@@ -620,12 +620,12 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            this.add("void", new PhVoid("void"));
-            this.add("plus", new PhSimple(new PhDefault()));
+            this.add("void", new AtVoid("void"));
+            this.add("plus", new AtComposite(this, rho -> new PhDefault()));
             this.add(
                 Phi.PHI,
-                new PhCached(
-                    new PhComposite(
+                new AtOnce(
+                    new AtComposite(
                         this,
                         rho -> rho.take("void")
                     )
@@ -633,8 +633,8 @@ final class PhDefaultTest {
             );
             this.add(
                 "context-hasContextedChildWithSetRhoWhenFormed",
-                new PhCached(
-                    new PhComposite(
+                new AtOnce(
+                    new AtComposite(
                         this,
                         rho -> {
                             final Phi plus = new Data.ToPhi(5L).take(
@@ -659,9 +659,9 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Foo() {
-            this.add("x", new PhVoid("x"));
-            this.add("kid", new PhSimple(new PhDefaultTest.Kid()));
-            this.add("φ", new PhSimple(new Data.ToPhi(5L)));
+            this.add("x", new AtVoid("x"));
+            this.add("kid", new AtComposite(this, rho -> new PhDefaultTest.Kid()));
+            this.add("φ", new AtComposite(this, rho -> new Data.ToPhi(5L)));
         }
     }
 
@@ -675,7 +675,7 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         WithVoidPhi() {
-            this.add(Phi.PHI, new PhVoid(Phi.PHI));
+            this.add(Phi.PHI, new AtVoid(Phi.PHI));
         }
     }
 
@@ -696,8 +696,8 @@ final class PhDefaultTest {
         Counter() {
             this.add(
                 Phi.PHI,
-                new PhCached(
-                    new PhComposite(
+                new AtOnce(
+                    new AtComposite(
                         this,
                         rho -> {
                             ++this.count;
@@ -706,7 +706,7 @@ final class PhDefaultTest {
                     )
                 )
             );
-            this.add("count", new PhComposite(this, rho -> new Data.ToPhi(this.count)));
+            this.add("count", new AtComposite(this, rho -> new Data.ToPhi(this.count)));
         }
     }
 
@@ -720,8 +720,8 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
-            this.add("z", new PhVoid("z"));
-            this.add(Phi.PHI, new PhSimple(new Data.ToPhi(true)));
+            this.add("z", new AtVoid("z"));
+            this.add(Phi.PHI, new AtComposite(this, rho -> new Data.ToPhi(true)));
         }
     }
 
@@ -742,7 +742,7 @@ final class PhDefaultTest {
         EndlessRecursion() {
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> {
                         --PhDefaultTest.EndlessRecursion.count;
@@ -776,7 +776,7 @@ final class PhDefaultTest {
         RecursivePhi() {
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> {
                         --PhDefaultTest.RecursivePhi.count;
@@ -810,7 +810,7 @@ final class PhDefaultTest {
         RecursivePhiViaNew() {
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> {
                         --PhDefaultTest.RecursivePhiViaNew.count;

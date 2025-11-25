@@ -58,7 +58,7 @@ final class PhCompositeTest {
             super();
             this.add(
                 Phi.LAMBDA,
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )

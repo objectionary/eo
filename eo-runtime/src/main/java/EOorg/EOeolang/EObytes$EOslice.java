@@ -10,12 +10,12 @@
 package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -33,8 +33,8 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOslice() {
-        this.add("start", new PhVoid("start"));
-        this.add("len", new PhVoid("len"));
+        this.add("start", new AtVoid("start"));
+        this.add("len", new AtVoid("len"));
     }
 
     @Override

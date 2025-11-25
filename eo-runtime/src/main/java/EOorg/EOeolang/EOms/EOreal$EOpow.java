@@ -9,10 +9,10 @@
  */
 package EOorg.EOeolang.EOms; // NOPMD
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -30,7 +30,7 @@ public final class EOreal$EOpow extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOreal$EOpow() {
-        this.add("x", new PhVoid("x"));
+        this.add("x", new AtVoid("x"));
     }
 
     @Override

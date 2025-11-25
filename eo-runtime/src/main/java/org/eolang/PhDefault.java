@@ -59,7 +59,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Attributes.
      */
-    private Map<String, Phi> attrs;
+    private Map<String, Attr> attrs;
 
     /**
      * Default ctor.
@@ -92,8 +92,8 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Phi> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Phi> ent : this.attrs.entrySet()) {
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -107,7 +107,7 @@ public class PhDefault implements Phi, Cloneable {
     public boolean hasRho() {
         boolean has = true;
         try {
-            this.attrs.get(Phi.RHO).take(0);
+            this.attrs.get(Phi.RHO).get();
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -116,16 +116,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        final String name = this.attr(pos);
-        if (!(((PhWithRho) this.attrs.get(name)).origin() instanceof PhVoid)) {
-            throw new ExReadOnly(
-                String.format(
-                    "Can't put attribute with position %d because it's not void one",
-                    pos
-                )
-            );
-        }
-        this.put(name, object);
+        this.put(this.attr(pos), object);
     }
 
     @Override
@@ -138,7 +129,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.attrs.get(name).put(name, object);
+        this.attrs.get(name).put(object);
     }
 
     @Override
@@ -147,7 +138,7 @@ public class PhDefault implements Phi, Cloneable {
         try {
             final Phi object;
             if (this.attrs.containsKey(name)) {
-                object = this.attrs.get(name).take(0);
+                object = this.attrs.get(name).get();
             } else if (name.equals(Phi.LAMBDA)) {
                 object = new AtomSafe(this).lambda();
             } else if (this instanceof Atom) {
@@ -251,11 +242,11 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    public final void add(final String name, final Phi attr) {
+    public final void add(final String name, final Attr attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, new PhWithRho(attr, this));
+        this.attrs.put(name, new AtWithRho(attr, this));
     }
 
     /**
@@ -313,9 +304,9 @@ public class PhDefault implements Phi, Cloneable {
      * Default attributes hash map with RHO attribute put.
      * @return Default attributes hash map
      */
-    private static Map<String, Phi> defaults() {
-        final Map<String, Phi> attrs = new HashMap<>(0);
-        attrs.put(Phi.RHO, new PhRho());
+    private static Map<String, Attr> defaults() {
+        final Map<String, Attr> attrs = new HashMap<>(0);
+        attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }
 

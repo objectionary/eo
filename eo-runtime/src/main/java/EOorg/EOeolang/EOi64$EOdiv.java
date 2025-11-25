@@ -9,12 +9,12 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -31,7 +31,7 @@ public final class EOi64$EOdiv extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOi64$EOdiv() {
-        this.add("x", new PhVoid("x"));
+        this.add("x", new AtVoid("x"));
     }
 
     @Override

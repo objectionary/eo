@@ -10,10 +10,10 @@
 package EOorg.EOeolang; // NOPMD
 
 import java.util.function.Supplier;
+import org.eolang.AtComposite;
+import org.eolang.AtVoid;
 import org.eolang.ExFailure;
-import org.eolang.PhComposite;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -271,8 +271,8 @@ final class HeapsTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhFake(final Supplier<Phi> sup) {
-            this.add("args", new PhVoid("args"));
-            this.add("φ", new PhComposite(this, rho -> sup.get()));
+            this.add("args", new AtVoid("args"));
+            this.add("φ", new AtComposite(this, rho -> sup.get()));
         }
     }
 }

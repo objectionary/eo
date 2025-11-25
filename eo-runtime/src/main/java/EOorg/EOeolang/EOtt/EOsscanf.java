@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -56,8 +56,8 @@ public final class EOsscanf extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOsscanf() {
-        this.add("format", new PhVoid("format"));
-        this.add("read", new PhVoid("read"));
+        this.add("format", new AtVoid("format"));
+        this.add("read", new AtVoid("read"));
     }
 
     @Override
