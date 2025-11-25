@@ -54,7 +54,7 @@ final class AtRhoTest {
         rho.put(obj);
         rho.put(new PhDefault());
         MatcherAssert.assertThat(
-            "AtVoid must not change state after put()",
+            "AtRho must not change state after put()",
             rho.get(),
             Matchers.equalTo(obj)
         );
