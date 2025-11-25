@@ -7,6 +7,8 @@ package org.eolang;
 
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
+ * This attribute is NOT thread safe!
+ *
  * @since 0.36.0
  * @todo #4673:30min Replace all PhWithRho occurrences with AtWithRho when all other
  *  Attr classes are returned to eo-runtime.
@@ -17,10 +19,10 @@ package org.eolang;
  * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
  *  call get() concurrently when the underlying object lacks RHO, each thread will:
  *  1. Pass the !ret.hasRho() check
- *  2.Create its own copy via ret.copy()
+ *  2. Create its own copy via ret.copy()
  *  3. Attempt to set RHO on its copy
  *  This results in different threads receiving different copies, violating the expectation
- *  that get() returns a consistent view of the attribute's value
+ *  that get() returns a consistent view of the attribute's value.
  */
 final class AtWithRho implements Attr {
     /**
