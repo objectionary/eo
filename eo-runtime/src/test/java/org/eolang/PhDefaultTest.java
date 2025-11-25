@@ -10,7 +10,9 @@ import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhDefault}.
@@ -470,7 +472,7 @@ final class PhDefaultTest {
                 () -> new EOnumber().put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
-            Matchers.containsString("Can't overwrite the cached attribute")
+            Matchers.containsString("Can't overwrite the cached attribute ")
         );
     }
 
