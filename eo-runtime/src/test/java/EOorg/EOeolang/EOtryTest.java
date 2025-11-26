@@ -9,13 +9,13 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import org.eolang.AtComposite;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.PhComposite;
 import org.eolang.PhDefault;
 import org.eolang.PhSafe;
-import org.eolang.PhVoid;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -125,7 +125,7 @@ final class EOtryTest {
             super();
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> {
                         ++this.count;
@@ -149,7 +149,7 @@ final class EOtryTest {
         Main() {
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> new Data.ToPhi(
                         new Dataized(new Data.ToPhi(42L)).take()
@@ -171,7 +171,7 @@ final class EOtryTest {
         Broken() {
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> {
                         throw new ExFailure("it is broken");
@@ -191,10 +191,10 @@ final class EOtryTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Catcher() {
-            this.add("ex", new PhVoid("ex"));
+            this.add("ex", new AtVoid("ex"));
             this.add(
                 "φ",
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> self.take("ex")
                 )

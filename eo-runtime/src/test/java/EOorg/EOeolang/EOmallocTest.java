@@ -9,13 +9,13 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import org.eolang.AtComposite;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
-import org.eolang.PhComposite;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.junit.jupiter.api.Assertions;
@@ -92,10 +92,10 @@ final class EOmallocTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("m", new PhVoid("m"));
+            this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(
@@ -123,10 +123,10 @@ final class EOmallocTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
-            this.add("m", new PhVoid("m"));
+            this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
-                new PhComposite(
+                new AtComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(

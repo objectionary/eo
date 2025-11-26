@@ -16,11 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhVoid;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -38,7 +38,7 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOdir$EOwalk() {
-        this.add("glob", new PhVoid("glob"));
+        this.add("glob", new AtVoid("glob"));
     }
 
     @Override

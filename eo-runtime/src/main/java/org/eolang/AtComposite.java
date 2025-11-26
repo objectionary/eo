@@ -13,12 +13,6 @@ import java.util.function.Function;
  * <p>The attribute depends on context (argument of lambda expression).</p>
  *
  * @since 0.1
- * @todo #4673:30min Replace all PhComposite occurrences with AtComposite when all other
- *  Attr classes are returned to eo-runtime.
- *  This class does not do anything useful right now, it is not used anywhere.
- *  The class is added as part of the task where Attr and its classes are returned
- *  to eo-runtime. When all other classes are returned - this class must replace
- *  PhComposite everywhere.
  */
 public final class AtComposite implements Attr {
     /**

@@ -101,7 +101,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
-            this.add(attr, new PhVoid(attr));
+            this.add(attr, new AtVoid(attr));
         }
     }
 
@@ -116,7 +116,7 @@ final class PhWithTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
-            this.add("φ", new PhComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }
 }

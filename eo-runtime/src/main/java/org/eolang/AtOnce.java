@@ -12,12 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>It's highly recommended to use it with {@link AtComposite}.</p>
  *
  * @since 0.1
- * @todo #4673:30min Replace all PhCached occurrences with AtOnce when all other
- *  Attr classes are returned to eo-runtime.
- *  This class does not do anything useful right now, it is not used anywhere.
- *  The class is added as part of the task where Attr and its classes are returned
- *  to eo-runtime. When all other classes are returned - this class must replace
- *  PhCached everywhere.
  */
 public final class AtOnce implements Attr {
 

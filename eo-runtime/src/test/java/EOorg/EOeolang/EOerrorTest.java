@@ -11,11 +11,11 @@ package EOorg.EOeolang; // NOPMD
 
 import java.nio.ByteBuffer;
 import java.util.stream.Stream;
+import org.eolang.AtComposite;
+import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
-import org.eolang.PhCached;
-import org.eolang.PhComposite;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
@@ -99,8 +99,8 @@ final class EOerrorTest {
         MyError(final Object data) {
             this.add(
                 "φ",
-                new PhCached(
-                    new PhComposite(
+                new AtOnce(
+                    new AtComposite(
                         this,
                         rho -> new PhWith(
                             new PhCopy(

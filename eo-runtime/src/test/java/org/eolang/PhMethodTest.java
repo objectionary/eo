@@ -97,8 +97,8 @@ final class PhMethodTest {
         Dummy() {
             this.add(
                 "φ",
-                new PhCached(
-                    new PhComposite(
+                new AtOnce(
+                    new AtComposite(
                         this,
                         self -> {
                             this.count += 1;
@@ -109,7 +109,7 @@ final class PhMethodTest {
             );
             this.add(
                 "foo",
-                new PhComposite(
+                new AtComposite(
                     this,
                     self -> {
                         this.count += 1;
