@@ -56,16 +56,6 @@ final class PhRho implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
-            );
-        }
-        return this.rho.get();
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         if (this.rho.get() == null) {
             this.rho.set(object);

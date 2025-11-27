@@ -55,16 +55,6 @@ final class PhWithRho implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        Phi ret = this.original.take(pos);
-        if (!ret.hasRho()) {
-            ret = ret.copy();
-            ret.put(Phi.RHO, this.rho);
-        }
-        return ret;
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         this.original.put(pos, object);
     }

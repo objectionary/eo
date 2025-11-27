@@ -102,13 +102,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        throw new ExFailure(
-            "Can't #take(#d) from package object \"%s\"", pos, this.pkg
-        );
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         throw new ExFailure(
             "Can't #put(%d, %s) to package object \"%s\"", pos, object, this.pkg

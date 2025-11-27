@@ -41,11 +41,6 @@ public final class PhComposite implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.expr.apply(this.argument);
-    }
-
-    @Override
     public Phi copy() {
         return this.argument.copy();
     }
