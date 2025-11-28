@@ -99,19 +99,6 @@ public final class PhVoid implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        final Phi phi = this.object.get();
-        if (phi == null) {
-            throw new ExUnset(
-                String.format(
-                    "The attribute \"%s\" is not initialized, can't read", this.name
-                )
-            );
-        }
-        return phi;
-    }
-
-    @Override
     public Phi copy() {
         final Phi obj = this.object.get();
         if (obj == null) {

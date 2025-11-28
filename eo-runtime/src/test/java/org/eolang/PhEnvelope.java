@@ -47,11 +47,6 @@ abstract class PhEnvelope implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.origin.take(pos);
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         this.origin.put(pos, object);
     }

@@ -27,7 +27,7 @@ final class PhCompositeTest {
                 self -> {
                     throw new IllegalStateException("intended unchecked");
                 }
-            ).take(0),
+            ).take("foo"),
             "PhComposite must decorate unchecked exception correctly, but it didn't"
         );
     }

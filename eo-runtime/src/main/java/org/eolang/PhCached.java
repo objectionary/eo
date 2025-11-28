@@ -61,16 +61,6 @@ public final class PhCached implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(pos));
-            }
-        }
-        return this.cached.get();
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         throw new ExReadOnly(
             String.format(
