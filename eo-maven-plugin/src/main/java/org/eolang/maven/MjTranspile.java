@@ -120,10 +120,9 @@ public final class MjTranspile extends MjSafe {
     @Override
     public void exec() throws IOException {
         final Collection<TjForeign> sources = this.scopedTojos().withXmir();
-        final Function<XML, XML> transform = this.transpilation();
         final int saved = new Threaded<>(
             sources,
-            tojo -> this.transpiled(tojo, transform)
+            this::transpiled
         ).total() + MjTranspile.pinfos(this.generatedDir.toPath());
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
@@ -149,13 +148,11 @@ public final class MjTranspile extends MjSafe {
     /**
      * Transpile.
      * @param tojo Tojo that should be transpiled.
-     * @param transform Optimization that transpiles
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpiled(
-        final TjForeign tojo,
-        final Function<XML, XML> transform
+        final TjForeign tojo
     ) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -165,6 +162,7 @@ public final class MjTranspile extends MjSafe {
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
+        final Function<XML, XML> transform = this.transpilation(source);
         new FpDefault(
             src -> {
                 rewrite.compareAndSet(false, true);
@@ -183,9 +181,10 @@ public final class MjTranspile extends MjSafe {
      * Transpile XSL transformations.
      * If {@link MjSafe#trackTransformationSteps} is {@code true} - we create new {@link Xsline}
      * for every XMIR in purpose of thread safety.
+     * @param source Path to source XMIR
      * @return XSL transformations that transpiles XMIR to Java.
      */
-    private Function<XML, XML> transpilation() {
+    private Function<XML, XML> transpilation(final Path source) {
         final Train<Shift> measured = this.measured(MjTranspile.TRAIN);
         final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
@@ -193,8 +192,9 @@ public final class MjTranspile extends MjSafe {
                 new TrSpy(
                     measured,
                     new StickyFunc<>(
-                        doc -> new Place(new OnDefault(doc).get())
-                            .make(this.targetDir.toPath().resolve(MjTranspile.PRE), "")
+                        doc -> new Place(
+                            new OnDetailed(new OnDefault(doc), source).get()
+                        ).make(this.targetDir.toPath().resolve(MjTranspile.PRE), "")
                     )
                 )
             ).pass(xml);
