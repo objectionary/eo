@@ -8,6 +8,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +28,7 @@ import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -73,6 +76,27 @@ final class MjTranspileTest {
                 )
             ),
             new XtoryMatcher()
+        );
+    }
+
+    @Test
+    void throwsDetailedError(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram("# Absent.")
+                .execute(new FakeMaven.Transpile()),
+            "TranspileMojo should throw an exception on invalid EO code"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "TranspileMojo should throw an exception with detailed message on invalid EO code",
+            writer.toString(),
+            Matchers.allOf(
+                Matchers.containsString("XMIR should have '/object/o/@name' attribute"),
+                Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
+            )
         );
     }
 
