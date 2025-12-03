@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
+import java.util.Optional;
 
 /**
  * Function that builds object name from:
@@ -15,6 +16,10 @@ import com.jcabi.xml.XML;
  * <p>If package is present - it'll be joined with object name by dot.
  * Otherwise, only object name without package is returned.</p>
  * @since 0.52
+ * @todo #4702:30min Add tests for {@link OnDefault} class.
+ *  For some reason this class is not covered by tests at all.
+ *  We need to add unit tests that will cover all possible cases of
+ *  object name resolution including cases with and without package meta.
  */
 public final class OnDefault implements ObjectName {
     /**
@@ -40,13 +45,11 @@ public final class OnDefault implements ObjectName {
 
     @Override
     public String get() {
-        final String obj = this.xnav
-            .element("object")
-            .element("o")
-            .attribute("name")
-            .text()
+        final String obj = this.name()
             .orElseThrow(
-                () -> new IllegalStateException("XMIR should have '/object/o/@name' attribute")
+                () -> new IllegalStateException(
+                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
+                )
             );
         return this.xnav.element("object")
             .elements(Filter.withName("metas"))
@@ -71,5 +74,24 @@ public final class OnDefault implements ObjectName {
                 .orElse(obj)
             )
             .orElse(obj);
+    }
+
+    /**
+     * Get object name from XMIR.
+     * @return Object name
+     */
+    private Optional<String> name() {
+        return Optional.ofNullable(
+            this.xnav
+                .element("object")
+                .element("o")
+                .attribute("name")
+                .text().orElseGet(
+                    () -> this.xnav.path("/object/class/@name")
+                        .findFirst()
+                        .flatMap(Xnav::text)
+                        .orElse(null)
+                )
+        );
     }
 }

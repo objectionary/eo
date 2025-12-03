@@ -80,6 +80,26 @@ final class MjTranspileTest {
     }
 
     @Test
+    void transpilesSimpleProgram(@Mktmp final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    String.join(
+                        "\n",
+                        "+architect yegor256@gmail.com",
+                        "+package org.eolang.examples",
+                        "",
+                        "# This is the main abstract object",
+                        "[] > x"
+                    )
+                ).with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class),
+            "We should be able to transpile a simple EO program without exceptions when tracking transformation steps"
+        );
+    }
+
+    @Test
     void throwsDetailedError(@Mktmp final Path temp) {
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,
@@ -94,7 +114,9 @@ final class MjTranspileTest {
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
             writer.toString(),
             Matchers.allOf(
-                Matchers.containsString("XMIR should have '/object/o/@name' attribute"),
+                Matchers.containsString(
+                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
+                ),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
             )
         );
