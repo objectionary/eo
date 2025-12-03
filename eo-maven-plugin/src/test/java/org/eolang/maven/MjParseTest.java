@@ -245,7 +245,7 @@ final class MjParseTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "//error[@severity='critical']",
-                "//error[text()=\"XMIR should have '/object/o/@name' attribute\"]"
+                "//error[text()=\"XMIR should have either '/object/o/@name' or '/object/class/@name' attribute\"]"
             )
         );
     }
