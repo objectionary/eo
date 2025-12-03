@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.log4j.Level;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -31,10 +32,14 @@ import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -48,7 +53,25 @@ import org.xml.sax.SAXParseException;
  * @since 0.1
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@Execution(ExecutionMode.SAME_THREAD)
 final class EoSyntaxTest {
+
+    /**
+     * Log level before test.
+     */
+    private Level before;
+
+    @BeforeEach
+    void setUp() {
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
+        this.before = logger.getLevel();
+    }
+
+    @AfterEach
+    void tearDown() {
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
+        logger.setLevel(this.before);
+    }
 
     @Test
     void parsesSimpleCode() throws Exception {
@@ -68,6 +91,23 @@ final class EoSyntaxTest {
                 "/object/metas/meta[head='meta2']",
                 "/object/o[@name='fibo']"
             )
+        );
+    }
+
+    @Test
+    void parsesSimpleCodeWithDebugMode() {
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
+        logger.setLevel(Level.DEBUG);
+        final EoSyntax syntax = new EoSyntax(
+            String.join(
+                "\n",
+                "# No comments.",
+                "[] > x-н, 1\n"
+            )
+        );
+        Assertions.assertDoesNotThrow(
+            syntax::parsed,
+            "EO syntax should not fail in debug mode when program has errors"
         );
     }
 
