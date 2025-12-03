@@ -203,7 +203,7 @@ public final class EoSyntax implements Syntax {
             );
         } else {
             Logger.debug(
-                this, "The %s program of %d EO lines compiled with %d error(s)",
+                this, "The program of %d EO lines compiled with %d error(s)",
                 lines.size(), errors
             );
         }
