@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +18,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Bridge between Java CLI and EO.
@@ -31,6 +31,21 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("PMD.MoreThanOneLogger")
 public final class Main {
+
+    /**
+     * Verbose option.
+     */
+    static final String VERBOSE = "--verbose";
+
+    /**
+     * Version option.
+     */
+    private static final String VERSION = "--version";
+
+    /**
+     * Help option.
+     */
+    private static final String HELP = "--help";
 
     /**
      * Logger.
@@ -56,29 +71,61 @@ public final class Main {
      */
     public static void main(final String... args) throws Exception {
         Main.setup();
-        final List<String> opts = new ArrayList<>(Arrays.asList(args));
-        while (!opts.isEmpty()) {
-            final String opt = opts.get(0);
+        final List<String> opts = Arrays.stream(args)
+            .filter(Main::isOption)
+            .collect(Collectors.toList());
+        for (final String opt : opts) {
             if (Main.parse(opt)) {
                 return;
             }
-            if (!opt.startsWith("--")) {
-                break;
-            }
-            opts.remove(0);
         }
-        Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.version()));
-        if (opts.isEmpty()) {
+        Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
+        final List<String> arguments = Arrays.stream(args)
+            .filter(Main::isArgument)
+            .collect(Collectors.toList());
+        if (arguments.isEmpty()) {
             throw new IllegalStateException(
                 "The name of an object is expected as a command line argument"
             );
         }
         try {
-            Main.run(opts);
+            Main.run(arguments);
         } catch (final ExAbstract ex) {
-            Main.print(ex);
+            Main.report(opts, ex);
             System.exit(1);
         }
+    }
+
+    /**
+     * Is it an argument?
+     * @param arg The arg
+     * @return TRUE if it's an argument
+     */
+    private static boolean isArgument(final String arg) {
+        return !Main.isOption(arg);
+    }
+
+    /**
+     * Is it an option?
+     * @param arg The arg
+     * @return TRUE if it's an option
+     */
+    private static boolean isOption(final String arg) {
+        return arg.startsWith("--");
+    }
+
+    /**
+     * Report exception.
+     *
+     * @param opts The options
+     * @param thr  The cause
+     */
+    @SuppressWarnings("PMD.AvoidPrintStackTrace")
+    private static void report(final List<String> opts, final Throwable thr) {
+        if (opts.contains(Main.VERBOSE)) {
+            thr.printStackTrace();
+        }
+        Main.print(thr);
     }
 
     /**
@@ -118,18 +165,18 @@ public final class Main {
      * @throws IOException If fails
      */
     private static boolean parse(final String opt) throws IOException {
-        if ("--verbose".equals(opt)) {
+        if (Main.VERBOSE.equals(opt)) {
             Main.EOLOG.setLevel(Level.FINE);
             for (final Handler hnd : Main.EOLOG.getHandlers()) {
                 hnd.setLevel(Level.FINE);
             }
         }
         boolean exit = false;
-        if ("--version".equals(opt)) {
-            Main.LOGGER.info(Main.version());
+        if (Main.VERSION.equals(opt)) {
+            Main.LOGGER.info(Main.ver());
             exit = true;
         }
-        if ("--help".equals(opt)) {
+        if (Main.HELP.equals(opt)) {
             Main.LOGGER.info(
                 String.join(
                     "\n",
@@ -137,9 +184,9 @@ public final class Main {
                     "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
                     "  options:",
-                    "    --help     Print this documentation and exit",
-                    "    --version  Print the version of this JAR and exit",
-                    "    --verbose  Print all intermediate dataization results"
+                    String.format("  %s     Print this documentation and exit", Main.HELP),
+                    String.format("  %s  Print the version of this JAR and exit", Main.VERSION),
+                    String.format("  %s  Print all intermediate dataization results", Main.VERBOSE)
                 )
             );
             exit = true;
@@ -184,7 +231,7 @@ public final class Main {
      * @return Version string
      * @throws IOException If fails
      */
-    private static String version() throws IOException {
+    private static String ver() throws IOException {
         try (
             BufferedReader input =
                 new BufferedReader(

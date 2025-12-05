@@ -1,7 +1,13 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 This is a simple example a program written entirely in EO.
-You can use the files from this directory as a template.
+To run this program only you might use the following command:
+
+```bash
+mvn invoker:run -Dinvoker.test=fibonacci
+```
+
+Additionally, you can use the files from this directory as a template.
 The only change you will have to do is setting
 the right versions the `pom.xml`. Use the latest version
 visible in this badge:

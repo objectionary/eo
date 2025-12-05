@@ -76,7 +76,7 @@ final class MainTest {
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
             "Incorrect verbose output when dataizing \"false\" object",
-            MainTest.stderr("--verbose", "org.eolang.false"),
+            MainTest.stderr(Main.VERBOSE, "org.eolang.false"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
@@ -88,7 +88,7 @@ final class MainTest {
     void executesJvmFullRunWithDashedObject() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.stderr("--verbose", "as-bytes"),
+            MainTest.stderr(Main.VERBOSE, "as-bytes"),
             Matchers.containsString("Couldn't find object 'Φ.as-bytes'")
         );
     }
@@ -97,7 +97,7 @@ final class MainTest {
     void executesJvmFullRunWithAttributeCall() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.stderr("--verbose", "string$as-bytes"),
+            MainTest.stderr(Main.VERBOSE, "string$as-bytes"),
             Matchers.containsString("Couldn't find object 'Φ.string$as-bytes'")
         );
     }
@@ -106,7 +106,7 @@ final class MainTest {
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.stderr("--verbose", "org.eolang.io.stdout"),
+            MainTest.stderr(Main.VERBOSE, "org.eolang.io.stdout"),
             Matchers.containsString(
                 "Error in \"Φ.org.eolang.io.stdout.φ.Δ\" "
             )
@@ -174,6 +174,19 @@ final class MainTest {
                 )
             ).read(),
             Matchers.greaterThan(0)
+        );
+    }
+
+    @Test
+    void printsFullStacktraceIfVerboseIsEnabled() {
+        MatcherAssert.assertThat(
+            "Prints full stacktrace when verbose mode is enabled",
+            MainTest.stderr("--verbose", "org.eolang.examples.app"),
+            Matchers.allOf(
+                Matchers.containsString("at org.eolang.PhPackage.loadPhi"),
+                Matchers.containsString("at org.eolang.PhPackage.take"),
+                Matchers.containsString("at org.eolang.Main.run")
+            )
         );
     }
 
