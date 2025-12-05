@@ -16,10 +16,6 @@ import java.util.Optional;
  * <p>If package is present - it'll be joined with object name by dot.
  * Otherwise, only object name without package is returned.</p>
  * @since 0.52
- * @todo #4702:30min Add tests for {@link OnDefault} class.
- *  For some reason this class is not covered by tests at all.
- *  We need to add unit tests that will cover all possible cases of
- *  object name resolution including cases with and without package meta.
  */
 public final class OnDefault implements ObjectName {
     /**
