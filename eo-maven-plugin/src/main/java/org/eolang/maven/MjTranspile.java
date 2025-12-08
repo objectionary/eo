@@ -259,6 +259,9 @@ public final class MjTranspile extends MjSafe {
      * @param generated Path to generated sources
      * @return Amount of created files
      * @throws IOException If fails to create a file
+     * @todo #4717:90min Move {@link #pinfos(Path)} method to a separate class.
+     *  Currently, this method violates Single Responsibility Principle of
+     *  MjTranspile class. After moving, make sure to cover it with unit tests.
      */
     private static int pinfos(final Path generated) throws IOException {
         final int size;
@@ -269,7 +272,7 @@ public final class MjTranspile extends MjSafe {
             for (final Path dir : dirs) {
                 final String pkg = generated.relativize(dir).toString()
                     .replace(File.separator, ".");
-                new Saved(
+                final Path saved = new Saved(
                     String.join(
                         "\n",
                         "/**",
@@ -284,9 +287,14 @@ public final class MjTranspile extends MjSafe {
                     ),
                     dir.resolve("package-info.java")
                 ).value();
+                Logger.debug(MjTranspile.class, "Created %s", saved);
             }
             size = dirs.size();
         } else {
+            Logger.info(
+                MjTranspile.class,
+                "No generated sources found, skipping package-info.java creation"
+            );
             size = 0;
         }
         return size;

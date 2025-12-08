@@ -35,11 +35,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration combine.self="override"/>
-      </plugin>
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <failIfNoTests>false</failIfNoTests>
@@ -61,20 +56,18 @@
         <version>@project.version@</version>
         <executions>
           <execution>
+            <id>compile</id>
             <goals>
               <goal>register</goal>
-              <goal>assemble</goal>
+              <goal>compile</goal>
               <goal>transpile</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <unrollExitError>true</unrollExitError>
-          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
-          <foreignFormat>csv</foreignFormat>
-          <placed>${project.build.directory}/eo/placed.json</placed>
-          <placedFormat>json</placedFormat>
-          <trackTransformationSteps>true</trackTransformationSteps>
+          <ignoreRuntime>true</ignoreRuntime>
+          <failOnWarning>false</failOnWarning>
+          <skipLinting>true</skipLinting>
         </configuration>
       </plugin>
       <plugin>
@@ -83,6 +76,7 @@
         <version>3.6.2</version>
         <executions>
           <execution>
+            <id>run-eo-fibonacci-app</id>
             <phase>test</phase>
             <goals>
               <goal>java</goal>

@@ -122,6 +122,16 @@ final class PhPackage implements Phi {
      * Load phi object by package name from ClassLoader.
      * @param fqn FQN of the EO object
      * @return Phi
+     * @todo #4717:90min Check 'package-info.class' existence before looking for an object.
+     *  Recently, we got an error when 'maven-compiler-plugin' removed 'package-info.class'
+     *  during compilation and we got quite confusing error message:
+     *  ```
+     *  Couldn't find object 'Φ.org.eolang.examples' because there's no class or package
+     *  'EOorg.EOeolang.EOexamples' EOorg.EOeolang.EOexamples
+     *  ```
+     *  Having said that, the 'EOorg.EOeolang.EOexamples' package does exist.
+     *  The error tells nothing about missing 'package-info.class'. We need to check for the
+     *  existence of 'package-info.class' before trying to find an object.
      */
     @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
