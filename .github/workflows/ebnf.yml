@@ -64,7 +64,7 @@ jobs:
           cp "${p}.png" ebnf/
           cp "${p}.svg" ebnf/
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
           branch: ebnf-gh-pages

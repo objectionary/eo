@@ -38,7 +38,7 @@ jobs:
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.check.outputs.updated == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
           branch: eoc-version-up

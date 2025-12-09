@@ -44,7 +44,7 @@ jobs:
           url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           export url
           perl -i -0777 -pe 's/(?<=\[benchmark-gha\]: )[^\n]+(?=\n)/$ENV{url}/gs;' README.md
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
           branch: benchmark

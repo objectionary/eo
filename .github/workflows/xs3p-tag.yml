@@ -21,7 +21,7 @@ jobs:
             "eo-parser/src/main/resources/XMIR.xsd" \
             > "gh-pages/xsd/XMIR-${{github.ref_name}}.html"
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
           branch: xsd-documentation
