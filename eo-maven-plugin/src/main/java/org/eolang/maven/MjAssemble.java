@@ -41,14 +41,14 @@ public final class MjAssemble extends MjSafe {
     @Override
     public void exec() {
         final long begin = System.currentTimeMillis();
-        String before = this.scopedTojos().status();
+        String before = this.foreignTojos().status();
         int cycle = 0;
         while (true) {
             final long start = System.currentTimeMillis();
             for (final Moja<?> moja : MjAssemble.MOJAS) {
                 moja.copy(this).execute();
             }
-            final String after = this.scopedTojos().status();
+            final String after = this.foreignTojos().status();
             ++cycle;
             if (after.equals(before)) {
                 Logger.info(

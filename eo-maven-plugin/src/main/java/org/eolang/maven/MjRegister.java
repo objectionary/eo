@@ -72,12 +72,12 @@ public final class MjRegister extends MjSafe {
             );
         }
         this.removeOldFiles();
-        final int before = this.scopedTojos().size();
+        final int before = this.foreignTojos().size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
         }
         final Unplace unplace = new Unplace(this.sourcesDir);
-        final int registered = new Threaded<>(
+    final int registered = new Threaded<>(
             new Walk(this.sourcesDir.toPath())
                 .includes(this.includeSources)
                 .excludes(this.excludeSources),
@@ -93,10 +93,13 @@ public final class MjRegister extends MjSafe {
                     );
                 }
                 final String name = unplace.make(file);
-                if (this.scopedTojos().contains(name)) {
+                if (this.foreignTojos().contains(name)) {
                     Logger.debug(this, "EO source %s already registered", name);
                 } else {
-                    this.scopedTojos().add(name).withSource(file.toAbsolutePath());
+                    this.foreignTojos()
+                        .add(name)
+                        .withSource(file.toAbsolutePath())
+                        .withHash(new ChSource(file));
                     Logger.debug(this, "EO source %s registered", name);
                 }
                 return 1;

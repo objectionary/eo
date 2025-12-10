@@ -21,7 +21,7 @@ final class FpIfReleased extends FpEnvelope {
     /**
      * Not cacheable versions.
      */
-    private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
+    private static final String[] NOT_CACHEABLE = {"0.0.0-remove-me", "SNAPSHOT-remove-me"};
 
     /**
      * Ctor.

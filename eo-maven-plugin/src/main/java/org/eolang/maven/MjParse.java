@@ -60,7 +60,7 @@ public final class MjParse extends MjSafe {
     @Override
     public void exec() {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> tojos = this.scopedTojos().withSources();
+        final Collection<TjForeign> tojos = this.foreignTojos().withSources();
         final int total = new Threaded<>(
             new Filtered<>(TjForeign::notParsed, tojos),
             this::parsed

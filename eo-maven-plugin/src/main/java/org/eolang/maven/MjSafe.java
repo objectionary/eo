@@ -526,7 +526,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final TjsForeign scopedTojos() {
+    protected final TjsForeign foreignTojos() {
         return this.tojos;
     }
 
