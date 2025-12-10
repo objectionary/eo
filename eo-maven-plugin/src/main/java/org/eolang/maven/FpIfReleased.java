@@ -11,6 +11,9 @@ import java.util.function.Supplier;
 /**
  * Footprint that behaves like one of the given footprints depending on
  * hash and semver of provided cache.
+ * Similar to {@link FpFork} but the condition is based on versioning and hash.
+ * If the version is not a released one (e.g. "0.0.0" or "SNAPSHOT")
+ * or the hash is empty, the second footprint is used, otherwise the first one.
  * @since 0.41
  * @checkstyle ParameterNumberCheck (100 lines)
  */
@@ -24,8 +27,8 @@ final class FpIfReleased extends FpEnvelope {
      * Ctor.
      * @param semver Cache version
      * @param hash Git hash
-     * @param first First wrapped footprint
-     * @param second Second wrapped footprint
+     * @param first First footprint to use if a version is released and a hash is present
+     * @param second Second footprint to use if a version is not released or a hash is not present
      */
     FpIfReleased(
         final String semver,
@@ -40,8 +43,8 @@ final class FpIfReleased extends FpEnvelope {
      * Ctor.
      * @param semver Cache version
      * @param hash Git hash
-     * @param first First wrapped footprint
-     * @param second Second wrapped footprint
+     * @param first First footprint to use if a version is released and a hash is present
+     * @param second Second footprint to use if a version is not released or a hash is not present
      */
     FpIfReleased(
         final String semver,
