@@ -32,7 +32,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 20
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
