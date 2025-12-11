@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -48,7 +49,19 @@ final class MjProbeTest {
         );
     }
 
+    /**
+     * Finds probes in objectionary remote repository.
+     * @param temp Temporary folder
+     * @throws IOException If some problem inside
+     * @todo #4526:90min Fix flaky {@link #findsProbesInOyRemote(Path)} test.
+     *  The test sometimes fails with the following error:
+     *  MjProbeTest.findsProbesInOyRemote:62 We should find 10 objects in
+     *  git repository with tag '0.50.0', but 9 found.
+     *  This might happen because the remote repository structure changes over time.
+     *  We need to investigate this issue and fix the test to make it stable.
+     */
     @Test
+    @Disabled
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
         final String tag = "0.50.0";
         final String expected = "10";
