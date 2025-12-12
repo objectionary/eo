@@ -15,12 +15,21 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link FpDefault}.
  * @since 0.41
+ * @todo #4526:90min Allow '0.0.0' and 'SNAPSHOT' versions to use cache in
+ *  FpDefault. For now these versions are treated as non-cacheable,
+ *  check {@link FpIfReleased}. This behavior causes issues as the following one:
+ *  <a href="https://github.com/objectionary/eo/issues/4526">Issue 4526</a>.
+ *  We need to allow these versions to use cache just like other versions.
+ *  After fixing this, remove @Disabled annotation from
+ *  {@link FpDefaultTest#usesCacheEvenItSnapshot} and
+ *  {@link FpDefaultTest#cachesEvenItZeroVersion} tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
@@ -31,7 +40,7 @@ final class FpDefaultTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FpDefault(
-                src -> this.footprintContent(),
+                src -> FpDefaultTest.footprintContent(),
                 Paths.get("/file-doesnt-exist"),
                 "",
                 "",
@@ -47,7 +56,7 @@ final class FpDefaultTest {
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(target);
         final Path result = new FpDefault(
-            src -> this.footprintContent(),
+            src -> FpDefaultTest.footprintContent(),
             temp,
             "1.2.3",
             "abcdef",
@@ -71,9 +80,8 @@ final class FpDefaultTest {
     ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
-        assert Files.notExists(target);
         new FpDefault(
-            src -> this.footprintContent(),
+            src -> FpDefaultTest.footprintContent(),
             temp,
             "SNAPSHOT",
             "",
@@ -82,7 +90,7 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
@@ -99,7 +107,7 @@ final class FpDefaultTest {
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(source);
         new FpDefault(
-            src -> this.footprintContent(),
+            src -> FpDefaultTest.footprintContent(),
             temp,
             "SNAPSHOT",
             "",
@@ -108,7 +116,7 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
@@ -125,17 +133,16 @@ final class FpDefaultTest {
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(source);
         final Cache cache = FpDefaultTest.notExistedCache(temp);
-        assert Files.notExists(cache.path());
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
     }
 
@@ -144,17 +151,16 @@ final class FpDefaultTest {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         final Cache cache = FpDefaultTest.notExistedCache(temp);
-        assert Files.notExists(cache.path());
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
     }
 
@@ -165,18 +171,17 @@ final class FpDefaultTest {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
-        assert Files.exists(cache.path());
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
     }
 
@@ -187,18 +192,17 @@ final class FpDefaultTest {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         final Cache cache = FpDefaultTest.existedCache(temp);
-        assert Files.notExists(target);
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.footprintContent())
+            Matchers.equalTo(FpDefaultTest.footprintContent())
         );
     }
 
@@ -215,12 +219,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.cacheContent())
+            Matchers.equalTo(FpDefaultTest.cacheContent())
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.cacheContent())
+            Matchers.equalTo(FpDefaultTest.cacheContent())
         );
     }
 
@@ -230,7 +234,6 @@ final class FpDefaultTest {
     ) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
-        assert Files.notExists(target);
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.makeOlder(cache.path(), 100_000);
@@ -238,12 +241,12 @@ final class FpDefaultTest {
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(this.cacheContent())
+            Matchers.equalTo(FpDefaultTest.cacheContent())
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(this.cacheContent())
+            Matchers.equalTo(FpDefaultTest.cacheContent())
         );
     }
 
@@ -251,12 +254,11 @@ final class FpDefaultTest {
     void skipsCacheIfItIsNotEnabled(@Mktmp final Path temp) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
-        assert Files.notExists(target);
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.makeOlder(cache.path(), 100_000);
         new FpDefault(
-            src -> this.footprintContent(),
+            src -> FpDefaultTest.footprintContent(),
             cache.base,
             cache.semver,
             () -> cache.hash,
@@ -267,8 +269,8 @@ final class FpDefaultTest {
             "Global cache must be skipped because of the boolean flag",
             new TextOf(target).asString(),
             Matchers.allOf(
-                Matchers.equalTo(this.footprintContent()),
-                Matchers.not(Matchers.equalTo(this.cacheContent()))
+                Matchers.equalTo(FpDefaultTest.footprintContent()),
+                Matchers.not(Matchers.equalTo(FpDefaultTest.cacheContent()))
             )
         );
     }
@@ -281,7 +283,7 @@ final class FpDefaultTest {
         Assertions.assertThrows(
             NullPointerException.class,
             () -> new FpDefault(
-                src1 -> this.footprintContent(),
+                src1 -> FpDefaultTest.footprintContent(),
                 cache.base,
                 cache.semver,
                 null,
@@ -291,17 +293,69 @@ final class FpDefaultTest {
         );
     }
 
+    @Test
+    @Disabled
+    void usesCacheEvenItIsSnapshot(@Mktmp final Path temp) throws Exception {
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        final String version = "1.0-SNAPSHOT";
+        final String hash = "snapshothash";
+        final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
+        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
+        new FpDefault(
+            src -> FpDefaultTest.footprintContent(),
+            temp.resolve("cache"),
+            version,
+            hash,
+            Path.of("")
+        ).apply(source, target);
+        MatcherAssert.assertThat(
+            "We expect that cache is used even for SNAPSHOT version",
+            new TextOf(target).asString(),
+            Matchers.allOf(
+                Matchers.equalTo(FpDefaultTest.cacheContent()),
+                Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
+            )
+        );
+    }
+
+    @Test
+    @Disabled
+    void cachesEvenItIsZeroVersion(@Mktmp final Path temp) throws Exception {
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        final String version = "0.0.0";
+        final String hash = "zerohash";
+        final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
+        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
+        new FpDefault(
+            src -> FpDefaultTest.footprintContent(),
+            temp.resolve("cache"),
+            version,
+            hash,
+            Path.of("")
+        ).apply(source, target);
+        MatcherAssert.assertThat(
+            "We expect that cache is used even for 0.0.0 version",
+            new TextOf(target).asString(),
+            Matchers.allOf(
+                Matchers.equalTo(FpDefaultTest.cacheContent()),
+                Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
+            )
+        );
+    }
+
     /**
      * Returns the cache content.
      */
-    private String cacheContent() {
+    private static String cacheContent() {
         return "Cache content";
     }
 
     /**
      * Returns the footprint content.
      */
-    private String footprintContent() {
+    private static String footprintContent() {
         return "Footprint content";
     }
 
@@ -315,9 +369,8 @@ final class FpDefaultTest {
     private static void defaultFootprint(
         final Cache cache, final Path source, final Path target
     ) throws Exception {
-        final String footprint = "Footprint content";
         new FpDefault(
-            src -> footprint,
+            src -> FpDefaultTest.footprintContent(),
             cache.base,
             cache.semver,
             cache.hash,
@@ -441,26 +494,26 @@ final class FpDefaultTest {
      * @checkstyle VisibilityModifierCheck (100 lines)
      * @checkstyle ParameterNumberCheck (100 lines)
      */
-    private static class Cache {
+    private static final class Cache {
         /**
          * Base.
          */
-        public final Path base;
+        final Path base;
 
         /**
          * Semver.
          */
-        public final String semver;
+        final String semver;
 
         /**
          * Hash.
          */
-        public final String hash;
+        final String hash;
 
         /**
          * Tail.
          */
-        public final Path tail;
+        final Path tail;
 
         /**
          * Ctor.
@@ -476,7 +529,7 @@ final class FpDefaultTest {
             this.tail = tail;
         }
 
-        public Path path() {
+        Path path() {
             return this.base.resolve(this.semver).resolve(this.hash).resolve(this.tail);
         }
     }
