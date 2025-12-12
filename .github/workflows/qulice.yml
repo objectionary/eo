@@ -20,7 +20,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/.m2/repository
           key: ubuntu-qulice-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
