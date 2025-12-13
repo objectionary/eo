@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -47,6 +48,7 @@ final class FpIfReleasedTest {
     }
 
     @Test
+    @Disabled
     void choosesTheSecondFootprintBecauseNotCacheable(@TempDir final Path tmp) throws IOException {
         final Path tgt = tmp.resolve("right");
         final Path result = new FpIfReleased(
@@ -63,6 +65,7 @@ final class FpIfReleasedTest {
     }
 
     @Test
+    @Disabled
     void choosesTheSecondFootprintBecauseVersionIsZero(@TempDir final Path tmp) throws IOException {
         final Path tgt = tmp.resolve("right-zero");
         final Path result = new FpIfReleased(

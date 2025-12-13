@@ -204,7 +204,7 @@ public final class MjResolve extends MjSafe {
      */
     private Collection<Dep> deps() {
         Dependencies deps = new DpsDefault(
-            this.scopedTojos(), this.discoverSelf, this.skipZeroVersions, this.resolveJna
+            this.foreignTojos(), this.discoverSelf, this.skipZeroVersions, this.resolveJna
         );
         if (this.ignoreRuntime) {
             Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");

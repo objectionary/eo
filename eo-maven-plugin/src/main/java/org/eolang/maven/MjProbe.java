@@ -56,15 +56,15 @@ public final class MjProbe extends MjSafe {
      * Probe objects.
      */
     private void probe() {
-        final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
+        final Collection<TjForeign> tojos = this.foreignTojos().unprobed();
         if (tojos.isEmpty()) {
-            if (this.scopedTojos().size() == 0) {
+            if (this.foreignTojos().size() == 0) {
                 Logger.warn(this, "Nothing to probe, since there are no programs");
             } else {
                 Logger.info(
                     this,
                     "Nothing to probe, all %d programs checked already",
-                    this.scopedTojos().size()
+                    this.foreignTojos().size()
                 );
             }
         } else {
@@ -104,7 +104,7 @@ public final class MjProbe extends MjSafe {
                         continue;
                     }
                     ++count;
-                    this.scopedTojos().add(object).withDiscoveredAt(src);
+                    this.foreignTojos().add(object).withDiscoveredAt(src);
                     probed.put(object, true);
                 }
                 tojo.withProbed(count);

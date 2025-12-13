@@ -63,7 +63,7 @@ public final class MjPull extends MjSafe {
     @SuppressWarnings("PMD.PrematureDeclaration")
     private void pull() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();
+        final Collection<TjForeign> tojos = this.foreignTojos().withoutSources();
         final Collection<String> names = new ArrayList<>(0);
         final Path base = this.targetDir.toPath().resolve(MjPull.DIR);
         final String hsh = this.hash.value();

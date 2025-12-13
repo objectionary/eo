@@ -70,7 +70,7 @@ public final class MjLint extends MjSafe {
      */
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
+        final Collection<TjForeign> tojos = this.foreignTojos().withXmir();
         final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
@@ -164,7 +164,7 @@ public final class MjLint extends MjSafe {
      */
     private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
-        for (final TjForeign tojo : this.scopedTojos().withXmir()) {
+        for (final TjForeign tojo : this.foreignTojos().withXmir()) {
             paths.put(tojo.identifier(), tojo.xmir());
         }
         for (final TjForeign tojo : this.compileTojos().withXmir()) {

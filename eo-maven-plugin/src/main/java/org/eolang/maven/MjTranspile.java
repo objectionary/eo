@@ -119,7 +119,7 @@ public final class MjTranspile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        final Collection<TjForeign> sources = this.scopedTojos().withXmir();
+        final Collection<TjForeign> sources = this.foreignTojos().withXmir();
         final int saved = new Threaded<>(
             sources,
             this::transpiled
