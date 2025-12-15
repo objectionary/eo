@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,15 +18,9 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.text.TextOf;
-import org.eolang.parser.EoSyntax;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -142,54 +135,21 @@ public final class MjParse extends MjSafe {
      * @throws IOException If fails to parse
      */
     private Node parsed(final Path source, final String identifier) throws IOException {
-        final XML xmir = new EoSyntax(new InputOf(source)).parsed();
+        final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
         Logger.debug(
             MjParse.class,
             "Parsed program '%s' from %[file]s:\n %s",
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
-        final Node document = xmir.inner();
-        final String name = new OnDetailed(
-            new OnDefault(xmir),
-            e -> MjParse.applyError("mandatory-object-name", e.getMessage(), document)
-        ).get();
-        if (!name.equals(identifier)) {
-            MjParse.applyError(
-                "validate-object-name",
-                Logger.format(
-                    "For some reason, the identifier of the tojo, which essentially is a name of the source file ('%s'), does not match the name of the object discovered in the XMIR after parsing ('%s'); the XMIR is saved to the %[file]s file, for debugging purposes",
-                    identifier, name,
-                    new Saved(
-                        new TextOf(xmir.toString()),
-                        this.targetDir.toPath().resolve(
-                            String.format("broken-%x.xmir", System.nanoTime())
-                        )
-                    ).value()
-                ),
-                document
-            );
+        if (xmir.broken()) {
+            new Saved(
+                new TextOf(xmir.xml().toString()),
+                this.targetDir.toPath().resolve(
+                    String.format("broken-%x.xmir", System.nanoTime())
+                )
+            ).value();
         }
-        return document;
-    }
-
-    /**
-     * Apply error to the document.
-     * @param check Check name
-     * @param message Error message
-     * @param document Document
-     */
-    private static void applyError(
-        final String check, final String message, final Node document
-    ) {
-        new Xembler(
-            new Directives()
-                .xpath("/object")
-                .addIf("errors")
-                .add("error")
-                .attr("check", check)
-                .attr("severity", "critical")
-                .set(message)
-        ).applyQuietly(document);
+        return xmir.xml().inner();
     }
 
     /**
