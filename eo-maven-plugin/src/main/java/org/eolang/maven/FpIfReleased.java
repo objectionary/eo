@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
@@ -18,10 +17,6 @@ import java.util.function.Supplier;
  * @checkstyle ParameterNumberCheck (100 lines)
  */
 final class FpIfReleased extends FpEnvelope {
-    /**
-     * Not cacheable versions.
-     */
-    private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
 
     /**
      * Ctor.
@@ -56,25 +51,18 @@ final class FpIfReleased extends FpEnvelope {
             new FpFork(
                 (source, target) -> {
                     final String hsh = hash.get();
-                    final boolean cacheable = !hsh.isEmpty()
-                        && Arrays.stream(FpIfReleased.NOT_CACHEABLE).noneMatch(semver::contains);
+                    final boolean cacheable = !hsh.isEmpty();
                     if (cacheable) {
                         Logger.debug(
                             FpIfReleased.class,
                             "The version '%s' and hash '%s' are good, using cache for %[file]s",
                             semver, hsh, target
                         );
-                    } else if (hsh.isEmpty()) {
+                    } else {
                         Logger.debug(
                             FpIfReleased.class,
                             "The version is '%s' but hash is absent, not using cache for %[file]s",
                             semver, target
-                        );
-                    } else {
-                        Logger.debug(
-                            FpIfReleased.class,
-                            "The version is '%s' and the hash is '%s', not using cache for %[file]s",
-                            semver, hsh, target
                         );
                     }
                     return cacheable;
