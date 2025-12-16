@@ -123,9 +123,9 @@
       if.
         or.
           gte 0
-          truncated.eq ^
+          (number truncated).eq ^
         truncated
-        truncated.minus 1
+        (number truncated).plus -1
     as-i64.as-number > truncated!
 
   # Tests that less-than comparison returns true when first number is smaller.
