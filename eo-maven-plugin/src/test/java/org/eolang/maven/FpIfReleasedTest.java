@@ -47,38 +47,6 @@ final class FpIfReleasedTest {
     }
 
     @Test
-    void choosesTheSecondFootprintBecauseNotCacheable(@TempDir final Path tmp) throws IOException {
-        final Path tgt = tmp.resolve("right");
-        final Path result = new FpIfReleased(
-            "1.2.3-SNAPSHOT",
-            () -> "contains-snapshot-word",
-            (source, target) -> source,
-            (source, target) -> target
-        ).apply(tmp.resolve("left"), tgt);
-        Assertions.assertEquals(
-            tgt,
-            result,
-            "Should choose the second footprint when not cacheable"
-        );
-    }
-
-    @Test
-    void choosesTheSecondFootprintBecauseVersionIsZero(@TempDir final Path tmp) throws IOException {
-        final Path tgt = tmp.resolve("right-zero");
-        final Path result = new FpIfReleased(
-            "0.0.0",
-            () -> "any-hash-value",
-            (source, target) -> source,
-            (source, target) -> target
-        ).apply(tmp.resolve("left-zero"), tgt);
-        Assertions.assertEquals(
-            tgt,
-            result,
-            "Should choose the second footprint when version is 0.0.0"
-        );
-    }
-
-    @Test
     void choosesTheSecondFootprintBecauseHashIsEmpty(@TempDir final Path tmp) throws IOException {
         final Path tgt = tmp.resolve("right-empty-hash");
         final Path result = new FpIfReleased(

@@ -19,7 +19,16 @@ import org.cactoos.text.TextOf;
 
 /**
  * Commit Hash from text.
- *
+ * <p>
+ * This class reads a text file that contains lines with Git SHAs and their corresponding tags,
+ * for example:
+ * <pre>{@code
+ * 9c9352890b5d30e1b89c9147e7c95a90c9b8709f, 0.28.5
+ * 17f89293e5ae6115e9a0234b754b22918c11c602, 0.28.6
+ * 5f82cc1edffad67bf4ba816610191403eb18af5d, 0.28.7
+ * be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9
+ * }</pre>
+ * </p>
  * @since 0.28.11
  */
 final class ChText implements CommitHash {

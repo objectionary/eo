@@ -96,7 +96,10 @@ public final class MjRegister extends MjSafe {
                 if (this.scopedTojos().contains(name)) {
                     Logger.debug(this, "EO source %s already registered", name);
                 } else {
-                    this.scopedTojos().add(name).withSource(file.toAbsolutePath());
+                    this.scopedTojos()
+                        .add(name)
+                        .withSource(file.toAbsolutePath())
+                        .withHash(new ChSource(file));
                     Logger.debug(this, "EO source %s registered", name);
                 }
                 return 1;
