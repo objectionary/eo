@@ -40,18 +40,18 @@ final class ChSource implements CommitHash {
 
     /**
      * Constructor.
-     * @param src Source file
+     * @param input Source text
      */
-    private ChSource(final File src) {
-        this(new TextOf(src));
+    ChSource(final Text input) {
+        this(new ScalarOf<>(input::asString));
     }
 
     /**
      * Constructor.
-     * @param input Source text
+     * @param src Source file
      */
-    private ChSource(final Text input) {
-        this(new ScalarOf<>(input::asString));
+    private ChSource(final File src) {
+        this(new TextOf(src));
     }
 
     /**
