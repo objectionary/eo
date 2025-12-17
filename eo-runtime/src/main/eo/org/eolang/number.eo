@@ -116,7 +116,17 @@
   # The object rounds down the original `number` to the nearest
   # whole `number` that is less than or equal to it
   # and returns the result as `org.eolang.number`.
-  [] > floor ?
+  [] > floor
+    if. > @
+      is-finite.not
+      ^
+      if.
+        or.
+          gte 0
+          (number truncated).eq ^
+        truncated
+        (number truncated).plus -1
+    as-i64.as-number > truncated!
 
   # Tests that less-than comparison returns true when first number is smaller.
   [] +> tests-int-less-true
@@ -350,7 +360,7 @@
     eq. > @
       floor.
         13.div -5
-      -2
+      -3
 
   # Tests that division result can be less than one.
   [] +> tests-div-less-than-one
