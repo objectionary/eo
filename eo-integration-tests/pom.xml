@@ -207,7 +207,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
-        <configuration combine.self="override">
+        <configuration combine.self="append">
           <skipInstallation>${skipITs}</skipInstallation>
           <skipInvocation>${skipITs}</skipInvocation>
         </configuration>
