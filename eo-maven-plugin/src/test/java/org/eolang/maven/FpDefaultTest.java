@@ -15,21 +15,12 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link FpDefault}.
  * @since 0.41
- * @todo #4526:90min Allow '0.0.0' and 'SNAPSHOT' versions to use cache in
- *  FpDefault. For now these versions are treated as non-cacheable,
- *  check {@link FpIfReleased}. This behavior causes issues as the following one:
- *  <a href="https://github.com/objectionary/eo/issues/4526">Issue 4526</a>.
- *  We need to allow these versions to use cache just like other versions.
- *  After fixing this, remove @Disabled annotation from
- *  {@link FpDefaultTest#usesCacheEvenItSnapshot} and
- *  {@link FpDefaultTest#cachesEvenItZeroVersion} tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
@@ -294,7 +285,6 @@ final class FpDefaultTest {
     }
 
     @Test
-    @Disabled
     void usesCacheEvenItIsSnapshot(@Mktmp final Path temp) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
@@ -302,6 +292,7 @@ final class FpDefaultTest {
         final String hash = "snapshothash";
         final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
         FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
+        FpDefaultTest.makeOlder(cache.path());
         new FpDefault(
             src -> FpDefaultTest.footprintContent(),
             temp.resolve("cache"),
@@ -320,7 +311,6 @@ final class FpDefaultTest {
     }
 
     @Test
-    @Disabled
     void cachesEvenItIsZeroVersion(@Mktmp final Path temp) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
@@ -328,6 +318,7 @@ final class FpDefaultTest {
         final String hash = "zerohash";
         final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
         FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
+        FpDefaultTest.makeOlder(cache.path());
         new FpDefault(
             src -> FpDefaultTest.footprintContent(),
             temp.resolve("cache"),
