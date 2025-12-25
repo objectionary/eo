@@ -21,10 +21,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration tests for {@link MjTranspile}.
  *
  * @since 0.52
+ * @todo #4718:90min Make {@linkg MjTranspileIT} independent on the previous eo-maven-plugin.
+ *  The tests in {@link MjTranspileIT} depend on the eo-maven-plugin being installed
+ *  on the local maven repository instead of using the current one.
+ *  We should either move these tests to eo-integration-tests, or find a way to use
+ *  the current eo-maven-plugin build for testing.
+ *  Otherwise, these tests check the previous version of the plugin.
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class, RandomProgramResolver.class})
 final class MjTranspileIT {
+
     @Test
     void transpilesWithPackage(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(

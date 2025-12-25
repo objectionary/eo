@@ -38,7 +38,7 @@ final class JavaPlacedTest {
             ),
             target,
             generated
-        ).exec(java);
+        ).exec(java, false);
         MatcherAssert.assertThat(
             "Generated Java code does not match with expected",
             new TextOf(target).asString(),
@@ -64,7 +64,9 @@ final class JavaPlacedTest {
                 new Directives().add("class").attr("java-name", "Foo").add("tests").set(expected)
             ).xml()
         ).element("class");
-        new JavaPlaced(new FpJavaGenerated(java, generated, utest), utest, generated).exec(java);
+        new JavaPlaced(
+            new FpJavaGenerated(java, generated, utest), utest, generated
+        ).exec(java, true);
         MatcherAssert.assertThat(
             "Generated tests does not match with expected",
             new TextOf(
