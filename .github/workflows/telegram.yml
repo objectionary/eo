@@ -24,7 +24,7 @@ jobs:
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4.8
+          ruby-version: 4.0.0
           bundler-cache: true
       - run: gem install hoc
       - run: |
