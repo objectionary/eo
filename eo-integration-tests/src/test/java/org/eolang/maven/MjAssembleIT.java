@@ -30,8 +30,8 @@ final class MjAssembleIT {
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/org/eolang/io/stdout.%s";
-        final String parsed = String.format(stdout, MjParse.DIR, MjAssemble.XMIR);
-        final String pulled = String.format(stdout, MjPull.DIR, MjAssemble.EO);
+        final String parsed = String.format(stdout, "1-parse", "xmir");
+        final String pulled = String.format(stdout, "2-pull", "eo");
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -83,8 +83,8 @@ final class MjAssembleIT {
                 f.exec("test");
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
-                    temp.resolve(String.format("target/eo/%s", MjParse.DIR)).toAbsolutePath(),
-                    new ContainsFiles(String.format("**/main.%s", MjAssemble.XMIR))
+                    temp.resolve(String.format("target/eo/%s", "1-parse")).toAbsolutePath(),
+                    new ContainsFiles("**/main.xmir")
                 );
             }
         );
