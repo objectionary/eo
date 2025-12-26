@@ -109,13 +109,13 @@ public final class MjTranspile extends MjSafe {
     private boolean addSourcesRoot = true;
 
     /**
-     * Add to test source root.
+     * Whether to transpile tests.
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addTestSourcesRoot")
-    @SuppressWarnings("PMD.LongVariable")
-    private boolean addTestSourcesRoot;
+    @Parameter(property = "eo.transpileTests")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean transpileTests = true;
 
     @Override
     public void exec() throws IOException {
@@ -246,7 +246,7 @@ public final class MjTranspile extends MjSafe {
                         ),
                         tgt,
                         this.generatedDir.toPath()
-                    ).exec(clazz);
+                    ).exec(clazz, this.transpileTests);
                 }
             }
         }

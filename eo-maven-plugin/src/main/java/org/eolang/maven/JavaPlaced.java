@@ -10,13 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import org.cactoos.Proc;
+import org.cactoos.BiProc;
 
 /**
  * Placed Java generated code.
  * @since 0.56.7
  */
-final class JavaPlaced implements Proc<Xnav> {
+final class JavaPlaced implements BiProc<Xnav, Boolean> {
 
     /**
      * The footprint.
@@ -46,11 +46,11 @@ final class JavaPlaced implements Proc<Xnav> {
     }
 
     @Override
-    public void exec(final Xnav clazz) throws IOException {
+    public void exec(final Xnav clazz, final Boolean tests) throws IOException {
         if (clazz.element("java").text().isPresent()) {
             this.footprint.apply(Paths.get(""), this.target);
         }
-        if (JavaPlaced.testsPresent(clazz)) {
+        if (tests && JavaPlaced.testsPresent(clazz)) {
             this.placeJavaTests(clazz);
         }
     }

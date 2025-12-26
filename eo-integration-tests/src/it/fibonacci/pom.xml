@@ -21,12 +21,6 @@
       <artifactId>eo-runtime</artifactId>
       <version>@project.version@</version>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <!-- version from parent POM -->
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
@@ -34,22 +28,6 @@
   </properties>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <failIfNoTests>false</failIfNoTests>
-          <!--
-            @todo #4702:90min EO tests are distributed with the eo-runtime library.
-            Currently, when we add 'eo-runtime' as a dependency, the surefire plugin
-            tries to run its tests as well, which takes significant time.
-            And it's rathter unexpected behavior when we just need to run an EO app.
-            We should either don't include EO tests in the eo-runtime jar,
-            or state it clearly in the documentation that when you add eo-runtime
-            as a dependency, you also get its tests.
-          -->
-          <skip>true</skip>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
@@ -65,9 +43,16 @@
           </execution>
         </executions>
         <configuration>
+          <transpileTests>false</transpileTests>
           <ignoreRuntime>true</ignoreRuntime>
           <failOnWarning>false</failOnWarning>
           <skipLinting>true</skipLinting>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
         </configuration>
       </plugin>
       <plugin>
