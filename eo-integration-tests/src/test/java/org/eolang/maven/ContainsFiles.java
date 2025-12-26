@@ -13,7 +13,7 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Asserting that path contains a files matching provided globs.
+ * Asserting that path contains files matching provided globs.
  * @since 0.31.0
  * @todo #4777:30min Remove {@link ContainsFiles} duplicate.
  *  We have exactly the same class in eo-maven-plugin module.
