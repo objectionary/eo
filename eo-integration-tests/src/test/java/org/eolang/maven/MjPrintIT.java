@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration tests for {@link MjPrint}.
+ * Integration tests for eo-maven-plugin:parse goal.
  *
  * @since 0.52
  */
@@ -42,9 +42,8 @@ final class MjPrintIT {
                     .file("src/main/xmir/foo.xmir")
                     .save(
                         f.files()
-                            .file(
-                                String.format("target/eo/%s/foo.xmir", MjParse.DIR)
-                            ).path()
+                            .file("target/eo/1-parse/foo.xmir")
+                            .path()
                     );
                 f.exec("eo:print");
                 MatcherAssert.assertThat(

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration tests for {@link MjLint}.
+ * Integration tests for eo-maven-plugin:lint goal.
  *
  * @since 0.52
  * @todo #4394:35min Enable MjLints related tests after `lints` will be adjusted with `Φ` object.
@@ -36,14 +36,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @Disabled
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
-@ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class, RandomProgramResolver.class})
+@ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjLintIT {
 
     @Test
-    void lintsAgainAfterModification(@Mktmp final Path temp, @RandomProgram final String program)
+    void lintsAgainAfterModification(@Mktmp final Path temp)
         throws Exception {
         final String source = "src/main/eo/foo.eo";
-        final String xmir = String.format("target/eo/%s/foo.xmir", MjLint.DIR);
+        final String program = MjLintIT.helloWorld();
+        final String xmir = "target/eo/3-lint/foo.xmir";
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -69,8 +70,9 @@ final class MjLintIT {
     }
 
     @Test
-    void printsLintsUrlWithVersion(@Mktmp final Path temp, @RandomProgram final String program)
+    void printsLintsUrlWithVersion(@Mktmp final Path temp)
         throws IOException {
+        final String program = MjLintIT.helloWorld();
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -91,6 +93,20 @@ final class MjLintIT {
                     )
                 );
             }
+        );
+    }
+
+    private static String helloWorld() {
+        return String.join(
+            "\n",
+            "+alias stdout org.eolang.io.stdout",
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "",
+            "# No comments.",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @"
         );
     }
 

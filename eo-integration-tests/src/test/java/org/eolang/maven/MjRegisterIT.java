@@ -9,7 +9,11 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.tojos.MnCsv;
+import com.yegor256.tojos.TjCached;
+import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.TjSmart;
+import com.yegor256.tojos.TjSynchronized;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -17,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration tests for {@link MjRegister}.
+ * Integration tests for eo-maven-plugin:register goal.
  *
  * @since 0.52
  */
@@ -54,12 +58,7 @@ final class MjRegisterIT {
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
-                    temp.resolve(
-                        String.format(
-                            "target/eo/%s",
-                            MjPull.DIR
-                        )
-                    ).toFile().exists(),
+                    temp.resolve("target/eo/2-pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -92,12 +91,7 @@ final class MjRegisterIT {
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
-                    temp.resolve(
-                        String.format(
-                            "target/eo/%s",
-                            MjResolve.DIR
-                        )
-                    ).toFile().exists(),
+                    temp.resolve("target/eo/2-pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -196,22 +190,12 @@ final class MjRegisterIT {
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
-                    temp.resolve(
-                        String.format(
-                            "target/eo/%s/org/eolang/number.eo",
-                            MjPull.DIR
-                        )
-                    ).toFile().exists(),
+                    temp.resolve("target/eo/2-pull/org/eolang/number.eo").toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Unnecessary objects were not removed",
-                    temp.resolve(
-                        String.format(
-                            "target/eo/%s/org/eolang/string.eo",
-                            MjPull.DIR
-                        )
-                    ).toFile().exists(),
+                    temp.resolve("target/eo/2-pull/org/eolang/string.eo").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -219,8 +203,6 @@ final class MjRegisterIT {
     }
 
     private static TjSmart foreign(final Path path) {
-        return new TjSmart(
-            Catalogs.INSTANCE.make(path)
-        );
+        return new TjSmart(new TjSynchronized(new TjCached(new TjDefault(new MnCsv(path)))));
     }
 }

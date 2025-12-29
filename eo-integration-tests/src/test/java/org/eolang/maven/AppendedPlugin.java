@@ -13,12 +13,6 @@ import org.cactoos.Scalar;
 /**
  * Configures the EO Maven plugin within a {@link Farea}.
  * @since 0.52
- * @todo #4777:90min Continue moving integration tests from eo-maven-plugin to
- * eo-integration-tests module. You can recognize these tests by the -IT suffix.
- * They use Farea to run Maven builds with eo-maven-plugin.
- * After moving all tests, remove the duplicated
- * {@link AppendedPlugin} class from eo-maven-plugin module.
- * Don't forget to remove exclusion from 'simian.yaml' as well.
  */
 final class AppendedPlugin implements Scalar<Execution> {
     /**

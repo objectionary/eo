@@ -37,7 +37,7 @@ final class MjAssembleIT {
                 f.clean();
                 f.files()
                     .file("src/main/eo/foo/x/main.eo")
-                    .write(MjAssembleIT.helloWorld().getBytes(StandardCharsets.UTF_8));
+                    .write(MjAssembleIT.program().getBytes(StandardCharsets.UTF_8));
                 MjAssembleIT.appendItself(f);
                 f.exec("package");
                 MatcherAssert.assertThat(
@@ -90,17 +90,16 @@ final class MjAssembleIT {
         );
     }
 
-    private static String helloWorld() {
+    private static String program() {
         return String.join(
             "\n",
             "+alias stdout org.eolang.io.stdout",
-            "+home https://www.eolang.org",
-            "+package foo.x",
-            "+version 0.0.0",
+            "+package foo.y",
+            "+version 0.1.1",
             "",
-            "# No comments.",
+            "# Prints Hello World! to stdout.",
             "[x] > main",
-            "  (stdout \"Hello!\" x).print > @"
+            "  (stdout \"Hello World!\" x).print > @"
         );
     }
 
