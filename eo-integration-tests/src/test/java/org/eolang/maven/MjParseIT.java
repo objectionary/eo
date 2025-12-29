@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration tests for {@link MjParse}.
+ * Integration tests for eo-maven-plugin:parse goal.
  *
  * @since 0.52
  */
@@ -36,9 +36,7 @@ final class MjParseIT {
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",
-                    f.files().file(
-                        String.format("target/eo/%s/foo.xmir", MjParse.DIR)
-                    ).exists(),
+                    f.files().file("target/eo/1-parse/foo.xmir").exists(),
                     Matchers.is(true)
                 );
             }

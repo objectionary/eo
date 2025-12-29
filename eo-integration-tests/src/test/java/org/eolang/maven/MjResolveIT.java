@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration tests for {@link MjResolve}.
+ * Integration tests for eo-maven-plugin:resolve.
  *
  * @since 0.52
  */
@@ -37,7 +37,7 @@ final class MjResolveIT {
                     f.files().file(
                         String.format(
                             "target/eo/%s/org.eolang/eo-runtime/-/%s/org/eolang/Phi.class",
-                            MjResolve.DIR,
+                            "4-resolve",
                             version
                         )
                     ).exists(),
@@ -83,7 +83,7 @@ final class MjResolveIT {
                     f.files().file(
                         String.format(
                             "target/eo/%s/org.eolang/eo-runtime/-/%s",
-                            MjResolve.DIR,
+                            "4-resolve",
                             version
                         )
                     ).exists(),
