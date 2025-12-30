@@ -182,7 +182,7 @@ final class JarIT {
                     Matchers.allOf(
                         Matchers.containsString("Couldn't find object 'Φ.org.eolang.unknown'"),
                         Matchers.containsString(
-                            "because there's no class or package 'EOorg.EOeolang.EOunknown"
+                            "because there's no class 'EOorg.EOeolang.EOunknown' or package-info class: 'EOorg.EOeolang.EOunknown.package-info"
                         )
                     )
                 );
