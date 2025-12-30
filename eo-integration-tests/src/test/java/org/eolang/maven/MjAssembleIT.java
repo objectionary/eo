@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,7 +39,7 @@ final class MjAssembleIT {
                 f.files()
                     .file("src/main/eo/foo/x/main.eo")
                     .write(MjAssembleIT.program().getBytes(StandardCharsets.UTF_8));
-                MjAssembleIT.appendItself(f);
+                MjAssembleIT.registerAssemble(f);
                 f.exec("package");
                 MatcherAssert.assertThat(
                     String.format(
@@ -79,12 +80,12 @@ final class MjAssembleIT {
                 f.files()
                     .file("src/main/eo/one/main.eo")
                     .write(prog.getBytes(StandardCharsets.UTF_8));
-                MjAssembleIT.appendItself(f);
+                MjAssembleIT.registerAssemble(f);
                 f.exec("test");
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
-                    temp.resolve(String.format("target/eo/%s", "1-parse")).toAbsolutePath(),
-                    new ContainsFiles("**/main.xmir")
+                    temp.resolve("target/eo/1-parse/one/main.xmir").toAbsolutePath().toFile(),
+                    FileMatchers.anExistingFile()
                 );
             }
         );
@@ -103,7 +104,7 @@ final class MjAssembleIT {
         );
     }
 
-    private static Execution appendItself(final Farea farea) throws IOException {
+    private static Execution registerAssemble(final Farea farea) throws IOException {
         return new AppendedPlugin(farea).value()
             .goals("register", "assemble");
     }
