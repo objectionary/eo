@@ -111,7 +111,7 @@ final class PhPackageTest {
     }
 
     @Test
-    void throwsExceptionsIfCantFindPackageInfo() {
+    void throwsExceptionIfCantFindPackageInfo() {
         MatcherAssert.assertThat(
             "Exception message must mention missing package-info.class",
             Assertions.assertThrows(
