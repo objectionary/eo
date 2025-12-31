@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -279,6 +280,33 @@ final class MjParseTest {
             Matchers.allOf(
                 Matchers.equalTo(before),
                 Matchers.equalTo(after)
+            )
+        );
+    }
+
+    @Test
+    void convertsLocalObjectsToAliases(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "Local object is not converted to alias, but it should",
+            new XMLDocument(
+                new FakeMaven(temp)
+                    .withProgram(
+                        String.join(
+                            "\n",
+                            "+package foo",
+                            "",
+                            "[] > x",
+                            "  bar 42 > @"
+                        ),
+                        "foo.x"
+                    )
+                    .execute(new FakeMaven.Parse())
+                    .result()
+                    .get("target/1-parse/foo/x.xmir")
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/metas/meta[head='alias' and part='bar' and part='foo.bar' and tail='bar foo.bar']",
+                "//o[@base='foo.bar']/o[1][@base='Φ.org.eolang.number']/o[1][@base='Φ.org.eolang.bytes']"
             )
         );
     }
