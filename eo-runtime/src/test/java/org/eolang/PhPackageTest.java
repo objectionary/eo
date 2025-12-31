@@ -111,6 +111,21 @@ final class PhPackageTest {
     }
 
     @Test
+    void throwsExceptionIfCantFindPackageInfo() {
+        MatcherAssert.assertThat(
+            "Exception message must mention missing package-info.class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhPackage(this.phiPackageName()).take("org.eolang.test.package-info"),
+                "We should throw if package-info.class is missing"
+            ).getMessage(),
+            Matchers.equalTo(
+                "Couldn't find object 'Φ.org.eolang.org' because there's no class 'EOorg.EOeolang.EOorg' or package-info class: 'EOorg.EOeolang.EOorg.package-info', at least one of them must exist"
+            )
+        );
+    }
+
+    @Test
     void returnsSelfOnCopy() {
         final Phi pckg = new PhPackage(this.phiPackageName());
         MatcherAssert.assertThat(
