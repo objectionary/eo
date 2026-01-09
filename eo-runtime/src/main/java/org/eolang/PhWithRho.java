@@ -74,7 +74,6 @@ final class PhWithRho implements Phi {
         return this.original.forma();
     }
 
-
     @Override
     public byte[] delta() {
         return this.original.delta();
