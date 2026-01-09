@@ -74,13 +74,6 @@ final class PhWithRho implements Phi {
         return this.original.forma();
     }
 
-    @Override
-    public Phi copy(final Phi self) {
-        return new PhWithRho(
-            this.original.copy(self),
-            self
-        );
-    }
 
     @Override
     public byte[] delta() {

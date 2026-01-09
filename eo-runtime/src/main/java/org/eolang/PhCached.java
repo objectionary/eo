@@ -36,11 +36,6 @@ public final class PhCached implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return new PhCached(this.origin.copy(self));
-    }
-
-    @Override
     public Phi copy() {
         return this.origin.copy();
     }

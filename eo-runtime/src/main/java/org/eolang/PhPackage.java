@@ -54,11 +54,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return this.copy();
-    }
-
-    @Override
     public Phi copy() {
         return this;
     }

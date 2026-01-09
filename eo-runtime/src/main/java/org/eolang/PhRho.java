@@ -79,12 +79,7 @@ final class PhRho implements Phi {
         return this.rho.get().forma();
     }
 
-    @Override
-    public Phi copy(final Phi self) {
-        return new PhRho(this.rho.get());
-    }
-
-    @Override
+   @Override
     public byte[] delta() {
         return this.rho.get().delta();
     }

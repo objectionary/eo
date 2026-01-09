@@ -27,11 +27,6 @@ abstract class PhEnvelope implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return this.origin.copy(self);
-    }
-
-    @Override
     public Phi copy() {
         return this.origin.copy();
     }

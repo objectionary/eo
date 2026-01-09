@@ -77,11 +77,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        return this.copy();
-    }
-
-    @Override
     public boolean equals(final Object obj) {
         return this.origin.equals(obj);
     }
