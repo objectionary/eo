@@ -45,18 +45,6 @@ public final class PhVoid implements Phi {
     }
 
     @Override
-    public Phi copy(final Phi self) {
-        final Phi obj = this.object.get();
-        final Phi copy;
-        if (obj == null) {
-            copy = null;
-        } else {
-            copy = obj.copy();
-        }
-        return new PhVoid(this.name, copy);
-    }
-
-    @Override
     public String locator() {
         final Phi obj = this.object.get();
         if (obj == null) {
