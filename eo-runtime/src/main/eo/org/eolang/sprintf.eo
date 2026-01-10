@@ -1,0 +1,130 @@
++alias org.eolang.tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# This is a pure EO implementation of sprintf functionality.
+[] > sprintf
+  format > fmt
+  args > args
+  [] > result
+    memory > output
+      ""
+    memory > i
+      0
+    memory > arg_index
+      0
+    
+    while. > @
+      i.lt (fmt.length)
+      [i] > @
+        if. > current_char
+          fmt.at i
+          current_char
+        if. > @
+          current_char.eq "%"
+          seq > @
+            if. > next_char
+              i.add 1.lt (fmt.length)
+              fmt.at (i.add 1)
+              ""
+            next_char
+            if. > @
+              next_char.eq "%"
+              seq > @
+                output.write > @
+                  output.concat "%"
+                i.write > @
+                  i.add 2
+              if. > @
+                next_char.eq "s"
+                seq > @
+                  if. > arg
+                    arg_index.lt (args.length)
+                    args.at arg_index
+                    ""
+                  arg
+                  output.write > @
+                    output.concat (arg.as-string)
+                  arg_index.write > @
+                    arg_index.add 1
+                  i.write > @
+                    i.add 2
+                if. > @
+                  next_char.eq "d"
+                  seq > @
+                    if. > arg
+                      arg_index.lt (args.length)
+                      args.at arg_index
+                      0
+                    arg
+                    output.write > @
+                      output.concat (arg.as-integer.as-string)
+                    arg_index.write > @
+                      arg_index.add 1
+                    i.write > @
+                      i.add 2
+                  if. > @
+                    next_char.eq "f"
+                    seq > @
+                      if. > arg
+                        arg_index.lt (args.length)
+                        args.at arg_index
+                        0.0
+                      arg
+                      output.write > @
+                        output.concat (arg.as-float.as-string)
+                      arg_index.write > @
+                        arg_index.add 1
+                      i.write > @
+                        i.add 2
+                    seq > @
+                      output.write > @
+                        output.concat current_char
+                      i.write > @
+                        i.add 1
+        seq > @
+          output.write > @
+            output.concat current_char
+          i.write > @
+            i.add 1
+    output > @
+
+[] > test_sprintf
+  memory > result1
+    sprintf
+      "Hello, %s!"
+      ("World" "")
+  memory > result2
+    sprintf
+      "Number: %d"
+      (42 0)
+  memory > result3
+    sprintf
+      "Pi: %.2f"
+      (3.14159 0.0)
+  memory > result4
+    sprintf
+      "Multiple: %s %d %f"
+      ("test" 123 45.6)
+  
+  seq > @
+    stdout
+      "Test 1: "
+      result1
+      "\n"
+    stdout
+      "Test 2: "
+      result2
+      "\n"
+    stdout
+      "Test 3: "
+      result3
+      "\n"
+    stdout
+      "Test 4: "
+      result4
+      "\n"
