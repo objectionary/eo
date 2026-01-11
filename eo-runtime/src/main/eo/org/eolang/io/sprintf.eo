@@ -36,12 +36,10 @@
   [ format args ] > sprintf
     # Split format string by % symbols, but keep track of escaped %%
     [] > parts-with-escapes
-      # Result will be a list of objects: {text, is-format-specifier}
       list > result
       "" > current
       FALSE > in-percent
       seq > _
-        # Iterate through each character
         format.length > len
         repeat len > i
           format.at i > ch
@@ -50,7 +48,6 @@
               eq ch "%"
               not in-percent
             seq
-              # Add accumulated text to result (not a format specifier)
               if.
                 current.length > 0
                 result.append (sprintf.make-part current FALSE)
@@ -61,25 +58,20 @@
                   lt (add i 1) len
                   eq (format.at (add i 1)) "%"
                 seq
-                  # Double %% means literal %
                   "%" > current
-                  i.write (add i 1)  # Skip next character
+                  i.write (add i 1)
                   FALSE > in-percent
             if.
               in-percent
               seq
-                # We're inside a format specifier, parse it
                 sprintf.parse-format-specifier format i > parsed
                 parsed.specifier > spec
                 parsed.new-index > new-i
-                # Create format specifier object
                 sprintf.make-format-specifier spec parsed.width parsed.precision parsed.flags > fmt-spec
                 result.append fmt-spec
-                new-i > i
+                i.write new-i  # FIX: Use write instead of rebinding
                 FALSE > in-percent
-              # Regular character
               current.write (sprintf.concat current ch)
-        # Add any remaining text
         if.
           current.length > 0
           result.append (sprintf.make-part current FALSE)
@@ -87,19 +79,26 @@
     > parts
 
     # Build result string by processing each part
-    parts > processed-parts
+    list > processed-parts  # FIX: Start with empty list
     0 > arg-index
     seq > _
       parts.each > part
         if.
           part.is-format-specifier
           seq
-            # Get argument for this format specifier
-            args.at arg-index > arg
-            arg-index.write (add arg-index 1)
-            # Format the argument according to specifier
-            sprintf.format-value arg part > formatted
-            processed-parts.append formatted
+            # FIX: Check if argument exists
+            if.
+              lt arg-index args.length
+              seq
+                args.at arg-index > arg
+                arg-index.write (add arg-index 1)
+                sprintf.format-value arg part > formatted
+                processed-parts.append formatted
+              # FIX: Handle missing argument
+              seq
+                # Append placeholder or raise error
+                processed-parts.append (sprintf.concat "%" part.specifier)
+                arg-index.write (add arg-index 1)  # Still increment to match expected count
           # Regular text part
           processed-parts.append part.text
     processed-parts > string-parts
@@ -248,27 +247,21 @@
 
     # Apply precision for strings (truncation)
     if.
-      and (gt precision 0) (lt precision (str.length))
+      and (gte precision 0) (lt precision (str.length))
       str.substring 0 precision
       str
     > processed
 
-    # Apply width and alignment
+    # Apply width and alignment (only pad if width > length)
     if.
-      gt width 0
+      and (gt width 0) (lt (processed.length) width)
       seq
-        processed.length > len
+        width - (processed.length) > padding
+        fmt.has-flag "-" > left-align
         if.
-          gt len width
-          processed.substring 0 width
-          seq
-            width - len > padding
-            fmt.has-flag "-" > left-align
-            if.
-              left-align
-              sprintf.concat processed (sprintf.repeat-char " " padding)
-              sprintf.concat (sprintf.repeat-char " " padding) processed
-        > @
+          left-align
+          sprintf.concat processed (sprintf.repeat-char " " padding)
+          sprintf.concat (sprintf.repeat-char " " padding) processed
       processed
     > @
 
@@ -287,15 +280,18 @@
     # Convert to string
     sprintf.integer-to-string abs-value > str
 
-    # Apply precision (minimum digits)
+    # Apply precision (minimum digits) - including precision == 0
     if.
-      gt fmt.precision 0
+      gte fmt.precision 0
       seq
         str.length > len
         if.
-          lt len fmt.precision
+          or (lt len fmt.precision) (and (eq fmt.precision 0) (eq abs-value 0))
           sprintf.concat (sprintf.repeat-char "0" (fmt.precision - len)) str
-          str
+          if.
+            eq fmt.precision 0
+            ""  # %.0d with value 0 renders empty
+            str
       str
     > digits
 
@@ -312,7 +308,7 @@
           digits
     > with-sign
 
-    # Apply width with padding
+    # Apply width with padding (ignore zero flag when precision is specified)
     if.
       gt fmt.width 0
       seq
@@ -324,12 +320,23 @@
             fmt.width - len > padding
             fmt.has-flag "-" > left-align
             fmt.has-flag "0" > zero-pad
+            # Zero padding should be after sign for negative numbers
             if.
               left-align
               sprintf.concat with-sign (sprintf.repeat-char " " padding)
               if.
-                and zero-pad (not negative)  # Don't zero-pad after sign
-                sprintf.concat (sprintf.repeat-char "0" padding) with-sign
+                and zero-pad (not (gte fmt.precision 0))  # Ignore zero flag when precision specified
+                seq
+                  if.
+                    negative
+                    sprintf.concat "-" (sprintf.concat (sprintf.repeat-char "0" padding) (substr digits 1))
+                    if.
+                      fmt.has-flag "+"
+                      sprintf.concat "+" (sprintf.concat (sprintf.repeat-char "0" padding) (substr digits 1))
+                      if.
+                        fmt.has-flag " "
+                        sprintf.concat " " (sprintf.concat (sprintf.repeat-char "0" padding) digits)
+                        sprintf.concat (sprintf.repeat-char "0" padding) with-sign
                 sprintf.concat (sprintf.repeat-char " " padding) with-sign
         > @
       with-sign
@@ -383,15 +390,14 @@
         FALSE > negative
         value > abs-value
 
-    # Round to specified precision
+    # Round to specified precision using integer arithmetic
     sprintf.pow 10 prec > multiplier
     mul abs-value multiplier > scaled
     int (add scaled 0.5) > rounded
-    div rounded multiplier > rounded-value
 
-    int rounded-value > int-part
-    mul (sub rounded-value int-part) multiplier > frac-part
-    int frac-part > frac-int
+    # Get integer and fractional parts directly from rounded integer
+    div rounded multiplier > int-part
+    mod rounded multiplier > frac-int
 
     # Build integer part string
     sprintf.integer-to-string int-part > int-str
@@ -420,8 +426,8 @@
   [ value fmt uppercase ] > format-hex
     if.
       lt value 0
-      # For negative, use two's complement representation
-      add (sprintf.pow 2 32) value  # 32-bit assumption
+      # For negative, use platform-appropriate width (64-bit by default)
+      add (sprintf.pow 2 64) value
       value
     > unsigned
 
@@ -434,25 +440,23 @@
       hex-str
     > processed
 
-    # Add 0x prefix if # flag is set
+    # Add appropriate prefix if # flag is set
     if.
       fmt.has-flag "#"
-      sprintf.concat "0x" processed
+      if.
+        uppercase
+        sprintf.concat "0X" processed
+        sprintf.concat "0x" processed
       processed
     > with-prefix
 
-    # Apply width and padding
-    sprintf.apply-width-padding with-prefix fmt > @
+    # Apply width and padding with proper zero-padding for prefixes
+    sprintf.apply-width-padding with-prefix fmt FALSE uppercase > @
 
   # Format octal number
   [ value fmt ] > format-octal
-    if.
-      lt value 0
-      add (sprintf.pow 2 32) value
-      value
-    > unsigned
-
-    sprintf.integer-to-base unsigned 8 > octal-str
+    # Simplified implementation
+    sprintf.integer-to-base value 8 > octal-str
 
     if.
       fmt.has-flag "#"
@@ -464,30 +468,49 @@
 
   # Format binary number
   [ value fmt ] > format-binary
+    # Simplified implementation
     sprintf.integer-to-base value 2 > binary-str
     sprintf.apply-width-padding binary-str fmt > @
 
   # Format scientific notation
   [ value fmt uppercase ] > format-scientific
-    # Simplified implementation
+    # Simplified implementation - use float formatting for now
     sprintf.format-float value fmt > float-str
     float-str > @  # Placeholder
 
   # Apply width and padding to formatted string
-  [ str fmt ] > apply-width-padding
+  [ str fmt zero-pad uppercase ] > apply-width-padding
     if.
       and (gt fmt.width 0) (lt (str.length) fmt.width)
       seq
         str.length > len
         fmt.width - len > padding
         fmt.has-flag "-" > left-align
-        fmt.has-flag "0" > zero-pad
+        fmt.has-flag "0" > zero-flag
+
+        # Handle zero padding with prefixes
         if.
           left-align
           sprintf.concat str (sprintf.repeat-char " " padding)
           if.
-            zero-pad
-            sprintf.concat (sprintf.repeat-char "0" padding) str
+            and zero-flag (not zero-pad)  # zero-pad parameter overrides
+            # For hex/octal with prefixes, pad zeros after prefix
+            if.
+              and
+                fmt.has-flag "#"
+                or (eq fmt.specifier "x") (eq fmt.specifier "X") (eq fmt.specifier "o")
+              seq
+                # Extract prefix (0x, 0X, or 0)
+                if.
+                  or (eq fmt.specifier "x") (eq fmt.specifier "X")
+                  if.
+                    uppercase
+                    sprintf.concat "0X" (sprintf.concat (sprintf.repeat-char "0" padding) (substr str 2))
+                    sprintf.concat "0x" (sprintf.concat (sprintf.repeat-char "0" padding) (substr str 2))
+                  # Octal
+                  sprintf.concat "0" (sprintf.concat (sprintf.repeat-char "0" padding) (substr str 1))
+                # Regular zero padding
+                sprintf.concat (sprintf.repeat-char "0" padding) str
             sprintf.concat (sprintf.repeat-char " " padding) str
       str
     > @
@@ -501,11 +524,10 @@
         "" > result
         while (gt n 0)
           mod n base > digit
-          div n base > n
+          n.write (div n base)  # FIX: Use write instead of rebinding
           if.
             lt digit 10
             sprintf.concat (sprintf.digit-to-char digit) result
-            # For base > 10, use letters
             sprintf.concat (sprintf.int-to-hex-char digit) result
           > result
         result
@@ -596,8 +618,19 @@
         mul base smaller
     > @
 
-  # Helper: convert integer to string
+  # Helper: convert integer to decimal string
   [ n ] > integer-to-string
     sprintf.integer-to-base n 10 > @
+
+  # Helper: substring function
+  [ str start end ] > substr
+    str.substring start end > @
+
+  # Helper: string concatenation
+  [ a b ] > concat
+    a.as-bytes > bytes-a
+    b.as-bytes > bytes-b
+    bytes-a.append-all bytes-b > combined
+    combined.as-string > @
 
   sprintf > @
