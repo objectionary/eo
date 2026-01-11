@@ -222,11 +222,6 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
-    @Override
-    public Phi copy(final Phi self) {
-        return this.copy();
-    }
-
     /**
      * Add new attribute.
      *
