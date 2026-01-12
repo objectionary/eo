@@ -2,13 +2,10 @@
 +package org.eolang.io
 +version 0.0.0
 +alias org.eolang.txt.concat
-+alias org.eolang.txt.split
 +alias org.eolang.txt.at
 +alias org.eolang.txt.substring
 +alias org.eolang.txt.length
 +alias org.eolang.seq
-+alias org.eolang.array
-+alias org.eolang.memory
 +alias org.eolang.int.add
 +alias org.eolang.int.sub
 +alias org.eolang.int.mul
@@ -31,150 +28,139 @@
 
 # Formats a string using a template and arguments
 [format args] > sprintf
-  [] > formatted
-    [] > processor
-      memory > i-mem
-      memory > arg-index-mem
-      memory > result-mem
-      
-      [] > result
-        seq > @
-          # Initialize
-          0 > idx
-          i-mem.put idx
-          0 > arg-idx
-          arg-index-mem.put arg-idx
-          "" > res
-          result-mem.put res
+  # Main recursive processor
+  [] > process-recursive
+    [index arg-index result] > rec
+      if.
+        gte index format.length
+        result
+        seq
+          format.at index > ch
           
-          format.length > len
-          
-          # Parse format string character by character
-          while (lt (i-mem.get) len)
+          # Check for format specifier
+          if.
+            and
+              eq ch "%"
+              lt (add index 1) format.length
             seq
-              format.at (i-mem.get) > ch
+              # Get next character
+              add index 1 > next-index
+              format.at next-index > next-ch
               
-              # Check for format specifier
+              # Handle different specifiers
               if.
-                and
-                  eq ch "%"
-                  lt (add (i-mem.get) 1) len
-                seq
-                  # Get next character
-                  i-mem.put (add (i-mem.get) 1)
-                  format.at (i-mem.get) > next-ch
-                  
-                  # Handle different specifiers
+                eq next-ch "%"
+                # Escaped %
+                rec (add next-index 1) arg-index (concat result "%")
+                if.
+                  eq next-ch "s"
+                  # String
                   if.
-                    eq next-ch "%"
-                    # Escaped %
+                    lt arg-index args.length
                     seq
-                      result-mem.put (concat (result-mem.get) "%")
-                      i-mem.put (add (i-mem.get) 1)
+                      args.at arg-index > arg
+                      rec
+                        (add next-index 1)
+                        (add arg-index 1)
+                        (concat result (string arg))
+                    # Missing argument
+                    rec (add next-index 1) arg-index (concat result "%s")
+                  if.
+                    or (eq next-ch "d") (eq next-ch "i")
+                    # Integer
                     if.
-                      eq next-ch "s"
-                      # String
+                      lt arg-index args.length
                       seq
-                        if.
-                          lt (arg-index-mem.get) args.length
-                          seq
-                            args.at (arg-index-mem.get) > arg
-                            result-mem.put (concat (result-mem.get) (string arg))
-                            arg-index-mem.put (add (arg-index-mem.get) 1)
-                          # Missing argument
-                          result-mem.put (concat (result-mem.get) "%s")
-                        i-mem.put (add (i-mem.get) 1)
-                      if.
-                        or (eq next-ch "d") (eq next-ch "i")
-                        # Integer
-                        seq
+                        args.at arg-index > arg
+                        
+                        # Integer to string converter
+                        [] > int-to-str
+                          # Handle sign
                           if.
-                            lt (arg-index-mem.get) args.length
+                            lt arg 0
                             seq
-                              args.at (arg-index-mem.get) > arg
-                              [] > int-to-str
-                                # Simple integer to string conversion
-                                if.
-                                  lt arg 0
-                                  seq
-                                    "-" > sign
-                                    mul arg -1 > n
-                                  seq
-                                    "" > sign
-                                    arg > n
-                                if.
-                                  eq n 0
-                                  "0"
-                                  seq
-                                    "" > digits
-                                    while (gt n 0)
-                                      seq
-                                        mod n 10 > digit
-                                        div n 10 > n
+                              "-" > sign
+                              mul arg -1 > positive-n
+                            seq
+                              "" > sign
+                              arg > positive-n
+                          
+                          # Recursive digit converter
+                          [] > to-digits
+                            [n acc] > digit-rec
+                              if.
+                                eq n 0
+                                acc
+                                seq
+                                  mod n 10 > digit
+                                  div n 10 > next-n
+                                  if.
+                                    eq digit 0
+                                    digit-rec next-n (concat "0" acc)
+                                    if.
+                                      eq digit 1
+                                      digit-rec next-n (concat "1" acc)
+                                      if.
+                                        eq digit 2
+                                        digit-rec next-n (concat "2" acc)
                                         if.
-                                          eq digit 0
-                                          digits.write "0"
+                                          eq digit 3
+                                          digit-rec next-n (concat "3" acc)
                                           if.
-                                            eq digit 1
-                                            digits.write "1"
+                                            eq digit 4
+                                            digit-rec next-n (concat "4" acc)
                                             if.
-                                              eq digit 2
-                                              digits.write "2"
+                                              eq digit 5
+                                              digit-rec next-n (concat "5" acc)
                                               if.
-                                                eq digit 3
-                                                digits.write "3"
+                                                eq digit 6
+                                                digit-rec next-n (concat "6" acc)
                                                 if.
-                                                  eq digit 4
-                                                  digits.write "4"
+                                                  eq digit 7
+                                                  digit-rec next-n (concat "7" acc)
                                                   if.
-                                                    eq digit 5
-                                                    digits.write "5"
-                                                    if.
-                                                      eq digit 6
-                                                      digits.write "6"
-                                                      if.
-                                                        eq digit 7
-                                                        digits.write "7"
-                                                        if.
-                                                          eq digit 8
-                                                          digits.write "8"
-                                                          digits.write "9"
-                                    concat sign digits
-                              > int-str
-                              result-mem.put (concat (result-mem.get) int-str)
-                              arg-index-mem.put (add (arg-index-mem.get) 1)
-                            # Missing argument
-                            result-mem.put (concat (result-mem.get) "%d")
-                          i-mem.put (add (i-mem.get) 1)
-                        if.
-                          or (eq next-ch "f") (eq next-ch "F")
-                          # Float
-                          seq
-                            if.
-                              lt (arg-index-mem.get) args.length
-                              seq
-                                args.at (arg-index-mem.get) > arg
-                                # Simple float formatting
-                                string arg > float-str
-                                result-mem.put (concat (result-mem.get) float-str)
-                                arg-index-mem.put (add (arg-index-mem.get) 1)
-                              # Missing argument
-                              result-mem.put (concat (result-mem.get) "%f")
-                            i-mem.put (add (i-mem.get) 1)
-                          # Unknown specifier - keep as is
-                          seq
-                            result-mem.put (concat (result-mem.get) "%")
-                            result-mem.put (concat (result-mem.get) next-ch)
-                            i-mem.put (add (i-mem.get) 1)
-                # Regular character
-                seq
-                  result-mem.put (concat (result-mem.get) ch)
-                  i-mem.put (add (i-mem.get) 1)
-          
-          result-mem.get
-      
-      result > @
-    
-    processor > @
+                                                    eq digit 8
+                                                    digit-rec next-n (concat "8" acc)
+                                                    digit-rec next-n (concat "9" acc)
+                          
+                          # Convert number
+                          if.
+                            eq positive-n 0
+                            "0"
+                            seq
+                              to-digits positive-n "" > digits
+                              concat sign digits
+                          > @
+                        
+                        int-to-str > int-str
+                        rec
+                          (add next-index 1)
+                          (add arg-index 1)
+                          (concat result int-str)
+                      # Missing argument
+                      rec (add next-index 1) arg-index (concat result "%d")
+                    if.
+                      or (eq next-ch "f") (eq next-ch "F")
+                      # Float
+                      if.
+                        lt arg-index args.length
+                        seq
+                          args.at arg-index > arg
+                          string arg > float-str
+                          rec
+                            (add next-index 1)
+                            (add arg-index 1)
+                            (concat result float-str)
+                        # Missing argument
+                        rec (add next-index 1) arg-index (concat result "%f")
+                      # Unknown specifier - keep as is
+                      rec
+                        (add next-index 1)
+                        arg-index
+                        (concat (concat result "%") next-ch)
+            # Regular character
+            rec (add index 1) arg-index (concat result ch)
+    > recursive-function
   
-  formatted > @
+  # Start recursion
+  recursive-function 0 0 "" > @
