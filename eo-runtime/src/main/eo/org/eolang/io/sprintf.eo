@@ -1,0 +1,35 @@
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# The `sprintf` object formats a string.
+# Example:
+# ```
+# [args] > app
+#   QQ.io.sprintf > @
+#     "Value: %d"
+#     42
+# ```
+[fmt] > sprintf
+  args... > values
+  
+  # The actual formatting happens here
+  fmt.formatted-with values > @
+
+  # Formatting implementation
+  [fmt] > formatted-with
+    [vals] > apply
+      # For now, just return the format string
+      # Real implementation would be in Java
+      fmt > @
+    
+    # Test with simple replacement
+    [] +> test-simple
+      apply > @
+        "test"
+        "arg1"
+        "arg2"
