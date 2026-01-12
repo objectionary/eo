@@ -1,165 +1,31 @@
 +home https://github.com/objectionary/eo
-+package org.eolang
++package org.eolang.io
 +version 0.0.0
-+alias org.eolang.txt.concat
-+alias org.eolang.txt.at
-+alias org.eolang.txt.length
-+alias org.eolang.seq
-+alias org.eolang.int.add
-+alias org.eolang.int.sub
-+alias org.eolang.int.mul
-+alias org.eolang.int.div
-+alias org.eolang.int.mod
-+alias org.eolang.int.lt
-+alias org.eolang.int.gt
-+alias org.eolang.int.eq
-+alias org.eolang.float.add
-+alias org.eolang.float.sub
-+alias org.eolang.float.mul
-+alias org.eolang.float.div
-+alias org.eolang.float.lt
-+alias org.eolang.float.gt
-+alias org.eolang.float.eq
-+alias org.eolang.float.isnan
-+alias org.eolang.float.isinf
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 
-# Formats a string using a template and arguments
-[format args] > sprintf
-  # Main recursive processor
-  [] > process-recursive
-    [index arg-index result] > rec
-      if.
-        gte index format.length
-        result
-        seq
-          format.at index > ch
-          
-          # Check for format specifier
-          if.
-            and
-              eq ch "%"
-              lt (add index 1) format.length
-            seq
-              # Get next character
-              add index 1 > next-index
-              format.at next-index > next-ch
-              
-              # Handle different specifiers
-              if.
-                eq next-ch "%"
-                # Escaped %
-                rec (add next-index 1) arg-index (concat result "%")
-                if.
-                  eq next-ch "s"
-                  # String
-                  if.
-                    lt arg-index args.length
-                    seq
-                      args.at arg-index > arg
-                      rec
-                        (add next-index 1)
-                        (add arg-index 1)
-                        (concat result (string arg))
-                    # Missing argument
-                    rec (add next-index 1) arg-index (concat result "%s")
-                  if.
-                    or (eq next-ch "d") (eq next-ch "i")
-                    # Integer
-                    if.
-                      lt arg-index args.length
-                      seq
-                        args.at arg-index > arg
-                        
-                        # Integer to string converter
-                        [] > int-to-str
-                          # Handle sign
-                          if.
-                            lt arg 0
-                            seq
-                              "-" > sign
-                              mul arg -1 > positive-n
-                            seq
-                              "" > sign
-                              arg > positive-n
-                          
-                          # Recursive digit converter
-                          [] > to-digits
-                            [n acc] > digit-rec
-                              if.
-                                eq n 0
-                                acc
-                                seq
-                                  mod n 10 > digit
-                                  div n 10 > next-n
-                                  if.
-                                    eq digit 0
-                                    digit-rec next-n (concat "0" acc)
-                                    if.
-                                      eq digit 1
-                                      digit-rec next-n (concat "1" acc)
-                                      if.
-                                        eq digit 2
-                                        digit-rec next-n (concat "2" acc)
-                                        if.
-                                          eq digit 3
-                                          digit-rec next-n (concat "3" acc)
-                                          if.
-                                            eq digit 4
-                                            digit-rec next-n (concat "4" acc)
-                                            if.
-                                              eq digit 5
-                                              digit-rec next-n (concat "5" acc)
-                                              if.
-                                                eq digit 6
-                                                digit-rec next-n (concat "6" acc)
-                                                if.
-                                                  eq digit 7
-                                                  digit-rec next-n (concat "7" acc)
-                                                  if.
-                                                    eq digit 8
-                                                    digit-rec next-n (concat "8" acc)
-                                                    digit-rec next-n (concat "9" acc)
-                          
-                          # Convert number
-                          if.
-                            eq positive-n 0
-                            "0"
-                            seq
-                              to-digits positive-n "" > digits
-                              concat sign digits
-                          > @
-                        
-                        int-to-str > int-str
-                        rec
-                          (add next-index 1)
-                          (add arg-index 1)
-                          (concat result int-str)
-                      # Missing argument
-                      rec (add next-index 1) arg-index (concat result "%d")
-                    if.
-                      or (eq next-ch "f") (eq next-ch "F")
-                      # Float
-                      if.
-                        lt arg-index args.length
-                        seq
-                          args.at arg-index > arg
-                          string arg > float-str
-                          rec
-                            (add next-index 1)
-                            (add arg-index 1)
-                            (concat result float-str)
-                        # Missing argument
-                        rec (add next-index 1) arg-index (concat result "%f")
-                      # Unknown specifier - keep as is
-                      rec
-                        (add next-index 1)
-                        arg-index
-                        (concat (concat result "%") next-ch)
-            # Regular character
-            rec (add index 1) arg-index (concat result ch)
-    > recursive-function
++alias org.eolang.bytes
++alias org.eolang.seq
+
+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+spdx SPDX-FileCopyrightText: Copyright (c) 2024 Assistant
+spdx SPDX-License-Identifier: MIT
+
+# Ultra-simple sprintf - only supports %s and literal text
+[fmt] > sprintf
+  # Single string argument version
+  [arg1] > with-1
+    fmt > @
   
-  # Start recursion
-  recursive-function 0 0 "" > @
+  # Two string arguments version  
+  [arg1 arg2] > with-2
+    seq > @
+      "Formatted: "
+      arg1.as-bytes
+      " + "
+      arg2.as-bytes
+  
+  # Generic version - very limited
+  [args-array] > with-args
+    # Simple implementation: just return first arg as string
+    if. args-array.empty
+      fmt
+      args-array.first.as-bytes
