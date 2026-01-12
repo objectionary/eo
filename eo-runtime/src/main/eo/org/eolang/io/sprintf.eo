@@ -1,3 +1,6 @@
++home https://github.com/objectionary/eo
++package org.eolang.io
++version 0.0.0
 +alias org.eolang.txt.concat
 +alias org.eolang.txt.split
 +alias org.eolang.txt.at
@@ -5,56 +8,58 @@
 +alias org.eolang.txt.length
 +alias org.eolang.seq
 +alias org.eolang.array
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package org.eolang.io
-+version 0.0.0
-+unlint unit-test-missing
++alias org.eolang.memory
++alias org.eolang.int.add
++alias org.eolang.int.sub
++alias org.eolang.int.mul
++alias org.eolang.int.div
++alias org.eolang.int.mod
++alias org.eolang.int.lt
++alias org.eolang.int.gt
++alias org.eolang.int.eq
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# The `sprintf` object formats a string using a template and arguments.
-#
-# Example:
-# ```
-# sprintf > message
-#   "Hello %s!"
-#   (array "World")
-# ```
+# Formats a string using a template and arguments
 [format args] > sprintf
-  # Simple implementation handling %s and %%
-  format.split "%" > parts
-  parts.at 0 > result
+  memory > i-mem
+  memory > result-mem
   
-  seq > @
-    parts.slice 1 parts.length > remaining
-    remaining.each-with-index > part i
-      if.
-        part.length.gt 0
-        seq
-          part.substring 0 1 > first
+  seq
+    # Initialize
+    0 > idx
+    i-mem.put idx
+    "" > res
+    result-mem.put res
+    
+    # Split by %
+    format.split "%" > parts
+    
+    # Process each part
+    while (lt (i-mem.get) parts.length)
+      seq
+        parts.at (i-mem.get) > part
+        if.
+          eq (i-mem.get) 0
+          # First part - just add to result
+          result-mem.put (concat (result-mem.get) part)
+          # Check if this is a format specifier
           if.
-            first.eq "%"
-            # Escaped %%
+            and
+              (gt (part.length) 0)
+              (eq (part.substring 0 1) "s")
+            # %s - substitute string
             seq
-              result.write (concat result "%")
-              part.substring 1 part.length > rest
+              args.at (sub (i-mem.get) 1) > arg
+              result-mem.put (concat (result-mem.get) (string arg))
               if.
-                rest.length.gt 0
-                result.write (concat result rest)
-            if.
-              first.eq "s"
-              seq
-                # String substitution
-                args.at i > arg
-                result.write (concat result (string arg))
-                part.substring 1 part.length > rest
-                if.
-                  rest.length.gt 0
-                  result.write (concat result rest)
-              # Unknown specifier, keep as is
-              seq
-                result.write (concat result "%")
-                result.write (concat result part)
-        result
-    result
+                gt (part.length) 1
+                result-mem.put (concat (result-mem.get) (part.substring 1 part.length))
+            # Not %s or empty - add % back
+            seq
+              result-mem.put (concat (result-mem.get) "%")
+              result-mem.put (concat (result-mem.get) part)
+        i-mem.put (add (i-mem.get) 1)
+    
+    result-mem.get
+  > @
