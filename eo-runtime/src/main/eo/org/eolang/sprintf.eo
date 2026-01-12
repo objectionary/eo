@@ -11,28 +11,26 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 
-[sprintf] > sprintf
-  fmt > f
-  args > a
+sprintf fmt args > sprintf
   seq > main
     memory > result
-      bytes
+      --
     memory > pos
       0
     memory > arg-idx
       0
     [] > loop
       if.
-        pos.eq f.length
+        pos.eq fmt.length
         result
         seq
-          f.at pos > ch
+          fmt.at pos > ch
           if.
             and
               ch.eq "%"
-              pos.lt (f.length.minus 1)
+              pos.lt (fmt.length.minus 1)
             seq
-              f.at (pos.plus 1) > spec
+              fmt.at (pos.plus 1) > spec
               if.
                 spec.eq "%"
                 seq
@@ -42,9 +40,9 @@
                   spec.eq "s"
                   seq
                     if.
-                      arg-idx.lt a.length
+                      arg-idx.lt args.length
                       seq
-                        a.at arg-idx > val
+                        args.at arg-idx > val
                         result.write (result.concat val.as-bytes)
                       result.write (result.concat "%s")
                     arg-idx.write (arg-idx.plus 1)
@@ -55,9 +53,9 @@
                       spec.eq "i"
                     seq
                       if.
-                        arg-idx.lt a.length
+                        arg-idx.lt args.length
                         seq
-                          a.at arg-idx > val
+                          args.at arg-idx > val
                           result.write (result.concat val.as-int.as-bytes)
                         result.write (result.concat "%d")
                       arg-idx.write (arg-idx.plus 1)
@@ -68,19 +66,18 @@
                         spec.eq "F"
                       seq
                         if.
-                          arg-idx.lt a.length
+                          arg-idx.lt args.length
                           seq
-                            a.at arg-idx > val
+                            args.at arg-idx > val
                             result.write (result.concat val.as-float.as-bytes)
                           result.write (result.concat "%f")
                         arg-idx.write (arg-idx.plus 1)
                         pos.write (pos.plus 2)
                       seq
-                        result.write
-                          result.concat
-                            bytes
-                              "%"
-                              spec
+                        bytes > tmp
+                          "%"
+                          spec
+                        result.write (result.concat tmp)
                         pos.write (pos.plus 2)
             seq
               result.write (result.concat ch)
