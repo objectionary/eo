@@ -11,13 +11,13 @@
 +unlint redundant-object:17
 
 # Returns a floating point number.
+# todo #4751:15min Remove `real` object when all inner objects are moved to a separate files
 [num] > real
   num > @
-  # Returns Euler's number raised to the power of a `num`.
-  (real e).pow num > exp
 
   # Calculate MOD.
   # An operation that finds the remainder after dividing one number by another.
+  # todo #4751:10min Move `mod` to a separate object with it's tests.
   [x] > mod
     if. > @
       divisor.eq 0
@@ -39,6 +39,7 @@
       (QQ.ms.real divisor).abs > divisor-abs
 
   # Absolute value of `num` (i.e., with no sign).
+  # todo #4751:10min Move `abs` to a separate object with it's tests.
   [] > abs
     if. > @
       value.gte 0
@@ -48,19 +49,29 @@
 
   # An operation that raises `^.num` (a number) to the power of `x` and returns the result as
   # `org.eolang.number`.
+  # todo #4751:15min Move `pow` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOpow`.
   [x] > pow ?
 
   # Returns the positive square root of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `sqrt` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOsqrt`.
   [] > sqrt ?
 
   # Returns the natural logarithm `e` of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `ln` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOln`.
   [] > ln ?
 
   # Calculates arc cosine of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `acos` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOacos`.
   [] > acos ?
 
   # Calculates arc sine of a `num` as `org.eolang.number`.
   # An operation that finds the angle whose sine is num.
+  # todo #4751:15min Move `asin` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOasin`.
   [] > asin ?
 
   # Tests that absolute value of positive integer is the integer itself.
@@ -565,70 +576,3 @@
   [] +> tests-arccos-nan-negative-value-test
     is-nan. +> @
       (real -2.0).acos
-
-  # Tests that exponential function e^1 approximately equals e.
-  [] +> tests-exp-check-n0
-    lt. +> @
-      abs.
-        real
-          minus.
-            e
-            (real 1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n1
-    lt. +> @
-      abs.
-        real
-          minus.
-            e
-            (real 1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n2
-    lt. +> @
-      abs.
-        real
-          minus.
-            1.div e
-            (real -1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n3
-    lt. +> @
-      abs.
-        real
-          minus.
-            (real e).pow 5
-            (real 5).exp
-      0.0000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n4
-    lt. +> @
-      abs.
-        real
-          minus.
-            (real e).pow -10
-            (real -10).exp
-      0.000000000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-nan
-    is-nan. +> @
-      (real nan).exp
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-infinity-n1
-    eq. +> @
-      (real positive-infinity).exp
-      positive-infinity
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-infinity-n2
-    eq. +> @
-      (real negative-infinity).exp
-      0
