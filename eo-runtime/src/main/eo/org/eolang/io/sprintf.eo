@@ -3,7 +3,6 @@
 +version 0.0.0
 +alias org.eolang.txt.concat
 +alias org.eolang.txt.at
-+alias org.eolang.txt.substring
 +alias org.eolang.txt.length
 +alias org.eolang.seq
 +alias org.eolang.int.add
@@ -23,8 +22,8 @@
 +alias org.eolang.float.eq
 +alias org.eolang.float.isnan
 +alias org.eolang.float.isinf
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+spdx SPDX-License-Identifier: MIT
 
 # Formats a string using a template and arguments
 [format args] > sprintf
