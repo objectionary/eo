@@ -8,12 +8,12 @@
 +alias org.eolang.float
 +alias org.eolang.mem
 
-spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-spdx SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
 
 [sprintf] > sprintf
-  fmt > @fmt
-  args > @args
+  fmt > f
+  args > a
   seq > main
     memory > result
       bytes
@@ -23,16 +23,16 @@ spdx SPDX-License-Identifier: MIT
       0
     [] > loop
       if.
-        pos.eq @fmt.length
+        pos.eq f.length
         result
         seq
-          @fmt.at pos > ch
+          f.at pos > ch
           if.
             and
               ch.eq "%"
-              pos.lt (@fmt.length.minus 1)
+              pos.lt (f.length.minus 1)
             seq
-              @fmt.at (pos.plus 1) > spec
+              f.at (pos.plus 1) > spec
               if.
                 spec.eq "%"
                 seq
@@ -42,9 +42,9 @@ spdx SPDX-License-Identifier: MIT
                   spec.eq "s"
                   seq
                     if.
-                      arg-idx.lt @args.length
+                      arg-idx.lt a.length
                       seq
-                        @args.at arg-idx > val
+                        a.at arg-idx > val
                         result.write (result.concat val.as-bytes)
                       result.write (result.concat "%s")
                     arg-idx.write (arg-idx.plus 1)
@@ -55,9 +55,9 @@ spdx SPDX-License-Identifier: MIT
                       spec.eq "i"
                     seq
                       if.
-                        arg-idx.lt @args.length
+                        arg-idx.lt a.length
                         seq
-                          @args.at arg-idx > val
+                          a.at arg-idx > val
                           result.write (result.concat val.as-int.as-bytes)
                         result.write (result.concat "%d")
                       arg-idx.write (arg-idx.plus 1)
@@ -68,9 +68,9 @@ spdx SPDX-License-Identifier: MIT
                         spec.eq "F"
                       seq
                         if.
-                          arg-idx.lt @args.length
+                          arg-idx.lt a.length
                           seq
-                            @args.at arg-idx > val
+                            a.at arg-idx > val
                             result.write (result.concat val.as-float.as-bytes)
                           result.write (result.concat "%f")
                         arg-idx.write (arg-idx.plus 1)
