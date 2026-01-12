@@ -1,11 +1,177 @@
 +home https://github.com/objectionary/eo
 +package org.eolang.io
 +version 0.0.0
-+unlint unit-test-missing
++alias org.eolang.txt.concat
++alias org.eolang.txt.split
++alias org.eolang.txt.at
++alias org.eolang.txt.substring
++alias org.eolang.txt.length
++alias org.eolang.seq
++alias org.eolang.array
++alias org.eolang.memory
++alias org.eolang.int.add
++alias org.eolang.int.sub
++alias org.eolang.int.mul
++alias org.eolang.int.div
++alias org.eolang.int.mod
++alias org.eolang.int.lt
++alias org.eolang.int.gt
++alias org.eolang.int.eq
++alias org.eolang.float.add
++alias org.eolang.float.sub
++alias org.eolang.float.mul
++alias org.eolang.float.div
++alias org.eolang.float.lt
++alias org.eolang.float.gt
++alias org.eolang.float.eq
++alias org.eolang.float.isnan
++alias org.eolang.float.isinf
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
+# Formats a string using a template and arguments
 [format args] > sprintf
-  [] > result
-    format > @
-  result > @
+  [] > formatted
+    memory > i-mem
+    memory > arg-index-mem
+    memory > result-mem
+    
+    [] > processor
+      seq > @
+        # Initialize
+        0 > idx
+        i-mem.put idx
+        0 > arg-idx
+        arg-index-mem.put arg-idx
+        "" > res
+        result-mem.put res
+        
+        format.length > len
+        
+        # Parse format string character by character
+        while (lt (i-mem.get) len)
+          seq
+            format.at (i-mem.get) > ch
+            
+            # Check for format specifier
+            if.
+              and
+                eq ch "%"
+                lt (add (i-mem.get) 1) len
+              seq
+                # Get next character
+                i-mem.put (add (i-mem.get) 1)
+                format.at (i-mem.get) > next-ch
+                
+                # Handle different specifiers
+                if.
+                  eq next-ch "%"
+                  # Escaped %
+                  seq
+                    result-mem.put (concat (result-mem.get) "%")
+                    i-mem.put (add (i-mem.get) 1)
+                  if.
+                    eq next-ch "s"
+                    # String
+                    seq
+                      if.
+                        lt (arg-index-mem.get) args.length
+                        seq
+                          args.at (arg-index-mem.get) > arg
+                          result-mem.put (concat (result-mem.get) (string arg))
+                          arg-index-mem.put (add (arg-index-mem.get) 1)
+                        # Missing argument
+                        result-mem.put (concat (result-mem.get) "%s")
+                      i-mem.put (add (i-mem.get) 1)
+                    if.
+                      or (eq next-ch "d") (eq next-ch "i")
+                      # Integer
+                      seq
+                        if.
+                          lt (arg-index-mem.get) args.length
+                          seq
+                            args.at (arg-index-mem.get) > arg
+                            [] > int-to-str
+                              # Simple integer to string conversion
+                              if.
+                                lt arg 0
+                                seq
+                                  "-" > sign
+                                  mul arg -1 > n
+                                seq
+                                  "" > sign
+                                  arg > n
+                              if.
+                                eq n 0
+                                "0"
+                                seq
+                                  "" > digits
+                                  while (gt n 0)
+                                    seq
+                                      mod n 10 > digit
+                                      div n 10 > n
+                                      if.
+                                        eq digit 0
+                                        digits.write "0"
+                                        if.
+                                          eq digit 1
+                                          digits.write "1"
+                                          if.
+                                            eq digit 2
+                                            digits.write "2"
+                                            if.
+                                              eq digit 3
+                                              digits.write "3"
+                                              if.
+                                                eq digit 4
+                                                digits.write "4"
+                                                if.
+                                                  eq digit 5
+                                                  digits.write "5"
+                                                  if.
+                                                    eq digit 6
+                                                    digits.write "6"
+                                                    if.
+                                                      eq digit 7
+                                                      digits.write "7"
+                                                      if.
+                                                        eq digit 8
+                                                        digits.write "8"
+                                                        digits.write "9"
+                                  concat sign digits
+                            > int-str
+                            result-mem.put (concat (result-mem.get) int-str)
+                            arg-index-mem.put (add (arg-index-mem.get) 1)
+                          # Missing argument
+                          result-mem.put (concat (result-mem.get) "%d")
+                        i-mem.put (add (i-mem.get) 1)
+                      if.
+                        or (eq next-ch "f") (eq next-ch "F")
+                        # Float
+                        seq
+                          if.
+                            lt (arg-index-mem.get) args.length
+                            seq
+                              args.at (arg-index-mem.get) > arg
+                              # Simple float formatting
+                              string arg > float-str
+                              result-mem.put (concat (result-mem.get) float-str)
+                              arg-index-mem.put (add (arg-index-mem.get) 1)
+                            # Missing argument
+                            result-mem.put (concat (result-mem.get) "%f")
+                          i-mem.put (add (i-mem.get) 1)
+                        # Unknown specifier - keep as is
+                        seq
+                          result-mem.put (concat (result-mem.get) "%")
+                          result-mem.put (concat (result-mem.get) next-ch)
+                          i-mem.put (add (i-mem.get) 1)
+              # Regular character
+              seq
+                result-mem.put (concat (result-mem.get) ch)
+                i-mem.put (add (i-mem.get) 1)
+        
+        result-mem.get
+    
+    processor > @
+  
+  formatted > @
