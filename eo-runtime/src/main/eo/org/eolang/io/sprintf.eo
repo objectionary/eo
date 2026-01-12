@@ -41,11 +41,13 @@
 +alias org.eolang.tt.as-integer
 +alias org.eolang.tt.as-float
 +alias org.eolang.tt.repeated
++alias org.eolang.bool.true
++alias org.eolang.bool.false
 
-[] > org.eolang.io.sprintf
+[] > sprintf
   "Formats a string using a template and arguments" > @doc
 
-  [ format args ] > sprintf
+  [ format args ] > main
     # Split format string by % symbols, but keep track of escaped %%
     [] > parts-with-escapes
       # Create mutable variables for the parsing loop
@@ -60,7 +62,7 @@
         i-mem.put i-init
         "" > current-init
         current-mem.put current-init
-        FALSE > in-percent-init
+        false > in-percent-init
         in-percent-mem.put in-percent-init
         array > result-init
         result-mem.put result-init
@@ -89,12 +91,12 @@
                 # Add any accumulated text to result
                 if.
                   gt (current-str.length) 0
-                  result-mem.put (current-result.with (sprintf.make-part current-str FALSE))
+                  result-mem.put (current-result.with (sprintf.make-part current-str false))
                   seq > noop1
                 # Reset current string
                 current-mem.put ""
                 # Set flag indicating we're parsing a format specifier
-                in-percent-mem.put TRUE
+                in-percent-mem.put true
                 # Check if this is an escaped %% (literal percent)
                 if.
                   and
@@ -106,7 +108,7 @@
                     # Skip the second %
                     i-mem.put (add current-i 1)
                     # Reset the flag since %% is not a format specifier
-                    in-percent-mem.put FALSE
+                    in-percent-mem.put false
                   seq > noop2
               # We're inside a format specifier
               if.
@@ -123,7 +125,7 @@
                   # Update index to continue after the specifier
                   i-mem.put next-index
                   # Reset the flag
-                  in-percent-mem.put FALSE
+                  in-percent-mem.put false
                 # Regular character (not part of a format specifier)
                 current-mem.put (sprintf.concat current-str ch)
 
@@ -137,7 +139,7 @@
         current-mem.get > final-current
         if.
           gt (final-current.length) 0
-          result-mem.put ((result-mem.get).with (sprintf.make-part final-current FALSE))
+          result-mem.put ((result-mem.get).with (sprintf.make-part final-current false))
           seq > noop4
 
         # Return the final list of parts
@@ -230,7 +232,7 @@
       i-mem.put i-init
       array > flags-init
       flags-mem.put flags-init
-      TRUE > parsing-init
+      true > parsing-init
       parsing-flags-mem.put parsing-init
       format.length > total-len
 
@@ -243,7 +245,7 @@
             seq
               flags-mem.put ((flags-mem.get).with current-char)
               i-mem.put (add (i-mem.get) 1)
-            parsing-flags-mem.put FALSE
+            parsing-flags-mem.put false
 
       # Parse width - use memory for string accumulation
       memory > width-str-mem
@@ -328,14 +330,14 @@
       width > width
       precision > precision
       flags > flags
-      TRUE > is-format-specifier
+      true > is-format-specifier
       # Helper: check if flag is present
       [ flag ] > has-flag
         # Manual search through flags array
         memory > found-mem
         memory > idx-mem
         seq
-          FALSE > found-init
+          false > found-init
           found-mem.put found-init
           0 > idx-init
           idx-mem.put idx-init
@@ -344,7 +346,7 @@
               flags.at (idx-mem.get) > current-flag
               if.
                 eq current-flag flag
-                found-mem.put TRUE
+                found-mem.put true
                 seq > noop7
               idx-mem.put (add (idx-mem.get) 1)
           found-mem.get
@@ -367,10 +369,10 @@
           sprintf.format-float value fmt
           if.
             eq specifier "x"
-            sprintf.format-hex value fmt FALSE
+            sprintf.format-hex value fmt false
             if.
               eq specifier "X"
-              sprintf.format-hex value fmt TRUE
+              sprintf.format-hex value fmt true
               if.
                 eq specifier "o"
                 sprintf.format-octal value fmt
@@ -379,10 +381,10 @@
                   sprintf.format-binary value fmt
                   if.
                     eq specifier "e"
-                    sprintf.format-scientific value fmt FALSE
+                    sprintf.format-scientific value fmt false
                     if.
                       eq specifier "E"
-                      sprintf.format-scientific value fmt TRUE
+                      sprintf.format-scientific value fmt true
                       # Unknown specifier - return as-is with %
                       sprintf.concat "%" specifier
 
@@ -422,10 +424,10 @@
     if.
       lt value 0
       seq
-        negative-mem.put TRUE
+        negative-mem.put true
         abs-value-mem.put (mul value -1)
       seq
-        negative-mem.put FALSE
+        negative-mem.put false
         abs-value-mem.put value
 
     # Convert to string
@@ -541,10 +543,10 @@
     if.
       lt fval 0
       seq
-        negative-mem.put TRUE
+        negative-mem.put true
         abs-val-mem.put (mul fval -1.0)
       seq
-        negative-mem.put FALSE
+        negative-mem.put false
         abs-val-mem.put fval
 
     # Round to specified precision
@@ -886,4 +888,4 @@
   [ a b ] > concat
     concat a b > @
 
-  sprintf > @
+  main > @
