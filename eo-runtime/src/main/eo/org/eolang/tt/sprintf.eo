@@ -6,6 +6,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint wrong-sprintf-arguments:58
++unlint wrong-sprintf-arguments:66
++unlint sprintf-without-formatters:72
 
 # The `sprintf` object allows you to format and output text depending
 # on the arguments passed to it and return it as `org.eolang.string`.
@@ -16,44 +19,60 @@
       "Hello, Jeffrey!"
       sprintf "Hello, %s!" "Jeffrey"
 
-  # Tests that sprintf formats string with multiple placeholders.
+  # Tests that sprintf formats string with multiple placeholders including UTF characters.
   [] +> tests-prints-complex-string
     eq. > @
       "Привет 3.140000 Jeff X!"
       sprintf "Привет %f %s %s!" 3.14 "Jeff" "X"
 
-  # Tests that sprintf formats bytes using %x placeholder.
+  # Tests that sprintf formats bytes using %x placeholder as hexadecimal.
   [] +> tests-prints-bytes-string
     eq. > @
       "40-45-00-00-00-00-00-00"
-      sprintf "%x"
-      42.as-bytes
+      sprintf "%x" 42.as-bytes
 
-  # Tests that sprintf formats all supported data types.
+  # Tests that sprintf formats all supported data types in single string.
   [] +> tests-formats-all-objects
     eq. > @
       "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-      sprintf "string %s, bytes %x, float %f, int %d, bool %b"
-      "Jeff" "Jeff".as-bytes 42.3 14 false
+      sprintf "string %s, bytes %x, float %f, int %d, bool %b" "Jeff" "Jeff".as-bytes 42.3 14 false
 
-  # Tests that sprintf does not fail if arguments more than formats.
+  # Tests that sprintf throws error when placeholders exceed provided arguments.
+  [] +> throws-on-sprintf-with-arguments-that-does-not-match
+    try > @
+      sprintf "%s%s" "Jeff"
+      FALSE
+
+  # Tests that sprintf ignores extra arguments beyond placeholders.
   [] +> tests-sprintf-does-not-fail-if-arguments-more-than-formats
     eq. > @
       "Hey"
       sprintf "%s" "Hey" "Jeff"
 
-  # Tests that sprintf handles escaped percent signs.
+  # Tests that sprintf throws error for unsupported format specifiers.
+  [] +> throws-on-sprintf-unsupported-format
+    try > @
+      sprintf "%o" "test"
+      FALSE
+
+  # Tests that sprintf handles escaped percent signs in format string.
   [] +> tests-sprintf-prints-percents
     eq. > @
       "%Jeff"
       sprintf "%%%s" "Jeff"
 
+  # Tests that sprintf does not directly format i64 values as numbers.
+  [] +> tests-sprintf-does-not-print-i64
+    not. > @
+      eq.
+        sprintf "%d" 42.as-i64
+        "42"
+
   # Tests that sprintf formats i64 values when converted to number.
   [] +> tests-sprintf-prints-i64-as-number
     eq. > @
       "42"
-      sprintf "%d"
-      42.as-i64.as-number
+      sprintf "%d" 42.as-i64.as-number
 
   # Tests that sprintf supports numbered parameter references.
   [] +> formats-numbered-substitution
@@ -65,8 +84,7 @@
   [] +> formats-numbered-substitution-with-multiple-args
     eq. > @
       "This is the first; This is the first as well; The second; and the 3"
-      sprintf "This is the %s; This is the %1$s as well; The %s; and the %d"
-      "first" "second" 3
+      sprintf "This is the %s; This is the %1$s as well; The %s; and the %d" "first" "second" 3
 
   # Tests that sprintf formats with reordered numbered parameter references.
   [] +> formats-with-ordered-numbered-substitutions
