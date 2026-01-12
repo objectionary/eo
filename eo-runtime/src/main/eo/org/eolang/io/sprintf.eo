@@ -90,6 +90,7 @@
                 if.
                   gt (current-str.length) 0
                   result-mem.put (current-result.with (sprintf.make-part current-str FALSE))
+                  seq > noop1
                 # Reset current string
                 current-mem.put ""
                 # Set flag indicating we're parsing a format specifier
@@ -106,6 +107,7 @@
                     i-mem.put (add current-i 1)
                     # Reset the flag since %% is not a format specifier
                     in-percent-mem.put FALSE
+                  seq > noop2
               # We're inside a format specifier
               if.
                 percent-flag
@@ -129,12 +131,14 @@
             if.
               eq (i-mem.get) current-i
               i-mem.put (add current-i 1)
+              seq > noop3
 
         # After loop, add any remaining accumulated text
         current-mem.get > final-current
         if.
           gt (final-current.length) 0
           result-mem.put ((result-mem.get).with (sprintf.make-part final-current FALSE))
+          seq > noop4
 
         # Return the final list of parts
         result-mem.get
@@ -178,6 +182,7 @@
                       arg-index-mem.put (add current-arg-index 1)
                       sprintf.format-value arg-value current-part > formatted-value
                       processed-mem.put ((processed-mem.get).with formatted-value)
+                      seq > noop5
                     # Missing argument - use placeholder
                     seq
                       arg-index-mem.put (add current-arg-index 1)
@@ -218,17 +223,19 @@
   [ format start-index ] > parse-format-specifier
     memory > i-mem
     memory > flags-mem
+    memory > parsing-flags-mem
 
     seq
       start-index > i-init
       i-mem.put i-init
       array > flags-init
       flags-mem.put flags-init
+      TRUE > parsing-init
+      parsing-flags-mem.put parsing-init
       format.length > total-len
 
       # Parse flags: -, +, space, 0, #
-      TRUE > parsing-flags
-      while (and parsing-flags (lt (i-mem.get) total-len))
+      while (and (parsing-flags-mem.get) (lt (i-mem.get) total-len))
         seq
           format.at (i-mem.get) > current-char
           if.
@@ -236,14 +243,18 @@
             seq
               flags-mem.put ((flags-mem.get).with current-char)
               i-mem.put (add (i-mem.get) 1)
-            FALSE > parsing-flags
+            parsing-flags-mem.put FALSE
 
-      # Parse width
-      "" > width-str
-      while (and (lt (i-mem.get) total-len) (sprintf.is-digit (format.at (i-mem.get))))
-        seq
-          width-str.write (sprintf.concat width-str (format.at (i-mem.get)))
-          i-mem.put (add (i-mem.get) 1)
+      # Parse width - use memory for string accumulation
+      memory > width-str-mem
+      seq
+        "" > width-init
+        width-str-mem.put width-init
+        while (and (lt (i-mem.get) total-len) (sprintf.is-digit (format.at (i-mem.get))))
+          seq
+            width-str-mem.put (sprintf.concat (width-str-mem.get) (format.at (i-mem.get)))
+            i-mem.put (add (i-mem.get) 1)
+      width-str-mem.get > width-str
 
       if.
         gt (width-str.length) 0
@@ -257,20 +268,32 @@
         and (lt (i-mem.get) total-len) (eq (format.at (i-mem.get)) ".")
         seq
           i-mem.put (add (i-mem.get) 1)
-          "" > precision-str
-          while (and (lt (i-mem.get) total-len) (sprintf.is-digit (format.at (i-mem.get))))
-            seq
-              precision-str.write (sprintf.concat precision-str (format.at (i-mem.get)))
-              i-mem.put (add (i-mem.get) 1)
+          memory > precision-str-mem
+          seq
+            "" > precision-init
+            precision-str-mem.put precision-init
+            while (and (lt (i-mem.get) total-len) (sprintf.is-digit (format.at (i-mem.get))))
+              seq
+                precision-str-mem.put (sprintf.concat (precision-str-mem.get) (format.at (i-mem.get)))
+                i-mem.put (add (i-mem.get) 1)
+          precision-str-mem.get > precision-str
           if.
             gt (precision-str.length) 0
             as-integer precision-str
             0
           > precision-value
+        seq > noop6
 
-      # Parse specifier (mandatory)
-      format.at (i-mem.get) > specifier-char
-      i-mem.put (add (i-mem.get) 1)
+      # Parse specifier (mandatory) - check bounds first
+      if.
+        lt (i-mem.get) total-len
+        seq
+          format.at (i-mem.get) > specifier-char
+          i-mem.put (add (i-mem.get) 1)
+        # Format ends with % - treat as literal percent
+        seq
+          "%" > specifier-char
+          # Don't advance index, let caller handle
 
       # Return parsed components
       [] > parsed-result
@@ -308,7 +331,24 @@
       TRUE > is-format-specifier
       # Helper: check if flag is present
       [ flag ] > has-flag
-        flags.contains flag > @
+        # Manual search through flags array
+        memory > found-mem
+        memory > idx-mem
+        seq
+          FALSE > found-init
+          found-mem.put found-init
+          0 > idx-init
+          idx-mem.put idx-init
+          while (and (not (found-mem.get)) (lt (idx-mem.get) flags.length))
+            seq
+              flags.at (idx-mem.get) > current-flag
+              if.
+                eq current-flag flag
+                found-mem.put TRUE
+                seq > noop7
+              idx-mem.put (add (idx-mem.get) 1)
+          found-mem.get
+        > @
     fmt > @
 
   # Format a value according to format specifier
@@ -374,18 +414,22 @@
 
   # Format integer with width, precision, and flags
   [ value fmt ] > format-integer
+    # Use memory for values that need to be modified
+    memory > negative-mem
+    memory > abs-value-mem
+
     # Convert to absolute value for processing
     if.
       lt value 0
       seq
-        TRUE > negative
-        mul value -1 > abs-value
+        negative-mem.put TRUE
+        abs-value-mem.put (mul value -1)
       seq
-        FALSE > negative
-        value > abs-value
+        negative-mem.put FALSE
+        abs-value-mem.put value
 
     # Convert to string
-    sprintf.integer-to-string abs-value > str
+    sprintf.integer-to-string (abs-value-mem.get) > str
 
     # Apply precision (minimum digits) - including precision == 0
     if.
@@ -393,7 +437,7 @@
       seq
         str.length > len
         if.
-          or (lt len fmt.precision) (and (eq fmt.precision 0) (eq abs-value 0))
+          or (lt len fmt.precision) (and (eq fmt.precision 0) (eq (abs-value-mem.get) 0))
           sprintf.concat (sprintf.repeat-char "0" (fmt.precision - len)) str
           if.
             eq fmt.precision 0
@@ -404,7 +448,7 @@
 
     # Add sign
     if.
-      negative
+      negative-mem.get
       sprintf.concat "-" digits
       if.
         fmt.has-flag "+"
@@ -435,7 +479,7 @@
                 and zero-pad (not (gte fmt.precision 0))
                 # Zero padding with proper sign placement
                 if.
-                  negative
+                  negative-mem.get
                   sprintf.concat "-" (sprintf.concat (sprintf.repeat-char "0" padding) digits)
                   if.
                     fmt.has-flag "+"
@@ -468,7 +512,7 @@
           lt value 0
           "-inf"
           "inf"
-        # Normal float - use simplified implementation
+        # Normal float
         sprintf.format-float-simple value fmt prec
     > result
 
@@ -486,15 +530,64 @@
       result
     > @
 
-  # Simplified float formatting for basic cases
+  # Simplified float formatting that returns a string
   [ value fmt prec ] > format-float-simple
-    # Use integer conversion function
-    as-float value > float-value
-    float-value > @
+    # Convert to float and handle sign
+    as-float value > fval
+
+    memory > negative-mem
+    memory > abs-val-mem
+
+    if.
+      lt fval 0
+      seq
+        negative-mem.put TRUE
+        abs-val-mem.put (mul fval -1.0)
+      seq
+        negative-mem.put FALSE
+        abs-val-mem.put fval
+
+    # Round to specified precision
+    mul (abs-val-mem.get) (float.pow 10.0 prec) > scaled
+    int (add scaled 0.5) > rounded
+    div (float rounded) (float.pow 10.0 prec) > rounded-val
+
+    # Get integer and fractional parts
+    int rounded-val > int-part
+    mul (sub rounded-val (float int-part)) (float.pow 10.0 prec) > frac-part
+    int frac-part > frac-int
+
+    # Build integer part string
+    sprintf.integer-to-string int-part > int-str
+
+    # Build fractional part string
+    if.
+      gt prec 0
+      seq
+        sprintf.integer-to-string frac-int > frac-str
+        sprintf.pad-left frac-str prec "0" > frac-padded
+        # Combine with decimal point
+        sprintf.concat int-str (sprintf.concat "." frac-padded) > number-str
+      # prec == 0, just integer part
+      int-str
+    > number-str
+
+    # Add sign
+    if.
+      negative-mem.get
+      sprintf.concat "-" number-str
+      if.
+        fmt.has-flag "+"
+        sprintf.concat "+" number-str
+        if.
+          fmt.has-flag " "
+          sprintf.concat " " number-str
+          number-str
+    > @
 
   # Format hexadecimal number
   [ value fmt uppercase ] > format-hex
-    # Use absolute value for hex representation
+    # Handle negative values with two's complement
     if.
       lt value 0
       # For negative, use two's complement with reasonable width
@@ -524,9 +617,17 @@
     # Apply width and padding
     sprintf.apply-width-padding with-prefix fmt > @
 
-  # Format octal number
+  # Format octal number with negative handling
   [ value fmt ] > format-octal
-    sprintf.integer-to-base value 8 > octal-str
+    # Handle negative values with two's complement
+    if.
+      lt value 0
+      # For negative, use two's complement with reasonable width
+      add (sprintf.int-pow 2 64) value
+      value
+    > unsigned
+
+    sprintf.integer-to-base unsigned 8 > octal-str
 
     if.
       fmt.has-flag "#"
@@ -536,9 +637,17 @@
 
     sprintf.apply-width-padding processed fmt > @
 
-  # Format binary number
+  # Format binary number with negative handling
   [ value fmt ] > format-binary
-    sprintf.integer-to-base value 2 > binary-str
+    # Handle negative values with two's complement
+    if.
+      lt value 0
+      # For negative, use two's complement with reasonable width
+      add (sprintf.int-pow 2 64) value
+      value
+    > unsigned
+
+    sprintf.integer-to-base unsigned 2 > binary-str
     sprintf.apply-width-padding binary-str fmt > @
 
   # Format scientific notation
@@ -639,15 +748,15 @@
               and
                 fmt.has-flag "#"
                 or (or (eq fmt.specifier "x") (eq fmt.specifier "X")) (eq fmt.specifier "o")
-              # Handle hex/octal prefixes
+              # Handle hex/octal prefixes with explicit substring end indices
               if.
                 or (eq fmt.specifier "x") (eq fmt.specifier "X")
                 if.
                   eq fmt.specifier "X"
-                  sprintf.concat "0X" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 2))
-                  sprintf.concat "0x" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 2))
+                  sprintf.concat "0X" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 2 str.length))
+                  sprintf.concat "0x" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 2 str.length))
                 # Octal
-                sprintf.concat "0" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 1))
+                sprintf.concat "0" (sprintf.concat (sprintf.repeat-char "0" padding) (str.substring 1 str.length))
             sprintf.concat (sprintf.repeat-char "0" padding) str
           sprintf.concat (sprintf.repeat-char " " padding) str
       str
@@ -775,6 +884,6 @@
 
   # Helper: string concatenation
   [ a b ] > concat
-    txt.concat a b > @
+    concat a b > @
 
   sprintf > @
