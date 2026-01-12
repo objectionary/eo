@@ -5,61 +5,37 @@
 +alias org.eolang.txt.split
 +alias org.eolang.txt.at
 +alias org.eolang.txt.substring
-+alias org.eolang.txt.length
-+alias org.eolang.seq
-+alias org.eolang.array
-+alias org.eolang.memory
-+alias org.eolang.int.add
-+alias org.eolang.int.sub
-+alias org.eolang.int.mul
-+alias org.eolang.int.div
-+alias org.eolang.int.mod
-+alias org.eolang.int.lt
-+alias org.eolang.int.gt
-+alias org.eolang.int.eq
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 
-# Formats a string using a template and arguments
+# Formats a string
 [format args] > sprintf
-  memory > i-mem
-  memory > result-mem
-  
-  seq
-    # Initialize
-    0 > idx
-    i-mem.put idx
-    "" > res
-    result-mem.put res
-    
-    # Split by %
+  [] > formatted
     format.split "%" > parts
+    parts.at 0 > base
     
-    # Process each part
-    while (lt (i-mem.get) parts.length)
-      seq
-        parts.at (i-mem.get) > part
-        if.
-          eq (i-mem.get) 0
-          # First part - just add to result
-          result-mem.put (concat (result-mem.get) part)
-          # Check if this is a format specifier
-          if.
-            and
-              (gt (part.length) 0)
-              (eq (part.substring 0 1) "s")
-            # %s - substitute string
-            seq
-              args.at (sub (i-mem.get) 1) > arg
-              result-mem.put (concat (result-mem.get) (string arg))
-              if.
-                gt (part.length) 1
-                result-mem.put (concat (result-mem.get) (part.substring 1 part.length))
-            # Not %s or empty - add % back
-            seq
-              result-mem.put (concat (result-mem.get) "%")
-              result-mem.put (concat (result-mem.get) part)
-        i-mem.put (add (i-mem.get) 1)
+    [] > processor
+      base > current
+      
+      [] > result
+        seq > @
+          parts.slice 1 parts.length > remaining
+          remaining.each > part
+            if.
+              and
+                (gt (part.length) 0)
+                (eq (part.substring 0 1) "s")
+              seq
+                args.at 0 > arg
+                current.write (concat current (string arg))
+                if.
+                  gt (part.length) 1
+                  current.write (concat current (part.substring 1 part.length))
+              seq
+                current.write (concat current "%")
+                current.write (concat current part)
+          current
+      
+      result > @
     
-    result-mem.get
-  > @
+    processor > @
+  
+  formatted > @
