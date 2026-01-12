@@ -4,85 +4,20 @@
 
 +alias org.eolang.seq
 +alias org.eolang.bytes
-+alias org.eolang.int
-+alias org.eolang.float
-+alias org.eolang.mem
 
-# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-# SPDX-License-Identifier: MIT
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
 
-sprintf fmt args > sprintf
-  seq > main
-    memory > result
-      --
-    memory > pos
-      0
-    memory > arg-idx
-      0
-    [] > loop
+[format args] > sprintf
+  format.as-bytes > fmt
+  
+  if.
+    args.empty
+    fmt
+    if.
+      fmt.eq "%s"
+      args.first.as-bytes
       if.
-        pos.eq fmt.length
-        result
-        seq
-          fmt.at pos > ch
-          if.
-            and
-              ch.eq "%"
-              pos.lt (fmt.length.minus 1)
-            seq
-              fmt.at (pos.plus 1) > spec
-              if.
-                spec.eq "%"
-                seq
-                  result.write (result.concat "%")
-                  pos.write (pos.plus 2)
-                if.
-                  spec.eq "s"
-                  seq
-                    if.
-                      arg-idx.lt args.length
-                      seq
-                        args.at arg-idx > val
-                        result.write (result.concat val.as-bytes)
-                      result.write (result.concat "%s")
-                    arg-idx.write (arg-idx.plus 1)
-                    pos.write (pos.plus 2)
-                  if.
-                    or
-                      spec.eq "d"
-                      spec.eq "i"
-                    seq
-                      if.
-                        arg-idx.lt args.length
-                        seq
-                          args.at arg-idx > val
-                          result.write (result.concat val.as-int.as-bytes)
-                        result.write (result.concat "%d")
-                      arg-idx.write (arg-idx.plus 1)
-                      pos.write (pos.plus 2)
-                    if.
-                      or
-                        spec.eq "f"
-                        spec.eq "F"
-                      seq
-                        if.
-                          arg-idx.lt args.length
-                          seq
-                            args.at arg-idx > val
-                            result.write (result.concat val.as-float.as-bytes)
-                          result.write (result.concat "%f")
-                        arg-idx.write (arg-idx.plus 1)
-                        pos.write (pos.plus 2)
-                      seq
-                        bytes > tmp
-                          "%"
-                          spec
-                        result.write (result.concat tmp)
-                        pos.write (pos.plus 2)
-            seq
-              result.write (result.concat ch)
-              pos.write (pos.plus 1)
-          loop
-    pos.write 0
-    arg-idx.write 0
-    loop > @
+        fmt.eq "%%"
+        "%"
+        fmt
