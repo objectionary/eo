@@ -1,0 +1,54 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns `text` trimmed from left side.
+[text] > trimmed-left
+  if. > @
+    0.eq len
+    text
+    string
+      bts.slice
+        idx
+        (number len).minus idx
+  text > bts!
+  bts.size > len!
+  first-non-space-index 0 > idx!
+  20- > space
+
+  [index] > first-non-space-index
+    if. > @
+      len.eq index
+      index
+      if.
+        char.eq space
+        first-non-space-index (index.plus 1).as-number
+        index
+    bts.slice index 1 > char!
+
+  # Tests specific functionality trimmed-left returns empty string when applied to empty text.
+  [] +> tests-trimmed-left-empty-text
+    eq. > @
+      trimmed-left ""
+      ""
+
+  # Tests specific functionality trimmed-left removes single leading space from text.
+  [] +> tests-text-trimmed-left-one-space
+    eq. > @
+      trimmed-left " s"
+      "s"
+
+  # Tests specific functionality trimmed-left removes multiple leading spaces from text.
+  [] +> tests-text-trimmed-left-many-spaces
+    eq. > @
+      trimmed-left "     some"
+      "some"
+
+  # Tests specific functionality trimmed-left returns empty string when text contains only spaces.
+  [] +> tests-text-trimmed-left-only-spaces
+    eq. > @
+      trimmed-left "     "
+      ""

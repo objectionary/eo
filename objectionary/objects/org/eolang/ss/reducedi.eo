@@ -1,0 +1,81 @@
++alias org.eolang.ss.list
++alias org.eolang.ss.reducedi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ss
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Reduce list with index from "start" using the function "func".
+# Here "func" must be an abstract object with three free attributes.
+# The first one for the accumulator, the second one
+# for the element of the collection and the third one for the index.
+[lst start func] > reducedi
+  if. > @
+    lst.is-empty
+    start
+    rec-reducedi lst
+
+  [tup] > rec-reducedi
+    if. > @
+      tup.length.eq 1
+      func
+        start
+        tup.head
+        0
+      func
+        rec-reducedi tup.tail
+        tup.head
+        tup.tail.length
+
+  # Tests that reducing a list with index access works correctly.
+  [] +> tests-reduce-list-with-index
+    eq. > @
+      6
+      reducedi
+        list
+          * 1 1
+        0
+        [a x i] >>
+          plus. > @
+            x
+            a.plus
+              (* 2 2).at i
+
+  # Tests that reducing a long array of integers with index works correctly.
+  [] +> tests-list-reducedi-long-int-array
+    eq. > @
+      reducedi
+        list
+          * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+        0
+        x.plus a > [a x i]
+      1
+
+  # Tests that reducing an array of boolean values with index works correctly.
+  [] +> tests-list-reducedi-bools-array
+    not. > @
+      reducedi
+        list
+          * true true false
+        true
+        x.and a > [a x i]
+
+  # Tests that reducing with nested functions and conditional logic works correctly.
+  [] +> tests-list-reducedi-nested-functions
+    eq. > @
+      reducedi
+        list
+          * 10 500
+        0
+        [acc x i]
+          check x > @
+          [el] > check
+            if. > @
+              ^.x.lt 100
+              ^.acc.plus x
+              ^.acc.minus x
+      plus.
+        10
+        0.minus 500

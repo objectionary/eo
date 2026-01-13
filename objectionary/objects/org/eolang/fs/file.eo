@@ -2,14 +2,13 @@
 +alias org.eolang.fs.path
 +alias org.eolang.fs.tmpdir
 +alias org.eolang.tt.sprintf
-+alias org.eolang.tt.text
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+rt jvm org.eolang:eo-runtime:0.59.0
++rt jvm org.eolang:eo-runtime:0.59.1
 +rt node eo2js-runtime:0.0.0
-+version 0.59.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:27
 +unlint redundant-object:29
@@ -304,9 +303,9 @@
         and.
           f.exists
           contains.
-            text f.path
+            f.path
             joined.
-              text path.separator
+              path.separator
               * "foo" "bar"
     (tmpdir.as-path.resolved "foo/bar").@ > resolved
     resolved.tmpfile > f

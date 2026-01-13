@@ -1,0 +1,35 @@
++alias org.eolang.tt.sscanf
++alias org.eolang.tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns the original `text` as `number`.
+[text] > as-number
+  if. > @
+    scanned.length.eq 0
+    error
+      sprintf
+        "Can't convert text %s to number"
+        * text
+    scanned.head
+  (sscanf "%f" text).@ > scanned
+
+  # Tests that as-number converts numeric string to number.
+  [] +> tests-converts-text-to-number
+    eq. > @
+      5
+      as-number "5"
+
+  # Tests that as-number throws error when text is not numeric.
+  [] +> throws-on-converting-text-to-number
+    as-number "Hello" > @
+
+  # Tests that as-number converts floating point string to number.
+  [] +> tests-converts-float-text-to-number
+    eq. > @
+      3.14
+      as-number "3.14"

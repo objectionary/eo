@@ -1,0 +1,86 @@
++alias org.eolang.tt.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns index of `substring` in `text`.
+# If no `substring` was found, it returns -1.
+[text substring] > index-of
+  if. > @
+    or.
+      or.
+        (number substring-size).gt text-size
+        and.
+          substring-size.eq text-size
+          (substring-bts.eq text-bts).not
+      found.eq -1
+    -1
+    length.
+      string
+        slice text-bts 0 found
+  text > text-bts!
+  substring > substring-bts!
+  text-bts.size > text-size!
+  substring-bts.size > substring-size!
+  (number text-size).minus substring-size > end!
+  rec-index-of 0 > found!
+
+  [idx] > rec-index-of
+    if. > @
+      end.eq idx
+      if.
+        includes
+        idx
+        -1
+      if.
+        includes
+        idx
+        rec-index-of (idx.plus 1).as-number
+    eq. > includes
+      slice text-bts idx substring-size
+      substring-bts
+
+  # Tests specific functionality index-of returns -1 for non-existent substring longer than text.
+  [] +> tests-index-of-non-existed-substring-with-more-length
+    eq. > @
+      -1
+      index-of "Hello" "Somebody"
+
+  # Tests specific functionality index-of returns -1 for non-existent substring of same length.
+  [] +> tests-index-of-non-existed-substring-with-same-length
+    eq. > @
+      -1
+      index-of "Hello" "world"
+
+  # Tests specific functionality index-of returns -1 for non-existent substring in UTF text.
+  [] +> tests-index-of-non-existed-substring-with-utf
+    eq. > @
+      -1
+      index-of
+        "привет, друг!"
+        "x"
+
+  # Tests specific functionality index-of finds correct position of UTF character in text.
+  [] +> tests-index-of-existed-substring-with-utf
+    eq. > @
+      3
+      index-of
+        "привет, друг!"
+        "в"
+
+  # Tests specific functionality index-of returns correct position of newline character.
+  [] +> tests-returns-valid-index-of-substring
+    eq. > @
+      6
+      index-of
+        "Hello \n world"
+        "\n"
+
+  # Tests specific functionality index-of finds substring located at end of text.
+  [] +> tests-returns-valid-index-of-substring-in-the-end
+    eq. > @
+      6
+      index-of "Hello world" "world"

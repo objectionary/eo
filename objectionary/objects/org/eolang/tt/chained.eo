@@ -1,0 +1,38 @@
++alias org.eolang.ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns concatenation of `text` with all `other` strings.
+# Here `others` must be a `tuple` of `strings`.
+[text others] > chained
+  if. > @
+    0.eq others.length
+    text
+    string
+      reduced.
+        list others
+        text.as-bytes
+        accum.concat str.as-bytes > [accum str]
+
+  # Tests specific functionality chained method concatenates text with multiple other strings.
+  [] +> tests-chains-with-other-strings
+    eq. > @
+      "Hello, world!"
+      chained
+        "Hello"
+        *
+          ", "
+          "world"
+          "!"
+
+  # Tests specific functionality chained method returns original text when no strings provided.
+  [] +> tests-returns-same-text-on-chaining-with-no-strings
+    eq. > @
+      "Some"
+      chained
+        "Some"
+        *

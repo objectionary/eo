@@ -1,8 +1,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+version 0.59.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint decorated-formation
 +unlint cti
@@ -348,14 +348,6 @@
         .as-bytes:0
       "first"
 
-  # Tests that the runtime handles methods accessed by position.
-  [] +> tests-methods-by-position
-    and. > @
-      bound.~0.eq 1
-      bound.~1.eq "Hey"
-    [first second] > obj
-    obj 1 "Hey" > bound
-
   # Tests that the runtime handles deep nesting of objects.
   [] +> tests-nesting-blah-test
     blah0 > @
@@ -446,5 +438,5 @@
       cti
         2.times 2
         "warning"
-        "This method is deprecated!"
+        "intentional error, ignore it"
       4

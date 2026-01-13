@@ -1,0 +1,55 @@
++alias org.eolang.ss.list
++alias org.eolang.ss.bytes-as-array
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns the `text` in upper case.
+[text] > up-cased
+  string > @
+    reduced.
+      list
+        bytes-as-array
+          text.as-bytes
+      --
+      [accum byte] >>
+        accum.concat > @
+          if.
+            and.
+              ascii-bte.lte ascii-z
+              ascii-bte.gte ascii-a
+            slice.
+              as-bytes.
+                as-i64.
+                  ascii-bte.minus distance
+              7
+              1
+            byte
+        ascii byte > ascii-bte
+  ascii "z" > ascii-z!
+  ascii "a" > ascii-a!
+  minus. > distance
+    number ascii-a
+    ascii "A"
+
+  [char] > ascii
+    as-number. > @
+      as-i64.
+        concat.
+          00-00-00-00-00-00-00
+          char.as-bytes
+
+  # Tests that up-cased converts lowercase text to uppercase.
+  [] +> tests-converts-text-to-upper-case
+    eq. > @
+      "HELLO"
+      up-cased "hello"
+
+  # Tests that up-cased converts mixed case text to uppercase.
+  [] +> tests-converts-text-with-upper-letters-to-upper-case
+    eq. > @
+      "HELLO"
+      up-cased "HeLlO"

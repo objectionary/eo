@@ -1,0 +1,52 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Joins `items`, which is a `tuple` of strings, using current `text`
+# as a delimiter.
+[text items] > joined
+  string joined-bts > @
+  text > delimiter!
+  if. > joined-bts!
+    items.length.eq 0
+    --
+    with-delimiter items.head items.tail
+
+  [acc tup] > with-delimiter
+    if. > @
+      tup.length.eq 0
+      acc
+      with-delimiter
+        concat.
+          concat.
+            dataized tup.head
+            delimiter
+          acc
+        tup.tail
+
+  # Tests specific functionality joined method returns empty string when joining empty tuple.
+  [] +> tests-joined-no-strings
+    eq. > @
+      ""
+      joined
+        "-"
+        *
+
+  # Tests specific functionality joined method returns single string when joining one element.
+  [] +> tests-joined-one-string
+    eq. > @
+      "some"
+      joined
+        "-"
+        * "some"
+
+  # Tests specific functionality joined method joins multiple strings with delimiter.
+  [] +> tests-joined-many-strings
+    eq. > @
+      "hello-world-dear-friend"
+      joined
+        "-"
+        * "hello" "world" "dear" "friend"

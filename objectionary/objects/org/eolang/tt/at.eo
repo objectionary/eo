@@ -1,0 +1,49 @@
++alias org.eolang.tt.slice
++alias org.eolang.tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Retrieve symbol by given index as `text`.
+# If 0 > index >= ^.length - the error will be returned.
+[text i] > at
+  if. > @
+    or.
+      0.gt index
+      (number index).gte len
+    error
+      sprintf
+        "Given index %d is out of text bounds"
+        * index
+    slice text index 1
+  text.length > len!
+  i > idx!
+  if. > index!
+    0.gt idx
+    (number len).plus idx
+    idx
+
+  # Tests specific functionality at method returns first character at index 0.
+  [] +> tests-returns-first-char
+    eq. > @
+      "s"
+      at "some" 0
+
+  # Tests specific functionality at method returns character at specified index.
+  [] +> tests-returns-third-char
+    eq. > @
+      "m"
+      at "some" 2
+
+  # Tests specific functionality at method supports negative indexing from end of text.
+  [] +> tests-returns-char-at-negative-index
+    eq. > @
+      "m"
+      at "some" -2
+
+  # Tests specific functionality at method throws error when index exceeds text length.
+  [] +> throws-on-text-at-index-more-than-length
+    at "some" 10 > @

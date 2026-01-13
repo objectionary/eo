@@ -1,0 +1,89 @@
++alias org.eolang.tt.regex
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns `text` where all regex target changed to replacement.
+# Here `target` must be a `org.eolang.tt.regex` object.
+# The `replacement` here is a `string` that would be pasted instead of
+# matched text in original one.
+[text target replacement] > replaced
+  if. > @
+    matched.exists.not
+    reinit
+    rec-replaced matched "" matched.start
+  text > self-as-bytes!
+  string self-as-bytes > reinit
+  (target.match reinit).next > matched
+
+  [block accum start] > rec-replaced
+    if. > @
+      block.exists
+      rec-replaced
+        block.next
+        concat.
+          concat.
+            accum
+            reinit.slice
+              start
+              block.from.minus start
+          replacement
+        block.to
+      string
+        accum.concat
+          reinit.slice
+            start
+            reinit.length.minus start
+
+  # Tests that replaced returns original text when regex pattern not found.
+  [] +> tests-does-not-replaces-if-regex-not-found
+    replaced
+      "Hello, world"
+      regex
+        "/[0-9]+/"
+      "12345"
+    .eq > @
+      "Hello, world"
+
+  # Tests that replaced substitutes digit characters with replacement string.
+  [] +> tests-replaces-digits-with-string
+    replaced
+      "Hell0, w0rld"
+      regex
+        "/[0-9]+/"
+      "o"
+    .eq > @
+      "Hello, world"
+
+  # Tests that replaced converts forward slashes to backslashes in path.
+  [] +> tests-replaces-slashes-to-windows-separator
+    replaced
+      "C:\\Windows/foo\\bar/hello.txt"
+      regex
+        "/\\//"
+      "\\"
+    .eq > @
+      "C:\\Windows\\foo\\bar\\hello.txt"
+
+  # Tests that replaced converts Windows path separators to forward slashes.
+  [] +> tests-replaces-windows-path-with-slash
+    replaced
+      "C:\\Windows\\Users\\AppLocal\\shrek"
+      regex
+        "/[\\\\:]+/"
+      "/"
+    .eq > @
+      "C/Windows/Users/AppLocal/shrek"
+
+  # Tests that replaced removes invalid filename characters from path.
+  [] +> tests-sanitizes-windows-path-with-regex
+    replaced
+      "foo\\bar<:>?*\"|baz\\asdf"
+      regex
+        "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+      ""
+    .eq > @
+      "foo\\barbaz\\asdf"

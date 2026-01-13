@@ -1,0 +1,78 @@
++alias org.eolang.tt.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns last index of `substring` in `text`.
+# If no element was found, it returns -1.
+[text substring] > last-index-of
+  if. > @
+    or.
+      or.
+        (number substring-size).gt text-size
+        and.
+          substring-size.eq text-size
+          (substring-bts.eq text-bts).not
+      found.eq -1
+    -1
+    length.
+      string
+        slice text-bts 0 found
+  text > text-bts!
+  substring > substring-bts!
+  text-bts.size > text-size!
+  substring-bts.size > substring-size!
+  rec-index-of > found!
+    (number text-size).minus substring-size
+
+  [idx] > rec-index-of
+    if. > @
+      0.eq idx
+      if.
+        includes
+        idx
+        -1
+      if.
+        includes
+        idx
+        rec-index-of (idx.plus -1).as-number
+    eq. > includes
+      slice text-bts idx substring-size
+      substring-bts
+
+  # Tests specific functionality last-index-of finds last occurrence of repeated substring.
+  [] +> tests-finds-last-index-of-substring
+    eq. > @
+      5
+      last-index-of "Hey, Hey, Hey" "Hey,"
+
+  # Tests specific functionality last-index-of returns 0 when substring equals entire text.
+  [] +> tests-finds-last-index-of-the-same-string
+    eq. > @
+      0
+      last-index-of "Hello" "Hello"
+
+  # Tests specific functionality last-index-of returns -1 for non-existent substring.
+  [] +> tests-last-index-of-non-existed-substring
+    eq. > @
+      -1
+      last-index-of "Hello, world" "somebody"
+
+  # Tests specific functionality last-index-of returns -1 for non-existent substring in UTF text.
+  [] +> tests-last-index-of-non-existed-substring-with-utf
+    eq. > @
+      -1
+      last-index-of
+        "привет, друг!"
+        "x"
+
+  # Tests that last-index-of finds correct position of UTF character in text.
+  [] +> tests-last-index-of-existed-substring-with-utf
+    eq. > @
+      3
+      last-index-of
+        "привет, друг!"
+        "в"

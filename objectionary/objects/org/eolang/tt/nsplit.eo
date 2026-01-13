@@ -1,0 +1,117 @@
++alias org.eolang.tt.slice
++alias org.eolang.tt.sprintf
++alias org.eolang.ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
+# The last element contains the remainder of the string after splitting.
+# If `limit` < 1, an error is returned.
+[text delimiter limit] > nsplit
+  if. > @
+    1.gt limit
+    error
+      sprintf
+        "Invalid limit %d for nsplit, must be at least 1"
+        * limit
+    if.
+      text.size.eq 0
+      *
+      if.
+        1.eq limit
+        * text
+        rec-nsplit * 0 0 0
+
+  [accum start current splits-made] > rec-nsplit
+    if. > @
+      text.size.eq current
+      accum.with > with-substr
+        string
+          slice
+            text
+            start
+            current.minus start
+      if.
+        and.
+          delimiter.eq
+            slice text current 1
+          (number splits-made).lt
+            (number limit).minus 1
+        rec-nsplit
+          with-substr
+          (current.plus 1).as-number
+          (current.plus 1).as-number
+          (splits-made.plus 1).as-number
+        rec-nsplit
+          accum
+          start
+          (current.plus 1).as-number
+          splits-made
+
+  # Tests that nsplit splits with limit 2 correctly.
+  [] +> tests-nsplit-with-limit-two
+    eq. > @
+      list
+        nsplit
+          "Cookie: a=1; b=2"
+          " "
+          2
+      * "Cookie:" "a=1; b=2"
+
+  # Tests that nsplit splits with limit 2 on dashes.
+  [] +> tests-nsplit-with-dashes-limit-two
+    eq. > @
+      list
+        nsplit
+          "a-b-c-d"
+          "-"
+          2
+      * "a" "b-c-d"
+
+  # Tests that nsplit with limit 1 returns entire string.
+  [] +> tests-nsplit-with-limit-one
+    eq. > @
+      list
+        nsplit
+          "a-b-c"
+          "-"
+          1
+      * "a-b-c"
+
+  # Tests that nsplit with limit greater than splits behaves like split.
+  [] +> tests-nsplit-with-high-limit
+    eq. > @
+      list
+        nsplit
+          "a-b-c"
+          "-"
+          10
+      * "a" "b" "c"
+
+  # Tests that nsplit throws error with limit 0.
+  [] +> throws-on-nsplit-with-limit-zero
+    nsplit > @
+      "text"
+      "-"
+      0
+
+  # Tests that nsplit throws error with negative limit.
+  [] +> throws-on-nsplit-with-negative-limit
+    nsplit > @
+      "text"
+      "-"
+      -1
+
+  # Tests that nsplit handles empty strings between delimiters.
+  [] +> tests-nsplit-with-empty-strings
+    eq. > @
+      list
+        nsplit
+          "-a-b-c"
+          "-"
+          3
+      * "" "a" "b-c"

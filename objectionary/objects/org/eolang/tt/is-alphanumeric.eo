@@ -1,0 +1,29 @@
++alias org.eolang.tt.regex
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Check that all signs in `text` are numbers or letters.
+# Works only for english letters.
+[text] > is-alphanumeric
+  (regex "/^[A-Za-z0-9]+$/").matches > @
+    text
+
+  # Tests that is-alphanumeric returns true for text containing only letters.
+  [] +> tests-checks-if-simple-text-is-alphanumeric
+    is-alphanumeric > @
+      "eEo"
+
+  # Tests that is-alphanumeric returns true for text with letters and numbers.
+  [] +> tests-checks-if-text-with-number-is-alphanumeric
+    is-alphanumeric > @
+      "ab3d"
+
+  # Tests that is-alphanumeric returns false for text containing special characters.
+  [] +> tests-checks-if-text-with-dashes-is-not-alphanumeric
+    not. > @
+      is-alphanumeric
+        "-w-"

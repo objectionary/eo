@@ -3,12 +3,15 @@
 +alias org.eolang.sm.os
 +alias org.eolang.ss.list
 +alias org.eolang.tt.regex
-+alias org.eolang.tt.text
++alias org.eolang.tt.index-of
++alias org.eolang.tt.last-index-of
++alias org.eolang.tt.replaced
++alias org.eolang.tt.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.59.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:56
 +unlint redundant-object:58
@@ -44,8 +47,8 @@
         posix joined-path
     string > joined-path
       as-bytes.
-        joined.
-          text separator
+        QQ.tt.joined
+          separator
           paths
 
   # POSIX specified path.
@@ -79,12 +82,12 @@
             uri-as-bytes.size.plus -1
             1
           separator
-      joined. > path
-        text separator
+      QQ.tt.joined > path
+        separator
         reduced.
           list
-            split.
-              text uri
+            split
+              uri
               separator
           *
           [accum segment] >>
@@ -176,10 +179,9 @@
               txt.length.minus
                 number slice-start-idx
       uri > pth!
-      text > txt
-        string pth
+      string pth > txt
       plus. > slice-start-idx!
-        txt.last-index-of separator
+        last-index-of txt separator
         1
 
     # Takes the extension part from the provided `path`, for example:
@@ -209,9 +211,8 @@
               txt.length.minus
                 number slice-start-idx
       basename > base!
-      text > txt
-        string base
-      txt.last-index-of "." > slice-start-idx!
+      string base > txt
+      last-index-of txt "." > slice-start-idx!
 
     # Takes the directory name from the provided `path`, for example:
     # |------------------------------|--------------------|
@@ -239,9 +240,8 @@
           as-bytes.
             txt.slice 0 len
       uri > pth!
-      text > txt
-        string pth
-      txt.last-index-of separator > len!
+      string pth > txt
+      last-index-of txt separator > len!
 
   # Windows specified path.
   # Here `uri` is file system URI which may contain forward slashes '/'.
@@ -280,13 +280,13 @@
       # Replaces slashes '/' with valid windows separator '\'.
       [uri] > separated-correctly
         if. > @
-          (pth.index-of path.posix.separator).eq -1
+          (index-of pth path.posix.separator).eq -1
           string uri-as-bytes
-          string replaced
+          string replaced-slash
         uri > uri-as-bytes!
-        text > pth
-          string uri-as-bytes
-        pth.replaced > replaced!
+        string uri-as-bytes > pth
+        replaced > replaced-slash!
+          pth
           regex "/\\//"
           separator
 
@@ -331,12 +331,12 @@
               uri-as-bytes.size.plus -1
               1
             separator
-        joined. > path!
-          text separator
+        QQ.tt.joined > path!
+          separator
           reduced.
             list
-              split.
-                text driveless
+              split
+                driveless
                 ^.separator
             *
             [accum segment] >>
@@ -453,10 +453,9 @@
                 txt.length.minus
                   number slice-start-idx
         uri > pth!
-        text > txt
-          string pth
+        string pth > txt
         plus. > slice-start-idx!
-          txt.last-index-of separator
+          last-index-of txt separator
           1
 
       # Takes the extension part from the provided `path`, for example:
@@ -486,9 +485,8 @@
                 txt.length.minus
                   number slice-start-idx
         basename > base!
-        text > txt
-          string base
-        txt.last-index-of "." > slice-start-idx!
+        string base > txt
+        last-index-of txt "." > slice-start-idx!
 
       # Takes the directory name from the provided `path`, for example:
       # |------------------------------|--------------------|
@@ -512,9 +510,8 @@
             as-bytes.
               txt.slice 0 len
         uri > pth!
-        text > txt
-          string pth
-        txt.last-index-of separator > len!
+        string pth > txt
+        last-index-of txt separator > len!
 
   # Tests that the path separator is determined correctly based on the operating system.
   [] +> tests-determines-separator-depending-on-os

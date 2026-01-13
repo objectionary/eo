@@ -1,0 +1,31 @@
++alias org.eolang.tt.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Checks that `text` ends with `substring`.
+[text substring] > ends-with
+  and. > @
+    (number substring-size).lte text-size
+    eq.
+      slice
+        text-bts
+        (number text-size).minus substring-size
+        substring-size
+      substring-bts
+  text > text-bts!
+  substring > substring-bts!
+  text-bts.size > text-size!
+  substring-bts.size > substring-size!
+
+  # Tests specific functionality ends-with returns true when text ends with given substring.
+  [] +> tests-ends-with-substring
+    ends-with "Hello world!" "world!" > @
+
+  # Tests specific functionality ends-with returns false when text does not end with substring.
+  [] +> tests-does-not-end-with-substring
+    not. > @
+      ends-with "Hello world!" "Hello"

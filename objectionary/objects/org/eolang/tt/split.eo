@@ -1,0 +1,64 @@
++alias org.eolang.tt.slice
++alias org.eolang.ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+[text delimiter] > split
+  if. > @
+    len.eq 0
+    *
+    rec-split * 0 0
+  delimiter > delim!
+  text > self-as-bytes!
+  self-as-bytes.size > len!
+
+  [accum start current] > rec-split
+    if. > @
+      len.eq current
+      accum.with > with-substr
+        string
+          slice
+            self-as-bytes
+            start
+            current.minus start
+      if.
+        delim.eq
+          slice self-as-bytes current 1
+        rec-split
+          with-substr
+          (current.plus 1).as-number
+          (current.plus 1).as-number
+        rec-split
+          accum
+          start
+          (current.plus 1).as-number
+
+  # Tests that split method divides text into parts using dash delimiter.
+  [] +> tests-splits-text-by-dash
+    eq. > @
+      list
+        split "a-b-c" "-"
+      * "a" "b" "c"
+
+  # Tests that split method handles empty strings between delimiters.
+  [] +> tests-splits-text-with-empty-strings
+    eq. > @
+      list
+        split "-a-b-" "-"
+      * "" "a" "b" ""
+
+  # Tests that split returns proper string objects with correct length.
+  [] +> tests-splits-and-returns-strings
+    eq. > @
+      length.
+        at.
+          split
+            "hello world!"
+            " "
+          1
+      6

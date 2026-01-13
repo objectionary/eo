@@ -1,0 +1,54 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns `text` trimmed from right side.
+[text] > trimmed-right
+  if. > @
+    0.eq len
+    text
+    string
+      bts.slice
+        0
+        first-non-space-index
+          (number len).plus -1
+  text > bts!
+  bts.size > len!
+  20- > space
+
+  [index] > first-non-space-index
+    if. > @
+      -1.eq index
+      0
+      if.
+        char.eq space
+        first-non-space-index (index.plus -1).as-number
+        index.plus 1
+    bts.slice index 1 > char!
+
+  # Tests specific functionality trimmed-right returns empty string when applied to empty text.
+  [] +> tests-trimmed-right-empty-text
+    eq. > @
+      trimmed-right ""
+      ""
+
+  # Tests specific functionality trimmed-right removes single trailing space from text.
+  [] +> tests-text-trimmed-right-one-space
+    eq. > @
+      trimmed-right "s "
+      "s"
+
+  # Tests specific functionality trimmed-right removes multiple trailing spaces from text.
+  [] +> tests-text-trimmed-right-many-spaces
+    eq. > @
+      trimmed-right "some     "
+      "some"
+
+  # Tests specific functionality trimmed-right returns empty string when text contains only spaces.
+  [] +> tests-text-trimmed-right-only-spaces
+    eq. > @
+      trimmed-right "     "
+      ""
