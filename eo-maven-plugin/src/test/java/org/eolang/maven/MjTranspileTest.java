@@ -168,7 +168,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void savesValidContentToPackageInfoFile(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
