@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: eo-maven-plugin-site
+run-name: "eo-maven-plugin site publication"
+'on':
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  site:
+    if: github.repository_owner == 'objectionary'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-eo-maven-plugin-site-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-eo-maven-plugin-site-
+      - run: mvn clean install -pl eo-parser -DskipTests -am
+      - run: mvn clean site -Psite -pl eo-maven-plugin
+      - uses: JamesIves/github-pages-deploy-action@v4.8.0
+        with:
+          branch: gh-pages
+          folder: eo-maven-plugin/target/site
+          target-folder: eo-maven-plugin
+          clean: false
