@@ -1,5 +1,6 @@
 +alias org.eolang.ss.list
 +alias org.eolang.ss.reducedi
++alias org.eolang.ss.eachi
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -78,23 +79,10 @@
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with
-  # two free attributes: the element of the
-  # collection and its index.
-  # The result of `func` must be dataizable.
-  [func] > eachi
-    reducedi > @
-      ^
-      true
-      [acc item index] >>
-        seq * > @
-          acc
-          func item index
-
-  # For each collection element dataize the object
-  # Here "func" must be an abstract object with
   # one free attribute, the element of the collection.
   [func] > each
     eachi > @
+      ^
       func item > [item index] >>
 
   # Create a new list without the i-th element.
@@ -403,22 +391,6 @@
           * 1 2 3
         x.times 2 > [x]
       * 2 4 6
-
-  # Tests that iterating over elements with index access works correctly.
-  [] +> tests-iterates-with-eachi
-    eq. > @
-      malloc.for
-        0
-        [m]
-          list
-            * 1 2 3
-          .eachi > @
-            [item index] >>
-              ^.m.put > @
-                plus.
-                  ^.m.as-number.plus item
-                  index
-      9
 
   # Tests that iterating over elements without index access works correctly.
   [] +> tests-iterates-with-each
