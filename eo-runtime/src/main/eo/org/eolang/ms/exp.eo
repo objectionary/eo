@@ -27,22 +27,12 @@
       abs.
         real
           minus.
-            e
-            exp 1
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n2
-    lt. +> @
-      abs.
-        real
-          minus.
             1.div e
             exp -1
       0.00000001
 
   # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n3
+  [] +> tests-exp-check-n2
     lt. +> @
       abs.
         real
@@ -52,7 +42,7 @@
       0.0000001
 
   # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n4
+  [] +> tests-exp-check-n3
     lt. +> @
       abs.
         real
