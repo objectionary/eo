@@ -29,15 +29,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Integration test for simple snippets.
  * @since 0.57
- * @todo #4679:30min Enable SnippetIT when it's possible. The test was
- *  disabled because because Attr interface was returned back and now these
- *  tests don't work anymore. These tests must be enabled when new EO release
- *  is made.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
-    @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
