@@ -25,6 +25,16 @@ final class PackageInfos {
     private static final Pattern PACKAGE = Pattern.compile("EO");
 
     /**
+     * Not allowed characters in package names.
+     */
+    private static final Pattern NOT_ALLOWED = Pattern.compile("[^a-zA-Z0-9_.$]");
+
+    /**
+     * Pattern for package names beginning with a number.
+     */
+    private static final Pattern NUMBER_BEGINNING = Pattern.compile("^\\d.*");
+
+    /**
      * Directory where create package info files.
      */
     private final Path root;
@@ -78,7 +88,15 @@ final class PackageInfos {
                 "// @org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
             ),
-            String.format("package %s;", pkg)
+            String.format("package %s;", PackageInfos.escaped(pkg))
         );
+    }
+
+    private static String escaped(final String pkg) {
+        String res = PackageInfos.NOT_ALLOWED.matcher(pkg).replaceAll("_");
+        if (PackageInfos.NUMBER_BEGINNING.matcher(res).matches()) {
+            res = String.format("_%s", res);
+        }
+        return res;
     }
 }
