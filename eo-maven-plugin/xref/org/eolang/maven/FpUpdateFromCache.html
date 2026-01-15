@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>FpUpdateFromCache xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/org/eolang/maven/FpUpdateFromCache.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">package</strong> org.eolang.maven;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> com.jcabi.log.Logger;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.nio.file.Path;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.function.Supplier;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.cactoos.text.TextOf;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * Footprint that updates target from cache.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * @since 0.41</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="FpUpdateFromCache" href="../../../org/eolang/maven/FpUpdateFromCache.html#FpUpdateFromCache">FpUpdateFromCache</a> <strong class="jxr_keyword">implements</strong> <a name="Footprint" href="../../../org/eolang/maven/Footprint.html#Footprint">Footprint</a> {
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     * Cached file supplier.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Supplier&lt;Path&gt; cache;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     * Ctor.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     * @param cache Lazy path to cache</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <a name="FpUpdateFromCache" href="../../../org/eolang/maven/FpUpdateFromCache.html#FpUpdateFromCache">FpUpdateFromCache</a>(<strong class="jxr_keyword">final</strong> Supplier&lt;Path&gt; cache) {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          <strong class="jxr_keyword">this</strong>.cache = cache;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      }
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      @Override
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">public</strong> Path apply(<strong class="jxr_keyword">final</strong> Path source, <strong class="jxr_keyword">final</strong> Path target) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          Logger.debug(
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              FpUpdateFromCache.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>              <span class="jxr_string">"Updating only target %[file]s from cache %[file]s"</span>,
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>              target, source
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          );
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="Saved" href="../../../org/eolang/maven/Saved.html#Saved">Saved</a>(<strong class="jxr_keyword">new</strong> TextOf(<strong class="jxr_keyword">this</strong>.cache.get()), target).value();
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>
+</body>
+</html>

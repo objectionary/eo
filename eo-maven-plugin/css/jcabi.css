@@ -1,0 +1,259 @@
+/**
+ * SPDX-FileCopyrightText: Copyright (c) 2012-2026 Yegor Bugayenko
+ * SPDX-License-Identifier: MIT
+ */
+@import "https://fonts.googleapis.com/css?family=Maven+Pro:400,500,700";
+@import "https://fonts.googleapis.com/css?family=Ubuntu+Mono";
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: "Maven Pro", sans-serif;
+  font-size: 20px;
+  line-height: 26px;
+  background-color: #d3d3d3;
+  color: #111;
+}
+@media all and (max-width: 1200px) {
+  body {
+    font-size: 16px;
+    line-height: 20px;
+    background-color: #fff;
+    padding: 0;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+a:hover {
+  color: #808080;
+}
+
+code, tt {
+  background-color: #eee;
+  padding: 0 10px;
+  font-family: "Ubuntu Mono", monospace;
+}
+
+h1 {
+  font-size: 38px;
+  line-height: 38px;
+  font-variant: small-caps;
+}
+
+h2 {
+  font-size: 34px;
+  line-height: 34px;
+  font-variant: small-caps;
+}
+
+h3 {
+  font-size: 30px;
+  line-height: 30px;
+  font-variant: small-caps;
+}
+
+pre {
+  border-left: 2px solid #808080;
+  margin-left: 20px;
+  color: #808080;
+  padding: 20px;
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 18px;
+  overflow-x: auto;
+  line-height: 20px;
+}
+@media all and (max-width: 1200px) {
+  pre {
+    border-left: 0;
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+
+table {
+  background-color: #fff;
+  border: 0;
+  border-collapse: collapse;
+}
+table tr .a {
+  background-color: #fcfcfc;
+}
+table tr .b {
+  background-color: #fafafa;
+}
+table th {
+  background-color: #f2f2f2;
+  color: #585858;
+  padding-left: 14px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  font-weight: normal;
+  text-align: left;
+  border-bottom: 1px solid #fff;
+}
+table td {
+  vertical-align: top;
+  padding: 14px;
+}
+table td:nth-child(1) {
+  width: 30%;
+}
+
+.page {
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
+  width: 90%;
+}
+@media all and (max-width: 1200px) {
+  .page {
+    width: 100%;
+  }
+}
+
+.menu-section {
+  vertical-align: top;
+  display: inline-block;
+  width: 30%;
+}
+@media all and (max-width: 1200px) {
+  .menu-section {
+    display: none;
+  }
+}
+.menu-section .signature {
+  color: #808080;
+  font-size: 75%;
+  width: 30%;
+}
+.menu-section .menu {
+  background-color: #fff;
+  padding: 40px 20px 20px;
+  margin-right: 20px;
+  font-size: 20px;
+  line-height: 26px;
+}
+@media all and (max-width: 1200px) {
+  .menu-section .menu {
+    text-align: center;
+  }
+}
+.menu-section .menu > li > span {
+  font-variant: small-caps;
+}
+.menu-section .menu > li > ul {
+  margin-bottom: 20px;
+  border-top: 1px solid #d3d3d3;
+}
+.menu-section .menu li {
+  font-weight: 700;
+  color: #808080;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.menu-section .menu li a {
+  text-decoration: none;
+}
+.menu-section .menu li ul {
+  list-style: none;
+  padding-left: 10px;
+}
+.menu-section .menu .active {
+  font-weight: bold;
+}
+.menu-section .menu li li {
+  color: #111;
+  font-weight: 400;
+}
+
+.badges {
+  margin-top: 12px;
+  color: #808080;
+  list-style: none;
+  padding-left: 0;
+  font-size: 16px;
+  /* stylelint-disable-next-line no-descending-specificity */
+}
+.badges.badges li {
+  display: inline;
+  border: 1px solid #808080;
+  border-radius: 3px;
+  padding: 4px;
+  margin-right: 12px;
+}
+.badges .menu-button {
+  display: none;
+  cursor: pointer;
+}
+.badges .menu-button:hover {
+  background-color: #808080;
+  color: white;
+}
+@media all and (max-width: 1200px) {
+  .badges .menu-button {
+    display: inline;
+  }
+}
+
+.legal-notes {
+  margin-top: 20px;
+  color: #808080;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+}
+@media all and (max-width: 1200px) {
+  .legal-notes {
+    display: none;
+  }
+}
+
+.content {
+  background-color: #fff;
+  position: relative;
+  padding: 60px;
+}
+@media all and (max-width: 1200px) {
+  .content {
+    padding: 20px;
+  }
+}
+
+.fork-me {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 140px;
+  height: 140px;
+}
+
+.right-side {
+  white-space: normal;
+  display: inline-block;
+  width: 70%;
+}
+@media all and (max-width: 1200px) {
+  .right-side {
+    width: 100%;
+  }
+}
+
+.mobile-menu {
+  display: none;
+}
+@media all and (max-width: 1200px) {
+  .mobile-menu {
+    display: block;
+  }
+}
+
+.logo {
+  /* stylelint-disable-next-line no-descending-specificity */
+}
+.logo.logo a {
+  border: 0;
+}
+
+/*# sourceMappingURL=jcabi.css.map */

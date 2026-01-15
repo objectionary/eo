@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EOLANG Maven Plugin – eo-maven-plugin</title>
+        <link media="all" rel="stylesheet" type="text/css" href="./css/jcabi.css">
+                    <meta name="author" content="Yegor Bugayenko">
+                                            <link rel="icon" href="https://www.yegor256.com/images/books/elegant-objects/cactus.png">
+                                        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin=anonymous></script>
+        <script src="./js/jcabi.js"></script>
+    </head>
+    <body>
+                <div class="page" itemscope="" itemtype="http://schema.org/BlogPosting">
+            <nav class="menu-section">
+                <div>
+                    <ul class="menu" id="menu">
+                                                                                                    <li>
+                                <span>Overview</span>
+                                                                    <ul>
+                                                                                                                <li  class='active' >
+                                <span>                        <a href="index.html" title="Introduction">Introduction</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="usage.html" title="Usage">Usage</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="plugin-info.html" title="Goals">Goals</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                                    <li>
+                                <span>Project Documentation</span>
+                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="project-info.html" title="Project Information">Project Information</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="dependencies.html" title="Dependencies">Dependencies</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li  class='active' >
+                                <span>                        <a href="index.html" title="About">About</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="plugins.html" title="Plugins">Plugins</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="scm.html" title="Source Code Management">Source Code Management</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="summary.html" title="Summary">Summary</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="project-reports.html" title="Project Reports">Project Reports</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                            </ul>
+                </div>
+                <div class="signature">
+                    Made by
+                    <a href="https://github.com/jcabi/jcabi-maven-skin">jcabi-maven-skin</a>
+                    2.0.1.
+                </div>
+            </nav>
+            <div class="right-side">
+                <main>
+                    <div class="content">
+                        <header>
+                            <div class="logo">
+                                <a href="https://www.eolang.org/"
+                                    title=" eo-maven-plugin ">
+                                                                        <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg"
+                                        alt="eo-maven-plugin"
+                                                                                    width="64"
+                                                                                                                            height="64"
+                                                                                itemprop="image"
+                                    >                                </a>
+                            </div>
+                            <ul class="badges">
+                                <li>
+                                    <strong itemprop="version">1.0-SNAPSHOT</strong>
+                                </li>
+                                <li>
+                                    <time itemprop="datePublished" datetime="2026-01-15">
+                                        15-Jan-2026
+                                    </time>
+                                </li>
+                                <li class="menu-button">menu</li>
+                            </ul>
+                        </header>
+                        <div id="here-goes-menu" class="menu-off"></div>
+                                                                        <article itemprop="articleBody">
+                            <section><a id="EOLANG_Maven_Plugin"></a>
+<h1>EOLANG Maven Plugin</h1>
+<p>Put your sources into <code>src/main/eo</code> and then add this to your <code>pom.xml</code>:</p>
+<pre><code>&lt;project&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.eolang&lt;/groupId&gt;
+        &lt;artifactId&gt;eo-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;register&lt;/goal&gt;
+              &lt;goal&gt;assemble&lt;/goal&gt;
+              &lt;goal&gt;transpile&lt;/goal&gt;
+              &lt;goal&gt;copy&lt;/goal&gt;
+              &lt;goal&gt;unplace&lt;/goal&gt;
+              &lt;goal&gt;unspile&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+    [...]
+  &lt;/build&gt;
+  [...]
+&lt;/project&gt;</code></pre>
+<p>More information you can find at <a class="externalLink" href="https://www.eolang.org">www.eolang.org</a>.</p></section>
+                        </article>
+                    </div>
+                </main>
+                <footer class="legal-notes">
+                    <div>
+                        Copyright &#169;
+                                                                            2016-2026
+                                            </div>
+                    <div>EO, All Rights Reserved.</div>
+                    <div><a href="https://maven.apache.org/privacy-policy.html">Privacy Policy</a>.</div>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>eo:unspile – eo-maven-plugin</title>
+        <link media="all" rel="stylesheet" type="text/css" href="./css/jcabi.css">
+                                            <link rel="icon" href="https://www.yegor256.com/images/books/elegant-objects/cactus.png">
+                                        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin=anonymous></script>
+        <script src="./js/jcabi.js"></script>
+    </head>
+    <body>
+                <div class="page" itemscope="" itemtype="http://schema.org/BlogPosting">
+            <nav class="menu-section">
+                <div>
+                    <ul class="menu" id="menu">
+                                                                                                    <li>
+                                <span>Overview</span>
+                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="index.html" title="Introduction">Introduction</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="usage.html" title="Usage">Usage</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="plugin-info.html" title="Goals">Goals</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                                    <li>
+                                <span>Project Documentation</span>
+                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="project-info.html" title="Project Information">Project Information</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="project-reports.html" title="Project Reports">Project Reports</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                            </ul>
+                </div>
+                <div class="signature">
+                    Made by
+                    <a href="https://github.com/jcabi/jcabi-maven-skin">jcabi-maven-skin</a>
+                    2.0.1.
+                </div>
+            </nav>
+            <div class="right-side">
+                <main>
+                    <div class="content">
+                        <header>
+                            <div class="logo">
+                                <a href="https://www.eolang.org/"
+                                    title=" eo-maven-plugin ">
+                                                                        <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg"
+                                        alt="eo-maven-plugin"
+                                                                                    width="64"
+                                                                                                                            height="64"
+                                                                                itemprop="image"
+                                    >                                </a>
+                            </div>
+                            <ul class="badges">
+                                <li>
+                                    <strong itemprop="version">1.0-SNAPSHOT</strong>
+                                </li>
+                                <li>
+                                    <time itemprop="datePublished" datetime="2026-01-15">
+                                        15-Jan-2026
+                                    </time>
+                                </li>
+                                <li class="menu-button">menu</li>
+                            </ul>
+                        </header>
+                        <div id="here-goes-menu" class="menu-off"></div>
+                                                                        <article itemprop="articleBody">
+                            <section><a id="eo.3Aunspile"></a>
+<h1>eo:unspile</h1>
+<p><strong>Full name</strong>:</p>
+<p>org.eolang:eo-maven-plugin:1.0-SNAPSHOT:unspile</p>
+<p><strong>Description</strong>:</p>
+<p>Goes through all .class files and deletes those that were created from autogenerated sources so these binaries are not got into result JAR.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li>Requires a Maven project to be executed.</li>
+<li>The goal is thread-safe and supports parallel builds.</li>
+<li>Since version: <code>0.1</code>.</li>
+<li>Binds by default to the <a class="externalLink" href="https://maven.apache.org/ref/current/maven-core/lifecycles.html">lifecycle phase</a>: <code>prepare-package</code>.</li></ul><section><a id="Required_Parameters"></a>
+<h2>Required Parameters</h2>
+<table class="bodyTable">
+<tr class="a">
+<th>Name</th>
+<th>Type</th>
+<th>Since</th>
+<th>Description</th></tr>
+<tr class="b">
+<td><a href="#discoverSelf"><code>&lt;discoverSelf&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.12.0</code></td>
+<td>Shall we discover JAR artifacts for .EO sources?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.discoverSelf</code></td></tr>
+<tr class="a">
+<td><a href="#failOnWarning"><code>&lt;failOnWarning&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Whether we should fail on warning.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.failOnWarning</code></td></tr>
+<tr class="b">
+<td><a href="#foreign"><code>&lt;foreign&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>File with foreign "tojos".<br /><strong>Default</strong>: <code>${project.build.directory}/eo-foreign.json</code><br /><strong>User Property</strong>: <code>eo.foreign</code></td></tr>
+<tr class="a">
+<td><a href="#foreignFormat"><code>&lt;foreignFormat&gt;</code></a></td>
+<td><code>String</code></td>
+<td><code>-</code></td>
+<td>Format of "foreign" file ("json" or "csv").<br /><strong>Default</strong>: <code>csv</code><br /><strong>User Property</strong>: <code>eo.foreignFormat</code></td></tr>
+<tr class="b">
+<td><a href="#generatedDir"><code>&lt;generatedDir&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>Generated sourced directory.<br /><strong>Default</strong>: <code>${project.build.directory}/generated-sources</code><br /><strong>User Property</strong>: <code>eo.generatedDir</code></td></tr>
+<tr class="a">
+<td><a href="#ignoreRuntime"><code>&lt;ignoreRuntime&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Add eo-runtime dependency to the classpath. 
+<p>That property is useful only for eo-runtime library compilation. When you compile eo-runtime, you don't want to add eo-runtime from foreign sources (since you compile an eo-runtime library and classpath will anyway have all required classes) and in this case, you should set this property to true. In any other cases, the eo-runtime dependency will be downloaded and added to the classpath automatically.</p><br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreRuntime</code></td></tr>
+<tr class="b">
+<td><a href="#ignoreTransitive"><code>&lt;ignoreTransitive&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Fail resolution process on transitive dependencies.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreTransitive</code></td></tr>
+<tr class="a">
+<td><a href="#ignoreVersionConflicts"><code>&lt;ignoreVersionConflicts&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.1.0</code></td>
+<td>Fail resolution process on conflicting dependencies.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreVersionConflicts</code></td></tr>
+<tr class="b">
+<td><a href="#lintAsPackage"><code>&lt;lintAsPackage&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Whether we should lint all the sources together as package.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.lintAsPackage</code></td></tr>
+<tr class="a">
+<td><a href="#offline"><code>&lt;offline&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.32.0</code></td>
+<td>If we are offline and not able to download anything from the internet.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.offline</code></td></tr>
+<tr class="b">
+<td><a href="#overWrite"><code>&lt;overWrite&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.10.0</code></td>
+<td>Pull again even if the .eo file is already present?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.overWrite</code></td></tr>
+<tr class="a">
+<td><a href="#placed"><code>&lt;placed&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>0.11.0</code></td>
+<td>The path to a text file where paths of all added .class (and maybe others) files are placed.<br /><strong>Default</strong>: <code>${project.build.directory}/eo-placed.json</code><br /><strong>User Property</strong>: <code>eo.placed</code></td></tr>
+<tr class="b">
+<td><a href="#placedFormat"><code>&lt;placedFormat&gt;</code></a></td>
+<td><code>String</code></td>
+<td><code>-</code></td>
+<td>Format of "placed" file ("json" or "csv").<br /><strong>Default</strong>: <code>json</code><br /><strong>User Property</strong>: <code>eo.placedFormat</code></td></tr>
+<tr class="a">
+<td><a href="#skipExperimentalLints"><code>&lt;skipExperimentalLints&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.57.0</code></td>
+<td>If set to TRUE, experimental lints are skipped during the linting.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.skipExperimentalLints</code></td></tr>
+<tr class="b">
+<td><a href="#skipLinting"><code>&lt;skipLinting&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Whether we should skip linting at all.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.skipLinting</code></td></tr>
+<tr class="a">
+<td><a href="#skipZeroVersions"><code>&lt;skipZeroVersions&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.9.0</code></td>
+<td>Skip artifact with the version 0.0.0.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.skipZeroVersions</code></td></tr>
+<tr class="b">
+<td><a href="#sourcesDir"><code>&lt;sourcesDir&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>Directory in which .eo files are located.<br /><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code><br /><strong>User Property</strong>: <code>eo.sourcesDir</code></td></tr>
+<tr class="a">
+<td><a href="#tag"><code>&lt;tag&gt;</code></a></td>
+<td><code>String</code></td>
+<td><code>0.21.0</code></td>
+<td>The Git tag to pull objects from, in objectionary.<br /><strong>Default</strong>: <code>master</code><br /><strong>User Property</strong>: <code>eo.tag</code></td></tr>
+<tr class="b">
+<td><a href="#targetDir"><code>&lt;targetDir&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>Target directory.<br /><strong>Default</strong>: <code>${project.build.directory}/eo</code><br /><strong>User Property</strong>: <code>eo.targetDir</code></td></tr>
+<tr class="a">
+<td><a href="#trackTransformationSteps"><code>&lt;trackTransformationSteps&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.24.0</code></td>
+<td>Track optimization steps into intermediate XMIR files?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.trackTransformationSteps</code></td></tr>
+<tr class="b">
+<td><a href="#xslMeasures"><code>&lt;xslMeasures&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>0.41.0</code></td>
+<td>The path of the file where XSL measurements (time of execution in milliseconds) will be stored.<br /><strong>Default</strong>: <code>${project.build.directory}/eo/xsl-measures.json</code><br /><strong>User Property</strong>: <code>eo.xslMeasuresFile</code></td></tr></table></section><section><a id="Optional_Parameters"></a>
+<h2>Optional Parameters</h2>
+<table class="bodyTable">
+<tr class="a">
+<th>Name</th>
+<th>Type</th>
+<th>Since</th>
+<th>Description</th></tr>
+<tr class="b">
+<td><a href="#cache"><code>&lt;cache&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>EO cache directory.<br /><strong>User Property</strong>: <code>eo.cache</code></td></tr>
+<tr class="a">
+<td><a href="#cacheEnabled"><code>&lt;cacheEnabled&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.55.0</code></td>
+<td>Use global caching or not.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.cacheEnabled</code></td></tr>
+<tr class="b">
+<td><a href="#keepBinaries"><code>&lt;keepBinaries&gt;</code></a></td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>0.24</code></td>
+<td>List of inclusion GLOB filters for unplacing and unspiling (ONLY these files will stay).<br /><strong>See also:</strong> <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a></td></tr>
+<tr class="a">
+<td><a href="#placeBinaries"><code>&lt;placeBinaries&gt;</code></a></td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>0.15</code></td>
+<td>List of inclusion GLOB filters for finding class files while placing them from where they were resolved to classes directory.</td></tr>
+<tr class="b">
+<td><a href="#rewriteBinaries"><code>&lt;rewriteBinaries&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.32.0</code></td>
+<td>Rewrite binaries in output directory or not.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.rewriteBinaries</code></td></tr>
+<tr class="a">
+<td><a href="#scope"><code>&lt;scope&gt;</code></a></td>
+<td><code>String</code></td>
+<td><code>-</code></td>
+<td>Current scope (either "compile" or "test").<br /><strong>User Property</strong>: <code>eo.scope</code></td></tr>
+<tr class="b">
+<td><a href="#skip"><code>&lt;skip&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>Whether we should skip goal execution.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.skip</code></td></tr>
+<tr class="a">
+<td><a href="#skipBinaries"><code>&lt;skipBinaries&gt;</code></a></td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>0.15</code></td>
+<td>List of exclusion GLOB filters for finding class files while placing them from where they were resolved to classed directory.</td></tr>
+<tr class="b">
+<td><a href="#skipProgramLints"><code>&lt;skipProgramLints&gt;</code></a></td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>0.57</code></td>
+<td>List of WPA lints which must be skipped during the linting.</td></tr>
+<tr class="a">
+<td><a href="#skipSourceLints"><code>&lt;skipSourceLints&gt;</code></a></td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>0.57</code></td>
+<td>List of individual lints which must be skipped during the linting.</td></tr>
+<tr class="b">
+<td><a href="#timeout"><code>&lt;timeout&gt;</code></a></td>
+<td><code>Integer</code></td>
+<td><code>0.28.12</code></td>
+<td>Mojo execution timeout in seconds.<br /><strong>User Property</strong>: <code>eo.timeout</code></td></tr>
+<tr class="a">
+<td><a href="#unrollExitError"><code>&lt;unrollExitError&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.29.0</code></td>
+<td>If set to TRUE, the exception on exit will be printed in details to the log.<br /><strong>User Property</strong>: <code>eo.unrollExitError</code></td></tr></table></section><section><a id="Parameter_Details"></a>
+<h2>Parameter Details</h2><a id="cache"></a><section><a id="a.3Ccache.3E"></a>
+<h3>&lt;cache&gt;</h3>
+<div>EO cache directory.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.cache</code></li></ul><hr /></section><a id="cacheEnabled"></a><section><a id="a.3CcacheEnabled.3E"></a>
+<h3>&lt;cacheEnabled&gt;</h3>
+<div>Use global caching or not.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.55.0</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.cacheEnabled</code></li>
+<li><strong>Default</strong>: <code>true</code></li></ul><hr /></section><a id="discoverSelf"></a><section><a id="a.3CdiscoverSelf.3E"></a>
+<h3>&lt;discoverSelf&gt;</h3>
+<div>Shall we discover JAR artifacts for .EO sources?</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.12.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.discoverSelf</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="failOnWarning"></a><section><a id="a.3CfailOnWarning.3E"></a>
+<h3>&lt;failOnWarning&gt;</h3>
+<div>Whether we should fail on warning.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.failOnWarning</code></li>
+<li><strong>Default</strong>: <code>true</code></li></ul><hr /></section><a id="foreign"></a><section><a id="a.3Cforeign.3E"></a>
+<h3>&lt;foreign&gt;</h3>
+<div>File with foreign "tojos".</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.foreign</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/eo-foreign.json</code></li></ul><hr /></section><a id="foreignFormat"></a><section><a id="a.3CforeignFormat.3E"></a>
+<h3>&lt;foreignFormat&gt;</h3>
+<div>Format of "foreign" file ("json" or "csv").</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.String</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.foreignFormat</code></li>
+<li><strong>Default</strong>: <code>csv</code></li></ul><hr /></section><a id="generatedDir"></a><section><a id="a.3CgeneratedDir.3E"></a>
+<h3>&lt;generatedDir&gt;</h3>
+<div>Generated sourced directory.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.generatedDir</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/generated-sources</code></li></ul><hr /></section><a id="ignoreRuntime"></a><section><a id="a.3CignoreRuntime.3E"></a>
+<h3>&lt;ignoreRuntime&gt;</h3>
+<div>Add eo-runtime dependency to the classpath. 
+<p>That property is useful only for eo-runtime library compilation. When you compile eo-runtime, you don't want to add eo-runtime from foreign sources (since you compile an eo-runtime library and classpath will anyway have all required classes) and in this case, you should set this property to true. In any other cases, the eo-runtime dependency will be downloaded and added to the classpath automatically.</p></div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.ignoreRuntime</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="ignoreTransitive"></a><section><a id="a.3CignoreTransitive.3E"></a>
+<h3>&lt;ignoreTransitive&gt;</h3>
+<div>Fail resolution process on transitive dependencies.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.ignoreTransitive</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="ignoreVersionConflicts"></a><section><a id="a.3CignoreVersionConflicts.3E"></a>
+<h3>&lt;ignoreVersionConflicts&gt;</h3>
+<div>Fail resolution process on conflicting dependencies.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.1.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.ignoreVersionConflicts</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="keepBinaries"></a><section><a id="a.3CkeepBinaries.3E"></a>
+<h3>&lt;keepBinaries&gt;</h3>
+<div>List of inclusion GLOB filters for unplacing and unspiling (ONLY these files will stay).<br /><strong>See also:</strong> <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a></div>
+<ul>
+<li><strong>Type</strong>: <code>java.util.Set&lt;java.lang.String&gt;</code></li>
+<li><strong>Since</strong>: <code>0.24</code></li>
+<li><strong>Required</strong>: <code>No</code></li></ul><hr /></section><a id="lintAsPackage"></a><section><a id="a.3ClintAsPackage.3E"></a>
+<h3>&lt;lintAsPackage&gt;</h3>
+<div>Whether we should lint all the sources together as package.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.lintAsPackage</code></li>
+<li><strong>Default</strong>: <code>true</code></li></ul><hr /></section><a id="offline"></a><section><a id="a.3Coffline.3E"></a>
+<h3>&lt;offline&gt;</h3>
+<div>If we are offline and not able to download anything from the internet.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.32.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.offline</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="overWrite"></a><section><a id="a.3CoverWrite.3E"></a>
+<h3>&lt;overWrite&gt;</h3>
+<div>Pull again even if the .eo file is already present?</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.10.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.overWrite</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="placeBinaries"></a><section><a id="a.3CplaceBinaries.3E"></a>
+<h3>&lt;placeBinaries&gt;</h3>
+<div>List of inclusion GLOB filters for finding class files while placing them from where they were resolved to classes directory.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.util.Set&lt;java.lang.String&gt;</code></li>
+<li><strong>Since</strong>: <code>0.15</code></li>
+<li><strong>Required</strong>: <code>No</code></li></ul><hr /></section><a id="placed"></a><section><a id="a.3Cplaced.3E"></a>
+<h3>&lt;placed&gt;</h3>
+<div>The path to a text file where paths of all added .class (and maybe others) files are placed.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Since</strong>: <code>0.11.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.placed</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/eo-placed.json</code></li></ul><hr /></section><a id="placedFormat"></a><section><a id="a.3CplacedFormat.3E"></a>
+<h3>&lt;placedFormat&gt;</h3>
+<div>Format of "placed" file ("json" or "csv").</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.String</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.placedFormat</code></li>
+<li><strong>Default</strong>: <code>json</code></li></ul><hr /></section><a id="rewriteBinaries"></a><section><a id="a.3CrewriteBinaries.3E"></a>
+<h3>&lt;rewriteBinaries&gt;</h3>
+<div>Rewrite binaries in output directory or not.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.32.0</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.rewriteBinaries</code></li>
+<li><strong>Default</strong>: <code>true</code></li></ul><hr /></section><a id="scope"></a><section><a id="a.3Cscope.3E"></a>
+<h3>&lt;scope&gt;</h3>
+<div>Current scope (either "compile" or "test").</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.String</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.scope</code></li></ul><hr /></section><a id="skip"></a><section><a id="a.3Cskip.3E"></a>
+<h3>&lt;skip&gt;</h3>
+<div>Whether we should skip goal execution.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.skip</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="skipBinaries"></a><section><a id="a.3CskipBinaries.3E"></a>
+<h3>&lt;skipBinaries&gt;</h3>
+<div>List of exclusion GLOB filters for finding class files while placing them from where they were resolved to classed directory.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.util.Set&lt;java.lang.String&gt;</code></li>
+<li><strong>Since</strong>: <code>0.15</code></li>
+<li><strong>Required</strong>: <code>No</code></li></ul><hr /></section><a id="skipExperimentalLints"></a><section><a id="a.3CskipExperimentalLints.3E"></a>
+<h3>&lt;skipExperimentalLints&gt;</h3>
+<div>If set to TRUE, experimental lints are skipped during the linting.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.57.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.skipExperimentalLints</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="skipLinting"></a><section><a id="a.3CskipLinting.3E"></a>
+<h3>&lt;skipLinting&gt;</h3>
+<div>Whether we should skip linting at all.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.skipLinting</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="skipProgramLints"></a><section><a id="a.3CskipProgramLints.3E"></a>
+<h3>&lt;skipProgramLints&gt;</h3>
+<div>List of WPA lints which must be skipped during the linting.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.util.Set&lt;java.lang.String&gt;</code></li>
+<li><strong>Since</strong>: <code>0.57</code></li>
+<li><strong>Required</strong>: <code>No</code></li></ul><hr /></section><a id="skipSourceLints"></a><section><a id="a.3CskipSourceLints.3E"></a>
+<h3>&lt;skipSourceLints&gt;</h3>
+<div>List of individual lints which must be skipped during the linting.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.util.Set&lt;java.lang.String&gt;</code></li>
+<li><strong>Since</strong>: <code>0.57</code></li>
+<li><strong>Required</strong>: <code>No</code></li></ul><hr /></section><a id="skipZeroVersions"></a><section><a id="a.3CskipZeroVersions.3E"></a>
+<h3>&lt;skipZeroVersions&gt;</h3>
+<div>Skip artifact with the version 0.0.0.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.9.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.skipZeroVersions</code></li>
+<li><strong>Default</strong>: <code>true</code></li></ul><hr /></section><a id="sourcesDir"></a><section><a id="a.3CsourcesDir.3E"></a>
+<h3>&lt;sourcesDir&gt;</h3>
+<div>Directory in which .eo files are located.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.sourcesDir</code></li>
+<li><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code></li></ul><hr /></section><a id="tag"></a><section><a id="a.3Ctag.3E"></a>
+<h3>&lt;tag&gt;</h3>
+<div>The Git tag to pull objects from, in objectionary.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.String</code></li>
+<li><strong>Since</strong>: <code>0.21.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.tag</code></li>
+<li><strong>Default</strong>: <code>master</code></li></ul><hr /></section><a id="targetDir"></a><section><a id="a.3CtargetDir.3E"></a>
+<h3>&lt;targetDir&gt;</h3>
+<div>Target directory.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.targetDir</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/eo</code></li></ul><hr /></section><a id="timeout"></a><section><a id="a.3Ctimeout.3E"></a>
+<h3>&lt;timeout&gt;</h3>
+<div>Mojo execution timeout in seconds.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.Integer</code></li>
+<li><strong>Since</strong>: <code>0.28.12</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.timeout</code></li></ul><hr /></section><a id="trackTransformationSteps"></a><section><a id="a.3CtrackTransformationSteps.3E"></a>
+<h3>&lt;trackTransformationSteps&gt;</h3>
+<div>Track optimization steps into intermediate XMIR files?</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.24.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.trackTransformationSteps</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="unrollExitError"></a><section><a id="a.3CunrollExitError.3E"></a>
+<h3>&lt;unrollExitError&gt;</h3>
+<div>If set to TRUE, the exception on exit will be printed in details to the log.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.29.0</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>eo.unrollExitError</code></li></ul><hr /></section><a id="xslMeasures"></a><section><a id="a.3CxslMeasures.3E"></a>
+<h3>&lt;xslMeasures&gt;</h3>
+<div>The path of the file where XSL measurements (time of execution in milliseconds) will be stored.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Since</strong>: <code>0.41.0</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.xslMeasuresFile</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/eo/xsl-measures.json</code></li></ul></section></section></section>
+                        </article>
+                    </div>
+                </main>
+                <footer class="legal-notes">
+                    <div>
+                        Copyright &#169;
+                                                                            2016-2026
+                                            </div>
+                    <div>EO, All Rights Reserved.</div>
+                    <div><a href="https://maven.apache.org/privacy-policy.html">Privacy Policy</a>.</div>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>MjProbeTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../testapidocs/org/eolang/maven/MjProbeTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">package</strong> org.eolang.maven;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> com.yegor256.Mktmp;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> com.yegor256.MktmpResolver;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.yegor256.WeAreOnline;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.nio.file.Path;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.cactoos.io.ResourceOf;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.MatcherAssert;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.Matchers;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Disabled;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.extension.ExtendWith;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * Test case for {@link MjProbe}.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * @since 0.28.11</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  @ExtendWith(WeAreOnline.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  @ExtendWith(MktmpResolver.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjProbeTest" href="../../../org/eolang/maven/MjProbeTest.html#MjProbeTest">MjProbeTest</a> {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      @Test
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">void</strong> findsProbesViaOfflineHashFile(@Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          <strong class="jxr_keyword">final</strong> String tag = <span class="jxr_string">"master"</span>;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">final</strong> String tags = <span class="jxr_string">"org/eolang/maven/commits/tags.txt"</span>;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">new</strong> Saved(
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>              <strong class="jxr_keyword">new</strong> ResourceOf(tags),
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>              temp.resolve(<span class="jxr_string">"tags.txt"</span>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          ).value();
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">final</strong> String expected = <span class="jxr_string">"11"</span>;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>              String.format(
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>                  <span class="jxr_string">"Number of objects that we should find during the probing phase should be equal %s"</span>,
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>                  expected
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>              ),
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>              <strong class="jxr_keyword">new</strong> FakeMaven(temp)
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .with(<span class="jxr_string">"hash"</span>, <strong class="jxr_keyword">new</strong> ChCached(<strong class="jxr_keyword">new</strong> ChText(temp.resolve(<span class="jxr_string">"tags.txt"</span>), tag)))
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .withProgram(MjProbeTest.program())
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>                  .execute(<strong class="jxr_keyword">new</strong> FakeMaven.Probe())
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>                  .programTojo()
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .probed(),
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>              Matchers.equalTo(expected)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          );
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * Finds probes in objectionary remote repository.</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     * @param temp Temporary folder</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     * @throws IOException If some problem inside</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     * @todo #4526:90min Fix flaky {@link #findsProbesInOyRemote(Path)} test.</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     *  The test sometimes fails with the following error:</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     *  MjProbeTest.findsProbesInOyRemote:62 We should find 10 objects in</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     *  git repository with tag '0.50.0', but 9 found.</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     *  This might happen because the remote repository structure changes over time.</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     *  We need to investigate this issue and fix the test to make it stable.</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      @Test
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      @Disabled
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">void</strong> findsProbesInOyRemote(@Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">final</strong> String tag = <span class="jxr_string">"0.50.0"</span>;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">final</strong> String expected = <span class="jxr_string">"10"</span>;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">final</strong> String found = <strong class="jxr_keyword">new</strong> FakeMaven(temp)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              .with(<span class="jxr_string">"tag"</span>, tag)
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              .with(<span class="jxr_string">"objectionary"</span>, <strong class="jxr_keyword">new</strong> OyRemote(<strong class="jxr_keyword">new</strong> ChRemote(tag)))
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              .withProgram(MjProbeTest.program())
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              .execute(<strong class="jxr_keyword">new</strong> FakeMaven.Probe())
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              .programTojo()
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              .probed();
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>              String.format(
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  <span class="jxr_string">"We should find %s objects in git repository with tag '%s', but %s found"</span>,
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  expected, tag, found
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>              ),
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>              found,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>              Matchers.equalTo(expected)
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          );
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String[] program() {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> String[]{
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              <span class="jxr_string">"+package foo.x"</span>,
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              <span class="jxr_string">"+also while\n"</span>,
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>              <span class="jxr_string">"# No comments."</span>,
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              <span class="jxr_string">"[] &gt; main"</span>,
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <span class="jxr_string">"  QQ.io.stdout &gt; @"</span>,
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              <span class="jxr_string">"    QQ.txt.sprintf"</span>,
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              <span class="jxr_string">"      \&quot;I am %d years old\&quot;"</span>,
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>              <span class="jxr_string">"      plus."</span>,
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>              <span class="jxr_string">"        1337"</span>,
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>              <span class="jxr_string">"        228"</span>,
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          };
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      }
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>
+</body>
+</html>

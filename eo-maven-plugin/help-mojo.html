@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>eo:help – eo-maven-plugin</title>
+        <link media="all" rel="stylesheet" type="text/css" href="./css/jcabi.css">
+                                            <link rel="icon" href="https://www.yegor256.com/images/books/elegant-objects/cactus.png">
+                                        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin=anonymous></script>
+        <script src="./js/jcabi.js"></script>
+    </head>
+    <body>
+                <div class="page" itemscope="" itemtype="http://schema.org/BlogPosting">
+            <nav class="menu-section">
+                <div>
+                    <ul class="menu" id="menu">
+                                                                                                    <li>
+                                <span>Overview</span>
+                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="index.html" title="Introduction">Introduction</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="usage.html" title="Usage">Usage</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="plugin-info.html" title="Goals">Goals</a>
+        </span>
+                                                                                                                                                                                        <ul>
+                                                                            </ul>
+                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                                    <li>
+                                <span>Project Documentation</span>
+                                                                    <ul>
+                                                                                                                <li >
+                                <span>                        <a href="project-info.html" title="Project Information">Project Information</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </li>
+                                                                                                                                        <li >
+                                <span>                        <a href="project-reports.html" title="Project Reports">Project Reports</a>
+        </span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </li>
+                                                                                                    </ul>
+                                                            </li>
+                                            </ul>
+                </div>
+                <div class="signature">
+                    Made by
+                    <a href="https://github.com/jcabi/jcabi-maven-skin">jcabi-maven-skin</a>
+                    2.0.1.
+                </div>
+            </nav>
+            <div class="right-side">
+                <main>
+                    <div class="content">
+                        <header>
+                            <div class="logo">
+                                <a href="https://www.eolang.org/"
+                                    title=" eo-maven-plugin ">
+                                                                        <img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg"
+                                        alt="eo-maven-plugin"
+                                                                                    width="64"
+                                                                                                                            height="64"
+                                                                                itemprop="image"
+                                    >                                </a>
+                            </div>
+                            <ul class="badges">
+                                <li>
+                                    <strong itemprop="version">1.0-SNAPSHOT</strong>
+                                </li>
+                                <li>
+                                    <time itemprop="datePublished" datetime="2026-01-15">
+                                        15-Jan-2026
+                                    </time>
+                                </li>
+                                <li class="menu-button">menu</li>
+                            </ul>
+                        </header>
+                        <div id="here-goes-menu" class="menu-off"></div>
+                                                                        <article itemprop="articleBody">
+                            <section><a id="eo.3Ahelp"></a>
+<h1>eo:help</h1>
+<p><strong>Full name</strong>:</p>
+<p>org.eolang:eo-maven-plugin:1.0-SNAPSHOT:help</p>
+<p><strong>Description</strong>:</p>
+<p>Display help information on eo-maven-plugin.
+<br />
+ Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.</p>
+<p><strong>Attributes</strong>:</p>
+<ul>
+<li>The goal is thread-safe and supports parallel builds.</li></ul><section><a id="Optional_Parameters"></a>
+<h2>Optional Parameters</h2>
+<table class="bodyTable">
+<tr class="a">
+<th>Name</th>
+<th>Type</th>
+<th>Since</th>
+<th>Description</th></tr>
+<tr class="b">
+<td><a href="#detail"><code>&lt;detail&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>-</code></td>
+<td>If <code>true</code>, display all settable properties for each goal.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>detail</code></td></tr>
+<tr class="a">
+<td><a href="#goal"><code>&lt;goal&gt;</code></a></td>
+<td><code>String</code></td>
+<td><code>-</code></td>
+<td>The name of the goal for which to show help. If unspecified, all goals will be displayed.<br /><strong>User Property</strong>: <code>goal</code></td></tr>
+<tr class="b">
+<td><a href="#indentSize"><code>&lt;indentSize&gt;</code></a></td>
+<td><code>int</code></td>
+<td><code>-</code></td>
+<td>The number of spaces per indentation level, should be positive.<br /><strong>Default</strong>: <code>2</code><br /><strong>User Property</strong>: <code>indentSize</code></td></tr>
+<tr class="a">
+<td><a href="#lineLength"><code>&lt;lineLength&gt;</code></a></td>
+<td><code>int</code></td>
+<td><code>-</code></td>
+<td>The maximum length of a display line, should be positive.<br /><strong>Default</strong>: <code>80</code><br /><strong>User Property</strong>: <code>lineLength</code></td></tr></table></section><section><a id="Parameter_Details"></a>
+<h2>Parameter Details</h2><a id="detail"></a><section><a id="a.3Cdetail.3E"></a>
+<h3>&lt;detail&gt;</h3>
+<div>If <code>true</code>, display all settable properties for each goal.</div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>detail</code></li>
+<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="goal"></a><section><a id="a.3Cgoal.3E"></a>
+<h3>&lt;goal&gt;</h3>
+<div>The name of the goal for which to show help. If unspecified, all goals will be displayed.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.lang.String</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>goal</code></li></ul><hr /></section><a id="indentSize"></a><section><a id="a.3CindentSize.3E"></a>
+<h3>&lt;indentSize&gt;</h3>
+<div>The number of spaces per indentation level, should be positive.</div>
+<ul>
+<li><strong>Type</strong>: <code>int</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>indentSize</code></li>
+<li><strong>Default</strong>: <code>2</code></li></ul><hr /></section><a id="lineLength"></a><section><a id="a.3ClineLength.3E"></a>
+<h3>&lt;lineLength&gt;</h3>
+<div>The maximum length of a display line, should be positive.</div>
+<ul>
+<li><strong>Type</strong>: <code>int</code></li>
+<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>User Property</strong>: <code>lineLength</code></li>
+<li><strong>Default</strong>: <code>80</code></li></ul></section></section></section>
+                        </article>
+                    </div>
+                </main>
+                <footer class="legal-notes">
+                    <div>
+                        Copyright &#169;
+                                                                            2016-2026
+                                            </div>
+                    <div>EO, All Rights Reserved.</div>
+                    <div><a href="https://maven.apache.org/privacy-policy.html">Privacy Policy</a>.</div>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>
