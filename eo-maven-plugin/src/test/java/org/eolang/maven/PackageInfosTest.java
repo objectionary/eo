@@ -13,9 +13,12 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link PackageInfos}.
+ *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
@@ -51,6 +54,29 @@ final class PackageInfosTest {
             "package-info.java should not be created in the root directory",
             Files.exists(tmp.resolve("package-info.java")),
             Matchers.is(false)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "invalid-dir, invalid_dir",
+        "in valid dir, in_valid_dir",
+        "in@valid#dir$, in_valid_dir$",
+        "123numericDir, _123numericDir",
+        "a.b.c, a.b.c"
+    })
+    void createsPackageInfoEvenWithWrongSymbols(
+        final String dir,
+        final String expected,
+        @Mktmp final Path tmp
+    ) throws IOException {
+        final Path subdir = tmp.resolve(dir);
+        Files.createDirectory(subdir);
+        new PackageInfos(tmp).create();
+        MatcherAssert.assertThat(
+            "package-info.java should contain correct package name",
+            Files.readString(subdir.resolve("package-info.java")),
+            Matchers.containsString(String.format("package %s;", expected))
         );
     }
 }
