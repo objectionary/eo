@@ -93,10 +93,10 @@ final class PackageInfos {
     }
 
     private static String escaped(final String pkg) {
-        String res = PackageInfos.NOT_ALLOWED.matcher(pkg).replaceAll("_");
-        if (PackageInfos.NUMBER_BEGINNING.matcher(res).matches()) {
-            res = String.format("_%s", res);
+        String escaped = PackageInfos.NOT_ALLOWED.matcher(pkg).replaceAll("_");
+        if (PackageInfos.NUMBER_BEGINNING.matcher(escaped).matches()) {
+            escaped = String.format("_%s", escaped);
         }
-        return res;
+        return escaped;
     }
 }
