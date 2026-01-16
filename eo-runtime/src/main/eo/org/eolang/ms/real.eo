@@ -15,29 +15,6 @@
 [num] > real
   num > @
 
-  # Calculate MOD.
-  # An operation that finds the remainder after dividing one number by another.
-  # todo #4751:10min Move `mod` to a separate object with it's tests.
-  [x] > mod
-    if. > @
-      divisor.eq 0
-      error "Can't calculate mod by zero"
-      if.
-        dividend.gt 0
-        abs-mod
-        abs-mod.neg
-    number num.as-bytes > dividend
-    number x.as-bytes > divisor
-
-    [] > abs-mod
-      minus. > @
-        dividend-abs
-        divisor-abs.times
-          floor.
-            dividend-abs.div divisor-abs
-      (QQ.ms.real dividend).abs > dividend-abs
-      (QQ.ms.real divisor).abs > divisor-abs
-
   # Absolute value of `num` (i.e., with no sign).
   # todo #4751:10min Move `abs` to a separate object with it's tests.
   [] > abs
@@ -103,64 +80,6 @@
     eq. +> @
       (real -17.9).abs
       17.9
-
-  # Tests that modulo operation works correctly for 1 mod 2.
-  [] +> tests-mod-n1-n2
-    eq. +> @
-      (real 1).mod 2
-      1
-
-  # Tests that modulo operation works correctly for 0 mod 5.
-  [] +> tests-mod-n0-n5
-    eq. +> @
-      (real 0).mod 5
-      0
-
-  # Tests that modulo operation works correctly for 0 mod -15.
-  [] +> tests-mod-n0-n15-neg
-    eq. +> @
-      (real 0).mod -15
-      0
-
-  # Tests that modulo operation works correctly for -1 mod 7.
-  [] +> tests-mod-n1-neg-n7
-    eq. +> @
-      (real -1).mod 7
-      -1
-
-  # Tests that modulo operation works correctly for 16 mod -200.
-  [] +> tests-mod-n16-n200-neg
-    eq. +> @
-      (real 16).mod -200
-      16
-
-  # Tests mathematical equality A = ((A div B) * B) + (A mod B).
-  # Checks mathematical equality
-  # A = ((A div B) * B) + (A mod B).
-  [] +> tests-div-mod-compatibility
-    eq. +> @
-      plus.
-        (real dividend).mod divisor
-        times.
-          divisor
-          (dividend.div divisor).floor
-      dividend
-    -13 > dividend
-    5 > divisor
-
-  # Tests modulo operation when dividend is less than divisor.
-  # Checks modulo: dividend < divisor.
-  [] +> tests-mod-dividend-less-than-divisor
-    eq. +> @
-      (real -1).mod 5
-      -1
-
-  # Tests modulo operation when divisor is 1.
-  # Checks modulo by 1.
-  [] +> tests-mod-dividend-by-one
-    eq. +> @
-      (real 133).mod 1
-      0
 
   # Tests that power operation works correctly for 2^4.
   [] +> tests-pow-test
