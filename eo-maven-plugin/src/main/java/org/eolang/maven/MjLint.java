@@ -35,7 +35,16 @@ import org.xembly.Xembler;
 /**
  * Mojo that runs all lints and checks errors and warnings,
  * preferably after the {@code assemble} goal.
- *
+ * <p>
+ *     This goal goes through all XMIR files generated in the previous steps (see {@link MjParse}
+ *     or {@link MjPull} goals) and runs all available lints on them.
+ *     If any errors or warnings are found, they are logged to the console,
+ *     and depending on the configuration, the build may fail.
+ *     The linting results are also embedded back into the XMIR files for future reference.
+ *     Lints might use caching to speed up the process on subsequent runs.
+ *     Cached files are stored in the {@link #CACHE} directory.
+ *     The results of linting are saved in the {@link #DIR} directory.
+ * </p>
  * @since 0.31.0
  */
 @Mojo(

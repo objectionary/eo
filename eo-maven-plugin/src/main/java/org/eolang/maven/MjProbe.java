@@ -21,6 +21,13 @@ import org.cactoos.list.ListOf;
  * More about the purpose of this Mojo is in
  * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
+ * <p>
+ *     This goal just modifies the "foreign" catalog by adding newly discovered
+ *     objects to it. It does not download or pull the sources of these objects,
+ *     that is the job of {@link MjPull} goal which usually goes after this one.
+ *     This goal does not create any files on the disk either.
+ * </p>
+ *
  * @since 0.28.11
  */
 @Mojo(

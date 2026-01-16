@@ -18,6 +18,13 @@ import org.eolang.parser.Xmir;
 
 /**
  * Print XMIR to EO.
+ * <p>
+ *  This goal goes through all XMIR sources found in the specified directory,
+ *  converts them back to EO format, and saves the resulting EO files
+ *  in the specified output directory, preserving the original directory structure.
+ *  Input XMIR files are found in {@link #printSourcesDir},
+ *  output EO files are saved in {@link #printOutputDir}.
+ * </p>
  * @since 0.33.0
  */
 @Mojo(

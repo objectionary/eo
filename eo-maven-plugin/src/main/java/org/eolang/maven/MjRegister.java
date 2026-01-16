@@ -16,6 +16,16 @@ import org.cactoos.set.SetOf;
 /**
  * Find and register all {@code .eo} sources in the "foreign" catalog.
  *
+ * <p>
+ *     This goal scans the {@code <sourcesDir>} directory for all {@code .eo} files
+ *     matching the inclusion and exclusion GLOB filters specified in the
+ *     {@code <includeSources>} and {@code <excludeSources>} parameters respectively.
+ *     By default, it includes all {@code .eo} files found recursively.
+ *     Each found EO source is then registered in the "foreign" catalog that later processed by
+ *     other goals like {@link MjParse}, {@link MjAssemble} or {@link MjCompile}.
+ *     This goal only changes the "foreign" catalog and does not save any generated files.
+ * </p>
+ *
  * @since 0.12
  */
 @Mojo(
