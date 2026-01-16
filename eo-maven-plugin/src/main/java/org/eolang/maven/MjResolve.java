@@ -35,7 +35,7 @@ import org.cactoos.text.Joined;
  *
  * <p>
  *     This goal goes through all dependencies found in the
- *     {@link MjPull} phase, finds their implementations
+ *     {@link MjPull} goal, finds their implementations
  *     (i.e. transitive dependencies), downloads them from Maven Central,
  *     unpacks them and places the resulting files to the
  *     {@link MjResolve#DIR} directory.
