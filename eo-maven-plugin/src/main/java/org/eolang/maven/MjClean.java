@@ -12,6 +12,10 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Implementation of maven clean plugin,
  * just deleting target/eo directory.
  *
+ * <p>
+ *     This goal simply deletes the directory containing all the files used for compilation.
+ * </p>
+ *
  * @since 0.28.6
  */
 @Mojo(

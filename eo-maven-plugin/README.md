@@ -3,7 +3,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
 [![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-maven-plugin.svg)](https://www.javadoc.io/doc/org.eolang/eo-maven-plugin)
 
-This is a Maven plugin for EO.
+This is a
+[Maven plugin for EO](https://www.eolang.org/eo-maven-plugin/index.html).
 
 Here is a simple program that gets a year from a command line and tells you
 whether it's leap or not:
@@ -74,6 +75,11 @@ Then, you just run `mvn clean test` (you will need [Maven 3.3+](https://maven.ap
 and the `.eo` file will be parsed to `.xml` files, transformed to `.java` files,
 and then compiled to `.class` files. You can see them all in the `target` directory.
 You will need Java 11+.
+
+The complete maven plugin documentation can be found
+[here](https://www.eolang.org/eo-maven-plugin/index.html). Each goal and its
+corresponding inputs and outputs are described in detail
+[here](https://www.eolang.org/eo-maven-plugin/plugin-info.html).
 
 ## How it Works?
 

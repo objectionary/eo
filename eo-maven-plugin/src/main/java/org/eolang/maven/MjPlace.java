@@ -20,6 +20,11 @@ import org.cactoos.scalar.Unchecked;
  * Take binary files from where {@link MjResolve} placed them and
  * copy to the {@code target/classes} directory.
  *
+ * <p>
+ *     Input directory is {@link MjResolve#DIR}.
+ *     Output directory is {@link MjPlace#targetDir}.
+ * </p>
+ *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.11
  */
