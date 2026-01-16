@@ -62,7 +62,8 @@ final class PackageInfosTest {
         "invalid-dir, invalid_dir",
         "in valid dir, in_valid_dir",
         "in@valid#dir$, in_valid_dir$",
-        "123numericDir, _123numericDir"
+        "123numericDir, _123numericDir",
+        "a.b.c, a.b.c"
     })
     void createsPackageInfoEvenWithWrongSymbols(
         final String dir,
