@@ -1,5 +1,6 @@
 +alias org.eolang.ms.real
 +alias org.eolang.ms.e
++alias org.eolang.ms.abs
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ms
@@ -14,7 +15,7 @@
   # Tests that exponential function e^1 approximately equals e.
   [] +> tests-exp-check-n0
     lt. +> @
-      abs.
+      abs
         real
           minus.
             e
@@ -24,7 +25,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n1
     lt. +> @
-      abs.
+      abs
         real
           minus.
             1.div e
@@ -34,7 +35,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n2
     lt. +> @
-      abs.
+      abs
         real
           minus.
             (real e).pow 5
@@ -44,7 +45,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n3
     lt. +> @
-      abs.
+      abs
         real
           minus.
             (real e).pow -10
