@@ -1,5 +1,6 @@
 +alias org.eolang.ms.e
 +alias org.eolang.ms.pi
++alias org.eolang.ms.abs
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ms
@@ -14,15 +15,6 @@
 # todo #4751:15min Remove `real` object when all inner objects are moved to a separate files
 [num] > real
   num > @
-
-  # Absolute value of `num` (i.e., with no sign).
-  # todo #4751:10min Move `abs` to a separate object with it's tests.
-  [] > abs
-    if. > @
-      value.gte 0
-      value
-      value.neg
-    number num.as-bytes > value
 
   # An operation that raises `^.num` (a number) to the power of `x` and returns the result as
   # `org.eolang.number`.
@@ -50,36 +42,6 @@
   # todo #4751:15min Move `asin` to a separate object with it's tests.
   # It's atom, don't forget change `EOreal$EOasin`.
   [] > asin ?
-
-  # Tests that absolute value of positive integer is the integer itself.
-  [] +> tests-abs-int-positive
-    eq. +> @
-      (real 3).abs
-      3
-
-  # Tests that absolute value of negative integer removes the sign.
-  [] +> tests-abs-int-negative
-    eq. +> @
-      (real -3).abs
-      3
-
-  # Tests that absolute value of zero is zero.
-  [] +> tests-abs-zero
-    eq. +> @
-      (real 0).abs
-      0
-
-  # Tests that absolute value of positive float is the float itself.
-  [] +> tests-abs-float-positive
-    eq. +> @
-      (real 13.5).abs
-      13.5
-
-  # Tests that absolute value of negative float removes the sign.
-  [] +> tests-abs-float-negative
-    eq. +> @
-      (real -17.9).abs
-      17.9
 
   # Tests that power operation works correctly for 2^4.
   [] +> tests-pow-test
@@ -329,7 +291,7 @@
   # Tests that square root of zero equals zero.
   [] +> tests-sqrt-check-zero-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             0
@@ -346,7 +308,7 @@
   # Tests that square root calculation works correctly for float input.
   [] +> tests-sqrt-check-float-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             2
@@ -358,7 +320,7 @@
   # Tests that square root calculation works correctly for integer input.
   [] +> tests-sqrt-check-int-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             9
@@ -466,7 +428,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-arccos-positive-calculated-test
     lt. +> @
-      abs.
+      abs
         real
           minus.
             acos.
@@ -477,7 +439,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-arccos-negative-calculated-test
     lt. +> @
-      abs.
+      abs
         real
           minus.
             acos.

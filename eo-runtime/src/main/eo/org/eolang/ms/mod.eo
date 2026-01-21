@@ -1,4 +1,5 @@
 +alias org.eolang.ms.real
++alias org.eolang.ms.abs
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ms
@@ -25,8 +26,8 @@
       divisor-abs.times
         floor.
           dividend-abs.div divisor-abs
-    (real dividend).abs > dividend-abs
-    (real divisor).abs > divisor-abs
+    abs dividend > dividend-abs
+    abs divisor > divisor-abs
 
   # Tests that modulo operation works correctly for 1 mod 2.
   [] +> tests-mod-n1-n2
