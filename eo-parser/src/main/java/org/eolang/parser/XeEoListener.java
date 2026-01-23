@@ -534,12 +534,12 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterCompactArray(final EoParser.CompactArrayContext ctx) {
+    public void enterCompactTuple(final EoParser.CompactTupleContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitCompactArray(final EoParser.CompactArrayContext ctx) {
+    public void exitCompactTuple(final EoParser.CompactTupleContext ctx) {
         final int count;
         if (ctx.INT() != null) {
             final String num = ctx.INT().getText();

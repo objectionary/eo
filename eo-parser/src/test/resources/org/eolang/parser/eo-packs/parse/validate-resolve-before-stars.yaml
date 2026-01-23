@@ -12,6 +12,7 @@ asserts:
   - //o[@name='third' and count(o)=3]/o[position()=3 and @base='Φ.org.eolang.tuple' and @star and count(o)=1]
   - //o[@name='fourth' and count(o)=2]/o[@base='sprintf' and count(o)=1]/o[@base='Φ.org.eolang.tuple' and @star and count(o)=2]
   - //o[@name='fourth']/o[@base='Φ.org.eolang.tuple' and @star and count(o)=1]
+  - //o[@name='sixth' and @base='.joined' and o[@base='text']/o[@base='Φ.org.eolang.string'] and o[@base='Φ.org.eolang.tuple' and @star]]
   - /object[count(//o[@before-star])=0]
 input: |
   # No comments.
@@ -34,3 +35,7 @@ input: |
         x
         y
       z
+    joined. *1 > sixth
+      text ""
+      x
+      y
