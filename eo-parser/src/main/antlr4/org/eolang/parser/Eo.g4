@@ -229,12 +229,12 @@ vapplicationHead
     : applicable
     | hmethod
     | vmethod
-    | compactArray
+    | compactTuple
     ;
 
-// Compact arrays
-compactArray
-    : (hmethod | applicable) SPACE STAR INT?
+// Compact tuple
+compactTuple
+    : (hmethod | applicable | reversed) SPACE STAR INT?
     ;
 
 // Vertical application arguments
