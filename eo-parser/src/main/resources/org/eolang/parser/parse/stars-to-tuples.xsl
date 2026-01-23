@@ -42,6 +42,7 @@
         <xsl:variable name="nested">
           <xsl:element name="o">
             <xsl:attribute name="star"/>
+            <xsl:apply-templates select="@line"/>
             <xsl:apply-templates select="o[position()!=last()]"/>
           </xsl:element>
         </xsl:variable>
@@ -52,11 +53,13 @@
           <xsl:apply-templates select="o[last()]"/>
           <xsl:element name="o">
             <xsl:attribute name="base" select="'Φ.org.eolang.number'"/>
+            <xsl:apply-templates select="@line"/>
             <xsl:element name="o">
-              <xsl:attribute name="base" select="'Φ.org.eolang.bytes'">
-              </xsl:attribute>
+              <xsl:attribute name="base" select="'Φ.org.eolang.bytes'"/>
+              <xsl:apply-templates select="@line"/>
               <xsl:element name="o">
                 <xsl:attribute name="hex"/>
+                <xsl:apply-templates select="@line"/>
                 <xsl:value-of select="count(o)"/>
               </xsl:element>
             </xsl:element>
