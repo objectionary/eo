@@ -5,7 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="unnecessary-as" version="2.0">
   <!--
-    Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
+    Performs the reverse operation of "/org/eolang/parser/mandatory-as.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:function name="eo:all-alphas">
