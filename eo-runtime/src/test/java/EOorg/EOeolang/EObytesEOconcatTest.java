@@ -31,7 +31,7 @@ final class EObytesEOconcatTest {
             "Concatenation of byte arrays should produce 'привет mr. ㄤㄠ!', but it didn't",
             new Dataized(
                 new PhWith(
-                    Phi.Φ.take("org.eolang.string"),
+                    Phi.Φ.take("string"),
                     0,
                     new PhWith(
                         new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),

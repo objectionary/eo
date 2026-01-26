@@ -5,7 +5,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +83,7 @@ public final class Dataized {
             raw.addAll(ex.messages());
             Collections.reverse(raw);
             final Phi enc = ex.enclosure();
-            if ("org.eolang.go.to.token.jump".equals(enc.forma())) {
+            if ("go.to.token.jump".equals(enc.forma())) {
                 throw new EOerror.ExError(enc);
             }
             if (String.format("%s.org.eolang.string", PhPackage.GLOBAL).equals(enc.forma())) {

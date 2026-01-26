@@ -15,9 +15,9 @@
 
   We must skip objects that refer to
   "bytes", "string" or "number" if such objects are inside the
-  "org.eolang.bytes", "org.eolang.string" or "org.eolang.bytes".
+  "Q.bytes", "Q.string" or "Q.bytes".
   Such a reference would be misleading: instead of referring to the
-  global, for example, "org.eolang.bytes" they will lead to local "bytes"
+  global, for example, "Q.bytes" they will lead to local "bytes"
   defined in this particular file.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>

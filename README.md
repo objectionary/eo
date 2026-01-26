@@ -64,7 +64,7 @@ Then, start with a simple EO program in the `app.eo` file:
 ```eo
 # Just prints hello.
 [args] > app
-  QQ.io.stdout > @
+  Q.io.stdout > @
     "Hello, world!\n"
 ```
 
@@ -94,7 +94,7 @@ with a few required arguments provided.
 This is how a copy of the object `stdout` is made:
 
 ```text
-QQ.io.stdout
+Q.io.stdout
   "Hello, world!\n"
 ```
 
@@ -104,7 +104,7 @@ in front of the line in order to go to the deeper level of nesting.
 This code can also be written in a "horizontal" notation:
 
 ```text
-QQ.io.stdout "Hello, world!"
+Q.io.stdout "Hello, world!"
 ```
 
 Moreover, it's possible to use brackets in order to group arguments and avoid
@@ -115,8 +115,8 @@ argument: a copy of the object `sprintf`:
 ```eo
 # Says hello to Jeff.
 [] > app
-  QQ.io.stdout > @
-    QQ.tt.sprintf
+  Q.io.stdout > @
+    Q.tt.sprintf
       "Hello, %s!"
       * "Jeffrey"
 ```
@@ -146,9 +146,9 @@ inside `app` and use it to build the output string:
 ```eo
 # Says hello to Jeff.
 [] > app
-  QQ.io.stdout (msg "Jeffrey") > @
+  Q.io.stdout (msg "Jeffrey") > @
   [name] > msg
-    QQ.tt.sprintf "Hello, %s!" (* name) > @
+    Q.tt.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
@@ -168,8 +168,8 @@ This is how you iterate:
           x.as-number.lt 6 > [i] >>
           [i] >>
             seq * > @
-              QQ.io.stdout
-                QQ.tt.sprintf *1
+              Q.io.stdout
+                Q.tt.sprintf *1
                   "%d x %1$d = %d\n"
                   x
                   x.as-number.times x

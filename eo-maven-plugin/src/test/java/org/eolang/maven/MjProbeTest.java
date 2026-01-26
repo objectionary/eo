@@ -33,7 +33,7 @@ final class MjProbeTest {
             new ResourceOf(tags),
             temp.resolve("tags.txt")
         ).value();
-        final String expected = "11";
+        final String expected = "9";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -88,8 +88,8 @@ final class MjProbeTest {
             "+also while\n",
             "# No comments.",
             "[] > main",
-            "  QQ.io.stdout > @",
-            "    QQ.txt.sprintf",
+            "  Q.io.stdout > @",
+            "    Q.txt.sprintf",
             "      \"I am %d years old\"",
             "      plus.",
             "        1337",

@@ -95,7 +95,6 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/move-voids-up.xsl",
                     "/org/eolang/parser/parse/validate-objects-count.xsl",
                     "/org/eolang/parser/parse/build-fqns.xsl",
-                    "/org/eolang/parser/parse/expand-qqs.xsl",
                     "/org/eolang/parser/parse/expand-aliases.xsl",
                     "/org/eolang/parser/parse/resolve-aliases.xsl",
                     "/org/eolang/parser/parse/add-default-package.xsl",

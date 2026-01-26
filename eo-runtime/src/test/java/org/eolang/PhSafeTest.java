@@ -4,7 +4,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

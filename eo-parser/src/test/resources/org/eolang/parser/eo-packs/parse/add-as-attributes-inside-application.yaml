@@ -5,7 +5,6 @@
 sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
-  - /org/eolang/parser/parse/expand-qqs.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
@@ -13,12 +12,12 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.i' and @as='α0']]
-  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.spb' and @as='α1']]
-  - //o[@base='Φ.org.eolang.x' and @name='i' and o[@base='Φ.org.eolang.number' and @as='α0']]
-  - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α0']]
-  - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α1']]
-  - //o[@base='Φ.org.eolang.bytes' and o[@as='α0']]
+  - //o[@base='Φ.foo' and @name='φ' and o[@base='Φ.i' and @as='α0']]
+  - //o[@base='Φ.foo' and @name='φ' and o[@base='Φ.spb' and @as='α1']]
+  - //o[@base='Φ.x' and @name='i' and o[@base='Φ.number' and @as='α0']]
+  - //o[@base='Φ.y' and @name='spb' and o[@base='Φ.number' and @as='α0']]
+  - //o[@base='Φ.y' and @name='spb' and o[@base='Φ.number' and @as='α1']]
+  - //o[@base='Φ.bytes' and o[@as='α0']]
   - //o[@base='.is' and @name='f' and not(@as)]
 input: |
   # This is main.

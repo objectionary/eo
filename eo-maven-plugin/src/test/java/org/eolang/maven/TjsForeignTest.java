@@ -46,7 +46,7 @@ final class TjsForeignTest {
     @CsvSource({
         "abs",
         "org.eolang.int",
-        "QQ.io.stdout"
+        "Q.io.stdout"
     })
     void contains(final String name) {
         this.tojos.add(name);
@@ -61,7 +61,7 @@ final class TjsForeignTest {
     @CsvSource({
         "abs, sba",
         "org.eolang.int, org.eolang.float",
-        "QQ.io.stdout, QQ.tt.sprintf"
+        "Q.io.stdout, Q.tt.sprintf"
     })
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);

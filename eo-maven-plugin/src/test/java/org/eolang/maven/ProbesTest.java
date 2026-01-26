@@ -56,19 +56,17 @@ final class ProbesTest {
             "We should find 11 objects in the program, but not",
             new Probes(ProbesTest.xmir()),
             Matchers.allOf(
-                Matchers.iterableWithSize(11),
+                Matchers.iterableWithSize(9),
                 Matchers.hasItems(
-                    "org.eolang.while",
-                    "org",
-                    "org.eolang",
-                    "org.eolang.io",
-                    "org.eolang.io.stdout",
-                    "org.eolang.tt",
-                    "org.eolang.tt.sprintf",
-                    "org.eolang.string",
-                    "org.eolang.bytes",
-                    "org.eolang.number",
-                    "org.eolang.number.plus"
+                    "while",
+                    "io",
+                    "io.stdout",
+                    "tt",
+                    "tt.sprintf",
+                    "string",
+                    "bytes",
+                    "number",
+                    "number.plus"
                 )
             )
         );
@@ -84,7 +82,7 @@ final class ProbesTest {
                     "\n",
                     "# No comments.",
                     "[] > simple",
-                    "  QQ.io.stdout > @",
+                    "  Q.io.stdout > @",
                     "    \"Hello, world!\""
                 )
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
@@ -93,14 +91,12 @@ final class ProbesTest {
             "We should find 6 objects in simple program, but not",
             new Probes(xmir),
             Matchers.allOf(
-                Matchers.iterableWithSize(6),
+                Matchers.iterableWithSize(4),
                 Matchers.hasItems(
-                    "org",
-                    "org.eolang",
-                    "org.eolang.io",
-                    "org.eolang.io.stdout",
-                    "org.eolang.string",
-                    "org.eolang.bytes"
+                    "io",
+                    "io.stdout",
+                    "string",
+                    "bytes"
                 )
             )
         );
@@ -114,20 +110,18 @@ final class ProbesTest {
                 new EoSyntax(
                     String.join(
                         "\n",
-                        "+alias QQ.io.stdout\n",
+                        "+alias Q.io.stdout\n",
                         "stdout \"Hello, world!\" > simple"
                     )
                 ).parsed()
             ),
             Matchers.allOf(
-                Matchers.iterableWithSize(6),
+                Matchers.iterableWithSize(4),
                 Matchers.hasItems(
-                    "org",
-                    "org.eolang",
-                    "org.eolang.io",
-                    "org.eolang.io.stdout",
-                    "org.eolang.string",
-                    "org.eolang.bytes"
+                    "io",
+                    "io.stdout",
+                    "string",
+                    "bytes"
                 )
             )
         );
@@ -142,8 +136,8 @@ final class ProbesTest {
                     "+also while\n",
                     "# No comments.",
                     "[] > main",
-                    "  QQ.io.stdout > @",
-                    "    QQ.tt.sprintf",
+                    "  Q.io.stdout > @",
+                    "    Q.tt.sprintf",
                     "      \"I am %d years old\"",
                     "      plus.",
                     "        1337",

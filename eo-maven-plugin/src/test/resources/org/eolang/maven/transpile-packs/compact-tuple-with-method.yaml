@@ -11,12 +11,12 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), 'Phi.Φ.take("org").take("eolang").take("io").take("stdout");')]
-  - //java[contains(text(), 'Phi.Φ.take("org").take("eolang").take("txt").take("sprintf");')]
+  - //java[contains(text(), 'Phi.Φ.take("io").take("stdout");')]
+  - //java[contains(text(), 'Phi.Φ.take("tt").take("sprintf");')]
 input: |
   # No comments.
   [args] > program
     io.stdout > @
-      txt.sprintf *1
+      tt.sprintf *1
         "Hello, %s\n"
         args.at 0

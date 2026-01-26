@@ -275,8 +275,8 @@ final class TjsForeign implements Closeable {
          * <p>
          * {@code
          * [] > main
-         *   QQ.io.stdout > @
-         *     QQ.tt.sprintf "I am %d years old"
+         *   Q.io.stdout > @
+         *     Q.tt.sprintf "I am %d years old"
          *       plus.
          *         1337
          *         228

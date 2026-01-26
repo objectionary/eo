@@ -54,7 +54,7 @@ final class PhiTest {
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
-                            new PhCopy(Phi.Φ.take("org.eolang.io.stdout")),
+                            new PhCopy(Phi.Φ.take("io.stdout")),
                             0, new Data.ToPhi("Hello, world")
                         ),
                         "text"

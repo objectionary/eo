@@ -1,0 +1,51 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object:11
+
+# The object is a FALSE boolean state.
+[] > false
+  00- > @
+  true > not
+
+  # Control structure that allows for conditional execution of code.
+  # Since $ is FALSE - behaves as `right` object.
+  right > [left right] > if
+
+  # And.
+  # A logical operation that returns true only if all given conditions are true.
+  ^ > [x] > and
+
+  # Or.
+  # A logical operation that returns true if at least one of the given conditions is true.
+  01-.eq x > [x] > or
+
+  # Tests that the negation of true equals false.
+  [] +> tests-true-not-is-false
+    eq. > @
+      true.not
+      false
+
+  # Tests that boolean values can be compared to their string representations.
+  [] +> tests-compares-bool-to-string
+    and. > @
+      true.eq "\001"
+      false.eq "\000"
+
+  # Tests that logical AND of true and false equals false.
+  [] +> tests-true-and-false-is-false
+    not. > @
+      and.
+        true
+        false
+
+  # Tests that the if statement chooses the correct branch when condition is false.
+  [] +> tests-forks-on-false-condition
+    eq. > @
+      if.
+        5.eq 8
+        123
+        42
+      42

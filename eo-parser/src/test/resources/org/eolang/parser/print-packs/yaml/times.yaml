@@ -5,8 +5,8 @@
 origin: |
   # No comments.
   [] > app
-    QQ.io.stdout > @
-      QQ.tt.sprintf
+    Q.io.stdout > @
+      Q.tt.sprintf
         "result is %d\n"
         -1.times 228
 

@@ -40,7 +40,7 @@ final class JarIT {
                     f,
                     "# No comments.",
                     "[] > simple",
-                    "  QQ.io.stdout > @",
+                    "  Q.io.stdout > @",
                     "    \"Hello, world!\""
                 );
                 MatcherAssert.assertThat(
@@ -68,7 +68,7 @@ final class JarIT {
                     "",
                     "# Program with a package.",
                     "[args] > packaged",
-                    "  QQ.io.stdout > @",
+                    "  Q.io.stdout > @",
                     "    \"Hello, world from a program with a package!\""
                 );
                 MatcherAssert.assertThat(
@@ -106,12 +106,12 @@ final class JarIT {
                             "[args] > app",
                             "  number > n",
                             "    at. > nn!",
-                            "      QQ.tt.sscanf",
+                            "      Q.tt.sscanf",
                             "        \"%d\"",
                             "        args.at 0",
                             "      0",
                             "  at. > e!",
-                            "    QQ.tt.sscanf",
+                            "    Q.tt.sscanf",
                             "      \"%d\"",
                             "      args.at 1",
                             "    0",

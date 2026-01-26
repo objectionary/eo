@@ -4,7 +4,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Handler;

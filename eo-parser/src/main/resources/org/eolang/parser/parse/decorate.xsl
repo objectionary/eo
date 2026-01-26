@@ -43,8 +43,8 @@
       some. > @
         with.
           joined.
-            Q.org.eolang.text
-              Q.org.eolang.string
+            Q.tt.text
+              Q.string
     ```
   -->
   <xsl:output encoding="UTF-8" method="xml"/>

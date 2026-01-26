@@ -9,10 +9,10 @@
  */
 package EOorg.EOeolang.EOio; // NOPMD
 
-import EOorg.EOeolang.EOsm.Posix.CStdLib;
-import EOorg.EOeolang.EOsm.Win32.Kernel32;
-import EOorg.EOeolang.EOsm.Win32.WinBase;
-import EOorg.EOeolang.EOsm.Win32.WinNT;
+import EOsm.Posix.CStdLib;
+import EOsm.Win32.Kernel32;
+import EOsm.Win32.WinBase;
+import EOsm.Win32.WinNT;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.File;
@@ -910,7 +910,7 @@ final class InputOutputTest {
                     new Dataized(
                         new PhWith(
                             new PhWith(
-                                Phi.Φ.take("org.eolang.sm.win32").copy(),
+                                Phi.Φ.take("sm.win32").copy(),
                                 0,
                                 new Data.ToPhi("WriteFile")
                             ),

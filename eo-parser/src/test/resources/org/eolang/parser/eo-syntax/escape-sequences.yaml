@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object[count(//o[@base='Φ.org.eolang.string'])=7]
+  - /object[count(//o[@base='Φ.string'])=7]
 input: |
   # Main.
   [] > main

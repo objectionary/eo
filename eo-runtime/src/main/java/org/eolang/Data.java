@@ -28,9 +28,9 @@ public interface Data {
      * This class is used in Java tests mostly for the sake of brevity.
      * In auto-generated Java code we do:
      * {@code
-     * Phi bytes = Phi.Φ.take("org.eolang.bytes").copy();
+     * Phi bytes = Phi.Φ.take("bytes").copy();
      * Phi attached = new PhWith(bytes, 0, new byte[] {...});
-     * Phi str = Phi.Φ.take("org.eolang.string").copy();
+     * Phi str = Phi.Φ.take("string").copy();
      * Phi applied = new PhWith(str, 0, attached);
      * return applied;
      * }
@@ -110,40 +110,39 @@ public interface Data {
         @SuppressWarnings("PMD.CognitiveComplexity")
         private static Phi toPhi(final Object obj) {
             final Phi phi;
-            final Phi eolang = Phi.Φ.take("org").take("eolang");
             if (obj instanceof Boolean) {
                 if (obj.equals(true)) {
-                    phi = eolang.take("true");
+                    phi = Phi.Φ.take("true");
                 } else {
-                    phi = eolang.take("false");
+                    phi = Phi.Φ.take("false");
                 }
             } else if (obj instanceof Phi[]) {
-                Phi tuple = eolang.take("tuple").take("empty");
+                Phi tuple = Phi.Φ.take("tuple").take("empty");
                 for (final Phi element : (Phi[]) obj) {
                     tuple = tuple.take("with");
                     tuple.put(0, element);
                 }
                 phi = tuple;
             } else if (obj instanceof byte[]) {
-                phi = eolang.take("bytes").copy();
+                phi = Phi.Φ.take("bytes").copy();
                 phi.put(0, new PhDefault((byte[]) obj));
             } else if (obj instanceof Number) {
                 final double value = ((Number) obj).doubleValue();
                 if (Double.isNaN(value)) {
-                    phi = eolang.take("nan");
+                    phi = Phi.Φ.take("nan");
                 } else if (value == Double.POSITIVE_INFINITY) {
-                    phi = eolang.take("positive-infinity");
+                    phi = Phi.Φ.take("positive-infinity");
                 } else if (value == Double.NEGATIVE_INFINITY) {
-                    phi = eolang.take("negative-infinity");
+                    phi = Phi.Φ.take("negative-infinity");
                 } else {
-                    phi = eolang.take("number").copy();
-                    final Phi bts = eolang.take("bytes").copy();
+                    phi = Phi.Φ.take("number").copy();
+                    final Phi bts = Phi.Φ.take("bytes").copy();
                     bts.put(0, new PhDefault(new BytesOf(value).take()));
                     phi.put(0, bts);
                 }
             } else if (obj instanceof String) {
-                phi = eolang.take("string").copy();
-                final Phi bts = eolang.take("bytes").copy();
+                phi = Phi.Φ.take("string").copy();
+                final Phi bts = Phi.Φ.take("bytes").copy();
                 bts.put(0, new PhDefault(((String) obj).getBytes(StandardCharsets.UTF_8)));
                 phi.put(0, bts);
             } else {

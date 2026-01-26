@@ -8,10 +8,10 @@
  */
 package EOorg.EOeolang.EOnk; // NOPMD
 
-import EOorg.EOeolang.EOsm.Posix.CStdLib;
-import EOorg.EOeolang.EOsm.SockaddrIn;
-import EOorg.EOeolang.EOsm.Win32.WSAStartupFuncCall;
-import EOorg.EOeolang.EOsm.Win32.Winsock;
+import EOsm.Posix.CStdLib;
+import EOsm.SockaddrIn;
+import EOsm.Win32.WSAStartupFuncCall;
+import EOsm.Win32.Winsock;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -59,7 +59,7 @@ final class EOsocketTest {
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
         try {
-            final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
+            final Phi socket = Phi.Φ.take("nk.socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
@@ -88,7 +88,7 @@ final class EOsocketTest {
         final int port = random.port;
         final Thread server = new Thread(
             () -> {
-                final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
+                final Phi socket = Phi.Φ.take("nk.socket").copy();
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
@@ -98,7 +98,7 @@ final class EOsocketTest {
         );
         server.start();
         Thread.sleep(2000);
-        final Phi socket = Phi.Φ.take("org.eolang.nk.socket").copy();
+        final Phi socket = Phi.Φ.take("nk.socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();

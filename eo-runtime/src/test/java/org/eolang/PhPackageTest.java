@@ -4,7 +4,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EObytes$EOeq;
+import EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
 import com.yegor256.Together;
 import java.util.stream.Stream;
@@ -28,10 +28,10 @@ final class PhPackageTest {
     void copiesObject() {
         MatcherAssert.assertThat(
             "Every take() should return new instance, but it didn't",
-            Phi.Φ.take("org.eolang.seq"),
+            Phi.Φ.take("seq"),
             Matchers.not(
                 Matchers.equalTo(
-                    Phi.Φ.take("org.eolang.seq")
+                    Phi.Φ.take("seq")
                 )
             )
         );
@@ -81,7 +81,7 @@ final class PhPackageTest {
     void findsLongClass() {
         MatcherAssert.assertThat(
             "Package should resolve class with '$' in the name, but it didn't",
-            Phi.Φ.take("org.eolang.bytes$eq").copy(),
+            Phi.Φ.take("bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }
@@ -116,7 +116,7 @@ final class PhPackageTest {
             "Exception message must mention missing package-info.class",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PhPackage(this.phiPackageName()).take("org.eolang.test.package-info"),
+                () -> new PhPackage(this.phiPackageName()).take("test.package-info"),
                 "We should throw if package-info.class is missing"
             ).getMessage(),
             Matchers.equalTo(

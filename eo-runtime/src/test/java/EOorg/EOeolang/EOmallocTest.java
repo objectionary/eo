@@ -71,7 +71,7 @@ final class EOmallocTest {
      * @return Malloc object
      */
     private static Phi allocated(final Phi obj, final Phi dummy) {
-        final Phi malloc = Phi.Φ.take("org.eolang.malloc").take("for").copy();
+        final Phi malloc = Phi.Φ.take("malloc").take("for").copy();
         malloc.put(0, obj);
         malloc.put(1, dummy);
         return malloc;
@@ -134,7 +134,7 @@ final class EOmallocTest {
                         ).asNumber();
                         return new PhWith(
                             new PhCopy(
-                                Phi.Φ.take("org.eolang.error")
+                                Phi.Φ.take("error")
                             ),
                             0, new Data.ToPhi("Some failure")
                         );

@@ -11,12 +11,12 @@
 [args] > app
   number > n
     at. > nn!
-      QQ.tt.sscanf
+      Q.tt.sscanf
         "%d"
         args.at 0
       0
   at. > e!
-    QQ.tt.sscanf
+    Q.tt.sscanf
       "%d"
       args.at 1
     0

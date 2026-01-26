@@ -38,7 +38,7 @@ final class MjTranspileIT {
                         "",
                         "# no comments.",
                         "[] > foo",
-                        "  QQ.io.stdout > @",
+                        "  Q.io.stdout > @",
                         "    \"Hello, world!\\n\""
                     ).getBytes(StandardCharsets.UTF_8)
                 );
@@ -93,7 +93,7 @@ final class MjTranspileIT {
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",
             "[] > foo",
-            "  QQ.io.stdout > @",
+            "  Q.io.stdout > @",
             "    \"Hello, world!\\n\"",
             ""
         );

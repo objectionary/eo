@@ -1,0 +1,75 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Exception handling mechanism that catches errors during dataization.
+# When `try` is dataized, it attempts to dataize the `main` attribute first.
+# If an error occurs during `main` dataization, the error is caught and the
+# `catch` attribute is dataized instead, receiving the error as its parameter.
+# The `finally` attribute is always dataized after either `main` or `catch`
+# completes, regardless of success or failure. Returns the result of `main`
+# or `catch` dataization as `org.eolang.bytes`.
+#
+# Usage example:
+# ```
+# try
+#   risky-operation    # main
+#   error-handler      # catch
+#   cleanup-action     # finally
+# ```
+# .
+[main catch finally] > try ?
+  # Tests that try-catch mechanism catches simple exceptions from string slice operations.
+  [] +> tests-catches-simple-exception
+    try > @
+      slice.
+        "some string"
+        7
+        5
+      true > [e]
+      false
+
+  # Tests that nested try-catch blocks work correctly with exception propagation.
+  [] +> tests-two-nested-try-blocks
+    try > @
+      try
+        slice.
+          "some string"
+          7
+          5
+        error e > [e]
+        false
+      true > [e]
+      false
+
+  # Tests that try block executes normally when no exception occurs.
+  [] +> tests-try-without-error-block
+    eq. > @
+      try
+        30.plus 2
+        e > [e]
+        true
+      32
+
+  # Tests that try-catch preserves memory state when exception occurs during malloc operations.
+  [] +> tests-try-malloc-update-catch
+    eq. > @
+      malloc.of
+        8
+        [m]
+          seq > @
+            *
+              m.put 1
+              try
+                seq
+                  *
+                    5.div 0
+                    m.put (m.plus 1)
+                e > [e]
+                false
+              m
+      1

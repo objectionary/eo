@@ -1,0 +1,32 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Dead input is an input that reads from nowhere and always
+# returns empty sequence of bytes (`--`).
+[] > dead-input
+  # Read `size` amount of bytes from nowhere.
+  # Returns new instance of `input-block`.
+  [size] > read
+    input-block > @
+
+    # Dead input block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `dead-input` object.
+    [] > input-block
+      -- > @
+
+      # Read `size` amount of bytes from nowhere.
+      # Returns new instance of `input-block`.
+      input-block > [size] > read
+
+  # Tests that dead-input always returns empty bytes regardless of requested size.
+  [] +> tests-reads-empty-bytes
+    and. > @
+      i1.eq --
+      (i1.read 10).eq --
+    dead-input.read 10 > i1

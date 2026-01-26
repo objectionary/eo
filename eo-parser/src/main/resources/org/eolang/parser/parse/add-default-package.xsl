@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-default-package" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="add-default-package" version="2.0">
   <!--
   Here we go through all objects that are not:
     1. methods (starts with .)
@@ -23,6 +23,7 @@
     hello > @
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
@@ -32,12 +33,8 @@
   <xsl:template match="*[not(contains(text(), ' '))]" mode="meta">
     <xsl:copy>
       <xsl:choose>
-        <xsl:when test="starts-with(text(), 'org.eolang')">
+        <xsl:when test="not(starts-with(text(), 'Φ.'))">
           <xsl:text>Φ.</xsl:text>
-          <xsl:value-of select="text()"/>
-        </xsl:when>
-        <xsl:when test="not(starts-with(text(), 'Φ.org.eolang')) and not(starts-with(text(), 'Φ̇.org.eolang'))">
-          <xsl:value-of select="'Φ.org.eolang.'"/>
           <xsl:value-of select="text()"/>
         </xsl:when>
         <xsl:otherwise>
@@ -46,25 +43,16 @@
       </xsl:choose>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, 'org.eolang')]" mode="with-base">
-    <xsl:copy>
-      <xsl:attribute name="base">
-        <xsl:text>Φ.</xsl:text>
-        <xsl:value-of select="@base"/>
-      </xsl:attribute>
-      <xsl:apply-templates select="node()|@* except @base"/>
-    </xsl:copy>
-  </xsl:template>
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!='φ' and @base!='Φ' and @base!='Φ̇' and @base!='ρ' and @base!='∅' and @base!='ξ']" mode="no-dots">
+  <xsl:template match="o[@base!=$eo:phi and @base!=$eo:program and @base!=$eo:rho and @base!=$eo:empty and @base!=$eo:xi]" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:text>Φ.org.eolang.</xsl:text>
+        <xsl:text>Φ.</xsl:text>
         <xsl:value-of select="@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
