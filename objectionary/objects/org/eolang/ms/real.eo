@@ -1,155 +1,47 @@
 +alias org.eolang.ms.e
 +alias org.eolang.ms.pi
++alias org.eolang.ms.abs
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ms
-+rt jvm org.eolang:eo-runtime:0.59.1
++rt jvm org.eolang:eo-runtime:0.59.3
 +rt node eo2js-runtime:0.0.0
-+version 0.59.1
++version 0.59.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:17
 
 # Returns a floating point number.
+# todo #4751:15min Remove `real` object when all inner objects are moved to a separate files
 [num] > real
   num > @
-  # Returns Euler's number raised to the power of a `num`.
-  (real e).pow num > exp
-
-  # Calculate MOD.
-  # An operation that finds the remainder after dividing one number by another.
-  [x] > mod
-    if. > @
-      divisor.eq 0
-      error "Can't calculate mod by zero"
-      if.
-        dividend.gt 0
-        abs-mod
-        abs-mod.neg
-    number num.as-bytes > dividend
-    number x.as-bytes > divisor
-
-    [] > abs-mod
-      minus. > @
-        dividend-abs
-        divisor-abs.times
-          floor.
-            dividend-abs.div divisor-abs
-      (QQ.ms.real dividend).abs > dividend-abs
-      (QQ.ms.real divisor).abs > divisor-abs
-
-  # Absolute value of `num` (i.e., with no sign).
-  [] > abs
-    if. > @
-      value.gte 0
-      value
-      value.neg
-    number num.as-bytes > value
 
   # An operation that raises `^.num` (a number) to the power of `x` and returns the result as
   # `org.eolang.number`.
+  # todo #4751:15min Move `pow` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOpow`.
   [x] > pow ?
 
   # Returns the positive square root of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `sqrt` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOsqrt`.
   [] > sqrt ?
 
   # Returns the natural logarithm `e` of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `ln` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOln`.
   [] > ln ?
 
   # Calculates arc cosine of a `num` as `org.eolang.number`.
+  # todo #4751:15min Move `acos` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOacos`.
   [] > acos ?
 
   # Calculates arc sine of a `num` as `org.eolang.number`.
   # An operation that finds the angle whose sine is num.
+  # todo #4751:15min Move `asin` to a separate object with it's tests.
+  # It's atom, don't forget change `EOreal$EOasin`.
   [] > asin ?
-
-  # Tests that absolute value of positive integer is the integer itself.
-  [] +> tests-abs-int-positive
-    eq. +> @
-      (real 3).abs
-      3
-
-  # Tests that absolute value of negative integer removes the sign.
-  [] +> tests-abs-int-negative
-    eq. +> @
-      (real -3).abs
-      3
-
-  # Tests that absolute value of zero is zero.
-  [] +> tests-abs-zero
-    eq. +> @
-      (real 0).abs
-      0
-
-  # Tests that absolute value of positive float is the float itself.
-  [] +> tests-abs-float-positive
-    eq. +> @
-      (real 13.5).abs
-      13.5
-
-  # Tests that absolute value of negative float removes the sign.
-  [] +> tests-abs-float-negative
-    eq. +> @
-      (real -17.9).abs
-      17.9
-
-  # Tests that modulo operation works correctly for 1 mod 2.
-  [] +> tests-mod-n1-n2
-    eq. +> @
-      (real 1).mod 2
-      1
-
-  # Tests that modulo operation works correctly for 0 mod 5.
-  [] +> tests-mod-n0-n5
-    eq. +> @
-      (real 0).mod 5
-      0
-
-  # Tests that modulo operation works correctly for 0 mod -15.
-  [] +> tests-mod-n0-n15-neg
-    eq. +> @
-      (real 0).mod -15
-      0
-
-  # Tests that modulo operation works correctly for -1 mod 7.
-  [] +> tests-mod-n1-neg-n7
-    eq. +> @
-      (real -1).mod 7
-      -1
-
-  # Tests that modulo operation works correctly for 16 mod -200.
-  [] +> tests-mod-n16-n200-neg
-    eq. +> @
-      (real 16).mod -200
-      16
-
-  # Tests mathematical equality A = ((A div B) * B) + (A mod B).
-  # Checks mathematical equality
-  # A = ((A div B) * B) + (A mod B).
-  [] +> tests-div-mod-compatibility
-    eq. +> @
-      plus.
-        (real dividend).mod divisor
-        times.
-          divisor
-          (dividend.div divisor).floor
-      dividend
-    -13 > dividend
-    5 > divisor
-
-  # Tests modulo operation when dividend is less than divisor.
-  # Checks modulo: dividend < divisor.
-  [] +> tests-mod-dividend-less-than-divisor
-    eq. +> @
-      (real -1).mod 5
-      -1
-
-  # Tests modulo operation when divisor is 1.
-  # Checks modulo by 1.
-  [] +> tests-mod-dividend-by-one
-    eq. +> @
-      (real 133).mod 1
-      0
 
   # Tests that power operation works correctly for 2^4.
   [] +> tests-pow-test
@@ -399,7 +291,7 @@
   # Tests that square root of zero equals zero.
   [] +> tests-sqrt-check-zero-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             0
@@ -416,7 +308,7 @@
   # Tests that square root calculation works correctly for float input.
   [] +> tests-sqrt-check-float-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             2
@@ -428,7 +320,7 @@
   # Tests that square root calculation works correctly for integer input.
   [] +> tests-sqrt-check-int-input
     lt. +> @
-      abs.
+      abs
         real
           minus.
             9
@@ -536,7 +428,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-arccos-positive-calculated-test
     lt. +> @
-      abs.
+      abs
         real
           minus.
             acos.
@@ -547,7 +439,7 @@
   # Tests mathematical operation functionality.
   [] +> tests-arccos-negative-calculated-test
     lt. +> @
-      abs.
+      abs
         real
           minus.
             acos.
@@ -565,70 +457,3 @@
   [] +> tests-arccos-nan-negative-value-test
     is-nan. +> @
       (real -2.0).acos
-
-  # Tests that exponential function e^1 approximately equals e.
-  [] +> tests-exp-check-n0
-    lt. +> @
-      abs.
-        real
-          minus.
-            e
-            (real 1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n1
-    lt. +> @
-      abs.
-        real
-          minus.
-            e
-            (real 1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n2
-    lt. +> @
-      abs.
-        real
-          minus.
-            1.div e
-            (real -1).exp
-      0.00000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n3
-    lt. +> @
-      abs.
-        real
-          minus.
-            (real e).pow 5
-            (real 5).exp
-      0.0000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-n4
-    lt. +> @
-      abs.
-        real
-          minus.
-            (real e).pow -10
-            (real -10).exp
-      0.000000000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-nan
-    is-nan. +> @
-      (real nan).exp
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-infinity-n1
-    eq. +> @
-      (real positive-infinity).exp
-      positive-infinity
-
-  # Tests mathematical operation functionality.
-  [] +> tests-exp-check-infinity-n2
-    eq. +> @
-      (real negative-infinity).exp
-      0

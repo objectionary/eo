@@ -1,0 +1,38 @@
++alias org.eolang.ss.list
++alias org.eolang.ss.reducedi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ss
++version 0.59.3
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# For each collection element dataize the object
+# Here "func" must be an abstract object with
+# two free attributes: the element of the
+# collection and its index.
+# The result of `func` must be dataizable.
+[lst func] > eachi
+  reducedi > @
+    lst
+    true
+    [acc item index] >>
+      seq * > @
+        acc
+        func item index
+
+  # Tests that iterating over elements with index access works correctly.
+  [] +> tests-iterates-with-eachi
+    eq. > @
+      malloc.for
+        0
+        [m]
+          eachi > @
+            list
+              * 1 2 3
+            [item index] >>
+              ^.m.put > @
+                plus.
+                  ^.m.as-number.plus item
+                  index
+      9

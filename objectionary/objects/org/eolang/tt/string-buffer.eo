@@ -1,0 +1,27 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.tt
++version 0.59.3
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# String buffer allows to sequentially build strings using `.with` object.
+[buf] > string-buffer
+  buf > @
+  [str] > with
+    string-buffer > @
+      string
+        buf.as-bytes.concat str.as-bytes
+
+  [] +> tests-string-buffer-decorates-string
+    (string-buffer "Hello").eq "Hello" > @
+
+  [] +> tests-string-buffer-builds-simple-string
+    eq. > @
+      ((string-buffer "Hello").with ", ").with "Jeff"
+      "Hello, Jeff"
+
+  [] +> tests-string-buffer-decorates-string-after-building
+    eq. > @
+      ((string-buffer "Hi, ").with "Mark").length
+      8

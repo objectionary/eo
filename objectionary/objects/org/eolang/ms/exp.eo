@@ -1,0 +1,70 @@
++alias org.eolang.ms.real
++alias org.eolang.ms.e
++alias org.eolang.ms.abs
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ms
++version 0.59.3
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns Euler's number raised to the power of a `num`.
+[num] > exp
+  (real e).pow num > @
+
+  # Tests that exponential function e^1 approximately equals e.
+  [] +> tests-exp-check-n0
+    lt. +> @
+      abs
+        real
+          minus.
+            e
+            exp 1
+      0.00000001
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-n1
+    lt. +> @
+      abs
+        real
+          minus.
+            1.div e
+            exp -1
+      0.00000001
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-n2
+    lt. +> @
+      abs
+        real
+          minus.
+            (real e).pow 5
+            exp 5
+      0.0000001
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-n3
+    lt. +> @
+      abs
+        real
+          minus.
+            (real e).pow -10
+            exp -10
+      0.000000000001
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-nan
+    is-nan. +> @
+      exp nan
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-infinity-n1
+    eq. +> @
+      exp positive-infinity
+      positive-infinity
+
+  # Tests mathematical operation functionality.
+  [] +> tests-exp-check-infinity-n2
+    eq. +> @
+      exp negative-infinity
+      0

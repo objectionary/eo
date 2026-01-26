@@ -1,0 +1,44 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ms
++version 0.59.3
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Absolute value of `num` (i.e., with no sign).
+[num] > abs
+  if. > @
+    value.gte 0
+    value
+    value.neg
+  number num.as-bytes > value
+
+  # Tests that absolute value of positive integer is the integer itself.
+  [] +> tests-abs-int-positive
+    eq. +> @
+      abs 3
+      3
+
+  # Tests that absolute value of negative integer removes the sign.
+  [] +> tests-abs-int-negative
+    eq. +> @
+      abs -3
+      3
+
+  # Tests that absolute value of zero is zero.
+  [] +> tests-abs-zero
+    eq. +> @
+      abs 0
+      0
+
+  # Tests that absolute value of positive float is the float itself.
+  [] +> tests-abs-float-positive
+    eq. +> @
+      abs 13.5
+      13.5
+
+  # Tests that absolute value of negative float removes the sign.
+  [] +> tests-abs-float-negative
+    eq. +> @
+      abs -17.9
+      17.9
