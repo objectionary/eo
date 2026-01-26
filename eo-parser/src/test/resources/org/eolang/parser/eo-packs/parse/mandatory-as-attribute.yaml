@@ -5,21 +5,26 @@
 sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
   - /org/eolang/parser/parse/expand-qqs.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
-  - /org/eolang/parser/parse/add-as-attributes-inside-application.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.i' and @as='α0']]
-  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='Φ.org.eolang.spb' and @as='α1']]
+  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='ξ.i' and @as='α0']]
+  - //o[@base='Φ.org.eolang.foo' and @name='φ' and o[@base='ξ.spb' and @as='α1']]
   - //o[@base='Φ.org.eolang.x' and @name='i' and o[@base='Φ.org.eolang.number' and @as='α0']]
   - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α0']]
   - //o[@base='Φ.org.eolang.y' and @name='spb' and o[@base='Φ.org.eolang.number' and @as='α1']]
   - //o[@base='Φ.org.eolang.bytes' and o[@as='α0']]
-  - //o[@base='.is' and @name='f' and not(@as)]
+  - //o[@base='Φ.org.eolang.this.is' and @name='f' and not(@as)]
+  - //o[@base='.if' and @name='q']/o[1][@base='Φ.org.eolang.some.x' and not(@as)]/o[1][@as='α0' and @base='Φ.org.eolang.y']
+  - //o[@base='.if' and @name='q']/o[2][@base='Φ.org.eolang.number' and @as='α0']
+  - //o[@base='.if' and @name='q']/o[3][@base='Φ.org.eolang.number' and @as='α1']
 input: |
   # This is main.
   [] > main
@@ -27,3 +32,7 @@ input: |
       x 42 > i
       y 52 -1 > spb
     this.is "F" > f
+    if. > q
+      some.x y
+      1
+      2
