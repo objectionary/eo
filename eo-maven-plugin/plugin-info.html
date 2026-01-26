@@ -124,11 +124,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">1.0-SNAPSHOT</strong>
+                                    <strong itemprop="version">0.59.3</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-01-15">
-                                        15-Jan-2026
+                                    <time itemprop="datePublished" datetime="2026-01-26">
+                                        26-Jan-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -147,13 +147,16 @@
 <th>Description</th></tr>
 <tr class="b">
 <td><a href="./assemble-mojo.html">eo:assemble</a></td>
-<td>Pull all necessary EO XML files from Objectionary and parse them all.</td></tr>
+<td>Pull all necessary EO XML files from Objectionary and parse them all. 
+<p>This goal combines <code>MjParse</code><!-- no javadoc sites associated -->, <code>MjProbe</code><!-- no javadoc sites associated --> and <code>MjPull</code><!-- no javadoc sites associated -->. See their documentation to find out more details. The <code></code><!-- no javadoc sites associated --> runs these goals repeatedly until no new objects are pulled or parsed in a cycle.</p></td></tr>
 <tr class="a">
 <td><a href="./clean-mojo.html">eo:clean</a></td>
-<td>Implementation of maven clean plugin, just deleting target/eo directory.</td></tr>
+<td>Implementation of maven clean plugin, just deleting target/eo directory. 
+<p>This goal simply deletes the directory containing all the files used for compilation.</p></td></tr>
 <tr class="b">
 <td><a href="./compile-mojo.html">eo:compile</a></td>
-<td>Compile and lint all EO files.</td></tr>
+<td>Compile and lint all EO files. 
+<p>This goal combines <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjLint</code><!-- no javadoc sites associated -->, <code>MjResolve</code><!-- no javadoc sites associated --> and <code>MjPlace</code><!-- no javadoc sites associated --> goals. See their documentation to find out more details. The <code></code><!-- no javadoc sites associated --> is useful to run the whole compilation process in one go without the need to call each goal separately.</p></td></tr>
 <tr class="a">
 <td><a href="./help-mojo.html">eo:help</a></td>
 <td>Display help information on eo-maven-plugin.
@@ -161,32 +164,43 @@
  Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.</td></tr>
 <tr class="b">
 <td><a href="./lint-mojo.html">eo:lint</a></td>
-<td>Mojo that runs all lints and checks errors and warnings, preferably after the <code>assemble</code> goal.</td></tr>
+<td>Mojo that runs all lints and checks errors and warnings, preferably after the <code>assemble</code> goal. 
+<p>This goal goes through all XMIR files generated in the previous steps (see <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals) and runs all available lints on them. If any errors or warnings are found, they are logged to the console, and depending on the configuration, the build may fail. The linting results are also embedded back into the XMIR files for future reference. Lints might use caching to speed up the process on subsequent runs. Cached files are stored in the <code>CACHE</code><!-- no javadoc sites associated --> directory. The results of linting are saved in the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
 <tr class="a">
 <td><a href="./parse-mojo.html">eo:parse</a></td>
-<td>Parse EO to XML.</td></tr>
+<td>Parse EO to XML. 
+<p>This is the initial goal that parses all found EO sources to XMIRs. You can read more about XMIR format <a href="https://www.eolang.org/XMIR.html">here</a></p>
+<p>The goal scans all the EO sources registered in the foreign file catalog (see <code>MjRegister</code><!-- no javadoc sites associated --> and <code>MjPull</code><!-- no javadoc sites associated -->) and then parses those that were not parsed before (i.e. do not have XMIRs yet) to XMIR format. The resulting XMIR files are stored in the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
 <tr class="b">
 <td><a href="./place-mojo.html">eo:place</a></td>
-<td>Take binary files from where <code>MjResolve</code><!-- no javadoc sites associated --> placed them and copy to the <code>target/classes</code> directory.<br /><strong>See also:</strong> <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a></td></tr>
+<td>Take binary files from where <code>MjResolve</code><!-- no javadoc sites associated --> placed them and copy to the <code>target/classes</code> directory. 
+<p>Input directory is <code>MjResolve.DIR</code><!-- no javadoc sites associated -->. Output directory is <code>MjPlace#targetDir</code><!-- this link could not be resolved -->.</p><br /><strong>See also:</strong> <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a></td></tr>
 <tr class="a">
 <td><a href="./print-mojo.html">eo:print</a></td>
-<td>Print XMIR to EO.</td></tr>
+<td>Print XMIR to EO. 
+<p>This goal goes through all XMIR sources found in the specified directory, converts them back to EO format, and saves the resulting EO files in the specified output directory, preserving the original directory structure. Input XMIR files are found in <code>printSourcesDir</code><!-- no javadoc sites associated -->, output EO files are saved in <code>printOutputDir</code><!-- no javadoc sites associated -->.</p></td></tr>
 <tr class="b">
 <td><a href="./probe-mojo.html">eo:probe</a></td>
-<td>Go through all `probe` and `also` metas in XMIR files, try to locate the objects pointed by `probe` in Objectionary, and if found, register them in the catalog. More about the purpose of this Mojo is in <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.</td></tr>
+<td>Go through all `probe` and `also` metas in XMIR files, try to locate the objects pointed by `probe` in Objectionary, and if found, register them in the catalog. More about the purpose of this Mojo is in <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>. 
+<p>This goal just modifies the "foreign" catalog by adding newly discovered objects to it. It does not download or pull the sources of these objects, that is the job of <code>MjPull</code><!-- no javadoc sites associated --> goal which usually goes after this one. This goal does not create any files on the disk either.</p></td></tr>
 <tr class="a">
 <td><a href="./pull-mojo.html">eo:pull</a></td>
-<td>Pull EO files from Objectionary.</td></tr>
+<td>Pull EO files from Objectionary. 
+<p>This goal goes through all objects from "foreign" catalog and looks for those without sources and pulls them from Objectionary remote repository. The pulled sources are stored in the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
 <tr class="b">
 <td><a href="./register-mojo.html">eo:register</a></td>
-<td>Find and register all <code>.eo</code> sources in the "foreign" catalog.</td></tr>
+<td>Find and register all <code>.eo</code> sources in the "foreign" catalog. 
+<p>This goal scans the <code>&lt;sourcesDir&gt;</code> directory for all <code>.eo</code> files matching the inclusion and exclusion GLOB filters specified in the <code>&lt;includeSources&gt;</code> and <code>&lt;excludeSources&gt;</code> parameters respectively. By default, it includes all <code>.eo</code> files found recursively. Each found EO source is then registered in the "foreign" catalog that later processed by other goals like <code>MjParse</code><!-- no javadoc sites associated -->, <code>MjAssemble</code><!-- no javadoc sites associated --> or <code>MjCompile</code><!-- no javadoc sites associated -->. This goal only changes the "foreign" catalog and does not save any generated files.</p></td></tr>
 <tr class="a">
 <td><a href="./resolve-mojo.html">eo:resolve</a></td>
 <td>Find all required runtime dependencies, download them from Maven Central, unpack and place to the <code>target/eo</code> directory. 
-<p>The motivation for this mojo is simple: Maven doesn't have a mechanism for adding .JAR files to transpile/test classpath in runtime.</p></td></tr>
+<p>The motivation for this mojo is simple: Maven doesn't have a mechanism for adding .JAR files to transpile/test classpath in runtime.</p>
+<p>This goal goes through all dependencies found in the <code>MjPull</code><!-- no javadoc sites associated --> goal, finds their implementations (i.e. transitive dependencies), downloads them from Maven Central, unpacks them and places the resulting files to the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
 <tr class="b">
 <td><a href="./transpile-mojo.html">eo:transpile</a></td>
-<td>Transpile.</td></tr>
+<td>Transpile. 
+<p>This Maven Mojo class transpiles XMIR files into Java source files. The goal of this class is to automate the process of transforming EO intermediate representations (XMIRs) into Java code, optimize the output, and integrate the results into the Maven build lifecycle for further processing.</p>
+<p>This is one of the final goals that transpiles XMIRs to Java files generated by <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals. The resulting Java files are stored in the <code>DIR</code><!-- no javadoc sites associated --> directory. The intermediate optimized XMIRs are stored in the <code>PRE</code><!-- no javadoc sites associated --> directory.</p></td></tr>
 <tr class="a">
 <td><a href="./unplace-mojo.html">eo:unplace</a></td>
 <td>It deletes binary files, which were previously copied by "place" mojo so these binaries are not got into result JAR.</td></tr>
@@ -228,7 +242,7 @@
         &lt;plugin&gt;
           &lt;groupId&gt;org.eolang&lt;/groupId&gt;
           &lt;artifactId&gt;eo-maven-plugin&lt;/artifactId&gt;
-          &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+          &lt;version&gt;0.59.3&lt;/version&gt;
         &lt;/plugin&gt;
         ...
       &lt;/plugins&gt;

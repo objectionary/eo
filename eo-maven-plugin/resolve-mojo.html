@@ -74,11 +74,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">1.0-SNAPSHOT</strong>
+                                    <strong itemprop="version">0.59.3</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-01-15">
-                                        15-Jan-2026
+                                    <time itemprop="datePublished" datetime="2026-01-26">
+                                        26-Jan-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -89,10 +89,11 @@
                             <section><a id="eo.3Aresolve"></a>
 <h1>eo:resolve</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:1.0-SNAPSHOT:resolve</p>
+<p>org.eolang:eo-maven-plugin:0.59.3:resolve</p>
 <p><strong>Description</strong>:</p>
 <p>Find all required runtime dependencies, download them from Maven Central, unpack and place to the <code>target/eo</code> directory. 
-<p>The motivation for this mojo is simple: Maven doesn't have a mechanism for adding .JAR files to transpile/test classpath in runtime.</p></p>
+<p>The motivation for this mojo is simple: Maven doesn't have a mechanism for adding .JAR files to transpile/test classpath in runtime.</p>
+<p>This goal goes through all dependencies found in the <code>MjPull</code><!-- no javadoc sites associated --> goal, finds their implementations (i.e. transitive dependencies), downloads them from Maven Central, unpacks them and places the resulting files to the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></p>
 <p><strong>Attributes</strong>:</p>
 <ul>
 <li>Requires a Maven project to be executed.</li>
