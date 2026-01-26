@@ -46,7 +46,7 @@ final class EOerrorTest {
                     new Data.ToPhi("intentional error")
                 )
             ).take(),
-            "Expected EOerror to throw ExError when dataized, but it didn't"
+            "Expected EOorg.EOeolang.EOerror to throw ExError when dataized, but it didn't"
         );
     }
 

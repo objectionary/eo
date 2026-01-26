@@ -8,10 +8,10 @@
  */
 package EOorg.EOeolang.EOnk; // NOPMD
 
-import EOsm.Posix.CStdLib;
-import EOsm.SockaddrIn;
-import EOsm.Win32.WSAStartupFuncCall;
-import EOsm.Win32.Winsock;
+import EOorg.EOeolang.EOsm.Posix.CStdLib;
+import EOorg.EOeolang.EOsm.SockaddrIn;
+import EOorg.EOeolang.EOsm.Win32.WSAStartupFuncCall;
+import EOorg.EOeolang.EOsm.Win32.Winsock;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;

@@ -101,7 +101,7 @@ final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
-            "EOtry dataized body more than once",
+            "EOorg.EOeolang.EOtry dataized body more than once",
             main.count,
             Matchers.equalTo(1)
         );

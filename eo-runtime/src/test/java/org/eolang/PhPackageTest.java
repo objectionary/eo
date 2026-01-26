@@ -4,7 +4,7 @@
  */
 package org.eolang;
 
-import EObytes$EOeq;
+import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
 import com.yegor256.Together;
 import java.util.stream.Stream;
