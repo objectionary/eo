@@ -43,6 +43,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl"),
                 new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
                 new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
+                new StClasspath("/org/eolang/parser/print/unnecessary-as.xsl"),
                 new StClasspath("/org/eolang/parser/print/to-eo.xsl")
             )
         )
