@@ -9,7 +9,9 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -34,10 +36,16 @@ final class OyRemote implements Objectionary {
     private final UrlOy directory;
 
     /**
+     * Proxies list to use for HTTP if needed.
+     */
+    private final List<Proxy> proxies;
+
+    /**
      * Constructor.
      * @param hash Commit hash
+     * @param proxies Proxies to use
      */
-    OyRemote(final CommitHash hash) {
+    OyRemote(final CommitHash hash, final Proxy... proxies) {
         this.program = new UrlOy(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash
@@ -46,6 +54,7 @@ final class OyRemote implements Objectionary {
             "https://github.com/objectionary/home/tree/%s/objects/%s",
             hash
         );
+        this.proxies = List.of(proxies);
     }
 
     @Override
@@ -64,8 +73,14 @@ final class OyRemote implements Objectionary {
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
+        final Input remote;
+        if (this.proxies.isEmpty()) {
+            remote = new InputOf(url);
+        } else {
+            remote = () -> url.openConnection(this.proxies.get(0)).getInputStream();
+        }
         return new InputWithFallback(
-            new InputOf(url),
+            remote,
             input -> {
                 throw new IOException(
                     String.format(

@@ -11,11 +11,14 @@ import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +35,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.set.SetOf;
 import org.slf4j.impl.StaticLoggerBinder;
@@ -40,8 +44,9 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings("PMD.TooManyFields")
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods"})
 abstract class MjSafe extends AbstractMojo {
 
     /**
@@ -419,6 +424,13 @@ abstract class MjSafe extends AbstractMojo {
     protected PluginDescriptor plugin;
 
     /**
+     * Maven settings.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(defaultValue = "${settings}", readonly = true)
+    protected Settings settings;
+
+    /**
      * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -582,6 +594,24 @@ abstract class MjSafe extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
+
+    /**
+     * Get active proxy from Maven settings.
+     * @return Proxy if any.
+     */
+    Proxy[] proxies() {
+        return Optional.ofNullable(this.settings)
+            .map(Settings::getProxies)
+            .orElse(List.of())
+            .stream()
+            .filter(org.apache.maven.settings.Proxy::isActive)
+            .map(
+                p -> new Proxy(
+                    Proxy.Type.HTTP,
+                    new InetSocketAddress(p.getHost(), p.getPort())
+                )
+            ).toArray(Proxy[]::new);
+    }
 
     /**
      * Runs exec command with timeout if needed.
