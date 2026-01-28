@@ -37,16 +37,6 @@ import org.cactoos.list.ListOf;
 )
 public final class MjProbe extends MjSafe {
 
-    /**
-     * Objectionary.
-     * @since 0.50
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyIndexed(
-        new OyCached(new OyRemote(this.hash, this.proxies()))
-    );
-
     @Override
     public void exec() throws IOException {
         if (this.offline) {
@@ -63,6 +53,9 @@ public final class MjProbe extends MjSafe {
      * Probe objects.
      */
     private void probe() {
+        final var objectionary = new OyIndexed(
+            new OyCached(new OyRemote(this.hash, this.proxies()))
+        );
         final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -77,7 +70,7 @@ public final class MjProbe extends MjSafe {
         } else {
             final long start = System.currentTimeMillis();
             final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
-            if (this.probed(tojos, probed) == 0) {
+            if (this.probed(objectionary, tojos, probed) == 0) {
                 Logger.info(this, "No probes found in %d programs", tojos.size());
             } else {
                 Logger.info(
@@ -92,11 +85,15 @@ public final class MjProbe extends MjSafe {
 
     /**
      * Probe given tojos and return amount of probed objects.
+     * @param objectionary Objectionary to probe against
      * @param tojos Tojos
      * @param probed Probed objects
      * @return Amount of probed objects
      */
-    private int probed(final Collection<TjForeign> tojos, final Map<String, Boolean> probed) {
+    private int probed(
+        final Objectionary objectionary,
+        final Collection<TjForeign> tojos,
+        final Map<String, Boolean> probed) {
         return new Threaded<>(
             tojos,
             tojo -> {
@@ -107,7 +104,7 @@ public final class MjProbe extends MjSafe {
                 }
                 int count = 0;
                 for (final String object : objects) {
-                    if (!this.objectionary.contains(object)) {
+                    if (!objectionary.contains(object)) {
                         continue;
                     }
                     ++count;
