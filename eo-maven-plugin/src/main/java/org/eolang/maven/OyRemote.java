@@ -98,18 +98,23 @@ final class OyRemote implements Objectionary {
     public boolean contains(final String name) throws IOException {
         final URL file = this.program.value(name);
         final URL dir = this.directory.value(name);
-        return OyRemote.exists(file) || OyRemote.exists(dir);
+        return this.exists(file) || this.exists(dir);
     }
 
     @Override
     public boolean isDirectory(final String name) throws IOException {
         final URL url = this.directory.value(name);
-        return OyRemote.exists(url);
+        return this.exists(url);
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static boolean exists(final URL url) throws IOException {
-        final int code = ((HttpURLConnection) url.openConnection()).getResponseCode();
+    private boolean exists(final URL url) throws IOException {
+        final int code;
+        if (this.proxies.isEmpty()) {
+            code = ((HttpURLConnection) url.openConnection()).getResponseCode();
+        } else {
+            code = ((HttpURLConnection) url.openConnection(this.proxies.get(0))).getResponseCode();
+        }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
