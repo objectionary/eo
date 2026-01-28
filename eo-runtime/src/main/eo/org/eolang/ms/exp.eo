@@ -1,6 +1,7 @@
 +alias org.eolang.ms.real
 +alias org.eolang.ms.e
 +alias org.eolang.ms.abs
++alias org.eolang.ms.pow
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ms
@@ -10,7 +11,7 @@
 
 # Returns Euler's number raised to the power of a `num`.
 [num] > exp
-  (real e).pow num > @
+  pow e num > @
 
   # Tests that exponential function e^1 approximately equals e.
   [] +> tests-exp-check-n0
@@ -38,7 +39,7 @@
       abs
         real
           minus.
-            (real e).pow 5
+            pow e 5
             exp 5
       0.0000001
 
@@ -48,7 +49,7 @@
       abs
         real
           minus.
-            (real e).pow -10
+            pow e -10
             exp -10
       0.000000000001
 

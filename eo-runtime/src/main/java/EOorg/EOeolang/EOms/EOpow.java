@@ -22,14 +22,15 @@ import org.eolang.XmirObject;
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "real.pow")
+@XmirObject(oname = "pow")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOreal$EOpow extends PhDefault implements Atom {
+public final class EOpow extends PhDefault implements Atom {
     /**
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOreal$EOpow() {
+    public EOpow() {
+        this.add("num", new AtVoid("num"));
         this.add("x", new AtVoid("x"));
     }
 
@@ -37,7 +38,7 @@ public final class EOreal$EOpow extends PhDefault implements Atom {
     public Phi lambda() {
         return new ToPhi(
             Math.pow(
-                new Dataized(this.take(Phi.RHO)).asNumber(),
+                new Dataized(this.take("num")).asNumber(),
                 new Dataized(this.take("x")).asNumber()
             )
         );
