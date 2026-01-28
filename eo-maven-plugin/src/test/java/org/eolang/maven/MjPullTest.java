@@ -16,6 +16,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.ScalarOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,7 +59,7 @@ final class MjPullTest {
                 "  QQ.io.stdout > @",
                 "    \"I am 18 years old\""
             )
-            .with("objectionary", new OyRemote(new ChRemote("master")))
+            .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "PullMojo should have pulled from probes, but it didn't",

@@ -36,7 +36,10 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -458,6 +461,20 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
+     * Objectionary.
+     * @since 0.50
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
+    private Scalar<Objectionary> objectionary = new Synced<>(
+        new Sticky<>(
+            () -> new OyIndexed(
+                new OyCached(new OyRemote(this.hash))
+            )
+        )
+    );
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -594,6 +611,10 @@ abstract class MjSafe extends AbstractMojo {
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
+
+    Objectionary objectionary() {
+        return new Unchecked<>(this.objectionary).value();
+    }
 
     /**
      * Get active proxy from Maven settings.

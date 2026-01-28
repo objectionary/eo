@@ -32,6 +32,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
+import org.cactoos.scalar.ScalarOf;
+import org.cactoos.scalar.Synced;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -195,7 +197,10 @@ final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent(
+                "objectionary",
+                new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
+            );
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classesDir", this.classesPath().toFile());

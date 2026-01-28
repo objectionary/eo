@@ -72,7 +72,7 @@ public final class MjPull extends MjSafe {
                 continue;
             }
             try {
-                tojo.withSource(this.pulled(objectionary, object, base, hsh))
+                tojo.withSource(this.pulled(object, base, hsh))
                     .withHash(new ChNarrow(this.hash));
             } catch (final IOException exception) {
                 throw new IOException(
@@ -105,7 +105,6 @@ public final class MjPull extends MjSafe {
 
     /**
      * Pull one object.
-     * @param objectionary Objectionary to pull from
      * @param object Name of the object
      * @param base Base cache path
      * @param hsh Git hash
@@ -114,7 +113,6 @@ public final class MjPull extends MjSafe {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private Path pulled(
-        final Objectionary objectionary,
         final String object,
         final Path base,
         final String hsh) throws IOException {
@@ -133,7 +131,7 @@ public final class MjPull extends MjSafe {
                     "Pulling %s object from remote objectionary with hash %s",
                     object, hsh
                 );
-                return objectionary.get(object);
+                return this.objectionary().get(object);
             }
         );
         final Footprint both = new FpUpdateBoth(generated, che);
