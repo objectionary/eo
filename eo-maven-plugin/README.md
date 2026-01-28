@@ -36,7 +36,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.59.1</version>
+        <version>0.59.4</version>
         <executions>
           <execution>
             <goals>
