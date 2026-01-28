@@ -1,5 +1,6 @@
 +alias org.eolang.ss.list
 +alias org.eolang.ss.bytes-as-array
++alias org.eolang.ss.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -10,7 +11,7 @@
 # Returns the `text` in upper case.
 [text] > up-cased
   string > @
-    reduced.
+    reduced
       list
         bytes-as-array
           text.as-bytes

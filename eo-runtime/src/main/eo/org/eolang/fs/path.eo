@@ -2,6 +2,7 @@
 +alias org.eolang.fs.file
 +alias org.eolang.sm.os
 +alias org.eolang.ss.list
++alias org.eolang.ss.reduced
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.index-of
 +alias org.eolang.tt.last-index-of
@@ -84,7 +85,7 @@
           separator
       QQ.tt.joined > path
         separator
-        reduced.
+        reduced
           list
             split
               uri
@@ -333,7 +334,7 @@
             separator
         QQ.tt.joined > path!
           separator
-          reduced.
+          reduced
             list
               split
                 driveless
