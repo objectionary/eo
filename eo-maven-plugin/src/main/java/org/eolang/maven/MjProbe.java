@@ -37,16 +37,6 @@ import org.cactoos.list.ListOf;
 )
 public final class MjProbe extends MjSafe {
 
-    /**
-     * Objectionary.
-     * @since 0.50
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyIndexed(
-        new OyCached(new OyRemote(this.hash))
-    );
-
     @Override
     public void exec() throws IOException {
         if (this.offline) {
@@ -96,7 +86,9 @@ public final class MjProbe extends MjSafe {
      * @param probed Probed objects
      * @return Amount of probed objects
      */
-    private int probed(final Collection<TjForeign> tojos, final Map<String, Boolean> probed) {
+    private int probed(
+        final Collection<TjForeign> tojos,
+        final Map<String, Boolean> probed) {
         return new Threaded<>(
             tojos,
             tojo -> {
@@ -107,7 +99,7 @@ public final class MjProbe extends MjSafe {
                 }
                 int count = 0;
                 for (final String object : objects) {
-                    if (!this.objectionary.contains(object)) {
+                    if (!this.objectionary().contains(object)) {
                         continue;
                     }
                     ++count;

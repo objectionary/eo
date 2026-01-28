@@ -19,6 +19,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.proxy.ProxyHandler;
 import org.eclipse.jetty.server.Server;
@@ -33,12 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
- * @todo #3235:90min Proxy usage in {@link #checksThatWeCanCompileTheProgramWithProxySet(Path)}.
- *  Currently, we just check that the build is successful without employing the proxy.
- *  We need to enhance this test to ensure that the build process actually goes through the proxy
- *  rather than accessing the internet directly.
- *  You ought to set up proxy settings using Maven settings.xml with a proxy configured:
- *  <a href="https://maven.apache.org/guides/mini/guide-proxies.html">Maven Proxies</a>.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
@@ -96,11 +93,16 @@ final class ProxyIT {
         new Farea(tmp).together(
             f -> {
                 f.clean();
+                final var settings = f.files().file("settings.xml").write(
+                    ProxyIT.settings(this.port).getBytes(StandardCharsets.UTF_8)
+                );
                 f.files()
                     .file("src/main/eo/foo/x/y/main.eo")
                     .write(ProxyIT.program().getBytes(StandardCharsets.UTF_8));
                 new AppendedPlugin(f).value()
                     .goals("register", "assemble", "resolve", "place");
+                f.withOpt("-s");
+                f.withOpt(settings.path().toString());
                 f.exec("package");
                 MatcherAssert.assertThat(
                     "We expect the build is successful when a proxy is set",
@@ -147,5 +149,16 @@ final class ProxyIT {
             "[x] > main",
             "  (stdout \"Hello Proxy!\" x).print > @"
         );
+    }
+
+    /**
+     * Returns proxy settings XML with the given port.
+     * @param port Proxy port.
+     * @return Proxy settings XML.
+     */
+    private static String settings(final int port) {
+        return new UncheckedText(new TextOf(new ResourceOf("proxy-settings.xml")))
+            .asString()
+            .replace("${proxy.port}", Integer.toString(port));
     }
 }
