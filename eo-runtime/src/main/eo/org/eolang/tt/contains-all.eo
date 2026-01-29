@@ -1,5 +1,6 @@
 +alias org.eolang.tt.contains
 +alias org.eolang.ss.list
++alias org.eolang.ss.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -9,7 +10,7 @@
 
 # Checks if `text` contains all elements from `substrings`
 [text substrings] > contains-all
-  reduced. > @
+  reduced > @
     mapped.
       substrings
       contains text-bts x > [x] >>

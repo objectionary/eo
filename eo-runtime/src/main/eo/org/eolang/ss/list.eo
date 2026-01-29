@@ -1,5 +1,6 @@
 +alias org.eolang.ss.list
 +alias org.eolang.ss.reducedi
++alias org.eolang.ss.reduced
 +alias org.eolang.ss.eachi
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
@@ -47,16 +48,6 @@
       back
         origin.length.minus index
 
-  # Reduce from "start" using the function "func".
-  # Here "func" must be an abstract object with two free attributes.
-  # The first one for the accumulator, the second one for the element
-  # of the collection.
-  [start func] > reduced
-    reducedi > @
-      ^
-      start
-      func accum item > [accum item idx] >>
-
   # Map with index. Here "func" must be an abstract
   # object with two free attributes. The first
   # one for the element of the collection, the second one
@@ -101,6 +92,7 @@
   [element] > without
     list > @
       reduced
+        ^
         *
         [accum item] >>
           if. > @
@@ -336,30 +328,6 @@
         0
         "hello"
       * "hello" 1 2 3 4 5
-
-  # Tests that reducing a list without index access works correctly.
-  [] +> tests-list-reduce-without-index
-    eq. > @
-      reduced.
-        list
-          * 1 2 3 4
-        -1
-        a.times x > [a x]
-      -24
-
-  # Tests that reducing a list to create a formatted string works correctly.
-  [] +> tests-list-reduced-printing
-    eq. > @
-      reduced.
-        list
-          * 0 1
-        ""
-        [acc item]
-          acc.concat > @
-            sprintf
-              "%d"
-              * item
-      "01"
 
   # Tests that comparing complex nested lists works correctly.
   [] +> tests-complex-objects-list-comparison
