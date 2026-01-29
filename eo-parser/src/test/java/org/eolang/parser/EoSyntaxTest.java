@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,6 +55,7 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @Execution(ExecutionMode.SAME_THREAD)
+@ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
 
     /**
