@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
-import org.apache.log4j.Level;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,9 +21,6 @@ final class LogProgress implements AfterEachCallback {
     @Override
     public void afterEach(final ExtensionContext context) {
         final Class<?> clazz = context.getTestClass().orElse(LogProgress.class);
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(clazz);
-        final Level before = logger.getLevel();
-        logger.setLevel(Level.INFO);
         if (LogProgress.parameterized(context)) {
             Logger.info(
                 clazz,
@@ -32,7 +28,6 @@ final class LogProgress implements AfterEachCallback {
                 context.getDisplayName().lines().findFirst().orElse(context.getUniqueId())
             );
         }
-        logger.setLevel(before);
     }
 
     /**
