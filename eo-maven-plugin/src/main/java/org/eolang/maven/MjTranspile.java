@@ -180,9 +180,11 @@ public final class MjTranspile extends MjSafe {
                 final String res = transform.apply(xmir).toString();
                 Logger.debug(
                     this,
-                    "Transpiled %[file]s to %[file]s in %[ms]s (cache miss)",
+                    "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss)",
                     source,
+                    MjTranspile.info(source),
                     target,
+                    MjTranspile.info(target),
                     System.currentTimeMillis() - start
                 );
                 return res;
@@ -194,6 +196,22 @@ public final class MjTranspile extends MjSafe {
             this.cacheEnabled
         ).apply(source, target);
         return this.javaGenerated(rewrite.get(), target, hsh.get());
+    }
+
+    /**
+     * File info for logging.
+     * @param info Path to file
+     * @return Info string
+     * @throws IOException If fails
+     */
+    private static String info(final Path info) throws IOException {
+        final String res;
+        if (Files.exists(info)) {
+            res = Files.getLastModifiedTime(info).toString();
+        } else {
+            res = "Not exists yet";
+        }
+        return res;
     }
 
     /**
@@ -254,7 +272,6 @@ public final class MjTranspile extends MjSafe {
                     );
                     new JavaPlaced(
                         new FpIfReleased(
-                            this.plugin.getVersion(),
                             hsh,
                             new FpAppliedWithCache(
                                 java,

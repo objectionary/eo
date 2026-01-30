@@ -18,10 +18,7 @@ import org.cactoos.io.InputOf;
  *    It can be created from source, or from global cache if cache exists, is cacheable, and
  *    is newer than source.
  * 3) the cache is updated if it is cacheable (it does not exist or if it is older than source)
- * 4) if the semver is "0.0.0" or "SNAPSHOT" ({@link FpIfReleased}) - the target is always
- *    regenerated and cache is not touched at all.
  * </p>
- *
  * <p>Excluding any type of errors there are 4 possible scenarios
  * of this {@link Footprint} work:
  * 1) do nothing and just return target file.
@@ -96,7 +93,7 @@ final class FpDefault extends FpEnvelope {
         final Path tail,
         final boolean global
     ) {
-        this(generated, semver, hash, new CachePath(base, semver, hash, tail), global);
+        this(generated, hash, new CachePath(base, semver, hash, tail), global);
     }
 
     /**
@@ -104,14 +101,12 @@ final class FpDefault extends FpEnvelope {
      * <p>Here {@link FpIfReleased} is on the first place because we don't want to work with any
      * type of cache (local or global) if we work with SNAPSHOT version of the plugin</p>
      * @param generated Footprint that generates content
-     * @param semver Cache version
      * @param hash Cache hash
      * @param cache Lazy cache path
      * @param global Is global cache enabled or not
      */
     private FpDefault(
         final Footprint generated,
-        final String semver,
         final Supplier<String> hash,
         final Supplier<Path> cache,
         final boolean global
@@ -119,7 +114,6 @@ final class FpDefault extends FpEnvelope {
         super(
             new FpExistedSource(
                 new FpIfReleased(
-                    semver,
                     hash,
                     new FpIfOlder(
                         new FpIgnore(),
