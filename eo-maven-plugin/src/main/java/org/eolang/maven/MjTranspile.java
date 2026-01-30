@@ -123,6 +123,7 @@ public final class MjTranspile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
+        final long begin = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withXmir();
         final int saved = new Threaded<>(
             sources,
@@ -147,6 +148,11 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+        Logger.info(
+            this,
+            "Transpilation took %[ms]s in total",
+            System.currentTimeMillis() - begin
+        );
     }
 
     /**
