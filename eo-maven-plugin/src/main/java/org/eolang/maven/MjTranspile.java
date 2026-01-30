@@ -176,7 +176,16 @@ public final class MjTranspile extends MjSafe {
         new FpDefault(
             src -> {
                 rewrite.compareAndSet(false, true);
-                return transform.apply(xmir).toString();
+                final long start = System.currentTimeMillis();
+                final String res = transform.apply(xmir).toString();
+                Logger.debug(
+                    this,
+                    "Transpiled %[file]s to %[file]s in %[ms]s (cache miss)",
+                    source,
+                    target,
+                    System.currentTimeMillis() - start
+                );
+                return res;
             },
             this.cache.toPath().resolve(MjTranspile.CACHE),
             this.plugin.getVersion(),
@@ -227,6 +236,7 @@ public final class MjTranspile extends MjSafe {
         final Path target,
         final String hsh
     ) throws IOException {
+        final long begin = System.currentTimeMillis();
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
             final Xnav object = new Xnav(target).element("object");
@@ -259,6 +269,11 @@ public final class MjTranspile extends MjSafe {
                     ).exec(clazz, this.transpileTests);
                 }
             }
+            Logger.debug(
+                this,
+                "Generated %d Java files from %[file]s in %[ms]s",
+                saved.get(), target, System.currentTimeMillis() - begin
+            );
         }
         return saved.get();
     }
