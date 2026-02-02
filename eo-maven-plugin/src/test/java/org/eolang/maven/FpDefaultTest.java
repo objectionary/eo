@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -333,6 +335,93 @@ final class FpDefaultTest {
                 Matchers.equalTo(FpDefaultTest.cacheContent()),
                 Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
             )
+        );
+    }
+
+    /**
+     * This test was added to mitigate an issue with the transpilation cache.
+     * You can read more about it here:
+     * <a href="https://github.com/objectionary/eo/issues/4840">4840</a>
+     * If cache is missing, then transpilation should be performed.
+     * @param temp Temporary directory
+     * @throws Exception If fails
+     */
+    @Test
+    void transpilesIfCacheMiss(@Mktmp final Path temp) throws Exception {
+        final Path cdir = temp.resolve("cache-folder").resolve("transpiled-folder");
+        Files.createDirectories(cdir);
+        final String content = "Source content - no cache";
+        final Path source = FpDefaultTest.existedFile(
+            temp.resolve("target/eo/1-parse/org/eolang/examples/fibonacci.xmir"),
+            "old"
+        );
+        final Path target = FpDefaultTest.notExistedTarget(
+            temp.resolve("target/eo/5-transpile/org/eolang/examples/fibonacci.xmir")
+        );
+        new FpDefault(
+            src -> content,
+            cdir,
+            "1.0-SNAPSHOT",
+            () -> "94641989dbaebef167cf67906a265d925bbb4e5b",
+            Paths.get("org/eolang/examples/fibonacci.xmir"),
+            true
+        ).apply(source, target);
+        MatcherAssert.assertThat(
+            "We expect a cache miss to trigger transpilation",
+            new TextOf(target).asString(),
+            Matchers.equalTo(content)
+        );
+    }
+
+    /**
+     * We should use the transpilation cache if it existed before transpilation.
+     * Current implementation of {@link FpDefault} relies on file timestamps to decide
+     * whether to use the cache or not.
+     * If the cache file is older than the source file, then the cache is ignored, which is
+     * a critical issue for the transpilation step, because the source files are often
+     * modified (e.g. by the parser) right before transpilation, making the cache
+     * always older than the source files.
+     * @param temp Temporary directory
+     * @throws Exception If fails
+     * @todo #4840:90min Implement proper cache validation mechanism.
+     *  Currently, FpDefault relies on file timestamps to decide whether to use
+     *  the cache or not. This approach is not reliable in many cases.
+     *  For example, in the transpilation step, the source files are often
+     *  modified right before transpilation, making the cache always older
+     *  than the source files.
+     */
+    @Test
+    @Disabled
+    void doesNotTranspileIfCacheHitWhenCacheExistedBefore(@Mktmp final Path temp) throws Exception {
+        final Path cdir = temp.resolve("cache-dir").resolve("transpiled-cache");
+        Files.createDirectories(cdir);
+        final Path cachefile = cdir
+            .resolve("1.0-SNAPSHOT")
+            .resolve("94641989dbaebef167cf67906a265d925bbb4e5b")
+            .resolve("org/eolang/examples/fibonacci.xmir");
+        Files.createDirectories(cachefile.getParent());
+        final String cached = "transpilation results from cache";
+        Files.write(cachefile, cached.getBytes(StandardCharsets.UTF_8));
+        FpDefaultTest.makeOlder(cdir, 1000);
+        final Path source = FpDefaultTest.existedFile(
+            temp.resolve("target/eo/1-parse/org/eolang/examples/fibonacci.xmir"),
+            "Source content"
+        );
+        final Path target = temp.resolve(
+            "target/eo/5-transpile/org/eolang/examples/fibonacci.xmir"
+        );
+        new FpDefault(
+            src -> "transpiled content",
+            cdir,
+            "1.0-SNAPSHOT",
+            () -> "94641989dbaebef167cf67906a265d925bbb4e5b",
+            Paths.get("org/eolang/examples/fibonacci.xmir"),
+            true
+        ).apply(source, target);
+        MatcherAssert.assertThat(
+            "We expect that cache is used",
+            new TextOf(target).asString(),
+            Matchers.equalTo(cached)
         );
     }
 
