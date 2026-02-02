@@ -136,7 +136,6 @@ public final class MjPull extends MjSafe {
         );
         final Footprint both = new FpUpdateBoth(generated, che);
         return new FpIfReleased(
-            this.plugin.getVersion(),
             hsh,
             new FpFork(
                 (src, tgt) -> {

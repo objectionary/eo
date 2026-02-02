@@ -21,7 +21,6 @@ final class FpIfReleasedTest {
         Assertions.assertThrows(
             NullPointerException.class,
             () -> new FpIfReleased(
-                "1.2.3",
                 () -> null,
                 (source, target) -> source,
                 (source, target) -> target
@@ -34,7 +33,6 @@ final class FpIfReleasedTest {
     void choosesTheFirstFootprintBecauseCacheable(@TempDir final Path tmp) throws IOException {
         final Path src = tmp.resolve("first");
         final Path result = new FpIfReleased(
-            "1.2.3",
             () -> "somehash",
             (source, target) -> source,
             (source, target) -> target
@@ -50,7 +48,6 @@ final class FpIfReleasedTest {
     void choosesTheSecondFootprintBecauseHashIsEmpty(@TempDir final Path tmp) throws IOException {
         final Path tgt = tmp.resolve("right-empty-hash");
         final Path result = new FpIfReleased(
-            "1.2.3",
             () -> "",
             (source, target) -> source,
             (source, target) -> target
