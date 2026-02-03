@@ -15,14 +15,8 @@ import org.cactoos.func.UncheckedFunc;
 
 /**
  * Simple cache mechanism.
+ * This class isn't thread-safe, use {@link ConcurrentCache} for concurrent scenarios.
  * @since 0.60
- * @todo #4846:30min Make Cache thread-safe.
- *  The Cache class lacks thread-safety mechanisms. If multiple threads call the apply method
- *  concurrently with the same source file, there could be race conditions where both threads
- *  determine the cache is stale and attempt to write simultaneously, potentially leading to
- *  corrupted files or inconsistent state. Consider adding synchronization or using atomic file
- *  operations. See ChCachedTest.java:63-86 for an example of how concurrency is tested in similar
- *  caching classes in this codebase.
  * @todo #4846:30min Replace {@link FpDefault} with {@link Cache}.
  *  The FpDefault class currently implements caching logic that is similar to the Cache class.
  *  Refactor the codebase to use Cache instead of FpDefault for caching functionality to
