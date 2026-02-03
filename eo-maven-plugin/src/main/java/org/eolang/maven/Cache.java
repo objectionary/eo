@@ -16,6 +16,17 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * Simple cache mechanism.
  * @since 0.60
+ * @todo #4846:30min Make Cache thread-safe.
+ *  The Cache class lacks thread-safety mechanisms. If multiple threads call the apply method
+ *  concurrently with the same source file, there could be race conditions where both threads
+ *  determine the cache is stale and attempt to write simultaneously, potentially leading to
+ *  corrupted files or inconsistent state. Consider adding synchronization or using atomic file
+ *  operations. See ChCachedTest.java:63-86 for an example of how concurrency is tested in similar
+ *  caching classes in this codebase.
+ * @todo #4846:30min Replace {@link FpDefault} with {@link Cache}.
+ *  The FpDefault class currently implements caching logic that is similar to the Cache class.
+ *  Refactor the codebase to use Cache instead of FpDefault for caching functionality to
+ *  improve code reuse and maintainability.
  */
 final class Cache {
 
@@ -47,16 +58,18 @@ final class Cache {
      */
     public void apply(final Path source, final Path target, final Path tail) {
         try {
-            final String hash = Cache.sha(source);
-            final Path hfile = this.hash(tail);
-            final Path cfile = this.base.resolve(tail);
-            if (Files.notExists(hfile) || !Files.readString(hfile).equals(hash)) {
+            final String sha = Cache.sha(source);
+            final Path hash = this.hash(tail);
+            final Path cache = this.base.resolve(tail);
+            if (Files.notExists(hash)
+                || Files.notExists(cache)
+                || !Files.readString(hash).equals(sha)) {
                 final String content = new UncheckedFunc<>(this.compilation).apply(source);
-                Files.writeString(this.hash(tail), hash);
-                Files.writeString(cfile, content);
-                Files.writeString(target, content);
+                new Saved(sha, this.hash(tail)).value();
+                new Saved(content, cache).value();
+                new Saved(content, target).value();
             } else {
-                Files.writeString(target, Files.readString(cfile));
+                new Saved(Files.readString(cache), target).value();
             }
         } catch (final IOException ioexception) {
             throw new IllegalStateException(
@@ -74,7 +87,7 @@ final class Cache {
      * @return Hash file path
      */
     private Path hash(final Path tail) {
-        final Path full = this.base.resolve(tail);
+        final Path full = this.base.resolve(tail.normalize());
         return full.getParent().resolve(String.format("%s.sha256", full.getFileName().toString()));
     }
 
@@ -84,6 +97,11 @@ final class Cache {
      * @return Base64-encoded SHA-256 hash
      * @throws NoSuchAlgorithmException If SHA-256 algorithm is not available
      * @throws IOException If an I/O error occurs reading the file
+     * @todo #4846:30min OutOfMemoryError for large files in cache.
+     *  The sha method reads the entire file into memory using Files.readAllBytes(file) which
+     *  could cause OutOfMemoryError for large files. Consider using a streaming approach with
+     *  MessageDigest.update() in a loop to hash the file in chunks, similar to how it's typically
+     *  done for large file hashing operations.
      */
     private static String sha(final Path file) throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
