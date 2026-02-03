@@ -305,9 +305,9 @@ public final class MjLint extends MjSafe {
      */
     private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
         final List<String> parts = new ArrayList<>(0);
-        final int criticals = counts.get(Severity.CRITICAL);
-        if (criticals > 0) {
-            parts.add(MjLint.plural(criticals, "critical error"));
+        final int critical = counts.get(Severity.CRITICAL);
+        if (critical > 0) {
+            parts.add(MjLint.plural(critical, "critical error"));
         }
         final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {
