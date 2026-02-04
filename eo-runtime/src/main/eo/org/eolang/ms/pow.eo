@@ -102,3 +102,94 @@
     eq. +> @
       pow -42 negative-infinity
       0
+
+  # Tests that negative float raised to negative infinity equals zero.
+  [] +> tests-negative-float-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow -42.5 negative-infinity
+      0
+
+  # Tests that positive infinity raised to negative infinity equals zero.
+  [] +> tests-positive-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow positive-infinity negative-infinity
+      0
+
+  # Tests that negative infinity raised to negative infinity equals zero.
+  [] +> tests-negative-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow negative-infinity negative-infinity
+      0
+
+  # Tests that positive infinity raised to finite negative power equals zero.
+  [] +> tests-positive-infinity-to-the-finite-negative-int-pow-is-zero
+    eq. +> @
+      pow positive-infinity -42
+      0
+
+  # Tests that positive infinity raised to finite negative float power equals zero.
+  [] +> tests-positive-infinity-to-the-finite-negative-float-pow-is-zero
+    eq. +> @
+      pow positive-infinity -42.2
+      0.0
+
+  # Tests that 2 raised to the power of -1 equals 0.5.
+  [] +> tests-two-to-the-pow-of-minus-one
+    eq. +> @
+      pow 2 -1
+      0.5
+
+  # Tests that 2 raised to the power of -2 equals 0.25.
+  [] +> tests-two-to-the-pow-of-int-minus-two
+    eq. +> @
+      pow 2 -2
+      0.25
+
+  # Tests mathematical operation functionality.
+  [] +> tests-two-to-the-pow-of-minus-three
+    eq. +> @
+      pow 2 -3
+      0.125
+
+  # Tests mathematical operation functionality.
+  [] +> tests-four-to-the-pow-of-minus-three
+    eq. +> @
+      pow 4 -3.0
+      0.015625
+
+  # Tests mathematical operation functionality.
+  # Check if pow more than zero.
+  [] +> tests-zero-to-the-pow-of-positive-int-is-zero
+    eq. +> @
+      pow 0 4
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-zero-to-the-pow-of-positive-float-is-zero
+    eq. +> @
+      pow 0 4.2
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-zero-to-the-pow-of-positive-infinity-is-zero
+    eq. +> @
+      pow 0 positive-infinity
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. +> @
+      pow -10 positive-infinity
+      positive-infinity
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-float-to-the-pow-of-positive-infinity-is-infinity
+    eq. +> @
+      pow -4.2 positive-infinity
+      positive-infinity
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. +> @
+      pow 42 positive-infinity
+      positive-infinity
