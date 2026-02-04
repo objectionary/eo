@@ -2,7 +2,6 @@
 +alias org.eolang.ss.reducedi
 +alias org.eolang.ss.reduced
 +alias org.eolang.ss.eachi
-+alias org.eolang.ss.mappedi
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -48,14 +47,6 @@
         item
       back
         origin.length.minus index
-
-  # Map without index. Here "func" must be an abstract
-  # object with one free attribute, for the element
-  # of the collection.
-  [func] > mapped
-    mappedi > @
-      ^
-      func item > [item idx] >>
 
   # For each collection element dataize the object
   # Here "func" must be an abstract object with
@@ -330,15 +321,6 @@
         * 0 1
         * 4 0
         * 7 3
-
-  # Tests that mapping without index transforms elements correctly.
-  [] +> tests-simple-list-mapping
-    eq. > @
-      mapped.
-        list
-          * 1 2 3
-        x.times 2 > [x]
-      * 2 4 6
 
   # Tests that iterating over elements without index access works correctly.
   [] +> tests-iterates-with-each

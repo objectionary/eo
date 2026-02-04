@@ -1,5 +1,6 @@
 +alias org.eolang.ss.list
 +alias org.eolang.ss.map
++alias org.eolang.ss.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ss
@@ -13,11 +14,10 @@
 [lst] > set
   initialized > @
     map
-      list
-        lst
-      .mapped
+      mapped
+        list
+          lst
         map.entry item true > [item]
-      .origin
 
   # Initialized set with rebuilt unique sequence.
   [mp] > initialized

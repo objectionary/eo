@@ -1,6 +1,7 @@
 +alias org.eolang.tt.contains
 +alias org.eolang.ss.list
 +alias org.eolang.ss.reduced
++alias org.eolang.ss.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.tt
@@ -11,7 +12,7 @@
 # Checks if `text` contains any element from `substrings`
 [text substrings] > contains-any
   reduced > @
-    mapped.
+    mapped
       substrings
       contains text-bts x > [x] >>
     false

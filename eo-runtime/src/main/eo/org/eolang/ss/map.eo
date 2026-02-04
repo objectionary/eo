@@ -1,5 +1,6 @@
 +alias org.eolang.ss.hash-code-of
 +alias org.eolang.ss.list
++alias org.eolang.ss.mapped
 +alias org.eolang.tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -65,12 +66,12 @@
     entries.length > size
     # Returns `list` of all keys in hash map.
     # Keys order is not guaranteed.
-    mapped. > keys
+    mapped > keys
       list entries
       entry.key > [entry]
     # Returns `list` of all values in hash map.
     # Values order is not guaranteed.
-    mapped. > values
+    mapped > values
       list entries
       entry.value > [entry]
 
