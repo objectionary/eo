@@ -7,9 +7,6 @@ name: trufflehog-oss
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 jobs:
   trufflehog:
     timeout-minutes: 25
