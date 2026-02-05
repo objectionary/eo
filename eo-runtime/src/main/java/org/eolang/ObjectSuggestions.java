@@ -7,6 +7,7 @@ package org.eolang;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +81,7 @@ final class ObjectSuggestions {
         if (suggestions.isEmpty()) {
             result = "";
         } else {
-            result = this.formatSuggestions(suggestions);
+            result = ObjectSuggestions.formatSuggestions(suggestions);
         }
         return result;
     }
@@ -110,7 +111,7 @@ final class ObjectSuggestions {
      * @param suggestions List of suggestions
      * @return Formatted string
      */
-    private String formatSuggestions(final List<Suggestion> suggestions) {
+    private static String formatSuggestions(final List<Suggestion> suggestions) {
         final StringBuilder result = new StringBuilder(64);
         result.append("\n\nDid you mean?");
         final int limit = Math.min(ObjectSuggestions.MAX_SUGGESTIONS, suggestions.size());
@@ -162,11 +163,11 @@ final class ObjectSuggestions {
      * Scans a file resource.
      * @param resource File resource URL
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private void scanFileResource(final URL resource) {
         try {
             this.scanDirectory(new File(resource.toURI()), "EOorg");
-        } catch (final Exception ignored) {
+        } catch (final URISyntaxException ignored) {
         }
     }
 
