@@ -7,9 +7,7 @@ package org.eolang;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,31 +17,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Suggests similar EO objects when an object is not found.
  *
  * <p>This class scans available EO objects and finds the closest matches
- * using Levenshtein distance, word matching, and partial matching algorithms.
+ * using Levenshtein distance algorithm.
  *
  * @since 0.52
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class ObjectSuggestions {
 
     /**
      * Pattern for package-info classes.
      */
     private static final Pattern PACKAGE_INFO = Pattern.compile("package-info");
-
-    /**
-     * Pattern to extract EO object names from Java class names.
-     * Matches class names like "EOorg.EOeolang.EOstdout" and extracts "org.eolang.stdout".
-     */
-    private static final Pattern EO_CLASS = Pattern.compile(
-        "^EO([^$]+)(?:\\$EO(.*))?$"
-    );
 
     /**
      * Maximum number of suggestions to return.
@@ -64,15 +54,43 @@ final class ObjectSuggestions {
 
     /**
      * Gets suggestions for a not found object.
-     * @param notfound The object that was not found (in Java notation, e.g., "EOorg.EOeolang.EOio.EOstd1out")
+     * @param notfound The object that was not found
      * @return Formatted suggestion string, or empty string if no suggestions
      */
-    public String suggest(final String notfound) {
+    String suggest(final String notfound) {
         this.ensureLoaded();
+        final String result;
         if (this.available.isEmpty()) {
-            return "";
+            result = "";
+        } else {
+            result = this.buildSuggestions(notfound);
         }
+        return result;
+    }
+
+    /**
+     * Builds formatted suggestions string.
+     * @param notfound The object that was not found
+     * @return Formatted suggestions or empty string
+     */
+    private String buildSuggestions(final String notfound) {
         final String target = ObjectSuggestions.javaToEo(notfound);
+        final List<Suggestion> suggestions = this.collectSuggestions(target);
+        final String result;
+        if (suggestions.isEmpty()) {
+            result = "";
+        } else {
+            result = this.formatSuggestions(suggestions);
+        }
+        return result;
+    }
+
+    /**
+     * Collects and sorts suggestions.
+     * @param target Target EO object name
+     * @return Sorted list of suggestions
+     */
+    private List<Suggestion> collectSuggestions(final String target) {
         final List<Suggestion> suggestions = new ArrayList<>(0);
         for (final String candidate : this.available) {
             final double score = ObjectSuggestions.similarity(target, candidate);
@@ -80,10 +98,19 @@ final class ObjectSuggestions {
                 suggestions.add(new Suggestion(candidate, score));
             }
         }
-        if (suggestions.isEmpty()) {
-            return "";
-        }
-        Collections.sort(suggestions, Comparator.comparingDouble(Suggestion::score).reversed());
+        Collections.sort(
+            suggestions,
+            Comparator.comparingDouble(Suggestion::score).reversed()
+        );
+        return suggestions;
+    }
+
+    /**
+     * Formats suggestions into output string.
+     * @param suggestions List of suggestions
+     * @return Formatted string
+     */
+    private String formatSuggestions(final List<Suggestion> suggestions) {
         final StringBuilder result = new StringBuilder(64);
         result.append("\n\nDid you mean?");
         final int limit = Math.min(ObjectSuggestions.MAX_SUGGESTIONS, suggestions.size());
@@ -97,31 +124,49 @@ final class ObjectSuggestions {
      * Ensures available objects are loaded.
      */
     private void ensureLoaded() {
-        if (!this.available.isEmpty()) {
-            return;
+        if (this.available.isEmpty()) {
+            this.loadFromClasspath();
         }
-        this.loadFromClasspath();
     }
 
     /**
      * Loads available EO objects from classpath.
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.EmptyCatchBlock"})
     private void loadFromClasspath() {
         try {
             final ClassLoader loader = Thread.currentThread().getContextClassLoader();
             final Enumeration<URL> resources = loader.getResources("EOorg");
             while (resources.hasMoreElements()) {
-                final URL resource = resources.nextElement();
-                final String protocol = resource.getProtocol();
-                if ("file".equals(protocol)) {
-                    this.scanDirectory(new File(resource.toURI()), "EOorg");
-                } else if ("jar".equals(protocol)) {
-                    this.scanJar(resource);
-                }
+                this.processResource(resources.nextElement());
             }
-        } catch (final Exception ex) {
-            // Silently ignore if we can't load classes - suggestions are optional
+        } catch (final IOException ignored) {
+        }
+    }
+
+    /**
+     * Processes a resource URL.
+     * @param resource Resource URL
+     * @throws IOException If reading fails
+     */
+    private void processResource(final URL resource) throws IOException {
+        final String protocol = resource.getProtocol();
+        if ("file".equals(protocol)) {
+            this.scanFileResource(resource);
+        } else if ("jar".equals(protocol)) {
+            this.scanJar(resource);
+        }
+    }
+
+    /**
+     * Scans a file resource.
+     * @param resource File resource URL
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private void scanFileResource(final URL resource) {
+        try {
+            this.scanDirectory(new File(resource.toURI()), "EOorg");
+        } catch (final Exception ignored) {
         }
     }
 
@@ -131,22 +176,27 @@ final class ObjectSuggestions {
      * @param packagename Current package name
      */
     private void scanDirectory(final File directory, final String packagename) {
-        if (!directory.exists()) {
-            return;
-        }
         final File[] files = directory.listFiles();
-        if (files == null) {
-            return;
-        }
-        for (final File file : files) {
-            if (file.isDirectory()) {
-                this.scanDirectory(
-                    file,
-                    String.format("%s.%s", packagename, file.getName())
-                );
-            } else if (file.getName().endsWith(".class")) {
-                this.processClass(packagename, file.getName());
+        if (files != null) {
+            for (final File file : files) {
+                this.processFile(file, packagename);
             }
+        }
+    }
+
+    /**
+     * Processes a file or directory.
+     * @param file File to process
+     * @param packagename Current package name
+     */
+    private void processFile(final File file, final String packagename) {
+        if (file.isDirectory()) {
+            this.scanDirectory(
+                file,
+                String.format("%s.%s", packagename, file.getName())
+            );
+        } else if (file.getName().endsWith(".class")) {
+            this.processClass(packagename, file.getName());
         }
     }
 
@@ -158,27 +208,39 @@ final class ObjectSuggestions {
     private void scanJar(final URL resource) throws IOException {
         final String jarpath = resource.getPath();
         final int separator = jarpath.indexOf('!');
-        if (separator < 0) {
-            return;
+        if (separator >= 0) {
+            final String path = jarpath.substring(5, separator);
+            try (JarFile jar = new JarFile(path)) {
+                this.processJarEntries(jar);
+            }
         }
-        final String path = jarpath.substring(5, separator);
-        try (JarFile jar = new JarFile(path)) {
-            final Enumeration<JarEntry> entries = jar.entries();
-            while (entries.hasMoreElements()) {
-                final JarEntry entry = entries.nextElement();
-                final String name = entry.getName();
-                if (name.startsWith("EOorg/") && name.endsWith(".class")) {
-                    final String classname = name
-                        .substring(0, name.length() - 6)
-                        .replace('/', '.');
-                    final int lastdot = classname.lastIndexOf('.');
-                    if (lastdot > 0) {
-                        this.processClass(
-                            classname.substring(0, lastdot),
-                            classname.substring(lastdot + 1) + ".class"
-                        );
-                    }
-                }
+    }
+
+    /**
+     * Processes JAR entries.
+     * @param jar JAR file
+     */
+    private void processJarEntries(final JarFile jar) {
+        final Enumeration<JarEntry> entries = jar.entries();
+        while (entries.hasMoreElements()) {
+            this.processJarEntry(entries.nextElement());
+        }
+    }
+
+    /**
+     * Processes a single JAR entry.
+     * @param entry JAR entry
+     */
+    private void processJarEntry(final JarEntry entry) {
+        final String name = entry.getName();
+        if (name.startsWith("EOorg/") && name.endsWith(".class")) {
+            final String classname = name.substring(0, name.length() - 6).replace('/', '.');
+            final int lastdot = classname.lastIndexOf('.');
+            if (lastdot > 0) {
+                this.processClass(
+                    classname.substring(0, lastdot),
+                    classname.substring(lastdot + 1).concat(".class")
+                );
             }
         }
     }
@@ -189,90 +251,91 @@ final class ObjectSuggestions {
      * @param filename Class file name
      */
     private void processClass(final String packagename, final String filename) {
-        if (ObjectSuggestions.PACKAGE_INFO.matcher(filename).find()) {
-            return;
-        }
-        final String classname = filename.substring(0, filename.length() - 6);
-        final String fullname = String.format("%s.%s", packagename, classname);
-        final String eoname = ObjectSuggestions.javaToEo(fullname);
-        if (!eoname.isEmpty()) {
-            this.available.add(eoname);
+        if (!ObjectSuggestions.PACKAGE_INFO.matcher(filename).find()) {
+            final String classname = filename.substring(0, filename.length() - 6);
+            final String fullname = String.format("%s.%s", packagename, classname);
+            final String eoname = ObjectSuggestions.javaToEo(fullname);
+            if (!eoname.isEmpty()) {
+                this.available.add(eoname);
+            }
         }
     }
 
     /**
      * Converts Java class name to EO object name.
-     * @param java Java class name (e.g., "EOorg.EOeolang.EOstdout")
-     * @return EO object name (e.g., "org.eolang.stdout"), or empty if not EO class
+     * @param java Java class name
+     * @return EO object name or empty string
      */
     private static String javaToEo(final String java) {
         final String[] parts = java.split("\\.");
         final StringBuilder result = new StringBuilder(64);
+        boolean valid = true;
         for (final String part : parts) {
             final String converted = ObjectSuggestions.convertPart(part);
             if (converted.isEmpty()) {
-                return "";
+                valid = false;
+                break;
             }
             if (result.length() > 0) {
                 result.append('.');
             }
             result.append(converted);
         }
-        return result.toString();
+        final String output;
+        if (valid) {
+            output = result.toString();
+        } else {
+            output = "";
+        }
+        return output;
     }
 
     /**
      * Converts a single part of Java class name to EO format.
-     * @param part Part to convert (e.g., "EOstdout" or "EOstdout$EOwrite")
-     * @return Converted part, or empty if not a valid EO part
+     * @param part Part to convert
+     * @return Converted part or empty string
      */
     private static String convertPart(final String part) {
-        if (!part.startsWith("EO")) {
-            return "";
-        }
         final StringBuilder result = new StringBuilder(32);
-        final String[] subparts = part.split("\\$");
-        for (final String subpart : subparts) {
-            if (!subpart.startsWith("EO")) {
-                return "";
+        boolean valid = part.startsWith("EO");
+        if (valid) {
+            final String[] subparts = part.split("\\$");
+            for (final String subpart : subparts) {
+                if (!subpart.startsWith("EO")) {
+                    valid = false;
+                    break;
+                }
+                if (result.length() > 0) {
+                    result.append('$');
+                }
+                result.append(subpart.substring(2).replace('_', '-'));
             }
-            if (result.length() > 0) {
-                result.append('$');
-            }
-            result.append(
-                subpart.substring(2).replace('_', '-')
-            );
         }
-        return result.toString();
+        final String output;
+        if (valid) {
+            output = result.toString();
+        } else {
+            output = "";
+        }
+        return output;
     }
 
     /**
-     * Calculates similarity score between two strings.
-     * Combines Levenshtein distance, word matching, and partial matching.
-     * @param target Target string (what user typed)
-     * @param candidate Candidate string (possible suggestion)
-     * @return Similarity score (higher is better)
-     */
-    private static double similarity(final String target, final String candidate) {
-        final double levenshtein = ObjectSuggestions.levenshteinSimilarity(target, candidate);
-        final double wordmatch = ObjectSuggestions.wordMatchScore(target, candidate);
-        final double partial = ObjectSuggestions.partialMatchScore(target, candidate);
-        return levenshtein * 0.4 + wordmatch * 0.3 + partial * 0.3;
-    }
-
-    /**
-     * Calculates Levenshtein-based similarity.
-     * @param first First string
-     * @param second Second string
+     * Calculates similarity score using Levenshtein distance.
+     * @param target Target string
+     * @param candidate Candidate string
      * @return Similarity score between 0 and 1
      */
-    private static double levenshteinSimilarity(final String first, final String second) {
-        final int distance = ObjectSuggestions.levenshteinDistance(first, second);
-        final int maxlen = Math.max(first.length(), second.length());
+    private static double similarity(final String target, final String candidate) {
+        final int distance = ObjectSuggestions.levenshteinDistance(target, candidate);
+        final int maxlen = Math.max(target.length(), candidate.length());
+        final double score;
         if (maxlen == 0) {
-            return 1.0;
+            score = 1.0;
+        } else {
+            score = 1.0 - (double) distance / maxlen;
         }
-        return 1.0 - (double) distance / maxlen;
+        return score;
     }
 
     /**
@@ -284,12 +347,29 @@ final class ObjectSuggestions {
     private static int levenshteinDistance(final String first, final String second) {
         final int flen = first.length();
         final int slen = second.length();
+        final int result;
         if (flen == 0) {
-            return slen;
+            result = slen;
+        } else if (slen == 0) {
+            result = flen;
+        } else {
+            result = ObjectSuggestions.computeDistance(first, second, flen, slen);
         }
-        if (slen == 0) {
-            return flen;
-        }
+        return result;
+    }
+
+    /**
+     * Computes Levenshtein distance using dynamic programming.
+     * @param first First string
+     * @param second Second string
+     * @param flen First string length
+     * @param slen Second string length
+     * @return Edit distance
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static int computeDistance(
+        final String first, final String second, final int flen, final int slen
+    ) {
         int[] prev = new int[slen + 1];
         int[] curr = new int[slen + 1];
         for (int idx = 0; idx <= slen; ++idx) {
@@ -314,55 +394,6 @@ final class ObjectSuggestions {
             curr = temp;
         }
         return prev[slen];
-    }
-
-    /**
-     * Calculates word match score.
-     * @param target Target string
-     * @param candidate Candidate string
-     * @return Score between 0 and 1
-     */
-    private static double wordMatchScore(final String target, final String candidate) {
-        final String[] twords = target.split("[.$-]");
-        final String[] cwords = candidate.split("[.$-]");
-        int matches = 0;
-        for (final String tword : twords) {
-            for (final String cword : cwords) {
-                if (tword.equalsIgnoreCase(cword)) {
-                    matches += 1;
-                    break;
-                }
-            }
-        }
-        if (twords.length == 0) {
-            return 0.0;
-        }
-        return (double) matches / twords.length;
-    }
-
-    /**
-     * Calculates partial match score (substring matching).
-     * @param target Target string
-     * @param candidate Candidate string
-     * @return Score between 0 and 1
-     */
-    private static double partialMatchScore(final String target, final String candidate) {
-        final String tlower = target.toLowerCase();
-        final String clower = candidate.toLowerCase();
-        if (clower.contains(tlower) || tlower.contains(clower)) {
-            return 1.0;
-        }
-        final String[] tparts = target.split("[.$-]");
-        int partials = 0;
-        for (final String tpart : tparts) {
-            if (tpart.length() >= 3 && clower.contains(tpart.toLowerCase())) {
-                partials += 1;
-            }
-        }
-        if (tparts.length == 0) {
-            return 0.0;
-        }
-        return (double) partials / tparts.length;
     }
 
     /**
