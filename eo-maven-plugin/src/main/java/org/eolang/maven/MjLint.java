@@ -152,16 +152,27 @@ public final class MjLint extends MjSafe {
         final Path target = new Place(
             new OnDetailed(new OnDefault(xmir), source).get()
         ).make(base, MjAssemble.XMIR);
-        tojo.withLinted(
-            new FpDefault(
-                src -> this.linted(tojo.identifier(), xmir, counts, unlints).toString(),
-                this.cache.toPath().resolve(MjLint.CACHE),
-                this.plugin.getVersion(),
-                new TojoHash(tojo),
-                base.relativize(target),
-                this.cacheEnabled
-            ).apply(source, target)
-        );
+        if (this.cacheEnabled) {
+            new ConcurrentCache(
+                new Cache(
+                    this.cache.toPath().resolve(MjLint.CACHE),
+                    src -> this.linted(
+                        tojo.identifier(),
+                        xmir,
+                        counts,
+                        unlints
+                    ).toString()
+                )
+            ).apply(source, target, base.relativize(target));
+        } else {
+            this.linted(
+                tojo.identifier(),
+                xmir,
+                counts,
+                unlints
+            );
+        }
+        tojo.withLinted(target);
         return 1;
     }
 

@@ -176,33 +176,36 @@ public final class MjTranspile extends MjSafe {
         final String version = this.plugin.getVersion();
         final Path tail = base.relativize(target);
         final Path cdir = this.cache.toPath().resolve(MjTranspile.CACHE);
-        new FpDefault(
-            src -> {
-                rewrite.compareAndSet(false, true);
-                final long start = System.currentTimeMillis();
-                final String res = transform.apply(xmir).toString();
-                Logger.debug(
-                    this,
-                    "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
-                    source,
-                    MjTranspile.info(source),
-                    target,
-                    MjTranspile.info(target),
-                    System.currentTimeMillis() - start,
-                    version,
-                    hsh.get(),
-                    tail,
-                    this.cacheEnabled,
-                    cdir
-                );
-                return res;
-            },
-            cdir,
-            version,
-            hsh,
-            tail,
-            this.cacheEnabled
-        ).apply(source, target);
+        if (this.cacheEnabled) {
+            new ConcurrentCache(
+                new Cache(
+                    cdir,
+                    src -> {
+                        rewrite.compareAndSet(false, true);
+                        final long start = System.currentTimeMillis();
+                        final String res = transform.apply(xmir).toString();
+                        Logger.debug(
+                            this,
+                            "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
+                            source,
+                            MjTranspile.info(source),
+                            target,
+                            MjTranspile.info(target),
+                            System.currentTimeMillis() - start,
+                            version,
+                            hsh.get(),
+                            tail,
+                            this.cacheEnabled,
+                            cdir
+                        );
+                        return res;
+                    }
+                )
+            ).apply(source, target, tail);
+        } else {
+            rewrite.compareAndSet(false, true);
+            transform.apply(xmir);
+        }
         return this.javaGenerated(rewrite.get(), target, hsh.get());
     }
 
