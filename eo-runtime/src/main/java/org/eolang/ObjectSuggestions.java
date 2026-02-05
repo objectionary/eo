@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.52
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class ObjectSuggestions {
 
     /**
