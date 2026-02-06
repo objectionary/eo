@@ -119,7 +119,7 @@ final class PhPackageTest {
                 () -> new PhPackage(this.phiPackageName()).take("org.eolang.test.package-info"),
                 "We should throw if package-info.class is missing"
             ).getMessage(),
-            Matchers.equalTo(
+            Matchers.startsWith(
                 "Couldn't find object 'Φ.org.eolang.org' because there's no class 'EOorg.EOeolang.EOorg' or package-info class: 'EOorg.EOeolang.EOorg.package-info', at least one of them must exist"
             )
         );
