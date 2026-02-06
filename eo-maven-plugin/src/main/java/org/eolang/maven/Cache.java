@@ -89,9 +89,7 @@ final class Cache {
      */
     private Path hash(final Path tail) {
         final Path full = this.base.resolve(tail.normalize());
-        final String format = String.format("%s.sha256", full.getFileName().toString());
-        final Path parent = full.getParent();
-        return parent.resolve(format);
+        return full.getParent().resolve(String.format("%s.sha256", full.getFileName().toString()));
     }
 
     /**

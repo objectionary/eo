@@ -120,7 +120,9 @@ public final class MjParse extends MjSafe {
                 )
             ).apply(source, target, base.relativize(target));
         } else {
-            refs.add(this.parsed(source, name));
+            final Node node = this.parsed(source, name);
+            new Saved(new XMLDocument(node).toString(), target).value();
+            refs.add(node);
         }
         tojo.withXmir(target).withVersion(MjParse.version(target, refs));
         final List<Xnav> errors = new Xnav(target)

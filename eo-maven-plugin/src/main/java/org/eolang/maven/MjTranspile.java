@@ -179,7 +179,7 @@ public final class MjTranspile extends MjSafe {
         if (this.cacheEnabled) {
             new ConcurrentCache(
                 new Cache(
-                    cdir,
+                    new CachePath(cdir, version, hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
                         final long start = System.currentTimeMillis();
@@ -204,7 +204,7 @@ public final class MjTranspile extends MjSafe {
             ).apply(source, target, tail);
         } else {
             rewrite.compareAndSet(false, true);
-            transform.apply(xmir);
+            new Saved(transform.apply(xmir).toString(), target).value();
         }
         return this.javaGenerated(rewrite.get(), target, hsh.get());
     }

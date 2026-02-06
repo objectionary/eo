@@ -155,7 +155,11 @@ public final class MjLint extends MjSafe {
         if (this.cacheEnabled) {
             new ConcurrentCache(
                 new Cache(
-                    this.cache.toPath().resolve(MjLint.CACHE),
+                    new CachePath(
+                        this.cache.toPath().resolve(MjLint.CACHE),
+                        this.plugin.getVersion(),
+                        new TojoHash(tojo).get()
+                    ),
                     src -> this.linted(
                         tojo.identifier(),
                         xmir,
@@ -165,12 +169,11 @@ public final class MjLint extends MjSafe {
                 )
             ).apply(source, target, base.relativize(target));
         } else {
-            this.linted(
-                tojo.identifier(),
-                xmir,
-                counts,
-                unlints
-            );
+            new Saved(
+                this.linted(tojo.identifier(), xmir, counts, unlints)
+                    .toString(),
+                target
+            ).value();
         }
         tojo.withLinted(target);
         return 1;
