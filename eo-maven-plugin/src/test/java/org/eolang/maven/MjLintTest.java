@@ -12,14 +12,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,13 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjLint}.
  *
  * @since 0.31.0
- * @todo #4851:30min Repair all the tests in {@link MjLintTest} related to caching.
- *  We disabled these tests because of the changes in caching logic, but they should be repaired
- *  and enabled again to make sure that caching works as expected.
- *  Tests to enable:
- *  - {@link MjLintTest#skipsAlreadyLinted}
- *  - {@link MjLintTest#savesVerifiedResultsToCache}
- *  - {@link MjLintTest#getsAlreadyVerifiedResultsFromCache}
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
@@ -171,7 +162,6 @@ final class MjLintTest {
     }
 
     @Test
-    @Disabled
     void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
@@ -180,17 +170,21 @@ final class MjLintTest {
         final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", MjLint.DIR, MjAssemble.XMIR)
         );
-        final long mtime = path.toFile().lastModified();
+        final String xpath = "/object/@time";
+        final String before = new Xnav(path).one(xpath).text().orElseThrow();
         maven.execute(MjLint.class);
+        final String after = new Xnav(path).one(xpath).text().orElseThrow();
         MatcherAssert.assertThat(
-            "VerifyMojo must skip verification if XMIR was already verified",
-            path.toFile().lastModified(),
-            Matchers.is(mtime)
+            String.format(
+                "must skip verification if XMIR was already verified, we check it by time attribute in XMIR (before: '%s', after: '%s'), but it was changed",
+                before, after
+            ),
+            before,
+            Matchers.equalTo(after)
         );
     }
 
     @Test
-    @Disabled
     void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
@@ -210,38 +204,29 @@ final class MjLintTest {
     }
 
     @Test
-    @Disabled
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
-        final TextOf cached = new TextOf(
+        final TextOf input = new TextOf(
             new ResourceOf("org/eolang/maven/main.xml")
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        new Saved(
-            cached,
-            cache
-                .resolve(MjLint.CACHE)
-                .resolve(FakeMaven.pluginVersion())
-                .resolve(hash)
-                .resolve("foo/x/main.xmir")
-        ).value();
-        Files.setLastModifiedTime(
-            cache.resolve(
-                Paths
-                    .get(MjLint.CACHE)
-                    .resolve(FakeMaven.pluginVersion())
-                    .resolve(hash)
-                    .resolve("foo/x/main.xmir")
+        final Path from = temp.resolve("input.xml");
+        new Saved(input, from).value();
+        new Cache(
+            new CachePath(
+                cache.resolve(MjLint.CACHE),
+                FakeMaven.pluginVersion(),
+                hash
             ),
-            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
-        );
+            p -> input.asString()
+        ).apply(from, temp.resolve("main.xmir"), Paths.get("foo/x/main.xmir"));
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            "Cached result should match the original verified XML document",
+            "We must get already verified results from cache",
             new XMLDocument(
                 Files.readAllBytes(
                     temp.resolve(
@@ -253,7 +238,14 @@ final class MjLintTest {
                     )
                 )
             ),
-            Matchers.is(new XMLDocument(cached.asString()))
+            Matchers.is(
+                new XMLDocument(
+                    cache.resolve(MjLint.CACHE)
+                        .resolve(FakeMaven.pluginVersion())
+                        .resolve(hash)
+                        .resolve("foo/x/main.xmir")
+                )
+            )
         );
     }
 
