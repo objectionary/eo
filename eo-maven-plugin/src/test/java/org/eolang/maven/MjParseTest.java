@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -83,24 +82,14 @@ final class MjParseTest {
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(MjParse.DIR);
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
-        new FpDefault(
-            src -> expected,
-            cache.resolve(MjParse.CACHE),
-            FakeMaven.pluginVersion(),
-            hash.value(),
-            base.relativize(target)
-        ).apply(maven.programTojo().source(), target);
+        final Path tail = base.relativize(target);
+        new Cache(
+            cache.resolve(MjParse.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash.value()),
+            src -> expected
+        ).apply(maven.programTojo().source(), target, tail);
         target.toFile().delete();
-        Files.setLastModifiedTime(
-            cache.resolve(
-                Paths
-                    .get(MjParse.CACHE)
-                    .resolve(FakeMaven.pluginVersion())
-                    .resolve(hash.value())
-                    .resolve("foo/x/main.xmir")
-            ),
-            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
-        );
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             MjParse.DIR,

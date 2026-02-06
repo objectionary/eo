@@ -17,10 +17,6 @@ import org.cactoos.func.UncheckedFunc;
  * Simple cache mechanism.
  * This class isn't thread-safe, use {@link ConcurrentCache} for concurrent scenarios.
  * @since 0.60
- * @todo #4846:30min Replace {@link FpDefault} with {@link Cache}.
- *  The FpDefault class currently implements caching logic that is similar to the Cache class.
- *  Refactor the codebase to use Cache instead of FpDefault for caching functionality to
- *  improve code reuse and maintainability.
  */
 final class Cache {
 
@@ -33,6 +29,15 @@ final class Cache {
      * Compilation function.
      */
     private final Func<Path, String> compilation;
+
+    /**
+     * Constructor.
+     * @param path Cache path
+     * @param compilation Compilation function
+     */
+    Cache(final CachePath path, final Func<Path, String> compilation) {
+        this(path.get(), compilation);
+    }
 
     /**
      * Ctor.
@@ -55,9 +60,11 @@ final class Cache {
             final String sha = Cache.sha(source);
             final Path hash = this.hash(tail);
             final Path cache = this.base.resolve(tail);
-            if (Files.notExists(hash)
-                || Files.notExists(cache)
-                || !Files.readString(hash).equals(sha)) {
+            if (
+                Files.notExists(hash)
+                    || Files.notExists(cache)
+                    || !Files.readString(hash).equals(sha)
+            ) {
                 final String content = new UncheckedFunc<>(this.compilation).apply(source);
                 new Saved(sha, this.hash(tail)).value();
                 new Saved(content, cache).value();

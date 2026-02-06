@@ -104,20 +104,27 @@ public final class MjParse extends MjSafe {
         final Path base = this.targetDir.toPath().resolve(MjParse.DIR);
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
-        tojo.withXmir(
-            new FpDefault(
-                src -> {
-                    final Node node = this.parsed(src, name);
-                    refs.add(node);
-                    return new XMLDocument(node).toString();
-                },
-                this.cache.toPath().resolve(MjParse.CACHE),
-                this.plugin.getVersion(),
-                new TojoHash(tojo),
-                base.relativize(target),
-                this.cacheEnabled
-            ).apply(source, target)
-        ).withVersion(MjParse.version(target, refs));
+        if (this.cacheEnabled) {
+            new ConcurrentCache(
+                new Cache(
+                    new CachePath(
+                        this.cache.toPath().resolve(MjParse.CACHE),
+                        this.plugin.getVersion(),
+                        new TojoHash(tojo).get()
+                    ),
+                    src -> {
+                        final Node node = this.parsed(src, name);
+                        refs.add(node);
+                        return new XMLDocument(node).toString();
+                    }
+                )
+            ).apply(source, target, base.relativize(target));
+        } else {
+            final Node node = this.parsed(source, name);
+            new Saved(new XMLDocument(node).toString(), target).value();
+            refs.add(node);
+        }
+        tojo.withXmir(target).withVersion(MjParse.version(target, refs));
         final List<Xnav> errors = new Xnav(target)
             .element("object")
             .element("errors")
@@ -175,7 +182,8 @@ public final class MjParse extends MjSafe {
      * @throws FileNotFoundException If XML document file does not exist
      */
     private static String version(
-        final Path target, final List<Node> parsed
+        final Path target,
+        final List<Node> parsed
     ) throws FileNotFoundException {
         final Node node;
         if (parsed.isEmpty()) {

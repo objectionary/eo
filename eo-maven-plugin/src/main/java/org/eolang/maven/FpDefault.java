@@ -26,6 +26,9 @@ import org.cactoos.io.InputOf;
  * 3) update target from source, update cache from target and return target.
  * 4) copy content from cache to target and return target.</p>
  * @since 0.41
+ * @todo #4851:60min Remove {@link FpDefault} from codebase.
+ *  The {@link FpDefault} class is used only in tests.
+ *  We should remove it and all tests that use it.
  * @checkstyle ParameterNumberCheck (100 lines)
  */
 final class FpDefault extends FpEnvelope {
