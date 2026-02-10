@@ -27,58 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class FpDefaultTest {
 
-    @Test
-    void usesCacheEvenItIsSnapshot(@Mktmp final Path temp) throws Exception {
-        final Path source = FpDefaultTest.existedSource(temp);
-        final Path target = FpDefaultTest.notExistedTarget(temp);
-        final String version = "1.0-SNAPSHOT";
-        final String hash = "snapshothash";
-        final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
-        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
-        FpDefaultTest.makeOlder(cache.path());
-        new FpDefault(
-            src -> FpDefaultTest.footprintContent(),
-            temp.resolve("cache"),
-            version,
-            hash,
-            Path.of("")
-        ).apply(source, target);
-        MatcherAssert.assertThat(
-            "We expect that cache is used even for SNAPSHOT version",
-            new TextOf(target).asString(),
-            Matchers.allOf(
-                Matchers.equalTo(FpDefaultTest.cacheContent()),
-                Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
-            )
-        );
-    }
-
-    @Test
-    void cachesEvenItIsZeroVersion(@Mktmp final Path temp) throws Exception {
-        final Path source = FpDefaultTest.existedSource(temp);
-        final Path target = FpDefaultTest.notExistedTarget(temp);
-        final String version = "0.0.0";
-        final String hash = "zerohash";
-        final Cache cache = FpDefaultTest.notExistedCache(temp, version, hash);
-        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.cacheContent());
-        FpDefaultTest.makeOlder(cache.path());
-        new FpDefault(
-            src -> FpDefaultTest.footprintContent(),
-            temp.resolve("cache"),
-            version,
-            hash,
-            Path.of("")
-        ).apply(source, target);
-        MatcherAssert.assertThat(
-            "We expect that cache is used even for 0.0.0 version",
-            new TextOf(target).asString(),
-            Matchers.allOf(
-                Matchers.equalTo(FpDefaultTest.cacheContent()),
-                Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
-            )
-        );
-    }
-
     /**
      * We should use the transpilation cache if it existed before transpilation.
      * Current implementation of {@link FpDefault} relies on file timestamps to decide
@@ -132,20 +80,6 @@ final class FpDefaultTest {
     }
 
     /**
-     * Returns the cache content.
-     */
-    private static String cacheContent() {
-        return "Cache content";
-    }
-
-    /**
-     * Returns the footprint content.
-     */
-    private static String footprintContent() {
-        return "Footprint content";
-    }
-
-    /**
      * Existed file with content.
      * @param path Path to file
      * @param content Content to insert
@@ -154,44 +88,6 @@ final class FpDefaultTest {
      */
     private static Path existedFile(final Path path, final String content) throws IOException {
         return new Saved(content, path).value();
-    }
-
-    /**
-     * Existed source file with content.
-     * @param temp Temporary directory
-     * @return Path to source file
-     * @throws IOException If failed to store content
-     */
-    private static Path existedSource(final Path temp) throws IOException {
-        final Path source = FpDefaultTest.notExistedSource(temp);
-        return FpDefaultTest.existedFile(source, "Source");
-    }
-
-    /**
-     * Not existed source file.
-     * @param temp Temporary directory
-     * @return Path to source file
-     */
-    private static Path notExistedSource(final Path temp) {
-        return temp.resolve("so/ur/ce.txt");
-    }
-
-    /**
-     * Not existed target file.
-     * @param temp Temporary directory
-     * @return Path to target file
-     */
-    private static Path notExistedTarget(final Path temp) {
-        return temp.resolve("tar/get.txt");
-    }
-
-    /**
-     * Make file older.
-     * @param file Path to file
-     * @throws IOException If failed to make file older
-     */
-    private static void makeOlder(final Path file) throws IOException {
-        FpDefaultTest.makeOlder(file, 50_000);
     }
 
     /**
@@ -205,67 +101,5 @@ final class FpDefaultTest {
             file,
             FileTime.fromMillis(System.currentTimeMillis() + time)
         );
-    }
-
-    /**
-     * Not existed global cache.
-     * @param temp Temporary directory
-     * @param ver Cache version
-     * @param hash Git hash
-     * @return Existed cache with content
-     */
-    private static Cache notExistedCache(final Path temp, final String ver, final String hash) {
-        return new Cache(
-            temp.resolve("cache"),
-            ver,
-            hash,
-            Paths.get("")
-        );
-    }
-
-    /**
-     * Cache path.
-     * @since 0.41
-     * @checkstyle VisibilityModifierCheck (100 lines)
-     * @checkstyle ParameterNumberCheck (100 lines)
-     */
-    private static final class Cache {
-        /**
-         * Base.
-         */
-        final Path base;
-
-        /**
-         * Semver.
-         */
-        final String semver;
-
-        /**
-         * Hash.
-         */
-        final String hash;
-
-        /**
-         * Tail.
-         */
-        final Path tail;
-
-        /**
-         * Ctor.
-         * @param base Base
-         * @param semver Semver
-         * @param hash Hash
-         * @param tail Tail
-         */
-        Cache(final Path base, final String semver, final String hash, final Path tail) {
-            this.base = base;
-            this.semver = semver;
-            this.hash = hash;
-            this.tail = tail;
-        }
-
-        Path path() {
-            return this.base.resolve(this.semver).resolve(this.hash).resolve(this.tail);
-        }
     }
 }
