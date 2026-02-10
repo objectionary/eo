@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -154,6 +155,65 @@ final class CacheTest {
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
+                )
+            )
+        );
+    }
+
+    @Test
+    void generatesCorrectHashForLargeFile(
+        @Mktmp final Path temp
+    ) throws IOException, NoSuchAlgorithmException {
+        final var cache = temp.resolve("cache");
+        Files.createDirectories(cache);
+        final var source = temp.resolve("large.txt");
+        final int lines = 100_000;
+        final StringBuilder builder = new StringBuilder(lines * 10);
+        IntStream.range(0, lines).forEach(
+            i -> builder.append("Line ").append(i).append('\n')
+        );
+        final String content = builder.toString();
+        Files.writeString(source, content, StandardCharsets.UTF_8);
+        final var target = temp.resolve("out.txt");
+        final var tail = source.getFileName();
+        new Cache(cache, p -> content).apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "SHA-256 hash file has incorrect content for large file",
+            Files.readString(
+                cache.resolve(String.format("%s.sha256", tail)),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(
+                Base64.getEncoder().encodeToString(
+                    MessageDigest.getInstance("SHA-256")
+                        .digest(content.getBytes(StandardCharsets.UTF_8))
+                )
+            )
+        );
+    }
+
+    @Test
+    void generatesCorrectHashForTinyFile(
+        @Mktmp final Path temp
+    ) throws IOException, NoSuchAlgorithmException {
+        final var cache = temp.resolve("cache");
+        Files.createDirectories(cache);
+        final var source = temp.resolve("tiny.txt");
+        final String content = "x";
+        Files.writeString(source, content, StandardCharsets.UTF_8);
+        final var target = temp.resolve("out.txt");
+        final var tail = source.getFileName();
+        new Cache(cache, p -> content).apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "SHA-256 hash file has incorrect content for tiny file",
+            Files.readString(
+                cache.resolve(String.format("%s.sha256", tail)),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(
+                Base64.getEncoder().encodeToString(
+                    MessageDigest.getInstance("SHA-256")
+                        .digest(content.getBytes(StandardCharsets.UTF_8))
                 )
             )
         );

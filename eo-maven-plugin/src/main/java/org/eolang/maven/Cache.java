@@ -98,15 +98,18 @@ final class Cache {
      * @return Base64-encoded SHA-256 hash
      * @throws NoSuchAlgorithmException If SHA-256 algorithm is not available
      * @throws IOException If an I/O error occurs reading the file
-     * @todo #4846:30min OutOfMemoryError for large files in cache.
-     *  The sha method reads the entire file into memory using Files.readAllBytes(file) which
-     *  could cause OutOfMemoryError for large files. Consider using a streaming approach with
-     *  MessageDigest.update() in a loop to hash the file in chunks, similar to how it's typically
-     *  done for large file hashing operations.
      */
     private static String sha(final Path file) throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        final byte[] hash = digest.digest(Files.readAllBytes(file));
+        try (var stream = Files.newInputStream(file)) {
+            final byte[] buffer = new byte[8192];
+            int read = stream.read(buffer);
+            while (read != -1) {
+                digest.update(buffer, 0, read);
+                read = stream.read(buffer);
+            }
+        }
+        final byte[] hash = digest.digest();
         return Base64.getEncoder().encodeToString(hash);
     }
 }
