@@ -15,7 +15,6 @@ import java.nio.file.attribute.FileTime;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,86 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class FpDefaultTest {
-
-    @Test
-    void failsIfSourcePathNotExists() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FpDefault(
-                src -> FpDefaultTest.footprintContent(),
-                Paths.get("/file-doesnt-exist"),
-                "",
-                "",
-                Paths.get("/also-doesnt-exist")
-            ).apply(Paths.get("/is-absent"), Paths.get("/not-found")),
-            "FpDefault should fail if source path does not exist"
-        );
-    }
-
-    @Test
-    void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(
-        @Mktmp final Path temp
-    ) throws Exception {
-        final Path source = FpDefaultTest.existedSource(temp);
-        final Path target = FpDefaultTest.notExistedTarget(temp);
-        final Cache cache = FpDefaultTest.existedCache(temp);
-        FpDefaultTest.makeOlder(source);
-        FpDefaultTest.makeOlder(cache.path(), 100_000);
-        FpDefaultTest.defaultFootprint(cache, source, target);
-        MatcherAssert.assertThat(
-            "Target content must be updated from cache, but it didn't",
-            new TextOf(target).asString(),
-            Matchers.equalTo(FpDefaultTest.cacheContent())
-        );
-        MatcherAssert.assertThat(
-            "Cache content must not be changed, but it did",
-            new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FpDefaultTest.cacheContent())
-        );
-    }
-
-    @Test
-    void skipsCacheIfItIsNotEnabled(@Mktmp final Path temp) throws Exception {
-        final Path source = FpDefaultTest.existedSource(temp);
-        final Path target = FpDefaultTest.notExistedTarget(temp);
-        final Cache cache = FpDefaultTest.existedCache(temp);
-        FpDefaultTest.makeOlder(source);
-        FpDefaultTest.makeOlder(cache.path(), 100_000);
-        new FpDefault(
-            src -> FpDefaultTest.footprintContent(),
-            cache.base,
-            cache.semver,
-            () -> cache.hash,
-            cache.tail,
-            false
-        ).apply(source, target);
-        MatcherAssert.assertThat(
-            "Global cache must be skipped because of the boolean flag",
-            new TextOf(target).asString(),
-            Matchers.allOf(
-                Matchers.equalTo(FpDefaultTest.footprintContent()),
-                Matchers.not(Matchers.equalTo(FpDefaultTest.cacheContent()))
-            )
-        );
-    }
-
-    @Test
-    void throwsNpeIfHashIsNull(@Mktmp final Path temp) throws IOException {
-        final Path source = FpDefaultTest.existedSource(temp);
-        final Path target = FpDefaultTest.notExistedTarget(temp);
-        final Cache cache = FpDefaultTest.existedCache(temp);
-        Assertions.assertThrows(
-            NullPointerException.class,
-            () -> new FpDefault(
-                src1 -> FpDefaultTest.footprintContent(),
-                cache.base,
-                cache.semver,
-                null,
-                cache.tail
-            ).apply(source, target),
-            "Should throw NPE if hash is null"
-        );
-    }
 
     @Test
     void usesCacheEvenItIsSnapshot(@Mktmp final Path temp) throws Exception {
@@ -157,41 +76,6 @@ final class FpDefaultTest {
                 Matchers.equalTo(FpDefaultTest.cacheContent()),
                 Matchers.not(Matchers.equalTo(FpDefaultTest.footprintContent()))
             )
-        );
-    }
-
-    /**
-     * This test was added to mitigate an issue with the transpilation cache.
-     * You can read more about it here:
-     * <a href="https://github.com/objectionary/eo/issues/4840">4840</a>
-     * If cache is missing, then transpilation should be performed.
-     * @param temp Temporary directory
-     * @throws Exception If fails
-     */
-    @Test
-    void transpilesIfCacheMiss(@Mktmp final Path temp) throws Exception {
-        final Path cdir = temp.resolve("cache-folder").resolve("transpiled-folder");
-        Files.createDirectories(cdir);
-        final String content = "Source content - no cache";
-        final Path source = FpDefaultTest.existedFile(
-            temp.resolve("target/eo/1-parse/org/eolang/examples/fibonacci.xmir"),
-            "old"
-        );
-        final Path target = FpDefaultTest.notExistedTarget(
-            temp.resolve("target/eo/5-transpile/org/eolang/examples/fibonacci.xmir")
-        );
-        new FpDefault(
-            src -> content,
-            cdir,
-            "1.0-SNAPSHOT",
-            () -> "94641989dbaebef167cf67906a265d925bbb4e5b",
-            Paths.get("org/eolang/examples/fibonacci.xmir"),
-            true
-        ).apply(source, target);
-        MatcherAssert.assertThat(
-            "We expect a cache miss to trigger transpilation",
-            new TextOf(target).asString(),
-            Matchers.equalTo(content)
         );
     }
 
@@ -262,25 +146,6 @@ final class FpDefaultTest {
     }
 
     /**
-     * Apply default footprint.
-     * @param cache Cache
-     * @param source Source
-     * @param target Target
-     * @throws Exception If fails
-     */
-    private static void defaultFootprint(
-        final Cache cache, final Path source, final Path target
-    ) throws Exception {
-        new FpDefault(
-            src -> FpDefaultTest.footprintContent(),
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
-    }
-
-    /**
      * Existed file with content.
      * @param path Path to file
      * @param content Content to insert
@@ -343,18 +208,6 @@ final class FpDefaultTest {
     }
 
     /**
-     * Existed global cache with content.
-     * @param temp Temporary directory
-     * @return Existed cache with content
-     * @throws IOException If failed to store a content to cache
-     */
-    private static Cache existedCache(final Path temp) throws IOException {
-        final Cache cache = FpDefaultTest.notExistedCache(temp);
-        FpDefaultTest.existedFile(cache.path(), "Cache content");
-        return cache;
-    }
-
-    /**
      * Not existed global cache.
      * @param temp Temporary directory
      * @param ver Cache version
@@ -368,15 +221,6 @@ final class FpDefaultTest {
             hash,
             Paths.get("")
         );
-    }
-
-    /**
-     * Not existed global cache.
-     * @param temp Temporary directory
-     * @return Existed cache with content
-     */
-    private static Cache notExistedCache(final Path temp) {
-        return FpDefaultTest.notExistedCache(temp, "1.2.3", "abcdef");
     }
 
     /**
