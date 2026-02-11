@@ -30,4 +30,6 @@ String log = new File(basedir, 'build.log').text
         'BUILD SUCCESS',
 ].each { expectedLog -> assert log.contains(expectedLog) || !online() }
 
+assert !log.contains(' ➜ org.eolang.PhDefault'):
+    'The log contains verbose logs, but shouldn\'t, remove the --verbose option'
 true
