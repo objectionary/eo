@@ -2,6 +2,7 @@
 +alias org.eolang.fs.file
 +alias org.eolang.sm.os
 +alias org.eolang.ss.list
++alias org.eolang.ss.reduced
 +alias org.eolang.tt.regex
 +alias org.eolang.tt.index-of
 +alias org.eolang.tt.last-index-of
@@ -10,7 +11,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.fs
-+version 0.59.4
++version 0.59.5
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:56
@@ -84,7 +85,7 @@
           separator
       QQ.tt.joined > path
         separator
-        reduced.
+        reduced
           list
             split
               uri
@@ -333,7 +334,7 @@
             separator
         QQ.tt.joined > path!
           separator
-          reduced.
+          reduced
             list
               split
                 driveless

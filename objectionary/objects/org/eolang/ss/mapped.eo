@@ -1,0 +1,25 @@
++alias org.eolang.ss.list
++alias org.eolang.ss.mappedi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ss
++version 0.59.5
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Map `lst` without index. Here "func" must be an abstract
+# object with one free attribute, for the element
+# of the collection.
+[lst func] > mapped
+  mappedi > @
+    lst
+    func item > [item idx] >>
+
+  # Tests that mapping without index transforms elements correctly.
+  [] +> tests-simple-list-mapping
+    eq. > @
+      mapped
+        list
+          * 1 2 3
+        x.times 2 > [x]
+      * 2 4 6

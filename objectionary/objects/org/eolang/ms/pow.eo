@@ -1,0 +1,195 @@
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.ms
++rt jvm org.eolang:eo-runtime:0.59.5
++rt node eo2js-runtime:0.0.0
++version 0.59.5
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# An operation that raises `num` to the power of `x`.
+[num x] > pow ?
+  # Tests that power operation works correctly for 2^4.
+  [] +> tests-pow-test
+    eq. +> @
+      pow 2 4
+      16
+
+  # Tests that any number raised to the power of zero equals 1.
+  [] +> tests-pow-is-zero
+    eq. +> @
+      pow 2 0
+      1
+
+  # Tests that large number raised to large negative power approaches zero.
+  [] +> tests-pow-is-negative
+    eq. +> @
+      pow 984782 -12341
+      0
+
+  # Tests that 3 raised to the power of 2 equals 9.
+  [] +> tests-pow-of-two
+    eq. +> @
+      pow 3 2
+      9
+
+  # Tests that zero raised to any positive power equals zero.
+  [] +> tests-pow-of-zero
+    eq. +> @
+      pow 0 145
+      0
+
+  # Tests that zero raised to negative power throws error.
+  [] +> throws-on-negative-pow-of-zero
+    pow 0 -567 +> @
+
+  # Tests that NaN raised to NaN power results in NaN.
+  # Check pow works with NaNs.
+  [] +> tests-nan-to-the-pow-of-nan-is-nan
+    is-nan. +> @
+      pow nan nan
+
+  # Tests that NaN raised to any power results in NaN.
+  [] +> tests-nan-to-the-pow-of-any-is-nan
+    is-nan. +> @
+      pow nan 42
+
+  # Tests that any number raised to NaN power results in NaN.
+  [] +> tests-any-to-the-pow-of-nan-is-nan
+    is-nan. +> @
+      pow 52 nan
+
+  # Tests that any integer raised to the power of zero equals 1.
+  # Check if pow is zero.
+  [] +> tests-any-int-to-the-pow-of-zero-is-one
+    eq. +> @
+      pow 42 0
+      1
+
+  # Tests that any float raised to the power of zero equals 1.
+  [] +> tests-any-float-to-the-pow-of-zero-is-one
+    eq. +> @
+      pow 42.5 0
+      1
+
+  # Tests that zero raised to negative power equals positive infinity.
+  # Check if pow is less than zero.
+  [] +> tests-zero-to-the-negative-pow-is-positive-infinity
+    eq. +> @
+      pow 0 -52
+      positive-infinity
+
+  # Tests that zero raised to negative infinity equals positive infinity.
+  [] +> tests-zero-to-the-negative-infinity-pow-is-positive-infinity
+    eq. +> @
+      pow 0 negative-infinity
+      positive-infinity
+
+  # Tests that positive integer raised to negative infinity equals zero.
+  [] +> tests-positive-int-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow 42 negative-infinity
+      0
+
+  # Tests that positive float raised to negative infinity equals zero.
+  [] +> tests-positive-float-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow 42.5 negative-infinity
+      0
+
+  # Tests that negative integer raised to negative infinity equals zero.
+  [] +> tests-negative-int-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow -42 negative-infinity
+      0
+
+  # Tests that negative float raised to negative infinity equals zero.
+  [] +> tests-negative-float-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow -42.5 negative-infinity
+      0
+
+  # Tests that positive infinity raised to negative infinity equals zero.
+  [] +> tests-positive-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow positive-infinity negative-infinity
+      0
+
+  # Tests that negative infinity raised to negative infinity equals zero.
+  [] +> tests-negative-infinity-to-the-pow-of-negative-infinity-is-zero
+    eq. +> @
+      pow negative-infinity negative-infinity
+      0
+
+  # Tests that positive infinity raised to finite negative power equals zero.
+  [] +> tests-positive-infinity-to-the-finite-negative-int-pow-is-zero
+    eq. +> @
+      pow positive-infinity -42
+      0
+
+  # Tests that positive infinity raised to finite negative float power equals zero.
+  [] +> tests-positive-infinity-to-the-finite-negative-float-pow-is-zero
+    eq. +> @
+      pow positive-infinity -42.2
+      0.0
+
+  # Tests that 2 raised to the power of -1 equals 0.5.
+  [] +> tests-two-to-the-pow-of-minus-one
+    eq. +> @
+      pow 2 -1
+      0.5
+
+  # Tests that 2 raised to the power of -2 equals 0.25.
+  [] +> tests-two-to-the-pow-of-int-minus-two
+    eq. +> @
+      pow 2 -2
+      0.25
+
+  # Tests mathematical operation functionality.
+  [] +> tests-two-to-the-pow-of-minus-three
+    eq. +> @
+      pow 2 -3
+      0.125
+
+  # Tests mathematical operation functionality.
+  [] +> tests-four-to-the-pow-of-minus-three
+    eq. +> @
+      pow 4 -3.0
+      0.015625
+
+  # Tests mathematical operation functionality.
+  # Check if pow more than zero.
+  [] +> tests-zero-to-the-pow-of-positive-int-is-zero
+    eq. +> @
+      pow 0 4
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-zero-to-the-pow-of-positive-float-is-zero
+    eq. +> @
+      pow 0 4.2
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-zero-to-the-pow-of-positive-infinity-is-zero
+    eq. +> @
+      pow 0 positive-infinity
+      0
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. +> @
+      pow -10 positive-infinity
+      positive-infinity
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-float-to-the-pow-of-positive-infinity-is-infinity
+    eq. +> @
+      pow -4.2 positive-infinity
+      positive-infinity
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. +> @
+      pow 42 positive-infinity
+      positive-infinity
