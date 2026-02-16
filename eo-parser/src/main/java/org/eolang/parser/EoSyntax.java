@@ -187,13 +187,6 @@ public final class EoSyntax implements Syntax {
         parser.addErrorListener(eospy);
         final XeEoListener xel = new XeEoListener();
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = this.transform.apply(
-            new XMLDocument(
-                new Xembler(
-                    new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
-                ).domQuietly()
-            )
-        );
         final long errors = new Unchecked<>(new LengthOf(spy)).value()
             + new Unchecked<>(new LengthOf(eospy)).value();
         if (errors == 0) {
@@ -208,7 +201,13 @@ public final class EoSyntax implements Syntax {
                 lines.size(), errors
             );
         }
-        return dom;
+        return this.transform.apply(
+            new XMLDocument(
+                new Xembler(
+                    new Directives(xel).append(new DrErrors(spy)).append(new DrErrors(eospy))
+                ).domQuietly()
+            )
+        );
     }
 
     /**

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 final class EoIndentLexerTest {
     @Test
     void emitsTabWithCorrectName() throws IOException {

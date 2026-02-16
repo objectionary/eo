@@ -20,10 +20,9 @@ final class LogProgress implements AfterEachCallback {
 
     @Override
     public void afterEach(final ExtensionContext context) {
-        final Class<?> clazz = context.getTestClass().orElse(LogProgress.class);
         if (LogProgress.parameterized(context)) {
             Logger.info(
-                clazz,
+                context.getTestClass().orElse(LogProgress.class),
                 "Parameterized test %s done",
                 context.getDisplayName().lines().findFirst().orElse(context.getUniqueId())
             );

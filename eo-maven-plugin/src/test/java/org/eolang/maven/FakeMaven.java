@@ -45,7 +45,6 @@ import org.cactoos.text.UncheckedText;
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
-    "PMD.CouplingBetweenObjects",
     "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName"
 })

@@ -14,6 +14,7 @@ import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +29,7 @@ import org.xembly.Xembler;
  *
  * @since 0.5
  */
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 final class StrictXmirTest {
 
     @Test
@@ -41,6 +43,15 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    @ExtendWith(WeAreOnline.class)
+    void createsTemporaryXsdFile(@Mktmp final Path tmp) {
+        new StrictXmir(
+            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+        ).inner();
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve("XMIR.xsd").toFile().exists(),
@@ -54,10 +65,9 @@ final class StrictXmirTest {
     void doesNotFailWithDifferentXmlInMultipleThreads(@Mktmp final Path tmp) {
         Assertions.assertDoesNotThrow(
             new Together<>(
-                thread -> {
-                    final XML xml = StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd");
-                    return new StrictXmir(xml, tmp).inner();
-                }
+                thread -> new StrictXmir(
+                    StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+                ).inner()
             )::asList,
             "StrictXmir should not fail in different threads with different xmls"
         );
@@ -67,13 +77,13 @@ final class StrictXmirTest {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MktmpResolver.class)
     void doesNotFailOnTheSameOperation(@Mktmp final Path tmp) {
-        final XML xmir = new StrictXmir(
-            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+        final AtomicReference<XML> ref = new AtomicReference<>(
+            new StrictXmir(
+                StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+            )
         );
         Assertions.assertDoesNotThrow(
-            new Together<>(
-                thread -> xmir.inner()
-            )::asList,
+            new Together<>(thread -> ref.get().inner())::asList,
             "StrictXmir should not fail in different threads with the same xml"
         );
     }
@@ -113,6 +123,22 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void createsLocalSchemaXsdFile(@Mktmp final Path tmp) {
+        new StrictXmir(
+            new Xmir(
+                StrictXmirTest.xmir(
+                    String.format(
+                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                        Manifests.read("EO-Version")
+                    )
+                )
+            ),
+            tmp
+        ).inner();
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve(

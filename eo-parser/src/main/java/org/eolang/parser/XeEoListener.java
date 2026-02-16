@@ -31,8 +31,8 @@ import org.xembly.Directives;
     "PMD.TooManyMethods",
     "PMD.AvoidDuplicateLiterals",
     "PMD.ExcessivePublicCount",
-    "PMD.ExcessiveClassLength",
-    "PMD.GodClass"
+    "PMD.GodClass",
+    "PMD.CouplingBetweenObjects"
 })
 final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
@@ -102,10 +102,9 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.dirs.addIf("metas");
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
-            final String head = pair[0].substring(1);
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
-                .add("head").set(head).up()
+                .add("head").set(pair[0].substring(1)).up()
                 .add("tail");
             if (pair.length > 1) {
                 this.dirs.set(XeEoListener.qqToGlobalPhi(pair[1].trim())).up();
@@ -416,7 +415,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterApplicable(final EoParser.ApplicableContext ctx) {
         this.objects.start(ctx);
         final String base;
@@ -546,7 +544,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             final int number = Integer.parseInt(num);
             if (num.charAt(0) == '+'
                 || num.charAt(0) == '-'
-                || num.length() > 1 && num.charAt(0) == '0'
+                || !num.equals("0") && num.charAt(0) == '0'
                 || number < 0
             ) {
                 this.errors.add(
@@ -807,7 +805,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBeginner(final EoParser.BeginnerContext ctx) {
         this.objects.start(ctx);
         if (ctx.data() == null) {
@@ -836,7 +833,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterFinisher(final EoParser.FinisherContext ctx) {
         this.objects.start(ctx);
         final String base;
@@ -944,7 +940,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final EoParser.SuffixContext ctx) {
         this.objects.enter();
         if (ctx.PHI() != null) {
@@ -980,7 +975,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAs(final EoParser.AsContext ctx) {
         this.objects.enter();
         final String has;
@@ -998,7 +992,6 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
@@ -1023,7 +1016,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 data = new BytesToHex(
                     ByteBuffer
                         .allocate(Double.BYTES)
-                        .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
+                        .putDouble((double) Long.parseLong(text.substring(2), 16))
                         .array()
                 );
             } else if (ctx.STRING() != null) {
@@ -1035,10 +1028,11 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 );
             } else {
                 base = "Φ.org.eolang.string";
-                final int indent = ctx.getStart().getCharPositionInLine();
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
-                        XeEoListener.trimMargin(text, indent)
+                        XeEoListener.trimMargin(
+                            text, ctx.getStart().getCharPositionInLine()
+                        )
                     ).getBytes(StandardCharsets.UTF_8)
                 );
             }
@@ -1124,7 +1118,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                             result = "";
                         } else {
                             final int sub;
-                            if (text.length() > 1 && text.charAt(1) == ' ') {
+                            if (text.startsWith(" ", 1)) {
                                 sub = 2;
                             } else {
                                 sub = 1;
@@ -1161,13 +1155,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Trimmed text.
      */
     private static String trimMargin(final String text, final int indent) {
-        final String rexp = "[\\s]{%d}";
         final String cutted = text
             .substring(3, text.length() - 3).trim();
         final String[] splitted = cutted.split("\n");
         StringBuilder res = new StringBuilder();
         for (final String line : splitted) {
-            res.append(line.replaceAll(String.format(rexp, indent), "")).append('\n');
+            res.append(
+                line.replaceAll(String.format("[\\s]{%d}", indent), "")
+            ).append('\n');
         }
         if (res.length() > 0 && res.charAt(0) == '\n') {
             res = new StringBuilder(res.substring(1));
