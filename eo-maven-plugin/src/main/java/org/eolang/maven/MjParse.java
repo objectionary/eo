@@ -63,7 +63,7 @@ public final class MjParse extends MjSafe {
     static final String CACHE = "parsed";
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withSources();

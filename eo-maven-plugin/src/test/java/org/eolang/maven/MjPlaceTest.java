@@ -22,7 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.11
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({
+    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+})
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 

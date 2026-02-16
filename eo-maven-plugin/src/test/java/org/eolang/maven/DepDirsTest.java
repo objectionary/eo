@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class DepDirsTest {
 
     @Test

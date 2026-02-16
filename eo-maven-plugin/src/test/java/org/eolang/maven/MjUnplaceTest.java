@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjUnplaceTest {
     @Test
     void cleansAllTheFiles(@Mktmp final Path temp) throws IOException {

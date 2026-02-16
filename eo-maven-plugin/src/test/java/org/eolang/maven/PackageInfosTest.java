@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class PackageInfosTest {
 
     @Test

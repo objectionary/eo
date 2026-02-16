@@ -32,6 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.33.0
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjPrintTest {
 
     @Test

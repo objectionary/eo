@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.29.5
  */
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class CommitHashesMapTest {
 
     /**

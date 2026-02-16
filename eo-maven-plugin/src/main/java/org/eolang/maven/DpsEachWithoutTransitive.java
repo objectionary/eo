@@ -42,15 +42,16 @@ final class DpsEachWithoutTransitive implements Dependencies {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Iterator<Dep> iterator() {
         return new Mapped<>(
             dependency -> {
                 final Iterable<Dep> transitives = new Filtered<>(
                     dep -> {
                         final Dependency dpndncy = dep.get();
-                        return !DpsEachWithoutTransitive.eqTo(dpndncy, dependency.get())
-                            && DpsEachWithoutTransitive.isRuntimeRequired(dpndncy)
+                        final Dependency orig = dependency.get();
+                        return !DpsEachWithoutTransitive.eqTo(dpndncy, orig)
+                            && DpsEachWithoutTransitive.required(dpndncy)
                             && !MjResolve.isRuntime(dpndncy);
                     },
                     this.transitive.apply(dependency)
@@ -93,7 +94,7 @@ final class DpsEachWithoutTransitive implements Dependencies {
      * @param dep Maven dependency
      * @return True if it's not needed at runtime
      */
-    private static boolean isRuntimeRequired(final Dependency dep) {
+    private static boolean required(final Dependency dep) {
         return dep.getScope() == null
             || dep.getScope().isEmpty()
             || "runtime".equals(dep.getScope())

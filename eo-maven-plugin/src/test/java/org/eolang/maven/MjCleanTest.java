@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.28.6
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjCleanTest {
 
     @Test

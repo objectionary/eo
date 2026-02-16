@@ -45,7 +45,7 @@ final class DepDirs extends ListEnvelope<String> {
      * @return List
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new LinkedList<>();
         if (Files.exists(dir)) {

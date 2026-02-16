@@ -28,6 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.53
  */
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class ProbesTest {
 
     @ParameterizedTest

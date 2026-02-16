@@ -30,7 +30,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+    "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+})
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MjPullTest {

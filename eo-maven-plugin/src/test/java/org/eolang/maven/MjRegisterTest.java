@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjRegisterTest {
 
     @Test

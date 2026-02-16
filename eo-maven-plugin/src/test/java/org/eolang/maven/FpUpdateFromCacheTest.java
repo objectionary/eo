@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.57
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
 final class FpUpdateFromCacheTest {
 
     @Test

@@ -31,7 +31,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+})
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
 

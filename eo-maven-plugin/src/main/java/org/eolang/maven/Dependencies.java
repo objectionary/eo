@@ -111,7 +111,7 @@ interface Dependencies extends Iterable<Dep> {
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 String.valueOf(rand.nextInt(Integer.MAX_VALUE)),
-                new String[]{"test", "compiled", "runtime"}[rand.nextInt(3)]
+                    new String[]{"test", "compiled", "runtime"}[rand.nextInt(3)]
             );
         }
 

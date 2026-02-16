@@ -46,7 +46,7 @@ public final class MjAssemble extends MjSafe {
     };
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         final long begin = System.currentTimeMillis();
         String before = this.scopedTojos().status();

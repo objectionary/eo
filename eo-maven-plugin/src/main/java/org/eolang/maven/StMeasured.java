@@ -55,7 +55,7 @@ final class StMeasured implements Shift {
      * @param action Action to execute
      * @return Result of the action
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private XML timed(final Supplier<XML> action) {
         final long start = System.currentTimeMillis();
         final XML out = action.get();

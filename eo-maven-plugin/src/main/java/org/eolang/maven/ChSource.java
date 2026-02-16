@@ -79,18 +79,13 @@ final class ChSource implements CommitHash {
      * @return SHA-1 hash
      * @throws NoSuchAlgorithmException If SHA-1 is not supported
      */
-    @SuppressWarnings("PMD.UseStringIsEmpty")
     private String hash() throws NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-1");
         final StringBuilder res = new StringBuilder(40);
         for (final byte raw : digest.digest(
             new Unchecked<>(this.text).value().getBytes(StandardCharsets.UTF_8)
         )) {
-            final String hex = Integer.toHexString(0xff & raw);
-            if (hex.length() == 1) {
-                res.append('0');
-            }
-            res.append(hex);
+            res.append(String.format("%02x", 0xff & raw));
         }
         return res.toString();
     }

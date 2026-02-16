@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.29
  */
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
 final class ObjectsIndexTest {
 
     @Test

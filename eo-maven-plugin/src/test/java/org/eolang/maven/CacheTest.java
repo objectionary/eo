@@ -25,31 +25,51 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test for {@link Cache}.
  * @since 0.60
  */
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.UnnecessaryLocalRule"})
 @ExtendWith(MktmpResolver.class)
 final class CacheTest {
 
     @Test
-    void compilesSourceAndAddsToCache(@Mktmp final Path temp) throws Exception {
+    void compilesSourceCreatesTarget(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache");
         Files.createDirectories(base);
         final Path source = temp.resolve("source.eo");
         Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
         final Path target = temp.resolve("target.xmir");
-        final Path tail = source.getFileName();
-        new Cache(base, p -> "compiled").apply(source, target, tail);
+        new Cache(base, p -> "compiled").apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Target file must be created from source",
             Files.readString(target),
             Matchers.equalTo("compiled")
         );
+    }
+
+    @Test
+    void compilesSourceCreatesCacheFile(@Mktmp final Path temp) throws Exception {
+        final Path base = temp.resolve("cache");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source.eo");
+        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        final Path target = temp.resolve("target.xmir");
+        new Cache(base, p -> "compiled").apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Cache file must be created",
-            Files.exists(base.resolve(tail)),
+            Files.exists(base.resolve(source.getFileName())),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void compilesSourceCreatesHashFile(@Mktmp final Path temp) throws Exception {
+        final Path base = temp.resolve("cache");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source.eo");
+        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        final Path target = temp.resolve("target.xmir");
+        new Cache(base, p -> "compiled").apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Hash file must be created",
-            Files.exists(base.resolve(String.format("%s.sha256", tail))),
+            Files.exists(base.resolve(String.format("%s.sha256", source.getFileName()))),
             Matchers.is(true)
         );
     }
@@ -66,16 +86,10 @@ final class CacheTest {
             base,
             p -> String.format("stdin %d", counter.incrementAndGet())
         );
-        final Path tail = source.getFileName();
-        cache.apply(source, target, tail);
+        cache.apply(source, target, source.getFileName());
+        cache.apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
-            "Compilation should happen only once",
-            counter.get(),
-            Matchers.equalTo(1)
-        );
-        cache.apply(source, target, tail);
-        MatcherAssert.assertThat(
-            "Compilation should not happen again",
+            "Compilation should not happen again when source unchanged",
             counter.get(),
             Matchers.equalTo(1)
         );
@@ -94,11 +108,6 @@ final class CacheTest {
             p -> String.format("compiled %d", counter.incrementAndGet())
         );
         cache.apply(source, target, source.getFileName());
-        MatcherAssert.assertThat(
-            "Compilation should happen once",
-            counter.get(),
-            Matchers.equalTo(1)
-        );
         Files.writeString(source, "[] > main\n  (stdout \"Hello, EO! Modified\") > @\n");
         cache.apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
@@ -120,15 +129,9 @@ final class CacheTest {
             base,
             p -> String.format("data %d", counter.incrementAndGet())
         );
-        final Path tail = source.getFileName();
-        cache.apply(source, target, tail);
-        MatcherAssert.assertThat(
-            "Compilation should happen once",
-            counter.get(),
-            Matchers.equalTo(1)
-        );
-        Files.delete(base.resolve(tail));
-        cache.apply(source, target, tail);
+        cache.apply(source, target, source.getFileName());
+        Files.delete(base.resolve(source.getFileName()));
+        cache.apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Compilation should happen again after cache deletion",
             counter.get(),
