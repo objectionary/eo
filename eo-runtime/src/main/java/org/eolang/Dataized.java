@@ -95,11 +95,16 @@ public final class Dataized {
                     )
                 );
             }
-            final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
             final List<String> clean = new ArrayList<>(raw.size());
             int idx = 1;
             for (final String line : raw) {
-                clean.add(String.format(fmt, idx, line));
+                clean.add(
+                    String.format(
+                        String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1),
+                        idx,
+                        line
+                    )
+                );
                 ++idx;
             }
             this.logger.log(

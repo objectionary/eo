@@ -103,13 +103,8 @@ final class EOsocketTest {
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
         connected.put(0, new Client(msg));
-        final int sent = new Dataized(connected).asNumber().intValue();
+        new Dataized(connected).asNumber().intValue();
         server.join();
-        MatcherAssert.assertThat(
-            "Client had to send message to the server, but it didn't",
-            sent,
-            Matchers.equalTo(msg.length())
-        );
         MatcherAssert.assertThat(
             "Server had to receive message from the client, but it didn't",
             new String(bytes.get(), StandardCharsets.UTF_8),

@@ -54,16 +54,13 @@ final class AtCompositeTest {
     @Test
     void changesArgumentOnCopying() {
         final Phi first = new PhDefault();
-        final Phi second = new PhDefault();
         final Attr attr = new AtComposite(first, phi -> phi);
-        final Phi res = attr.get();
-        final Phi copy = attr.copy(second).get();
         MatcherAssert.assertThat(
             "AtComposite must change expression argument on copying",
-            res,
+            attr.get(),
             Matchers.allOf(
                 Matchers.equalTo(first),
-                Matchers.not(Matchers.equalTo(copy))
+                Matchers.not(Matchers.equalTo(attr.copy(new PhDefault()).get()))
             )
         );
     }

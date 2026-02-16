@@ -28,22 +28,34 @@ final class DataTest {
     }
 
     @Test
-    void comparesTwoDatas() {
+    void comparesLongDatas() {
         MatcherAssert.assertThat(
             "Data.ToPhi instances with the same long value should differ, but they didn't",
             new Data.ToPhi(1L),
             Matchers.not(Matchers.equalTo(new Data.ToPhi(1L)))
         );
+    }
+
+    @Test
+    void comparesStringDatas() {
         MatcherAssert.assertThat(
             "Data.ToPhi instances with the same string value should differ, but they didn't",
             new Data.ToPhi("Welcome"),
             Matchers.not(Matchers.equalTo(new Data.ToPhi("Welcome")))
         );
+    }
+
+    @Test
+    void comparesDoubleDatas() {
         MatcherAssert.assertThat(
             "Data.ToPhi instances with the same double value should differ, but they didn't",
             new Data.ToPhi(2.18d),
             Matchers.not(Matchers.equalTo(new Data.ToPhi(2.18d)))
         );
+    }
+
+    @Test
+    void comparesByteDatas() {
         MatcherAssert.assertThat(
             "Data.ToPhi instances with the same byte array value should differ, but they didn't",
             new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}),

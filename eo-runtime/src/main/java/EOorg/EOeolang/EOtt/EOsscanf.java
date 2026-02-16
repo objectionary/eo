@@ -31,7 +31,6 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sscanf")
-@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOsscanf extends PhDefault implements Atom {
     /**
      * Character conversion.
@@ -64,7 +63,7 @@ public final class EOsscanf extends PhDefault implements Atom {
     @SuppressWarnings("PMD.CognitiveComplexity")
     public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
-        final StringBuilder regex = new StringBuilder();
+        final StringBuilder regex = new StringBuilder(64);
         boolean literal = false;
         for (int idx = 0; idx < format.length(); ++idx) {
             final char sym = format.charAt(idx);

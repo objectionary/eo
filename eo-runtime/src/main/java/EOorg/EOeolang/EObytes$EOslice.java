@@ -48,19 +48,19 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
             .it();
-        final int length = Expect.at(this, "len")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .must(number -> number % 1 == 0)
-            .that(Double::intValue)
-            .otherwise("must be an integer")
-            .must(integer -> integer >= 0)
-            .otherwise("must be a positive integer")
-            .it();
         return new Data.ToPhi(
             Arrays.copyOfRange(
                 new Dataized(this.take(Phi.RHO)).take(),
-                start, start + length
+                start,
+                start + Expect.at(this, "len")
+                    .that(phi -> new Dataized(phi).asNumber())
+                    .otherwise("must be a number")
+                    .must(number -> number % 1 == 0)
+                    .that(Double::intValue)
+                    .otherwise("must be an integer")
+                    .must(integer -> integer >= 0)
+                    .otherwise("must be a positive integer")
+                    .it()
             )
         );
     }

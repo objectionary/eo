@@ -40,6 +40,22 @@ public interface WinDef {
         public int compareTo(final WORD other) {
             return compare(this, other);
         }
+
+        @Override
+        public boolean equals(final Object other) {
+            final boolean result;
+            if (other != null && this.getClass().equals(other.getClass())) {
+                result = this.longValue() == WORD.class.cast(other).longValue();
+            } else {
+                result = false;
+            }
+            return result;
+        }
+
+        @Override
+        public int hashCode() {
+            return Long.hashCode(this.longValue());
+        }
     }
 
     /**
@@ -82,6 +98,22 @@ public interface WinDef {
         @Override
         public int compareTo(final DWORD other) {
             return compare(this, other);
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            final boolean result;
+            if (other != null && this.getClass().equals(other.getClass())) {
+                result = this.longValue() == DWORD.class.cast(other).longValue();
+            } else {
+                result = false;
+            }
+            return result;
+        }
+
+        @Override
+        public int hashCode() {
+            return Long.hashCode(this.longValue());
         }
     }
 }

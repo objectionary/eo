@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.TooManyMethods")
 public class PhDefault implements Phi, Cloneable {
     /**
      * Logger.

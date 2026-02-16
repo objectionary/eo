@@ -11,7 +11,6 @@ package EOorg.EOeolang.EOtt; // NOPMD
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,22 +60,22 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     @Override
     public Phi lambda() {
         final Phi match = this.take(Phi.RHO);
-        final InputStream stream = new ByteArrayInputStream(
-            new Dataized(match.take(Phi.RHO).take("serialized")).take()
-        );
         final Matcher matcher;
         try {
-            matcher = ((Pattern) new ObjectInputStream(stream).readObject()).matcher(
-                new Dataized(match.take("txt")).asString()
-            );
+            matcher = ((Pattern) new ObjectInputStream(
+                new ByteArrayInputStream(
+                    new Dataized(match.take(Phi.RHO).take("serialized")).take()
+                )
+            ).readObject()).matcher(new Dataized(match.take("txt")).asString());
         } catch (final IOException | ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         }
         final Phi start = this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START);
-        final Double from = new Dataized(
-            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
-        ).asNumber();
-        final boolean found = matcher.find(from.intValue());
+        final boolean found = matcher.find(
+            new Dataized(
+                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            ).asNumber().intValue()
+        );
         final Phi result;
         if (found) {
             result = match.take("matched");

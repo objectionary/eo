@@ -213,8 +213,7 @@ final class HeapsTest {
     @Test
     void increasesSizeSuccessfully() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        final byte[] bytes = {1, 2, 3, 4, 5};
-        Heaps.INSTANCE.write(idx, 0, bytes);
+        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         Heaps.INSTANCE.resize(idx, 7);
         MatcherAssert.assertThat(
             "Heaps should successfully increase size of allocated block, but it didn't",
@@ -227,8 +226,7 @@ final class HeapsTest {
     @Test
     void decreasesSizeSuccessfully() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        final byte[] bytes = {1, 2, 3, 4, 5};
-        Heaps.INSTANCE.write(idx, 0, bytes);
+        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         Heaps.INSTANCE.resize(idx, 3);
         MatcherAssert.assertThat(
             "Heaps should successfully decrease size of allocated block, but it didn't",
@@ -241,8 +239,7 @@ final class HeapsTest {
     @Test
     void returnsValidSizeAfterDecreasing() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        final byte[] bytes = {1, 2, 3, 4, 5};
-        Heaps.INSTANCE.write(idx, 0, bytes);
+        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         Heaps.INSTANCE.resize(idx, 3);
         MatcherAssert.assertThat(
             "Heaps should return valid size after decreasing, but it didn't",

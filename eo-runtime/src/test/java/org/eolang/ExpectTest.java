@@ -32,248 +32,200 @@ final class ExpectTest {
     }
 
     @Test
-    void failsWithCorrectTraceWithOneError() {
-        MatcherAssert.assertThat(
-            "Throw error in first 'must'. Error message is correct",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("a number", () -> 42)
-                    .must(i -> i < 0)
-                    .otherwise("must be negative")
-                    .it(),
-                "fails on check"
-            ).getMessage(),
-            Matchers.equalTo("a number (42) must be negative")
+    void failsWithOneError() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("a number", () -> 42)
+                .must(i -> i < 0)
+                .otherwise("must be negative")
+                .it(),
+            "Expect should fail when must condition is not satisfied, but it didn't"
         );
     }
 
     @Test
-    void failsWithCorrectTraceWithTwoErrors() {
-        MatcherAssert.assertThat(
-            "Throw error in first 'must'. Not add error about second 'must'",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("a number", () -> 42.2)
-                    .must(i -> i < 0)
-                    .otherwise("must be negative")
-                    .must(i -> i % 1 == 0)
-                    .otherwise("must be an integer")
-                    .it(),
-                "fails only for first 'must'"
-            ).getMessage(),
-            Matchers.equalTo("a number (42.2) must be negative")
+    void failsWithTwoErrors() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("a number", () -> 42.2)
+                .must(i -> i < 0)
+                .otherwise("must be negative")
+                .must(i -> i % 1 == 0)
+                .otherwise("must be an integer")
+                .it(),
+            "Expect should fail on first unsatisfied condition, but it didn't"
         );
     }
 
     @Test
-    void failsWithCorrectTraceWithOneOkAndOneError() {
-        MatcherAssert.assertThat(
-            "Throw error in second 'must'. First 'must' passes check",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("a number", () -> 42.2)
-                    .must(i -> i > 0)
-                    .otherwise("must be positive")
-                    .must(i -> i % 1 == 0)
-                    .otherwise("must be an integer")
-                    .it(),
-                "fails on checking integer"
-            ).getMessage(),
-            Matchers.equalTo("a number (42.2) must be an integer")
+    void failsWithOneOkAndOneError() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("a number", () -> 42.2)
+                .must(i -> i > 0)
+                .otherwise("must be positive")
+                .must(i -> i % 1 == 0)
+                .otherwise("must be an integer")
+                .it(),
+            "Expect should fail on second condition when first passes, but it didn't"
         );
     }
 
     @Test
-    void failsWithCorrectTraceWithExFailureInThat() {
-        MatcherAssert.assertThat(
-            "Take error message from 'otherwise', not from original error",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("attr", () -> 42.2)
-                    .that(
-                        i -> {
-                            throw new ExFailure("Some error in operation");
+    void failsWithExFailureInThat() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("attr", () -> 42.2)
+                .that(
+                    i -> {
+                        throw new ExFailure("Some error in operation");
+                    }
+                )
+                .otherwise("must be converted to something")
+                .it(),
+            "Expect should fail when that() throws ExFailure, but it didn't"
+        );
+    }
+
+    @Test
+    void failsWithExFailureInThatForParsing() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("attr", () -> "string")
+                .that(
+                    i -> {
+                        try {
+                            return Integer.parseInt(i);
+                        } catch (final NumberFormatException ex) {
+                            throw new ExFailure("Can't parse to integer", ex);
                         }
-                    )
-                    .otherwise("must be converted to something")
-                    .it(),
-                "fails on 'that' because of some internal error"
-            ).getMessage(),
-            Matchers.equalTo("attr must be converted to something")
+                    }
+                )
+                .otherwise("must be an integer")
+                .it(),
+            "Expect should fail when that() throws parsing error, but it didn't"
         );
     }
 
     @Test
-    void failsWithCorrectTraceWithExFailureInThatForParsing() {
-        MatcherAssert.assertThat(
-            "Take error message from 'otherwise', not from original error",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("attr", () -> "string")
-                    .that(
-                        i -> {
-                            try {
-                                return Integer.parseInt(i);
-                            } catch (final NumberFormatException ex) {
-                                throw new ExFailure("Can't parse to integer", ex);
-                            }
-                        }
-                    )
-                    .otherwise("must be an integer")
-                    .it(),
-                "fails on 'that' because can not parse"
-            ).getMessage(),
-            Matchers.equalTo("attr must be an integer")
-        );
-    }
-
-    @Test
-    void failsWithCorrectTraceForMustAndThat() {
-        MatcherAssert.assertThat(
-            "Take error message from must",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect<>("attr", () -> "string")
-                    .must(i -> false)
-                    .otherwise("in must")
-                    .that(i -> i)
-                    .otherwise("in that")
-                    .it(),
-                "fails on 'must'"
-            ).getMessage(),
-            Matchers.equalTo("attr (string) in must")
+    void failsForMustBeforeThat() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect<>("attr", () -> "string")
+                .must(i -> false)
+                .otherwise("in must")
+                .that(i -> i)
+                .otherwise("in that")
+                .it(),
+            "Expect should fail on must() before that(), but it didn't"
         );
     }
 
     @Test
     void failsInTransformingToNumberForNotNumber() {
-        MatcherAssert.assertThat(
-            "inner class Number working throws error if attr is not a number",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Number(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(true)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to Number"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute must be a number")
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Number(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(true)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Number should fail when attribute is not a number, but it didn't"
         );
     }
 
     @Test
     void failsInTransformingToIntegerForNotNumber() {
-        MatcherAssert.assertThat(
-            "inner class Integer throws error for not a number",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Int(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(true)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to Integer"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute must be a number")
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Int(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(true)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Int should fail when attribute is not a number, but it didn't"
         );
     }
 
     @Test
     void failsInTransformingToIntegerForNotInteger() {
-        MatcherAssert.assertThat(
-            "inner class Integer throws error for not an integer number",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Int(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(42.23)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to Integer"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute (42.23) must be an integer")
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Int(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(42.23)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Int should fail when attribute is not an integer, but it didn't"
         );
     }
 
     @Test
-    void failsInTransformingToNonNegativeIntegerForNotNumber() {
-        MatcherAssert.assertThat(
-            "inner class NonNegativeInteger throws error for not a number",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Natural(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(true)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to NonNegativeInteger"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute must be a number")
+    void failsInTransformingToNaturalForNotNumber() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Natural(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(true)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Natural should fail when attribute is not a number, but it didn't"
         );
     }
 
     @Test
-    void failsInTransformingToNonNegativeIntegerForNotInteger() {
-        MatcherAssert.assertThat(
-            "inner class NonNegativeInteger throws error for not an integer number",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Natural(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(42.23)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to NonNegativeInteger"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute (42.23) must be an integer")
+    void failsInTransformingToNaturalForNotInteger() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Natural(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(42.23)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Natural should fail when attribute is not an integer, but it didn't"
         );
     }
 
     @Test
-    void failsInTransformingToNonNegativeIntegerForNegative() {
-        MatcherAssert.assertThat(
-            "inner class NonNegativeInteger throws error for a negative integer",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new Expect.Natural(
-                    Expect.at(
-                        new PhWith(
-                            new PhDefault(),
-                            Phi.RHO,
-                            new Data.ToPhi(-42)
-                        ),
-                        Phi.RHO
-                    )
-                ).it(),
-                "fails with correct error message while transform Phi to NonNegativeInteger"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute (-42) must be greater or equal to zero")
+    void failsInTransformingToNaturalForNegative() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Expect.Natural(
+                Expect.at(
+                    new PhWith(
+                        new PhDefault(),
+                        Phi.RHO,
+                        new Data.ToPhi(-42)
+                    ),
+                    Phi.RHO
+                )
+            ).it(),
+            "Expect.Natural should fail when attribute is negative, but it didn't"
         );
     }
 

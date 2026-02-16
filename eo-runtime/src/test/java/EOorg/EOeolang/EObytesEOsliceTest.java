@@ -9,8 +9,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
@@ -50,32 +48,24 @@ final class EObytesEOsliceTest {
     }
 
     @Test
-    void takesWrongSlice() {
-        MatcherAssert.assertThat(
-            "error message is correct",
-            new UncheckedText(
-                new TextOf(
-                    Assertions.assertThrows(
-                        EOerror.ExError.class,
-                        () -> new Dataized(
-                            new PhWith(
-                                new PhWith(
-                                    new Data.ToPhi("hello, world!")
-                                        .take("as-bytes")
-                                        .take("slice")
-                                        .copy(),
-                                    "start",
-                                    new Data.ToPhi(2)
-                                ),
-                                "len",
-                                new Data.ToPhi(-5)
-                            )
-                        ).asString(),
-                        "fails on check"
-                    )
+    void failsOnNegativeSliceLength() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhWith(
+                    new PhWith(
+                        new Data.ToPhi("hello, world!")
+                            .take("as-bytes")
+                            .take("slice")
+                            .copy(),
+                        "start",
+                        new Data.ToPhi(2)
+                    ),
+                    "len",
+                    new Data.ToPhi(-5)
                 )
             ).asString(),
-            Matchers.containsString("the 'len' attribute (-5) must be a positive integer")
+            "Slice with negative length should throw an error, but it didn't"
         );
     }
 

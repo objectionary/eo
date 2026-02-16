@@ -36,7 +36,7 @@ public final class RecvSyscall implements Syscall {
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
         final int size = new Dataized(params[1]).asNumber().intValue();
-        final byte[] buf = new byte[(int) size];
+        final byte[] buf = new byte[size];
         final int received = CStdLib.INSTANCE.recv(
             new Dataized(params[0]).asNumber().intValue(),
             buf,

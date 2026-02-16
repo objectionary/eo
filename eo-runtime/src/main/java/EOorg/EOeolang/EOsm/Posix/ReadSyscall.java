@@ -36,7 +36,7 @@ public final class ReadSyscall implements Syscall {
     public Phi make(final Phi... params) {
         final int size = new Dataized(params[1]).asNumber().intValue();
         final Phi result = this.posix.take("return").copy();
-        final byte[] buf = new byte[(int) size];
+        final byte[] buf = new byte[size];
         final int count = CStdLib.INSTANCE.read(
             new Dataized(params[0]).asNumber().intValue(), buf, size
         );

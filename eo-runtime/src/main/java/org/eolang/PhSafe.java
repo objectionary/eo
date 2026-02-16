@@ -120,12 +120,12 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public boolean hasRho() {
-        return this.through(this.origin::hasRho);
+        return this.through(this.origin::hasRho, "");
     }
 
     @Override
     public Phi take(final String name) {
-        return this.through(() -> this.origin.take(name));
+        return this.through(() -> this.origin.take(name), "");
     }
 
     @Override
@@ -178,16 +178,6 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Helper, for other methods.
-     * @param action The action
-     * @param <T> Type of result
-     * @return Result
-     */
-    private <T> T through(final Supplier<T> action) {
-        return this.through(action, "");
-    }
-
-    /**
-     * Helper, for other methods.
      *
      * <p>No matter what happens inside the {@code action}, only
      * an instance of {@link EOerror.ExError} may be thrown out
@@ -199,7 +189,7 @@ public final class PhSafe implements Phi, Atom {
      * @return Result
      * @checkstyle IllegalCatchCheck (20 lines)
      */
-    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "PMD.PreserveStackTrace"})
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.PreserveStackTrace"})
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();

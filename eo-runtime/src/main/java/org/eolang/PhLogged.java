@@ -12,7 +12,7 @@ package org.eolang;
  * <p>This class is thread-safe.</p>
  * @since 0.24
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.SystemPrintln"})
+@SuppressWarnings("PMD.SystemPrintln")
 public final class PhLogged implements Phi {
 
     /**
@@ -47,9 +47,8 @@ public final class PhLogged implements Phi {
     @Override
     public Phi take(final String name) {
         System.out.printf("%d.take(\"%s\")...\n", this.hashCode(), name);
-        final Phi ret = this.origin.take(name);
         System.out.printf("%d.take(\"%s\")!\n", this.hashCode(), name);
-        return ret;
+        return this.origin.take(name);
     }
 
     @Override
@@ -89,8 +88,7 @@ public final class PhLogged implements Phi {
     @Override
     public byte[] delta() {
         System.out.printf("%d.delta()...\n", this.hashCode());
-        final byte[] data = this.origin.delta();
         System.out.printf("%d.delta()!\n", this.hashCode());
-        return data;
+        return this.origin.delta();
     }
 }
