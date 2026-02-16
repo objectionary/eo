@@ -113,4 +113,3 @@ final class Cache {
         return Base64.getEncoder().encodeToString(digest.digest());
     }
 }
-
