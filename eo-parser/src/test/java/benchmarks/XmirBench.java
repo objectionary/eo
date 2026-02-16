@@ -17,12 +17,11 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
  * Benchmark for XMIR to EO transformations.
+ * To run benchmarks using Maven, use the command:
+ * {@code mvn jmh:benchmark}
  *
  * @since 0.41
  * @checkstyle DesignForExtensionCheck (100 lines)
@@ -41,23 +40,6 @@ public class XmirBench {
      * Large XMIR document.
      */
     private static final XML XMIR = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
-
-    /**
-     * This main method allows to run the benchmark from IDE.
-     * To run benchmarks using Maven, use the command:
-     * <p>{@code
-     *   mvn jmh:benchmark
-     * }</p>
-     * @param args Arguments.
-     * @throws RunnerException If something goes wrong.
-     */
-    public static void main(final String[] args) throws RunnerException {
-        new Runner(
-            new OptionsBuilder()
-                .include(XmirBench.class.getSimpleName())
-                .build()
-        ).run();
-    }
 
     @Benchmark
     public void xmirToEO() {
