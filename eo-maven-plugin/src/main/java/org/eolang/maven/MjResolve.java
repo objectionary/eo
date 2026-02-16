@@ -90,15 +90,14 @@ public final class MjResolve extends MjSafe {
         if (deps.isEmpty()) {
             Logger.info(this, "No new dependencies unpacked");
         } else {
-            final Path target = this.targetDir.toPath().resolve(MjResolve.DIR);
             new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, target)
+                dep -> this.resolved(dep, this.targetDir.toPath().resolve(MjResolve.DIR))
             ).total();
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                deps.size(), target,
+                deps.size(), this.targetDir.toPath().resolve(MjResolve.DIR),
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
@@ -273,6 +272,7 @@ public final class MjResolve extends MjSafe {
      * @return Folder size
      * @throws IOException if I/O fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

@@ -79,6 +79,7 @@ final class ChSource implements CommitHash {
      * @return SHA-1 hash
      * @throws NoSuchAlgorithmException If SHA-1 is not supported
      */
+    @SuppressWarnings("PMD.UseStringIsEmpty")
     private String hash() throws NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-1");
         final StringBuilder res = new StringBuilder(40);

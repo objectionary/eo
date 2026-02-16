@@ -60,6 +60,7 @@ public final class MjUnspile extends MjSafe {
      * Unspile classes.
      * @param classes Collection of compiled classes
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
     private void unspile(final Walk classes) {
         final Path generated = this.generatedDir.toPath();
         final Set<String> included = new Walk(generated)

@@ -60,7 +60,6 @@ public final class MjPull extends MjSafe {
      * @param objectionary Objectionary to pull from
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
     private void pull(final OyIndexed objectionary) throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();

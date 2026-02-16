@@ -42,6 +42,7 @@ final class DpsEachWithoutTransitive implements Dependencies {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
     public Iterator<Dep> iterator() {
         return new Mapped<>(
             dependency -> {

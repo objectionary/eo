@@ -38,6 +38,7 @@ public final class MjCompile extends MjSafe {
     };
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
     public void exec() {
         final long begin = System.currentTimeMillis();
         for (final Moja<?> moja : MjCompile.MOJAS) {

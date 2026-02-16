@@ -23,7 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class MjUnplaceTest {
     @Test

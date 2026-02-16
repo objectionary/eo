@@ -77,6 +77,7 @@ public final class MjLint extends MjSafe {
      * Lint.
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalBeforeReturn")
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
