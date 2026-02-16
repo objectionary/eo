@@ -30,7 +30,6 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class MjUnspile extends MjSafe {
     /**
      * Pattern for matching paths ended with .class.

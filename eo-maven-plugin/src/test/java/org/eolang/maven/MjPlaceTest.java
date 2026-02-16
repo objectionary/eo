@@ -241,9 +241,9 @@ final class MjPlaceTest {
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
      *
-     * @param temp   Temp test directory.
-     * @param binary Binary name.
-     * @throws IOException In case of error.
+     * @param temp Temp test directory
+     * @param binary Binary name
+     * @throws IOException In case of error
      */
     private static void saveBinary(final Path temp, final String binary) throws IOException {
         MjPlaceTest.saveBinary(temp, UUID.randomUUID().toString(), binary);
@@ -253,10 +253,10 @@ final class MjPlaceTest {
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
      *
-     * @param temp    Temp test directory.
-     * @param content Content of the binary.
-     * @param binary  Binary name.
-     * @throws IOException In case of error.
+     * @param temp Temp test directory
+     * @param content Content of the binary
+     * @param binary Binary name
+     * @throws IOException In case of error
      */
     private static void saveBinary(
         final Path temp,
@@ -275,9 +275,9 @@ final class MjPlaceTest {
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
      *
-     * @param temp   Temp test directory.
-     * @param binary Binary name.
-     * @throws IOException In case of error.
+     * @param temp Temp test directory
+     * @param binary Binary name
+     * @throws IOException In case of error
      */
     private static void saveAlreadyPlacedBinary(
         final Path temp,
@@ -290,10 +290,10 @@ final class MjPlaceTest {
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
      *
-     * @param temp    Temp test directory.
-     * @param content Content of the binary.
-     * @param binary  Binary name.
-     * @throws IOException In case of error.
+     * @param temp Temp test directory
+     * @param content Content of the binary
+     * @param binary Binary name
+     * @throws IOException In case of error
      */
     private static void saveAlreadyPlacedBinary(
         final Path temp,
@@ -310,9 +310,9 @@ final class MjPlaceTest {
     /**
      * Path to the placed binary.
      *
-     * @param temp   Temp test directory
-     * @param binary Binary name.
-     * @return Path to the placed binary.
+     * @param temp Temp test directory
+     * @param binary Binary name
+     * @return Path to the placed binary
      */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
         return temp.resolve("target/classes").resolve(binary);

@@ -26,18 +26,17 @@ final class ConcurrentCacheTest {
     @Test
     void triesToCompileProgramConcurrently(@Mktmp final Path temp) throws IOException {
         final AtomicInteger counter = new AtomicInteger(0);
-        final var cache = new ConcurrentCache(
+        final ConcurrentCache cache = new ConcurrentCache(
             new Cache(
                 temp.resolve("cache"),
                 p -> String.format("only once %d", counter.incrementAndGet())
             )
         );
-        final var source = temp.resolve("program.eo");
+        final Path source = temp.resolve("program.eo");
         new Saved("[] > main\n  (stdout \"Hello, EO!\") > @\n", source).value();
-        final var target = temp.resolve("program.xmir");
         new Threaded<>(
             IntStream.range(0, 100).boxed().collect(Collectors.toList()), ignored -> {
-            cache.apply(source, target, source.getFileName());
+            cache.apply(source, temp.resolve("program.xmir"), source.getFileName());
             return ignored;
         }
         ).total();

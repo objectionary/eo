@@ -32,14 +32,13 @@ final class FpIfReleasedTest {
     @Test
     void choosesTheFirstFootprintBecauseCacheable(@TempDir final Path tmp) throws IOException {
         final Path src = tmp.resolve("first");
-        final Path result = new FpIfReleased(
-            () -> "somehash",
-            (source, target) -> source,
-            (source, target) -> target
-        ).apply(src, tmp.resolve("second"));
         Assertions.assertEquals(
             src,
-            result,
+            new FpIfReleased(
+                () -> "somehash",
+                (source, target) -> source,
+                (source, target) -> target
+            ).apply(src, tmp.resolve("second")),
             "Should choose the first footprint when cacheable"
         );
     }
@@ -47,14 +46,13 @@ final class FpIfReleasedTest {
     @Test
     void choosesTheSecondFootprintBecauseHashIsEmpty(@TempDir final Path tmp) throws IOException {
         final Path tgt = tmp.resolve("right-empty-hash");
-        final Path result = new FpIfReleased(
-            () -> "",
-            (source, target) -> source,
-            (source, target) -> target
-        ).apply(tmp.resolve("left-empty-hash"), tgt);
         Assertions.assertEquals(
             tgt,
-            result,
+            new FpIfReleased(
+                () -> "",
+                (source, target) -> source,
+                (source, target) -> target
+            ).apply(tmp.resolve("left-empty-hash"), tgt),
             "Should choose the second footprint when hash is empty"
         );
     }

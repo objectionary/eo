@@ -80,7 +80,7 @@ public final class MjLint extends MjSafe {
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
-        final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
+        final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
@@ -143,7 +143,7 @@ public final class MjLint extends MjSafe {
      */
     private int lintOne(
         final TjForeign tojo,
-        final ConcurrentHashMap<Severity, Integer> counts,
+        final Map<Severity, Integer> counts,
         final String... unlints
     ) throws Exception {
         final Path source = tojo.xmir();
@@ -185,7 +185,7 @@ public final class MjLint extends MjSafe {
      * @return Amount of seen XMIR files
      * @throws IOException If failed to lint
      */
-    private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
+    private int lintAll(final Map<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
         for (final TjForeign tojo : this.scopedTojos().withXmir()) {
             paths.put(tojo.identifier(), tojo.xmir());
@@ -235,7 +235,7 @@ public final class MjLint extends MjSafe {
     private XML linted(
         final String program,
         final XML xmir,
-        final ConcurrentHashMap<Severity, Integer> counts,
+        final Map<Severity, Integer> counts,
         final String... unlints
     ) {
         final Node node = xmir.inner();
@@ -317,7 +317,7 @@ public final class MjLint extends MjSafe {
      * @param counts Counts of errors, warnings, and critical
      * @return Summary text
      */
-    private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
+    private static String summary(final Map<Severity, Integer> counts) {
         final List<String> parts = new ArrayList<>(0);
         final int critical = counts.get(Severity.CRITICAL);
         if (critical > 0) {

@@ -26,11 +26,12 @@ final class FpUpdateFromCacheTest {
     @Test
     void appliesFromCache(@Mktmp final Path tmp) throws IOException {
         final Text expected = new TextOf("Cached!");
-        final Path cached = new Saved(expected, tmp.resolve("cache.txt")).value();
+        final Path cache = tmp.resolve("cache.txt");
+        new Saved(expected, cache).value();
         final Path target = tmp.resolve("target.txt");
         MatcherAssert.assertThat(
             "We expect the footprint will return the target file path",
-            new FpUpdateFromCache(() -> cached).apply(Paths.get("/dev/null"), target),
+            new FpUpdateFromCache(() -> cache).apply(Paths.get("/dev/null"), target),
             Matchers.equalTo(target)
         );
         MatcherAssert.assertThat(

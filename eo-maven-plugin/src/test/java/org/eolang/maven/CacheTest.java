@@ -30,18 +30,17 @@ final class CacheTest {
 
     @Test
     void compilesSourceAndAddsToCache(@Mktmp final Path temp) throws Exception {
-        final var base = temp.resolve("cache");
+        final Path base = temp.resolve("cache");
         Files.createDirectories(base);
-        final var source = temp.resolve("source.eo");
+        final Path source = temp.resolve("source.eo");
         Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
-        final var target = temp.resolve("target.xmir");
-        final var tail = source.getFileName();
-        final String content = "compiled";
-        new Cache(base, p -> content).apply(source, target, tail);
+        final Path target = temp.resolve("target.xmir");
+        final Path tail = source.getFileName();
+        new Cache(base, p -> "compiled").apply(source, target, tail);
         MatcherAssert.assertThat(
             "Target file must be created from source",
             Files.readString(target),
-            Matchers.equalTo(content)
+            Matchers.equalTo("compiled")
         );
         MatcherAssert.assertThat(
             "Cache file must be created",
@@ -57,13 +56,13 @@ final class CacheTest {
 
     @Test
     void readsFromCacheWhenUnchanged(@Mktmp final Path temp) throws Exception {
-        final var base = temp.resolve("cache-directory");
+        final Path base = temp.resolve("cache-directory");
         Files.createDirectories(base);
-        final var source = temp.resolve("stdin.eo");
+        final Path source = temp.resolve("stdin.eo");
         Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
-        final var target = temp.resolve("stdin.xmir");
-        final var counter = new AtomicInteger(0);
-        final var cache = new Cache(
+        final Path target = temp.resolve("stdin.xmir");
+        final AtomicInteger counter = new AtomicInteger(0);
+        final Cache cache = new Cache(
             base,
             p -> String.format("stdin %d", counter.incrementAndGet())
         );
@@ -84,13 +83,13 @@ final class CacheTest {
 
     @Test
     void compilesAgainWhenChanged(@Mktmp final Path temp) throws Exception {
-        final var base = temp.resolve("cache-base-dir");
+        final Path base = temp.resolve("cache-base-dir");
         Files.createDirectories(base);
-        final var source = temp.resolve("stdout.eo");
+        final Path source = temp.resolve("stdout.eo");
         Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
-        final var target = temp.resolve("stdout.xmir");
-        final var counter = new AtomicInteger(0);
-        final var cache = new Cache(
+        final Path target = temp.resolve("stdout.xmir");
+        final AtomicInteger counter = new AtomicInteger(0);
+        final Cache cache = new Cache(
             base,
             p -> String.format("compiled %d", counter.incrementAndGet())
         );
@@ -111,13 +110,13 @@ final class CacheTest {
 
     @Test
     void compilesIfHashExistsButCacheMissing(@Mktmp final Path temp) throws Exception {
-        final var base = temp.resolve("cache-root");
+        final Path base = temp.resolve("cache-root");
         Files.createDirectories(base);
-        final var source = temp.resolve("data.eo");
+        final Path source = temp.resolve("data.eo");
         Files.writeString(source, "[] > main\n  (stdout \"Data EO\") > @\n");
-        final var target = temp.resolve("data.xmir");
-        final var counter = new AtomicInteger(0);
-        final var cache = new Cache(
+        final Path target = temp.resolve("data.xmir");
+        final AtomicInteger counter = new AtomicInteger(0);
+        final Cache cache = new Cache(
             base,
             p -> String.format("data %d", counter.incrementAndGet())
         );
@@ -139,16 +138,15 @@ final class CacheTest {
 
     @Test
     void writesCorrectShaHash(@Mktmp final Path temp) throws IOException, NoSuchAlgorithmException {
-        final var base = temp.resolve("cache");
+        final Path base = temp.resolve("cache");
         Files.createDirectories(base);
-        final var source = temp.resolve("message.txt");
+        final Path source = temp.resolve("message.txt");
         final String msg = "hello";
         final Charset encoding = StandardCharsets.UTF_8;
         Files.writeString(source, msg, encoding);
-        final var target = temp.resolve("out.txt");
-        final var tail = source.getFileName();
-        final var cache = new Cache(base, p -> "compiled");
-        cache.apply(source, target, tail);
+        final Path tail = source.getFileName();
+        final Cache cache = new Cache(base, p -> "compiled");
+        cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
             Files.readString(base.resolve(String.format("%s.sha256", tail)), encoding),
@@ -164,9 +162,9 @@ final class CacheTest {
     void generatesCorrectHashForLargeFile(
         @Mktmp final Path temp
     ) throws IOException, NoSuchAlgorithmException {
-        final var cache = temp.resolve("cache");
+        final Path cache = temp.resolve("cache");
         Files.createDirectories(cache);
-        final var source = temp.resolve("large.txt");
+        final Path source = temp.resolve("large.txt");
         final int lines = 100_000;
         final StringBuilder builder = new StringBuilder(lines * 10);
         IntStream.range(0, lines).forEach(
@@ -174,9 +172,8 @@ final class CacheTest {
         );
         final String content = builder.toString();
         Files.writeString(source, content, StandardCharsets.UTF_8);
-        final var target = temp.resolve("out.txt");
-        final var tail = source.getFileName();
-        new Cache(cache, p -> content).apply(source, target, tail);
+        final Path tail = source.getFileName();
+        new Cache(cache, p -> content).apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             Files.readString(
@@ -196,14 +193,13 @@ final class CacheTest {
     void generatesCorrectHashForTinyFile(
         @Mktmp final Path temp
     ) throws IOException, NoSuchAlgorithmException {
-        final var cache = temp.resolve("cache");
+        final Path cache = temp.resolve("cache");
         Files.createDirectories(cache);
-        final var source = temp.resolve("tiny.txt");
+        final Path source = temp.resolve("tiny.txt");
         final String content = "x";
         Files.writeString(source, content, StandardCharsets.UTF_8);
-        final var target = temp.resolve("out.txt");
-        final var tail = source.getFileName();
-        new Cache(cache, p -> content).apply(source, target, tail);
+        final Path tail = source.getFileName();
+        new Cache(cache, p -> content).apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for tiny file",
             Files.readString(

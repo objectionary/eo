@@ -21,19 +21,18 @@ final class ChCachedTest {
 
     @Test
     void raisesException() {
-        final String msg = "inner problem";
         MatcherAssert.assertThat(
             "The exception message should provide information about the inner problem",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new ChCached(
                     () -> {
-                        throw new IllegalStateException(msg);
+                        throw new IllegalStateException("inner problem");
                     }
                 ).value(),
                 "An exception should be thrown, but it was not"
             ).getMessage(),
-            Matchers.containsString(msg)
+            Matchers.containsString("inner problem")
         );
     }
 

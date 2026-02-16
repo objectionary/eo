@@ -124,13 +124,14 @@ final class Walk extends ListEnvelope<Path> {
      * @return Matcher
      */
     private boolean matches(final String text, final Path file) {
-        final Path rel = Paths.get(
-            file.toAbsolutePath().toString().substring(
-                this.home.toAbsolutePath().toString().length() + 1
-            )
-        );
         return FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", text)
-        ).matches(rel);
+        ).matches(
+            Paths.get(
+                file.toAbsolutePath().toString().substring(
+                    this.home.toAbsolutePath().toString().length() + 1
+                )
+            )
+        );
     }
 }

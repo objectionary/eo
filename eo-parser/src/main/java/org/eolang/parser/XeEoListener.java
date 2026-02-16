@@ -30,7 +30,6 @@ import org.xembly.Directives;
     "PMD.TooManyMethods",
     "PMD.AvoidDuplicateLiterals",
     "PMD.ExcessivePublicCount",
-    "PMD.GodClass",
     "PMD.CouplingBetweenObjects"
 })
 final class XeEoListener extends EoBaseListener implements Iterable<Directive> {
@@ -629,9 +628,9 @@ final class XeEoListener extends EoBaseListener implements Iterable<Directive> {
      */
     private static boolean invalidIndex(final String num, final int number) {
         final char first = num.charAt(0);
-        final boolean sign = first == '+' || first == '-';
-        final boolean leading = !"0".equals(num) && first == '0';
-        return sign || leading || number < 0;
+        return first == '+' || first == '-'
+            || !"0".equals(num) && first == '0'
+            || number < 0;
     }
 
     /**

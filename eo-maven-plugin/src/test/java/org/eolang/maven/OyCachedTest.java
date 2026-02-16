@@ -82,11 +82,10 @@ final class OyCachedTest {
                 .asList().stream().allMatch(input -> input.equals(content)),
             Matchers.equalTo(true)
         );
-        final int expected = 1;
         MatcherAssert.assertThat(
-            String.format("Original objectionary should be called only %d time", expected),
+            "Original objectionary should be called only 1 time",
             calls.get(),
-            Matchers.equalTo(expected)
+            Matchers.equalTo(1)
         );
     }
 
