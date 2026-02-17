@@ -29,7 +29,10 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Integration test for simple snippets.
  * @since 0.57
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnitTestShouldIncludeAssert"
+})
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
     @ParameterizedTest

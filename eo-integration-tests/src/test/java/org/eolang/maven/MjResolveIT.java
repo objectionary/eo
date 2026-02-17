@@ -21,7 +21,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.52
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleNotContainsTestWord",
+    "PMD.UnitTestShouldIncludeAssert"
+})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjResolveIT {
 

@@ -199,8 +199,9 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <version>12.1.6</version>
       <artifactId>jetty-http</artifactId>
+      <version>12.1.6</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -263,6 +264,8 @@
             <configuration>
               <excludes combine.children="append">
                 <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
+                <exclude>dependencies:org.eolang:eo-parser</exclude>
+                <exclude>dependencies:org.eclipse.jetty:jetty-http</exclude>
                 <exclude>checkstyle:/src/it/.*</exclude>
                 <exclude>pmd:/src/it/.*</exclude>
               </excludes>

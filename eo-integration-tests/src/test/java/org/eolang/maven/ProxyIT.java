@@ -37,7 +37,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnitTestShouldIncludeAssert",
+    "PMD.UnitTestContainsTooManyAsserts",
+    "PMD.UnnecessaryLocalRule",
+    "PMD.UseExplicitTypes"
+})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ProxyIT {
 
@@ -62,7 +68,7 @@ final class ProxyIT {
 
     @Test
     void checksThatProxyIsWorking() throws IOException, InterruptedException {
-        final var resp = HttpClient.newBuilder()
+        final HttpResponse<String> resp = HttpClient.newBuilder()
             .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build()
@@ -131,7 +137,7 @@ final class ProxyIT {
      * @return Free port number
      */
     private static int free() {
-        try (var socket = new ServerSocket(0)) {
+        try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         } catch (final IOException exception) {
             throw new IllegalStateException("Could not find a free port", exception);
