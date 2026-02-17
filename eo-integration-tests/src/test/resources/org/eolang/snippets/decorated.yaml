@@ -3,17 +3,21 @@
 ---
 # yamllint disable rule:line-length
 out:
-  - ".*Hello, Jeff.*"
+  - ".*Sin of 1.234500 is 0.943983.*"
 file: org/eolang/snippets/foo.eo
 args: ["org.eolang.snippets.foo"]
 eo: |
   +alias org.eolang.io.stdout
-  +decorate string tt.text
+  +alias org.eolang.tt.sprintf
+  +decorate number ms.angle
   +package org.eolang.snippets
 
   # No comments.
   [] > foo
+    1.2345 > x
     stdout > @
-      joined.
-        ", "
-        "Hello Jeff".split " "
+      sprintf
+        "Sin of %f is %f"
+        *
+          x
+          x.sin
