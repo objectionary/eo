@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * List of dependencies.
  * @since 0.54
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
+@FunctionalInterface
 interface Dependencies extends Iterable<Dep> {
     /**
      * Fake dependencies.
