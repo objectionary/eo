@@ -135,7 +135,7 @@ final class BytesRaw implements Bytes {
 
     @Override
     public String asString() {
-        final StringBuilder out = new StringBuilder(this.data.length * 3 + 2);
+        final StringBuilder out = new StringBuilder(this.data.length * 3 + 3);
         for (final byte bte : this.data) {
             if (out.length() > 0) {
                 out.append('-');

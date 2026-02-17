@@ -36,8 +36,8 @@ final class AtCompositeTest {
         ).get();
         MatcherAssert.assertThat(
             "AtComposite must execute given expression",
-            count.get(),
-            Matchers.equalTo(1)
+            count.get() + count.get(),
+            Matchers.equalTo(2)
         );
     }
 

@@ -77,4 +77,20 @@ public final class SockaddrIn extends Structure {
     public List<String> getFieldOrder() {
         return Arrays.asList("family", "port", "addr", "zero");
     }
+
+    /**
+     * Checks if this address is localhost.
+     * @return True if localhost
+     */
+    public boolean localhost() {
+        return this.addr == 0x0100007F;
+    }
+
+    /**
+     * Checks if the structure is valid.
+     * @return True if valid
+     */
+    public boolean valid() {
+        return this.family > 0 && this.zero.length == 8;
+    }
 }

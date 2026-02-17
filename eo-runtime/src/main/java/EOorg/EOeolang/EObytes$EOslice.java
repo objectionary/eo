@@ -39,6 +39,21 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        final int[] bounds = this.bounds();
+        return new Data.ToPhi(
+            Arrays.copyOfRange(
+                new Dataized(this.take(Phi.RHO)).take(),
+                bounds[0],
+                bounds[1]
+            )
+        );
+    }
+
+    /**
+     * Calculate the start and end bounds for the slice.
+     * @return Array with [start, end]
+     */
+    private int[] bounds() {
         final int start = Expect.at(this, "start")
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")
@@ -48,20 +63,22 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
             .it();
-        return new Data.ToPhi(
-            Arrays.copyOfRange(
-                new Dataized(this.take(Phi.RHO)).take(),
-                start,
-                start + Expect.at(this, "len")
-                    .that(phi -> new Dataized(phi).asNumber())
-                    .otherwise("must be a number")
-                    .must(number -> number % 1 == 0)
-                    .that(Double::intValue)
-                    .otherwise("must be an integer")
-                    .must(integer -> integer >= 0)
-                    .otherwise("must be a positive integer")
-                    .it()
-            )
-        );
+        return new int[]{start, start + this.len(), };
+    }
+
+    /**
+     * Calculate the length parameter.
+     * @return Length value
+     */
+    private int len() {
+        return Expect.at(this, "len")
+            .that(phi -> new Dataized(phi).asNumber())
+            .otherwise("must be a number")
+            .must(number -> number % 1 == 0)
+            .that(Double::intValue)
+            .otherwise("must be an integer")
+            .must(integer -> integer >= 0)
+            .otherwise("must be a positive integer")
+            .it();
     }
 }

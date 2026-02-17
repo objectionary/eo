@@ -31,9 +31,9 @@ public final class AtomSafe implements Atom {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted(ex);
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
+        } catch (final ExAbstract ex) {
+            throw AtomSafe.rethrow(ex);
+            // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Exception ex) {
             throw new ExFailure(
                 String.format(
@@ -44,5 +44,14 @@ public final class AtomSafe implements Atom {
                 ex
             );
         }
+    }
+
+    /**
+     * Rethrow exception without change.
+     * @param exception The exception to rethrow
+     * @return The same exception
+     */
+    private static ExAbstract rethrow(final ExAbstract exception) {
+        return exception;
     }
 }

@@ -5,8 +5,9 @@
 
 package org.eolang;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -238,12 +239,14 @@ public final class Main {
      * @throws IOException If fails
      */
     private static String ver() throws IOException {
-        try (InputStream stream = Objects.requireNonNull(Main.class.getResourceAsStream("version.txt"))) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8)
-                .lines()
-                .findFirst()
-                .orElse("N/A");
-        }
+        return new BufferedReader(
+            new InputStreamReader(
+                Objects.requireNonNull(
+                    Main.class.getResourceAsStream("version.txt")
+                ),
+                StandardCharsets.UTF_8
+            )
+        ).lines().findFirst().orElse("N/A");
     }
 
 }

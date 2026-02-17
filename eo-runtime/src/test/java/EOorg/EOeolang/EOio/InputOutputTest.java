@@ -158,11 +158,11 @@ final class InputOutputTest {
         assert descriptor >= 0;
         final int origin = CStdLib.INSTANCE.dup(CStdLib.INSTANCE.STDIN_FILENO);
         CStdLib.INSTANCE.dup2(descriptor, CStdLib.INSTANCE.STDIN_FILENO);
-        final byte[] read = action.get();
+        final byte[] result = action.get();
         CStdLib.INSTANCE.dup2(origin, CStdLib.INSTANCE.STDIN_FILENO);
         CStdLib.INSTANCE.close(origin);
         CStdLib.INSTANCE.close(descriptor);
-        return read;
+        return result;
     }
 
     /**
@@ -290,7 +290,8 @@ final class InputOutputTest {
                             temp,
                             () -> new Dataized(
                                 new PhWith(
-                                    Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
+                                    Phi.Φ.take(InputOutputTest.CONSOLE)
+                                        .take(InputOutputTest.WRITE).copy(),
                                     "buffer",
                                     new Data.ToPhi("writes to console")
                                 )
@@ -316,7 +317,8 @@ final class InputOutputTest {
                                     new PhCopy(
                                         new PhMethod(
                                             new PhWith(
-                                                Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
+                                                Phi.Φ.take(InputOutputTest.CONSOLE)
+                                                    .take(InputOutputTest.WRITE).copy(),
                                                 0, new Data.ToPhi("Hey")
                                             ),
                                             InputOutputTest.WRITE
@@ -347,7 +349,8 @@ final class InputOutputTest {
                         content,
                         () -> new Dataized(
                             new PhWith(
-                                Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.READ).copy(),
+                                Phi.Φ.take(InputOutputTest.CONSOLE)
+                                    .take(InputOutputTest.READ).copy(),
                                 0,
                                 new Data.ToPhi(content.length())
                             )

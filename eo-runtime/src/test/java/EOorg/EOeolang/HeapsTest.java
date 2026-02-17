@@ -42,6 +42,7 @@ final class HeapsTest {
     void failsOnDoubleAllocation() {
         final Phi phi = new HeapsTest.PhFake();
         final int idx = Heaps.INSTANCE.malloc(phi, 10);
+        Heaps.INSTANCE.size(idx);
         Assertions.assertThrows(
             ExFailure.class,
             () -> Heaps.INSTANCE.malloc(phi, 10),
@@ -100,6 +101,7 @@ final class HeapsTest {
             () -> Heaps.INSTANCE.read(idx, 1, 3),
             "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
+        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -111,6 +113,7 @@ final class HeapsTest {
             Heaps.INSTANCE.read(idx, 1, 3),
             Matchers.equalTo(new byte[] {2, 3, 4})
         );
+        Heaps.INSTANCE.free(idx);
     }
 
     @Test

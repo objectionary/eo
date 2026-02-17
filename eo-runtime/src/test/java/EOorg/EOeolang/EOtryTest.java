@@ -38,9 +38,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhSafe(new Broken())
+                            0, new PhSafe(Broken.make())
                         ),
-                        1, new Catcher()
+                        1, Catcher.make()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -59,9 +59,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhSafe(new Broken())
+                            0, new PhSafe(Broken.make())
                         ),
-                        1, new Catcher()
+                        1, Catcher.make()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -80,9 +80,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new Main()
+                            0, Main.make()
                         ),
-                        1, new Catcher()
+                        1, Catcher.make()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -95,9 +95,9 @@ final class EOtryTest {
     @Test
     void doesNotDataizeBodyTwice() {
         final Phi trier = new EOtry();
-        final MainWithCounter main = new MainWithCounter();
+        final MainWithCounter main = MainWithCounter.make();
         trier.put(0, main);
-        trier.put(1, new Catcher());
+        trier.put(1, Catcher.make());
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
@@ -111,28 +111,29 @@ final class EOtryTest {
      * Body object with counter.
      * @since 0.36.0
      */
-    private static class MainWithCounter extends PhDefault {
+    private static final class MainWithCounter extends PhDefault {
         /**
          * Counter.
          */
         private int count;
 
         /**
-         * Ctor.
+         * Factory method.
+         * @return New MainWithCounter instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        MainWithCounter() {
-            super();
-            this.add(
+        static MainWithCounter make() {
+            final MainWithCounter main = new MainWithCounter();
+            main.add(
                 Phi.PHI,
                 new AtComposite(
-                    this,
+                    main,
                     rho -> {
-                        ++this.count;
+                        ++main.count;
                         return new Data.ToPhi(1L);
                     }
                 )
             );
+            return main;
         }
     }
 
@@ -140,22 +141,24 @@ final class EOtryTest {
      * Main.
      * @since 0.1.0
      */
-    private static class Main extends PhDefault {
+    private static final class Main extends PhDefault {
 
         /**
-         * Ctor.
+         * Factory method.
+         * @return New Main instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Main() {
-            this.add(
+        static Main make() {
+            final Main main = new Main();
+            main.add(
                 "φ",
                 new AtComposite(
-                    this,
+                    main,
                     self -> new Data.ToPhi(
                         new Dataized(new Data.ToPhi(42L)).take()
                     )
                 )
             );
+            return main;
         }
     }
 
@@ -163,21 +166,23 @@ final class EOtryTest {
      * Broken.
      * @since 0.1.0
      */
-    private static class Broken extends PhDefault {
+    private static final class Broken extends PhDefault {
         /**
-         * Ctor.
+         * Factory method.
+         * @return New Broken instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Broken() {
-            this.add(
+        static Broken make() {
+            final Broken broken = new Broken();
+            broken.add(
                 "φ",
                 new AtComposite(
-                    this,
+                    broken,
                     self -> {
                         throw new ExFailure("it is broken");
                     }
                 )
             );
+            return broken;
         }
     }
 
@@ -185,20 +190,22 @@ final class EOtryTest {
      * Catcher.
      * @since 0.1.0
      */
-    private static class Catcher extends PhDefault {
+    private static final class Catcher extends PhDefault {
         /**
-         * Ctor.
+         * Create a new Catcher.
+         * @return New Catcher
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Catcher() {
-            this.add("ex", new AtVoid("ex"));
-            this.add(
+        static Catcher make() {
+            final Catcher catcher = new Catcher();
+            catcher.add("ex", new AtVoid("ex"));
+            catcher.add(
                 "φ",
                 new AtComposite(
-                    this,
+                    catcher,
                     self -> self.take("ex")
                 )
             );
+            return catcher;
         }
     }
 }

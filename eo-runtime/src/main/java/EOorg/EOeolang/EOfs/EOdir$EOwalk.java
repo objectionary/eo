@@ -51,9 +51,9 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", new Dataized(this.take("glob")).asString())
         );
-        try (Stream<Path> walked = Files.walk(path)) {
+        try (Stream<Path> stream = Files.walk(path)) {
             return new Data.ToPhi(
-                walked
+                stream
                     .map(p -> p.toAbsolutePath().toString())
                     .map(p -> p.substring(p.indexOf(path.toString())))
                     .filter(p -> matcher.matches(Paths.get(p)))
