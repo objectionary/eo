@@ -263,9 +263,6 @@
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
               <excludes combine.children="append">
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
-                <exclude>dependencies:org.eolang:eo-parser</exclude>
-                <exclude>dependencies:org.eclipse.jetty:jetty-http</exclude>
                 <exclude>checkstyle:/src/it/.*</exclude>
                 <exclude>pmd:/src/it/.*</exclude>
               </excludes>
