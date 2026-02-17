@@ -146,6 +146,7 @@ final class InputOutputTest {
      * @return Read content
      * @throws IOException If fails to create temporary file
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static byte[] posixStdin(
         final Path temp, final String content, final Supplier<byte[]> action
     ) throws IOException {
@@ -195,6 +196,7 @@ final class InputOutputTest {
      * @param action Action to run
      * @throws IOException If fails to create temporary file
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static byte[] windowsStdin(
         final Path temp, final String content, final Supplier<byte[]> action
     ) throws IOException {
@@ -228,6 +230,7 @@ final class InputOutputTest {
      * @return Stdout as file
      * @throws IOException If fails to create temporary file
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static File windowsStdout(final Path temp, final Runnable action) throws IOException {
         final File file = Files.createTempFile(
             temp, String.valueOf(action.hashCode()), null

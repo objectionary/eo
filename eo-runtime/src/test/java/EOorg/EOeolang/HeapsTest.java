@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class HeapsTest {
 
     @Test

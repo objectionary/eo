@@ -50,7 +50,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @SuppressWarnings({
     "PMD.TooManyMethods",
     "PMD.AvoidUsingHardCodedIP",
-    "JTCOP.RuleAllTestsHaveProductionClass"
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnnecessaryLocalRule"
 })
 final class EOsocketTest {
 
@@ -142,8 +143,8 @@ final class EOsocketTest {
     @Nested
     @DisabledOnOs({OS.MAC, OS.LINUX})
     @Execution(ExecutionMode.SAME_THREAD)
+    @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class WindowsSocketTest {
-        @Test
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
             final RandomServer server = new RandomServer().started();
@@ -496,8 +497,8 @@ final class EOsocketTest {
     @Nested
     @DisabledOnOs(OS.WINDOWS)
     @Execution(ExecutionMode.SAME_THREAD)
+    @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class PosixSocketTest {
-        @Test
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
             final RandomServer server = new RandomServer().started();
