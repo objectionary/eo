@@ -22,9 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.11
  */
-@SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
-})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 
@@ -71,10 +69,9 @@ final class MjPlaceTest {
     }
 
     @Test
-    void rewritesAlreadyPlacedBinaries(@Mktmp final Path temp) throws Exception {
+    void processesUnplacedBinaries(@Mktmp final Path temp) throws Exception {
         final String binary = "org/eolang/f/y.a.class";
-        final String content = "some new content";
-        MjPlaceTest.saveBinary(temp, content, binary);
+        MjPlaceTest.saveBinary(temp, "some new content", binary);
         MjPlaceTest.saveAlreadyPlacedBinary(temp, "old content", binary);
         final Path path = MjPlaceTest.pathToPlacedBinary(temp, binary);
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
@@ -84,10 +81,22 @@ final class MjPlaceTest {
             maven.execute(MjPlace.class).result(),
             Matchers.hasValue(path)
         );
+    }
+
+    @Test
+    void updatesContentOfUnplacedBinaries(@Mktmp final Path temp) throws Exception {
+        final String binary = "org/eolang/f/y.a.class";
+        final String content = "some new content";
+        MjPlaceTest.saveBinary(temp, content, binary);
+        MjPlaceTest.saveAlreadyPlacedBinary(temp, "old content", binary);
+        final Path path = MjPlaceTest.pathToPlacedBinary(temp, binary);
+        final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
+        maven.placed().unplaceAll();
+        maven.execute(MjPlace.class);
         MatcherAssert.assertThat(
             "The file must be updated, but it was not",
-            content,
-            Matchers.is(new TextOf(path).asString())
+            new TextOf(path).asString(),
+            Matchers.is(content)
         );
     }
 
@@ -166,17 +175,24 @@ final class MjPlaceTest {
      * @throws IOException If fails
      */
     @Test
-    void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
+    void placesEoRuntimeClassFile(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
-            maven.withHelloWorld()
+            new FakeMaven(temp).withHelloWorld()
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
         );
+    }
+
+    @Test
+    void tracksPlacedClasses(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .with("resolveJna", false)
+            .execute(new FakeMaven.Place());
         MatcherAssert.assertThat(
             "PlaceMojo have to place class file, but doesn't",
             maven.placed().classes().size(),

@@ -22,22 +22,30 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class PackageInfosTest {
 
     @Test
-    void createsPackageInfosInSubDirectories(@Mktmp final Path tmp) throws IOException {
+    void createsCorrectNumberOfPackageInfosInSubDirectories(@Mktmp final Path tmp)
+        throws IOException {
         final Path subdir = tmp.resolve("subdir");
-        final Path subsubdir = subdir.resolve("subsubdir");
         Files.createDirectory(subdir);
-        Files.createDirectories(subsubdir);
+        Files.createDirectories(subdir.resolve("subsubdir"));
         MatcherAssert.assertThat(
             "We should create exactly two package-info.java files for two subdirectories",
             new PackageInfos(tmp).create(),
             Matchers.equalTo(2)
         );
+    }
+
+    @Test
+    void createsPackageInfoFilesInBothSubDirectories(@Mktmp final Path tmp) throws IOException {
+        final Path subdir = tmp.resolve("subdir");
+        final Path subsubdir = subdir.resolve("subsubdir");
+        Files.createDirectory(subdir);
+        Files.createDirectories(subsubdir);
+        new PackageInfos(tmp).create();
         MatcherAssert.assertThat(
-            "package-info.java should be created in the both subdirectories",
+            "package-info.java should be created in both subdirectories",
             Files.exists(subdir.resolve("package-info.java"))
                 && Files.exists(subsubdir.resolve("package-info.java")),
             Matchers.is(true)
@@ -45,12 +53,17 @@ final class PackageInfosTest {
     }
 
     @Test
-    void ignoresTheRootDirectoryItself(@Mktmp final Path tmp) throws IOException {
+    void returnsZeroForEmptyDirectory(@Mktmp final Path tmp) throws IOException {
         MatcherAssert.assertThat(
             "No package-info.java files should be created in the root directory",
             new PackageInfos(tmp).create(),
             Matchers.equalTo(0)
         );
+    }
+
+    @Test
+    void doesNotCreatePackageInfoInRootDirectory(@Mktmp final Path tmp) throws IOException {
+        new PackageInfos(tmp).create();
         MatcherAssert.assertThat(
             "package-info.java should not be created in the root directory",
             Files.exists(tmp.resolve("package-info.java")),

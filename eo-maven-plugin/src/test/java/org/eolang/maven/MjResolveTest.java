@@ -27,12 +27,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 @SuppressWarnings({
     "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
-    "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+    "PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"
 })
 final class MjResolveTest {
 
     @Test
-    void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
+    void createsDependencyDirectory(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
                 "+package foo.x",
@@ -41,18 +41,33 @@ final class MjResolveTest {
                 "# No comments.",
                 "[] > main ?"
             ).execute(new FakeMaven.Resolve());
-        final Path path = temp
-            .resolve("target")
-            .resolve(MjResolve.DIR)
-            .resolve("org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(
             "Dependency directory must exist, but it doesn't",
-            path.toFile(),
+            temp.resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/0.7.0")
+                .toFile(),
             FileMatchers.anExistingDirectory()
         );
+    }
+
+    @Test
+    void resolvesClassFileWithSingleDependency(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.7.0",
+                "+version 0.25.0\n",
+                "# No comments.",
+                "[] > main ?"
+            ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            path.resolve("eo-runtime-0.7.0.class").toFile(),
+            temp.resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/0.7.0")
+                .resolve("eo-runtime-0.7.0.class")
+                .toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -71,7 +86,8 @@ final class MjResolveTest {
     }
 
     @Test
-    void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
+    void createsRuntimeDirectoryWithoutExplicitDependencies(@Mktmp final Path temp)
+        throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x\n",
             "# No comments.",
@@ -82,18 +98,34 @@ final class MjResolveTest {
         );
         maven.foreignTojos().add("sum");
         maven.execute(new FakeMaven.Resolve());
-        final Path path = temp
-            .resolve("target")
-            .resolve(MjResolve.DIR)
-            .resolve("org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(
             "The directory with runtime must exist, but doesn't",
-            path.toFile(),
+            temp.resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/")
+                .toFile(),
             FileMatchers.anExistingDirectory()
         );
+    }
+
+    @Test
+    void resolvesRuntimeClassWithoutExplicitDependencies(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[a b] > main",
+            "  plus. > @",
+            "    a",
+            "    b"
+        );
+        maven.foreignTojos().add("sum");
+        maven.execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            path,
+            temp.resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/"),
             new ContainsFiles("**/eo-runtime-*.class")
         );
     }

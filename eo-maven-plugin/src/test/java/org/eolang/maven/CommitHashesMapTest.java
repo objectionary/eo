@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,14 +14,31 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.29.5
  */
-@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 final class CommitHashesMapTest {
 
     /**
-     * Check if commit hashes as map contains given tag as key and hash by tag.
+     * Check if commit hashes as map contains given tag as key.
+     * @param tag Tag.
+     * @checkstyle AnnotationUseStyleCheck (30 lines)
+     */
+    @ParameterizedTest
+    @CsvSource({"0.26.0", "0.28.10"})
+    void containsTag(final String tag) {
+        MatcherAssert.assertThat(
+            String.format(
+                "Commit hashes should have contained tag %s, but they didn't",
+                tag
+            ),
+            new CommitHashesMap.Fake(),
+            Matchers.hasKey(tag)
+        );
+    }
+
+    /**
+     * Check if commit hashes as map contains valid hash by tag.
      * @param tag Tag.
      * @param hash Hash.
-     * @checkstyle AnnotationUseStyleCheck (40 lines)
+     * @checkstyle AnnotationUseStyleCheck (30 lines)
      */
     @ParameterizedTest
     @CsvSource({
@@ -30,22 +46,13 @@ final class CommitHashesMapTest {
         "0.28.10, 9b88393",
     })
     void containsValidHash(final String tag, final String hash) {
-        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        MatcherAssert.assertThat(
-            String.format(
-                "Commit hashes should have contained tag %s, but they didn't",
-                tag
-            ),
-            hashes,
-            Matchers.hasKey(tag)
-        );
         MatcherAssert.assertThat(
             String.format(
                 "Commit hashes should have contained hash %s by tag %s, but they didn't",
                 hash,
                 tag
             ),
-            hashes.get(tag).value(),
+            new CommitHashesMap.Fake().get(tag).value(),
             Matchers.equalTo(hash)
         );
     }

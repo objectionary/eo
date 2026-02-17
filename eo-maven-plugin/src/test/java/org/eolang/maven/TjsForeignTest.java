@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.29.5
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+    "PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"
 })
 final class TjsForeignTest {
 

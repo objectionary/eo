@@ -41,7 +41,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.1
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+    "PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"
 })
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)

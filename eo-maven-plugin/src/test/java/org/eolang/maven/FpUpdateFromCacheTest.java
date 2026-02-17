@@ -21,20 +21,28 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.57
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class FpUpdateFromCacheTest {
 
     @Test
-    void appliesFromCache(@Mktmp final Path tmp) throws IOException {
-        final Text expected = new TextOf("Cached!");
+    void returnsTargetPath(@Mktmp final Path tmp) throws IOException {
         final Path cache = tmp.resolve("cache.txt");
-        new Saved(expected, cache).value();
+        new Saved(new TextOf("Cached!"), cache).value();
         final Path target = tmp.resolve("target.txt");
         MatcherAssert.assertThat(
             "We expect the footprint will return the target file path",
             new FpUpdateFromCache(() -> cache).apply(Paths.get("/dev/null"), target),
             Matchers.equalTo(target)
         );
+    }
+
+    @Test
+    void updatesTargetFromCache(@Mktmp final Path tmp) throws IOException {
+        final Text expected = new TextOf("Cached!");
+        final Path cache = tmp.resolve("cache.txt");
+        new Saved(expected, cache).value();
+        final Path target = tmp.resolve("target.txt");
+        new FpUpdateFromCache(() -> cache).apply(Paths.get("/dev/null"), target);
         MatcherAssert.assertThat(
             "The target file should be updated from cache",
             new TextOf(target),

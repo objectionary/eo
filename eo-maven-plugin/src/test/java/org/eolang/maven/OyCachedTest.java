@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link OyCached}.
  * @since 0.56.10
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class OyCachedTest {
 
     @Test
@@ -66,16 +66,10 @@ final class OyCachedTest {
     }
 
     @RepeatedTest(10)
-    void cachesInConcurrentEnvironment() {
-        final AtomicInteger calls = new AtomicInteger(0);
+    void returnsConsistentContentInConcurrentEnvironment() {
         final Input content = new InputOf("[] > foo");
         final Objectionary objectionary = new OyCached(
-            new Objectionary.Fake(
-                nme -> {
-                    calls.incrementAndGet();
-                    return content;
-                }
-            )
+            new Objectionary.Fake(nme -> content)
         );
         MatcherAssert.assertThat(
             "We expect that all values are equal to the same content",
@@ -83,6 +77,20 @@ final class OyCachedTest {
                 .asList().stream().allMatch(input -> input.equals(content)),
             Matchers.equalTo(true)
         );
+    }
+
+    @RepeatedTest(10)
+    void callsOriginOnceInConcurrentEnvironment() {
+        final AtomicInteger calls = new AtomicInteger(0);
+        final Objectionary objectionary = new OyCached(
+            new Objectionary.Fake(
+                nme -> {
+                    calls.incrementAndGet();
+                    return new InputOf("[] > foo");
+                }
+            )
+        );
+        new Together<>(30, thread -> objectionary.get("parallel")).asList();
         MatcherAssert.assertThat(
             "Original objectionary should be called only 1 time",
             calls.get(),
