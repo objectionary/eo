@@ -46,21 +46,21 @@ final class DepDirs extends ListEnvelope<String> {
      * @throws IOException If fails
      */
     private static List<String> list(final Path dir) throws IOException {
-        final List<String> names = new LinkedList<>();
+        final List<String> result;
         if (Files.exists(dir)) {
             final String home = dir.toAbsolutePath().toString();
-            try (Stream<Path> paths = Files.find(dir, 4, (t, u) -> true)) {
-                names.addAll(
-                    paths
-                        .filter(file -> file.toFile().isDirectory())
-                        .map(file -> file.toAbsolutePath().toString())
-                        .filter(name -> !name.equals(home))
-                        .map(name -> name.substring(home.length() + 1))
-                        .filter(name -> name.split(Pattern.quote(File.separator)).length == 4)
-                        .collect(Collectors.toList())
-                );
+            try (Stream<Path> walk = Files.find(dir, 4, (path, attrs) -> true)) {
+                result = walk
+                    .filter(file -> file.toFile().isDirectory())
+                    .map(file -> file.toAbsolutePath().toString())
+                    .filter(name -> !name.equals(home))
+                    .map(name -> name.substring(home.length() + 1))
+                    .filter(name -> name.split(Pattern.quote(File.separator)).length == 4)
+                    .collect(Collectors.toCollection(LinkedList::new));
             }
+        } else {
+            result = new LinkedList<>();
         }
-        return names;
+        return result;
     }
 }

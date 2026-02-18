@@ -21,7 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.58.3
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnitTestShouldIncludeAssert"
+})
 final class XmirIT {
 
     @Test

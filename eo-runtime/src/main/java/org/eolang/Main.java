@@ -214,8 +214,15 @@ public final class Main {
             }
             app.put(0, args);
         }
-        final long start = System.currentTimeMillis();
-        final byte[] ret = new Dataized(app).take();
+        Main.logged(System.currentTimeMillis(), new Dataized(app).take());
+    }
+
+    /**
+     * Logs the result of dataization with timing information.
+     * @param start Time when dataization started
+     * @param ret The result bytes
+     */
+    private static void logged(final long start, final byte[] ret) {
         Main.LOGGER.info(
             String.format(
                 "%n---%n%s%nFinished in %.02fs (%d bytes)",
@@ -232,17 +239,14 @@ public final class Main {
      * @throws IOException If fails
      */
     private static String ver() throws IOException {
-        try (
-            BufferedReader input =
-                new BufferedReader(
-                    new InputStreamReader(
-                        Objects.requireNonNull(Main.class.getResourceAsStream("version.txt")),
-                        StandardCharsets.UTF_8
-                    )
-                )
-        ) {
-            return input.lines().findFirst().orElse("N/A");
-        }
+        return new BufferedReader(
+            new InputStreamReader(
+                Objects.requireNonNull(
+                    Main.class.getResourceAsStream("version.txt")
+                ),
+                StandardCharsets.UTF_8
+            )
+        ).lines().findFirst().orElse("N/A");
     }
 
 }

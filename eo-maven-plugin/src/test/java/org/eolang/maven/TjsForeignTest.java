@@ -26,7 +26,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.29.5
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({
+    "PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"
+})
 final class TjsForeignTest {
 
     /**
@@ -164,7 +166,6 @@ final class TjsForeignTest {
         this.tojos.close();
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<TjForeign, Object>) TjForeign::xmir),
@@ -176,7 +177,6 @@ final class TjsForeignTest {
         );
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> tojoFunctionsWithDefaultValues() {
         return Stream.of(
             Arguments.of("string", (Func<TjForeign, Object>) TjForeign::identifier),

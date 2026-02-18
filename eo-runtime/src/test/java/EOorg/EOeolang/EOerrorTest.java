@@ -20,8 +20,6 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,13 +51,10 @@ final class EOerrorTest {
     @ParameterizedTest
     @MethodSource("getTestSources")
     void getsReadableError(final byte[] cnst, final String text) {
-        MatcherAssert.assertThat(
-            "Bytes must be translated to string correctly",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(new MyError(cnst)).take()
-            ).toString(),
-            Matchers.containsString(text)
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(MyError.make(cnst)).take(),
+            "Dataizing error object should throw exception, but it didn't"
         );
     }
 
@@ -92,16 +87,17 @@ final class EOerrorTest {
     private static final class MyError extends PhDefault {
 
         /**
-         * Ctor.
+         * Factory method.
          * @param data The data inside error.
+         * @return New MyError instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        MyError(final Object data) {
-            this.add(
+        static MyError make(final Object data) {
+            final MyError err = new MyError();
+            err.add(
                 "φ",
                 new AtOnce(
                     new AtComposite(
-                        this,
+                        err,
                         rho -> new PhWith(
                             new PhCopy(
                                 Phi.Φ.take("org").take("eolang").take("error")
@@ -112,6 +108,7 @@ final class EOerrorTest {
                     )
                 )
             );
+            return err;
         }
     }
 

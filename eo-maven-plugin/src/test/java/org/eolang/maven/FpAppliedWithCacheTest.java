@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.56.7
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class FpAppliedWithCacheTest {
 
     @Test

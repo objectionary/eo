@@ -45,9 +45,9 @@ import org.cactoos.text.UncheckedText;
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
-    "PMD.CouplingBetweenObjects",
     "JTCOP.RuleAllTestsHaveProductionClass",
-    "JTCOP.RuleCorrectTestName"
+    "JTCOP.RuleCorrectTestName",
+    "PMD.UnnecessaryLocalRule"
 })
 @NotThreadSafe
 final class FakeMaven {

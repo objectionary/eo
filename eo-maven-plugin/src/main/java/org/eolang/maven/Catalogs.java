@@ -15,7 +15,10 @@ import com.yegor256.tojos.TjSynchronized;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
@@ -32,12 +35,18 @@ final class Catalogs {
     static final Catalogs INSTANCE = new Catalogs();
 
     /**
+     * Lock for thread-safe test detection.
+     */
+    private static final Lock LOCK = new ReentrantLock();
+
+    /**
      * Singleton.
      */
     private static final Unchecked<Boolean> TESTING = new Unchecked<>(
         new Sticky<>(
             () -> {
-                synchronized (Catalogs.class) {
+                Catalogs.LOCK.lock();
+                try {
                     boolean tests;
                     try {
                         Class.forName("org.junit.jupiter.api.Test");
@@ -46,6 +55,8 @@ final class Catalogs {
                         tests = false;
                     }
                     return tests;
+                } finally {
+                    Catalogs.LOCK.unlock();
                 }
             }
         )
@@ -54,7 +65,7 @@ final class Catalogs {
     /**
      * All of them.
      */
-    private final ConcurrentHashMap<Path, Tojos> all;
+    private final Map<Path, Tojos> all;
 
     /**
      * Ctor.

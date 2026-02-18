@@ -7,9 +7,11 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.function.Supplier;
 
 /**
  * Shift that measures and saves stats into a file.
@@ -44,10 +46,19 @@ final class StMeasured implements Shift {
     }
 
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
     public XML apply(final int position, final XML xml) {
+        return this.timed(() -> this.origin.apply(position, xml));
+    }
+
+    /**
+     * Execute with timing and log the elapsed time.
+     * @param action Action to execute
+     * @return Result of the action
+     */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    private XML timed(final Supplier<XML> action) {
         final long start = System.currentTimeMillis();
-        final XML out = this.origin.apply(position, xml);
+        final XML out = action.get();
         try {
             Files.write(
                 this.path,
@@ -55,7 +66,7 @@ final class StMeasured implements Shift {
                     "%s,%d\n",
                     this.origin.uid(),
                     System.currentTimeMillis() - start
-                ).getBytes(),
+                ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.APPEND,
                 StandardOpenOption.CREATE
             );

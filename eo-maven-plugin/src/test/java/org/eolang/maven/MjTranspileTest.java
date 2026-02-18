@@ -40,7 +40,9 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings({
+    "PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"
+})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjTranspileTest {

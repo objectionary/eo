@@ -53,6 +53,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -71,6 +72,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -124,13 +126,14 @@ final class Walk extends ListEnvelope<Path> {
      * @return Matcher
      */
     private boolean matches(final String text, final Path file) {
-        final Path rel = Paths.get(
-            file.toAbsolutePath().toString().substring(
-                this.home.toAbsolutePath().toString().length() + 1
-            )
-        );
         return FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", text)
-        ).matches(rel);
+        ).matches(
+            Paths.get(
+                file.toAbsolutePath().toString().substring(
+                    this.home.toAbsolutePath().toString().length() + 1
+                )
+            )
+        );
     }
 }

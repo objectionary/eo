@@ -22,7 +22,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.52
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleNotContainsTestWord",
+    "PMD.UnitTestShouldIncludeAssert"
+})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjTranspileIT {
 
@@ -100,7 +104,7 @@ final class MjTranspileIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(prog.getBytes());
+                f.files().file("src/main/eo/foo.eo").write(prog.getBytes(StandardCharsets.UTF_8));
                 new AppendedPlugin(f).value()
                     .goals("register", "parse", "transpile");
                 f.exec("process-sources");

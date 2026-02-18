@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MjPullTest {
@@ -133,18 +133,14 @@ final class MjPullTest {
             .with("offline", true)
             .execute(new FakeMaven.Pull())
             .result();
-        final String format = "%s folder should not contain %s file, but it did";
-        final String stdout = "org/eolang/io/stdout.eo";
-        final String string = "org/eolang/string.eo";
+        final String dir = MjPull.DIR;
         MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, stdout),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, stdout)),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, string),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, string)),
-            Matchers.is(false)
+            String.format("%s folder should not contain dependencies in offline mode", dir),
+            result,
+            Matchers.allOf(
+                Matchers.not(Matchers.hasKey(String.format("%s/org/eolang/io/stdout.eo", dir))),
+                Matchers.not(Matchers.hasKey(String.format("%s/org/eolang/string.eo", dir)))
+            )
         );
     }
 

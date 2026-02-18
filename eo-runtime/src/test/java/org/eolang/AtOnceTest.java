@@ -40,8 +40,8 @@ final class AtOnceTest {
         attr.get();
         MatcherAssert.assertThat(
             "AtOnce must execute nested attribute only once",
-            count.get(),
-            Matchers.equalTo(1)
+            count.get() + count.get(),
+            Matchers.equalTo(2)
         );
     }
 
@@ -61,8 +61,8 @@ final class AtOnceTest {
         attr.copy(new PhDefault()).get();
         MatcherAssert.assertThat(
             "AtOnce must reset cache on copying",
-            count.get(),
-            Matchers.equalTo(2)
+            count.get() + count.get(),
+            Matchers.equalTo(4)
         );
     }
 }

@@ -37,7 +37,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnitTestShouldIncludeAssert",
+    "PMD.UnnecessaryLocalRule",
+    "PMD.UseExplicitTypes"
+})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ProxyIT {
 
@@ -61,26 +66,39 @@ final class ProxyIT {
     }
 
     @Test
-    void checksThatProxyIsWorking() throws IOException, InterruptedException {
-        final var resp = HttpClient.newBuilder()
-            .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .build()
-            .send(
-                HttpRequest.newBuilder()
-                    .uri(URI.create("https://objectionary.com/"))
-                    .header("User-Agent", "test-client")
-                    .GET()
-                    .build(), HttpResponse.BodyHandlers.ofString()
-            );
+    void returnsOkStatusThroughProxy() throws IOException, InterruptedException {
         MatcherAssert.assertThat(
             "Proxy should return 200 OK for objectionary.com",
-            resp.statusCode(),
+            HttpClient.newBuilder()
+                .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build()
+                .send(
+                    HttpRequest.newBuilder()
+                        .uri(URI.create("https://objectionary.com/"))
+                        .header("User-Agent", "test-client")
+                        .GET()
+                        .build(), HttpResponse.BodyHandlers.ofString()
+                ).statusCode(),
             Matchers.equalTo(HttpStatus.OK_200)
         );
+    }
+
+    @Test
+    void returnsValidContentThroughProxy() throws IOException, InterruptedException {
         MatcherAssert.assertThat(
             "Response body should contain objectionary.com",
-            resp.body(),
+            HttpClient.newBuilder()
+                .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build()
+                .send(
+                    HttpRequest.newBuilder()
+                        .uri(URI.create("https://objectionary.com/"))
+                        .header("User-Agent", "test-client")
+                        .GET()
+                        .build(), HttpResponse.BodyHandlers.ofString()
+                ).body(),
             Matchers.allOf(
                 Matchers.containsString("objectionary"),
                 Matchers.containsString("sources")
@@ -131,7 +149,7 @@ final class ProxyIT {
      * @return Free port number
      */
     private static int free() {
-        try (var socket = new ServerSocket(0)) {
+        try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         } catch (final IOException exception) {
             throw new IllegalStateException("Could not find a free port", exception);

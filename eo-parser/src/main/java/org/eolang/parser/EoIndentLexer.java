@@ -5,10 +5,10 @@
 package org.eolang.parser;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Stack;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
@@ -35,7 +35,7 @@ final class EoIndentLexer extends EoLexer {
     /**
      * Spaces.
      */
-    private final Stack<String> spaces;
+    private final Deque<String> spaces;
 
     /**
      * Ctor.
@@ -56,7 +56,7 @@ final class EoIndentLexer extends EoLexer {
             Collections.singletonList(0)
         );
         this.tokens = new LinkedList<>();
-        this.spaces = new Stack<>();
+        this.spaces = new ArrayDeque<>();
     }
 
     @Override

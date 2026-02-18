@@ -49,11 +49,10 @@ public final class VerboseBytesAsString implements Supplier<String> {
                 );
                 break;
             case 8:
-                final Bytes bytes = new BytesOf(this.data);
                 result = String.format(
                     "[0x%s] = %s, or \"%s\")",
                     this.toHex(),
-                    bytes.asNumber(),
+                    new BytesOf(this.data).asNumber(),
                     this.escaped()
                 );
                 break;

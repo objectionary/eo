@@ -26,12 +26,12 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiJustOnce() {
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = Dummy.make();
         final Phi phi = new PhMethod(dummy, "φ");
-        final int total = 10;
-        for (int idx = 0; idx < total; ++idx) {
+        for (int idx = 0; idx < 10; ++idx) {
             new Dataized(phi).take();
         }
+        new Dataized(phi).take();
         MatcherAssert.assertThat(
             "Phi should be calculated only once, but it didn't",
             dummy.count,
@@ -41,12 +41,12 @@ final class PhMethodTest {
 
     @Test
     void calculatesLocalJustOnce() {
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = Dummy.make();
         final Phi phi = new PhMethod(dummy, "foo");
-        final int total = 10;
-        for (int idx = 0; idx < total; ++idx) {
+        for (int idx = 0; idx < 10; ++idx) {
             new Dataized(phi).take();
         }
+        new Dataized(phi).take();
         MatcherAssert.assertThat(
             "Foo should be calculated only once, but it wasn't",
             dummy.count,
@@ -56,8 +56,9 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiOnce() {
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = Dummy.make();
         final Phi phi = new PhMethod(dummy, "neg");
+        new Dataized(phi).take();
         new Dataized(phi).take();
         MatcherAssert.assertThat(
             "Neg should be calculated only once, but it wasn't",
@@ -68,7 +69,7 @@ final class PhMethodTest {
 
     @Test
     void hasDifferentFormasWithOwnMethod() {
-        final Phi dummy = new Dummy();
+        final Phi dummy = Dummy.make();
         MatcherAssert.assertThat(
             "Forma of PhMethod should be differ from original, but it wasn't",
             dummy.forma(),
@@ -84,39 +85,41 @@ final class PhMethodTest {
      * Dummy default.
      * @since 0.1.0
      */
-    public static class Dummy extends PhDefault {
+    public static final class Dummy extends PhDefault {
         /**
          * Count.
          */
         private int count;
 
         /**
-         * Ctor.
+         * Factory method.
+         * @return New Dummy instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Dummy() {
-            this.add(
+        static Dummy make() {
+            final Dummy dummy = new Dummy();
+            dummy.add(
                 "φ",
                 new AtOnce(
                     new AtComposite(
-                        this,
+                        dummy,
                         self -> {
-                            this.count += 1;
+                            dummy.count += 1;
                             return new Data.ToPhi(1L);
                         }
                     )
                 )
             );
-            this.add(
+            dummy.add(
                 "foo",
                 new AtComposite(
-                    this,
+                    dummy,
                     self -> {
-                        this.count += 1;
+                        dummy.count += 1;
                         return new Data.ToPhi(1L);
                     }
                 )
             );
+            return dummy;
         }
     }
 }

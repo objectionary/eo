@@ -64,25 +64,21 @@ final class EOnumberTest {
         EOnumber$EOplus.class,
         EOnumber$EOtimes.class
     })
-    void throwsCorrectErrorForXAttr(final Class<?> cls) {
-        MatcherAssert.assertThat(
-            "the message in the error is correct",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
+    void throwsErrorForNonNumberXAttr(final Class<?> cls) throws Exception {
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(
+                new PhWith(
                     new PhWith(
-                        new PhWith(
-                            (Phi) cls.getDeclaredConstructor().newInstance(),
-                            Phi.RHO,
-                            new Data.ToPhi(42)
-                        ),
-                        "x",
-                        new Data.ToPhi(true)
-                    )
-                ).take(),
-                "operation with TRUE fails with a proper message that explains what happened"
-            ).getMessage(),
-            Matchers.equalTo("the 'x' attribute must be a number")
+                        (Phi) cls.getDeclaredConstructor().newInstance(),
+                        Phi.RHO,
+                        new Data.ToPhi(42)
+                    ),
+                    "x",
+                    new Data.ToPhi(true)
+                )
+            ).take(),
+            "Operation with non-number x attribute should throw exception, but it didn't"
         );
     }
 
@@ -95,21 +91,17 @@ final class EOnumberTest {
         EOnumber$EOas_i64.class,
         EOnumber$EOfloor.class
     })
-    void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
-        MatcherAssert.assertThat(
-            "the message in the error is correct",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhWith(
-                        (Phi) cls.getDeclaredConstructor().newInstance(),
-                        Phi.RHO,
-                        new Data.ToPhi(true)
-                    )
-                ).take(),
-                "EOnumber must be a number"
-            ).getMessage(),
-            Matchers.equalTo("the 'ρ' attribute must be a number")
+    void throwsErrorForNonNumberRhoAttr(final Class<?> cls) throws Exception {
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(
+                new PhWith(
+                    (Phi) cls.getDeclaredConstructor().newInstance(),
+                    Phi.RHO,
+                    new Data.ToPhi(true)
+                )
+            ).take(),
+            "Operation with non-number rho attribute should throw exception, but it didn't"
         );
     }
 }

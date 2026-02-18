@@ -41,16 +41,17 @@ public final class MjPull extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        final var objectionary = new OyIndexed(
-            new OyCached(new OyRemote(this.hash, this.proxies()))
-        );
         if (this.offline) {
             Logger.info(
                 this,
                 "No programs were pulled because eo.offline flag is TRUE"
             );
         } else {
-            this.pull(objectionary);
+            this.pull(
+                new OyIndexed(
+                    new OyCached(new OyRemote(this.hash, this.proxies()))
+                )
+            );
         }
     }
 
@@ -59,21 +60,23 @@ public final class MjPull extends MjSafe {
      * @param objectionary Objectionary to pull from
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
     private void pull(final OyIndexed objectionary) throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();
         final Collection<String> names = new ArrayList<>(0);
-        final Path base = this.targetDir.toPath().resolve(MjPull.DIR);
-        final String hsh = this.hash.value();
         for (final TjForeign tojo : tojos) {
             final String object = tojo.identifier();
             if (objectionary.isDirectory(object)) {
                 continue;
             }
             try {
-                tojo.withSource(this.pulled(object, base, hsh))
-                    .withHash(new ChNarrow(this.hash));
+                tojo.withSource(
+                    this.pulled(
+                        object,
+                        this.targetDir.toPath().resolve(MjPull.DIR),
+                        this.hash.value()
+                    )
+                ).withHash(new ChNarrow(this.hash));
             } catch (final IOException exception) {
                 throw new IOException(
                     String.format(
@@ -116,11 +119,10 @@ public final class MjPull extends MjSafe {
         final String object,
         final Path base,
         final String hsh) throws IOException {
-        final String semver = this.plugin.getVersion();
         final Path target = new Place(object).make(base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
             this.cache.toPath().resolve(MjPull.CACHE),
-            semver,
+            this.plugin.getVersion(),
             hsh,
             base.relativize(target)
         );

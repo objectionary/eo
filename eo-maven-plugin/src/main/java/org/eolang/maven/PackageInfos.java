@@ -59,12 +59,17 @@ final class PackageInfos {
                 .filter(file -> Files.isDirectory(file) && !file.equals(this.root))
                 .collect(Collectors.toList());
             for (final Path dir : dirs) {
-                final String pkg = this.root.relativize(dir).toString()
-                    .replace(File.separator, ".");
-                final Path saved = new Saved(
-                    PackageInfos.content(pkg), dir.resolve("package-info.java")
-                ).value();
-                Logger.debug(this, "Created %s", saved);
+                Logger.debug(
+                    this,
+                    "Created %s",
+                    new Saved(
+                        PackageInfos.content(
+                            this.root.relativize(dir).toString()
+                                .replace(File.separator, ".")
+                        ),
+                        dir.resolve("package-info.java")
+                    ).value()
+                );
             }
             size = dirs.size();
         } else {

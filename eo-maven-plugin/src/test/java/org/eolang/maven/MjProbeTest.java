@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjProbeTest {
 
     @Test

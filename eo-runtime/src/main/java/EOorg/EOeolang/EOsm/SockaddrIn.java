@@ -18,7 +18,7 @@ import java.util.List;
  * @checkstyle VisibilityModifierCheck (50 lines)
  * @checkstyle ParameterNumberCheck (50 lines)
  */
-@SuppressWarnings({"PMD.OnlyOneConstructorShouldDoInitialization", "PMD.DataClass"})
+@SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public final class SockaddrIn extends Structure {
     /**
      * Address family (e.g., AF_INET).
@@ -76,5 +76,21 @@ public final class SockaddrIn extends Structure {
     @Override
     public List<String> getFieldOrder() {
         return Arrays.asList("family", "port", "addr", "zero");
+    }
+
+    /**
+     * Checks if this address is localhost.
+     * @return True if localhost
+     */
+    public boolean localhost() {
+        return this.addr == 0x0100007F;
+    }
+
+    /**
+     * Checks if the structure is valid.
+     * @return True if valid
+     */
+    public boolean valid() {
+        return this.family > 0 && this.zero.length == 8;
     }
 }

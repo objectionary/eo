@@ -228,7 +228,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean cacheEnabled = true;
 
     /**
@@ -238,7 +237,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean rewriteBinaries = true;
 
     /**
@@ -256,7 +254,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
     protected String tag = "master";
 
@@ -372,7 +369,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreRuntime;
 
     /**
@@ -382,7 +378,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreTransitive;
 
     /**
@@ -391,7 +386,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
     protected boolean failOnWarning;
 
@@ -401,7 +395,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
     protected boolean lintAsPackage;
 
@@ -411,7 +404,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
     protected boolean skipLinting;
 
@@ -448,7 +440,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     protected BiConsumer<Dependency, Path> central;
 
     /**
@@ -487,7 +478,6 @@ abstract class MjSafe extends AbstractMojo {
      * Whether we should skip goal execution.
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
     @Override
@@ -502,7 +492,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    @SuppressWarnings("PMD.CognitiveComplexity")
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.UnnecessaryLocalRule"})
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -649,13 +639,13 @@ abstract class MjSafe extends AbstractMojo {
                     this.exec();
                     return new Object();
                 }
-            ).get(this.timeout.longValue(), TimeUnit.SECONDS);
+            ).get(this.timeout, TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
                     "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout.longValue())
+                    TimeUnit.SECONDS.toMillis(this.timeout)
                 ),
                 ex
             );

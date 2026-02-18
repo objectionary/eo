@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class DepDirsTest {
 
     @Test
-    void findsDirs(@Mktmp final Path temp) throws IOException {
+    void findsExpectedPath(@Mktmp final Path temp) throws IOException {
         new Saved("", temp.resolve("a/b/c/f/test.txt")).value();
         new Saved("", temp.resolve("a/b/f.txt")).value();
         new Saved("", temp.resolve("test/f.txt")).value();
@@ -34,6 +34,14 @@ final class DepDirsTest {
             new DepDirs(temp),
             Matchers.contains(path)
         );
+    }
+
+    @Test
+    void findsExactlyOneDirectory(@Mktmp final Path temp) throws IOException {
+        new Saved("", temp.resolve("a/b/c/f/test.txt")).value();
+        new Saved("", temp.resolve("a/b/f.txt")).value();
+        new Saved("", temp.resolve("test/f.txt")).value();
+        new Saved("", temp.resolve("a/g")).value();
         MatcherAssert.assertThat(
             "DepDirs should contain one element, but it doesn't",
             new DepDirs(temp),

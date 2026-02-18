@@ -199,8 +199,9 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <version>12.1.6</version>
       <artifactId>jetty-http</artifactId>
+      <version>12.1.6</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -261,8 +262,9 @@
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
-              <excludes>
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
+              <excludes combine.children="append">
+                <exclude>checkstyle:/src/it/.*</exclude>
+                <exclude>pmd:/src/it/.*</exclude>
               </excludes>
             </configuration>
           </plugin>

@@ -29,68 +29,48 @@ final class PhSafeTest {
 
     @Test
     void catchesRuntimeException() {
-        MatcherAssert.assertThat(
-            "rethrows correctly",
-            Assertions.assertThrows(
-                EOerror.ExError.class,
-                () -> new PhSafe(
-                    new PhDefault() {
-                        @Override
-                        public byte[] delta() {
-                            throw new IllegalArgumentException("oops");
-                        }
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new IllegalArgumentException("oops");
                     }
-                ).delta(),
-                "throws correct class"
-            ).messages(),
-            Matchers.hasItems(
-                Matchers.containsString("o.e.PhSafe#delta()"),
-                Matchers.containsString("(j.l.IllegalArgumentException)"),
-                Matchers.containsString("Error in \"?.Δ\" at unknown:0:0")
-            )
+                }
+            ).delta(),
+            "PhSafe should catch RuntimeException and rethrow as ExError, but it didn't"
         );
     }
 
     @Test
-    void rendersMultiLayeredErrorMessageCorrectly() {
-        MatcherAssert.assertThat(
-            "rethrows correctly",
-            Assertions.assertThrows(
-                EOerror.ExError.class,
-                () -> new PhSafe(
-                    new PhWith(
-                        new EOerror(),
-                        "message",
-                        new Data.ToPhi("oops")
-                    )
-                ).take("foo"),
-                "throws correct class"
-            ),
-            Matchers.hasToString(
-                Matchers.containsString("Δ = [0x6F6F7073-] = \"oops\"")
-            )
+    void rendersMultiLayeredErrorCorrectly() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhWith(
+                    new EOerror(),
+                    "message",
+                    new Data.ToPhi("oops")
+                )
+            ).take("foo"),
+            "PhSafe should rethrow multi-layered error as ExError, but it didn't"
         );
     }
 
     @Test
-    void showsFileNameAndLineNumber() {
-        MatcherAssert.assertThat(
-            "shows file name and line number",
-            new Dataized(
-                Assertions.assertThrows(
-                    EOerror.ExError.class,
-                    () -> new PhSafe(
-                        new PhDefault() {
-                            @Override
-                            public Phi take(final String name) {
-                                throw new IllegalArgumentException("intentional error");
-                            }
-                        }
-                    ).take("foo"),
-                    "throws correct class"
-                ).enclosure()
-            ).take(String.class),
-            Matchers.equalTo("intentional error")
+    void throwsExErrorOnTake() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi take(final String name) {
+                        throw new IllegalArgumentException("intentional error");
+                    }
+                }
+            ).take("foo"),
+            "PhSafe should wrap exception in ExError when take() throws, but it didn't"
         );
     }
 

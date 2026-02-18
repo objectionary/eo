@@ -21,7 +21,7 @@ final class PhWithTest {
     @Test
     void comparesTwoObjects() {
         final Phi dummy = new PhWith(
-            new PhMethod(new PhWithTest.Dummy(), "plus"),
+            new PhMethod(PhWithTest.Dummy.make(), "plus"),
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
@@ -43,12 +43,11 @@ final class PhWithTest {
 
     @Test
     void passesToSubObject() {
-        final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
             "PhWith should pass attribute to sub-object and calculate correctly, but it didn't",
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(dummy, "plus")),
+                    new PhCopy(new PhMethod(PhWithTest.Dummy.make(), "plus")),
                     0, new Data.ToPhi(1L)
                 )
             ).asNumber(),
@@ -59,15 +58,14 @@ final class PhWithTest {
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
     void runsInThreads(final String data) {
-        final String attr = "foo";
-        final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
+        final Phi ref = new PhWith(DummyWithAtFree.make("foo"), 0, new Data.ToPhi(data));
         MatcherAssert.assertThat(
             "works in multiple threads",
             new Together<>(
                 thread -> {
                     MatcherAssert.assertThat(
                         "Attribute 'foo' should return the same string that was passed to Phi, but it didn't",
-                        new Dataized(ref.take(attr)).asString(),
+                        new Dataized(ref.take("foo")).asString(),
                         Matchers.is(data)
                     );
                     return true;
@@ -79,7 +77,7 @@ final class PhWithTest {
 
     @Test
     void hasTheSameFormaWithBoundAttribute() {
-        final Phi dummy = new DummyWithAtFree("x");
+        final Phi dummy = DummyWithAtFree.make("x");
         MatcherAssert.assertThat(
             "forma of PhWith with bound attribute should be same as forma of original, but it didn't",
             dummy.forma(),
@@ -93,15 +91,17 @@ final class PhWithTest {
      * Dummy Phi with free attribute.
      * @since 0.1.0
      */
-    private static class DummyWithAtFree extends PhDefault {
+    private static final class DummyWithAtFree extends PhDefault {
 
         /**
-         * Ctor.
+         * Factory method.
          * @param attr Free attribute name
+         * @return New DummyWithAtFree instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        DummyWithAtFree(final String attr) {
-            this.add(attr, new AtVoid(attr));
+        static DummyWithAtFree make(final String attr) {
+            final DummyWithAtFree dummy = new DummyWithAtFree();
+            dummy.add(attr, new AtVoid(attr));
+            return dummy;
         }
     }
 
@@ -109,14 +109,16 @@ final class PhWithTest {
      * Dummy Phi.
      * @since 0.1.0
      */
-    public static class Dummy extends PhDefault {
+    public static final class Dummy extends PhDefault {
 
         /**
-         * Ctor.
+         * Factory method.
+         * @return New Dummy instance
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Dummy() {
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+        static Dummy make() {
+            final Dummy dummy = new Dummy();
+            dummy.add("φ", new AtComposite(dummy, self -> new Data.ToPhi(1L)));
+            return dummy;
         }
     }
 }

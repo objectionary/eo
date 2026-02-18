@@ -42,12 +42,17 @@ final class StEoLoggedTest {
 
     @Test
     void delegatesWithoutException() throws ImpossibleModificationException {
-        final FakeLog log = new FakeLog();
         MatcherAssert.assertThat(
             "We expect that shift will successfully generate output xml",
-            new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example()),
+            new StEoLogged(new StUnhex(), new FakeLog()).apply(1, StEoLoggedTest.example()),
             Matchers.notNullValue()
         );
+    }
+
+    @Test
+    void logsNothingWhenNoException() throws ImpossibleModificationException {
+        final FakeLog log = new FakeLog();
+        new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example());
         MatcherAssert.assertThat(
             String.format(
                 "We expect that logs will be empty, but was %s",
@@ -59,16 +64,29 @@ final class StEoLoggedTest {
     }
 
     /**
+     * Check that exception is thrown when shift fails.
+     */
+    @Test
+    void throwsWhenShiftFails() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new StEoLogged(new StFailure(), new FakeLog()).apply(
+                1, StEoLoggedTest.example()
+            ),
+            "We expect that shift will throw an exception, but xml didn't"
+        );
+    }
+
+    /**
      * Check EO log message on exception thrown.
      */
     @Test
-    void printsMessageWithEoIfExceptionIsThrown() {
+    void logsEoRepresentationWhenExceptionIsThrown() throws ImpossibleModificationException {
         final FakeLog log = new FakeLog();
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new StEoLogged(new StFailure(), log).apply(1, StEoLoggedTest.example()),
-            "We expect that shift will throw an exception, but xml didn't"
-        );
+        try {
+            new StEoLogged(new StFailure(), log).apply(1, StEoLoggedTest.example());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
             String.format(
                 "We expect that logs will contain the eo representation of the xml, but was %s",

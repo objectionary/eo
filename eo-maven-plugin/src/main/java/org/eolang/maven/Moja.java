@@ -145,9 +145,8 @@ final class Moja<T extends AbstractMojo> {
         final AbstractMojo mojo,
         final Map.Entry<String, Object> entry
     ) throws IllegalAccessException {
-        final String name = entry.getKey();
         final Optional<Field> declared = Arrays.stream(clazz.getDeclaredFields())
-            .filter(f -> f.getName().equals(name))
+            .filter(f -> f.getName().equals(entry.getKey()))
             .findFirst();
         if (declared.isPresent()) {
             final Field field = declared.get();
@@ -159,7 +158,7 @@ final class Moja<T extends AbstractMojo> {
                 throw new IllegalStateException(
                     String.format(
                         "Can't find '%s' in '%s'",
-                        name,
+                        entry.getKey(),
                         this.type.getCanonicalName()
                     )
                 );

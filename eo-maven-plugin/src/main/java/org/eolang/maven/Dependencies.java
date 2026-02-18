@@ -17,6 +17,7 @@ import java.util.stream.Stream;
  * List of dependencies.
  * @since 0.54
  */
+@FunctionalInterface
 interface Dependencies extends Iterable<Dep> {
     /**
      * Fake dependencies.
@@ -106,14 +107,11 @@ interface Dependencies extends Iterable<Dep> {
          */
         private static Dep randDep() {
             final Random rand = new SecureRandom();
-            final String scope = new String[] {
-                "test", "compiled", "runtime",
-            }[rand.nextInt(3)];
             return Dependencies.Fake.dep(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 String.valueOf(rand.nextInt(Integer.MAX_VALUE)),
-                scope
+                    new String[]{"test", "compiled", "runtime"}[rand.nextInt(3)]
             );
         }
 
@@ -126,7 +124,6 @@ interface Dependencies extends Iterable<Dep> {
          * @return Dependency.
          * @checkstyle ParameterNumberCheck (5 lines)
          */
-        @SuppressWarnings("PMD.UseObjectForClearerAPI")
         private static Dep dep(
             final String group,
             final String artifact,

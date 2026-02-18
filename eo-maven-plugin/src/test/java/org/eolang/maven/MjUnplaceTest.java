@@ -23,8 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class MjUnplaceTest {
     @Test
     void cleansAllTheFiles(@Mktmp final Path temp) throws IOException {

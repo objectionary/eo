@@ -99,7 +99,6 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
-    @SuppressWarnings("PMD.CognitiveComplexity")
     public Bytes shift(final int bits) {
         return this.bytes.shift(bits);
     }

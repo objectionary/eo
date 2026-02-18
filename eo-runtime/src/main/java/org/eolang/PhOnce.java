@@ -6,6 +6,8 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
@@ -14,7 +16,6 @@ import java.util.function.Supplier;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public class PhOnce implements Phi {
 
     /**
@@ -28,18 +29,27 @@ public class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
+     * Lock for synchronizing access.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      *
      * @param obj The object
      */
     public PhOnce(final Supplier<Phi> obj) {
         this.ref = new AtomicReference<>(null);
+        this.lock = new ReentrantLock();
         this.object = () -> {
-            synchronized (this.ref) {
+            this.lock.lock();
+            try {
                 if (this.ref.get() == null) {
                     this.ref.set(obj.get());
                 }
                 return this.ref.get();
+            } finally {
+                this.lock.unlock();
             }
         };
     }

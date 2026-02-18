@@ -23,7 +23,6 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "pow")
-@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOpow extends PhDefault implements Atom {
     /**
      * Ctor.

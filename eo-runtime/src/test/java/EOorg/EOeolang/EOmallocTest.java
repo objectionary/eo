@@ -26,17 +26,15 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "PMD.UnnecessaryLocalRule"
+})
 final class EOmallocTest {
     @Test
     void freesMemory() {
         final Dummy dummy = new Dummy();
-        new Dataized(
-            EOmallocTest.allocated(
-                new Data.ToPhi(1L),
-                dummy
-            )
-        ).take();
+        new Dataized(EOmallocTest.allocated(new Data.ToPhi(1L), dummy)).take();
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
@@ -45,18 +43,26 @@ final class EOmallocTest {
     }
 
     @Test
-    void freesMemoryIfErrorIsOccurred() {
-        final ErrorDummy dummy = new ErrorDummy();
+    void throwsOnErrorDummy() {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
                 EOmallocTest.allocated(
                     new Data.ToPhi(1L),
-                    dummy
+                    new ErrorDummy()
                 )
             ).take(),
             "Should throw an exception on attempting to use ErrorDummy, but it didn't"
         );
+    }
+
+    @Test
+    void freesMemoryIfErrorIsOccurred() {
+        final ErrorDummy dummy = new ErrorDummy();
+        try {
+            new Dataized(EOmallocTest.allocated(new Data.ToPhi(1L), dummy)).take();
+        } catch (final ExAbstract ignored) {
+        }
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
@@ -81,7 +87,7 @@ final class EOmallocTest {
      * Dummy.
      * @since 0.37.0
      */
-    private static class Dummy extends PhDefault {
+    private static final class Dummy extends PhDefault {
         /**
          * Id.
          */
@@ -112,7 +118,7 @@ final class EOmallocTest {
      * Dummy that throws an exception.
      * @since 0.36.0
      */
-    private static class ErrorDummy extends PhDefault {
+    private static final class ErrorDummy extends PhDefault {
         /**
          * Id.
          */

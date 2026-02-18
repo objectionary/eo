@@ -11,6 +11,7 @@ import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,7 +36,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  {@link MjTranspileTest#transpilesSourcesForDifferentScopesWithoutIntersections}.
  */
 @Disabled
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleNotContainsTestWord",
+    "PMD.UnitTestShouldIncludeAssert",
+    "PMD.UnnecessaryLocalRule"
+})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjLintIT {
 
@@ -48,7 +54,7 @@ final class MjLintIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file(source).write(program.getBytes());
+                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -58,7 +64,7 @@ final class MjLintIT {
                     .path()
                     .toFile()
                     .lastModified();
-                f.files().file(source).write(program.getBytes());
+                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "the .xmir file is re-generated",
@@ -76,7 +82,9 @@ final class MjLintIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.files()
+                    .file("src/main/eo/foo.eo")
+                    .write(program.getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");

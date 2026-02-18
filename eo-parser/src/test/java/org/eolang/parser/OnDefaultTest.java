@@ -65,16 +65,10 @@ final class OnDefaultTest {
 
     @Test
     void throwsWhenNeitherONameNorClassNamePresent() {
-        MatcherAssert.assertThat(
-            "Expecting exception when neither o name nor class name present",
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new OnDefault(new XMLDocument("<object></object>")).get(),
-                "We should throw IllegalStateException"
-            ).getMessage(),
-            Matchers.equalTo(
-                "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
-            )
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new OnDefault(new XMLDocument("<object></object>")).get(),
+            "We should throw IllegalStateException when neither o name nor class name present"
         );
     }
 

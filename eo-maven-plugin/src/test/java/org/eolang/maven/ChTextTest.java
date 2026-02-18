@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.28.11
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class ChTextTest {
 
     /**

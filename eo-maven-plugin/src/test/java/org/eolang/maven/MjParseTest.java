@@ -31,13 +31,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"
+})
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
 
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp);
         final String parsed = String.format(
             "target/%s/foo/x/main.%s",
             MjParse.DIR,
@@ -45,13 +46,19 @@ final class MjParseTest {
         );
         MatcherAssert.assertThat(
             String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
-            maven.withHelloWorld()
+            new FakeMaven(temp).withHelloWorld()
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(parsed)
         );
+    }
+
+    @Test
+    void registersXmirResource(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld().execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
-            "The resource must exist, but it doesn't",
+            "The xmir resource must exist, but it doesn't",
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );

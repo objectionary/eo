@@ -18,10 +18,34 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.29
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class ObjectsIndexTest {
 
     @Test
-    void contains() throws Exception {
+    void containsKnownObject() throws Exception {
+        final String object = "org.eolang.io.stderr";
+        MatcherAssert.assertThat(
+            "The index must contain the known value",
+            new ObjectsIndex(
+                new ScalarOf<>(() -> Collections.singleton(object))
+            ).contains(object),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotContainUnknownObject() throws Exception {
+        MatcherAssert.assertThat(
+            "The index must not contain the unknown value",
+            new ObjectsIndex(
+                new ScalarOf<>(() -> Collections.singleton("org.eolang.io.stderr"))
+            ).contains("unknown"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void cachesResultAndCallsScalarOnce() throws Exception {
         final AtomicInteger calls = new AtomicInteger(0);
         final String object = "org.eolang.io.stderr";
         final ObjectsIndex index = new ObjectsIndex(
@@ -32,24 +56,10 @@ final class ObjectsIndexTest {
                 }
             )
         );
-        final String message = "The object must contain the value";
+        index.contains(object);
+        index.contains(object);
         MatcherAssert.assertThat(
-            message,
-            index.contains(object),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            message,
-            index.contains(object),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "The index must not contain the unknown value",
-            index.contains("unknown"),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            "The number of calls should be 1",
+            "The scalar should be called exactly once due to caching",
             calls.get(),
             Matchers.is(1)
         );

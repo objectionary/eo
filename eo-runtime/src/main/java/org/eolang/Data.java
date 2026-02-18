@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @since 0.1
  */
+@FunctionalInterface
 @SuppressWarnings("PMD.TooManyMethods")
 public interface Data {
     /**

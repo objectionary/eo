@@ -27,19 +27,16 @@ import org.cactoos.text.Joined;
  * them from Maven Central, unpack and place to the {@code target/eo}
  * directory.
  *
- * <p>
- *     The motivation for this mojo is simple: Maven doesn't have
- *     a mechanism for adding .JAR files to transpile/test classpath in
- *     runtime.
- * </p>
+ * <p>The motivation for this mojo is simple: Maven doesn't have
+ * a mechanism for adding .JAR files to transpile/test classpath in
+ * runtime.</p>
  *
- * <p>
- *     This goal goes through all dependencies found in the
- *     {@link MjPull} goal, finds their implementations
- *     (i.e. transitive dependencies), downloads them from Maven Central,
- *     unpacks them and places the resulting files to the
- *     {@link MjResolve#DIR} directory.
- * </p>
+ * <p>This goal goes through all dependencies found in the
+ * {@link MjPull} goal, finds their implementations
+ * (i.e. transitive dependencies), downloads them from Maven Central,
+ * unpacks them and places the resulting files to the
+ * {@link MjResolve#DIR} directory.</p>
+ *
  * @since 0.1
  */
 @Mojo(
@@ -90,15 +87,14 @@ public final class MjResolve extends MjSafe {
         if (deps.isEmpty()) {
             Logger.info(this, "No new dependencies unpacked");
         } else {
-            final Path target = this.targetDir.toPath().resolve(MjResolve.DIR);
             new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, target)
+                dep -> this.resolved(dep, this.targetDir.toPath().resolve(MjResolve.DIR))
             ).total();
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                deps.size(), target,
+                deps.size(), this.targetDir.toPath().resolve(MjResolve.DIR),
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
@@ -273,6 +269,7 @@ public final class MjResolve extends MjSafe {
      * @return Folder size
      * @throws IOException if I/O fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

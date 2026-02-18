@@ -36,17 +36,18 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
-        final int id = Expect.at(rho, "id")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
-        final int size = Expect.at(this, "new-size")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
-        Heaps.INSTANCE.resize(id, size);
+        Heaps.INSTANCE.resize(
+            Expect.at(rho, "id")
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .that(Double::intValue)
+                .it(),
+            Expect.at(this, "new-size")
+                .that(phi -> new Dataized(phi).asNumber())
+                .otherwise("must be a number")
+                .that(Double::intValue)
+                .it()
+        );
         return rho;
     }
 }

@@ -7,6 +7,8 @@ package org.eolang.maven;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Concurrent cache wrapper for Cache.
@@ -23,7 +25,7 @@ final class ConcurrentCache {
     /**
      * Locks for each cache entry.
      */
-    private final ConcurrentMap<? super Path, Object> locks;
+    private final ConcurrentMap<Path, Lock> locks;
 
     /**
      * Ctor.
@@ -38,7 +40,7 @@ final class ConcurrentCache {
      * @param original Original cache
      * @param locks Locks map
      */
-    private ConcurrentCache(final Cache original, final ConcurrentMap<? super Path, Object> locks) {
+    private ConcurrentCache(final Cache original, final ConcurrentMap<Path, Lock> locks) {
         this.original = original;
         this.locks = locks;
     }
@@ -50,9 +52,12 @@ final class ConcurrentCache {
      * @param tail Tail path in cache
      */
     void apply(final Path source, final Path target, final Path tail) {
-        final Object loc = this.locks.computeIfAbsent(tail.normalize(), k -> new Object());
-        synchronized (loc) {
+        final Lock loc = this.locks.computeIfAbsent(tail.normalize(), k -> new ReentrantLock());
+        loc.lock();
+        try {
             this.original.apply(source, target, tail.normalize());
+        } finally {
+            loc.unlock();
         }
     }
 }

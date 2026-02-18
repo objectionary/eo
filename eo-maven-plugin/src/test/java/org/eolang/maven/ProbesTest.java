@@ -34,19 +34,14 @@ final class ProbesTest {
     @ClasspathSource(value = "org/eolang/maven/probe-packs/", glob = "**.yaml")
     void checksProbePacks(final String yaml) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yaml));
-        final List<String> expected = Optional.ofNullable(
-            (List<String>) xtory.map().get("probes")
-        ).orElse(Collections.emptyList());
-        final Probes actual = new Probes(new EoSyntax(xtory.map().get("eo").toString()).parsed());
-        MatcherAssert.assertThat(
-            "We should find the same number of probes as in the YAML file",
-            actual,
-            Matchers.iterableWithSize(expected.size())
-        );
         MatcherAssert.assertThat(
             "Probes should match the ones in the YAML file",
-            actual,
-            Matchers.containsInAnyOrder(expected.toArray(new String[0]))
+            new Probes(new EoSyntax(xtory.map().get("eo").toString()).parsed()),
+            Matchers.containsInAnyOrder(
+                Optional.ofNullable(
+                    (List<String>) xtory.map().get("probes")
+                ).orElse(Collections.emptyList()).toArray(new String[0])
+            )
         );
     }
 

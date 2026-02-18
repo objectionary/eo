@@ -77,7 +77,7 @@ public interface WinBase extends WinDef, BaseTSD {
      * @checkstyle MemberNameCheck (40 lines)
      */
     @Structure.FieldOrder({"Internal", "InternalHigh", "Offset", "OffsetHigh", "hEvent"})
-    @SuppressWarnings("PMD.FieldNamingConventions")
+    @SuppressWarnings({"PMD.FieldNamingConventions", "PMD.DataClass"})
     final class OVERLAPPED extends Structure {
         /**
          * Internal.

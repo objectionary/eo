@@ -5,6 +5,8 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Attribute that retrieves object only once.
@@ -26,12 +28,18 @@ public final class AtOnce implements Attr {
     private final AtomicReference<Phi> cached;
 
     /**
+     * Lock for synchronizing cache access.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      * @param attr Origin attribute
      */
     public AtOnce(final Attr attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>(null);
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -41,10 +49,13 @@ public final class AtOnce implements Attr {
 
     @Override
     public Phi get() {
-        synchronized (this.cached) {
+        this.lock.lock();
+        try {
             if (this.cached.get() == null) {
                 this.cached.set(this.origin.get());
             }
+        } finally {
+            this.lock.unlock();
         }
         return this.cached.get();
     }

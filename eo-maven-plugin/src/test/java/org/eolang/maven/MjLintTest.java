@@ -26,7 +26,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"
+})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
@@ -44,7 +46,22 @@ final class MjLintTest {
     }
 
     @Test
-    void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
+    void throwsOnErrorsInProgram(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
+                    "  cti true \"error\" \"msg\" > @"
+                ).execute(new FakeMaven.Lint()),
+            "Program with noname attributes should have failed or error, but it didn't"
+        );
+    }
+
+    @Test
+    void recordsErrorsInLintedXmir(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",
@@ -52,13 +69,12 @@ final class MjLintTest {
                 "[] > main",
                 "  cti true \"error\" \"msg\" > @"
             );
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
-            "Program with noname attributes should have failed or error, but it didn't"
-        );
+        try {
+            maven.execute(new FakeMaven.Lint());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
-            "Critical errors must exist in linted XMIR",
+            "Error must exist in linted XMIR",
             new Xnav(
                 maven.programTojo().linted()
             ).path("/object/errors/error[@severity='error']").count(),
@@ -67,7 +83,22 @@ final class MjLintTest {
     }
 
     @Test
-    void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
+    void throwsOnCriticalErrors(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
+                    "  cti true \"critical\" \"msg\" > @"
+                ).execute(new FakeMaven.Lint()),
+            "Wrong program should have failed or error, but it didn't"
+        );
+    }
+
+    @Test
+    void createsLintedFileOnCriticalErrors(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",
@@ -75,16 +106,30 @@ final class MjLintTest {
                 "[] > main",
                 "  cti true \"critical\" \"msg\" > @"
             );
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
-            "Wrong program should have failed or error, but it didn't"
-        );
+        try {
+            maven.execute(new FakeMaven.Lint());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
-            "Linted file should not exist",
+            "Linted file should exist",
             maven.programTojo().linted().toFile(),
             FileMatchers.anExistingFile()
         );
+    }
+
+    @Test
+    void recordsCriticalErrorsInParsedXmir(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  cti true \"critical\" \"msg\" > @"
+            );
+        try {
+            maven.execute(new FakeMaven.Lint());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
             "Error must exist in parsed XMIR",
             new Xnav(
@@ -95,7 +140,26 @@ final class MjLintTest {
     }
 
     @Test
-    void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
+    void throwsOnWarningWithCorrespondingFlag(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
+                    "  # No comments.",
+                    "  [] > @",
+                    "    \"Hello world\" > @"
+                )
+                .with("failOnWarning", true)
+                .execute(new FakeMaven.Lint()),
+            "Program with sparse decorated object should have failed on warning, but it didn't"
+        );
+    }
+
+    @Test
+    void recordsWarningsInLintedXmir(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",
@@ -106,11 +170,10 @@ final class MjLintTest {
                 "    \"Hello world\" > @"
             )
             .with("failOnWarning", true);
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
-            "Program with sparse decorated object should have failed on warning, but it didn't"
-        );
+        try {
+            maven.execute(new FakeMaven.Lint());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
             "Warning must exist in shaken XMIR",
             new Xnav(
@@ -138,7 +201,23 @@ final class MjLintTest {
     }
 
     @Test
-    void failsParsingOnError(@Mktmp final Path temp) throws Exception {
+    void throwsOnParsingError(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package foo.x\n",
+                    "# No comments.",
+                    "[] > main",
+                    "  seq *-1 > @",
+                    "    true"
+                ).execute(new FakeMaven.Lint()),
+            "Program with invalid syntax should have failed, but it didn't"
+        );
+    }
+
+    @Test
+    void recordsParsingErrorsInLintedXmir(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",
@@ -147,11 +226,10 @@ final class MjLintTest {
                 "  seq *-1 > @",
                 "    true"
             );
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
-            "Program with invalid syntax should have failed, but it didn't"
-        );
+        try {
+            maven.execute(new FakeMaven.Lint());
+        } catch (final IllegalStateException ignored) {
+        }
         MatcherAssert.assertThat(
             "Parsing errors must exist in linted XMIR",
             new Xnav(maven.programTojo().linted()).path(

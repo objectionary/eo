@@ -42,11 +42,10 @@ public final class InetAddrFuncCall implements Syscall {
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
         try {
-            final byte[] bytes = InetAddress.getByName(
-                new Dataized(params[0]).asString()
-            ).getAddress();
             final ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.put(bytes);
+            buffer.put(
+                InetAddress.getByName(new Dataized(params[0]).asString()).getAddress()
+            );
             result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
         } catch (final UnknownHostException exception) {
             Kernel32.INSTANCE.SetLastError(Winsock.WSAEINVAL);

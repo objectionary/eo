@@ -76,11 +76,9 @@ final class OyRemoteTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfProgram() throws IOException {
-        final CommitHash hash = new ChRemote("master");
-        final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
             "OyRemote positively checks the presence of the program in Objectionary",
-            objectionary.contains("org.eolang.io.stdout"),
+            new OyRemote(new ChRemote("master")).contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );
     }
@@ -88,11 +86,9 @@ final class OyRemoteTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfDirectory() throws IOException {
-        final CommitHash hash = new ChRemote("master");
-        final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
             "OyRemote positively checks the presence of the directory in Objectionary",
-            objectionary.contains("org.eolang.ms"),
+            new OyRemote(new ChRemote("master")).contains("org.eolang.ms"),
             Matchers.is(true)
         );
     }
