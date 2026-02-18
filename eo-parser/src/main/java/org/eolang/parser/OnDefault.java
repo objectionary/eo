@@ -40,6 +40,7 @@ public final class OnDefault implements ObjectName {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public String get() {
         final String obj = this.name()
             .orElseThrow(

@@ -64,6 +64,7 @@ final class OnDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsWhenNeitherONameNorClassNamePresent() {
         MatcherAssert.assertThat(
             "Expecting exception when neither o name nor class name present",

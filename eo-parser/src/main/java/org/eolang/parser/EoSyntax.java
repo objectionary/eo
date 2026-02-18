@@ -173,6 +173,7 @@ public final class EoSyntax implements Syntax {
      * @return Parsed XML
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
         final GeneralErrors spy = new GeneralErrors(lines);

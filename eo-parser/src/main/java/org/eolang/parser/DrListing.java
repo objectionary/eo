@@ -33,16 +33,19 @@ final class DrListing implements Iterable<Directive> {
 
     @Override
     public Iterator<Directive> iterator() {
-        final String text = this.context.getStart().getInputStream().getText(
-            new Interval(
-                this.context.getStart().getStartIndex(),
-                this.context.getStop().getStopIndex()
-            )
-        );
         return new Directives()
             .xpath("/object")
             .strict(1).add("listing")
-            .set(StringEscapeUtils.escapeXml11(text))
+            .set(
+                StringEscapeUtils.escapeXml11(
+                    this.context.getStart().getInputStream().getText(
+                        new Interval(
+                            this.context.getStart().getStartIndex(),
+                            this.context.getStop().getStopIndex()
+                        )
+                    )
+                )
+            )
             .iterator();
     }
 }

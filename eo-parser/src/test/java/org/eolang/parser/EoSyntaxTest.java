@@ -7,7 +7,6 @@ package org.eolang.parser;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
@@ -100,15 +99,14 @@ final class EoSyntaxTest {
     void parsesSimpleCodeWithDebugMode() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
         logger.setLevel(Level.DEBUG);
-        final EoSyntax syntax = new EoSyntax(
-            String.join(
-                "\n",
-                "# No comments.",
-                "[] > x-н, 1\n"
-            )
-        );
         Assertions.assertDoesNotThrow(
-            syntax::parsed,
+            new EoSyntax(
+                String.join(
+                    "\n",
+                    "# No comments.",
+                    "[] > x-н, 1\n"
+                )
+            )::parsed,
             "EO syntax should not fail in debug mode when program has errors"
         );
     }
@@ -159,39 +157,39 @@ final class EoSyntaxTest {
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
         ).asString();
-        final Xnav xml = new Xnav(
-            new XMLDocument(
-                new String(
-                    new EoSyntax(
-                        new InputOf(src)
-                    ).parsed().toString().getBytes(),
-                    StandardCharsets.UTF_8
-                )
-            ).inner()
-        );
         MatcherAssert.assertThat(
             "EoSyntax must copy listing to XMIR",
-            xml.element("object").element("listing").text().get(),
+            new Xnav(
+                new XMLDocument(
+                    new String(
+                        new EoSyntax(
+                            new InputOf(src)
+                        ).parsed().toString().getBytes(),
+                        StandardCharsets.UTF_8
+                    )
+                ).inner()
+            ).element("object").element("listing").text().get(),
             Matchers.containsString(StringEscapeUtils.escapeXml11(src))
         );
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "1 > x\n2 > y",
-        "1 > x\r\n2 > y",
-        "1 > x\r\n\r\n2 > y",
-        "1 > x\n2 > y\n",
-        "1 > x\n\n2 > y",
-        "# No comments.\n[] > x",
-        "# No comments.\n[] > x\n  x ^ > @"
-    })
+    @ValueSource(
+        strings = {
+            "1 > x\n2 > y",
+            "1 > x\r\n2 > y",
+            "1 > x\r\n\r\n2 > y",
+            "1 > x\n2 > y\n",
+            "1 > x\n\n2 > y",
+            "# No comments.\n[] > x",
+            "# No comments.\n[] > x\n  x ^ > @"
+        }
+    )
     void parsesSuccessfully(final String code) {
-        final EoSyntax syntax = new EoSyntax(
-            new InputOf(code)
-        );
         Assertions.assertDoesNotThrow(
-            syntax::parsed,
+            new EoSyntax(
+                new InputOf(code)
+            )::parsed,
             "EO syntax must be parsed successfully without exceptions (even with errors)"
         );
     }
@@ -211,20 +209,21 @@ final class EoSyntaxTest {
 
     @Test
     void parsesNested() throws IOException {
-        final String src = String.join(
-            "\n",
-            "# No comments.",
-            "[] > base",
-            "  memory 0 > x",
-            "  # No comments.",
-            "  [self] > f",
-            "    v > @",
-            "      v\n"
-        );
         MatcherAssert.assertThat(
             "EO object with nested objects must be parsed successfully",
             new EoSyntax(
-                new InputOf(src)
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# No comments.",
+                        "[] > base",
+                        "  memory 0 > x",
+                        "  # No comments.",
+                        "  [self] > f",
+                        "    v > @",
+                        "      v\n"
+                    )
+                )
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
@@ -264,10 +263,12 @@ final class EoSyntaxTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "5 > five",
-        "\"Hello\" > str"
-    })
+    @ValueSource(
+        strings = {
+            "5 > five",
+            "\"Hello\" > str"
+        }
+    )
     void storesAsBytes(final String code) throws IOException {
         MatcherAssert.assertThat(
             "We data is parsed successfully as bytes",
@@ -281,6 +282,7 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void checksTypoPacks(final String yaml) {
         final Xtory story = new XtSticky(
             new XtYaml(
@@ -364,11 +366,10 @@ final class EoSyntaxTest {
             )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
-        final XML xml = story.after();
         final Set<String> errors = new SetOf<>(
             new Mapped<>(
                 SAXParseException::toString,
-                xml.validate(
+                story.after().validate(
                     new XMLDocument(
                         new TextOf(new ResourceOf("XMIR.xsd")).asString()
                     )
@@ -477,16 +478,17 @@ final class EoSyntaxTest {
 
     @Test
     void checksProhibitionCactusInObjectName() throws Exception {
-        final String src = String.join(
-            "\n",
-            "[] > foo\uD83C\uDF35bar\n"
-        );
         MatcherAssert.assertThat(
             "Cactus is prohibited in object name",
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf(src)
+                        new InputOf(
+                            String.join(
+                                "\n",
+                                "[] > foo\uD83C\uDF35bar\n"
+                            )
+                        )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
@@ -499,17 +501,18 @@ final class EoSyntaxTest {
 
     @Test
     void checksProhibitionCactusInAttributeName() throws Exception {
-        final String src = String.join(
-            "\n",
-            "[] > app",
-            "  x > a\uD83C\uDF3565\n"
-        );
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute name",
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf(src)
+                        new InputOf(
+                            String.join(
+                                "\n",
+                                "[] > app",
+                                "  x > a\uD83C\uDF3565\n"
+                            )
+                        )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
@@ -522,17 +525,18 @@ final class EoSyntaxTest {
 
     @Test
     void checksProhibitionCactusInAttributeValue() throws Exception {
-        final String src = String.join(
-            "\n",
-            "[] > x",
-            "  \uD83C\uDF35 > y\n"
-        );
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute value",
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf(src)
+                        new InputOf(
+                            String.join(
+                                "\n",
+                                "[] > x",
+                                "  \uD83C\uDF35 > y\n"
+                            )
+                        )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
