@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StFailure;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
+import org.cactoos.Proc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -42,12 +44,18 @@ final class StEoLoggedTest {
 
     @Test
     void delegatesWithoutException() throws ImpossibleModificationException {
-        final FakeLog log = new FakeLog();
         MatcherAssert.assertThat(
             "We expect that shift will successfully generate output xml",
-            new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example()),
+            new StEoLogged(new StUnhex(), new FakeLog())
+                .apply(1, StEoLoggedTest.example()),
             Matchers.notNullValue()
         );
+    }
+
+    @Test
+    void delegatesWithoutLogs() throws ImpossibleModificationException {
+        final FakeLog log = new FakeLog();
+        new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example());
         MatcherAssert.assertThat(
             String.format(
                 "We expect that logs will be empty, but was %s",
@@ -64,10 +72,9 @@ final class StEoLoggedTest {
     @Test
     void printsMessageWithEoIfExceptionIsThrown() {
         final FakeLog log = new FakeLog();
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new StEoLogged(new StFailure(), log).apply(1, StEoLoggedTest.example()),
-            "We expect that shift will throw an exception, but xml didn't"
+        StEoLoggedTest.safe(
+            ignore -> new StEoLogged(new StFailure(), log)
+                .apply(1, StEoLoggedTest.example())
         );
         MatcherAssert.assertThat(
             String.format(
@@ -76,6 +83,16 @@ final class StEoLoggedTest {
             ),
             log.last(),
             Matchers.containsString("[] > bar")
+        );
+    }
+
+    @Test
+    void throwsExceptionIfFailure() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new StEoLogged(new StFailure(), new FakeLog())
+                .apply(1, StEoLoggedTest.example()),
+            "We expect that shift will throw an exception, but xml didn't"
         );
     }
 
@@ -99,6 +116,20 @@ final class StEoLoggedTest {
                     .attr("name", "bar")
             ).xml()
         );
+    }
+
+    /**
+     * Ignores all excesptions thrown.
+     * @param run Procedure to execute
+     * @checkstyle IllegalCatchCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private static void safe(final Proc<Object> run) {
+        try {
+            run.exec(new Object());
+        } catch (final Exception ignore) {
+            Logger.trace(StEoLoggedTest.class, ignore.getMessage());
+        }
     }
 
     /**

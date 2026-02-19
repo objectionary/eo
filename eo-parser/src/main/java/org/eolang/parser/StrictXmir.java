@@ -44,8 +44,14 @@ import org.xml.sax.SAXParseException;
  * then encapsulate it into this decorator.</p>
  *
  * @since 0.49.0
+ * @todo #4884:30min Replace synchronized statements with ReentrantLock.
+ *  We are getting the following complaint about {@ling StrictXmir}:
+ *  StrictXmir.java[244-289]: Use ReentrantLock rather than synchronization
+ *  (AvoidSynchronizedStatement). It's better to consider this replacement.
+ *  Don't forget to remove  PMD.AvoidSynchronizedStatement from the
+ *  SuppressWarnings annotation of this class.
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidSynchronizedStatement"})
 public final class StrictXmir implements XML {
     /**
      * XSD for current EO version.
@@ -76,7 +82,6 @@ public final class StrictXmir implements XML {
      * @param before The XML source
      * @param tmp The directory with cached XSD files
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public StrictXmir(final XML before, final Path tmp) {
         this.xml = new Unchecked<>(
             new Synced<>(
