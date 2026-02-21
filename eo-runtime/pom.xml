@@ -168,6 +168,12 @@
       <version>2.1.6</version>
       <scope>test</scope>
     </dependency>
+  
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-strings</artifactId>
+      <version>0.1.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
