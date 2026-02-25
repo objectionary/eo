@@ -32,12 +32,10 @@ final class DepDirsTest {
         MatcherAssert.assertThat(
             String.format("DepDirs should contain %s, but it doesn't", path),
             new DepDirs(temp),
-            Matchers.contains(path)
-        );
-        MatcherAssert.assertThat(
-            "DepDirs should contain one element, but it doesn't",
-            new DepDirs(temp),
-            Matchers.iterableWithSize(1)
+            Matchers.allOf(
+                Matchers.<String>iterableWithSize(1),
+                Matchers.contains(path)
+            )
         );
     }
 

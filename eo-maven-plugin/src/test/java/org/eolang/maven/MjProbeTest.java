@@ -27,10 +27,8 @@ final class MjProbeTest {
 
     @Test
     void findsProbesViaOfflineHashFile(@Mktmp final Path temp) throws IOException {
-        final String tag = "master";
-        final String tags = "org/eolang/maven/commits/tags.txt";
         new Saved(
-            new ResourceOf(tags),
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
             temp.resolve("tags.txt")
         ).value();
         final String expected = "11";
@@ -40,7 +38,7 @@ final class MjProbeTest {
                 expected
             ),
             new FakeMaven(temp)
-                .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), tag)))
+                .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), "master")))
                 .withProgram(MjProbeTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()

@@ -45,7 +45,6 @@ import org.cactoos.text.UncheckedText;
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
-    "PMD.CouplingBetweenObjects",
     "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName"
 })
@@ -170,7 +169,6 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            final Path placed = Paths.get("placed.json");
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
                 "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
@@ -186,7 +184,10 @@ final class FakeMaven {
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
-            this.params.putIfAbsent("placed", this.workspace.resolve(placed).toFile());
+            this.params.putIfAbsent(
+                "placed",
+                this.workspace.resolve(Paths.get("placed.json")).toFile()
+            );
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
                 "sourcesDir", this.workspace.resolve(".").toFile()
@@ -342,11 +343,10 @@ final class FakeMaven {
         final Path src = this.workspace.resolve(source);
         new Saved(content, src).value();
         final String scope = this.scope();
-        final String version = "0.25.0";
         this.foreignTojos()
             .add(object)
             .withScope(scope)
-            .withVersion(version)
+            .withVersion("0.25.0")
             .withSource(src);
         this.current.incrementAndGet();
         return this;
@@ -394,6 +394,7 @@ final class FakeMaven {
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     Map<String, Path> result() throws IOException {
         final Path root = this.workspace.resolve("");
         return Files.walk(root).collect(
@@ -657,8 +658,7 @@ final class FakeMaven {
         public void accept(final Dependency dependency, final Path path) {
             try {
                 Files.createDirectories(path);
-                final String other = DummyCentral.className(dependency);
-                Files.createFile(path.resolve(other));
+                Files.createFile(path.resolve(DummyCentral.className(dependency)));
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     String.format("Can't save '%s' to '%s'", dependency, path),

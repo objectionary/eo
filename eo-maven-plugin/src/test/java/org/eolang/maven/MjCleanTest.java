@@ -27,8 +27,9 @@ final class MjCleanTest {
     @Test
     void cleansSuccessfully(@Mktmp final Path temp) throws IOException {
         final Path dir = Files.createDirectories(temp.resolve("target"));
-        final Path out = Files.createDirectories(dir.resolve("child"));
-        final Path small = Files.createDirectories(out.resolve("child.eo"));
+        final Path small = Files.createDirectories(
+            Files.createDirectories(dir.resolve("child")).resolve("child.eo")
+        );
         final Path file = Files.createTempFile(dir, "some", ".eo");
         if (!small.toFile().exists() || !file.toFile().exists()) {
             throw new IllegalStateException("Files not created.");

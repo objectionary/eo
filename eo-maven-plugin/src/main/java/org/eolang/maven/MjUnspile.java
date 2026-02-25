@@ -30,7 +30,6 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class MjUnspile extends MjSafe {
     /**
      * Pattern for matching paths ended with .class.
@@ -61,6 +60,7 @@ public final class MjUnspile extends MjSafe {
      * Unspile classes.
      * @param classes Collection of compiled classes
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void unspile(final Walk classes) {
         final Path generated = this.generatedDir.toPath();
         final Set<String> included = new Walk(generated)

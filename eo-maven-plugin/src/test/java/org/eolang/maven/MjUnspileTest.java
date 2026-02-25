@@ -39,6 +39,7 @@ final class MjUnspileTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void keepsSpecifiedClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("keepBinaries", Set.of("EOorg/package-info.class"));
@@ -63,6 +64,7 @@ final class MjUnspileTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void deletesInnerGeneratedClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("outer", maven.generatedPath().resolve("EOorg/EOnumber.java")).value();

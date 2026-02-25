@@ -37,16 +37,13 @@ final class ProbesTest {
         final List<String> expected = Optional.ofNullable(
             (List<String>) xtory.map().get("probes")
         ).orElse(Collections.emptyList());
-        final Probes actual = new Probes(new EoSyntax(xtory.map().get("eo").toString()).parsed());
-        MatcherAssert.assertThat(
-            "We should find the same number of probes as in the YAML file",
-            actual,
-            Matchers.iterableWithSize(expected.size())
-        );
         MatcherAssert.assertThat(
             "Probes should match the ones in the YAML file",
-            actual,
-            Matchers.containsInAnyOrder(expected.toArray(new String[0]))
+            new Probes(new EoSyntax(xtory.map().get("eo").toString()).parsed()),
+            Matchers.allOf(
+                Matchers.<String>iterableWithSize(expected.size()),
+                Matchers.containsInAnyOrder(expected.toArray(new String[0]))
+            )
         );
     }
 

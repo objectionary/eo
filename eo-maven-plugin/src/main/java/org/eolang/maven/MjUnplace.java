@@ -25,7 +25,6 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class MjUnplace extends MjSafe {
     @Override
     public void exec() throws IOException {
@@ -39,7 +38,6 @@ public final class MjUnplace extends MjSafe {
     /**
      * Unplace what's necessary.
      */
-    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private void unplace() {
         final Path classes = this.classesDir.toPath();
         final Walk binaries = new Walk(classes);

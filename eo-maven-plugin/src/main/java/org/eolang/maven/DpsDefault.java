@@ -156,12 +156,10 @@ final class DpsDefault implements Dependencies {
                         Filter.withName("meta"),
                         meta -> {
                             final Xnav xnav = new Xnav(meta);
-                            final Optional<String> head = xnav.element("head").text();
-                            final boolean runtime = head.map("rt"::equals).orElse(false);
                             final Optional<Xnav> part = xnav.elements(
                                 Filter.withName("part")
                             ).findFirst();
-                            return runtime
+                            return xnav.element("head").text().map("rt"::equals).orElse(false)
                                 && part.isPresent()
                                 && part.get().text().map("jvm"::equals).orElse(false);
                         }

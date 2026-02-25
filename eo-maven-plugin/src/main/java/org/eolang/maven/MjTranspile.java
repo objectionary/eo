@@ -122,6 +122,7 @@ public final class MjTranspile extends MjSafe {
     private boolean transpileTests = true;
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
         final long begin = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withXmir();
@@ -161,6 +162,7 @@ public final class MjTranspile extends MjSafe {
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int transpiled(
         final TjForeign tojo
     ) throws IOException {
@@ -260,6 +262,7 @@ public final class MjTranspile extends MjSafe {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int javaGenerated(
         final boolean rewrite,
         final Path target,

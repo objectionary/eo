@@ -133,22 +133,25 @@ final class MjPullTest {
             .with("offline", true)
             .execute(new FakeMaven.Pull())
             .result();
-        final String format = "%s folder should not contain %s file, but it did";
         final String stdout = "org/eolang/io/stdout.eo";
         final String string = "org/eolang/string.eo";
         MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, stdout),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, stdout)),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, string),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, string)),
-            Matchers.is(false)
+            String.format(
+                "%s folder should not contain %s and %s file, but it did",
+                MjPull.DIR,
+                stdout,
+                string
+            ),
+            result,
+            Matchers.allOf(
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, stdout))),
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, string)))
+            )
         );
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()

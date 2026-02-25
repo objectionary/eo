@@ -139,7 +139,7 @@ final class Moja<T extends AbstractMojo> {
      * @param entry Field name and value
      * @throws java.lang.IllegalAccessException If can't set field.
      */
-    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+    @SuppressWarnings({"PMD.AvoidAccessibilityAlteration", "PMD.UnnecessaryLocalRule"})
     private void initField(
         final Class<?> clazz,
         final AbstractMojo mojo,

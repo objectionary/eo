@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -101,7 +102,7 @@ final class Cache {
      */
     private static String sha(final Path file) throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        try (var stream = Files.newInputStream(file)) {
+        try (InputStream stream = Files.newInputStream(file)) {
             final byte[] buffer = new byte[8192];
             int read = stream.read(buffer);
             while (read != -1) {
@@ -109,8 +110,7 @@ final class Cache {
                 read = stream.read(buffer);
             }
         }
-        final byte[] hash = digest.digest();
-        return Base64.getEncoder().encodeToString(hash);
+        return Base64.getEncoder().encodeToString(digest.digest());
     }
 }
 

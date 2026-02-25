@@ -12,7 +12,12 @@ import java.util.concurrent.ConcurrentMap;
  * Concurrent cache wrapper for Cache.
  * Wrap {@link Cache} to make it thread-safe.
  * @since 0.60
+ * @todo #4884:30min Use ReentrantLock instead of synchronized block.
+ *  This is the suggestion from qulice.
+ *  Dont' forget to remove the PMD suppression for AvoidSynchronizedStatement
+ *  after that.
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class ConcurrentCache {
 
     /**
