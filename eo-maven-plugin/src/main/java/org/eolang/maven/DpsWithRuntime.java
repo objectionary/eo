@@ -10,6 +10,7 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
@@ -78,7 +79,7 @@ final class DpsWithRuntime implements Dependencies {
 
     @Override
     public Iterator<Dep> iterator() {
-        final ListOf<Dep> all = new ListOf<>(this.delegate);
+        final List<Dep> all = new ListOf<>(this.delegate);
         if (all.stream().noneMatch(dep -> DpsWithRuntime.isRuntime(dep.get()))) {
             all.add(this.supplied.value());
         }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
@@ -44,6 +44,10 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings({
+        "PMD.UnitTestContainsTooManyAsserts",
+        "PMD.UnnecessaryLocalRule"
+    })
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
@@ -67,6 +71,7 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
@@ -95,6 +100,10 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings({
+        "PMD.UnitTestContainsTooManyAsserts",
+        "PMD.UnnecessaryLocalRule"
+    })
     void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
@@ -138,6 +147,10 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings({
+        "PMD.UnitTestContainsTooManyAsserts",
+        "PMD.UnnecessaryLocalRule"
+    })
     void failsParsingOnError(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
@@ -185,6 +198,7 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
@@ -204,6 +218,7 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf input = new TextOf(
             new ResourceOf("org/eolang/maven/main.xml")

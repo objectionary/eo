@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -44,7 +45,7 @@ final class StMeasured implements Shift {
     }
 
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public XML apply(final int position, final XML xml) {
         final long start = System.currentTimeMillis();
         final XML out = this.origin.apply(position, xml);
@@ -55,7 +56,7 @@ final class StMeasured implements Shift {
                     "%s,%d\n",
                     this.origin.uid(),
                     System.currentTimeMillis() - start
-                ).getBytes(),
+                ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.APPEND,
                 StandardOpenOption.CREATE
             );

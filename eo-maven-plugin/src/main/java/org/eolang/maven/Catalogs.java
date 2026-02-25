@@ -15,6 +15,7 @@ import com.yegor256.tojos.TjSynchronized;
 import com.yegor256.tojos.Tojos;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -23,7 +24,11 @@ import org.cactoos.scalar.Unchecked;
  * All catalogs in one place, to avoid making multiple objects.
  *
  * @since 0.29
+ * @todo #4884:30min Use ReentranLock instead of synchronized block in the code.
+ *  It will be more efficient and will not cause deadlocks.
+ *  Don't forget to remove the PMD suppression after that.
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Catalogs {
 
     /**
@@ -54,7 +59,7 @@ final class Catalogs {
     /**
      * All of them.
      */
-    private final ConcurrentHashMap<Path, Tojos> all;
+    private final Map<Path, Tojos> all;
 
     /**
      * Ctor.

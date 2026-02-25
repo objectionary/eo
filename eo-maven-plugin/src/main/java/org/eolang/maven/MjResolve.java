@@ -85,6 +85,7 @@ public final class MjResolve extends MjSafe {
     private boolean resolveInCentral = true;
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
         final Collection<Dep> deps = this.deps();
         if (deps.isEmpty()) {
@@ -273,6 +274,7 @@ public final class MjResolve extends MjSafe {
      * @return Folder size
      * @throws IOException if I/O fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

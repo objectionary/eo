@@ -141,6 +141,7 @@ final class ChTextTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void executesExactlyOnceAtNoError() {
         final AtomicInteger count = new AtomicInteger(0);
         new ChText(
@@ -159,6 +160,7 @@ final class ChTextTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void executesNotAtTagMatchesHash() {
         final AtomicInteger count = new AtomicInteger(0);
         new ChText(
@@ -177,6 +179,7 @@ final class ChTextTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void executesEventually() {
         final AtomicInteger count = new AtomicInteger(0);
         new ChText(

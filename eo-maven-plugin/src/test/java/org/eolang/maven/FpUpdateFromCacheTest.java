@@ -28,15 +28,22 @@ final class FpUpdateFromCacheTest {
         final Text expected = new TextOf("Cached!");
         final Path cached = new Saved(expected, tmp.resolve("cache.txt")).value();
         final Path target = tmp.resolve("target.txt");
-        MatcherAssert.assertThat(
-            "We expect the footprint will return the target file path",
-            new FpUpdateFromCache(() -> cached).apply(Paths.get("/dev/null"), target),
-            Matchers.equalTo(target)
-        );
+        new FpUpdateFromCache(() -> cached).apply(Paths.get("/dev/null"), target);
         MatcherAssert.assertThat(
             "The target file should be updated from cache",
             new TextOf(target),
             Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void returnsSaved(@Mktmp final Path tmp) throws IOException {
+        final Path cached = new Saved(new TextOf("Cached!"), tmp.resolve("cache.txt")).value();
+        final Path target = tmp.resolve("target.txt");
+        MatcherAssert.assertThat(
+            "We expect the footprint will return the target file path",
+            new FpUpdateFromCache(() -> cached).apply(Paths.get("/dev/null"), target),
+            Matchers.equalTo(target)
         );
     }
 }

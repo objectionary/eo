@@ -52,6 +52,7 @@ public final class MjProbe extends MjSafe {
     /**
      * Probe objects.
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void probe() {
         final Collection<TjForeign> tojos = this.scopedTojos().unprobed();
         if (tojos.isEmpty()) {
