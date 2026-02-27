@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/validate-aliases.xsl
+asserts:
+  - /object/errors/error[@check='validate-aliases' and @severity='error']
+input: |
+  +alias ms.real org.eolang.ms.real
+
+  [] > foo
+    42 > @

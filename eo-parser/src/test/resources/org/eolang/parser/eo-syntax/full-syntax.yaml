@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/metas[count(meta)=4]
+  - /object/metas[count(meta)=2]
   - /object/metas/meta[head='foo' and tail='']
   - //o[@base='Φ.org.eolang.true']
   - //o[@base='Φ.org.eolang.string']
@@ -17,8 +17,6 @@ asserts:
   - /object[not(.//o[@name=''])]
   - //o[o[@name='λ'] and @name='atom' and count(o)=4 and o[@name='a']]
 input: |
-  +alias org.example.foo
-  +alias Test Test
   +bar Some text
   +foo
 
