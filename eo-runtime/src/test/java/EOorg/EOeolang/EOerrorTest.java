@@ -52,6 +52,7 @@ final class EOerrorTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void getsReadableError(final byte[] cnst, final String text) {
         MatcherAssert.assertThat(
             "Bytes must be translated to string correctly",
@@ -95,7 +96,6 @@ final class EOerrorTest {
          * Ctor.
          * @param data The data inside error.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         MyError(final Object data) {
             this.add(
                 "φ",

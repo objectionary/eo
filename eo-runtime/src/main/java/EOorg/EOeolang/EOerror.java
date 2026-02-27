@@ -140,8 +140,10 @@ public final class EOerror extends PhDefault implements Atom {
          * @param message New one
          * @return New list of them
          */
-        private static Collection<String> concat(final Collection<String> before,
-            final String message) {
+        private static Collection<String> concat(
+            final Collection<String> before,
+            final String message
+        ) {
             final Collection<String> list = new ArrayList<>(before.size() + 1);
             list.addAll(before);
             list.add(message);
@@ -161,11 +163,10 @@ public final class EOerror extends PhDefault implements Atom {
                 result = "null Phi";
             } else {
                 try {
-                    final byte[] raw = new Dataized(enclosure).take();
                     result = String.format(
                         "%s(Δ = %s)",
                         enclosure,
-                        new VerboseBytesAsString(raw).get()
+                        new VerboseBytesAsString(new Dataized(enclosure).take()).get()
                     );
                 } catch (final Exception first) {
                     try {

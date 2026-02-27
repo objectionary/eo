@@ -15,6 +15,7 @@ import org.eolang.Phi;
  *
  * @since 0.40
  */
+@FunctionalInterface
 public interface Syscall {
     /**
      * Makes native method call.

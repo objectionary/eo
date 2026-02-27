@@ -19,7 +19,7 @@ import com.sun.jna.Structure;
  * @since 0.40.0
  * @checkstyle InterfaceIsTypeCheck (500 lines)
  */
-@SuppressWarnings({"PMD.ConstantsInInterface", "PMD.LongVariable"})
+@SuppressWarnings({"PMD.ConstantsInInterface", "PMD.LongVariable", "PMD.DataClass"})
 public interface WinBase extends WinDef, BaseTSD {
     /**
      * Constant value representing an invalid {@link WinNT.HANDLE}.

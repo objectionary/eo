@@ -42,17 +42,19 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
                 this.take(Phi.RHO).take("file").take("path")
             ).asString()
         ).toAbsolutePath();
-        final String glob = new Dataized(
-            this.take("glob")
-        ).asString();
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(
-            String.format("glob:%s", glob)
+            String.format(
+                "glob:%s", new Dataized(
+                    this.take("glob")
+                ).asString()
+            )
         );
         try (Stream<Path> paths = Files.walk(path)) {
             return new Data.ToPhi(

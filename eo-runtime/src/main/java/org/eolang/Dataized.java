@@ -75,7 +75,7 @@ public final class Dataized {
      *
      * @return The data
      */
-    @SuppressWarnings("PMD.PreserveStackTrace")
+    @SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.PreserveStackTrace"})
     public byte[] take() {
         try {
             return this.phi.delta();

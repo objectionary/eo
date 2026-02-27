@@ -9,7 +9,7 @@ package org.eolang;
  *
  * @since 0.36.0
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.AvoidRethrowingException"})
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
 public final class AtomSafe implements Atom {
     /**
      * Original atom.

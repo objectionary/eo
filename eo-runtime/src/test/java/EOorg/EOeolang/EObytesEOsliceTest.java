@@ -50,6 +50,7 @@ final class EObytesEOsliceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void takesWrongSlice() {
         MatcherAssert.assertThat(
             "error message is correct",

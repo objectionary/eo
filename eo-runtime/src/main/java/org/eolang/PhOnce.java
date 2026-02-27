@@ -12,9 +12,13 @@ import java.util.function.Supplier;
  * An object wrapping another one.
  *
  * @since 0.1
+ * @todo #4884:30min Use ReentrantLock instead of synchronized block in the constructor.
+ *  This will allow to avoid blocking the whole object while fetching the wrapped one.
+ *  Moreover, using 'syznchronized' is forbidden by qulice.
+ *  Don't forget to remove the suppression of PMD.AvoidSynchronizedStatement in
+ *  the constructor after that.
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public class PhOnce implements Phi {
 
     /**
@@ -32,6 +36,7 @@ public class PhOnce implements Phi {
      *
      * @param obj The object
      */
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public PhOnce(final Supplier<Phi> obj) {
         this.ref = new AtomicReference<>(null);
         this.object = () -> {

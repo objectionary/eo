@@ -23,7 +23,12 @@ import org.eolang.ExFailure;
 /**
  * File streams.
  * @since 0.40
+ * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in Files.
+ *  We should use ReentrantLock instead of 'synchronized' to avoid potential
+ *  deadlocks when multiple AtOnce attributes are used together.
+ *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Files {
     /**
      * Files instance.
@@ -33,6 +38,7 @@ final class Files {
     /**
      * File input streams for reading.
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     private final ConcurrentHashMap<String, Object[]> streams;
 
     /**
@@ -52,7 +58,7 @@ final class Files {
         final Path path = Paths.get(name);
         this.streams.putIfAbsent(
             name,
-            new Object[] {
+            new Object[]{
                 java.nio.file.Files.newInputStream(path),
                 java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
             }

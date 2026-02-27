@@ -45,7 +45,7 @@ final class JavaPath {
 
     @Override
     public String toString() {
-        return DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
+        return JavaPath.DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
             .replaceAll("$1EO$2")
             .replace("$", "$EO")
             .replace("-", "_");
