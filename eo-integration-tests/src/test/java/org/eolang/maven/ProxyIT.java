@@ -9,6 +9,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.Requisite;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
@@ -22,7 +23,6 @@ import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.proxy.ProxyHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ConnectHandler;
@@ -62,7 +62,9 @@ final class ProxyIT {
 
     @Test
     void checksThatProxyIsWorking() throws IOException, InterruptedException {
-        final var resp = HttpClient.newBuilder()
+        MatcherAssert.assertThat(
+            "Response body should contain objectionary.com",
+            HttpClient.newBuilder()
             .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build()
@@ -72,15 +74,7 @@ final class ProxyIT {
                     .header("User-Agent", "test-client")
                     .GET()
                     .build(), HttpResponse.BodyHandlers.ofString()
-            );
-        MatcherAssert.assertThat(
-            "Proxy should return 200 OK for objectionary.com",
-            resp.statusCode(),
-            Matchers.equalTo(HttpStatus.OK_200)
-        );
-        MatcherAssert.assertThat(
-            "Response body should contain objectionary.com",
-            resp.body(),
+            ).body(),
             Matchers.allOf(
                 Matchers.containsString("objectionary"),
                 Matchers.containsString("sources")
@@ -89,11 +83,12 @@ final class ProxyIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         new Farea(tmp).together(
             f -> {
                 f.clean();
-                final var settings = f.files().file("settings.xml").write(
+                final Requisite settings = f.files().file("settings.xml").write(
                     ProxyIT.settings(this.port).getBytes(StandardCharsets.UTF_8)
                 );
                 f.files()
@@ -130,8 +125,9 @@ final class ProxyIT {
      * Finds a free port.
      * @return Free port number
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static int free() {
-        try (var socket = new ServerSocket(0)) {
+        try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         } catch (final IOException exception) {
             throw new IllegalStateException("Could not find a free port", exception);

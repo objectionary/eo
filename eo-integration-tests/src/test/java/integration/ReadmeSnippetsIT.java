@@ -39,6 +39,7 @@ final class ReadmeSnippetsIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {

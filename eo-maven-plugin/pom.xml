@@ -519,7 +519,6 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.25.1</version>
             <configuration>
               <excludes>
                 <exclude>checkstyle:/src/it.*</exclude>
