@@ -25,7 +25,6 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sprintf")
-@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOsprintf extends PhDefault implements Atom {
 
     /**

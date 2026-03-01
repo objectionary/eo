@@ -25,6 +25,7 @@ final class AtOnceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesAttribute() {
         final AtomicInteger count = new AtomicInteger();
         final Attr attr = new AtOnce(
@@ -46,6 +47,7 @@ final class AtOnceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void resetsCacheOnCopy() {
         final AtomicInteger count = new AtomicInteger();
         final Attr attr = new AtOnce(

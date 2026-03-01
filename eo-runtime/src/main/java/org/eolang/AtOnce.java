@@ -12,7 +12,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>It's highly recommended to use it with {@link AtComposite}.</p>
  *
  * @since 0.1
+ * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in AtOnce.
+ *  We should use ReentrantLock instead of 'synchronized' to avoid potential
+ *  deadlocks when multiple AtOnce attributes are used together.
+ *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 public final class AtOnce implements Attr {
 
     /**

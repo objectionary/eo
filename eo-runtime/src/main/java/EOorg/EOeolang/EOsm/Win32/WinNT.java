@@ -20,7 +20,7 @@ import com.sun.jna.PointerType;
  * @since 0.40
  * @checkstyle InterfaceIsTypeCheck (500 lines)
  */
-@SuppressWarnings("PMD.LongVariable")
+@SuppressWarnings({"PMD.LongVariable", "PMD.ConstantsInInterface"})
 public interface WinNT extends WinDef, WinBase, BaseTSD {
     /**
      * This flag specifies the file's attributes. FILE_ATTRIBUTE_NORMAL indicates that the file

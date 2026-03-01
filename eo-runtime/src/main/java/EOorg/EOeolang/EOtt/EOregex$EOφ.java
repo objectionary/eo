@@ -47,8 +47,7 @@ public final class EOregex$EOφ extends PhDefault implements Atom {
         final Phi pattern = regex.take("pattern");
         try {
             final ObjectOutputStream ous = new ObjectOutputStream(baos);
-            final Pattern compiled = Pattern.compile(builder.toString());
-            ous.writeObject(compiled);
+            ous.writeObject(Pattern.compile(builder.toString()));
             pattern.put(0, new Data.ToPhi(baos.toByteArray()));
             ous.close();
             return pattern;

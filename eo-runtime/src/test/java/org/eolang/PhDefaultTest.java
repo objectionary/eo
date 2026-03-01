@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhDefaultTest {
 
     @Test
@@ -78,6 +78,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi first = phi.take(this.plus());
@@ -104,16 +105,21 @@ final class PhDefaultTest {
     }
 
     @Test
-    void hasKidWithSetRhoAfterCopying() {
-        final Phi phi = new PhDefaultTest.Int().copy();
-        final Phi plus = phi.take(this.plus());
+    void hasKidWithSetRhoAfterCopyingShouldGetAfttribute() {
         Assertions.assertDoesNotThrow(
-            () -> plus.take(Phi.RHO),
+            () -> new PhDefaultTest.Int().copy().take(this.plus()).take(Phi.RHO),
             String.format(
                 "Child object should get %s attribute after copying main object",
                 Phi.RHO
             )
         );
+    }
+
+    @Test
+    void hasKidWithSetRhoAfterCopying() {
+        final Phi phi = new PhDefaultTest.Int().copy();
+        final Phi plus = phi.take(this.plus());
+        plus.take(Phi.RHO);
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied child object should be equal to copied main object",
@@ -125,6 +131,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void hasDifferentKidsAfterDoubleCopying() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi first = phi.copy();
@@ -139,7 +146,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void changesKidRhoAfterSelfCopying() {
+    void changesKidRhoAfterSelfCopyingKidShouldReferToOriginal() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
@@ -149,6 +156,13 @@ final class PhDefaultTest {
             phi.take(this.plus()).take(Phi.RHO),
             Matchers.not(Matchers.equalTo(copy.take(this.plus()).take(Phi.RHO)))
         );
+    }
+
+    @Test
+    void changesKidRhoAfterSelfCopyingKidShouldReferToCopied() {
+        final Phi phi = new PhDefaultTest.Int();
+        final Phi copy = phi.copy();
+        phi.take(this.plus()).take(Phi.RHO);
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of copied object kid should refer to copied object",
@@ -160,6 +174,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi first = phi.take(this.plus());
@@ -235,13 +250,17 @@ final class PhDefaultTest {
     }
 
     @Test
-    void hasAccessToDependentOnContextAttribute() {
-        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
+    void hasAccessToDependentOnContextAttributeThrows() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Phi.PHI),
+            () -> new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.PHI),
             "Phi should not be accessible without setting void attribute, but it did"
         );
+    }
+
+    @Test
+    void hasAccessToDependentOnContextAttributeDoesNotThrow() {
+        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         phi.put(this.getVoid(), new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
@@ -263,10 +282,9 @@ final class PhDefaultTest {
 
     @Test
     void makesObjectIdentity() {
-        final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             "Object should have a hashCode greater then 0, but it didn't",
-            phi.hashCode(),
+            new PhDefaultTest.Int().hashCode(),
             Matchers.greaterThan(0)
         );
     }
@@ -309,6 +327,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo();
@@ -322,33 +341,30 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        final Phi phi = new PhDefaultTest.EndlessRecursion();
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(phi).asNumber(),
+            new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void hesPhiRecursively() {
-        final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(phi).asNumber(),
+            new Dataized(new PhDefaultTest.RecursivePhi()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void cachesPhiViaNewRecursively() {
-        final Phi phi = new PhDefaultTest.RecursivePhiViaNew();
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
-            new Dataized(phi).asNumber(),
+            new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
@@ -464,6 +480,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
@@ -486,7 +503,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void verifiesThreadLocalNestingWithExceptions() {
+    void verifiesThreadLocalNestingWithExceptionsThrows() {
         final Phi phi = this.phiWithContextAttribute(
             "context-verifiesThreadLocalNestingWithExceptions"
         );
@@ -494,6 +511,13 @@ final class PhDefaultTest {
             ExUnset.class,
             () -> phi.take("non-existent-attribute"),
             "Should throw exception for non-existent attribute"
+        );
+    }
+
+    @Test
+    void verifiesThreadLocalNestingWithExceptionsDoesNotThrow() {
+        final Phi phi = this.phiWithContextAttribute(
+            "context-verifiesThreadLocalNestingWithExceptions"
         );
         Assertions.assertDoesNotThrow(
             () -> phi.take("context-verifiesThreadLocalNestingWithExceptions"),
@@ -513,6 +537,7 @@ final class PhDefaultTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int cnt = 100;
@@ -596,11 +621,10 @@ final class PhDefaultTest {
      * Rnd.
      * @since 0.1.0
      */
-    private static class Rnd extends PhDefault {
+    private static final class Rnd extends PhDefault {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Rnd() {
             this.add(
                 "φ",
@@ -616,7 +640,7 @@ final class PhDefaultTest {
      * Int.
      * @since 0.36.0
      */
-    private static class Int extends PhDefault {
+    private static final class Int extends PhDefault {
         /**
          * Ctor.
          */
@@ -655,7 +679,7 @@ final class PhDefaultTest {
      * Foo.
      * @since 0.1.0
      */
-    public static class Foo extends PhDefault {
+    public static final class Foo extends PhDefault {
         /**
          * Ctor.
          */
@@ -671,7 +695,7 @@ final class PhDefaultTest {
      * Dummy.
      * @since 0.1.0
      */
-    public static class WithVoidPhi extends PhDefault {
+    public static final class WithVoidPhi extends PhDefault {
         /**
          * Ctor.
          */
@@ -685,7 +709,7 @@ final class PhDefaultTest {
      * Counter.
      * @since 0.1.0
      */
-    public static class Counter extends PhDefault {
+    public static final class Counter extends PhDefault {
         /**
          * Count.
          */
@@ -694,7 +718,6 @@ final class PhDefaultTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Counter() {
             this.add(
                 Phi.PHI,
@@ -716,7 +739,7 @@ final class PhDefaultTest {
      * Kid.
      * @since 0.1.0
      */
-    public static class Kid extends PhDefault {
+    public static final class Kid extends PhDefault {
         /**
          * Ctor.
          */
@@ -731,7 +754,7 @@ final class PhDefaultTest {
      * Endless Recursion.
      * @since 0.1.0
      */
-    public static class EndlessRecursion extends PhDefault {
+    public static final class EndlessRecursion extends PhDefault {
         /**
          * Count.
          */
@@ -740,7 +763,7 @@ final class PhDefaultTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         EndlessRecursion() {
             this.add(
                 Phi.PHI,
@@ -765,7 +788,7 @@ final class PhDefaultTest {
      * Recursive Phi.
      * @since 0.1.0
      */
-    public static class RecursivePhi extends PhDefault {
+    public static final class RecursivePhi extends PhDefault {
         /**
          * Count.
          */
@@ -774,7 +797,7 @@ final class PhDefaultTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         RecursivePhi() {
             this.add(
                 "φ",
@@ -799,16 +822,17 @@ final class PhDefaultTest {
      * RecursivePhiViaNew.
      * @since 0.1.0
      */
-    public static class RecursivePhiViaNew extends PhDefault {
+    public static final class RecursivePhiViaNew extends PhDefault {
         /**
          * Count.
          */
+        @SuppressWarnings("PMD.UnusedPrivateField")
         private static int count;
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         RecursivePhiViaNew() {
             this.add(
                 "φ",

@@ -35,6 +35,7 @@ public final class EOnumber$EOdiv extends PhDefault implements Atom {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Double left = new Expect.Number(Expect.at(this, Phi.RHO)).it();
         final Double right = new Expect.Number(Expect.at(this, "x")).it();

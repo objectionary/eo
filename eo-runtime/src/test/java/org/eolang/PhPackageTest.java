@@ -52,13 +52,12 @@ final class PhPackageTest {
     @Test
     void setsRhoToPackage() {
         final Phi org = Phi.Φ.take("org");
-        final Phi eolang = org.take("eolang");
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            eolang.take(Phi.RHO),
+            org.take("eolang").take(Phi.RHO),
             Matchers.equalTo(org)
         );
     }
@@ -66,13 +65,12 @@ final class PhPackageTest {
     @Test
     void setsRhoToObject() {
         final Phi eolang = Phi.Φ.take("org.eolang");
-        final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to object inside package on dispatch",
                 Phi.RHO
             ),
-            seq.take(Phi.RHO),
+            eolang.take("seq").take(Phi.RHO),
             Matchers.equalTo(eolang)
         );
     }
@@ -89,14 +87,12 @@ final class PhPackageTest {
     @ParameterizedTest
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
-        final Phi parent = new PhPackage(this.phiPackageName());
-        final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
             String.format(
                 "Attribute '%s' should be instance of %s, but it wasn't",
                 attribute, expected.getSimpleName()
             ),
-            actual,
+            new PhPackage(this.phiPackageName()).take(attribute),
             Matchers.instanceOf(expected)
         );
     }
@@ -111,6 +107,7 @@ final class PhPackageTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsExceptionIfCantFindPackageInfo() {
         MatcherAssert.assertThat(
             "Exception message must mention missing package-info.class",

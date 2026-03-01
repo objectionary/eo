@@ -64,6 +64,7 @@ final class EOnumberTest {
         EOnumber$EOplus.class,
         EOnumber$EOtimes.class
     })
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsCorrectErrorForXAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -95,6 +96,7 @@ final class EOnumberTest {
         EOnumber$EOas_i64.class,
         EOnumber$EOfloor.class
     })
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",

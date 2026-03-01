@@ -34,6 +34,7 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
         final int id = Expect.at(rho, "id")

@@ -38,6 +38,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final int start = Expect.at(this, "start")
             .that(phi -> new Dataized(phi).asNumber())

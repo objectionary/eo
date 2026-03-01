@@ -38,7 +38,7 @@ public final class ReadFileFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final int size = new Dataized(params[1]).asNumber().intValue();
-        final byte[] buf = new byte[(int) size];
+        final byte[] buf = new byte[size];
         final IntByReference read = new IntByReference();
         final Phi result = this.win.take("return").copy();
         result.put(

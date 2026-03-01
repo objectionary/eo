@@ -21,6 +21,7 @@ public interface WinDef {
      * @since 0.40
      * @checkstyle AbbreviationAsWordInNameCheck (30 lines)
      */
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     final class WORD extends IntegerType implements Comparable<WORD> {
 
         /**
@@ -47,6 +48,7 @@ public interface WinDef {
      * @since 0.40
      * @checkstyle AbbreviationAsWordInNameCheck (30 lines)
      */
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     final class DWORD extends IntegerType implements Comparable<DWORD> {
         /**
          * Constant size.

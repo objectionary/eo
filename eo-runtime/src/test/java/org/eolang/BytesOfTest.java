@@ -22,20 +22,18 @@ final class BytesOfTest {
     @Test
     void negatesSeveralTimes() {
         final String text = "abc";
-        final Bytes bytes = new BytesOf(text);
         MatcherAssert.assertThat(
             "Double negation should return the original value, but it didn't",
-            bytes.not().not(),
+            new BytesOf(text).not().not(),
             Matchers.equalTo(new BytesOf(text))
         );
     }
 
     @Test
     void negatesOnce() {
-        final Bytes bytes = new BytesOf(-128L);
         MatcherAssert.assertThat(
             "Negation should give the correct value, but it didn't",
-            bytes.not(),
+            new BytesOf(-128L).not(),
             Matchers.equalTo(new BytesOf(127L))
         );
     }
@@ -80,30 +78,27 @@ final class BytesOfTest {
 
     @Test
     void checksXor() {
-        final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
             "'Xor' operation should give correct value, but it didn't",
-            bytes.xor(new BytesOf(-512L)),
+            new BytesOf(512L).xor(new BytesOf(-512L)),
             Matchers.equalTo(new BytesOf(-1024L))
         );
     }
 
     @Test
     void checksAsNumberLong() {
-        final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
             "Bytes as long number must be equals to correct number, but it didn't",
-            bytes.asNumber(Long.class),
+            new BytesOf(512L).asNumber(Long.class),
             Matchers.equalTo(512L)
         );
     }
 
     @Test
     void checksUnderflowForLong() {
-        final Bytes bytes = new BytesOf("A");
         Assertions.assertThrows(
             ExFailure.class,
-            bytes::asNumber,
+            new BytesOf("A")::asNumber,
             "Converting non-numeric bytes to number should throw, but it didn't"
         );
     }
@@ -119,13 +114,12 @@ final class BytesOfTest {
         "0x000000FF,   8, 0x00000000"
     })
     void checksShift(final long num, final int bits, final long expected) {
-        final Bytes bytes = new BytesOf(num);
         MatcherAssert.assertThat(
             String.format(
                 "%d >> %d should result in %d, but it didn't",
                 num, bits, expected
             ),
-            bytes.shift(bits).asNumber(Long.class),
+            new BytesOf(num).shift(bits).asNumber(Long.class),
             Matchers.equalTo(expected)
         );
     }
@@ -143,24 +137,21 @@ final class BytesOfTest {
         "0xFFFFFC00,   3, 0xFFFFFF80"
     })
     void checksShifts(final long num, final int bits, final long expected) {
-        final Bytes bytes = new BytesOf((int) num);
-        final int actual = bytes.sshift(bits).asNumber(Integer.class);
         MatcherAssert.assertThat(
             String.format(
                 "%d >> %d (arithmetic shift) should result in %d, but it didn't",
                 num, bits, expected
             ),
-            actual,
+            new BytesOf((int) num).sshift(bits).asNumber(Integer.class),
             Matchers.equalTo((int) expected)
         );
     }
 
     @Test
     void doesNotSupportRightShift() {
-        final Bytes bytes = new BytesOf(Integer.MAX_VALUE);
         Assertions.assertThrows(
             UnsupportedOperationException.class,
-            () -> bytes.sshift(-1),
+            () -> new BytesOf(Integer.MAX_VALUE).sshift(-1),
             "Integer.MAX_VALUE << 1 should throw exception, but it didn't"
         );
     }

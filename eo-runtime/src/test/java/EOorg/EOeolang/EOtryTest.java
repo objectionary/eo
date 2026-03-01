@@ -111,7 +111,7 @@ final class EOtryTest {
      * Body object with counter.
      * @since 0.36.0
      */
-    private static class MainWithCounter extends PhDefault {
+    private static final class MainWithCounter extends PhDefault {
         /**
          * Counter.
          */
@@ -120,7 +120,6 @@ final class EOtryTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         MainWithCounter() {
             super();
             this.add(
@@ -140,12 +139,11 @@ final class EOtryTest {
      * Main.
      * @since 0.1.0
      */
-    private static class Main extends PhDefault {
+    private static final class Main extends PhDefault {
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Main() {
             this.add(
                 "φ",
@@ -163,11 +161,10 @@ final class EOtryTest {
      * Broken.
      * @since 0.1.0
      */
-    private static class Broken extends PhDefault {
+    private static final class Broken extends PhDefault {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Broken() {
             this.add(
                 "φ",
@@ -185,7 +182,7 @@ final class EOtryTest {
      * Catcher.
      * @since 0.1.0
      */
-    private static class Catcher extends PhDefault {
+    private static final class Catcher extends PhDefault {
         /**
          * Ctor.
          */

@@ -14,16 +14,20 @@ import org.junit.jupiter.api.Test;
  */
 final class AtWithRhoTest {
     @Test
-    void copiesAndSetsRhoIfNotSet() {
-        final Phi obj = new PhDefault();
-        final Attr attr = new AtComposite(obj, phi -> phi);
+    void copiesAndSetsRhoIfNotSetMustSetRho() {
         final Phi rho = new PhDefault();
-        final Phi phi = new AtWithRho(attr, rho).get();
         MatcherAssert.assertThat(
             "AtWithRho must set RHO if it is not set before",
-            phi.take(Phi.RHO),
+            new AtWithRho(new AtComposite(new PhDefault(), phi -> phi), rho).get().take(Phi.RHO),
             Matchers.is(rho)
         );
+    }
+
+    @Test
+    void copiesAndSetsRhoIfNotSetMustCopyOriginal() {
+        final Phi obj = new PhDefault();
+        final Phi phi = new AtWithRho(new AtComposite(obj, p -> p), new PhDefault()).get();
+        phi.take(Phi.RHO);
         MatcherAssert.assertThat(
             "AtWithRho must copy original object if RHO is not set",
             phi,
@@ -45,17 +49,23 @@ final class AtWithRhoTest {
     }
 
     @Test
-    void doesNotCopyAndSetRhoIfAlreadySet() {
+    void doesNotCopyAndSetRhoIfAlreadySetMustNotResetRho() {
         final Phi obj = new PhDefault();
         final Phi rho = new PhDefault();
         obj.put(Phi.RHO, rho);
-        final Phi reset = new PhDefault();
-        final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), reset).get();
         MatcherAssert.assertThat(
             "AtWithRho must not reset RHO if it is already set",
-            res.take(Phi.RHO),
+            new AtWithRho(new AtComposite(obj, phi -> phi), new PhDefault()).get().take(Phi.RHO),
             Matchers.is(rho)
         );
+    }
+
+    @Test
+    void doesNotCopyAndSetRhoIfAlreadySetMustCopyOriginalIfRhoIsSet() {
+        final Phi obj = new PhDefault();
+        obj.put(Phi.RHO, new PhDefault());
+        final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), new PhDefault()).get();
+        res.take(Phi.RHO);
         MatcherAssert.assertThat(
             "AtWithRho must not copy original object if RHO is already set",
             res,
@@ -64,16 +74,23 @@ final class AtWithRhoTest {
     }
 
     @Test
-    void copiesWithNewRho() {
-        final Phi obj = new PhDefault();
-        final Phi rho = new PhDefault();
+    void copiesWithNewRhoMustSetNewPhoOnCopy() {
         final Phi self = new PhDefault();
-        final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), rho).copy(self).get();
         MatcherAssert.assertThat(
             "AtWithRho must set new RHO on copy() operation",
-            res.take(Phi.RHO),
+            new AtWithRho(new AtComposite(new PhDefault(), phi -> phi), new PhDefault()).copy(self)
+                .get().take(Phi.RHO),
             Matchers.is(self)
         );
+    }
+
+    @Test
+    void copiesWithNewRhoMustCallCopyOnOriginal() {
+        final Phi obj = new PhDefault();
+        final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), new PhDefault()).copy(
+            new PhDefault()
+        ).get();
+        res.take(Phi.RHO);
         MatcherAssert.assertThat(
             "AtWithRho must call copy() on original object",
             res,
