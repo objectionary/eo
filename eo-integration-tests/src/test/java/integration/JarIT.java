@@ -33,20 +33,20 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "# No comments.",
-                    "[] > simple",
-                    "  QQ.io.stdout > @",
-                    "    \"Hello, world!\""
-                );
                 MatcherAssert.assertThat(
                     "simple program must be successfully executed",
                     new Jaxec(
-                        "java", "-cp", classpath,
+                        "java", "-cp", JarIT.compile(
+                            f,
+                            "# No comments.",
+                            "[] > simple",
+                            "  QQ.io.stdout > @",
+                            "    \"Hello, world!\""
+                        ),
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
                         "org.eolang.Main", "simple"
                     ).withHome(temp.resolve("target")).exec().stdout(),
@@ -59,22 +59,22 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "+package org.eolang.examples",
-                    "",
-                    "# Program with a package.",
-                    "[args] > packaged",
-                    "  QQ.io.stdout > @",
-                    "    \"Hello, world from a program with a package!\""
-                );
                 MatcherAssert.assertThat(
                     "'packaged' program must be successfully executed",
                     new Jaxec(
-                        "java", "-cp", classpath,
+                        "java", "-cp", JarIT.compile(
+                            f,
+                            "+package org.eolang.examples",
+                            "",
+                            "# Program with a package.",
+                            "[args] > packaged",
+                            "  QQ.io.stdout > @",
+                            "    \"Hello, world from a program with a package!\""
+                        ),
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
                         "org.eolang.Main", "org.eolang.examples.packaged"
                     ).withHome(temp.resolve("target")).exec().stdout(),
@@ -87,6 +87,11 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings({
+        "PMD.UnitTestShouldIncludeAssert",
+        "PMD.UnnecessaryLocalRule",
+        "PMD.UnnecessaryVarargsArrayCreation"
+    })
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -162,20 +167,20 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "# No comments.",
-                    "[] > simple",
-                    "  unknown.io.stdout > @",
-                    "    \"Hello, world!\""
-                );
                 MatcherAssert.assertThat(
                     "the program must throw an error and print it to stderr",
                     new Jaxec(
-                        "java", "-cp", classpath,
+                        "java", "-cp", JarIT.compile(
+                            f,
+                            "# No comments.",
+                            "[] > simple",
+                            "  unknown.io.stdout > @",
+                            "    \"Hello, world!\""
+                        ),
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
                         "org.eolang.Main", "simple"
                     ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
@@ -240,18 +245,22 @@ final class JarIT {
             farea.log(),
             RequisiteMatcher.SUCCESS
         );
-        final String ver = System.getProperty("eo.version", Manifests.read("EO-Version"));
-        final String jar = String.format("eo-runtime-%s.jar", ver);
-        final String runtime = Paths.get(System.getProperty("user.home")).resolve(".m2")
-            .resolve("repository")
-            .resolve("org/eolang/eo-runtime")
-            .resolve(ver)
-            .resolve(jar)
-            .toString();
         return String.join(
             File.pathSeparator,
             "test-0.0.0.jar",
-            runtime
+            Paths.get(System.getProperty("user.home")).resolve(".m2")
+            .resolve("repository")
+            .resolve("org/eolang/eo-runtime")
+            .resolve(
+                System.getProperty("eo.version", Manifests.read("EO-Version"))
+            )
+            .resolve(
+                String.format(
+                    "eo-runtime-%s.jar",
+                    System.getProperty("eo.version", Manifests.read("EO-Version"))
+                )
+            )
+            .toString()
         );
     }
 

@@ -27,6 +27,7 @@ final class XmirIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void validatesWithXsd() throws IOException {
         Files.walk(
             Paths.get("").toAbsolutePath().getParent()

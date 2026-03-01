@@ -36,7 +36,7 @@ final class SnippetIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.UnitTestShouldIncludeAssert"})
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
