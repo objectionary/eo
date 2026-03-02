@@ -197,11 +197,6 @@
       <version>12.1.6</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>12.1.6</version>
-      <artifactId>jetty-http</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
