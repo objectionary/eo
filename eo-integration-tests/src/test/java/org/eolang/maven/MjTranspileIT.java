@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjTranspileIT {
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void transpilesWithPackage(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -85,6 +86,7 @@ final class MjTranspileIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void transpilesSimpleApp(@Mktmp final Path temp)
         throws Exception {
         final String prog = String.join(
@@ -100,7 +102,7 @@ final class MjTranspileIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(prog.getBytes());
+                f.files().file("src/main/eo/foo.eo").write(prog.getBytes(StandardCharsets.UTF_8));
                 new AppendedPlugin(f).value()
                     .goals("register", "parse", "transpile");
                 f.exec("process-sources");
