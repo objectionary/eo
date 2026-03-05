@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
- *
  * @checkstyle DesignForExtensionCheck (100 lines)
  * @since 0.1
  */
@@ -28,14 +27,12 @@ public class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
-     * Reentrant lock for thread-safe initialization
+     * Reentrant lock for thread-safe initialization.
      */
     private final ReentrantLock lock;
 
-
     /**
      * Ctor.
-     *
      * @param obj The object
      */
     public PhOnce(final Supplier<Phi> obj) {
@@ -72,7 +69,7 @@ public class PhOnce implements Phi {
     @Override
     public Phi copy() {
         return new PhOnce(
-                () -> this.object.get().copy()
+            () -> this.object.get().copy()
         );
     }
 
