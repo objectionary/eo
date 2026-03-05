@@ -64,6 +64,17 @@ final class OnDefaultTest {
     }
 
     @Test
+    void failsWhenMoreThanOneClassNamePresent() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new OnDefault(
+                new XMLDocument("<object><class name='A'/><class name='B'/></object>")
+            ).get(),
+            "We should fail when more than one '/object/class/@name' is present in XMIR"
+        );
+    }
+
+    @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsWhenNeitherONameNorClassNamePresent() {
         MatcherAssert.assertThat(
