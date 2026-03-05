@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 /**
  * An object wrapping another one.
  *
- * @since 0.1
  * @checkstyle DesignForExtensionCheck (100 lines)
+ * @since 0.1
  */
 public class PhOnce implements Phi {
 
@@ -42,14 +42,18 @@ public class PhOnce implements Phi {
         this.ref = new AtomicReference<>(null);
         this.lock = new ReentrantLock();
         this.object = () -> {
-            lock.lock();
-            try {
-                if (this.ref.get() == null) {
-                    this.ref.set(obj.get());
+            Phi cached = this.ref.get();
+            if (cached == null) {
+                this.lock.lock();
+                try {
+                    cached = this.ref.get();
+                    if (cached == null) {
+                        cached = obj.get();
+                        this.ref.set(cached);
+                    }
+                } finally {
+                    this.lock.unlock();
                 }
-                return this.ref.get();
-            } finally {
-                lock.unlock();
             }
         };
     }
@@ -67,7 +71,7 @@ public class PhOnce implements Phi {
     @Override
     public Phi copy() {
         return new PhOnce(
-            () -> this.object.get().copy()
+                () -> this.object.get().copy()
         );
     }
 
