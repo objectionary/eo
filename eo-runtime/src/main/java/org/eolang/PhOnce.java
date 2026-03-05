@@ -11,8 +11,8 @@ import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
- * @checkstyle DesignForExtensionCheck (100 lines)
  * @since 0.1
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
 public class PhOnce implements Phi {
 
