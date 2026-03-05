@@ -55,6 +55,7 @@ public class PhOnce implements Phi {
                     this.lock.unlock();
                 }
             }
+            return cached;
         };
     }
 
