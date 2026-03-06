@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Attribute that retrieves object only once.
@@ -12,12 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>It's highly recommended to use it with {@link AtComposite}.</p>
  *
  * @since 0.1
- * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in AtOnce.
- *  We should use ReentrantLock instead of 'synchronized' to avoid potential
- *  deadlocks when multiple AtOnce attributes are used together.
- *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
-@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 public final class AtOnce implements Attr {
 
     /**
@@ -31,12 +27,18 @@ public final class AtOnce implements Attr {
     private final AtomicReference<Phi> cached;
 
     /**
+     * Reentrant lock for thread-safe initialization.
+     */
+    private final ReentrantLock lock;
+
+    /**
      * Ctor.
      * @param attr Origin attribute
      */
     public AtOnce(final Attr attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>(null);
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -46,12 +48,20 @@ public final class AtOnce implements Attr {
 
     @Override
     public Phi get() {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.get());
+        Phi result = this.cached.get();
+        if (result == null) {
+            this.lock.lock();
+            try {
+                result = this.cached.get();
+                if (result == null) {
+                    result = this.origin.get();
+                    this.cached.set(result);
+                }
+            } finally {
+                this.lock.unlock();
             }
         }
-        return this.cached.get();
+        return result;
     }
 
     @Override
