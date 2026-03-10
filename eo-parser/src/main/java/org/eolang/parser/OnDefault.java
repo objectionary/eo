@@ -83,22 +83,12 @@ public final class OnDefault implements ObjectName {
                 .element("object")
                 .element("o")
                 .attribute("name")
-                .text().orElseGet(
-                    () -> {
-                        final String xpath = "/object/class/@name";
-                        String result = null;
-                        try {
-                            result = this.xnav.strict(xpath, 1)
-                                .findFirst()
-                                .flatMap(Xnav::text)
-                                .orElse(null);
-                        } catch (final IllegalStateException ex) {
-                            if (this.xnav.path(xpath).findAny().isPresent()) {
-                                throw ex;
-                            }
-                        }
-                        return result;
-                    }
+                .text()
+                .orElseGet(
+                    () -> this.xnav.strict("/object/class/@name", 1)
+                        .findFirst()
+                        .flatMap(Xnav::text)
+                        .orElse(null)
                 )
         );
     }
