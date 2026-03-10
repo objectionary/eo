@@ -117,9 +117,7 @@ final class MjTranspileTest {
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
             writer.toString(),
             Matchers.allOf(
-                Matchers.containsString(
-                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
-                ),
+                Matchers.containsString("Expected 1 child nodes, but found 0"),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
             )
         );
