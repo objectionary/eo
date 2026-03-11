@@ -65,17 +65,31 @@ final class OnDefaultTest {
 
     @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    void failsWhenMoreThanOneClassNamePresent() {
+        MatcherAssert.assertThat(
+            "We should fail when more than one '/object/class/@name' is present in XMIR",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new OnDefault(
+                    new XMLDocument("<object><class name='A'/><class name='B'/></object>")
+                ).get(),
+                "We should fail fast on multiple class names"
+            ).getMessage(),
+            Matchers.containsString("found 2")
+        );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsWhenNeitherONameNorClassNamePresent() {
         MatcherAssert.assertThat(
-            "Expecting exception when neither o name nor class name present",
+            "We should fail when neither '/object/o/@name' nor '/object/class/@name' is present in XMIR",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new OnDefault(new XMLDocument("<object></object>")).get(),
-                "We should throw IllegalStateException"
+                "We should fail fast when no object name can be derived"
             ).getMessage(),
-            Matchers.equalTo(
-                "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
-            )
+            Matchers.containsString("found 0")
         );
     }
 
