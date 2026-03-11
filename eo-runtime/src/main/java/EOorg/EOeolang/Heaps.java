@@ -11,6 +11,8 @@ package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
 
@@ -18,12 +20,7 @@ import org.eolang.Phi;
  * Dynamic memory.
  *
  * @since 0.19
- * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in Heaps.
- *  We should use ReentrantLock instead of 'synchronized' to avoid potential
- *  deadlocks when multiple AtOnce attributes are used together.
- *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
-@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Heaps {
 
     /**
@@ -38,10 +35,16 @@ final class Heaps {
     private final ConcurrentHashMap<Integer, byte[]> blocks;
 
     /**
+     * Lock.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      */
     private Heaps() {
         this.blocks = new ConcurrentHashMap<>(0);
+        this.lock = new ReentrantLock();
     }
 
     /**
@@ -52,7 +55,8 @@ final class Heaps {
      */
     int malloc(final Phi phi, final int size) {
         final int identifier = phi.hashCode();
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -62,6 +66,8 @@ final class Heaps {
                 );
             }
             this.blocks.put(identifier, new byte[size]);
+        } finally {
+            this.lock.unlock();
         }
         return identifier;
     }
@@ -72,7 +78,8 @@ final class Heaps {
      * @return Size
      */
     int size(final int identifier) {
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -82,6 +89,8 @@ final class Heaps {
                 );
             }
             return this.blocks.get(identifier).length;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -99,7 +108,8 @@ final class Heaps {
                 )
             );
         }
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -112,6 +122,8 @@ final class Heaps {
             final byte[] resized = new byte[size];
             System.arraycopy(bytes, 0, resized, 0, Math.min(bytes.length, size));
             this.blocks.put(identifier, resized);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -123,7 +135,8 @@ final class Heaps {
      * @return Bytes from the block in memory
      */
     byte[] read(final int identifier, final int offset, final int length) {
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -144,6 +157,8 @@ final class Heaps {
                 );
             }
             return Arrays.copyOfRange(bytes, offset, offset + length);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -154,7 +169,8 @@ final class Heaps {
      * @param data Data to write
      */
     void write(final int identifier, final int offset, final byte[] data) {
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -191,6 +207,8 @@ final class Heaps {
                 );
             }
             this.blocks.put(identifier, result);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -199,7 +217,8 @@ final class Heaps {
      * @param identifier Identifier of pointer
      */
     void free(final int identifier) {
-        synchronized (this.blocks) {
+        this.lock.lock();
+        try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
@@ -209,6 +228,8 @@ final class Heaps {
                 );
             }
             this.blocks.remove(identifier);
+        } finally {
+            this.lock.unlock();
         }
     }
 }
