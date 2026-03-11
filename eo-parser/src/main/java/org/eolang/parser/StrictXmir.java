@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.namespace.NamespaceContext;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
@@ -44,14 +46,8 @@ import org.xml.sax.SAXParseException;
  * then encapsulate it into this decorator.</p>
  *
  * @since 0.49.0
- * @todo #4884:30min Replace synchronized statements with ReentrantLock.
- *  We are getting the following complaint about {@ling StrictXmir}:
- *  StrictXmir.java[244-289]: Use ReentrantLock rather than synchronization
- *  (AvoidSynchronizedStatement). It's better to consider this replacement.
- *  Don't forget to remove  PMD.AvoidSynchronizedStatement from the
- *  SuppressWarnings annotation of this class.
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidSynchronizedStatement"})
+@SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
     /**
      * XSD for current EO version.
@@ -60,6 +56,11 @@ public final class StrictXmir implements XML {
         "https://www.eolang.org/xsd/XMIR-%s.xsd",
         Manifests.read("EO-Version")
     );
+
+    /**
+     * Lock to synchronize by.
+     */
+    private static final Lock LOCK = new ReentrantLock();
 
     /**
      * The XML.
@@ -167,8 +168,7 @@ public final class StrictXmir implements XML {
                         before,
                         tmp.resolve(
                             before.substring(before.lastIndexOf('/') + 1)
-                        ),
-                        tmp
+                        )
                     ).getAbsoluteFile().toString().replace("\\", "/")
                 );
             } else {
@@ -190,15 +190,14 @@ public final class StrictXmir implements XML {
      * Fetch the XSD and place into the path.
      * @param uri The URI
      * @param path The file
-     * @param tmp Original directory
      * @return Where it was saved
      */
-    private static File fetch(final String uri, final Path path, final Path tmp) {
+    private static File fetch(final String uri, final Path path) {
         final File ret;
         if (StrictXmir.MINE.equals(uri)) {
-            ret = StrictXmir.copied(uri, path, tmp);
+            ret = StrictXmir.copied(uri, path);
         } else {
-            ret = StrictXmir.downloaded(uri, path, tmp);
+            ret = StrictXmir.downloaded(uri, path);
         }
         return ret;
     }
@@ -207,12 +206,12 @@ public final class StrictXmir implements XML {
      * Copy URI from local resource and save to file.
      * @param uri The URI
      * @param path The file
-     * @param tmp Directory to synchronize by
      * @return Where it was saved
      */
-    private static File copied(final String uri, final Path path, final Path tmp) {
+    private static File copied(final String uri, final Path path) {
         final File file = path.toFile();
-        synchronized (tmp) {
+        StrictXmir.LOCK.lock();
+        try {
             if (!file.exists()) {
                 if (file.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
@@ -232,6 +231,8 @@ public final class StrictXmir implements XML {
                     );
                 }
             }
+        } finally {
+            StrictXmir.LOCK.unlock();
         }
         return file;
     }
@@ -240,13 +241,13 @@ public final class StrictXmir implements XML {
      * Download URI from Internet and save to file.
      * @param uri The URI
      * @param path The file
-     * @param tmp Directory to synchronize by
      * @return Where it was saved
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private static File downloaded(final String uri, final Path path, final Path tmp) {
+    private static File downloaded(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
-        synchronized (tmp) {
+        StrictXmir.LOCK.lock();
+        try {
             if (!abs.exists()) {
                 if (abs.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
@@ -291,6 +292,8 @@ public final class StrictXmir implements XML {
                     }
                 }
             }
+        } finally {
+            StrictXmir.LOCK.unlock();
         }
         return abs;
     }
