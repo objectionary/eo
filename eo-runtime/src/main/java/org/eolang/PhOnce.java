@@ -6,17 +6,12 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
- *
  * @since 0.1
- * @todo #4884:30min Use ReentrantLock instead of synchronized block in the constructor.
- *  This will allow to avoid blocking the whole object while fetching the wrapped one.
- *  Moreover, using 'syznchronized' is forbidden by qulice.
- *  Don't forget to remove the suppression of PMD.AvoidSynchronizedStatement in
- *  the constructor after that.
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
 public class PhOnce implements Phi {
@@ -32,20 +27,32 @@ public class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
+     * Reentrant lock for thread-safe initialization.
+     */
+    private final ReentrantLock lock;
+
+    /**
      * Ctor.
-     *
      * @param obj The object
      */
-    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public PhOnce(final Supplier<Phi> obj) {
         this.ref = new AtomicReference<>(null);
+        this.lock = new ReentrantLock();
         this.object = () -> {
-            synchronized (this.ref) {
-                if (this.ref.get() == null) {
-                    this.ref.set(obj.get());
+            Phi cached = this.ref.get();
+            if (cached == null) {
+                this.lock.lock();
+                try {
+                    cached = this.ref.get();
+                    if (cached == null) {
+                        cached = obj.get();
+                        this.ref.set(cached);
+                    }
+                } finally {
+                    this.lock.unlock();
                 }
-                return this.ref.get();
             }
+            return cached;
         };
     }
 
