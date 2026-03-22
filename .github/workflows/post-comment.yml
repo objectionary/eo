@@ -28,7 +28,7 @@ jobs:
           echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
           echo "The PR number is $PR_NUMBER"
       - name: Post Comment on PR
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@v3
         with:
           issue: ${{ env.PR_NUMBER }}
           message-path: |
