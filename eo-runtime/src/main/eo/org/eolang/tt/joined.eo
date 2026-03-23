@@ -8,13 +8,14 @@
 # Joins `items`, which is a `tuple` of strings, using current `text`
 # as a delimiter.
 [text items] > joined
-  string joined-bts > @
+  string bts > @
   text > delimiter!
-  if. > joined-bts!
+  if. > bts!
     items.length.eq 0
     --
     with-delimiter items.head items.tail
 
+  # Recursively concatenates tuple elements with delimiter between them.
   [acc tup] > with-delimiter
     if. > @
       tup.length.eq 0

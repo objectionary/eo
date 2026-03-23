@@ -9,12 +9,12 @@
 # Checks that `text` starts with `substring`.
 [text substring] > starts-with
   and. > @
-    (number substring-size).lte text-size
-    (slice text-bts 0 substring-size).eq substring-bts
-  text > text-bts!
-  substring > substring-bts!
-  text-bts.size > text-size!
-  substring-bts.size > substring-size!
+    (number slen).lte tlen
+    (slice txt 0 slen).eq sub
+  text > txt!
+  substring > sub!
+  txt.size > tlen!
+  sub.size > slen!
 
   # Tests specific functionality starts-with returns true when text begins with given substring.
   [] +> tests-starts-with-substring

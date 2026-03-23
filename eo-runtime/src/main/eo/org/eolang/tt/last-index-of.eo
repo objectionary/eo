@@ -12,22 +12,23 @@
   if. > @
     or.
       or.
-        (number substring-size).gt text-size
+        (number slen).gt tlen
         and.
-          substring-size.eq text-size
-          (substring-bts.eq text-bts).not
+          slen.eq tlen
+          (sub.eq txt).not
       found.eq -1
     -1
     length.
       string
-        slice text-bts 0 found
-  text > text-bts!
-  substring > substring-bts!
-  text-bts.size > text-size!
-  substring-bts.size > substring-size!
+        slice txt 0 found
+  text > txt!
+  substring > sub!
+  txt.size > tlen!
+  sub.size > slen!
   rec-index-of > found!
-    (number text-size).minus substring-size
+    (number tlen).minus slen
 
+  # Recursively searches for substring from end to beginning of text.
   [idx] > rec-index-of
     if. > @
       0.eq idx
@@ -40,8 +41,8 @@
         idx
         rec-index-of (idx.plus -1).as-number
     eq. > includes
-      slice text-bts idx substring-size
-      substring-bts
+      slice txt idx slen
+      sub
 
   # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring

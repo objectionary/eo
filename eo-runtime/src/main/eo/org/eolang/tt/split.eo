@@ -14,23 +14,24 @@
     *
     rec-split * 0 0
   delimiter > delim!
-  text > self-as-bytes!
-  self-as-bytes.size > len!
+  text > bts!
+  bts.size > len!
 
+  # Recursively splits text by delimiter into tuple of substrings.
   [accum start current] > rec-split
     if. > @
       len.eq current
-      accum.with > with-substr
+      accum.with > appended
         string
           slice
-            self-as-bytes
+            bts
             start
             current.minus start
       if.
         delim.eq
-          slice self-as-bytes current 1
+          slice bts current 1
         rec-split
-          with-substr
+          appended
           (current.plus 1).as-number
           (current.plus 1).as-number
         rec-split

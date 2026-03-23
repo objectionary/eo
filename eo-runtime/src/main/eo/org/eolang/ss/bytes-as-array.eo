@@ -12,12 +12,13 @@
 # each element is one `byte`.
 [bts] > bytes-as-array
   slice-byte * 0 > @
-  bts > dataized-bts!
-  dataized-bts.size > bytes-size!
+  bts > data!
+  data.size > len!
 
+  # Recursively slices bytes one by one and appends them to tuple.
   [tup index] > slice-byte
     if. > @
-      index.lt bytes-size
+      index.lt len
       slice-byte
         tup.with (bts.slice index 1)
         (index.plus 1).as-number

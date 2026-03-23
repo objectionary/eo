@@ -9,18 +9,19 @@
 # Checks if `text` contains `substring`.
 [text substring] > contains
   and. > @
-    (number text-size).gte substring-size
+    (number tlen).gte slen
     or.
       and.
-        text-size.eq substring-size
-        text-bts.eq substring-bts
+        tlen.eq slen
+        txt.eq sub
       rec-contains 0
-  text > text-bts!
-  substring > substring-bts!
-  text-bts.size > text-size!
-  substring-bts.size > substring-size!
-  (number text-size).minus substring-size > end!
+  text > txt!
+  substring > sub!
+  txt.size > tlen!
+  sub.size > slen!
+  (number tlen).minus slen > end!
 
+  # Recursively searches for substring presence in text from given index.
   [idx] > rec-contains
     if. > @
       end.eq idx
@@ -29,8 +30,8 @@
         includes
         rec-contains (idx.plus 1).as-number
     eq. > includes
-      slice text-bts idx substring-size
-      substring-bts
+      slice txt idx slen
+      sub
 
   # Tests specific functionality contains returns true when text includes given substring.
   [] +> tests-text-contains-substring

@@ -9,17 +9,17 @@
 # Checks that `text` ends with `substring`.
 [text substring] > ends-with
   and. > @
-    (number substring-size).lte text-size
+    (number slen).lte tlen
     eq.
       slice
-        text-bts
-        (number text-size).minus substring-size
-        substring-size
-      substring-bts
-  text > text-bts!
-  substring > substring-bts!
-  text-bts.size > text-size!
-  substring-bts.size > substring-size!
+        txt
+        (number tlen).minus slen
+        slen
+      sub
+  text > txt!
+  substring > sub!
+  txt.size > tlen!
+  sub.size > slen!
 
   # Tests specific functionality ends-with returns true when text ends with given substring.
   [] +> tests-ends-with-substring
