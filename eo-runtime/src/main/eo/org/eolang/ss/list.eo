@@ -10,6 +10,7 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object:28
 +unlint redundant-object:34
++unlint compound-name
 
 # List implements basic operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple` to provide functional programming operations.

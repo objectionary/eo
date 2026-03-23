@@ -7,11 +7,13 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:31
-+unlint redundant-object:34
-+unlint redundant-object:52
-+unlint redundant-object:61
-+unlint redundant-object:70
++unlint redundant-object:30
++unlint redundant-object:33
++unlint redundant-object:51
++unlint redundant-object:60
++unlint redundant-object:69
++unlint idempotent-attribute-is-not-first
++unlint compound-name
 
 # The object encapsulates a chain of bytes, providing bitwise operations,
 # numeric conversions, and byte manipulation methods. Objects like `number`, `string`,

@@ -20,6 +20,8 @@
 +unlint redundant-object:46
 +unlint redundant-object:53
 +unlint redundant-object:54
++unlint idempotent-attribute-is-not-first
++unlint compound-name
 
 # Makes a kernel32.dll function call by name.
 #
@@ -40,7 +42,7 @@
   -1 > socket-error
   -1 > inaddr-none
   02-02 > winsock-version-2-2
-
+  # Result of a Win32 function call with return code and output.
   [code output] > return
     output > @
     return code output > called

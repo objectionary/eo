@@ -6,6 +6,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint idempotent-attribute-is-not-first
 
 # Exception handling mechanism that catches errors during dataization.
 # When `try` is dataized, it attempts to dataize the `main` attribute first.

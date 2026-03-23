@@ -10,6 +10,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint idempotent-attribute-is-not-first
 
 # Returns a floating point number.
 # TODO #4751:15min Remove `real` object when all inner objects are moved to separate files.

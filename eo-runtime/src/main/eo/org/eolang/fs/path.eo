@@ -14,10 +14,11 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:60
-+unlint redundant-object:61
-+unlint redundant-object:266
-+unlint redundant-object:267
++unlint redundant-object:58
++unlint redundant-object:59
++unlint redundant-object:264
++unlint redundant-object:265
++unlint compound-name
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.

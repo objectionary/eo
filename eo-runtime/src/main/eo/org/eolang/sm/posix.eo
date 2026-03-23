@@ -16,6 +16,8 @@
 +unlint redundant-object:36
 +unlint redundant-object:44
 +unlint redundant-object:45
++unlint idempotent-attribute-is-not-first
++unlint compound-name
 
 # Makes a Unix syscall by `name` with POSIX interface.
 # Here `args` is a `org.eolang.tuple` of arguments required for
@@ -31,6 +33,7 @@
   1 > sock-stream
   6 > ipproto-tcp
   -1 > inaddr-none
+  # Result of a POSIX syscall with return code and output.
   [code output] > return
     output > @
     return code output > called

@@ -4,8 +4,8 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:53
-+unlint redundant-object:58
++unlint redundant-object:55
++unlint redundant-object:61
 
 # Non-conditional forward and backward jumps.
 # Forward jump instantly returns provided object to `g.forward` without touching
