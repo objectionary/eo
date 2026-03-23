@@ -42,9 +42,9 @@
     normalized. > @
       if.
         os.is-windows
-        win32 joined-path
-        posix joined-path
-    string > joined-path
+        win32 jpath
+        posix jpath
+    string > jpath
       as-bytes.
         QQ.tt.joined
           separator
@@ -72,13 +72,13 @@
           normalized.eq "//"
           "/"
           string normalized
-      uri > uri-as-bytes!
+      uri > ubts!
       ^.is-absolute.as-bool > is-absolute
-      and. > has-trailing-slash
-        uri-as-bytes.size.gt 0
+      and. > trailing
+        ubts.size.gt 0
         eq.
-          uri-as-bytes.slice
-            uri-as-bytes.size.plus -1
+          ubts.slice
+            ubts.size.plus -1
             1
           separator
       QQ.tt.joined > path
@@ -117,7 +117,7 @@
               separator.concat path
               path
             if.
-              has-trailing-slash
+              trailing
               separator
               --
 
@@ -141,14 +141,14 @@
         posix
           string
             if.
-              (other-as-bytes.slice 0 1).eq separator
-              other-as-bytes
+              (obts.slice 0 1).eq separator
+              obts
               concat.
                 concat.
                   uri
                   separator
-                other-as-bytes
-      other.as-bytes > other-as-bytes
+                obts
+      other.as-bytes > obts
 
     # Takes the base name from the provided `path`, for example:
     # |------------------------------|---------------|
@@ -170,16 +170,16 @@
         if.
           or.
             pth.size.eq 0
-            slice-start-idx.eq 0
+            idx.eq 0
           pth
           as-bytes.
             txt.slice
-              slice-start-idx
+              idx
               txt.length.minus
-                number slice-start-idx
+                number idx
       uri > pth!
       string pth > txt
-      plus. > slice-start-idx!
+      plus. > idx!
         last-index-of txt separator
         1
 
@@ -201,17 +201,17 @@
       if. > @
         or.
           base.size.eq 0
-          slice-start-idx.eq -1
+          idx.eq -1
         ""
         string
           as-bytes.
             txt.slice
-              slice-start-idx
+              idx
               txt.length.minus
-                number slice-start-idx
+                number idx
       basename > base!
       string base > txt
-      last-index-of txt "." > slice-start-idx!
+      last-index-of txt "." > idx!
 
     # Takes the directory name from the provided `path`, for example:
     # |------------------------------|--------------------|
@@ -272,19 +272,19 @@
       # starts with windows separator '\'.
       [uri] > is-root-relative
         and. > @
-          uri-as-bytes.size.gt 0
-          (uri-as-bytes.slice 0 1).eq separator
-        uri > uri-as-bytes!
+          ubts.size.gt 0
+          (ubts.slice 0 1).eq separator
+        uri > ubts!
 
       # Replaces slashes '/' with valid windows separator '\'.
       [uri] > separated-correctly
         if. > @
           (index-of pth path.posix.separator).eq -1
-          string uri-as-bytes
-          string replaced-slash
-        uri > uri-as-bytes!
-        string uri-as-bytes > pth
-        replaced > replaced-slash!
+          string ubts
+          string repl
+        uri > ubts!
+        string ubts > pth
+        replaced > repl!
           pth
           regex "/\\//"
           separator
@@ -294,14 +294,14 @@
       # - or path is drive relative (starts with "X:\", where 'X' - 1 char disk name).
       [] > is-absolute
         if. > @
-          uri-as-bytes.size.eq 0
+          ubts.size.eq 0
           false
           or.
-            is-root-relative uri-as-bytes
+            is-root-relative ubts
             and.
-              uri-as-bytes.size.gt 1
-              is-drive-relative uri-as-bytes
-        uri > uri-as-bytes!
+              ubts.size.gt 1
+              is-drive-relative ubts
+        uri > ubts!
 
       # Return new `path` with normalized uri.
       # Normalization includes:
@@ -314,20 +314,20 @@
             normalized.eq "\\\\"
             separator
             string normalized
-        uri > uri-as-bytes!
-        (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative
-        (^.is-root-relative uri-as-bytes).as-bool > is-root-relative
+        uri > ubts!
+        (^.is-drive-relative ubts).as-bool > is-drive-relative
+        (^.is-root-relative ubts).as-bool > is-root-relative
         if. > driveless!
           is-drive-relative
-          uri-as-bytes.slice
+          ubts.slice
             2
-            uri-as-bytes.size.plus -2
-          uri-as-bytes
-        and. > has-trailing-slash
-          uri-as-bytes.size.gt 0
+            ubts.size.plus -2
+          ubts
+        and. > trailing
+          ubts.size.gt 0
           eq.
-            uri-as-bytes.slice
-              uri-as-bytes.size.plus -1
+            ubts.slice
+              ubts.size.plus -1
               1
             separator
         QQ.tt.joined > path!
@@ -376,7 +376,7 @@
                     --
                 path
               if.
-                has-trailing-slash
+                trailing
                 separator
                 --
 
@@ -406,23 +406,23 @@
           validated
             string
               if.
-                (^.is-drive-relative valid-other).as-bool
-                valid-other
+                (^.is-drive-relative valid).as-bool
+                valid
                 if.
-                  (^.is-root-relative valid-other).as-bool
+                  (^.is-root-relative valid).as-bool
                   if.
-                    is-drive-relative uri-as-bytes
+                    is-drive-relative ubts
                     concat.
-                      uri-as-bytes.slice 0 2
-                      valid-other
-                    valid-other
+                      ubts.slice 0 2
+                      valid
+                    valid
                   concat.
                     concat.
-                      uri-as-bytes
+                      ubts
                       separator
-                    valid-other
-        uri > uri-as-bytes!
-        separated-correctly other > valid-other!
+                    valid
+        uri > ubts!
+        separated-correctly other > valid!
 
       # Takes the base name from the provided `path`, for example:
       # |------------------------------|---------------|
@@ -444,16 +444,16 @@
           if.
             or.
               pth.size.eq 0
-              slice-start-idx.eq 0
+              idx.eq 0
             pth
             as-bytes.
               txt.slice
-                slice-start-idx
+                idx
                 txt.length.minus
-                  number slice-start-idx
+                  number idx
         uri > pth!
         string pth > txt
-        plus. > slice-start-idx!
+        plus. > idx!
           last-index-of txt separator
           1
 
@@ -475,17 +475,17 @@
         if. > @
           or.
             base.size.eq 0
-            slice-start-idx.eq -1
+            idx.eq -1
           ""
           string
             as-bytes.
               txt.slice
-                slice-start-idx
+                idx
                 txt.length.minus
-                  number slice-start-idx
+                  number idx
         basename > base!
         string base > txt
-        last-index-of txt "." > slice-start-idx!
+        last-index-of txt "." > idx!
 
       # Takes the directory name from the provided `path`, for example:
       # |------------------------------|--------------------|
