@@ -520,7 +520,7 @@
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
-              <excludes>
+              <excludes combine.children="append">
                 <exclude>checkstyle:/src/it.*</exclude>
                 <exclude>checkstyle:/src/test/resources/.*</exclude>
                 <exclude>pmd:/src/it.*</exclude>

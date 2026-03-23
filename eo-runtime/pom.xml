@@ -207,9 +207,8 @@
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>true</failOnWarning>
+          <failOnWarning>false</failOnWarning>
           <offline>true</offline>
-          <skipLinting>true</skipLinting>
         </configuration>
         <executions>
           <execution>
