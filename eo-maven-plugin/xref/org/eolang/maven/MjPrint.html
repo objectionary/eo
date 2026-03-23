@@ -73,28 +73,30 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                      <strong class="jxr_keyword">this</strong>.printSourcesDir.toPath().relativize(source).toString()
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                          .replace(<span class="jxr_string">".xmir"</span>, <span class="jxr_string">".eo"</span>)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  );
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  <strong class="jxr_keyword">final</strong> String program = <strong class="jxr_keyword">new</strong> Xmir(
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                      <strong class="jxr_keyword">new</strong> XMLDocument(<strong class="jxr_keyword">new</strong> TextOf(source).asString())
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  ).toEO();
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  <strong class="jxr_keyword">new</strong> <a name="Saved" href="../../../org/eolang/maven/Saved.html#Saved">Saved</a>(program, home.resolve(relative)).value();
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  Logger.info(
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                      <strong class="jxr_keyword">this</strong>,
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                      <span class="jxr_string">"Printed: %[file]s (%[size]s) =&gt; %[file]s (%[size]s)"</span>,
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>                      source,
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      source.toFile().length(),
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                      <strong class="jxr_keyword">this</strong>.printOutputDir.toPath().resolve(relative),
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                      <strong class="jxr_keyword">this</strong>.printOutputDir.toPath().resolve(relative).toFile().length()
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  );
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                  <strong class="jxr_keyword">return</strong> 1;
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>              }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          ).total();
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <strong class="jxr_keyword">if</strong> (total == 0) {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"No XMIR sources found"</span>);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>              Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Printed %d XMIR sources into EO"</span>, total);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          }
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  <strong class="jxr_keyword">new</strong> <a name="Saved" href="../../../org/eolang/maven/Saved.html#Saved">Saved</a>(
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                      <strong class="jxr_keyword">new</strong> Xmir(
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                          <strong class="jxr_keyword">new</strong> XMLDocument(<strong class="jxr_keyword">new</strong> TextOf(source).asString())
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                      ).toEO(),
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                      home.resolve(relative)
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  ).value();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  Logger.info(
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                      <strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      <span class="jxr_string">"Printed: %[file]s (%[size]s) =&gt; %[file]s (%[size]s)"</span>,
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                      source,
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                      source.toFile().length(),
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                      <strong class="jxr_keyword">this</strong>.printOutputDir.toPath().resolve(relative),
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>                      <strong class="jxr_keyword">this</strong>.printOutputDir.toPath().resolve(relative).toFile().length()
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  );
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  <strong class="jxr_keyword">return</strong> 1;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              }
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          ).total();
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <strong class="jxr_keyword">if</strong> (total == 0) {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"No XMIR sources found"</span>);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Printed %d XMIR sources into EO"</span>, total);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

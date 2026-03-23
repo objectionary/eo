@@ -46,18 +46,19 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      };
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Override
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> begin = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Moja&lt;?&gt; moja : MjCompile.MOJAS) {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>              moja.copy(<strong class="jxr_keyword">this</strong>).execute();
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          }
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          Logger.info(
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>              <strong class="jxr_keyword">this</strong>,
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>              <span class="jxr_string">"Compilation process took %[ms]s"</span>,
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>              System.currentTimeMillis() - begin
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          );
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      }
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      @SuppressWarnings(<span class="jxr_string">"PMD.UnnecessaryLocalRule"</span>)
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> begin = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Moja&lt;?&gt; moja : MjCompile.MOJAS) {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>              moja.copy(<strong class="jxr_keyword">this</strong>).execute();
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          Logger.info(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>              <strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>              <span class="jxr_string">"Compilation process took %[ms]s"</span>,
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>              System.currentTimeMillis() - begin
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          );
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

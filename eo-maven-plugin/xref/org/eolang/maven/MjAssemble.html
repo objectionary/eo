@@ -54,40 +54,41 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      };
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      @Override
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> begin = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          String before = <strong class="jxr_keyword">this</strong>.scopedTojos().status();
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">int</strong> cycle = 0;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">while</strong> (<strong class="jxr_keyword">true</strong>) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> start = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>              <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Moja&lt;?&gt; moja : MjAssemble.MOJAS) {
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  moja.copy(<strong class="jxr_keyword">this</strong>).execute();
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>              }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>              <strong class="jxr_keyword">final</strong> String after = <strong class="jxr_keyword">this</strong>.scopedTojos().status();
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>              ++cycle;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>              <strong class="jxr_keyword">if</strong> (after.equals(before)) {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  Logger.info(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>                      <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Last assemble cycle #%d (%s), took %[ms]s"</span>,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                      cycle, after, System.currentTimeMillis() - start
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  );
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  Logger.info(
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                      <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Assemble cycle #%d (%s -&gt; %s), took %[ms]s"</span>,
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                      cycle, before, after, System.currentTimeMillis() - start
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  );
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>              before = after;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          Logger.info(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              <strong class="jxr_keyword">this</strong>,
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <span class="jxr_string">"%d assemble cycle(s) produced some new object(s) in %[ms]s: %s"</span>,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>              cycle,
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>              System.currentTimeMillis() - begin,
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>              before
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          );
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      @SuppressWarnings(<span class="jxr_string">"PMD.UnnecessaryLocalRule"</span>)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> begin = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          String before = <strong class="jxr_keyword">this</strong>.scopedTojos().status();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">int</strong> cycle = 0;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">while</strong> (<strong class="jxr_keyword">true</strong>) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> start = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Moja&lt;?&gt; moja : MjAssemble.MOJAS) {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                  moja.copy(<strong class="jxr_keyword">this</strong>).execute();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>              }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>              <strong class="jxr_keyword">final</strong> String after = <strong class="jxr_keyword">this</strong>.scopedTojos().status();
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>              ++cycle;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              <strong class="jxr_keyword">if</strong> (after.equals(before)) {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>                  Logger.info(
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                      <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Last assemble cycle #%d (%s), took %[ms]s"</span>,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                      cycle, after, System.currentTimeMillis() - start
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  );
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  Logger.info(
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                      <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Assemble cycle #%d (%s -&gt; %s), took %[ms]s"</span>,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                      cycle, before, after, System.currentTimeMillis() - start
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  );
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              before = after;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          Logger.info(
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>              <span class="jxr_string">"%d assemble cycle(s) produced some new object(s) in %[ms]s: %s"</span>,
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>              cycle,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>              System.currentTimeMillis() - begin,
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>              before
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          );
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

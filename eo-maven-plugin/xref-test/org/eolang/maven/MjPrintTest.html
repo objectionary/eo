@@ -53,63 +53,62 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>              <strong class="jxr_keyword">new</strong> Saved(<strong class="jxr_keyword">new</strong> TextOf(source), temp.resolve(source)).value();
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          }
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">final</strong> Path output = temp.resolve(<span class="jxr_string">"output"</span>);
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">final</strong> Path sources = temp.resolve(resources);
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">new</strong> FakeMaven(temp)
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>              .with(<span class="jxr_string">"printSourcesDir"</span>, sources.toFile())
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .with(<span class="jxr_string">"printOutputDir"</span>, output.toFile())
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .execute(<strong class="jxr_keyword">new</strong> FakeMaven.Print())
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .result();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Path source : walk) {
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>              <strong class="jxr_keyword">final</strong> String src = resources.relativize(source).toString()
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .replace(<span class="jxr_string">".xmir"</span>, <span class="jxr_string">".eo"</span>);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>              MatcherAssert.assertThat(
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  String.format(
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>                      <span class="jxr_string">"File with name %s should have existed in output directory, but it didn't"</span>,
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>                      src
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  ),
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>                  Files.exists(output.resolve(Paths.get(src))),
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                  Matchers.is(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              );
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      @ParameterizedTest
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      @ClasspathSource(value = <span class="jxr_string">"org/eolang/maven/print-packs"</span>, glob = <span class="jxr_string">"**.yaml"</span>)
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">void</strong> printsXmirToEo(<strong class="jxr_keyword">final</strong> String pack, @Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">final</strong> Xtory xtory = <strong class="jxr_keyword">new</strong> XtSticky(<strong class="jxr_keyword">new</strong> XtYaml(pack));
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          Assumptions.assumeTrue(xtory.map().get(<span class="jxr_string">"skip"</span>) == <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          MatcherAssert.assertThat(
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>              <span class="jxr_string">"PrintMojo should print EO in straight notation, but it didn't"</span>,
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              MjPrintTest.printed(xtory, temp, false).asString(),
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>              Matchers.equalTo((String) xtory.map().get(<span class="jxr_string">"printed"</span>))
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          );
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     * Print XMIR to EO from given pack.</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     * @param xtory XaX story</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">     * @param temp Temp directory</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * @param reversed Should notation be reversed or not</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     * @return Result printed EO</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">     * @throws Exception If fails to execute {@link MjPrint}</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Text printed(<strong class="jxr_keyword">final</strong> Xtory xtory, <strong class="jxr_keyword">final</strong> Path temp, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> reversed)
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">new</strong> Saved(
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">new</strong> EoSyntax(
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  <strong class="jxr_keyword">new</strong> InputOf(xtory.map().get(<span class="jxr_string">"origin"</span>).toString())
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>              ).parsed().toString(),
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>              temp.resolve(<span class="jxr_string">"xmir/foo/x/main.xmir"</span>)
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          ).value();
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          <strong class="jxr_keyword">final</strong> Map&lt;String, Path&gt; result = <strong class="jxr_keyword">new</strong> FakeMaven(temp)
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>              .with(<span class="jxr_string">"printSourcesDir"</span>, temp.resolve(<span class="jxr_string">"xmir"</span>).toFile())
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>              .with(<span class="jxr_string">"printOutputDir"</span>, temp.resolve(<span class="jxr_string">"eo"</span>).toFile())
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>              .with(<span class="jxr_string">"printReversed"</span>, reversed)
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>             .execute(MjPrint.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>             .result();
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TextOf(result.get(<span class="jxr_string">"eo/foo/x/main.eo"</span>));
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">new</strong> FakeMaven(temp)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>              .with(<span class="jxr_string">"printSourcesDir"</span>, temp.resolve(resources).toFile())
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>              .with(<span class="jxr_string">"printOutputDir"</span>, output.toFile())
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .execute(<strong class="jxr_keyword">new</strong> FakeMaven.Print())
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .result();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Path source : walk) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <strong class="jxr_keyword">final</strong> String src = resources.relativize(source).toString()
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .replace(<span class="jxr_string">".xmir"</span>, <span class="jxr_string">".eo"</span>);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                  String.format(
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>                      <span class="jxr_string">"File with name %s should have existed in output directory, but it didn't"</span>,
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>                      src
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  ),
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  Files.exists(output.resolve(Paths.get(src))),
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>                  Matchers.is(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              );
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      @ParameterizedTest
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      @ClasspathSource(value = <span class="jxr_string">"org/eolang/maven/print-packs"</span>, glob = <span class="jxr_string">"**.yaml"</span>)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> printsXmirToEo(<strong class="jxr_keyword">final</strong> String pack, @Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">final</strong> Xtory xtory = <strong class="jxr_keyword">new</strong> XtSticky(<strong class="jxr_keyword">new</strong> XtYaml(pack));
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          Assumptions.assumeTrue(xtory.map().get(<span class="jxr_string">"skip"</span>) == <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <span class="jxr_string">"PrintMojo should print EO in straight notation, but it didn't"</span>,
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              MjPrintTest.printed(xtory, temp, false).asString(),
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              Matchers.equalTo((String) xtory.map().get(<span class="jxr_string">"printed"</span>))
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          );
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     * Print XMIR to EO from given pack.</em>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     * @param xtory XaX story</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     * @param temp Temp directory</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">     * @param reversed Should notation be reversed or not</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * @return Result printed EO</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     * @throws Exception If fails to execute {@link MjPrint}</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Text printed(<strong class="jxr_keyword">final</strong> Xtory xtory, <strong class="jxr_keyword">final</strong> Path temp, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> reversed)
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">new</strong> Saved(
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              <strong class="jxr_keyword">new</strong> EoSyntax(
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  <strong class="jxr_keyword">new</strong> InputOf(xtory.map().get(<span class="jxr_string">"origin"</span>).toString())
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              ).parsed().toString(),
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              temp.resolve(<span class="jxr_string">"xmir/foo/x/main.xmir"</span>)
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          ).value();
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          <strong class="jxr_keyword">final</strong> Map&lt;String, Path&gt; result = <strong class="jxr_keyword">new</strong> FakeMaven(temp)
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>              .with(<span class="jxr_string">"printSourcesDir"</span>, temp.resolve(<span class="jxr_string">"xmir"</span>).toFile())
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>              .with(<span class="jxr_string">"printOutputDir"</span>, temp.resolve(<span class="jxr_string">"eo"</span>).toFile())
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>              .with(<span class="jxr_string">"printReversed"</span>, reversed)
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              .execute(MjPrint.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>             .result();
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TextOf(result.get(<span class="jxr_string">"eo/foo/x/main.eo"</span>));
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

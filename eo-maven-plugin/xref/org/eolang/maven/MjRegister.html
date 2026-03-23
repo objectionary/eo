@@ -95,54 +95,59 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>              Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"There are %d EO sources registered already"</span>, before);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">final</strong> <a name="Unplace" href="../../../org/eolang/maven/Unplace.html#Unplace">Unplace</a> unplace = <strong class="jxr_keyword">new</strong> <a name="Unplace" href="../../../org/eolang/maven/Unplace.html#Unplace">Unplace</a>(<strong class="jxr_keyword">this</strong>.sourcesDir);
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> registered = <strong class="jxr_keyword">new</strong> Threaded&lt;&gt;(
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">new</strong> <a name="Walk" href="../../../org/eolang/maven/Walk.html#Walk">Walk</a>(<strong class="jxr_keyword">this</strong>.sourcesDir.toPath())
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .includes(<strong class="jxr_keyword">this</strong>.includeSources)
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .excludes(<strong class="jxr_keyword">this</strong>.excludeSources),
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>              file -&gt; {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.strictFileNames
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      &amp;&amp; !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()) {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>                      <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                          String.format(
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>                              <span class="jxr_string">"Incorrect name found: '%s'. EO name must match '%s'"</span>,
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>                             file.getFileName().toString(),
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>                             MjRegister.PATTERN
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>                         )
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>                     );
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>                 }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>                 <strong class="jxr_keyword">final</strong> String name = unplace.make(file);
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.scopedTojos().contains(name)) {
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>                     Logger.debug(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"EO source %s already registered"</span>, name);
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>                     <strong class="jxr_keyword">this</strong>.scopedTojos()
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>                         .add(name)
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                         .withSource(file.toAbsolutePath())
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                         .withHash(<strong class="jxr_keyword">new</strong> <a name="ChSource" href="../../../org/eolang/maven/ChSource.html#ChSource">ChSource</a>(file));
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                     Logger.debug(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"EO source %s registered"</span>, name);
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 }
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 <strong class="jxr_keyword">return</strong> 1;
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>             }
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>         ).total();
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         Logger.info(
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>             <strong class="jxr_keyword">this</strong>,
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>             <span class="jxr_string">"Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s"</span>,
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>             registered, <strong class="jxr_keyword">this</strong>.sourcesDir, <strong class="jxr_keyword">this</strong>.foreign, <strong class="jxr_keyword">this</strong>.includeSources, <strong class="jxr_keyword">this</strong>.excludeSources
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>         );
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> removeOldFiles() {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <strong class="jxr_keyword">final</strong> File[] files = {
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>             <strong class="jxr_keyword">this</strong>.foreign,
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>             <strong class="jxr_keyword">this</strong>.targetDir.toPath().resolve(MjPull.DIR).toFile(),
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>             <strong class="jxr_keyword">this</strong>.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>         };
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> File file : files) {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>             <strong class="jxr_keyword">if</strong> (file.exists()) {
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 <strong class="jxr_keyword">new</strong> <a name="Deleted" href="../../../org/eolang/maven/Deleted.html#Deleted">Deleted</a>(file).get();
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>             }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>         }
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     }
-<a class="jxr_linenumber" name="L137" href="#L137">137</a> }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          Logger.info(
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              <span class="jxr_string">"Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s"</span>,
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              <strong class="jxr_keyword">new</strong> Threaded&lt;&gt;(
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  <strong class="jxr_keyword">new</strong> <a name="Walk" href="../../../org/eolang/maven/Walk.html#Walk">Walk</a>(<strong class="jxr_keyword">this</strong>.sourcesDir.toPath())
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                      .includes(<strong class="jxr_keyword">this</strong>.includeSources)
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      .excludes(<strong class="jxr_keyword">this</strong>.excludeSources),
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  file -&gt; {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                      <strong class="jxr_keyword">if</strong> (
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                          <strong class="jxr_keyword">this</strong>.strictFileNames
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                             &amp;&amp; !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>                     ) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>                         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>                             String.format(
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>                                 <span class="jxr_string">"Incorrect name found: '%s'. EO name must match '%s'"</span>,
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>                                 file.getFileName().toString(),
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                                 MjRegister.PATTERN
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>                             )
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                         );
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>                     }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                     <strong class="jxr_keyword">final</strong> String name = unplace.make(file);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.scopedTojos().contains(name)) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                         Logger.debug(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"EO source %s already registered"</span>, name);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                         <strong class="jxr_keyword">this</strong>.scopedTojos()
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                             .add(name)
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                             .withSource(file.toAbsolutePath())
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                             .withHash(<strong class="jxr_keyword">new</strong> <a name="ChSource" href="../../../org/eolang/maven/ChSource.html#ChSource">ChSource</a>(file));
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                         Logger.debug(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"EO source %s registered"</span>, name);
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                     }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     <strong class="jxr_keyword">return</strong> 1;
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 }
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>             ).total(),
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>             <strong class="jxr_keyword">this</strong>.sourcesDir,
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>             <strong class="jxr_keyword">this</strong>.foreign,
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             <strong class="jxr_keyword">this</strong>.includeSources,
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             <strong class="jxr_keyword">this</strong>.excludeSources
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         );
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     }
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> removeOldFiles() {
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         <strong class="jxr_keyword">final</strong> File[] files = {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>             <strong class="jxr_keyword">this</strong>.foreign,
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>             <strong class="jxr_keyword">this</strong>.targetDir.toPath().resolve(MjPull.DIR).toFile(),
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">this</strong>.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         };
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> File file : files) {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>             <strong class="jxr_keyword">if</strong> (file.exists()) {
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 <strong class="jxr_keyword">new</strong> <a name="Deleted" href="../../../org/eolang/maven/Deleted.html#Deleted">Deleted</a>(file).get();
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             }
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

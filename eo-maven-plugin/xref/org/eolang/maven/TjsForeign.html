@@ -97,12 +97,12 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     * @param name The name of the tojo.</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @return The tojo.</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      TjForeign add(<strong class="jxr_keyword">final</strong> String name) {
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <a name="TjForeign" href="../../../org/eolang/maven/TjForeign.html#TjForeign">TjForeign</a> add(<strong class="jxr_keyword">final</strong> String name) {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">final</strong> Tojo tojo = <strong class="jxr_keyword">this</strong>.tojos.value().add(name);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">if</strong> (!tojo.exists(Attribute.SCOPE.getKey())) {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>              tojo.set(Attribute.SCOPE.getKey(), <strong class="jxr_keyword">this</strong>.scope.get());
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          }
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TjForeign(tojo);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TjForeign" href="../../../org/eolang/maven/TjForeign.html#TjForeign">TjForeign</a>(tojo);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      }
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     <em class="jxr_javadoccomment">/**</em>
@@ -110,8 +110,8 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> <em class="jxr_javadoccomment">     * @param id The id of the tojo.</em>
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> <em class="jxr_javadoccomment">     * @return The tojo.</em>
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     TjForeign find(<strong class="jxr_keyword">final</strong> String id) {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TjForeign(
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <a name="TjForeign" href="../../../org/eolang/maven/TjForeign.html#TjForeign">TjForeign</a> find(<strong class="jxr_keyword">final</strong> String id) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TjForeign" href="../../../org/eolang/maven/TjForeign.html#TjForeign">TjForeign</a>(
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>             <strong class="jxr_keyword">this</strong>.tojos.value()
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>                 .select(tojo -&gt; tojo.get(Attribute.ID.getKey()).equals(id))
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                 .stream()
