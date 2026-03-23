@@ -24,7 +24,7 @@ jobs:
       - run: |
           sudo apt-get update --yes --fix-missing
           sudo apt-get install --yes ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: zauguin/install-texlive@v4.0.0
+      - uses: zauguin/install-texlive@v4.1.0
         with:
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
           texlive_version: 2025
