@@ -16,12 +16,12 @@
 [value] > angle
   value > @
   # Converts this from radians to degrees.
-  angle > in-degrees
+  angle > degrees
     div.
       times 180.0
       pi
   # Converts this from degrees to radians.
-  angle > in-radians
+  angle > radians
     div.
       times pi
       180.0

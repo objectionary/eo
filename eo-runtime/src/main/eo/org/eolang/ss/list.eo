@@ -88,6 +88,7 @@
         other.length
       rec-eq origin other
 
+    # Recursively compares elements of two tuples for equality.
     [first second] > rec-eq
       if. > @
         first.length.eq 0
@@ -109,6 +110,7 @@
     number > @
       rec-index-of origin
 
+    # Recursively searches for wanted element returning its index.
     [tup] > rec-index-of
       if. > @
         tup.length.eq 0
@@ -127,6 +129,7 @@
   [wanted] > last-index-of
     rec-last-index-of origin > @
 
+    # Recursively searches for last occurrence of wanted element.
     [tup] > rec-last-index-of
       if. > @
         tup.length.eq 0
@@ -154,6 +157,7 @@
     list > @
       rec-filteredi origin
 
+    # Recursively filters tuple elements using predicate function with index.
     [tup] > rec-filteredi
       if. > @
         tup.length.eq 0
@@ -188,6 +192,7 @@
             rec-head origin
     index > idx!
 
+    # Recursively removes tail elements until tuple reaches target length.
     [tup] > rec-head
       if. > @
         tup.length.eq idx
@@ -348,6 +353,7 @@
       foo
         * 1 "text" "f"
       * "text" "f"
+    # Helper function that removes first element from given tuple.
     [a] > foo
       withouti. > @
         list a

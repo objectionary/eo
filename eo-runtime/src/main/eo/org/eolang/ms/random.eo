@@ -40,19 +40,19 @@
         plus.
           as-i64.
             and.
-              time-bytes.left const-1
+              tbytes.left shift1
               ((one.left 53).as-i64.minus one).as-bytes
           plus.
             as-i64.
               and.
-                time-bytes.left const-3
-                ((one.left const-1).as-i64.minus one).as-bytes
+                tbytes.left shift3
+                ((one.left shift1).as-i64.minus one).as-bytes
             as-i64.
               and.
-                time-bytes
-                ((one.left const-3).as-i64.minus one).as-bytes
+                tbytes
+                ((one.left shift3).as-i64.minus one).as-bytes
     (posix "gettimeofday" *).output > timeval
-    as-bytes. > time-bytes
+    as-bytes. > tbytes
       as-i64.
         if.
           os.is-windows
@@ -61,8 +61,8 @@
             timeval.tv-sec.times 1000
             as-number.
               timeval.tv-usec.as-i64.div 1000.as-i64
-    35 > const-1
-    17 > const-3
+    35 > shift1
+    17 > shift3
     00-00-00-00-00-00-00-01 > one
 
   # Tests that random numbers generated with the same seed are different in sequence.

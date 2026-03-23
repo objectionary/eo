@@ -70,6 +70,7 @@
         and.
           cached1.eq cached2
           1.eq cached1
+    # Function that increments counter in memory for testing.
     [] > func
       malloc.for > @
         0

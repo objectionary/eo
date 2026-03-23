@@ -26,10 +26,11 @@
         * text
         rec-nsplit * 0 0 0
 
-  [accum start current splits-made] > rec-nsplit
+  # Recursively splits text by delimiter up to limit number of times.
+  [accum start current count] > rec-nsplit
     if. > @
       text.size.eq current
-      accum.with > with-substr
+      accum.with > appended
         string
           slice
             text
@@ -39,18 +40,18 @@
         and.
           delimiter.eq
             slice text current 1
-          (number splits-made).lt
+          (number count).lt
             (number limit).minus 1
         rec-nsplit
-          with-substr
+          appended
           (current.plus 1).as-number
           (current.plus 1).as-number
-          (splits-made.plus 1).as-number
+          (count.plus 1).as-number
         rec-nsplit
           accum
           start
           (current.plus 1).as-number
-          splits-made
+          count
 
   # Tests that nsplit splits with limit 2 correctly.
   [] +> tests-nsplit-with-limit-two

@@ -8,6 +8,7 @@
 # String buffer allows to sequentially build strings using `.with` object.
 [buf] > string-buffer
   buf > @
+  # Appends given string to buffer returning new string-buffer instance.
   [str] > with
     string-buffer > @
       string

@@ -20,22 +20,23 @@
         accum.concat > @
           if.
             and.
-              ascii-bte.lte ascii-z
-              ascii-bte.gte ascii-a
+              code.lte maxcode
+              code.gte mincode
             slice.
               as-bytes.
                 as-i64.
-                  ascii-bte.minus distance
+                  code.minus distance
               7
               1
             byte
-        ascii byte > ascii-bte
-  ascii "z" > ascii-z!
-  ascii "a" > ascii-a!
+        ascii byte > code
+  ascii "z" > maxcode!
+  ascii "a" > mincode!
   minus. > distance
-    number ascii-a
+    number mincode
     ascii "A"
 
+  # Converts character to its ASCII numeric value as number.
   [char] > ascii
     as-number. > @
       as-i64.

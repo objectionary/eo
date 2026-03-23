@@ -21,18 +21,18 @@
         accum.concat > @
           if.
             and.
-              ascii-bte.lte ascii-z
-              ascii-bte.gte ascii-a
+              code.lte maxcode
+              code.gte mincode
             slice.
               as-bytes.
                 as-i64.
-                  ascii-bte.plus (up-cased text).distance
+                  code.plus (up-cased text).distance
               7
               1
             byte
-        (up-cased text).ascii byte > ascii-bte
-  (up-cased text).ascii "Z" > ascii-z
-  (up-cased text).ascii "A" > ascii-a
+        (up-cased text).ascii byte > code
+  (up-cased text).ascii "Z" > maxcode
+  (up-cased text).ascii "A" > mincode
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case

@@ -22,6 +22,7 @@
     range
       [] >>
         build ^.start > @
+        # Creates integer range element with value and next element generator.
         [num] > build
           num > @
           ^.build (1.plus @) > next

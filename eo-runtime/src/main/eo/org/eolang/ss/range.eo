@@ -60,6 +60,7 @@
     range > rng
       []
         build 1 > @
+        # Creates range element with value and next element generator.
         [i] > build
           i > @
           ^.build (1.plus @) > next
@@ -73,6 +74,7 @@
     range > rng
       []
         x 1.0 > @
+        # Creates float range element with value and next element generator.
         [i] > x
           i > @
           ^.x (0.5.plus @) > next
@@ -86,6 +88,7 @@
     range > rng
       []
         b 1 > @
+        # Creates range element with step of 5 for out-of-bounds testing.
         [num] > b
           num > @
           ^.b (5.plus @) > next
@@ -97,8 +100,10 @@
     range > rng
       []
         y 10 > @
+        # Creates range element with invalid next for empty result testing.
         [num] > y
           num > @
+          # Invalid next element that lacks required lt attribute.
           [] > next
             42 > nothing
       1
