@@ -1,16 +1,15 @@
-+alias org.eolang.ss.list
-+alias org.eolang.ss.reducedi
-+alias org.eolang.ss.reduced
 +alias org.eolang.ss.eachi
-+alias org.eolang.tt.sprintf
++alias org.eolang.ss.list
++alias org.eolang.ss.reduced
++alias org.eolang.ss.reducedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.ss
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:18
-+unlint redundant-object:24
++unlint redundant-object:28
++unlint redundant-object:34
 
 # List implements basic operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple` to provide functional programming operations.

@@ -7,12 +7,11 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:22
-+unlint redundant-object:23
-+unlint redundant-object:26
-+unlint redundant-object:44
-+unlint redundant-object:53
-+unlint redundant-object:62
++unlint redundant-object:31
++unlint redundant-object:34
++unlint redundant-object:52
++unlint redundant-object:61
++unlint redundant-object:70
 
 # The object encapsulates a chain of bytes, providing bitwise operations,
 # numeric conversions, and byte manipulation methods. Objects like `number`, `string`,

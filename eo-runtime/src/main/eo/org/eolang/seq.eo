@@ -154,7 +154,8 @@
           true
           true
 
-  # Tests that seq correctly handles multiple memory operations and returns the last value when used with equality comparison.
+  # Tests that seq correctly handles multiple memory operations and returns
+  # the last value when used with equality comparison.
   [] +> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
       1
