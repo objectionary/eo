@@ -11,11 +11,14 @@ import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +35,11 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -40,8 +47,9 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings("PMD.TooManyFields")
+@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods"})
 abstract class MjSafe extends AbstractMojo {
 
     /**
@@ -71,7 +79,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
-        defaultValue = "${project.build.directory}/classes",
+        defaultValue = "${project.build.directory}/classes/org/eolang",
         readonly = true,
         required = true
     )
@@ -158,7 +166,7 @@ abstract class MjSafe extends AbstractMojo {
     @Parameter(
         property = "eo.generatedDir",
         required = true,
-        defaultValue = "${project.build.directory}/generated-sources"
+        defaultValue = "${project.build.directory}/generated-sources/org/eolang"
     )
     protected File generatedDir;
 
@@ -220,7 +228,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean cacheEnabled = true;
 
     /**
@@ -230,7 +237,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean rewriteBinaries = true;
 
     /**
@@ -248,7 +254,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
     protected String tag = "master";
 
@@ -364,7 +369,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreRuntime;
 
     /**
@@ -374,7 +378,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreTransitive", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean ignoreTransitive;
 
     /**
@@ -383,7 +386,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
     protected boolean failOnWarning;
 
@@ -393,7 +395,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
     protected boolean lintAsPackage;
 
@@ -403,7 +404,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
     protected boolean skipLinting;
 
@@ -417,6 +417,13 @@ abstract class MjSafe extends AbstractMojo {
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
     protected PluginDescriptor plugin;
+
+    /**
+     * Maven settings.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(defaultValue = "${settings}", readonly = true)
+    protected Settings settings;
 
     /**
      * Placed tojos.
@@ -433,7 +440,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     protected BiConsumer<Dependency, Path> central;
 
     /**
@@ -443,6 +449,20 @@ abstract class MjSafe extends AbstractMojo {
      */
     protected CommitHash hash = new ChCached(
         new ChNarrow(new ChRemote(this.tag))
+    );
+
+    /**
+     * Objectionary.
+     * @since 0.50
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
+    private Scalar<Objectionary> objectionary = new Synced<>(
+        new Sticky<>(
+            () -> new OyIndexed(
+                new OyCached(new OyRemote(this.hash))
+            )
+        )
     );
 
     /**
@@ -458,7 +478,6 @@ abstract class MjSafe extends AbstractMojo {
      * Whether we should skip goal execution.
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
-    @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
     @Override
@@ -473,7 +492,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    @SuppressWarnings("PMD.CognitiveComplexity")
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.UnnecessaryLocalRule"})
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -583,6 +602,28 @@ abstract class MjSafe extends AbstractMojo {
      */
     abstract void exec() throws IOException;
 
+    Objectionary objectionary() {
+        return new Unchecked<>(this.objectionary).value();
+    }
+
+    /**
+     * Get active proxy from Maven settings.
+     * @return Proxy if any.
+     */
+    Proxy[] proxies() {
+        return Optional.ofNullable(this.settings)
+            .map(Settings::getProxies)
+            .orElse(List.of())
+            .stream()
+            .filter(org.apache.maven.settings.Proxy::isActive)
+            .map(
+                p -> new Proxy(
+                    Proxy.Type.HTTP,
+                    new InetSocketAddress(p.getHost(), p.getPort())
+                )
+            ).toArray(Proxy[]::new);
+    }
+
     /**
      * Runs exec command with timeout if needed.
      *
@@ -598,13 +639,13 @@ abstract class MjSafe extends AbstractMojo {
                     this.exec();
                     return new Object();
                 }
-            ).get(this.timeout.longValue(), TimeUnit.SECONDS);
+            ).get(this.timeout, TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
                     "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout.longValue())
+                    TimeUnit.SECONDS.toMillis(this.timeout)
                 ),
                 ex
             );

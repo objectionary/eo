@@ -65,10 +65,12 @@ public final class MjPrint extends MjSafe {
                     this.printSourcesDir.toPath().relativize(source).toString()
                         .replace(".xmir", ".eo")
                 );
-                final String program = new Xmir(
-                    new XMLDocument(new TextOf(source).asString())
-                ).toEO();
-                new Saved(program, home.resolve(relative)).value();
+                new Saved(
+                    new Xmir(
+                        new XMLDocument(new TextOf(source).asString())
+                    ).toEO(),
+                    home.resolve(relative)
+                ).value();
                 Logger.info(
                     this,
                     "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",

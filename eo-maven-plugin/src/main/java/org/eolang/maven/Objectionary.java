@@ -49,7 +49,6 @@ interface Objectionary {
      * @since 0.28.11
      * @checkstyle IllegalCatchCheck (150 lines)
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     final class Fake implements Objectionary {
 
         /**

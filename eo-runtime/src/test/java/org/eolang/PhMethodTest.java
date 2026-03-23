@@ -25,6 +25,7 @@ final class PhMethodTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void calculatesPhiJustOnce() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "φ");
@@ -40,6 +41,7 @@ final class PhMethodTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void calculatesLocalJustOnce() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "foo");
@@ -57,8 +59,7 @@ final class PhMethodTest {
     @Test
     void calculatesPhiOnce() {
         final Dummy dummy = new Dummy();
-        final Phi phi = new PhMethod(dummy, "neg");
-        new Dataized(phi).take();
+        new Dataized(new PhMethod(dummy, "neg")).take();
         MatcherAssert.assertThat(
             "Neg should be calculated only once, but it wasn't",
             dummy.count,
@@ -84,7 +85,7 @@ final class PhMethodTest {
      * Dummy default.
      * @since 0.1.0
      */
-    public static class Dummy extends PhDefault {
+    public static final class Dummy extends PhDefault {
         /**
          * Count.
          */
@@ -93,7 +94,6 @@ final class PhMethodTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.add(
                 "φ",

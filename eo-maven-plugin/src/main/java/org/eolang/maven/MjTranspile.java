@@ -122,7 +122,9 @@ public final class MjTranspile extends MjSafe {
     private boolean transpileTests = true;
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
+        final long begin = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withXmir();
         final int saved = new Threaded<>(
             sources,
@@ -147,6 +149,11 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+        Logger.info(
+            this,
+            "Transpilation took %[ms]s in total",
+            System.currentTimeMillis() - begin
+        );
     }
 
     /**
@@ -155,6 +162,7 @@ public final class MjTranspile extends MjSafe {
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int transpiled(
         final TjForeign tojo
     ) throws IOException {
@@ -167,18 +175,56 @@ public final class MjTranspile extends MjSafe {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.transpilation(source);
-        new FpDefault(
-            src -> {
-                rewrite.compareAndSet(false, true);
-                return transform.apply(xmir).toString();
-            },
-            this.cache.toPath().resolve(MjTranspile.CACHE),
-            this.plugin.getVersion(),
-            hsh,
-            base.relativize(target),
-            this.cacheEnabled
-        ).apply(source, target);
+        final String version = this.plugin.getVersion();
+        final Path tail = base.relativize(target);
+        final Path cdir = this.cache.toPath().resolve(MjTranspile.CACHE);
+        if (this.cacheEnabled) {
+            new ConcurrentCache(
+                new Cache(
+                    new CachePath(cdir, version, hsh.get()),
+                    src -> {
+                        rewrite.compareAndSet(false, true);
+                        final long start = System.currentTimeMillis();
+                        final String res = transform.apply(xmir).toString();
+                        Logger.debug(
+                            this,
+                            "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
+                            source,
+                            MjTranspile.info(source),
+                            target,
+                            MjTranspile.info(target),
+                            System.currentTimeMillis() - start,
+                            version,
+                            hsh.get(),
+                            tail,
+                            this.cacheEnabled,
+                            cdir
+                        );
+                        return res;
+                    }
+                )
+            ).apply(source, target, tail);
+        } else {
+            rewrite.compareAndSet(false, true);
+            new Saved(transform.apply(xmir).toString(), target).value();
+        }
         return this.javaGenerated(rewrite.get(), target, hsh.get());
+    }
+
+    /**
+     * File info for logging.
+     * @param info Path to file
+     * @return Info string
+     * @throws IOException If fails
+     */
+    private static String info(final Path info) throws IOException {
+        final String res;
+        if (Files.exists(info)) {
+            res = Files.getLastModifiedTime(info).toString();
+        } else {
+            res = "Not exists yet";
+        }
+        return res;
     }
 
     /**
@@ -216,11 +262,13 @@ public final class MjTranspile extends MjSafe {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int javaGenerated(
         final boolean rewrite,
         final Path target,
         final String hsh
     ) throws IOException {
+        final long begin = System.currentTimeMillis();
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
             final Xnav object = new Xnav(target).element("object");
@@ -238,7 +286,6 @@ public final class MjTranspile extends MjSafe {
                     );
                     new JavaPlaced(
                         new FpIfReleased(
-                            this.plugin.getVersion(),
                             hsh,
                             new FpAppliedWithCache(
                                 java,
@@ -253,6 +300,11 @@ public final class MjTranspile extends MjSafe {
                     ).exec(clazz, this.transpileTests);
                 }
             }
+            Logger.debug(
+                this,
+                "Generated %d Java files from %[file]s in %[ms]s",
+                saved.get(), target, System.currentTimeMillis() - begin
+            );
         }
         return saved.get();
     }

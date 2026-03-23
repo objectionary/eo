@@ -27,6 +27,7 @@ final class PhSafeTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
             "rethrows correctly",
@@ -51,6 +52,7 @@ final class PhSafeTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void rendersMultiLayeredErrorMessageCorrectly() {
         MatcherAssert.assertThat(
             "rethrows correctly",
@@ -72,6 +74,7 @@ final class PhSafeTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void showsFileNameAndLineNumber() {
         MatcherAssert.assertThat(
             "shows file name and line number",

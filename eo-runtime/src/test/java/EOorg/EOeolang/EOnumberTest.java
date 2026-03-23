@@ -11,6 +11,12 @@ package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOorg.EOeolang.EOnumber$EOas_i64;
+import org.eolang.EOorg.EOeolang.EOnumber$EOdiv;
+import org.eolang.EOorg.EOeolang.EOnumber$EOfloor;
+import org.eolang.EOorg.EOeolang.EOnumber$EOgt;
+import org.eolang.EOorg.EOeolang.EOnumber$EOplus;
+import org.eolang.EOorg.EOeolang.EOnumber$EOtimes;
 import org.eolang.ExAbstract;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -64,6 +70,7 @@ final class EOnumberTest {
         EOnumber$EOplus.class,
         EOnumber$EOtimes.class
     })
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsCorrectErrorForXAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -95,6 +102,7 @@ final class EOnumberTest {
         EOnumber$EOas_i64.class,
         EOnumber$EOfloor.class
     })
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",

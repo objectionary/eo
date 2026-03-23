@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpAppliedWithCacheTest {
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void appliesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cached = temp.resolve("cached");
         final Path target = temp.resolve("target");
@@ -40,6 +41,7 @@ final class FpAppliedWithCacheTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void appliesOnlyToTarget(@Mktmp final Path temp) throws Exception {
         final String expected = "foo bar";
         final Path target = temp.resolve("target");

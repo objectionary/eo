@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjAssembleIT {
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/org/eolang/io/stdout.%s";
         final String parsed = String.format(stdout, "1-parse", "xmir");
@@ -62,6 +63,7 @@ final class MjAssembleIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final String prog = String.join(
             "\n",

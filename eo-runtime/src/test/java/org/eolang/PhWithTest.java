@@ -43,12 +43,11 @@ final class PhWithTest {
 
     @Test
     void passesToSubObject() {
-        final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
             "PhWith should pass attribute to sub-object and calculate correctly, but it didn't",
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(dummy, "plus")),
+                    new PhCopy(new PhMethod(new PhWithTest.Dummy(), "plus")),
                     0, new Data.ToPhi(1L)
                 )
             ).asNumber(),
@@ -58,6 +57,7 @@ final class PhWithTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsInThreads(final String data) {
         final String attr = "foo";
         final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
@@ -93,7 +93,7 @@ final class PhWithTest {
      * Dummy Phi with free attribute.
      * @since 0.1.0
      */
-    private static class DummyWithAtFree extends PhDefault {
+    private static final class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.
@@ -109,12 +109,11 @@ final class PhWithTest {
      * Dummy Phi.
      * @since 0.1.0
      */
-    public static class Dummy extends PhDefault {
+    public static final class Dummy extends PhDefault {
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }

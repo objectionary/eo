@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.namespace.NamespaceContext;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
@@ -56,6 +58,11 @@ public final class StrictXmir implements XML {
     );
 
     /**
+     * Lock to synchronize by.
+     */
+    private static final Lock LOCK = new ReentrantLock();
+
+    /**
      * The XML.
      */
     private final Unchecked<XML> xml;
@@ -76,7 +83,6 @@ public final class StrictXmir implements XML {
      * @param before The XML source
      * @param tmp The directory with cached XSD files
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public StrictXmir(final XML before, final Path tmp) {
         this.xml = new Unchecked<>(
             new Synced<>(
@@ -162,8 +168,7 @@ public final class StrictXmir implements XML {
                         before,
                         tmp.resolve(
                             before.substring(before.lastIndexOf('/') + 1)
-                        ),
-                        tmp
+                        )
                     ).getAbsoluteFile().toString().replace("\\", "/")
                 );
             } else {
@@ -185,15 +190,14 @@ public final class StrictXmir implements XML {
      * Fetch the XSD and place into the path.
      * @param uri The URI
      * @param path The file
-     * @param tmp Original directory
      * @return Where it was saved
      */
-    private static File fetch(final String uri, final Path path, final Path tmp) {
+    private static File fetch(final String uri, final Path path) {
         final File ret;
         if (StrictXmir.MINE.equals(uri)) {
-            ret = StrictXmir.copied(uri, path, tmp);
+            ret = StrictXmir.copied(uri, path);
         } else {
-            ret = StrictXmir.downloaded(uri, path, tmp);
+            ret = StrictXmir.downloaded(uri, path);
         }
         return ret;
     }
@@ -202,12 +206,12 @@ public final class StrictXmir implements XML {
      * Copy URI from local resource and save to file.
      * @param uri The URI
      * @param path The file
-     * @param tmp Directory to synchronize by
      * @return Where it was saved
      */
-    private static File copied(final String uri, final Path path, final Path tmp) {
+    private static File copied(final String uri, final Path path) {
         final File file = path.toFile();
-        synchronized (tmp) {
+        StrictXmir.LOCK.lock();
+        try {
             if (!file.exists()) {
                 if (file.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
@@ -227,6 +231,8 @@ public final class StrictXmir implements XML {
                     );
                 }
             }
+        } finally {
+            StrictXmir.LOCK.unlock();
         }
         return file;
     }
@@ -235,13 +241,13 @@ public final class StrictXmir implements XML {
      * Download URI from Internet and save to file.
      * @param uri The URI
      * @param path The file
-     * @param tmp Directory to synchronize by
      * @return Where it was saved
      */
     @SuppressWarnings("PMD.CognitiveComplexity")
-    private static File downloaded(final String uri, final Path path, final Path tmp) {
+    private static File downloaded(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
-        synchronized (tmp) {
+        StrictXmir.LOCK.lock();
+        try {
             if (!abs.exists()) {
                 if (abs.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
@@ -286,6 +292,8 @@ public final class StrictXmir implements XML {
                     }
                 }
             }
+        } finally {
+            StrictXmir.LOCK.unlock();
         }
         return abs;
     }

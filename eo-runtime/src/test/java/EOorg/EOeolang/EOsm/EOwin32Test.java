@@ -8,8 +8,8 @@
  */
 package EOorg.EOeolang.EOsm; // NOPMD
 
-import EOorg.EOeolang.EOsm.Win32.WSAStartupFuncCall;
-import EOorg.EOeolang.EOsm.Win32.Winsock;
+import org.eolang.EOorg.EOeolang.EOsm.Win32.WSAStartupFuncCall;
+import org.eolang.EOorg.EOeolang.EOsm.Win32.Winsock;
 import java.lang.management.ManagementFactory;
 import org.eolang.Data;
 import org.eolang.Dataized;

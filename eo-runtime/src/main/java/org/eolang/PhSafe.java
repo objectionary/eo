@@ -89,8 +89,10 @@ public final class PhSafe implements Phi, Atom {
      * @param oname Original name
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public PhSafe(final Phi phi, final String prg, final int lne,
-        final int pos, final String loc, final String oname) {
+    public PhSafe(
+        final Phi phi, final String prg, final int lne,
+        final int pos, final String loc, final String oname
+    ) {
         this.origin = phi;
         this.program = prg;
         this.line = lne;
@@ -181,6 +183,7 @@ public final class PhSafe implements Phi, Atom {
      * @param <T> Type of result
      * @return Result
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private <T> T through(final Supplier<T> action) {
         return this.through(action, "");
     }
@@ -198,7 +201,7 @@ public final class PhSafe implements Phi, Atom {
      * @return Result
      * @checkstyle IllegalCatchCheck (20 lines)
      */
-    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "PMD.PreserveStackTrace"})
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.PreserveStackTrace"})
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();

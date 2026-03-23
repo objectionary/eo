@@ -46,7 +46,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.26</version>
+      <version>1.5.29</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -424,7 +424,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.20.3</version>
+            <version>0.23.1</version>
             <executions>
               <execution>
                 <goals>

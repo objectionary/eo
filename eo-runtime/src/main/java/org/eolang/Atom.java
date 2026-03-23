@@ -13,6 +13,7 @@ package org.eolang;
  *
  * @since 0.36.0
  */
+@FunctionalInterface
 public interface Atom {
     /**
      * Executes λ function and calculates object.

@@ -124,42 +124,40 @@ final class MainTest {
 
     @Test
     void readsStreamCorrectly() throws IOException {
-        final BufferedReader reader = new BufferedReader(
-            Channels.newReader(
-                Channels.newChannel(
-                    new ByteArrayInputStream(
-                        ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
-                            StandardCharsets.UTF_8
-                        )
-                    )
-                ),
-                StandardCharsets.UTF_8.name()
-            )
-        );
         MatcherAssert.assertThat(
             "Reading stream should produce a non-empty line, but it didn't",
-            reader.readLine().length(),
+            new BufferedReader(
+                Channels.newReader(
+                    Channels.newChannel(
+                        new ByteArrayInputStream(
+                            ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    ),
+                    StandardCharsets.UTF_8.name()
+                )
+            ).readLine().length(),
             Matchers.greaterThan(0)
         );
     }
 
     @Test
     void readsSimpleStreamCorrectly() throws IOException {
-        final BufferedReader reader = new BufferedReader(
-            Channels.newReader(
-                Channels.newChannel(
-                    new ByteArrayInputStream(
-                        "abc".getBytes(
-                            StandardCharsets.UTF_8
-                        )
-                    )
-                ),
-                StandardCharsets.UTF_8.name()
-            )
-        );
         MatcherAssert.assertThat(
             "Reading stream should produce a line longer then 1 character, but it didn't",
-            reader.readLine().length(),
+            new BufferedReader(
+                Channels.newReader(
+                    Channels.newChannel(
+                        new ByteArrayInputStream(
+                            "abc".getBytes(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    ),
+                    StandardCharsets.UTF_8.name()
+                )
+            ).readLine().length(),
             Matchers.greaterThan(1)
         );
     }

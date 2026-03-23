@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjResolveIT {
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void resolvesJarFile(@Mktmp final Path temp) throws IOException {
         final String version = "0.39.0";
         new Farea(temp).together(
@@ -48,6 +49,7 @@ final class MjResolveIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void logsJarWithEmptyClassifierCorrectly(@Mktmp final Path temp) throws IOException {
         final String version = "0.52.0";
         new Farea(temp).together(
@@ -69,6 +71,7 @@ final class MjResolveIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldJarFile(@Mktmp final Path temp) throws IOException {
         final String version = "0.38.0";
         new Farea(temp).together(

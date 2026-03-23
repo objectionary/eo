@@ -22,6 +22,7 @@ import java.io.IOException;
  * @see org.eolang.parser.EoSyntax Implementation for EO language
  * @since 0.34.0
  */
+@FunctionalInterface
 interface Syntax {
     /**
      * Parses the source input and transforms it into XMIR format.

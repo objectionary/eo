@@ -13,6 +13,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOorg.EOeolang.Heaps;
 import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOmallocTest {
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void freesMemory() {
         final Dummy dummy = new Dummy();
         new Dataized(
@@ -45,6 +47,7 @@ final class EOmallocTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void freesMemoryIfErrorIsOccurred() {
         final ErrorDummy dummy = new ErrorDummy();
         Assertions.assertThrows(
@@ -81,7 +84,7 @@ final class EOmallocTest {
      * Dummy.
      * @since 0.37.0
      */
-    private static class Dummy extends PhDefault {
+    private static final class Dummy extends PhDefault {
         /**
          * Id.
          */
@@ -112,7 +115,7 @@ final class EOmallocTest {
      * Dummy that throws an exception.
      * @since 0.36.0
      */
-    private static class ErrorDummy extends PhDefault {
+    private static final class ErrorDummy extends PhDefault {
         /**
          * Id.
          */

@@ -23,10 +23,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 final class MjUnplaceTest {
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cleansAllTheFiles(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Path clazz = MjUnplaceTest.placed(temp, maven, "class");
@@ -46,6 +46,7 @@ final class MjUnplaceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void keepsClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).with("keepBinaries", Set.of("**/*.class"));
         final Path clazz = MjUnplaceTest.placed(temp, maven, "class");
@@ -63,6 +64,7 @@ final class MjUnplaceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void updatesPlacedTojosFile(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Path file = MjUnplaceTest.placed(temp, maven, "bat");

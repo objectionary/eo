@@ -9,6 +9,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.Requisite;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
@@ -19,7 +20,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import org.eclipse.jetty.http.HttpStatus;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eclipse.jetty.proxy.ProxyHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ConnectHandler;
@@ -33,12 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
- * @todo #3235:90min Proxy usage in {@link #checksThatWeCanCompileTheProgramWithProxySet(Path)}.
- *  Currently, we just check that the build is successful without employing the proxy.
- *  We need to enhance this test to ensure that the build process actually goes through the proxy
- *  rather than accessing the internet directly.
- *  You ought to set up proxy settings using Maven settings.xml with a proxy configured:
- *  <a href="https://maven.apache.org/guides/mini/guide-proxies.html">Maven Proxies</a>.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
@@ -65,7 +62,9 @@ final class ProxyIT {
 
     @Test
     void checksThatProxyIsWorking() throws IOException, InterruptedException {
-        final var resp = HttpClient.newBuilder()
+        MatcherAssert.assertThat(
+            "Response body should contain objectionary.com",
+            HttpClient.newBuilder()
             .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build()
@@ -75,15 +74,7 @@ final class ProxyIT {
                     .header("User-Agent", "test-client")
                     .GET()
                     .build(), HttpResponse.BodyHandlers.ofString()
-            );
-        MatcherAssert.assertThat(
-            "Proxy should return 200 OK for objectionary.com",
-            resp.statusCode(),
-            Matchers.equalTo(HttpStatus.OK_200)
-        );
-        MatcherAssert.assertThat(
-            "Response body should contain objectionary.com",
-            resp.body(),
+            ).body(),
             Matchers.allOf(
                 Matchers.containsString("objectionary"),
                 Matchers.containsString("sources")
@@ -92,15 +83,21 @@ final class ProxyIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         new Farea(tmp).together(
             f -> {
                 f.clean();
+                final Requisite settings = f.files().file("settings.xml").write(
+                    ProxyIT.settings(this.port).getBytes(StandardCharsets.UTF_8)
+                );
                 f.files()
                     .file("src/main/eo/foo/x/y/main.eo")
                     .write(ProxyIT.program().getBytes(StandardCharsets.UTF_8));
                 new AppendedPlugin(f).value()
                     .goals("register", "assemble", "resolve", "place");
+                f.withOpt("-s");
+                f.withOpt(settings.path().toString());
                 f.exec("package");
                 MatcherAssert.assertThat(
                     "We expect the build is successful when a proxy is set",
@@ -128,8 +125,9 @@ final class ProxyIT {
      * Finds a free port.
      * @return Free port number
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static int free() {
-        try (var socket = new ServerSocket(0)) {
+        try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
         } catch (final IOException exception) {
             throw new IllegalStateException("Could not find a free port", exception);
@@ -147,5 +145,16 @@ final class ProxyIT {
             "[x] > main",
             "  (stdout \"Hello Proxy!\" x).print > @"
         );
+    }
+
+    /**
+     * Returns proxy settings XML with the given port.
+     * @param port Proxy port.
+     * @return Proxy settings XML.
+     */
+    private static String settings(final int port) {
+        return new UncheckedText(new TextOf(new ResourceOf("proxy-settings.xml")))
+            .asString()
+            .replace("${proxy.port}", Integer.toString(port));
     }
 }

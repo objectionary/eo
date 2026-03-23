@@ -27,6 +27,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class OnDetailedTest {
 
     @Test
+    @SuppressWarnings({
+        "PMD.UnnecessaryLocalRule",
+        "PMD.UnitTestContainsTooManyAsserts"
+    })
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
         final XML xmir = new XMLDocument("<nothing/>");
         final String expected = "f.xmir";

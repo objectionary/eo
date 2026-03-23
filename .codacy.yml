@@ -1,9 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-# SPDX-License-Identifier: MIT
-
----
-exclude_paths:
-  - "eo-runtime/src/test/java/integration/JarIT.java"
-  - "eo-runtime/src/test/java/integration/EoMavenPlugin.java"
-  - "**/*IT.java"
-  - "eo-integration-tests/README.md"

@@ -25,20 +25,18 @@ final class ChRemoteTest {
 
     @Test
     void getsCommitHashTag() {
-        final String hash = new ChRemote("0.41.1").value();
         MatcherAssert.assertThat(
             "ChRemote should return the correct commit hash, but it doesn't",
-            hash,
+            new ChRemote("0.41.1").value(),
             Matchers.equalTo("9a3dee39597b2e9ac305ca57c296b0fa7e10eb55")
         );
     }
 
     @Test
     void getsCommitHashOldTag() {
-        final String hash = new ChRemote("0.40.5").value();
         MatcherAssert.assertThat(
             "ChRemote should return the correct commit hash for an old tag, but it doesn't",
-            hash,
+            new ChRemote("0.40.5").value(),
             Matchers.equalTo("ee14a1e30a9e0f8f64404e7a52f40c2a07f88359")
         );
     }

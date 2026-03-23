@@ -51,7 +51,6 @@ public class XmirBench {
      * @param args Arguments.
      * @throws RunnerException If something goes wrong.
      */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static void main(final String[] args) throws RunnerException {
         new Runner(
             new OptionsBuilder()

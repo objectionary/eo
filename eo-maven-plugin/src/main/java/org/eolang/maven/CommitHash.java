@@ -18,11 +18,7 @@ interface CommitHash extends Scalar<String> {
      */
     CommitHash FAKE = new CommitHash.ChConstant("abcdef");
 
-    /**
-     * SHA Hash.
-     *
-     * @return SHA of commit
-     */
+    @Override
     String value();
 
     /**

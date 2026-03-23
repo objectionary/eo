@@ -14,6 +14,7 @@ import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.TjSynchronized;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -25,14 +26,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.52
  */
-@SuppressWarnings({
-    "JTCOP.RuleAllTestsHaveProductionClass",
-    "JTCOP.RuleNotContainsTestWord",
-    "PMD.AvoidDuplicateLiterals"
-})
+@SuppressWarnings(
+    {
+        "JTCOP.RuleAllTestsHaveProductionClass",
+        "JTCOP.RuleNotContainsTestWord",
+        "PMD.AvoidDuplicateLiterals"
+    }
+)
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjRegisterIT {
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldPulledFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -43,7 +47,7 @@ final class MjRegisterIT {
                         "# Foo.",
                         "[] > foo",
                         "  \"Pull\" > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
@@ -53,7 +57,7 @@ final class MjRegisterIT {
                         "# Foo.",
                         "[] > foo",
                         "  41 > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
@@ -66,6 +70,7 @@ final class MjRegisterIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldResolvedFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -76,7 +81,7 @@ final class MjRegisterIT {
                         "# Foo.",
                         "[] > foo",
                         "  \"Resolve\" > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
@@ -86,7 +91,7 @@ final class MjRegisterIT {
                         "# Foo.",
                         "[] > foo",
                         "  42 > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
@@ -99,6 +104,7 @@ final class MjRegisterIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -111,7 +117,7 @@ final class MjRegisterIT {
                         "# In this program, we refer to the 'String'",
                         "[] > foo",
                         "  \"42\" > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
@@ -123,7 +129,7 @@ final class MjRegisterIT {
                         "# In this program, we refer to the 'Number'.",
                         "[] > foo",
                         "  42 > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 final TjSmart foreign = MjRegisterIT.foreign(
@@ -161,6 +167,7 @@ final class MjRegisterIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -173,7 +180,7 @@ final class MjRegisterIT {
                         "# In this program, we refer to the 'String' object by mistake.",
                         "[] > foo",
                         "  \"Hello\" > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
@@ -185,7 +192,7 @@ final class MjRegisterIT {
                         "# Now, this program, doesn't refer to the 'String' object",
                         "[] > foo",
                         "  42 > @"
-                    ).getBytes()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(

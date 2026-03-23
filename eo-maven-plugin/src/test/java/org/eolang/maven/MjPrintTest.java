@@ -45,9 +45,8 @@ final class MjPrintTest {
             new Saved(new TextOf(source), temp.resolve(source)).value();
         }
         final Path output = temp.resolve("output");
-        final Path sources = temp.resolve(resources);
         new FakeMaven(temp)
-            .with("printSourcesDir", sources.toFile())
+            .with("printSourcesDir", temp.resolve(resources).toFile())
             .with("printOutputDir", output.toFile())
             .execute(new FakeMaven.Print())
             .result();

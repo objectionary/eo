@@ -77,10 +77,11 @@ public final class MjLint extends MjSafe {
      * Lint.
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withXmir();
-        final ConcurrentHashMap<Severity, Integer> counts = new ConcurrentHashMap<>();
+        final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
@@ -143,7 +144,7 @@ public final class MjLint extends MjSafe {
      */
     private int lintOne(
         final TjForeign tojo,
-        final ConcurrentHashMap<Severity, Integer> counts,
+        final Map<Severity, Integer> counts,
         final String... unlints
     ) throws Exception {
         final Path source = tojo.xmir();
@@ -152,16 +153,30 @@ public final class MjLint extends MjSafe {
         final Path target = new Place(
             new OnDetailed(new OnDefault(xmir), source).get()
         ).make(base, MjAssemble.XMIR);
-        tojo.withLinted(
-            new FpDefault(
-                src -> this.linted(tojo.identifier(), xmir, counts, unlints).toString(),
-                this.cache.toPath().resolve(MjLint.CACHE),
-                this.plugin.getVersion(),
-                new TojoHash(tojo),
-                base.relativize(target),
-                this.cacheEnabled
-            ).apply(source, target)
-        );
+        if (this.cacheEnabled) {
+            new ConcurrentCache(
+                new Cache(
+                    new CachePath(
+                        this.cache.toPath().resolve(MjLint.CACHE),
+                        this.plugin.getVersion(),
+                        new TojoHash(tojo).get()
+                    ),
+                    src -> this.linted(
+                        tojo.identifier(),
+                        xmir,
+                        counts,
+                        unlints
+                    ).toString()
+                )
+            ).apply(source, target, base.relativize(target));
+        } else {
+            new Saved(
+                this.linted(tojo.identifier(), xmir, counts, unlints)
+                    .toString(),
+                target
+            ).value();
+        }
+        tojo.withLinted(target);
         return 1;
     }
 
@@ -171,7 +186,7 @@ public final class MjLint extends MjSafe {
      * @return Amount of seen XMIR files
      * @throws IOException If failed to lint
      */
-    private int lintAll(final ConcurrentHashMap<Severity, Integer> counts) throws IOException {
+    private int lintAll(final Map<Severity, Integer> counts) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
         for (final TjForeign tojo : this.scopedTojos().withXmir()) {
             paths.put(tojo.identifier(), tojo.xmir());
@@ -221,7 +236,7 @@ public final class MjLint extends MjSafe {
     private XML linted(
         final String program,
         final XML xmir,
-        final ConcurrentHashMap<Severity, Integer> counts,
+        final Map<Severity, Integer> counts,
         final String... unlints
     ) {
         final Node node = xmir.inner();
@@ -303,11 +318,11 @@ public final class MjLint extends MjSafe {
      * @param counts Counts of errors, warnings, and critical
      * @return Summary text
      */
-    private static String summary(final ConcurrentHashMap<Severity, Integer> counts) {
+    private static String summary(final Map<Severity, Integer> counts) {
         final List<String> parts = new ArrayList<>(0);
-        final int criticals = counts.get(Severity.CRITICAL);
-        if (criticals > 0) {
-            parts.add(MjLint.plural(criticals, "critical error"));
+        final int critical = counts.get(Severity.CRITICAL);
+        if (critical > 0) {
+            parts.add(MjLint.plural(critical, "critical error"));
         }
         final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
     @Test
+    @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void logsAllLocationsWithPhSafe() {
         final Logger log = Logger.getLogger("logsWithPhSafe");
         final Level before = log.getLevel();
@@ -80,6 +81,7 @@ final class DataizedTest {
     }
 
     @Test
+    @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void doesNotLogGoToTokenJump() {
         final Logger log = Logger.getLogger("logsWithPhSafe");
         final Level before = log.getLevel();
@@ -121,7 +123,7 @@ final class DataizedTest {
      *
      * @since 0.1.0
      */
-    private static class Hnd extends Handler {
+    private static final class Hnd extends Handler {
         /**
          * Logs.
          */

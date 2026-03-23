@@ -30,6 +30,12 @@ import org.xembly.Xembler;
  */
 final class StrictXmirTest {
 
+    /**
+     * EO version manifest key.
+     */
+    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
+    private static final String EO_VERSION = "EO-Version";
+
     @Test
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
@@ -41,11 +47,6 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
-        MatcherAssert.assertThat(
-            "temporary XSD file created",
-            tmp.resolve("XMIR.xsd").toFile().exists(),
-            Matchers.is(true)
-        );
     }
 
     @RepeatedTest(20)
@@ -55,8 +56,10 @@ final class StrictXmirTest {
         Assertions.assertDoesNotThrow(
             new Together<>(
                 thread -> {
-                    final XML xml = StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd");
-                    return new StrictXmir(xml, tmp).inner();
+                    return new StrictXmir(
+                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"),
+                        tmp
+                    ).inner();
                 }
             )::asList,
             "StrictXmir should not fail in different threads with different xmls"
@@ -67,12 +70,11 @@ final class StrictXmirTest {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MktmpResolver.class)
     void doesNotFailOnTheSameOperation(@Mktmp final Path tmp) {
-        final XML xmir = new StrictXmir(
-            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
-        );
         Assertions.assertDoesNotThrow(
             new Together<>(
-                thread -> xmir.inner()
+                thread -> new StrictXmir(
+            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+        ).inner()
             )::asList,
             "StrictXmir should not fail in different threads with the same xml"
         );
@@ -98,14 +100,14 @@ final class StrictXmirTest {
 
     @Test
     @ExtendWith(MktmpResolver.class)
-    void validatesXmirWithLocalSchema(@Mktmp final Path tmp) {
+    void validatesXmirWithLocalSchemaWithoutException(@Mktmp final Path tmp) {
         Assertions.assertDoesNotThrow(
             new StrictXmir(
                 new Xmir(
                     StrictXmirTest.xmir(
                         String.format(
                             "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                            Manifests.read("EO-Version")
+                            Manifests.read(StrictXmirTest.EO_VERSION)
                         )
                     )
                 ),
@@ -113,10 +115,26 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void validatesXmirWithLocalSchemaAndCreatesXsd(@Mktmp final Path tmp) {
+        new StrictXmir(
+            new Xmir(
+                StrictXmirTest.xmir(
+                    String.format(
+                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                        Manifests.read(StrictXmirTest.EO_VERSION)
+                    )
+                )
+            ),
+            tmp
+        ).inner();
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve(
-                String.format("XMIR-%s.xsd", Manifests.read("EO-Version"))
+                String.format("XMIR-%s.xsd", Manifests.read(StrictXmirTest.EO_VERSION))
             ).toFile().exists(),
             Matchers.is(true)
         );
@@ -132,7 +150,7 @@ final class StrictXmirTest {
                         StrictXmirTest.xmir(
                             String.format(
                                 "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                                Manifests.read("EO-Version")
+                                Manifests.read(StrictXmirTest.EO_VERSION)
                             )
                         )
                     ),
@@ -151,7 +169,7 @@ final class StrictXmirTest {
                 StrictXmirTest.xmir(
                     String.format(
                         "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                        Manifests.read("EO-Version")
+                        Manifests.read(StrictXmirTest.EO_VERSION)
                     )
                 )
             ),

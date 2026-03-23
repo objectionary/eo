@@ -192,7 +192,7 @@
   <!-- Common templates of class.java and class.tests -->
   <xsl:template name="commonclass">
     <xsl:apply-templates select="/object" mode="license"/>
-    <xsl:apply-templates select="/object/metas/meta[head='package']" mode="head"/>
+    <xsl:apply-templates select="/object" mode="package"/>
     <xsl:text>import java.util.function.Function;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.eolang.*;</xsl:text>
@@ -866,9 +866,12 @@
     <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->
-  <xsl:template match="meta[head='package']" mode="head">
-    <xsl:text>package </xsl:text>
-    <xsl:value-of select="eo:class-name(tail, '')"/>
+  <xsl:template match="*" mode="package">
+    <xsl:text>package org.eolang</xsl:text>
+    <xsl:if test="/object/metas/meta[head='package']">
+      <xsl:text>.</xsl:text>
+      <xsl:value-of select="eo:class-name(tail, '')"/>
+    </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>

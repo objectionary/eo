@@ -38,18 +38,13 @@ final class MjResolveTest {
                 "# No comments.",
                 "[] > main ?"
             ).execute(new FakeMaven.Resolve());
-        final Path path = temp
-            .resolve("target")
-            .resolve(MjResolve.DIR)
-            .resolve("org.eolang/eo-runtime/-/0.7.0");
-        MatcherAssert.assertThat(
-            "Dependency directory must exist, but it doesn't",
-            path.toFile(),
-            FileMatchers.anExistingDirectory()
-        );
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            path.resolve("eo-runtime-0.7.0.class").toFile(),
+            temp
+                .resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/0.7.0").resolve("eo-runtime-0.7.0.class")
+                .toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -79,18 +74,12 @@ final class MjResolveTest {
         );
         maven.foreignTojos().add("sum");
         maven.execute(new FakeMaven.Resolve());
-        final Path path = temp
-            .resolve("target")
-            .resolve(MjResolve.DIR)
-            .resolve("org.eolang/eo-runtime/-/");
-        MatcherAssert.assertThat(
-            "The directory with runtime must exist, but doesn't",
-            path.toFile(),
-            FileMatchers.anExistingDirectory()
-        );
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            path,
+            temp
+                .resolve("target")
+                .resolve(MjResolve.DIR)
+                .resolve("org.eolang/eo-runtime/-/"),
             new ContainsFiles("**/eo-runtime-*.class")
         );
     }
@@ -223,6 +212,7 @@ final class MjResolveTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x",
@@ -237,13 +227,12 @@ final class MjResolveTest {
             "# No comment.",
             "[] > main-1 ?"
         );
-        final Exception except = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Resolve())
-        );
         MatcherAssert.assertThat(
             "Expected that conflicting dependencies were found, but they were not",
-            except.getCause().getCause().getMessage(),
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.execute(new FakeMaven.Resolve())
+            ).getCause().getCause().getMessage(),
             Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
             )

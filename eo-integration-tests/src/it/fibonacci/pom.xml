@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.70.0</version>
+    <version>0.73.1</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -58,7 +58,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.6.2</version>
+        <version>3.6.3</version>
         <executions>
           <execution>
             <id>run-eo-fibonacci-app</id>
@@ -71,7 +71,6 @@
         <configuration>
           <mainClass>org.eolang.Main</mainClass>
           <arguments>
-            <argument>--verbose</argument>
             <argument>org.eolang.examples.app</argument>
             <argument>6</argument>
             <argument>8</argument>

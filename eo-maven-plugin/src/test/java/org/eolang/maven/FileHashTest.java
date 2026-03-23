@@ -34,10 +34,9 @@ final class FileHashTest {
 
     @Test
     void readsFromAbsentFile(@Mktmp final Path temp) {
-        final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
             "FileHash must read an absent file, but it doesn't",
-            new FileHash(path).toString(),
+            new FileHash(temp.resolve("2.txt")).toString(),
             Matchers.equalTo("")
         );
     }

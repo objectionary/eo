@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -32,13 +31,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+    "PMD.AvoidDuplicateLiterals",
+    "PMD.TooManyMethods"
+})
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
 
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp);
         final String parsed = String.format(
             "target/%s/foo/x/main.%s",
             MjParse.DIR,
@@ -46,11 +47,17 @@ final class MjParseTest {
         );
         MatcherAssert.assertThat(
             String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
-            maven.withHelloWorld()
+            new FakeMaven(temp).withHelloWorld()
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(parsed)
         );
+    }
+
+    @Test
+    void parsesSuccessfullyAndSavesToForeign(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld().execute(new FakeMaven.Parse()).result();
         MatcherAssert.assertThat(
             "The resource must exist, but it doesn't",
             maven.foreign().getById("foo.x.main").exists("xmir"),
@@ -72,6 +79,7 @@ final class MjParseTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void parsesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
@@ -83,24 +91,13 @@ final class MjParseTest {
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(MjParse.DIR);
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
-        new FpDefault(
-            src -> expected,
-            cache.resolve(MjParse.CACHE),
-            FakeMaven.pluginVersion(),
-            hash.value(),
-            base.relativize(target)
-        ).apply(maven.programTojo().source(), target);
+        new Cache(
+            cache.resolve(MjParse.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash.value()),
+            src -> expected
+        ).apply(maven.programTojo().source(), target, base.relativize(target));
         target.toFile().delete();
-        Files.setLastModifiedTime(
-            cache.resolve(
-                Paths
-                    .get(MjParse.CACHE)
-                    .resolve(FakeMaven.pluginVersion())
-                    .resolve(hash.value())
-                    .resolve("foo/x/main.xmir")
-            ),
-            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
-        );
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             MjParse.DIR,
@@ -159,6 +156,7 @@ final class MjParseTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotParseIfAlreadyParsed(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
@@ -193,11 +191,10 @@ final class MjParseTest {
                 String.format("+package foo.x\n\n# Program\n[] > main%s", FakeMaven.suffix(program))
             );
         }
-        final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
                 "We have to parse concurrently, but we didn't",
-                res,
+                maven.execute(new FakeMaven.Parse()).result(),
                 Matchers.hasKey(
                     String.format(
                         "target/%s/foo/x/main%s.%s",
@@ -245,12 +242,13 @@ final class MjParseTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "//error[@severity='critical']",
-                "//error[text()=\"XMIR should have either '/object/o/@name' or '/object/class/@name' attribute\"]"
+                "//error[@check='mandatory-object-name'][contains(text(), 'found 0')]"
             )
         );
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void parsesWithTargetCache(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final File parsed = maven

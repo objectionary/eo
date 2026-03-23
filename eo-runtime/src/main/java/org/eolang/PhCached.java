@@ -13,6 +13,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>It's highly recommended to use it with {@link PhComposite}.</p>
  *
  * @since 0.1
+ * @todo #4884:30min Replace 'synchronized' with ReentrantLock.
+ *  We need to replace 'synchronized' with ReentrantLock to avoid potential
+ *  deadlocks when multiple threads are trying to access the cache simultaneously.
+ *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
 public final class PhCached implements Phi {
 
@@ -46,6 +50,7 @@ public final class PhCached implements Phi {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public Phi take(final String name) {
         synchronized (this.cached) {
             if (this.cached.get() == null) {

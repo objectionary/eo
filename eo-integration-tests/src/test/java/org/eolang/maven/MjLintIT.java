@@ -11,6 +11,7 @@ import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  {@link MjLintTest#doesNotFailWithNoErrorsAndWarnings},
  *  {@link MjLintTest#doesNotDetectWarningWithoutCorrespondingFlag},
  *  {@link MjLintTest#skipsAlreadyLinted}, {@link MjLintTest#savesVerifiedResultsToCache},
+ *  {@link MjLintTest#getsAlreadyVerifiedResultsFromCache}
  *  {@link MjTranspileTest#recompilesIfModified}, {@link MjTranspileTest#recompilesIfExpired},
  *  {@link MjTranspileTest#doesNotRetranspileIfNotModified},
  *  {@link MjTranspileTest#transpilesSimpleEoProgram},
@@ -40,6 +42,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjLintIT {
 
     @Test
+    @SuppressWarnings({"PMD.UnitTestShouldIncludeAssert", "PMD.UnnecessaryLocalRule"})
     void lintsAgainAfterModification(@Mktmp final Path temp)
         throws Exception {
         final String source = "src/main/eo/foo.eo";
@@ -48,7 +51,7 @@ final class MjLintIT {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file(source).write(program.getBytes());
+                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -58,7 +61,7 @@ final class MjLintIT {
                     .path()
                     .toFile()
                     .lastModified();
-                f.files().file(source).write(program.getBytes());
+                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "the .xmir file is re-generated",
@@ -70,13 +73,16 @@ final class MjLintIT {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void printsLintsUrlWithVersion(@Mktmp final Path temp)
         throws IOException {
         final String program = MjLintIT.helloWorld();
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
+                f.files()
+                    .file("src/main/eo/foo.eo")
+                    .write(program.getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");

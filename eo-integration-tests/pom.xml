@@ -62,7 +62,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.26</version>
+      <version>1.5.29</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -188,19 +188,14 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>12.1.5</version>
+      <version>12.1.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-proxy</artifactId>
-      <version>12.1.5</version>
+      <version>12.1.7</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>12.1.5</version>
-      <artifactId>jetty-http</artifactId>
     </dependency>
   </dependencies>
   <build>

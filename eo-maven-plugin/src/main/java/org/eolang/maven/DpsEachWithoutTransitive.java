@@ -45,18 +45,20 @@ final class DpsEachWithoutTransitive implements Dependencies {
     public Iterator<Dep> iterator() {
         return new Mapped<>(
             dependency -> {
-                final Iterable<Dep> transitives = new Filtered<>(
-                    dep -> {
-                        final Dependency dpndncy = dep.get();
-                        return !DpsEachWithoutTransitive.eqTo(dpndncy, dependency.get())
-                            && DpsEachWithoutTransitive.isRuntimeRequired(dpndncy)
-                            && !MjResolve.isRuntime(dpndncy);
-                    },
-                    this.transitive.apply(dependency)
-                );
                 final String list = String.join(
                     ", ",
-                    new Mapped<>(Dep::toString, transitives)
+                    new Mapped<>(
+                        Dep::toString,
+                        new Filtered<>(
+                            dep -> {
+                                final Dependency dpndncy = dep.get();
+                                return !DpsEachWithoutTransitive.eqTo(dpndncy, dependency.get())
+                                    && DpsEachWithoutTransitive.isRuntimeRequired(dpndncy)
+                                    && !MjResolve.isRuntime(dpndncy);
+                            },
+                            this.transitive.apply(dependency)
+                        )
+                    )
                 );
                 if (!list.isEmpty()) {
                     throw new IllegalStateException(

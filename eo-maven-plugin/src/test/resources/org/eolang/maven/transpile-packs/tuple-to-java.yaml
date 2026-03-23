@@ -11,6 +11,7 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
+  - //java[contains(text(), 'package org.eolang;')]
   - //java[contains(text(), 'Phi rr11 = Phi.Φ.take("tuple");')]
   - //java[contains(text(), 'rr11 = new PhCopy(rr11);')]
   - //java[contains(text(), 'new PhMethod(rr111, "empty");')]

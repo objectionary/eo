@@ -100,7 +100,8 @@ public final class EoSyntax implements Syntax {
                     "/org/eolang/parser/parse/add-default-package.xsl",
                     "/org/eolang/parser/parse/roll-bases.xsl",
                     "/org/eolang/parser/parse/cti-adds-errors.xsl",
-                    "/org/eolang/parser/parse/decorate.xsl"
+                    "/org/eolang/parser/parse/decorate.xsl",
+                    "/org/eolang/parser/parse/mandatory-as.xsl"
                 ).back(),
                 new TrDefault<>(new StHex())
             )
@@ -171,6 +172,7 @@ public final class EoSyntax implements Syntax {
      * @return Parsed XML
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
         final GeneralErrors spy = new GeneralErrors(lines);

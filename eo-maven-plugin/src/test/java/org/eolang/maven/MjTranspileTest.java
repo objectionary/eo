@@ -40,7 +40,10 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings({
+    "PMD.TooManyMethods",
+    "PMD.UnitTestContainsTooManyAsserts"
+})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjTranspileTest {
@@ -114,9 +117,7 @@ final class MjTranspileTest {
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
             writer.toString(),
             Matchers.allOf(
-                Matchers.containsString(
-                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
-                ),
+                Matchers.containsString("Expected 1 child nodes, but found 0"),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
             )
         );
@@ -125,19 +126,17 @@ final class MjTranspileTest {
     @Disabled
     @Test
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:0.0.0\n",
-                "# Atom.",
-                "[x y z] > main ?"
-            );
-        final Map<String, Path> res = maven
-            .execute(new FakeMaven.Transpile())
-            .result();
         MatcherAssert.assertThat(
             "TranspileMojo should not touch atoms, but it did",
-            res,
+            new FakeMaven(temp)
+                .withProgram(
+                    "+package foo.x",
+                    "+rt jvm org.eolang:eo-runtime:0.0.0\n",
+                    "# Atom.",
+                    "[x y z] > main ?"
+                )
+                .execute(new FakeMaven.Transpile())
+                .result(),
             Matchers.not(
                 Matchers.allOf(
                     Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", MjTranspile.DIR)),
@@ -216,6 +215,7 @@ final class MjTranspileTest {
 
     @Disabled
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void recompilesIfExpired(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
@@ -292,10 +292,9 @@ final class MjTranspileTest {
     @Disabled
     @Test
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
-        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(
-                new TextOf(src).asString(),
+                new TextOf(Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo")).asString(),
                 "org.eolang.tuple",
                 "org/eolang/tuple.eo"
             )

@@ -13,6 +13,7 @@ import org.cactoos.BiFunc;
  * target files, updates target file and returns it.
  * @since 0.41.0
  */
+@FunctionalInterface
 interface Footprint extends BiFunc<Path, Path, Path> {
     @Override
     Path apply(Path source, Path target) throws IOException;

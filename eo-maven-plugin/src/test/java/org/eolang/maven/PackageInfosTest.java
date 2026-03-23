@@ -25,16 +25,25 @@ import org.junit.jupiter.params.provider.CsvSource;
 final class PackageInfosTest {
 
     @Test
-    void createsPackageInfosInSubDirectories(@Mktmp final Path tmp) throws IOException {
+    void returnsCorrectNumberOfPackageInfosInSubDirectories(@Mktmp final Path tmp)
+        throws IOException {
         final Path subdir = tmp.resolve("subdir");
-        final Path subsubdir = subdir.resolve("subsubdir");
         Files.createDirectory(subdir);
-        Files.createDirectories(subsubdir);
+        Files.createDirectories(subdir.resolve("subsubdir"));
         MatcherAssert.assertThat(
             "We should create exactly two package-info.java files for two subdirectories",
             new PackageInfos(tmp).create(),
             Matchers.equalTo(2)
         );
+    }
+
+    @Test
+    void createsPackageInfosInSubDirectories(@Mktmp final Path tmp) throws IOException {
+        final Path subdir = tmp.resolve("subdir");
+        final Path subsubdir = subdir.resolve("subsubdir");
+        Files.createDirectory(subdir);
+        Files.createDirectories(subsubdir);
+        new PackageInfos(tmp).create();
         MatcherAssert.assertThat(
             "package-info.java should be created in the both subdirectories",
             Files.exists(subdir.resolve("package-info.java"))
@@ -50,6 +59,11 @@ final class PackageInfosTest {
             new PackageInfos(tmp).create(),
             Matchers.equalTo(0)
         );
+    }
+
+    @Test
+    void ignoresTheRootDirectoryAndDoesNotCreateFiles(@Mktmp final Path tmp) throws IOException {
+        new PackageInfos(tmp).create();
         MatcherAssert.assertThat(
             "package-info.java should not be created in the root directory",
             Files.exists(tmp.resolve("package-info.java")),

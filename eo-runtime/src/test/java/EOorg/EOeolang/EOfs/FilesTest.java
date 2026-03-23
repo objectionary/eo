@@ -9,7 +9,7 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
-import EOorg.EOeolang.EOfs.Files;
+import org.eolang.EOorg.EOeolang.EOfs.Files;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.BufferedWriter;
@@ -67,8 +67,10 @@ final class FilesTest {
     @Test
     void readsFromFile(@Mktmp final Path dir) throws IOException {
         final String file = dir.resolve("bar.txt").toFile().getAbsolutePath();
-        try (BufferedWriter writer =
-            java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
+        try (
+            BufferedWriter writer =
+                java.nio.file.Files.newBufferedWriter(Paths.get(file))
+        ) {
             writer.write("Hello, world");
         }
         Files.INSTANCE.open(file);
@@ -83,8 +85,10 @@ final class FilesTest {
     @Test
     void writesToFile(@Mktmp final Path dir) throws IOException {
         final String file = dir.resolve("foo.txt").toFile().getAbsolutePath();
-        try (BufferedWriter writer =
-            java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
+        try (
+            BufferedWriter writer =
+                java.nio.file.Files.newBufferedWriter(Paths.get(file))
+        ) {
             writer.write("Hello, world");
         }
         Files.INSTANCE.open(file);

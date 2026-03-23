@@ -8,7 +8,7 @@
  */
 package EOorg.EOeolang.EOsm; // NOPMD
 
-import EOorg.EOeolang.EOsm.EOos$EOname;
+import org.eolang.EOorg.EOeolang.EOsm.EOos$EOname;
 import org.eolang.Dataized;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

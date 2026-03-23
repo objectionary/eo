@@ -15,6 +15,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOorg.EOeolang.EOerror;
 import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
@@ -52,6 +53,7 @@ final class EOerrorTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void getsReadableError(final byte[] cnst, final String text) {
         MatcherAssert.assertThat(
             "Bytes must be translated to string correctly",
@@ -95,7 +97,6 @@ final class EOerrorTest {
          * Ctor.
          * @param data The data inside error.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         MyError(final Object data) {
             this.add(
                 "φ",

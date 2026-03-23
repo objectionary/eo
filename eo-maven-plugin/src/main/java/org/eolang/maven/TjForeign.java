@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @since 0.30
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class TjForeign {
 
     /**
@@ -44,8 +44,7 @@ final class TjForeign {
         } else if (other == null || this.getClass() != other.getClass()) {
             result = false;
         } else {
-            final TjForeign tojo = (TjForeign) other;
-            result = Objects.equals(this.delegate, tojo.delegate);
+            result = Objects.equals(this.delegate, ((TjForeign) other).delegate);
         }
         return result;
     }

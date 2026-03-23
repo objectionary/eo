@@ -9,7 +9,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.UncheckedBytes;
@@ -77,9 +76,8 @@ public final class LargeXmir {
      * @return XML
      */
     private XML unsafe() throws IOException {
-        final Path home = Files.createTempDirectory("tmp");
         final AtomicReference<XML> ref = new AtomicReference<>();
-        new Farea(home).together(
+        new Farea(Files.createTempDirectory("tmp")).together(
             f -> {
                 f.clean();
                 f.files()

@@ -13,6 +13,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOorg.EOeolang.EOerror;
 import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -50,6 +51,7 @@ final class EObytesEOsliceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void takesWrongSlice() {
         MatcherAssert.assertThat(
             "error message is correct",

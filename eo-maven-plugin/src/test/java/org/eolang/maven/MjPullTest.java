@@ -16,6 +16,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.ScalarOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -60,7 +61,7 @@ final class MjPullTest {
                 "  Q.io.stdout > @",
                 "    \"I am 18 years old\""
             )
-            .with("objectionary", new OyRemote(new ChRemote("master")))
+            .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "PullMojo should have pulled from probes, but it didn't",
@@ -134,22 +135,25 @@ final class MjPullTest {
             .with("offline", true)
             .execute(new FakeMaven.Pull())
             .result();
-        final String format = "%s folder should not contain %s file, but it did";
         final String stdout = "org/eolang/io/stdout.eo";
         final String string = "org/eolang/string.eo";
         MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, stdout),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, stdout)),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            String.format(format, MjPull.DIR, string),
-            result.containsKey(String.format("%s/%s", MjPull.DIR, string)),
-            Matchers.is(false)
+            String.format(
+                "%s folder should not contain %s and %s file, but it did",
+                MjPull.DIR,
+                stdout,
+                string
+            ),
+            result,
+            Matchers.allOf(
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, stdout))),
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, string)))
+            )
         );
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()

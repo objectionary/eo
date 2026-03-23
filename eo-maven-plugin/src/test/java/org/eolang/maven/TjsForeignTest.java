@@ -6,7 +6,6 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.Func;
@@ -83,6 +82,7 @@ final class TjsForeignTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfTojoWasNotFound() {
         final String id = "absent";
         Assertions.assertThrows(
@@ -95,12 +95,9 @@ final class TjsForeignTest {
     @Test
     void findsAnyTojoIfSeveralTojosWithTheSameIdWereAdded() {
         final String same = "same";
-        final TjForeign first = this.tojos.add(same);
-        final TjForeign second = this.tojos.add(same);
-        final List<TjForeign> expected = Arrays.asList(first, second);
         MatcherAssert.assertThat(
             "We don't care which tojo will be returned, but it should be one of the added tojos",
-            expected,
+            Arrays.asList(this.tojos.add(same), this.tojos.add(same)),
             Matchers.hasItem(this.tojos.find(same))
         );
     }
@@ -109,7 +106,8 @@ final class TjsForeignTest {
     @MethodSource("tojoFunctionsWithoutDefaultValues")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
-        final Func<TjForeign, Object> method) {
+        final Func<TjForeign, Object> method
+    ) {
         final TjForeign tojo = this.tojos.add("string");
         Assertions.assertThrows(
             AttributeNotFoundException.class,
@@ -119,15 +117,14 @@ final class TjsForeignTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void getsExceptionMessageIfKeyWasNotFoundInTojo() {
-        final TjForeign tojo = this.tojos.add("string");
-        final AttributeNotFoundException thrown = Assertions.assertThrows(
-            AttributeNotFoundException.class,
-            tojo::xmir
-        );
         Assertions.assertEquals(
             "There is no 'XMIR' attribute in the tojo",
-            thrown.getMessage(),
+            Assertions.assertThrows(
+                AttributeNotFoundException.class,
+                this.tojos.add("string")::xmir
+            ).getMessage(),
             "Should throw an exception if key 'XMIR' was not found in Tojo"
         );
     }
@@ -138,9 +135,8 @@ final class TjsForeignTest {
         final String key,
         final Func<TjForeign, ?> method
     ) throws Exception {
-        final TjForeign tojo = this.tojos.add("string");
         Assertions.assertEquals(
-            method.apply(tojo),
+            method.apply(this.tojos.add("string")),
             key,
             String.format("Shouldn't throw an exception if key='%s' was found in Tojo", key)
         );
@@ -164,7 +160,6 @@ final class TjsForeignTest {
         this.tojos.close();
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<TjForeign, Object>) TjForeign::xmir),
@@ -176,7 +171,6 @@ final class TjsForeignTest {
         );
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> tojoFunctionsWithDefaultValues() {
         return Stream.of(
             Arguments.of("string", (Func<TjForeign, Object>) TjForeign::identifier),

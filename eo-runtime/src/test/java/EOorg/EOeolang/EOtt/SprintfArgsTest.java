@@ -9,7 +9,7 @@
  */
 package EOorg.EOeolang.EOtt; // NOPMD
 
-import EOorg.EOeolang.EOtt.SprintfArgs;
+import org.eolang.EOorg.EOeolang.EOtt.SprintfArgs;
 import org.cactoos.list.ListOf;
 import org.eolang.Data;
 import org.eolang.Phi;

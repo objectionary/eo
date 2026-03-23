@@ -29,12 +29,12 @@ final class MjRegisterTest {
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
         ).value();
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve("src/eo").toFile())
-            .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             "The resource must exist, but it doesn't",
-            maven.foreign().getById("org.eolang.maven.abc-def").exists("id"),
+            new FakeMaven(temp)
+                .with("sourcesDir", temp.resolve("src/eo").toFile())
+                .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven.abc-def")
+                .exists("id"),
             Matchers.is(true)
         );
     }
@@ -45,13 +45,13 @@ final class MjRegisterTest {
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             temp.resolve("src/eo/org/eolang/maven/.abc.eo")
         ).value();
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve("src/eo").toFile())
-            .with("strictFileNames", false)
-            .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             "The resource with incorrect id must exist, but it doesn't",
-            maven.foreign().getById("org.eolang.maven..abc").exists("id"),
+            new FakeMaven(temp)
+                .with("sourcesDir", temp.resolve("src/eo").toFile())
+                .with("strictFileNames", false)
+                .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven..abc")
+                .exists("id"),
             Matchers.is(true)
         );
     }

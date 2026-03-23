@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,21 +29,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Integration test for EO snippets in `README.md`.
  * @since 0.56.3
- * @todo #4679:30min Enable ReadmeSnippetsIT when it's possible. The test was
- *  disabled because because Attr interface was returned back and now these
- *  tests don't work anymore. These tests must be enabled when new EO release
- *  is made.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class ReadmeSnippetsIT {
 
-    @Disabled
     @Tag("snippets")
     @ParameterizedTest
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
+    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {

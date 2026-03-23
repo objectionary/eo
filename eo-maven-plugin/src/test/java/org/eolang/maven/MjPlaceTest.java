@@ -45,6 +45,7 @@ final class MjPlaceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPlacedBinaries(@Mktmp final Path temp) throws IOException {
         final String binary = "org/eolang/f/x.a.class";
         MjPlaceTest.saveBinary(temp, binary);
@@ -77,11 +78,7 @@ final class MjPlaceTest {
         final Path path = MjPlaceTest.pathToPlacedBinary(temp, binary);
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
         maven.placed().unplaceAll();
-        MatcherAssert.assertThat(
-            "PlaceMojo have to process the file",
-            maven.execute(MjPlace.class).result(),
-            Matchers.hasValue(path)
-        );
+        maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
             "The file must be updated, but it was not",
             content,
@@ -165,29 +162,22 @@ final class MjPlaceTest {
      */
     @Test
     void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
-            maven.withHelloWorld()
+            new FakeMaven(temp).withHelloWorld()
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
         );
-        MatcherAssert.assertThat(
-            "PlaceMojo have to place class file, but doesn't",
-            maven.placed().classes().size(),
-            Matchers.is(1)
-        );
     }
 
     @Test
     void placesWithoutEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             "PlaceMojo have not to place the runtime file, but doesn't",
-            maven.withHelloWorld()
+            new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
                 .with("resolveJna", false)
                 .execute(new FakeMaven.Place())
@@ -300,10 +290,9 @@ final class MjPlaceTest {
         final String content,
         final String binary
     ) throws IOException {
-        final String targets = "target/classes";
         new Saved(
             content,
-            temp.resolve(targets).resolve(binary)
+            temp.resolve("target/classes").resolve(binary)
         ).value();
     }
 

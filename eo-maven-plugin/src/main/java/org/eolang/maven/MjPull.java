@@ -39,16 +39,6 @@ public final class MjPull extends MjSafe {
      */
     static final String CACHE = "pulled";
 
-    /**
-     * Objectionary.
-     * @since 0.50
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary = new OyIndexed(
-        new OyCached(new OyRemote(this.hash))
-    );
-
     @Override
     public void exec() throws IOException {
         if (this.offline) {
@@ -57,16 +47,21 @@ public final class MjPull extends MjSafe {
                 "No programs were pulled because eo.offline flag is TRUE"
             );
         } else {
-            this.pull();
+            this.pull(
+                new OyIndexed(
+                    new OyCached(new OyRemote(this.hash, this.proxies()))
+                )
+            );
         }
     }
 
     /**
      * Pull them all.
+     * @param objectionary Objectionary to pull from
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    private void pull() throws IOException {
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    private void pull(final OyIndexed objectionary) throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();
         final Collection<String> names = new ArrayList<>(0);
@@ -74,7 +69,7 @@ public final class MjPull extends MjSafe {
         final String hsh = this.hash.value();
         for (final TjForeign tojo : tojos) {
             final String object = tojo.identifier();
-            if (this.objectionary.isDirectory(object)) {
+            if (objectionary.isDirectory(object)) {
                 continue;
             }
             try {
@@ -116,13 +111,16 @@ public final class MjPull extends MjSafe {
      * @param hsh Git hash
      * @return The path of .eo file
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private Path pulled(final String object, final Path base, final String hsh) throws IOException {
-        final String semver = this.plugin.getVersion();
+    private Path pulled(
+        final String object,
+        final Path base,
+        final String hsh) throws IOException {
         final Path target = new Place(object).make(base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
             this.cache.toPath().resolve(MjPull.CACHE),
-            semver,
+            this.plugin.getVersion(),
             hsh,
             base.relativize(target)
         );
@@ -133,12 +131,11 @@ public final class MjPull extends MjSafe {
                     "Pulling %s object from remote objectionary with hash %s",
                     object, hsh
                 );
-                return this.objectionary.get(object);
+                return this.objectionary().get(object);
             }
         );
         final Footprint both = new FpUpdateBoth(generated, che);
         return new FpIfReleased(
-            this.plugin.getVersion(),
             hsh,
             new FpFork(
                 (src, tgt) -> {
