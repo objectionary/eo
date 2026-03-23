@@ -53,6 +53,7 @@
               cached.as-bytes
               cached.as-bool
               m
+          # Function that increments counter in memory for testing.
           [] > func
             ^.m.put (^.m.as-number.plus 1) > @
           (dataized func).as-bytes > cached

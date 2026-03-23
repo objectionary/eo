@@ -17,6 +17,7 @@
     start
     rec-reducedi lst
 
+  # Recursively reduces tuple by applying func to each element with index.
   [tup] > rec-reducedi
     if. > @
       tup.length.eq 1
@@ -71,6 +72,7 @@
         0
         [acc x i]
           check x > @
+          # Checks if element is less than 100 and adds or subtracts it.
           [el] > check
             if. > @
               ^.x.lt 100

@@ -40,6 +40,7 @@
       length.plus idx
       idx
 
+    # Recursively traverses tuple tail until reaching the target index.
     [tup] > at-fast
       if. > @
         (tup.length.plus -1).eq index
@@ -70,6 +71,7 @@
     eq. > @
       (arr *).elements.length
       0
+    # Wrapper object that holds elements tuple for testing purposes.
     [elements] > arr
 
   # Check that tuple.length works properly for non-empty tuples.
@@ -80,21 +82,22 @@
       .elements
       .length
       5
+    # Wrapper object that holds elements tuple for testing purposes.
     [elements] > arr
 
   # Tests that a tuple bound as an attribute with size 0 has correct length.
   [] +> tests-tuple-as-a-bound-attribute-size-0
     eq. > @
-      anArray.length
+      tup.length
       0
-    * > anArray
+    * > tup
 
   # Tests that a tuple bound as an attribute with size 1 allows element access.
   [] +> tests-tuple-as-a-bound-attribute-size-1
     eq. > @
-      anArray.at 0
+      tup.at 0
       100
-    * > anArray
+    * > tup
       100
 
   # Tests that a tuple bound as an attribute with size 2 allows access to both elements.

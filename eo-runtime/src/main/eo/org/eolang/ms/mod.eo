@@ -19,14 +19,15 @@
   number x.as-bytes > dividend
   number y.as-bytes > divisor
 
+  # Calculates absolute value modulo using floor division method.
   [] > abs-mod
     minus. > @
-      dividend-abs
-      divisor-abs.times
+      absx
+      absy.times
         floor.
-          dividend-abs.div divisor-abs
-    abs dividend > dividend-abs
-    abs divisor > divisor-abs
+          absx.div absy
+    abs dividend > absx
+    abs divisor > absy
 
   # Tests that modulo operation works correctly for 1 mod 2.
   [] +> tests-mod-n1-n2
