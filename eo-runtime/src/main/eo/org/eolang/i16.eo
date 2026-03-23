@@ -77,7 +77,7 @@
   # An `org.eolang.error` is returned if `x` is equal to `0`.
   [x] > div
     if. > @
-      x-as-i16.eq zero
+      xval.eq zero
       error
         sprintf
           "Can't divide %d by i16 zero"
@@ -90,8 +90,8 @@
         plus.
           i16 left
           i16 right
-    x.as-i16 > x-as-i16
-    (as-i32.div x-as-i16.as-i32).as-bytes > bts
+    x.as-i16 > xval
+    (as-i32.div xval.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
     00-00 > zero

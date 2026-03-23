@@ -94,10 +94,10 @@
       [] > size ?
 
       # Resizes allocated block in memory and returns `true`.
-      # Here `new-size` must be positive `number`.
+      # Here `size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
       # Returns `org.eolang.malloc.of.allocated` object.
-      [new-size] > resized ?
+      [size] > resized ?
 
       # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
