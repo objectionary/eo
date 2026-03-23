@@ -181,11 +181,11 @@ final class MjTranspileTest {
                     )
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get("target/generated/EOfoo/EOx/package-info.java")
+                    .get("target/generated/org/eolang/EOfoo/EOx/package-info.java")
             ).asString(),
             Matchers.allOf(
                 Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
-                Matchers.containsString("package EOfoo.EOx;")
+                Matchers.containsString("package org.eolang.EOfoo.EOx;")
             )
         );
     }

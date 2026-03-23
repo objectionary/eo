@@ -870,7 +870,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:class-name(tail, '')"/>
+      <xsl:value-of select="eo:class-name(/object/metas/meta[head='package']/tail, '')"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

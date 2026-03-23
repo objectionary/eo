@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Package info classes.
+ *
  * @since 0.60
  */
 final class PackageInfos {
@@ -41,6 +42,7 @@ final class PackageInfos {
 
     /**
      * Constructor.
+     *
      * @param root In which directory create files.
      */
     PackageInfos(final Path root) {
@@ -49,6 +51,7 @@ final class PackageInfos {
 
     /**
      * Create {@code package-info.java} files in all the directories under the {@link #root}.
+     *
      * @return Amount of created files
      * @throws IOException If fails to create a file
      */
@@ -93,7 +96,7 @@ final class PackageInfos {
                 "// @org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
             ),
-            String.format("package %s;", PackageInfos.escaped(pkg))
+            String.format("package %s;", String.format("org.eolang.%s", PackageInfos.escaped(pkg)))
         );
     }
 
