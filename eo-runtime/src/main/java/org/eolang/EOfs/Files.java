@@ -111,7 +111,7 @@ final class Files {
         try {
             if (!this.streams.containsKey(name)) {
                 throw new ExFailure(
-                    "File output stream with name %s is absent, can't read",
+                    "File output stream with name %s is absent, can't write",
                     name
                 );
             }
