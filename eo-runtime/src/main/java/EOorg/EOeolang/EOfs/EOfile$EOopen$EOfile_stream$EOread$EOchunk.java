@@ -20,14 +20,14 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * File.open.file-stream.read.read-bytes.
+ * File.open.file-stream.read.chunk.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "file.open.file-stream.read.read-bytes")
+@XmirObject(oname = "file.open.file-stream.read.chunk")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
+public final class EOfile$EOopen$EOfile_stream$EOread$EOchunk
     extends PhDefault
     implements Atom {
 
@@ -35,7 +35,7 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOfile$EOopen$EOfile_stream$EOread$EOread_bytes() {
+    public EOfile$EOopen$EOfile_stream$EOread$EOchunk() {
         this.add("size", new AtVoid("size"));
     }
 
