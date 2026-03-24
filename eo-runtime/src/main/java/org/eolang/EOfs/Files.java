@@ -24,6 +24,7 @@ import org.eolang.ExFailure;
 
 /**
  * File streams.
+ *
  * @since 0.40
  */
 final class Files {
@@ -37,7 +38,7 @@ final class Files {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     private final ConcurrentHashMap<String, Object[]> streams;
-    
+
     /**
      * Lock.
      */
