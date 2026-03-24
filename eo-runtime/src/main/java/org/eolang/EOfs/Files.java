@@ -26,7 +26,12 @@ import org.eolang.ExFailure;
  * File streams.
  *
  * @since 0.40
+ * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in Files.
+ *  We should use ReentrantLock instead of 'synchronized' to avoid potential
+ *  deadlocks when multiple AtOnce attributes are used together.
+ *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Files {
     /**
      * Files instance.
