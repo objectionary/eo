@@ -8,6 +8,11 @@
  */
 package org.eolang.EOsm; // NOPMD
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.eolang.Atom;
+import org.eolang.Dataized;
 import org.eolang.EOsm.Win32.AcceptFuncCall;
 import org.eolang.EOsm.Win32.BindFuncCall;
 import org.eolang.EOsm.Win32.ClosesocketFuncCall;
@@ -25,11 +30,6 @@ import org.eolang.EOsm.Win32.WSACleanupFuncCall;
 import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
 import org.eolang.EOsm.Win32.WriteFileFuncCall;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import org.eolang.Atom;
-import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;

@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 out:
   - ".*Sin of 1.234500 is 0.943983.*"
-file: org/eolang/snippets/foo.eo
-args: ["org.eolang.snippets.foo"]
+file: snippets/foo.eo
+args: ["snippets.foo"]
 eo: |
   +alias io.stdout
   +alias tt.sprintf

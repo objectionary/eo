@@ -8,11 +8,11 @@
  */
 package org.eolang.EOsm.Posix; // NOPMD
 
-import org.eolang.EOsm.SockaddrIn;
-import org.eolang.EOsm.Syscall;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOsm.SockaddrIn;
+import org.eolang.EOsm.Syscall;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 

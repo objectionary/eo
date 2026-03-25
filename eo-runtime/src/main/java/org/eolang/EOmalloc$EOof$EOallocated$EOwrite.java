@@ -21,7 +21,7 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    EOmalloc$EOof$EOallocated$EOwrite() {
+    public EOmalloc$EOof$EOallocated$EOwrite() {
         this.add("offset", new AtVoid("offset"));
         this.add("data", new AtVoid("data"));
     }

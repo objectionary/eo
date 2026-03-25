@@ -8,9 +8,9 @@
  */
 package org.eolang.EOsm.Posix; // NOPMD
 
-import org.eolang.EOsm.Syscall;
 import com.sun.jna.Native;
 import org.eolang.Data;
+import org.eolang.EOsm.Syscall;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 

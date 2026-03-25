@@ -227,8 +227,8 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "eo.cacheEnabled", defaultValue = "false")
-    protected boolean cacheEnabled;
+    @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
+    protected boolean cacheEnabled = true;
 
     /**
      * Rewrite binaries in output directory or not.

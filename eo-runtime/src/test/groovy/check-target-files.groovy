@@ -4,19 +4,18 @@
  */
 List<String> expected = [
   'eo-foreign.csv',
-  'eo/1-parse/org/eolang/bytes.xmir',
-  'eo/1-parse/org/eolang/fs/dir.xmir',
-  'eo/5-transpile/org/eolang/malloc.xmir',
-  'eo/5-transpile/org/eolang/runtime.xmir',
-  'generated-sources/EOorg/EOeolang/EOdataized.java',
-  'generated-sources/EOorg/EOeolang/EOnk/EOsocket.java',
-  'generated-test-sources/EOorg/EOeolang/EOtryEOAtomTest.java',
-  'classes/EOorg/package-info.class',
-  'classes/EOorg/EOeolang/package-info.class',
-  'classes/EOorg/EOeolang/EOsm/package-info.class',
-  'classes/EOorg/EOeolang/EOms/package-info.class',
-  'classes/EOorg/EOeolang/EOfs/package-info.class',
-  'classes/EOorg/EOeolang/EOtt/package-info.class',
+  'eo/1-parse/bytes.xmir',
+  'eo/1-parse/fs/dir.xmir',
+  'eo/5-transpile/malloc.xmir',
+  'eo/5-transpile/runtime.xmir',
+  'generated-sources/org/eolang/EOdataized.java',
+  'generated-sources/org/eolang/EOnk/EOsocket.java',
+  'generated-test-sources/org/eolang/EOtryEOAtomTest.java',
+  'classes/org/eolang/package-info.class',
+  'classes/org/eolang/EOsm/package-info.class',
+  'classes/org/eolang/EOms/package-info.class',
+  'classes/org/eolang/EOfs/package-info.class',
+  'classes/org/eolang/EOtt/package-info.class',
 ]
 
 for (path in expected) {

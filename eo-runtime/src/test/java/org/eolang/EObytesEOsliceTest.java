@@ -7,7 +7,7 @@
  * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang; // NOPMD
+package org.eolang;
 
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;

@@ -7,7 +7,7 @@
  * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang; // NOPMD
+package org.eolang;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

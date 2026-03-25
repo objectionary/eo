@@ -56,7 +56,7 @@ final class MjTranspileIT {
                     ),
                     temp.resolve(
                         String.format(
-                            "target/generated-sources/%s/%s",
+                            "target/generated-sources/org/eolang/%s/%s",
                             pname,
                             java
                         )
@@ -72,14 +72,14 @@ final class MjTranspileIT {
                     Files.readString(
                         temp.resolve(
                             String.format(
-                                "target/generated-sources/%s/%s",
+                                "target/generated-sources/org/eolang/%s/%s",
                                 pname,
                                 pinfo
                             )
                         ),
                         StandardCharsets.UTF_8
                     ),
-                    Matchers.containsString(String.format("package %s;", pname))
+                    Matchers.containsString(String.format("package org.eolang.%s;", pname))
                 );
             }
         );
@@ -115,7 +115,7 @@ final class MjTranspileIT {
                     ),
                     temp.resolve(
                         String.format(
-                            "target/generated-sources/%s",
+                            "target/generated-sources/org/eolang/%s",
                             java
                         )
                     ).toFile().exists(),
@@ -123,16 +123,16 @@ final class MjTranspileIT {
                 );
                 MatcherAssert.assertThat(
                     String.format(
-                        "The %s file must not exist, but it doesn't",
+                        "The %s file must exist, but it doesn't",
                         pinfo
                     ),
                     temp.resolve(
                         String.format(
-                            "target/generated-sources/%s",
+                            "target/generated-sources/org/eolang/%s",
                             pinfo
                         )
                     ).toFile().exists(),
-                    Matchers.is(false)
+                    Matchers.is(true)
                 );
             }
         );

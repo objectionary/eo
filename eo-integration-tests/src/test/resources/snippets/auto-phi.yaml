@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 skip: true
 out: []
-file: org/eolang/snippets/auto.eo
-args: ["org.eolang.snippets.auto"]
+file: snippets/auto.eo
+args: ["snippets.auto"]
 eo: |
   +alias io.stdout
   +package snippets

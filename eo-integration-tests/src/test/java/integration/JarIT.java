@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,13 +27,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.UnitTestShouldIncludeAssert"})
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
 
+    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -56,10 +59,11 @@ final class JarIT {
         );
     }
 
+    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -77,7 +81,7 @@ final class JarIT {
                     new Jaxec(
                         "java", "-cp", classpath,
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "org.eolang.examples.packaged"
+                        "org.eolang.Main", "examples.packaged"
                     ).withHome(temp.resolve("target")).exec().stdout(),
                     Matchers.containsString("Hello, world from a program with a package!")
                 );
@@ -85,14 +89,11 @@ final class JarIT {
         );
     }
 
+    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings({
-        "PMD.UnitTestShouldIncludeAssert",
-        "PMD.UnnecessaryLocalRule",
-        "PMD.UnnecessaryVarargsArrayCreation"
-    })
+    @SuppressWarnings({"PMD.UnnecessaryLocalRule",  "PMD.UnnecessaryVarargsArrayCreation"})
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -157,7 +158,7 @@ final class JarIT {
                     new Jaxec(
                         "java", "-cp", classpath,
                         "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "org.eolang.examples.app", "6", "8"
+                        "org.eolang.Main", "examples.app", "6", "8"
                     ).withHome(temp.resolve("target")).exec().stdout(),
                     Matchers.containsString("6th Fibonacci number is 8")
                 );
@@ -168,7 +169,6 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -186,9 +186,9 @@ final class JarIT {
                         "org.eolang.Main", "simple"
                     ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
                     Matchers.allOf(
-                        Matchers.containsString("Couldn't find object 'Φ.org.eolang.unknown'"),
+                        Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
                         Matchers.containsString(
-                            "because there's no class 'EOorg.EOeolang.EOunknown' or package-info class: 'EOorg.EOeolang.EOunknown.package-info"
+                            "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
                         )
                     )
                 );

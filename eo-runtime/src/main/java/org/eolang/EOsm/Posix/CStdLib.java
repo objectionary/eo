@@ -8,11 +8,11 @@
  */
 package org.eolang.EOsm.Posix; // NOPMD
 
-import org.eolang.EOsm.SockaddrIn;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
+import org.eolang.EOsm.SockaddrIn;
 
 /**
  * C standard library with unix syscalls.

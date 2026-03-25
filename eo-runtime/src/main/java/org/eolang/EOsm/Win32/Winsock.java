@@ -9,11 +9,11 @@
  */
 package org.eolang.EOsm.Win32; // NOPMD
 
-import org.eolang.EOsm.SockaddrIn;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
+import org.eolang.EOsm.SockaddrIn;
 
 /**
  * Interface definitions for <code>WS2_32.dll</code>.

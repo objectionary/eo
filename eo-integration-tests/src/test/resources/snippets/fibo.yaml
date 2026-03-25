@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 out:
   - ".*8 is the 6th number.*"
-file: org/eolang/snippets/fibo.eo
-args: ["org.eolang.snippets.fibo"]
+file: snippets/fibo.eo
+args: ["snippets.fibo"]
 eo: |
   +alias io.stdout
   +alias tt.sprintf

@@ -8,10 +8,6 @@
  */
 package org.eolang.EOnk; // NOPMD
 
-import org.eolang.EOsm.Posix.CStdLib;
-import org.eolang.EOsm.SockaddrIn;
-import org.eolang.EOsm.Win32.WSAStartupFuncCall;
-import org.eolang.EOsm.Win32.Winsock;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -31,6 +27,10 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOsm.Posix.CStdLib;
+import org.eolang.EOsm.SockaddrIn;
+import org.eolang.EOsm.Win32.WSAStartupFuncCall;
+import org.eolang.EOsm.Win32.Winsock;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;

@@ -21,7 +21,7 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    EOmalloc$EOof$EOallocated$EOresized() {
+    public EOmalloc$EOof$EOallocated$EOresized() {
         this.add("new-size", new AtVoid("new-size"));
     }
 

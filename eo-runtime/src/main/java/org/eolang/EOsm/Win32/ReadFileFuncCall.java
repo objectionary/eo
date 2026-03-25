@@ -9,11 +9,11 @@
  */
 package org.eolang.EOsm.Win32; // NOPMD
 
-import org.eolang.EOsm.Syscall;
 import com.sun.jna.ptr.IntByReference;
 import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOsm.Syscall;
 import org.eolang.Phi;
 
 /**

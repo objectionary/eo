@@ -9,10 +9,10 @@
  */
 package org.eolang.EOsm.Win32; // NOPMD
 
-import org.eolang.EOsm.SockaddrIn;
-import org.eolang.EOsm.Syscall;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOsm.SockaddrIn;
+import org.eolang.EOsm.Syscall;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 

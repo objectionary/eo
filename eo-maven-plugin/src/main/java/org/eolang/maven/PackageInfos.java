@@ -26,6 +26,11 @@ final class PackageInfos {
     private static final Pattern PACKAGE = Pattern.compile("EO");
 
     /**
+     * Pattern for replacing first default org.eolang package.
+     */
+    private static final Pattern BASE = Pattern.compile("org.eolang.");
+
+    /**
      * Not allowed characters in package names.
      */
     private static final Pattern NOT_ALLOWED = Pattern.compile("[^a-zA-Z0-9_.$]");
@@ -98,7 +103,9 @@ final class PackageInfos {
             " */",
             String.format(
                 "// @org.eolang.XmirPackage(\"%s\")",
-                PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                PackageInfos.BASE.matcher(
+                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                ).replaceFirst("")
             ),
             String.format("package %s;", PackageInfos.escaped(pkg))
         );

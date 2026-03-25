@@ -9,10 +9,6 @@
  */
 package org.eolang.EOio; // NOPMD
 
-import org.eolang.EOsm.Posix.CStdLib;
-import org.eolang.EOsm.Win32.Kernel32;
-import org.eolang.EOsm.Win32.WinBase;
-import org.eolang.EOsm.Win32.WinNT;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.File;
@@ -24,6 +20,10 @@ import java.nio.file.Paths;
 import java.util.function.Supplier;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.EOsm.Posix.CStdLib;
+import org.eolang.EOsm.Win32.Kernel32;
+import org.eolang.EOsm.Win32.WinBase;
+import org.eolang.EOsm.Win32.WinNT;
 import org.eolang.PhCopy;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;

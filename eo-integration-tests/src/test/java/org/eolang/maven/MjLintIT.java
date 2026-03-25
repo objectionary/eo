@@ -105,7 +105,7 @@ final class MjLintIT {
     private static String helloWorld() {
         return String.join(
             "\n",
-            "+alias stdout org.eolang.io.stdout",
+            "+alias stdout io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
             "+version 0.0.0",

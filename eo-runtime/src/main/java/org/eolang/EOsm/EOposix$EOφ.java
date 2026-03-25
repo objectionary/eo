@@ -8,6 +8,11 @@
  */
 package org.eolang.EOsm; // NOPMD
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.eolang.Atom;
+import org.eolang.Dataized;
 import org.eolang.EOsm.Posix.AcceptSyscall;
 import org.eolang.EOsm.Posix.BindSyscall;
 import org.eolang.EOsm.Posix.CloseSyscall;
@@ -24,11 +29,6 @@ import org.eolang.EOsm.Posix.SendSyscall;
 import org.eolang.EOsm.Posix.SocketSyscall;
 import org.eolang.EOsm.Posix.StrerrorSyscall;
 import org.eolang.EOsm.Posix.WriteSyscall;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import org.eolang.Atom;
-import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;

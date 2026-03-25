@@ -7,7 +7,7 @@
  * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang; // NOPMD
+package org.eolang;
 
 import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;

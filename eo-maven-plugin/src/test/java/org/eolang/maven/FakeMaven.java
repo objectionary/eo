@@ -237,7 +237,7 @@ final class FakeMaven {
      * @return Path to generated dir.
      */
     Path generatedPath() {
-        return this.targetPath().resolve("generated/org/eolang");
+        return this.targetPath().resolve("generated");
     }
 
     /**
