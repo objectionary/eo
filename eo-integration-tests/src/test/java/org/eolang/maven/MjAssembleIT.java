@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  - {@link integration.JarIT#runsProgramWithTwoObjects(Path)}
  *  - {@link integration.SnippetIT#runsAllSnippets(String, Path)}
  *  The most probable reason - most of the tests require downloading objects from objectionary,
- *  but since the objects were moved and not realeased when this todo is written, they are failed
+ *  but since the objects were moved and not released when this todo is written, they are failed
  *  to be downloaded. When fresh release is done, need to enable the tests
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})

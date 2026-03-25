@@ -12,11 +12,7 @@
     <xsl:value-of select="$eo:space"/>
     <xsl:value-of select="$eo:space"/>
   </xsl:variable>
-  <xsl:variable
-    name="runtime"
-    as="xs:string*"
-    select="'Φ.bytes', 'Φ.number', 'Φ.string', 'Φ.true', 'Φ.false', 'Φ.tuple', 'Φ.io.stdout', 'Φ.tt.sprintf'"
-  />
+  <xsl:variable name="runtime" as="xs:string*" select="'Φ.bytes', 'Φ.number', 'Φ.string', 'Φ.true', 'Φ.false', 'Φ.tuple', 'Φ.io.stdout', 'Φ.tt.sprintf'"/>
   <!-- FUNCTIONS -->
   <!-- EOL -->
   <xsl:function name="eo:eol">
