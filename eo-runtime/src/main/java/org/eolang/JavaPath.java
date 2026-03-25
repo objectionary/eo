@@ -37,6 +37,7 @@ final class JavaPath {
 
     /**
      * Ctor.
+     *
      * @param obj Object name.
      */
     JavaPath(final String obj) {
@@ -45,9 +46,12 @@ final class JavaPath {
 
     @Override
     public String toString() {
-        return JavaPath.DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
-            .replaceAll("$1EO$2")
-            .replace("$", "$EO")
-            .replace("-", "_");
+        return String.format(
+            "org.eolang.%s",
+            JavaPath.DOTS.matcher(JavaPath.PHI.matcher(this.object).replaceAll(""))
+                .replaceAll("$1EO$2")
+                .replace("$", "$EO")
+                .replace("-", "_")
+        );
     }
 }

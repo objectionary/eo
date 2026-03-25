@@ -90,7 +90,7 @@ final class MjTranspileTest {
                     String.join(
                         "\n",
                         "+architect yegor256@gmail.com",
-                        "+package org.eolang.examples",
+                        "+package examples",
                         "",
                         "# This is the main abstract object",
                         "[] > x"

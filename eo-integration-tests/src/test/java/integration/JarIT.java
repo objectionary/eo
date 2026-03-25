@@ -65,7 +65,7 @@ final class JarIT {
             f -> {
                 final String classpath = JarIT.compile(
                     f,
-                    "+package org.eolang.examples",
+                    "+package examples",
                     "",
                     "# Program with a package.",
                     "[args] > packaged",
@@ -101,11 +101,11 @@ final class JarIT {
                     new ElegantObject(
                         "app",
                         new String[]{
-                            "+package org.eolang.examples",
-                            "+alias org.eolang.examples.fibonacci",
-                            "+alias org.eolang.io.stdout",
-                            "+alias org.eolang.tt.sprintf",
-                            "+alias org.eolang.tt.sscanf",
+                            "+package examples",
+                            "+alias examples.fibonacci",
+                            "+alias io.stdout",
+                            "+alias tt.sprintf",
+                            "+alias tt.sscanf",
                             "+architect yegor256@gmail.com",
                             "",
                             "# Application.",
@@ -133,7 +133,7 @@ final class JarIT {
                     new ElegantObject(
                         "fibonacci",
                         new String[]{
-                            "+package org.eolang.examples",
+                            "+package examples",
                             "+architect yegor256@gmail.com",
                             "",
                             "# This is the main abstract object that",

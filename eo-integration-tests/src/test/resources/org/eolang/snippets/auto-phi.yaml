@@ -7,8 +7,8 @@ out: []
 file: org/eolang/snippets/auto.eo
 args: ["org.eolang.snippets.auto"]
 eo: |
-  +alias org.eolang.io.stdout
-  +package org.eolang.snippets
+  +alias io.stdout
+  +package snippets
 
   # No comments.
   [] > auto

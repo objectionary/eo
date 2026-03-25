@@ -72,7 +72,7 @@ input: |
       $
       ^.i
       foo
-      Q.org.eolang.random
+      Q.random
 ```
 
 ### Sections

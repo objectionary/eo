@@ -31,7 +31,7 @@
 
     # Main.
     [] > main
-      Q.org.eolang.string.joined.with.some > @
+      Q.string.joined.with.some > @
     ```
 
     It'll be transformed to:

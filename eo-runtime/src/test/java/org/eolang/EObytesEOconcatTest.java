@@ -1,0 +1,43 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
+ */
+package org.eolang; // NOPMD
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Test case for {@link EObytes}.
+ *
+ * @since 0.23
+ * @checkstyle TypeNameCheck (4 lines)
+ */
+final class EObytesEOconcatTest {
+
+    @Test
+    void concatenatesBytes() {
+        MatcherAssert.assertThat(
+            "Concatenation of byte arrays should produce 'привет mr. ㄤㄠ!', but it didn't",
+            new Dataized(
+                new PhWith(
+                    Phi.Φ.take("string"),
+                    0,
+                    new PhWith(
+                        new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),
+                        "b",
+                        new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes")
+                    )
+                )
+            ).asString(),
+            Matchers.equalTo("привет mr. ㄤㄠ!")
+        );
+    }
+
+}

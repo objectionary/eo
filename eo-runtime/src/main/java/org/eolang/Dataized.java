@@ -86,7 +86,7 @@ public final class Dataized {
             if ("go.to.token.jump".equals(enc.forma())) {
                 throw new EOerror.ExError(enc);
             }
-            if (String.format("%s.org.eolang.string", PhPackage.GLOBAL).equals(enc.forma())) {
+            if (String.format("%s.string", PhPackage.GLOBAL).equals(enc.forma())) {
                 raw.add(
                     String.format(
                         "\"%s\"",
@@ -104,7 +104,7 @@ public final class Dataized {
             this.logger.log(
                 Level.SEVERE,
                 String.format(
-                    "Dataized to org.eolang.error with %s inside, at:%n  ⇢ %s",
+                    "Dataized to 'error' with %s inside, at:%n  ⇢ %s",
                     enc.forma(),
                     String.join("\n  ⇢ ", clean)
                 )

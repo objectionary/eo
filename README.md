@@ -125,8 +125,8 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
-+alias org.eolang.io.stdout
-+alias org.eolang.tt.sprintf
++alias io.stdout
++alias tt.sprintf
 
 # Also says hello to Jeff.
 [] > app

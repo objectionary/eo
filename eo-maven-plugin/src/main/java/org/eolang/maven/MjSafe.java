@@ -166,7 +166,7 @@ abstract class MjSafe extends AbstractMojo {
     @Parameter(
         property = "eo.generatedDir",
         required = true,
-        defaultValue = "${project.build.directory}/generated-sources/org/eolang"
+        defaultValue = "${project.build.directory}/generated-sources"
     )
     protected File generatedDir;
 
@@ -227,8 +227,8 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
-    protected boolean cacheEnabled = true;
+    @Parameter(property = "eo.cacheEnabled", defaultValue = "false")
+    protected boolean cacheEnabled;
 
     /**
      * Rewrite binaries in output directory or not.

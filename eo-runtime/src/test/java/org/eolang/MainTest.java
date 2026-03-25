@@ -63,7 +63,7 @@ final class MainTest {
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             "Incorrect output when dataizing \"true\" object",
-            MainTest.stderr("org.eolang.true"),
+            MainTest.stderr("true"),
             Matchers.stringContainsInOrder(
                 String.format("%n---%n"),
                 "true",
@@ -76,7 +76,7 @@ final class MainTest {
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
             "Incorrect verbose output when dataizing \"false\" object",
-            MainTest.stderr(Main.VERBOSE, "org.eolang.false"),
+            MainTest.stderr(Main.VERBOSE, "false"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
@@ -106,9 +106,9 @@ final class MainTest {
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.stderr(Main.VERBOSE, "org.eolang.io.stdout"),
+            MainTest.stderr(Main.VERBOSE, "io.stdout"),
             Matchers.containsString(
-                "Error in \"Φ.org.eolang.io.stdout.φ.Δ\" "
+                "Error in \"Φ.io.stdout.φ.Δ\" "
             )
         );
     }

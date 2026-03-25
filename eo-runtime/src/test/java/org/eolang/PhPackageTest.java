@@ -4,8 +4,6 @@
  */
 package org.eolang;
 
-import org.eolang.EOorg.EOeolang.EObytes$EOeq;
-import EOorg.EOeolang.EOgo;
 import com.yegor256.Together;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -50,28 +48,15 @@ final class PhPackageTest {
     }
 
     @Test
-    void setsRhoToPackage() {
-        final Phi org = Phi.Φ.take("org");
+    void setsRhoToObject() {
+        final Phi pckg = Phi.Φ.take("fs");
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            org.take("eolang").take(Phi.RHO),
-            Matchers.equalTo(org)
-        );
-    }
-
-    @Test
-    void setsRhoToObject() {
-        final Phi eolang = Phi.Φ.take("org.eolang");
-        MatcherAssert.assertThat(
-            String.format(
-                "The %s attribute must be set to object inside package on dispatch",
-                Phi.RHO
-            ),
-            eolang.take("seq").take(Phi.RHO),
-            Matchers.equalTo(eolang)
+            pckg.take("dir").take(Phi.RHO),
+            Matchers.equalTo(pckg)
         );
     }
 
@@ -92,7 +77,7 @@ final class PhPackageTest {
                 "Attribute '%s' should be instance of %s, but it wasn't",
                 attribute, expected.getSimpleName()
             ),
-            new PhPackage(this.phiPackageName()).take(attribute),
+            Phi.Φ.take(attribute),
             Matchers.instanceOf(expected)
         );
     }
@@ -101,7 +86,7 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(this.phiPackageName()).take("failed"),
+            () -> Phi.Φ.take("failed"),
             "Should throw if object cannot be instantiated, but it was"
         );
     }
@@ -113,18 +98,18 @@ final class PhPackageTest {
             "Exception message must mention missing package-info.class",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PhPackage(this.phiPackageName()).take("test.package-info"),
+                () -> Phi.Φ.take("test.package-info"),
                 "We should throw if package-info.class is missing"
             ).getMessage(),
             Matchers.equalTo(
-                "Couldn't find object 'Φ.org.eolang.org' because there's no class 'EOorg.EOeolang.EOorg' or package-info class: 'EOorg.EOeolang.EOorg.package-info', at least one of them must exist"
+                "Couldn't find object 'Φ.test' because there's no class 'org.eolang.EOtest' or package-info class: 'org.eolang.EOtest.package-info', at least one of them must exist"
             )
         );
     }
 
     @Test
     void returnsSelfOnCopy() {
-        final Phi pckg = new PhPackage(this.phiPackageName());
+        final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
             "Package object should return itself on copying",
             pckg.copy(),
@@ -136,8 +121,8 @@ final class PhPackageTest {
     void returnsForma() {
         MatcherAssert.assertThat(
             "Should return valid forma",
-            new PhPackage(this.phiPackageName()).forma(),
-            Matchers.equalTo(this.phiPackageName())
+            Phi.Φ.forma(),
+            Matchers.equalTo(PhPackage.GLOBAL)
         );
     }
 
@@ -145,14 +130,14 @@ final class PhPackageTest {
     void returnsLocator() {
         MatcherAssert.assertThat(
             "locator of the DEFAULT_PACKAGE must be ?:?:?, but is wasn't",
-            new PhPackage(this.phiPackageName()).locator(),
+            Phi.Φ.locator(),
             Matchers.equalTo("?:?:?")
         );
     }
 
     @Test
     void findsAttributesInThreads() {
-        final PhPackage pckg = new PhPackage(this.phiPackageName());
+        final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
@@ -162,13 +147,6 @@ final class PhPackageTest {
                 Matchers.not(Matchers.hasItem(true))
             )
         );
-    }
-
-    /**
-     * Returns the phi package name.
-     */
-    private String phiPackageName() {
-        return "Φ.org.eolang";
     }
 
     private static Stream<Arguments> attributes() {

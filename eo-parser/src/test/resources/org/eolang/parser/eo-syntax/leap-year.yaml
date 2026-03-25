@@ -8,9 +8,9 @@ asserts:
   - /object[count(o)=1]
   - //o[@base='.and']
 input: |
-  +alias org.eolang.io.stdin
-  +alias org.eolang.io.stdout
-  +alias org.eolang.tt.scanner
+  +alias io.stdin
+  +alias io.stdout
+  +alias tt.scanner
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0

@@ -59,7 +59,11 @@ final class PackageInfos {
         final int size;
         if (Files.exists(this.root)) {
             final List<Path> dirs = Files.walk(this.root)
-                .filter(file -> Files.isDirectory(file) && !file.equals(this.root))
+                .filter(
+                    file -> Files.isDirectory(file)
+                        && !file.equals(this.root)
+                        && !file.equals(this.root.resolve("org"))
+                )
                 .collect(Collectors.toList());
             for (final Path dir : dirs) {
                 Logger.debug(
@@ -96,7 +100,7 @@ final class PackageInfos {
                 "// @org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
             ),
-            String.format("package %s;", String.format("org.eolang.%s", PackageInfos.escaped(pkg)))
+            String.format("package %s;", PackageInfos.escaped(pkg))
         );
     }
 

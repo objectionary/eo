@@ -220,6 +220,7 @@
       <xsl:value-of select="."/>
     </xsl:attribute>
     <xsl:attribute name="java-name">
+      <xsl:text>org.eolang.</xsl:text>
       <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>

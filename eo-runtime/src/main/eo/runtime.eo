@@ -158,7 +158,7 @@
   # Tests that the runtime directly accesses objects from root namespace.
   [] +> tests-directly-accesses-objects-from-root
     eq. > @
-      Q.org.eolang.malloc.of
+      Q.malloc.of
         8
         [m]
           seq > @
@@ -187,7 +187,7 @@
       root
       stand-root
     Q.sm.os > stand-root
-    Q.org.eolang.sm.os > root
+    Q.sm.os > root
 
   # Tests that the runtime extracts attributes from decoratees.
   [] +> tests-extract-attribute-from-decoratee

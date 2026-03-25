@@ -11,8 +11,8 @@ file: simple.eo
 args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
-  +alias org.eolang.io.stdout
-  +alias org.eolang.tt.sprintf
+  +alias io.stdout
+  +alias tt.sprintf
 
   # No comments.
   [args] > simple

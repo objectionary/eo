@@ -7,10 +7,10 @@ out:
 file: org/eolang/snippets/foo.eo
 args: ["org.eolang.snippets.foo"]
 eo: |
-  +alias org.eolang.io.stdout
-  +alias org.eolang.tt.sprintf
+  +alias io.stdout
+  +alias tt.sprintf
   +decorate number ms.angle
-  +package org.eolang.snippets
+  +package snippets
 
   # No comments.
   [] > foo
