@@ -1,6 +1,6 @@
++alias ms.abs
 +alias ms.e
 +alias ms.pi
-+alias ms.abs
 +alias ms.pow
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -10,32 +10,31 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:17
 
 # Returns a floating point number.
-# todo #4751:15min Remove `real` object when all inner objects are moved to a separate files
+# @todo #4751:15min Remove `real` object when all inner objects are moved to a separate files
 [num] > real
   num > @
 
   # Returns the positive square root of a `num` as `org.eolang.number`.
-  # todo #4751:15min Move `sqrt` to a separate object with it's tests.
-  # It's atom, don't forget change `EOreal$EOsqrt`.
+  # @todo #4751:15min Move `sqrt` to a separate object with it's tests.
+  #  It's atom, don't forget change `EOreal$EOsqrt`.
   [] > sqrt ?
 
   # Returns the natural logarithm `e` of a `num` as `org.eolang.number`.
-  # todo #4751:15min Move `ln` to a separate object with it's tests.
-  # It's atom, don't forget change `EOreal$EOln`.
+  # @todo #4751:15min Move `ln` to a separate object with it's tests.
+  #  It's atom, don't forget change `EOreal$EOln`.
   [] > ln ?
 
   # Calculates arc cosine of a `num` as `org.eolang.number`.
-  # todo #4751:15min Move `acos` to a separate object with it's tests.
-  # It's atom, don't forget change `EOreal$EOacos`.
+  # @todo #4751:15min Move `acos` to a separate object with it's tests.
+  #  It's atom, don't forget change `EOreal$EOacos`.
   [] > acos ?
 
   # Calculates arc sine of a `num` as `org.eolang.number`.
   # An operation that finds the angle whose sine is num.
-  # todo #4751:15min Move `asin` to a separate object with it's tests.
-  # It's atom, don't forget change `EOreal$EOasin`.
+  # @todo #4751:15min Move `asin` to a separate object with it's tests.
+  #  It's atom, don't forget change `EOreal$EOasin`.
   [] > asin ?
 
   # Tests mathematical operation functionality.

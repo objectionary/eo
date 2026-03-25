@@ -24,6 +24,12 @@
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
       <version>0.0.60</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -520,7 +526,7 @@
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
-              <excludes>
+              <excludes combine.children="append">
                 <exclude>checkstyle:/src/it.*</exclude>
                 <exclude>checkstyle:/src/test/resources/.*</exclude>
                 <exclude>pmd:/src/it.*</exclude>
