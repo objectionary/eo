@@ -245,7 +245,7 @@
                 -->
                 <lint>sparse-decoration</lint>
                 <!-- @todo #4935:30min. Enable `comment-not-capitalized` lint.
-                      The lint incorrectly flags comments starting with `@todo` as not capitalized.
+                      The lint incorrectly flags comments starting with `@to-do` as not capitalized.
                       We should enable it after the lints repo fixes the issue to
                       ignore @todo markers. See: https://github.com/objectionary/lints/issues/805
                 -->
