@@ -16,8 +16,8 @@ asserts:
   - //java[contains(text(), 'rb = rb.take("ρ");')]
   - //java[contains(text(), 'rb = new PhMethod(rb, "or");')]
   - //java[contains(text(), 'rb = new PhCopy(rb);')]
-  - //java[contains(text(), 'Phi rb1 = Phi.Φ.take("number");')]
-  - //java[contains(text(), 'Phi rb11 = Phi.Φ.take("bytes").copy();')]
+  - //java[contains(text(), 'Phi rb1 = new PhMethod(Phi.Φ, "number");')]
+  - //java[contains(text(), 'Phi rb11 = new PhMethod(Phi.Φ, "bytes")')]
   - //java[contains(text(), 'Phi r = new PhMethod(rb, "and");')]
 input: |
   # Comment.
