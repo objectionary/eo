@@ -940,7 +940,7 @@ final class InputOutputTest {
                                 new Dataized(
                                     new PhWith(
                                         new PhWith(
-                                            Phi.Φ.take("org.eolang.sm.win32").copy(),
+                                            Phi.Φ.take("sm.win32").copy(),
                                             0,
                                             new Data.ToPhi("WriteFile")
                                         ),

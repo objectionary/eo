@@ -224,36 +224,31 @@
               <skipSourceLints>
                 <!-- Required to be skipped, since we in runtime origin library. -->
                 <lint>prohibited-package</lint>
-                <!--
-                  @todo #4148:35min Enable `unused-void-attr` lint.
+                <!-- @todo #4148:35min Enable `unused-void-attr` lint.
                    We should enable this lint after the following issue with magic
                    voids will be resolved: https://github.com/objectionary/lints/issues/574.
                    Don't forget to enable `unused-void-attr` in the `test–compile` execution as well.
                 -->
                 <lint>unused-void-attr</lint>
-                <!--
-                  @todo #4148:35min Enable `duplicate-names-in-diff-context` lint.
+                <!-- @todo #4148:35min Enable `duplicate-names-in-diff-context` lint.
                    For now its too pedantic. See this: https://github.com/objectionary/lints/issues/578.
                    Also, we should fix the bug with false positives with lambda object names in the atoms,
                    in order to enable this lint.
                 -->
                 <lint>duplicate-names-in-diff-context</lint>
-                <!--
-                  @todo #4096:35min Enable `sparse-decoration` lint.
+                <!-- @todo #4096:35min Enable `sparse-decoration` lint.
                    After we merged EO tests together with their source objects, and removed
                    `+tests` meta, we have complains about sparse-decoration. Let's adjust and
                    enable it.
                 -->
                 <lint>sparse-decoration</lint>
-                <!--
-                  @todo #4935:35min Enable `comment-not-capitalized` lint.
+                <!-- @todo #4935:35min Enable `comment-not-capitalized` lint.
                    The lint incorrectly flags comments starting with `@todo` as not capitalized.
                    We should enable it after the lints repo fixes the issue to ignore @todo markers.
                    See: https://github.com/objectionary/lints/issues/805
                 -->
                 <lint>comment-not-capitalized</lint>
-                <!--
-                  @todo #4538:30min Enable `object-has-data` lint.
+                <!-- @todo #4538:30min Enable `object-has-data` lint.
                    The lint incorrectly flags all objects with bytes inside because they don't have
                    @base='Φ.org.eolang.bytes'. It was changed in
                    https://github.com/objectionary/eo/issues/4538. Right now we have just Φ.bytes.
