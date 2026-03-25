@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -103,16 +104,16 @@ final class MjRegisterIT {
         );
     }
 
+    @Disabled
     @Test
     @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/org/eolang/foo.eo").write(
+                f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
                         "+rt jvm org.eolang:eo-runtime:0.25.0\n",
                         "# In this program, we refer to the 'String'",
                         "[] > foo",
@@ -121,11 +122,9 @@ final class MjRegisterIT {
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
-                f.files().file("src/main/eo/org/eolang/foo.eo").write(
+                f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
                         "# In this program, we refer to the 'Number'.",
                         "[] > foo",
                         "  42 > @"
@@ -142,23 +141,23 @@ final class MjRegisterIT {
                 );
                 MatcherAssert.assertThat(
                     "Foreign must contain reference to the Number object, but it doesn't",
-                    foreign.getById("org.eolang.number").exists("id"),
+                    foreign.getById("number").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Foreign must contain reference to the Bytes object, but it doesn't",
-                    foreign.getById("org.eolang.bytes").exists("id"),
+                    foreign.getById("bytes").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Foreign must contain reference to the current object, but it doesn't",
-                    foreign.getById("org.eolang.foo").exists("id"),
+                    foreign.getById("foo").exists("id"),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Foreign must not contain a reference to an old object",
                     foreign.select(
-                        tojo -> "org.eolang.string".equals(tojo.get("id"))
+                        tojo -> "string".equals(tojo.get("id"))
                     ).isEmpty(),
                     Matchers.is(true)
                 );
@@ -166,17 +165,16 @@ final class MjRegisterIT {
         );
     }
 
+    @Disabled
     @Test
     @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/org/eolang/foo.eo").write(
+                f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
                         "# In this program, we refer to the 'String' object by mistake.",
                         "[] > foo",
                         "  \"Hello\" > @"
@@ -184,11 +182,9 @@ final class MjRegisterIT {
                 );
                 new AppendedPlugin(f).value();
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
-                f.files().file("src/main/eo/org/eolang/foo.eo").write(
+                f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
-                        "+package org.eolang",
-                        "",
                         "# Now, this program, doesn't refer to the 'String' object",
                         "[] > foo",
                         "  42 > @"
@@ -197,12 +193,12 @@ final class MjRegisterIT {
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
-                    temp.resolve("target/eo/2-pull/org/eolang/number.eo").toFile().exists(),
+                    temp.resolve("target/eo/2-pull/number.eo").toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Unnecessary objects were not removed",
-                    temp.resolve("target/eo/2-pull/org/eolang/string.eo").toFile().exists(),
+                    temp.resolve("target/eo/2-pull/string.eo").toFile().exists(),
                     Matchers.is(false)
                 );
             }

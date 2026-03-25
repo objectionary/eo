@@ -10,32 +10,32 @@ asserts:
   - /object/o[@name='main' and o[1][@base='ξ' and @name='xi🌵']]
   - /object/o[count(//o[@star])=0]
   # first
-  - //o[@base='Φ.org.eolang.tuple.empty' and @line=3 and @name='xs']
+  - //o[@base='Φ.tuple.empty' and @line=3 and @name='xs']
   # second
-  - //o[@base='Φ.org.eolang.tuple' and @line=4 and @name='xl']/o[1][@base='Φ.org.eolang.tuple.empty' and @line]
-  - //o[@base='Φ.org.eolang.tuple' and @line=4 and @name='xl']/o[2][@base='Φ.org.eolang.number' and @line]
-  - //o[@base='Φ.org.eolang.tuple' and @line=4 and @name='xl']/o[3][@base='Φ.org.eolang.number' and @line]/o[@base='Φ.org.eolang.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[1][@base='Φ.tuple.empty' and @line]
+  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[2][@base='Φ.number' and @line]
+  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[3][@base='Φ.number' and @line]/o[@base='Φ.bytes']/o[1][@hex and text()='1']
   # third
-  - //o[@base='Φ.org.eolang.tuple' and @line=5]/o[1][@base='Φ.org.eolang.tuple']/o[1][@base='Φ.org.eolang.tuple.empty']
-  - //o[@base='Φ.org.eolang.tuple' and @line=5]/o[1][@base='Φ.org.eolang.tuple']/o[2][@base='Φ.org.eolang.number']
-  - //o[@base='Φ.org.eolang.tuple' and @line=5]/o[1][@base='Φ.org.eolang.tuple']/o[3][@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[1][@hex and text()='1']
-  - //o[@base='Φ.org.eolang.tuple' and @line=5]/o[2][@base='Φ.org.eolang.number']
-  - //o[@base='Φ.org.eolang.tuple' and @line=5]/o[3][@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[1][@hex and text()='2']
+  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[1][@base='Φ.tuple.empty']
+  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[2][@base='Φ.number']
+  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=5]/o[2][@base='Φ.number']
+  - //o[@base='Φ.tuple' and @line=5]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='2']
   # fourth
-  - //o[@base='.empty' and @line=6]/o[@base='Φ.org.eolang.tuple.empty']
+  - //o[@base='.empty' and @line=6]/o[@base='Φ.tuple.empty']
   # fifth
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[1][@base='Φ.org.eolang.tuple.empty']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[2][@base='.c']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[3][@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[@hex and text()='1']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[2][@base='.f']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[1][@base='Φ.org.eolang.tuple' and @line]/o[3][@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[@hex and text()='2']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[2][@base='.i']
-  - //o[@base='Φ.org.eolang.tuple' and @line=7]/o[3][@base='Φ.org.eolang.number']/o[@base='Φ.org.eolang.bytes']/o[@hex and text()='3']
+  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple.empty']
+  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.c']
+  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.f']
+  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='2']
+  - //o[@base='Φ.tuple' and @line=7]/o[2][@base='.i']
+  - //o[@base='Φ.tuple' and @line=7]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='3']
   # sixth
-  - //o[@base='.elements']/o[@base='arr']/o[@base='Φ.org.eolang.tuple.empty' and @line]
+  - //o[@base='.elements']/o[@base='arr']/o[@base='Φ.tuple.empty' and @line]
   # seventh
   - //o[@base='.reduced']/o[@base='list']
-  - //o[@base='.reduced']/o[@base='Φ.org.eolang.tuple.empty' and @line]
+  - //o[@base='.reduced']/o[@base='Φ.tuple.empty' and @line]
   - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
   # Main.

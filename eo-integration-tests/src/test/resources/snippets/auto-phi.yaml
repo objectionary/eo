@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+skip: true
+out: []
+file: snippets/auto.eo
+args: ["snippets.auto"]
+eo: |
+  +alias io.stdout
+  +package snippets
+
+  # No comments.
+  [] > auto
+    malloc.of > @
+      8
+      [m]
+        while > @
+          m.get.eq 42 >> [i]
+          m.put 42 >> [i]

@@ -42,13 +42,11 @@ final class TjsForeignTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-        {
-            "abs",
-            "org.eolang.int",
-            "QQ.io.stdout"
-        }
-    )
+    @CsvSource({
+        "abs",
+        "org.eolang.int",
+        "Q.io.stdout"
+    })
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
@@ -59,13 +57,11 @@ final class TjsForeignTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-        {
-            "abs, sba",
-            "org.eolang.int, org.eolang.float",
-            "QQ.io.stdout, QQ.tt.sprintf"
-        }
-    )
+    @CsvSource({
+        "abs, sba",
+        "org.eolang.int, org.eolang.float",
+        "Q.io.stdout, Q.tt.sprintf"
+    })
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(

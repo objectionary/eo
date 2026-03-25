@@ -137,7 +137,7 @@ final class ProxyIT {
     private static String program() {
         return String.join(
             "\n",
-            "+alias stdout org.eolang.io.stdout",
+            "+alias stdout io.stdout",
             "+package foo.x.y",
             "+version 0.1.2",
             "",

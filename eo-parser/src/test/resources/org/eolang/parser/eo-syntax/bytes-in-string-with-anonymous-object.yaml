@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@base='Φ.org.eolang.string' and @name='string-bytes']/o[@base='Φ.org.eolang.bytes']/o[text()='62-79-74-65-73']
+  - /object/o[@base='Φ.string' and @name='string-bytes']/o[@base='Φ.bytes']/o[text()='62-79-74-65-73']
 input: |
   # No comments.
   "bytes" > string-bytes

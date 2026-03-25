@@ -7,9 +7,7 @@
   <!--
   Here we go through all objects that are not methods or have
   composite FQN and try to find their references in aliases.
-  If we find them, we change their @base attributes. If not,
-  we decide that they are in org.eolang package and also change
-  the @base attribute.
+  If we find them, we change their @base attributes.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(contains(@base, '.'))]">

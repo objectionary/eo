@@ -396,7 +396,6 @@ methodTail
 beginner
     : STAR
     | ROOT
-    | HOME
     | XI
     | data
     ;
@@ -481,8 +480,6 @@ META: PLUS NAME (SPACE ~[\t\r\n ]+)*
     ;
 
 ROOT: 'Q'
-    ;
-HOME: 'QQ'
     ;
 STAR: '*'
     ;

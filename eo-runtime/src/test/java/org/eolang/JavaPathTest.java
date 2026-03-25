@@ -18,12 +18,12 @@ class JavaPathTest {
 
     @ParameterizedTest
     @CsvSource({
-        "Φ.org.eolang, EOorg.EOeolang",
-        "Φ.obj, EOobj",
-        "Φ.obj.sub, EOobj.EOsub",
-        "Φ.obj.sub$attr, EOobj.EOsub$EOattr",
-        "Φ.obj.sub-dashed$attr, EOobj.EOsub_dashed$EOattr",
-        "Φ.obj.sub-dashed$attr-dashed, EOobj.EOsub_dashed$EOattr_dashed"
+        "Φ.org.eolang, org.eolang.EOorg.EOeolang",
+        "Φ.obj, org.eolang.EOobj",
+        "Φ.obj.sub, org.eolang.EOobj.EOsub",
+        "Φ.obj.sub$attr, org.eolang.EOobj.EOsub$EOattr",
+        "Φ.obj.sub-dashed$attr, org.eolang.EOobj.EOsub_dashed$EOattr",
+        "Φ.obj.sub-dashed$attr-dashed, org.eolang.EOobj.EOsub_dashed$EOattr_dashed"
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(

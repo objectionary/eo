@@ -18,20 +18,14 @@ final class PhiTest {
     @Test
     void takesPackage() {
         MatcherAssert.assertThat(
-            "Phi should resolve and invoke method from org.eolang.io.stdout package, but it didn't",
+            "Phi should resolve and invoke method from io.stdout package, but it didn't",
             new Dataized(
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
                             new PhCopy(
                                 new PhMethod(
-                                    new PhMethod(
-                                        new PhMethod(
-                                            Phi.Φ.take("org"),
-                                            "eolang"
-                                        ),
-                                        "io"
-                                    ),
+                                    Phi.Φ.take("io"),
                                     "stdout"
                                 )
                             ),
@@ -54,7 +48,7 @@ final class PhiTest {
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
-                            new PhCopy(Phi.Φ.take("org.eolang.io.stdout")),
+                            new PhCopy(Phi.Φ.take("io.stdout")),
                             0, new Data.ToPhi("Hello, world")
                         ),
                         "text"
@@ -68,9 +62,9 @@ final class PhiTest {
     @Test
     void takesDirectly() {
         MatcherAssert.assertThat(
-            "Phi should resolve nested attribute org.eolang.nan.gt and return false, but it didn't",
+            "Phi should resolve nested attribute nan.gt and return false, but it didn't",
             new Dataized(
-                Phi.Φ.take("org").take("eolang").take("nan").take("gt")
+                Phi.Φ.take("nan").take("gt")
             ).asBool(),
             Matchers.equalTo(false)
         );

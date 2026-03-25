@@ -3,9 +3,7 @@
 ---
 # yamllint disable rule:line-length
 probes:
-  - 'org'
-  - 'org.eolang'
-  - 'org.eolang.int'
+  - 'int'
 eo: |
   # No comments.
   [] > test

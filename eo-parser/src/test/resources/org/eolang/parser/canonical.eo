@@ -16,8 +16,8 @@
             [i] >>
               seq > @
                 *
-                  QQ.io.stdout
-                    QQ.tt.sprintf
+                  io.stdout
+                    tt.sprintf
                       "%d x %d = %d\n"
                       *
                         ^.x

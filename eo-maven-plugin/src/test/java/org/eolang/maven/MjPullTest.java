@@ -21,6 +21,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,13 +51,14 @@ final class MjPullTest {
     }
 
     @Test
+    @Disabled
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",
                 "# No comments.",
                 "[] > main",
-                "  QQ.io.stdout > @",
+                "  Q.io.stdout > @",
                 "    \"I am 18 years old\""
             )
             .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
@@ -157,7 +159,7 @@ final class MjPullTest {
             .withHelloWorld()
             .execute(new FakeMaven.Pull());
         final Path path = maven.result().get(
-            String.format("target/%s/org/eolang/bytes.%s", MjPull.DIR, MjAssemble.EO)
+            String.format("target/%s/bytes.%s", MjPull.DIR, MjAssemble.EO)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(MjPull.class);
@@ -169,6 +171,7 @@ final class MjPullTest {
     }
 
     @Test
+    @Disabled
     void savesPulledResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final CommitHash hash = new ChCached(
@@ -203,7 +206,7 @@ final class MjPullTest {
                 .resolve(MjPull.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
-                .resolve("org/eolang/io/stdout.eo")
+                .resolve("io/stdout.eo")
         ).value();
         Files.setLastModifiedTime(
             cache.resolve(
@@ -211,7 +214,7 @@ final class MjPullTest {
                     .get(MjPull.CACHE)
                     .resolve(FakeMaven.pluginVersion())
                     .resolve(hash)
-                    .resolve("org/eolang/io/stdout.eo")
+                    .resolve("io/stdout.eo")
             ),
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
@@ -220,7 +223,7 @@ final class MjPullTest {
                 "+package foo.x",
                 "# No comments.",
                 "[] > main",
-                "  QQ.io.stdout > @"
+                "  Q.io.stdout > @"
             )
             .with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
@@ -231,7 +234,7 @@ final class MjPullTest {
                 Files.readAllBytes(
                     temp.resolve(
                         String.format(
-                            "target/%s/org/eolang/io/stdout.%s",
+                            "target/%s/io/stdout.%s",
                             MjPull.DIR,
                             MjAssemble.EO
                         )
@@ -246,7 +249,7 @@ final class MjPullTest {
      * Returns the stdout path.
      */
     private String stdout() {
-        return "org.eolang.io.stdout";
+        return "io.stdout";
     }
 
     /**

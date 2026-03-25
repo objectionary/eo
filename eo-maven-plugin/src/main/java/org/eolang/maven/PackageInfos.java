@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Package info classes.
+ *
  * @since 0.60
  */
 final class PackageInfos {
@@ -23,6 +24,11 @@ final class PackageInfos {
      * Pattern for replacing EO in package.
      */
     private static final Pattern PACKAGE = Pattern.compile("EO");
+
+    /**
+     * Pattern for replacing first default org.eolang package.
+     */
+    private static final Pattern BASE = Pattern.compile("org.eolang.");
 
     /**
      * Not allowed characters in package names.
@@ -41,6 +47,7 @@ final class PackageInfos {
 
     /**
      * Constructor.
+     *
      * @param root In which directory create files.
      */
     PackageInfos(final Path root) {
@@ -49,6 +56,7 @@ final class PackageInfos {
 
     /**
      * Create {@code package-info.java} files in all the directories under the {@link #root}.
+     *
      * @return Amount of created files
      * @throws IOException If fails to create a file
      */
@@ -56,7 +64,11 @@ final class PackageInfos {
         final int size;
         if (Files.exists(this.root)) {
             final List<Path> dirs = Files.walk(this.root)
-                .filter(file -> Files.isDirectory(file) && !file.equals(this.root))
+                .filter(
+                    file -> Files.isDirectory(file)
+                        && !file.equals(this.root)
+                        && !file.equals(this.root.resolve("org"))
+                )
                 .collect(Collectors.toList());
             for (final Path dir : dirs) {
                 Logger.debug(
@@ -91,7 +103,9 @@ final class PackageInfos {
             " */",
             String.format(
                 "// @org.eolang.XmirPackage(\"%s\")",
-                PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                PackageInfos.BASE.matcher(
+                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                ).replaceFirst("")
             ),
             String.format("package %s;", PackageInfos.escaped(pkg))
         );

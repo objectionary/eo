@@ -1,0 +1,29 @@
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++package examples
++alias examples.fibonacci
++alias io.stdout
++alias tt.sprintf
++alias tt.sscanf
++architect yegor256@gmail.com
+
+# Application.
+[args] > app
+  number > n
+    at. > nn!
+      Q.tt.sscanf
+        "%d"
+        args.at 0
+      0
+  at. > e!
+    Q.tt.sscanf
+      "%d"
+      args.at 1
+    0
+  fibonacci n > f!
+  and. > @
+    stdout
+      sprintf
+        "%dth Fibonacci number is %d\n"
+        * n f
+    e.eq f

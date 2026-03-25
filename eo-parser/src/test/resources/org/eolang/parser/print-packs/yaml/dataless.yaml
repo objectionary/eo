@@ -7,7 +7,7 @@ origin: |
 
   # No comments.
   [args] > main
-    QQ.io.stdout > @
+    Q.io.stdout > @
       args.at
         args.length.neg
     nan.plus negative-infinity > not-a-number

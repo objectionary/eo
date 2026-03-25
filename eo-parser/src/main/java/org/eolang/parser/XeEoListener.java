@@ -422,7 +422,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.start(ctx);
         final String base;
         if (ctx.STAR() != null) {
-            base = "Φ.org.eolang.tuple";
+            base = "Φ.tuple";
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
@@ -816,12 +816,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             if (ctx.XI() != null) {
                 base = "ξ";
             } else if (ctx.STAR() != null) {
-                base = "Φ.org.eolang.tuple";
+                base = "Φ.tuple";
                 this.objects.prop("star");
             } else if (ctx.ROOT() != null) {
                 base = "Φ";
-            } else if (ctx.HOME() != null) {
-                base = "Φ̇";
             } else {
                 base = "";
             }
@@ -1000,7 +998,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
             this.objects
-                .prop("base", "Φ.org.eolang.bytes")
+                .prop("base", "Φ.bytes")
                 .start(ctx)
                 .data(text.replaceAll("\\s+", "").trim())
                 .leave();
@@ -1008,7 +1006,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             final Supplier<String> data;
             final String base;
             if (ctx.FLOAT() != null || ctx.INT() != null) {
-                base = "Φ.org.eolang.number";
+                base = "Φ.number";
                 data = new BytesToHex(
                     ByteBuffer
                         .allocate(Double.BYTES)
@@ -1016,7 +1014,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                         .array()
                 );
             } else if (ctx.HEX() != null) {
-                base = "Φ.org.eolang.number";
+                base = "Φ.number";
                 data = new BytesToHex(
                     ByteBuffer
                         .allocate(Double.BYTES)
@@ -1024,14 +1022,14 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                         .array()
                 );
             } else if (ctx.STRING() != null) {
-                base = "Φ.org.eolang.string";
+                base = "Φ.string";
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
                         text.substring(1, text.length() - 1)
                     ).getBytes(StandardCharsets.UTF_8)
                 );
             } else {
-                base = "Φ.org.eolang.string";
+                base = "Φ.string";
                 data = new BytesToHex(
                     StringEscapeUtils.unescapeJava(
                         XeEoListener.trimMargin(text, ctx.getStart().getCharPositionInLine())
@@ -1041,7 +1039,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects
                 .prop("base", base)
                 .start(ctx)
-                .prop("base", "Φ.org.eolang.bytes")
+                .prop("base", "Φ.bytes")
                 .start(ctx)
                 .data(data.get())
                 .leave()
