@@ -59,14 +59,19 @@ final class Files {
      */
     @SuppressWarnings("java:S2095")
     void open(final String name) throws IOException {
-        final Path path = Paths.get(name);
-        this.streams.putIfAbsent(
-            name,
-            new Object[]{
-                java.nio.file.Files.newInputStream(path),
-                java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
-            }
-        );
+        this.lock.lock();
+        try {
+            final Path path = Paths.get(name);
+            this.streams.putIfAbsent(
+                name,
+                new Object[]{
+                    java.nio.file.Files.newInputStream(path),
+                    java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
+                }
+            );
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
