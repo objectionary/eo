@@ -1,6 +1,5 @@
 +alias ms.abs
 +alias ms.e
-+alias ms.pi
 +alias ms.pow
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -29,13 +28,6 @@
   #  For more information check this ticket:
   #  https://github.com/objectionary/eo/issues/4751
   [] > ln ?
-
-  # Calculates arc cosine of a `num` as `org.eolang.number`.
-  # @todo #4751:15min Move `acos` to a separate object with it's tests.
-  #  It's atom, don't forget change `EOreal$EOacos`.
-  #  For more information check this ticket:
-  #  https://github.com/objectionary/eo/issues/4751
-  [] > acos ?
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
@@ -210,59 +202,3 @@
       ln.
         real 20
       2.995732273553991
-
-  # Tests that arccosine of -1 equals pi.
-  [] +> tests-arccos-negative-one-test
-    eq. +> @
-      acos.
-        real -1.0
-      pi
-
-  # Tests that arccosine of 0 equals pi/2.
-  [] +> tests-arccos-zero-test
-    eq. +> @
-      acos.
-        real 0
-      div.
-        pi
-        2
-
-  # Tests that arccosine of 1 equals zero.
-  [] +> tests-arccos-one-test
-    eq. +> @
-      acos.
-        real 1.0
-      0
-
-  # Tests mathematical operation functionality.
-  [] +> tests-arccos-positive-calculated-test
-    lt. +> @
-      abs
-        real
-          minus.
-            acos.
-              real 0.6
-            0.927295
-      0.000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-arccos-negative-calculated-test
-    lt. +> @
-      abs
-        real
-          minus.
-            acos.
-              real -0.6
-            2.214297
-      0.000001
-
-  # Tests mathematical operation functionality.
-  [] +> tests-arccos-nan-positive-value-test
-    is-nan. +> @
-      acos.
-        real 2.0
-
-  # Tests mathematical operation functionality.
-  [] +> tests-arccos-nan-negative-value-test
-    is-nan. +> @
-      (real -2.0).acos

@@ -1,0 +1,78 @@
++alias ms.abs
++alias ms.pi
++alias ms.real
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Calculates arc cosine of a `num` as `org.eolang.number`.
+[num] > acos ?
+  # Tests that arccosine of -1 equals pi.
+  [] +> tests-arccos-negative-one-test
+    eq. +> @
+      acos -1.0
+      pi
+
+  # Tests that arccosine of 0 equals pi/2.
+  [] +> tests-arccos-zero-test
+    eq. +> @
+      acos 0
+      div.
+        pi
+        2
+
+  # Tests that arccosine of 1 equals zero.
+  [] +> tests-arccos-one-test
+    eq. +> @
+      acos 1.0
+      0
+
+  # Tests acos calculation for a positive value inside [-1,1].
+  [] +> tests-arccos-positive-calculated-test
+    lt. +> @
+      abs
+        real
+          minus.
+            acos 0.6
+            0.927295
+      0.000001
+
+  # Tests acos calculation for a negative value inside [-1,1].
+  [] +> tests-arccos-negative-calculated-test
+    lt. +> @
+      abs
+        real
+          minus.
+            acos -0.6
+            2.214297
+      0.000001
+
+  # Tests that acos returns NaN for a positive value outside [-1,1].
+  [] +> tests-arccos-nan-positive-value-test
+    is-nan. +> @
+      acos 2.0
+
+  # Tests that acos returns NaN for a negative value outside [-1,1].
+  [] +> tests-arccos-nan-negative-value-test
+    is-nan. +> @
+      acos -2.0
+
+  # Tests that arccosine of NaN is NaN.
+  [] +> tests-arccos-nan-input
+    is-nan. +> @
+      acos nan
+
+  # Tests that arccosine of positive-infinity is NaN.
+  [] +> tests-arccos-positive-infinity
+    is-nan. +> @
+      acos positive-infinity
+
+  # Tests that arccosine of negative-infinity is NaN.
+  [] +> tests-arccos-negative-infinity
+    is-nan. +> @
+      acos negative-infinity
