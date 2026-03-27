@@ -17,7 +17,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Real.asin.
+ * Asin.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
@@ -35,9 +35,7 @@ public final class EOasin extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.asin(
-                new Dataized(this.take("num")).asNumber()
-            )
+            Math.asin(new Dataized(this.take("num")).asNumber())
         );
     }
 }

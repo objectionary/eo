@@ -53,7 +53,7 @@
           -0.5235987756
       0.000001
 
-  # Tests that asin of value > 2 equals NaN.
+  # Tests that asin of value > 1 equals NaN.
   [] +> tests-asin-out-of-range-positive
     is-nan. +> @
       asin 2
