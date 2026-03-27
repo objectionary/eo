@@ -16,13 +16,6 @@
 [num] > real
   num > @
 
-  # Returns the positive square root of a `num` as `org.eolang.number`.
-  # @todo #4751:15min Move `sqrt` to a separate object with it's tests.
-  #  It's atom, don't forget change `EOreal$EOsqrt`.
-  #  For more information check this ticket:
-  #  https://github.com/objectionary/eo/issues/4751
-  [] > sqrt ?
-
   # Returns the natural logarithm `e` of a `num` as `org.eolang.number`.
   # @todo #4751:15min Move `ln` to a separate object with it's tests.
   #  It's atom, don't forget change `EOreal$EOln`.
@@ -96,66 +89,6 @@
     eq. +> @
       pow 4 5
       1024
-
-  # Tests that square root of zero equals zero.
-  [] +> tests-sqrt-check-zero-input
-    lt. +> @
-      abs
-        real
-          minus.
-            0
-            sqrt.
-              real 0
-      0.00000000001
-
-  # Tests that square root of negative number returns NaN.
-  [] +> tests-sqrt-check-negative-input
-    is-nan. +> @
-      sqrt.
-        real -0.1
-
-  # Tests that square root calculation works correctly for float input.
-  [] +> tests-sqrt-check-float-input
-    lt. +> @
-      abs
-        real
-          minus.
-            2
-            sqrt.
-              real
-                4
-      0.00000000001
-
-  # Tests that square root calculation works correctly for integer input.
-  [] +> tests-sqrt-check-int-input
-    lt. +> @
-      abs
-        real
-          minus.
-            9
-            sqrt.
-              real
-                81
-      0.00000000001
-
-  # Tests that square root of NaN returns NaN.
-  [] +> tests-sqrt-check-nan-input
-    is-nan. +> @
-      sqrt.
-        real nan
-
-  # Tests that square root of positive infinity equals positive infinity.
-  [] +> tests-sqrt-check-infinity-n1
-    eq. +> @
-      sqrt.
-        real positive-infinity
-      positive-infinity
-
-  # Tests that square root of negative infinity returns NaN.
-  [] +> tests-sqrt-check-infinity-n2
-    is-nan. +> @
-      sqrt.
-        real negative-infinity
 
   # Tests that natural logarithm of negative float returns NaN.
   [] +> tests-ln-of-negative-float-is-nan

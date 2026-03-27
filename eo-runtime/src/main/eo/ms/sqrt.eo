@@ -1,0 +1,93 @@
++alias ms.abs
++alias ms.real
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns the positive square root of a `num` as `org.eolang.number`.
+[num] > sqrt ?
+  # Tests that sqrt of zero is zero.
+  [] +> tests-sqrt-zero
+    eq. > @
+      sqrt 0.0
+      0.0
+
+  # Tests that sqrt of one is one.
+  [] +> tests-sqrt-one
+    eq. > @
+      sqrt 1.0
+      1.0
+
+  # Tests that sqrt of a perfect square.
+  [] +> tests-sqrt-four
+    eq. > @
+      sqrt 4.0
+      2.0
+
+  # Tests that sqrt of a non-perfect square.
+  [] +> tests-sqrt-two
+    eq. > @
+      sqrt 2.0
+      1.4142135623730951
+
+  # Tests that sqrt of a fractional number.
+  [] +> tests-sqrt-point-five
+    eq. > @
+      sqrt 0.25
+      0.5
+
+  # Tests that square root of zero equals zero.
+  [] +> tests-sqrt-check-zero-input
+    lt. +> @
+      abs
+        real
+          minus.
+            0
+            sqrt 0
+      0.00000000001
+
+  # Tests that square root of negative number returns NaN.
+  [] +> tests-sqrt-check-negative-input
+    is-nan. +> @
+      sqrt -0.1
+
+  # Tests that square root calculation works correctly for float input.
+  [] +> tests-sqrt-check-float-input
+    lt. +> @
+      abs
+        real
+          minus.
+            2
+            sqrt 4
+      0.00000000001
+
+  # Tests that square root calculation works correctly for integer input.
+  [] +> tests-sqrt-check-int-input
+    lt. +> @
+      abs
+        real
+          minus.
+            9
+            sqrt 81
+      0.00000000001
+
+  # Tests that square root of NaN returns NaN.
+  [] +> tests-sqrt-check-nan-input
+    is-nan. +> @
+      sqrt nan
+
+  # Tests that square root of positive infinity equals positive infinity.
+  [] +> tests-sqrt-check-infinity-n1
+    eq. +> @
+      sqrt positive-infinity
+      positive-infinity
+
+  # Tests that square root of negative infinity returns NaN.
+  [] +> tests-sqrt-check-infinity-n2
+    is-nan. +> @
+      sqrt negative-infinity
