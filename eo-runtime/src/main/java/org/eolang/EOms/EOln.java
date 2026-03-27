@@ -9,6 +9,7 @@
  */
 package org.eolang.EOms; // NOPMD
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -16,18 +17,25 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Real.ln.
+ * Ln.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "real.ln")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOreal$EOln extends PhDefault implements Atom {
+@XmirObject(oname = "ln")
+public final class EOln extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+    public EOln() {
+        this.add("num", new AtVoid("num"));
+    }
+
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.log(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.log(new Dataized(this.take("num")).asNumber())
         );
     }
 }
