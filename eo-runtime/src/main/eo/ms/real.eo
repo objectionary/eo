@@ -36,14 +36,6 @@
   #  https://github.com/objectionary/eo/issues/4751
   [] > acos ?
 
-  # Calculates arc sine of a `num` as `org.eolang.number`.
-  # An operation that finds the angle whose sine is num.
-  # @todo #4751:15min Move `asin` to a separate object with it's tests.
-  #  It's atom, don't forget change `EOreal$EOasin`.
-  #  For more information check this ticket:
-  #  https://github.com/objectionary/eo/issues/4751
-  [] > asin ?
-
   # Tests mathematical operation functionality.
   [] +> tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
     eq. +> @
