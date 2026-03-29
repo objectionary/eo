@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: objectionary
+'on':
+  push:
+    tags:
+      - '*'
+concurrency:
+  group: objectionary-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  objectionary:
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - run: mvn install -DskipTests -Dinvoker.skip --errors --batch-mode
+      - run: |
+          tag=${{ github.ref_name }}
+          mkdir -p gh-pages/xsd
+          mkdir -p gh-pages/objectionary
+          cp eo-parser/target/classes/XMIR.xsd gh-pages/
+          cp gh-pages/XMIR.xsd "gh-pages/xsd/XMIR-${tag}.xsd"
+          cp -R eo-runtime/src/main/eo/* gh-pages/objectionary/
+          find gh-pages/objectionary -name '*.eo' | \
+            xargs sed -i "s/jvm org.eolang:eo-runtime:0\.0\.0/jvm org.eolang:eo-runtime:${tag}/g"
+          find gh-pages/objectionary -name '*.eo' | \
+            xargs sed -i "s/version 0\.0\.0/version ${tag}/g"
+          find gh-pages/objectionary -name '*.eo' | sed 's|gh-pages/||' > gh-pages/objectionary.lst
+      - uses: peter-evans/create-pull-request@v8
+        with:
+          sign-commits: true
+          branch: objectionary-${{ github.ref_name }}
+          commit-message: 'objectionary and XMIR.xsd ${{ github.ref_name }}'
+          delete-branch: true
+          title: 'objectionary and XMIR.xsd ${{ github.ref_name }}'
+          assignees: yegor256
+          base: gh-pages

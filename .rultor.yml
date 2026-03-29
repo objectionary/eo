@@ -28,26 +28,3 @@ release:
     git commit -am "${tag}"
     mvn clean install -DskipTests -Dinvoker.skip
     mvn clean deploy -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
-
-    mkdir /tmp/objectionary
-    cp -R eo-runtime/src/main/eo /tmp/objectionary/objects
-    cp eo-parser/target/classes/XMIR.xsd /tmp
-    branch=$(git rev-parse --abbrev-ref HEAD)
-    git checkout gh-pages
-    git reset --hard
-    sudo git config --global --add safe.directory "$(pwd)"
-    sudo /bin/bash -c "cd '$(pwd)'; git clean -fd"
-    cp /tmp/XMIR.xsd .
-    mkdir -p xsd
-    cp XMIR.xsd "xsd/XMIR-${tag}.xsd"
-    git add XMIR.xsd "xsd/XMIR-${tag}.xsd"
-    git commit -am "XMIR XSD ${tag}"
-    rm -rf objectionary
-    cp -R /tmp/objectionary .
-    find objectionary -name '*.eo' | xargs sed -i "s/jvm org.eolang:eo-runtime:0\.0\.0/jvm org.eolang:eo-runtime:${tag}/g"
-    find objectionary -name '*.eo' | xargs sed -i "s/version 0\.0\.0/version ${tag}/g"
-    git add objectionary
-    find objectionary -name '*.eo' > objectionary.lst
-    git add objectionary.lst
-    git commit -am "objectionary ${tag}"
-    git checkout "${branch}"
