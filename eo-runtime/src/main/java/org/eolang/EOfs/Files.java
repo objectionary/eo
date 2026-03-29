@@ -18,17 +18,15 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.eolang.ExFailure;
 
 /**
  * File streams.
+ *
  * @since 0.40
- * @todo #4884:30min Use ReentrantLock instead of 'synchronized' in Files.
- *  We should use ReentrantLock instead of 'synchronized' to avoid potential
- *  deadlocks when multiple AtOnce attributes are used together.
- *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
-@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Files {
     /**
      * Files instance.
@@ -42,10 +40,16 @@ final class Files {
     private final ConcurrentHashMap<String, Object[]> streams;
 
     /**
+     * Lock.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      */
     private Files() {
         this.streams = new ConcurrentHashMap<>(0);
+        this.lock = new ReentrantLock();
     }
 
     /**
@@ -55,14 +59,19 @@ final class Files {
      */
     @SuppressWarnings("java:S2095")
     void open(final String name) throws IOException {
-        final Path path = Paths.get(name);
-        this.streams.putIfAbsent(
-            name,
-            new Object[]{
-                java.nio.file.Files.newInputStream(path),
-                java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
-            }
-        );
+        this.lock.lock();
+        try {
+            final Path path = Paths.get(name);
+            this.streams.putIfAbsent(
+                name,
+                new Object[]{
+                    java.nio.file.Files.newInputStream(path),
+                    java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
+                }
+            );
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -74,7 +83,8 @@ final class Files {
      */
     @SuppressWarnings({"PMD.AssignmentInOperand", "PMD.CloseResource"})
     byte[] read(final String name, final int size) throws IOException {
-        synchronized (this.streams) {
+        this.lock.lock();
+        try {
             if (!this.streams.containsKey(name)) {
                 throw new ExFailure(
                     "File input stream with name %s is absent, can't read",
@@ -90,6 +100,8 @@ final class Files {
                 ++processed;
             }
             return Arrays.copyOf(read, processed);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -100,14 +112,17 @@ final class Files {
      * @throws IOException If fails to write
      */
     void write(final String name, final byte[] buffer) throws IOException {
-        synchronized (this.streams) {
+        this.lock.lock();
+        try {
             if (!this.streams.containsKey(name)) {
                 throw new ExFailure(
-                    "File output stream with name %s is absent, can't read",
+                    "File output stream with name %s is absent, can't write",
                     name
                 );
             }
             ((OutputStream) this.streams.get(name)[1]).write(buffer);
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -117,7 +132,8 @@ final class Files {
      * @throws IOException If fails to close the streams
      */
     void close(final String name) throws IOException {
-        synchronized (this.streams) {
+        this.lock.lock();
+        try {
             if (!this.streams.containsKey(name)) {
                 throw new ExFailure(
                     "File streams with name %s is absent, can't close",
@@ -127,6 +143,8 @@ final class Files {
             ((InputStream) this.streams.get(name)[0]).close();
             ((OutputStream) this.streams.get(name)[1]).close();
             this.streams.remove(name);
+        } finally {
+            this.lock.unlock();
         }
     }
 }
