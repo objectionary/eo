@@ -22,12 +22,8 @@ jobs:
           java-version: 21
       - run: mvn install -DskipTests -Dinvoker.skip --errors --batch-mode
       - run: .github/objectionary.sh ${{ github.ref_name }}
-      - uses: peter-evans/create-pull-request@v8
+      - uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
-          sign-commits: true
-          branch: objectionary-${{ github.ref_name }}
-          commit-message: 'objectionary and XMIR.xsd ${{ github.ref_name }}'
-          delete-branch: true
-          title: 'objectionary and XMIR.xsd ${{ github.ref_name }}'
-          assignees: yegor256
-          base: gh-pages
+          branch: gh-pages
+          folder: gh-pages
+          clean: false
