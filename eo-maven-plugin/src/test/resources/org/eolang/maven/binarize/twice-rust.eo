@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 
-+package org.eolang.custom
++package custom
 +version 0.0.0
 
 # No comments.
 [] > hello-world-1
-  QQ.rust > r
+  Q.rust > r
     """
     use eo::Portal;
     use eo::eo_enum::EO;
@@ -24,7 +24,7 @@
 
 # No comments.
 [] > hello-world-2
-  QQ.rust > r
+  Q.rust > r
     """
     use eo::Portal;
     use eo::eo_enum::EO;

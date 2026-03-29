@@ -50,7 +50,6 @@ public class XslBench {
             "/org/eolang/parser/parse/wrap-method-calls.xsl",
             "/org/eolang/parser/parse/const-to-dataized.xsl",
             "/org/eolang/parser/parse/stars-to-tuples.xsl",
-            "/org/eolang/parser/shake/add-default-package.xsl",
             "/org/eolang/parser/shake/build-fqns.xsl"
         ).back()
     );

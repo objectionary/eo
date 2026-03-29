@@ -17,8 +17,8 @@ whether it's leap or not:
         eq. (mod. y 4) 0
         not. (eq. (mod. y 100) 0)
       eq. (mod. y 400) 0
-  QQ.io.stdout > @
-    QQ.tt.sprintf
+  Q.io.stdout > @
+    Q.tt.sprintf
       "%d is %sa leap year!"
       (args.get 0).as-int > year!
       if (leap year:y) "" "not "

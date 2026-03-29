@@ -21,7 +21,7 @@ input: |
 
     # No comments.
     [] > app
-      QQ.io.stdout > @
-        QQ.tt.sprintf
+      Q.io.stdout > @
+        Q.tt.sprintf
           "The result is %d\n"
           foo

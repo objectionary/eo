@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out:
+  - ".*Sin of 1.234500 is 0.943983.*"
+file: snippets/foo.eo
+args: ["snippets.foo"]
+eo: |
+  +alias io.stdout
+  +alias tt.sprintf
+  +decorate number ms.angle
+  +package snippets
+
+  # No comments.
+  [] > foo
+    1.2345 > x
+    stdout > @
+      sprintf
+        "Sin of %f is %f"
+        *
+          x
+          x.sin

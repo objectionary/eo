@@ -11,20 +11,19 @@ sheets:
   - /org/eolang/parser/parse/stars-to-tuples.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
   - /org/eolang/parser/parse/build-fqns.xsl
-  - /org/eolang/parser/parse/expand-qqs.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/dataized-to-const.xsl
 asserts:
-  - //o[@base='Φ.org.eolang.x' and @const and @name='first']
-  - //o[@base='Φ.org.eolang.dataized.as-bytes' and @name='second']
-  - //o[@base='Φ.org.eolang.a' and @const and @name='third']/o[@base='Φ.org.eolang.b']
+  - //o[@base='Φ.x' and @const and @name='first']
+  - //o[@base='Φ.dataized.as-bytes' and @name='second']
+  - //o[@base='Φ.a' and @const and @name='third']/o[@base='Φ.b']
   - //o[@name='fourth-1' and not(@base)]
   - //o[@base='ξ.fourth-1' and @name='fourth' and @const]
-  - //o[@base='Φ.org.eolang.number' and @name='fifths' and @const]/o[@base='Φ.org.eolang.bytes']/o[text()!='']
-  - //o[@base='Φ.org.eolang.bytes' and @name='sixth' and @const]/o[text()='2A-']
+  - //o[@base='Φ.number' and @name='fifths' and @const]/o[@base='Φ.bytes']/o[text()!='']
+  - //o[@base='Φ.bytes' and @name='sixth' and @const]/o[text()='2A-']
   - //o[@base='ξ.third' and @const and not(@as)]
 input: |
   # No comments.

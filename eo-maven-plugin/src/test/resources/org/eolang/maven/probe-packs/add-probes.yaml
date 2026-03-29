@@ -3,38 +3,36 @@
 ---
 # yamllint disable rule:line-length
 probes:
-  - 'org'
-  - 'org.eolang'
-  - 'org.eolang.tt'
-  - 'org.eolang.tt.sprintf'
-  - 'org.eolang.tt.text'
-  - 'org.eolang.car'
-  - 'org.eolang.car.engine'
-  - 'org.eolang.car.engine.start'
-  - 'org.eolang.stdout.and'
-  - 'org.eolang.stdout.and.or'
-  - 'org.eolang.string'
-  - 'org.eolang.bytes'
-  - 'org.eolang.stdout'
-  - 'org.eolang.sprintf'
-  - 'org.eolang.n'
-  - 'org.eolang.true'
-  - 'org.eolang.number'
-  - 'org.eolang.memory'
-  - 'org.eolang.fibonacci'
+  - 'tt'
+  - 'tt.sprintf'
+  - 'tt.text'
+  - 'car'
+  - 'car.engine'
+  - 'car.engine.start'
+  - 'stdout.and'
+  - 'stdout.and.or'
+  - 'string'
+  - 'bytes'
+  - 'stdout'
+  - 'sprintf'
+  - 'n'
+  - 'true'
+  - 'number'
+  - 'memory'
+  - 'fibonacci'
 eo: |
   +home https://github.com/objectionary/eo
-  +package org.eolang.custom
+  +package custom
   +version 0.0.0
 
   # No comments.
   [] > app
-    QQ.tt.text.^.q > s
-    QQ.tt.sprintf > @
+    Q.tt.text.^.q > s
+    Q.tt.sprintf > @
       "Hello, world!\n"
     start. > a
       engine.
-        QQ.car
+        Q.car
     or. > fib
       and.
         stdout

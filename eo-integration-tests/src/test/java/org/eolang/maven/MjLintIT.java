@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  {@link MjLintTest#doesNotFailWithNoErrorsAndWarnings},
  *  {@link MjLintTest#doesNotDetectWarningWithoutCorrespondingFlag},
  *  {@link MjLintTest#skipsAlreadyLinted}, {@link MjLintTest#savesVerifiedResultsToCache},
+ *  {@link MjLintTest#getsAlreadyVerifiedResultsFromCache}
  *  {@link MjTranspileTest#recompilesIfModified}, {@link MjTranspileTest#recompilesIfExpired},
  *  {@link MjTranspileTest#doesNotRetranspileIfNotModified},
  *  {@link MjTranspileTest#transpilesSimpleEoProgram},
@@ -104,7 +105,7 @@ final class MjLintIT {
     private static String helloWorld() {
         return String.join(
             "\n",
-            "+alias stdout org.eolang.io.stdout",
+            "+alias stdout io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
             "+version 0.0.0",

@@ -1,0 +1,178 @@
++alias sm.os
++alias sm.posix
++alias sm.win32
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# The `console` object is basic I/O object that allows to
+# interact with operation system console.
+#
+# Imagine, operation system console input is "Hello, world!"
+# Here's how you can use `console` object as input
+# ```
+# seq > @
+#   *
+#     console                # error
+#     console.read 4 > c1    # "Hell".as-bytes
+#     c1.read 4 > c2         # "o, w".as-bytes
+#     console.read 4 > c3    # "orld".as-bytes
+#     c2.read 4 > c4         # "!".as-bytes
+# ```
+#
+# Here 16 bytes are read from operation system console.
+# Every `console.read` object returns an input block.
+# Every input block is requested portion of bytes read
+# from console, so it's dataizable.
+# Also every input block has object `read` which allows to get
+# next input block with next portion of bytes read from console
+#
+# Here's how you can write to `console`.
+# ```
+# seq > @
+#   *
+#     console.write "Hello" > o1
+#     o1.write ", " > o2
+#     console.write "world!" > o3
+# ```
+#
+# Here `"Hello, world!".as-bytes` bytes are printed to console.
+# The object `write` is an output block.
+# It dataizes the given argument, converts it to string,
+# prints it to the operating system console and returns the next output block
+# ready to `write` again.
+#
+# Console operations are platform-specific, with different implementations
+# for POSIX and Windows systems. Each access to the `console` object creates
+# a new console instance, so reusing returned input/output blocks improves
+# performance by maintaining the same console session:
+#
+# Efficient (recommended):
+# ```
+# console.read 2 > i1
+# i1.read 2 > i2
+# i2.read 2 > i3
+# ```
+#
+# Less efficient (creates new console each time):
+# ```
+# console.read 2 > i1
+# console.read 2 > i2
+# console.read 2 > i3
+# ```
+#
+# Sequential reuse maintains the console state across operations.
+[] > console
+  if. > @
+    os.is-windows
+    windows-console
+    posix-console
+
+  # Posix console.
+  # It uses posix system calls to read/write standard inputs/outputs.
+  [] > posix-console
+    # Read `size` amount of bytes from operation system console.
+    # Returns new instance of `input-block` with `buffer` read from console.
+    [size] > read
+      ((input-block --).read size).@ > @
+
+      # Posix console input block.
+      #
+      # Note: This object is intended for internal use only. Please do not use this object
+      # programmatically outside of `console` object.
+      [buffer] > input-block
+        buffer > @
+
+        # Read `size` amount of bytes from operation system console.
+        # Returns new instance of `input-block` with `buffer` read from console.
+        [size] > read
+          seq * > @
+            chunk
+            input-block chunk
+          output. > chunk!
+            posix
+              "read"
+              * posix.stdin-fileno size
+
+    # Writes the given `buffer` to console.
+    # Here `buffer` is either sequence of bytes or and object that can be
+    # dataized via `as-bytes` object.
+    # Returns new instance of `output-block` ready to write again.
+    [buffer] > write
+      (output-block.write buffer).@ > @
+
+      # Posix console output block.
+      #
+      # Note: This object is intended for internal use only. Please do not use this object
+      # programmatically outside of `console` object.
+      [] > output-block
+        true > @
+
+        # Writes bytes contained in `buffer` to the operating system console.
+        # Returns new instance of `output-block` ready to write again.
+        [buffer] > write
+          seq * > @
+            code.
+              posix
+                "write"
+                * posix.stdout-fileno buffer buffer.size
+            output-block
+
+  # Windows console.
+  # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
+  [] > windows-console
+    # Read `size` amount of bytes from operation system console.
+    # Returns new instance of `input-block` with `buffer` read from console.
+    [size] > read
+      ((input-block --).read size).@ > @
+
+      # Windows console input block.
+      #
+      # Note: This object is intended for internal use only. Please do not use this object
+      # programmatically outside of `console` object.
+      [buffer] > input-block
+        buffer > @
+
+        # Read `size` amount of bytes from operation system console.
+        # Returns new instance of `input-block` with `buffer` read from console.
+        [size] > read
+          seq * > @
+            chunk
+            input-block chunk
+          output. > chunk!
+            win32
+              "ReadFile"
+              * win32.std-input-handle size
+
+    # Writes the given `buffer` to console.
+    # Here `buffer` is either sequence of bytes or and object that can be
+    # dataized via `as-bytes` object.
+    # Returns new instance of `output-block` ready to write again.
+    [buffer] > write
+      (output-block.write buffer).@ > @
+
+      # Windows console output block.
+      #
+      # Note: This object is intended for internal use only. Please do not use this object
+      # programmatically outside of `console` object.
+      [] > output-block
+        true > @
+
+        # Writes bytes contained in `buffer` to the operating system console.
+        # Returns new instance of `output-block` ready to write again.
+        [buffer] > write
+          seq * > @
+            code.
+              win32
+                "WriteFile"
+                * win32.std-output-handle buffer buffer.size
+            output-block
+
+  # Prints a simple message to the console. We can't validate
+  # the output, so we just run it and see if it crashes.
+  [] +> tests-writes-to-console
+    console.write > @
+      "Hello, console-test!\n"

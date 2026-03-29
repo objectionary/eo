@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,10 +30,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Integration test for EO snippets in `README.md`.
  * @since 0.56.3
+ * @todo #4538:30min Enable ReadmeSnippetsIT. The test was disabled because we've moved
+ *  EO objects from default org.eolang package to root package and most of the objects
+ *  can't be downloaded from objectionary anymore. When new release is made, we need to enable
+ *  the test.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class ReadmeSnippetsIT {
 
+    @Disabled
     @Tag("snippets")
     @ParameterizedTest
     @ExtendWith(MktmpResolver.class)

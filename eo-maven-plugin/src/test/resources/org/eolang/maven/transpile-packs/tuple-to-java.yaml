@@ -11,11 +11,12 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), 'Phi rr11 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), 'package org.eolang;')]
+  - //java[contains(text(), 'Phi rr11 = new PhMethod(Phi.Φ, "tuple");')]
   - //java[contains(text(), 'rr11 = new PhCopy(rr11);')]
-  - //java[contains(text(), '  Phi rr111 = Phi.Φ.take("org").take("eolang").take("tuple").take("empty");')]
-  - //java[contains(text(), '  Phi rr112 = Phi.Φ.take("org").take("eolang").take("number");')]
-  - //java[contains(text(), '  Phi rr113 = Phi.Φ.take("org").take("eolang").take("number");')]
+  - //java[contains(text(), 'new PhMethod(rr111, "empty");')]
+  - //java[contains(text(), 'Phi rr112 = new PhMethod(Phi.Φ, "number");')]
+  - //java[contains(text(), 'Phi rr113 = new PhMethod(Phi.Φ, "number");')]
   - //java[contains(text(), 'rr11 = new PhWith(rr11, 0, rr111);')]
   - //java[contains(text(), 'rr11 = new PhWith(rr11, 1, rr112);')]
   - //java[contains(text(), 'rr11 = new PhWith(rr11, 2, rr113);')]

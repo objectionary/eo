@@ -7,9 +7,9 @@ asserts:
   - /object[not(errors)]
   - /object/metas[count(meta)=4]
   - /object/metas/meta[head='foo' and tail='']
-  - //o[@base='Φ.org.eolang.true']
-  - //o[@base='Φ.org.eolang.string']
-  - //o[@name='hello' and @base='.as-bytes' and o[@base='Φ.org.eolang.dataized']]
+  - //o[@base='Φ.true']
+  - //o[@base='Φ.string']
+  - //o[@name='hello' and @base='.as-bytes' and o[@base='Φ.dataized']]
   - //o[@as='i']
   - //o[@as='α1']
   - //o[@as='α0']
@@ -59,11 +59,10 @@ input: |
             false:fle > a!
               []
                 Q.x.f.d Q Q > f
-                QQ.y QQ > s
+                Q.y Q > s
               [] >>
                 ^.@.hey > you
                 Q > qq
-                QQ > qqq
               kid.^.^
               "家"
             q

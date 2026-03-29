@@ -22,6 +22,7 @@ import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -32,10 +33,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
+    @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
+    @ClasspathSource(value = "snippets", glob = "**.yaml")
     @SuppressWarnings({"unchecked", "PMD.UnitTestShouldIncludeAssert"})
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));

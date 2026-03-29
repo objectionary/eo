@@ -11,14 +11,13 @@ sheets:
   - /org/eolang/parser/parse/stars-to-tuples.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
   - /org/eolang/parser/parse/build-fqns.xsl
-  - /org/eolang/parser/parse/expand-qqs.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/print/tuples-to-stars.xsl
 asserts:
-  - /object/o[@name='foo']/o[@base='Φ.org.eolang.tuple' and @star and count(o)=3 and count(o[@star]=0)]
+  - /object/o[@name='foo']/o[@base='Φ.tuple' and @star and count(o)=3 and count(o[@star]=0)]
 input: |
   +package test
 

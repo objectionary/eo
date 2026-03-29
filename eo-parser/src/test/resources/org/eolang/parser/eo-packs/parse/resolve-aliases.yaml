@@ -5,7 +5,6 @@
 sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
-  - /org/eolang/parser/parse/expand-qqs.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
 asserts:
@@ -20,13 +19,13 @@ asserts:
   - //o[@base='and']
   - //o[@base='ξ']
   - //o[@base='ρ']
-  - //o[@base='Φ.org.eolang.tt.regex']
+  - //o[@base='Φ.tt.regex']
   - //o[@base='Φ.org.d']
 input: |
   +alias org.eolang.tt.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
-  +alias custom org.eolang.tt.regex
+  +alias custom tt.regex
   +alias my org.eolang.xyz
   +alias a b c org.d
   +also my

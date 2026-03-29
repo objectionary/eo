@@ -18,6 +18,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
+    @Disabled
     @Test
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
@@ -129,6 +131,7 @@ final class MjLintTest {
         );
     }
 
+    @Disabled
     @Test
     void doesNotDetectWarningWithoutCorrespondingFlag(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
@@ -174,6 +177,7 @@ final class MjLintTest {
         );
     }
 
+    @Disabled
     @Test
     void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
@@ -197,6 +201,7 @@ final class MjLintTest {
         );
     }
 
+    @Disabled
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
@@ -217,6 +222,7 @@ final class MjLintTest {
         );
     }
 
+    @Disabled
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {

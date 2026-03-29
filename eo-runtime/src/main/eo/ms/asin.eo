@@ -1,0 +1,79 @@
++alias ms.abs
++alias ms.pi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# An operation that finds the angle whose sine is `num`.
+[num] > asin ?
+  # Tests that asin by zero equals zero.
+  [] +> tests-asin-zero
+    eq. +> @
+      asin 0
+      0
+
+  # Tests that asin of 1 equals pi/2.
+  [] +> tests-asin-one
+    eq. +> @
+      asin 1
+      div.
+        pi
+        2
+
+  # Tests that asin of -1 equals -pi/2.
+  [] +> tests-asin-negative-one
+    eq. +> @
+      asin -1
+      minus.
+        0
+        div.
+          pi
+          2
+
+  # Tests that asin of 0.5 equals 0.5235987756.
+  [] +> tests-asin-positive-value
+    lt. +> @
+      abs
+        minus.
+          asin 0.5
+          0.5235987756
+      0.000001
+
+  # Tests that asin of -0.5 equals -0.5235987756.
+  [] +> tests-asin-negative-value
+    lt. +> @
+      abs
+        minus.
+          asin -0.5
+          -0.5235987756
+      0.000001
+
+  # Tests that asin of value > 1 equals NaN.
+  [] +> tests-asin-out-of-range-positive
+    is-nan. +> @
+      asin 2
+
+  # Tests that asin of value < -1 equals NaN.
+  [] +> tests-asin-out-of-range-negative
+    is-nan. +> @
+      asin -2
+
+  # Tests that asin of NaN equals NaN.
+  [] +> tests-asin-nan
+    is-nan. +> @
+      asin nan
+
+  # Tests that asin of +inf equals NaN.
+  [] +> tests-asin-positive-infinity
+    is-nan. +> @
+      asin positive-infinity
+
+  # Tests that asin of -inf equals NaN.
+  [] +> tests-asin-negative-infinity
+    is-nan. +> @
+      asin negative-infinity

@@ -11,7 +11,6 @@
   <xsl:variable name="eo:phi" select="'φ'"/>
   <xsl:variable name="eo:rho" select="'ρ'"/>
   <xsl:variable name="eo:program" select="'Φ'"/>
-  <xsl:variable name="eo:def-package" select="'Φ̇'"/>
   <xsl:variable name="eo:lambda" select="'λ'"/>
   <xsl:variable name="eo:arrow">
     <xsl:value-of select="$eo:space"/>

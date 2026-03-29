@@ -32,7 +32,7 @@ public final class RandomProgramResolver implements ParameterResolver {
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",
             "[] > foo",
-            "  QQ.io.stdout > @",
+            "  Q.io.stdout > @",
             "    \"Hello, world!\\n\"",
             ""
         );

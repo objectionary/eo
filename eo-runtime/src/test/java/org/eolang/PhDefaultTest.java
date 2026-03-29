@@ -4,7 +4,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOnumber;
 import com.yegor256.Together;
 import java.security.SecureRandom;
 import org.cactoos.set.SetOf;

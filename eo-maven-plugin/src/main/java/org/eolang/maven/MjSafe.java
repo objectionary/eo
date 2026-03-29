@@ -79,7 +79,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
-        defaultValue = "${project.build.directory}/classes",
+        defaultValue = "${project.build.directory}/classes/org/eolang",
         readonly = true,
         required = true
     )

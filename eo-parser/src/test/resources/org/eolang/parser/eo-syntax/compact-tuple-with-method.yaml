@@ -5,10 +5,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.org.eolang.io.stdout']/o[@base='Φ.org.eolang.txt.sprintf']
+  - //o[@base='Φ.io.stdout']/o[@base='Φ.tt.sprintf']
 input: |
   [args] > program
     io.stdout > @
-      txt.sprintf *1
+      tt.sprintf *1
         "Hello, %s\n"
         args.at 0
