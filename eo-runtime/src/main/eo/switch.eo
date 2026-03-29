@@ -3,7 +3,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:44
++unlint redundant-object
 
 # The object allows choosing the right options according to case conditions.
 # Parameter `cases` is an array of two-dimensional arrays, which
@@ -32,6 +32,7 @@
       true
   (rec-case cases).@ > found
 
+  # Recursively searches tuple for the first case with true condition.
   [tup] > rec-case
     if. > @
       and.
@@ -123,9 +124,12 @@
             []
               "true case" > @
       "true case"
+    # Condition that evaluates to false for testing purposes.
     [] > c1
       false > @
+    # Condition that compares unequal strings returning false.
     [] > c2
       "1".eq "2" > @
+    # Condition that evaluates to true for testing purposes.
     [] > c3
       true > @

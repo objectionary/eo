@@ -7,8 +7,8 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:19
-+unlint redundant-object:24
++unlint redundant-object
++unlint idempotent-attribute-is-not-first
 
 # The angle.
 # A measure of how much something is tilted or rotated, measured in degrees or radians.
@@ -16,12 +16,12 @@
 [value] > angle
   value > @
   # Converts this from radians to degrees.
-  angle > in-degrees
+  angle > degrees
     div.
       times 180.0
       pi
   # Converts this from degrees to radians.
-  angle > in-radians
+  angle > radians
     div.
       times pi
       180.0

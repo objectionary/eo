@@ -16,14 +16,15 @@
       sprintf
         "Can't repeat text %d times"
         * amount
-    string repeated-bytes
+    string result
   text > bts!
   times > amount!
-  if. > repeated-bytes!
+  if. > result!
     0.eq amount
     --
     rec-repeated bts 1
 
+  # Recursively concatenates text bytes to accumulator until index reaches amount.
   [accum index] > rec-repeated
     if. > @
       amount.eq index

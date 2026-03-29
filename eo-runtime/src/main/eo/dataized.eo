@@ -52,6 +52,7 @@
               cached.as-bytes
               cached.as-bool
               m
+          # Function that increments counter in memory for testing.
           [] > func
             ^.m.put (^.m.as-number.plus 1) > @
           (dataized func).as-bytes > cached
@@ -68,6 +69,7 @@
         and.
           cached1.eq cached2
           1.eq cached1
+    # Function that increments counter in memory for testing.
     [] > func
       malloc.for > @
         0

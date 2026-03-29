@@ -3,6 +3,8 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint compound-name
++unlint redundant-object
 
 # Negative infinity.
 # A special floating-point value representing an unbounded quantity less than all real numbers.

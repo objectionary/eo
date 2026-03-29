@@ -24,7 +24,7 @@
       steps.length.eq 1
       steps.head
       loop steps
-  steps.length.plus -1 > last-index!
+  steps.length.plus -1 > end!
 
   # Recursive steps dataization.
   #
@@ -38,7 +38,7 @@
       tup.head
       or.
         (dataized tup.head).as-bool.eq --
-        tup.length.eq last-index
+        tup.length.eq end
 
   # Tests that seq step processing and final value return with float less than comparison.
   [] +> tests-seq-single-dataization-float-less

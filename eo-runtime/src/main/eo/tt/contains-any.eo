@@ -14,10 +14,10 @@
   reduced > @
     mapped
       substrings
-      contains text-bts x > [x] >>
+      contains txt x > [x] >>
     false
     x.or a > [a x]
-  text > text-bts!
+  text > txt!
 
   # Tests that contains-any returns true when any substring is present.
   [] +> tests-successful-contains-any

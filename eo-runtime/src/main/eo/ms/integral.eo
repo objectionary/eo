@@ -35,6 +35,7 @@
               sum
             b > right
             ((right.minus left).div n).as-number > step
+  # Calculates integral over single subsection using Simpson's rule.
   [a b] > subsection
     times. > @
       div.
@@ -71,6 +72,7 @@
             value.minus operand
           err
         0
+      # Returns absolute value of the given number.
       [value] > abs
         if. > @
           value.gte 0
@@ -97,6 +99,7 @@
             value.minus operand
           err
         0
+      # Returns absolute value of the given number.
       [value] > abs
         if. > @
           value.gte 0
@@ -123,6 +126,7 @@
             value.minus operand
           err
         0
+      # Returns absolute value of the given number.
       [value] > abs
         if. > @
           value.gte 0

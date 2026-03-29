@@ -90,9 +90,9 @@
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
           seq * > @
-            read-bytes
-            input-block read-bytes
-          output. > read-bytes!
+            chunk
+            input-block chunk
+          output. > chunk!
             posix
               "read"
               * posix.stdin-fileno size
@@ -140,9 +140,9 @@
         # Returns new instance of `input-block` with `buffer` read from console.
         [size] > read
           seq * > @
-            read-bytes
-            input-block read-bytes
-          output. > read-bytes!
+            chunk
+            input-block chunk
+          output. > chunk!
             win32
               "ReadFile"
               * win32.std-input-handle size

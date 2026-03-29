@@ -23,25 +23,7 @@ jobs:
           key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-jdk-20-maven-
-      - run: |
-          # Clean the test classes to avoid caching issues and prepare testing environment
-          # without running the tests
-          mvn clean install -Pqulice -PskipTests
-          # Find script
-          SCRIPT=${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh
-          # Check that script is exists
-          if [ ! -f "${SCRIPT}" ]; then
-              echo "Script ${SCRIPT} not found"
-              exit 1
-          fi
-          # Make script runnable
-          chmod +x "${SCRIPT}"
-          # Test eo-parser
-          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-parser"
-          # Test eo-maven-plugin
-          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-maven-plugin"
-          # Test eo-runtime
-          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-runtime" --compilation true
+      - run: .github/daily.sh ${{ github.workspace }}
   report-fail:
     name: Create issue on failure
     needs: build

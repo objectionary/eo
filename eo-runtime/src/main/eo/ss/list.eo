@@ -8,8 +8,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:28
-+unlint redundant-object:34
++unlint redundant-object
 
 # List implements basic operations on collections like reducing, mapping, filtering, etc.
 # Decorates and extends `tuple` to provide functional programming operations.
@@ -86,15 +85,16 @@
       eq.
         origin.length
         other.length
-      rec-eq origin other
+      receq origin other
 
-    [first second] > rec-eq
+    # Recursively compares elements of two tuples for equality.
+    [first second] > receq
       if. > @
         first.length.eq 0
         true
         and.
           first.head.eq second.head
-          rec-eq first.tail second.tail
+          receq first.tail second.tail
 
   # Concatenates current list with given one.
   [passed] > concat
@@ -107,9 +107,10 @@
   # If the list has no this item, index-of returns -1.
   [wanted] > index-of
     number > @
-      rec-index-of origin
+      recidx origin
 
-    [tup] > rec-index-of
+    # Recursively searches for wanted element returning its index.
+    [tup] > recidx
       if. > @
         tup.length.eq 0
         -1
@@ -120,21 +121,22 @@
             tup.tail.length
             -1
           next
-      rec-index-of tup.tail > next!
+      recidx tup.tail > next!
 
   # Returns index of the last particular item in list.
   # If the list has no this item, returns -1.
   [wanted] > last-index-of
-    rec-last-index-of origin > @
+    reclast origin > @
 
-    [tup] > rec-last-index-of
+    # Recursively searches for last occurrence of wanted element.
+    [tup] > reclast
       if. > @
         tup.length.eq 0
         -1
         if.
           tup.head.eq wanted
           tup.tail.length
-          rec-last-index-of tup.tail
+          reclast tup.tail
 
   # Returns `true` if the list contains `element`.
   # Otherwise, `false`.
@@ -152,9 +154,10 @@
   # the `func` should be boolean, that is `true` or `false`.
   [func] > filteredi
     list > @
-      rec-filteredi origin
+      recfilter origin
 
-    [tup] > rec-filteredi
+    # Recursively filters tuple elements using predicate function with index.
+    [tup] > recfilter
       if. > @
         tup.length.eq 0
         *
@@ -162,7 +165,7 @@
           func tup.head tup.tail.length
           next.with tup.head
           next
-      rec-filteredi tup.tail > next
+      recfilter tup.tail > next
 
   # Filter list without index with the function `func`.
   # Here `func` must be an abstract object
@@ -185,14 +188,15 @@
           (number idx).gte origin.length
           ^
           list
-            rec-head origin
+            rechead origin
     index > idx!
 
-    [tup] > rec-head
+    # Recursively removes tail elements until tuple reaches target length.
+    [tup] > rechead
       if. > @
         tup.length.eq idx
         tup
-        rec-head tup.tail
+        rechead tup.tail
 
   # Get the last `index` elements from the end of the list.
   [index] > back
@@ -348,6 +352,7 @@
       foo
         * 1 "text" "f"
       * "text" "f"
+    # Helper function that removes first element from given tuple.
     [a] > foo
       withouti. > @
         list a

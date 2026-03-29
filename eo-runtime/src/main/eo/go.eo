@@ -3,8 +3,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:52
-+unlint redundant-object:57
++unlint redundant-object
 
 # Non-conditional forward and backward jumps.
 # Forward jump instantly returns provided object to `g.forward` without touching
@@ -38,6 +37,7 @@
     8
     m.put m.id > [m]
 
+  # Executes body with jump token allowing forward and backward jumps.
   [body] > to
     try > @
       body token
@@ -48,14 +48,17 @@
           error e
       true
 
+    # Token object that provides backward and forward jump capabilities.
     [] > token
       error > backward
         jump
           to body
 
+      # Internal object that carries jump identifier and return value.
       [value] > jump
         identifier > id
 
+      # Performs forward jump returning given result immediately to caller.
       [res] > forward
         error > @
           jump
@@ -91,6 +94,7 @@
       eq.
         div 0
         0
+    # Divides 42 by x, returns 0 if x is zero using forward jump.
     [x] > div
       malloc.for > @
         0
@@ -110,6 +114,7 @@
     eq. > @
       max 7 42
       42
+    # Returns maximum of two numbers using forward jump for early return.
     [a b] > max
       go.to > @
         [g] >>

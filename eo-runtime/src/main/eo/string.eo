@@ -4,8 +4,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:104
-+unlint redundant-object:120
++unlint redundant-object
 
 # The `string` object represents UTF-8 encoded text strings stored internally
 # as byte sequences. It provides Unicode-aware operations for text manipulation
@@ -28,49 +27,49 @@
     if. > @
       size.eq 0
       0
-      rec-length 0 0
+      reclen 0 0
     as-bytes.size > size
-    80- > pattern-one
-    E0- > pattern-two
-    F0- > pattern-three
-    F8- > pattern-four
-    00- > result-one
-    C0- > result-two
-    pattern-two > result-three
-    pattern-three > result-four
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
 
-    # The object checks if `index` + `char-size` is out of the string bounds.
-    # If not - the new recursion iteration is started with `index` increased by `char-size` and
+    # The object checks if `index` + `csize` is out of the string bounds.
+    # If not - the new recursion iteration is started with `index` increased by `csize` and
     # `accum` increased by 1.
-    [index char-size len] > increase-length
+    [index csize len] > inclen
       if. > @
-        (index.plus char-size).gt size
+        (index.plus csize).gt size
         error
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
-            * char-size index as-bytes
-        rec-length
-          index.plus char-size
+            * csize index as-bytes
+        reclen
+          index.plus csize
           len.plus 1
 
     # The object recursively calculates the length of current string considering how many bytes
     # the character on each iteration must consist of.
-    [index accum] > rec-length
+    [index accum] > reclen
       if. > @
         index.eq size
         accum
         if.
-          (byte.and pattern-one).eq result-one
-          increase-length index 1 accum
+          (byte.and p1).eq r1
+          inclen index 1 accum
           if.
-            (byte.and pattern-two).eq result-two
-            increase-length index 2 accum
+            (byte.and p2).eq r2
+            inclen index 2 accum
             if.
-              (byte.and pattern-three).eq result-three
-              increase-length index 3 accum
+              (byte.and p3).eq r3
+              inclen index 3 accum
               if.
-                (byte.and pattern-four).eq result-four
-                increase-length index 4 accum
+                (byte.and p4).eq r4
+                inclen index 4 accum
                 error
                   sprintf
                     "Unknown byte format (%x), can't recognize character"
@@ -80,65 +79,65 @@
   # Takes a piece of a string as another string.
   [start len] > slice
     if. > @
-      num-start.lt 0
+      nstart.lt 0
       error
         sprintf
           "Start index must be >= 0, but was %d"
-          * num-start
+          * nstart
       if.
-        num-len.lt 0
+        nlen.lt 0
         error
           sprintf
             "Length to slice must be >= 0, but was %d"
-            * num-len
+            * nlen
         if.
-          num-len.eq 0
+          nlen.eq 0
           ""
           string
-            as-bytes.slice bts-start bts-length
-    start > start-bytes!
-    len > len-bytes!
-    number start-bytes > num-start
-    number len-bytes > num-len
+            as-bytes.slice bstart blen
+    start > sbts!
+    len > lbts!
+    number sbts > nstart
+    number lbts > nlen
     as-bytes.size > size
-    num-start.plus num-len > end
-    80- > pattern-one
-    E0- > pattern-two
-    F0- > pattern-three
-    F8- > pattern-four
-    00- > result-one
-    C0- > result-two
-    pattern-two > result-three
-    pattern-three > result-four
-    rec-index > bts-start!
+    nstart.plus nlen > end
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
+    recidx > bstart!
       0
       0
-      num-start
+      nstart
       sprintf
         "Start index (%d) is out of string bounds"
-        * num-start
-    minus. > bts-length
-      rec-index
-        number bts-start
+        * nstart
+    minus. > blen
+      recidx
+        number bstart
         0
-        num-len
+        nlen
         sprintf
           "Start index + length to slice (%d) is out of string bounds"
-          * (num-start.plus num-len)
-      bts-start
+          * (nstart.plus nlen)
+      bstart
 
-    # The object checks if `index` + `char-size` is not out of the string bounds.
-    # If not - the new recursion cycle is started with `index` increased by `char-size` and
+    # The object checks if `index` + `csize` is not out of the string bounds.
+    # If not - the new recursion cycle is started with `index` increased by `csize` and
     # `accum` increased by 1.
-    [index char-size accum result cause] > increase
+    [index csize accum result cause] > increase
       if. > @
-        (index.plus char-size).gt size
+        (index.plus csize).gt size
         error
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
-            * char-size index as-bytes
-        rec-index
-          index.plus char-size
+            * csize index as-bytes
+        recidx
+          index.plus csize
           accum.plus 1
           result
           cause
@@ -149,7 +148,7 @@
     # of the bytes but `accum` does not reach the `result`.
     # Also it checks how many bytes (B) must contain character on the current step and tries to
     # increase index by B.
-    [index accum result cause] > rec-index
+    [index accum result cause] > recidx
       if. > @
         accum.eq result
         index
@@ -157,16 +156,16 @@
           index.eq size
           error cause
           if.
-            (byte.and pattern-one).eq result-one
+            (byte.and p1).eq r1
             increase index 1 accum result cause
             if.
-              (byte.and pattern-two).eq result-two
+              (byte.and p2).eq r2
               increase index 2 accum result cause
               if.
-                (byte.and pattern-three).eq result-three
+                (byte.and p3).eq r3
                 increase index 3 accum result cause
                 if.
-                  (byte.and pattern-four).eq result-four
+                  (byte.and p4).eq r4
                   increase index 4 accum result cause
                   error
                     sprintf

@@ -6,6 +6,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint idempotent-attribute-is-not-first
++unlint compound-name
++unlint redundant-object
 
 # The 32 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -90,7 +93,7 @@
   # An `error` is returned if `x` is equal to 0.
   [x] > div
     if. > @
-      x-as-i32.eq zero
+      xval.eq zero
       error
         sprintf
           "Can't divide %d by i32 zero"
@@ -103,8 +106,8 @@
         plus.
           i32 left
           i32 right
-    x.as-i32 > x-as-i32
-    (as-i64.div x-as-i32.as-i64).as-bytes > bts
+    x.as-i32 > xval
+    (as-i64.div xval.as-i64).as-bytes > bts
     bts.slice 0 4 > left
     bts.slice 4 4 > right
     00-00-00-00 > zero

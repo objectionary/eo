@@ -10,9 +10,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:157
-+unlint redundant-object:159
-+unlint redundant-object:578
++unlint redundant-object
++unlint idempotent-attribute-is-not-first
++unlint compound-name
 
 # The file object in the filesystem.
 [path] > file
@@ -108,12 +108,12 @@
   # closes the file stream and returns an original file object.
   [mode scope] > open
     if. > @
-      can-read.not.and can-write.not
+      readable.not.and writable.not
       error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         exists.not
         if.
-          must-exists
+          existing
           error
             sprintf
               "File must exist for given access mod: '%s'"
@@ -135,23 +135,23 @@
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
-    (access.eq "r+").as-bool > read-write
-    (access.eq "w+").as-bool > write-read
-    (access.eq "a+").as-bool > read-append
-    as-bool. > can-read
+    (access.eq "r+").as-bool > rw
+    (access.eq "w+").as-bool > wr
+    (access.eq "a+").as-bool > ra
+    as-bool. > readable
       or.
-        read.or read-write
-        write-read.or read-append
-    as-bool. > can-write
+        read.or rw
+        wr.or ra
+    as-bool. > writable
       or.
         or.
-          write.or read-write
-          write-read.or read-append
+          write.or rw
+          wr.or ra
         (access.eq "a").as-bool
-    as-bool. > must-exists
-      read.or read-write
+    as-bool. > existing
+      read.or rw
     as-bool. > truncate
-      write.or write-read
+      write.or wr
 
     # Process current file in the provided scope.
     #
@@ -189,22 +189,22 @@
           # returns `org.eolang.error` if provided access mode does not allow reading operations.
           [size] > read
             if. > @
-              can-read.not
+              readable.not
               [] >>
                 error > @
                   sprintf
                     "Can't read from file with provided access mode '%s'"
                     * access
               seq *
-                read-bytes
-                input-block read-bytes
-            ^.^.read-bytes size > read-bytes!
+                chunk
+                input-block chunk
+            ^.^.chunk size > chunk!
 
         # Bytes, as `org.eolang.bytes`, read from file input stream.
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [size] > read-bytes ?
+        [size] > chunk ?
 
       # Writes the given `buffer` to file output stream.
       # Here `buffer` is either a sequence of bytes or an object that can be
@@ -228,7 +228,7 @@
           # returns an error if provided access mode does not allow writing operations.
           [buffer] > write
             if. > @
-              can-write.not
+              writable.not
               [] >>
                 error > @
                   sprintf
@@ -328,7 +328,7 @@
       "r"
       f > [f]
 
-  # Tests that opening a non-existent file in read-write mode throws an error.
+  # Tests that opening a non-existent file in rw mode throws an error.
   [] +> throws-on-reading-or-writing-from-not-existed-file
     tmpdir
     .tmpfile
@@ -357,7 +357,7 @@
       true > [f]
     .exists > @
 
-  # Tests that opening a non-existent file in write-read mode creates the file.
+  # Tests that opening a non-existent file in wr mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -367,7 +367,7 @@
       true > [f]
     .exists > @
 
-  # Tests that opening a non-existent file in read-append mode creates the file.
+  # Tests that opening a non-existent file in ra mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-reading-or-appending
     tmpdir
     .tmpfile
@@ -413,7 +413,7 @@
     .size
     .eq 0 > @
 
-  # Tests that opening an existing file in write-read mode truncates it to zero size.
+  # Tests that opening an existing file in wr mode truncates it to zero size.
   [] +> tests-truncates-file-opened-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -439,7 +439,7 @@
     .size
     .eq 12 > @
 
-  # Tests that opening an existing file in read-append mode preserves its content.
+  # Tests that opening an existing file in ra mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-reading-or-appending
     tmpdir
     .tmpfile

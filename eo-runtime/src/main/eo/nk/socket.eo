@@ -9,8 +9,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
-+unlint redundant-object:154
-+unlint redundant-object:341
++unlint redundant-object
++unlint compound-name
 
 # Socket.
 #
@@ -97,9 +97,9 @@
         # Returns new instance of `input-block` with `buffer` read from socket.
         [size] > read
           seq * > @
-            read-bytes
-            input-block read-bytes
-          (recv size).as-bytes > read-bytes
+            chunk
+            input-block chunk
+          (recv size).as-bytes > chunk
 
   # Makes an `output` from posix socket.
   # The object allows to use `socket` as output stream and `write` to it sequentially.
@@ -138,21 +138,21 @@
       posix
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
-    code. > inet-addr
+    code. > addr
       posix
         "inet_addr"
         * address
-    if. > inet-addr-as-int
-      inet-addr.eq posix.inaddr-none
+    if. > addrint
+      addr.eq posix.inaddr-none
       error
         sprintf
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
           * address strerror.code
-      inet-addr.as-i32
+      addr.as-i32
     posix.sockaddr-in > sockaddr
       posix.af-inet.as-i16
       htons port
-      inet-addr-as-int
+      addrint
     posix > strerror
       "strerror"
       * (posix "errno" *).code
@@ -290,7 +290,7 @@
                       [scope] > accept
                         try > @
                           if.
-                            client-sockfd.eq -1
+                            client.eq -1
                             error
                               sprintf
                                 "Failed to accept a connection on the socket #%d because '%s'"
@@ -299,10 +299,10 @@
                               dataized
                                 scope
                                   sock.scoped-socket
-                                    client-sockfd
+                                    client
                           error ex > [ex]
-                          sock.closed-socket client-sockfd
-                        code. > client-sockfd
+                          sock.closed-socket client
+                        code. > client
                           posix
                             "accept"
                             * sock.sd sock.sockaddr sock.sockaddr.size
@@ -325,22 +325,22 @@
       win32
         "socket"
         * win32.af-inet win32.sock-stream win32.ipproto-tcp
-    code. > inet-addr
+    code. > addr
       win32
         "inet_addr"
         * address
-    if. > inet-addr-as-int
-      inet-addr.eq win32.inaddr-none
+    if. > addrint
+      addr.eq win32.inaddr-none
       error
         sprintf
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
-          * address last-error.code
-      inet-addr.as-i32
+          * address err.code
+      addr.as-i32
     win32.sockaddr-in > sockaddr
       win32.af-inet.as-i16
       htons port
-      inet-addr-as-int
-    win32 "WSAGetLastError" * > last-error
+      addrint
+    win32 "WSAGetLastError" * > err
 
     # Scoped win32 socket that is passed as argument
     # to scope of `win32-socket.connect`, `win32-socket.listen` and `scoped-socket.accept`.
@@ -362,7 +362,7 @@
           error
             sprintf
               "Failed to send message through the socket #%d, WSA error code is #%d"
-              * sockfd last-error.code
+              * sockfd err.code
           sent
         buffer > buff!
         code. > sent
@@ -379,7 +379,7 @@
           error
             sprintf
               "Failed to receive data from the socket #%d, WSA error code is #%d"
-              * sockfd last-error.code
+              * sockfd err.code
           received.output
         called. > received
           win32
@@ -397,7 +397,7 @@
         error
           sprintf
             "Couldn't close a Win32 the socket #%d, WSA error code is #%d"
-            * sockfd last-error.code
+            * sockfd err.code
         true
       code. > closed
         win32
@@ -411,18 +411,18 @@
     # the object programmatically outside of `socket` object.
     [scope] > safe-socket
       if. > @
-        (started-up.eq 0).not
+        (started.eq 0).not
         error
           sprintf
             "Couldn't initialize Winsock via 'WSAStartup' call, WSA error code: %d"
-            * started-up
+            * started
         try
           if.
             sd.eq -1
             error
               sprintf
                 "Couldn't create a Win32 socket, WSA error code: %d"
-                * last-error.code
+                * err.code
             try
               scope
               error ex > [ex]
@@ -432,7 +432,7 @@
             (win32 "WSACleanup" *).code.eq win32.socket-error
             error "Couldn't cleanup Winsock resources"
             true
-      code. > started-up
+      code. > started
         win32
           "WSAStartup"
           * win32.winsock-version-2-2
@@ -448,7 +448,7 @@
             error
               sprintf
                 "Couldn't connect to '%s:%d' on Win32 socket #%d, WSA error code: %d"
-                * sock.address sock.port sock.sd sock.last-error.code
+                * sock.address sock.port sock.sd sock.err.code
             as-bytes.
               dataized
                 scope
@@ -472,13 +472,13 @@
             error
               sprintf
                 "Couldn't bind Win32 socket #%d to '%s:%d', WSA error code: %d"
-                * sock.sd sock.address sock.port sock.last-error.code
+                * sock.sd sock.address sock.port sock.err.code
             if.
               listened.eq -1
               error
                 sprintf
                   "Failed to listen for connections to '%s:%d' on socket #%d, WSA error code: %d"
-                  * sock.address sock.port sock.sd sock.last-error.code
+                  * sock.address sock.port sock.sd sock.err.code
               as-bytes.
                 dataized
                   scope
@@ -492,19 +492,19 @@
                       [scope] > accept
                         try > @
                           if.
-                            client-sockfd.eq -1
+                            client.eq -1
                             error
                               sprintf
                                 "Failed to accept a connection on Win32 socket #%d, WSA error code: %d"
-                                * sock.sd sock.last-error.code
+                                * sock.sd sock.err.code
                             as-bytes.
                               dataized
                                 scope
                                   sock.scoped-socket
-                                    client-sockfd
+                                    client
                           error ex > [ex]
-                          sock.closed-socket client-sockfd
-                        code. > client-sockfd
+                          sock.closed-socket client
+                        code. > client
                           win32
                             "accept"
                             * sock.sd sock.sockaddr sock.sockaddr.size

@@ -12,14 +12,15 @@
 [input] > input-length
   rec-read input 0 > @
 
+  # Recursively reads from input accumulating total byte length.
   [input length] > rec-read
     if. > @
-      read-bytes.size.eq 0
+      chunk.size.eq 0
       length
       rec-read
-        read-bytes
-        length.plus read-bytes.size
-    (input.read 4096).read.^ > read-bytes
+        chunk
+        length.plus chunk.size
+    (input.read 4096).read.^ > chunk
 
   # Tests that input-length reads all bytes from input and returns the total length.
   [] +> tests-reads-all-bytes-and-returns-length

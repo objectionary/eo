@@ -12,22 +12,23 @@
   if. > @
     or.
       or.
-        (number substring-size).gt text-size
+        (number slen).gt tlen
         and.
-          substring-size.eq text-size
-          (substring-bts.eq text-bts).not
+          slen.eq tlen
+          (sub.eq txt).not
       found.eq -1
     -1
     length.
       string
-        slice text-bts 0 found
-  text > text-bts!
-  substring > substring-bts!
-  text-bts.size > text-size!
-  substring-bts.size > substring-size!
-  (number text-size).minus substring-size > end!
+        slice txt 0 found
+  text > txt!
+  substring > sub!
+  txt.size > tlen!
+  sub.size > slen!
+  (number tlen).minus slen > end!
   rec-index-of 0 > found!
 
+  # Recursively searches for substring from beginning to end of text.
   [idx] > rec-index-of
     if. > @
       end.eq idx
@@ -40,8 +41,8 @@
         idx
         rec-index-of (idx.plus 1).as-number
     eq. > includes
-      slice text-bts idx substring-size
-      substring-bts
+      slice txt idx slen
+      sub
 
   # Tests specific functionality index-of returns -1 for non-existent substring longer than text.
   [] +> tests-index-of-non-existed-substring-with-more-length

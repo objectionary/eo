@@ -59,13 +59,13 @@
                   number next
             as-bytes.
               data.slice 0 next
-        size > to-read!
+        size > requested!
         data.size > available!
         if. > next!
           gt.
             number available
-            to-read
-          to-read
+            requested
+          requested
           available
 
   # Tests that bytes-as-input can create an input from bytes and read portions sequentially.

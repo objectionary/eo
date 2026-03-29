@@ -8,6 +8,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint idempotent-attribute-is-not-first
++unlint compound-name
++unlint redundant-object
 
 # Directory in the file system.
 # Apparently every directory is a file.

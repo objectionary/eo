@@ -14,10 +14,10 @@
   reduced > @
     mapped
       substrings
-      contains text-bts x > [x] >>
+      contains txt x > [x] >>
     true
     x.and a > [a x]
-  text > text-bts!
+  text > txt!
 
   # Tests that contains-all returns true when all substrings are present.
   [] +> tests-successful-contains-all

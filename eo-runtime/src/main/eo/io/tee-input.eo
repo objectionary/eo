@@ -46,13 +46,13 @@
       # `input` ready to be read, `output` ready to be written and bytes `buffer`.
       [size] > read
         seq * > @
-          written-bytes
+          written
           input-block
-            read-bytes
-            written-bytes
-            read-bytes.as-bytes
-        (input.read size).read.^ > read-bytes
-        (output.write read-bytes).write.^ > written-bytes
+            chunk
+            written
+            chunk.as-bytes
+        (input.read size).read.^ > chunk
+        (output.write chunk).write.^ > written
 
   # Tests that tee-input can read from bytes input and simultaneously write to memory output.
   [] +> tests-reads-from-bytes-and-writes-to-memory

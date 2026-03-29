@@ -5,8 +5,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:23
-+unlint redundant-object:26
++unlint redundant-object
++unlint idempotent-attribute-is-not-first
++unlint compound-name
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
@@ -37,21 +38,21 @@
     if. > @
       or.
         is-nan
-        (number x-as-bytes).is-nan
+        (number xbts).is-nan
       false
       or.
         and.
           or.
-            x-as-bytes.eq pos-zero-as-bytes
-            x-as-bytes.eq neg-zero-as-bytes
+            xbts.eq pzero
+            xbts.eq nzero
           or.
-            self-as-bytes.eq pos-zero-as-bytes
-            self-as-bytes.eq neg-zero-as-bytes
-        self-as-bytes.eq x-as-bytes
-    x > x-as-bytes!
-    as-bytes > self-as-bytes!
-    0.as-bytes > pos-zero-as-bytes
-    -0.as-bytes > neg-zero-as-bytes
+            bts.eq pzero
+            bts.eq nzero
+        bts.eq xbts
+    x > xbts!
+    as-bytes > bts!
+    0.as-bytes > pzero
+    -0.as-bytes > nzero
 
   # Returns `true` if `$` < `x`.
   # Here `x` can be a `number` or any other object which
@@ -285,6 +286,7 @@
     eq. > @
       fibo 4
       3
+    # Recursively calculates Fibonacci number for given n.
     [n] > fibo
       if. > @
         n.lt 3
@@ -299,18 +301,21 @@
       fibonacci 4
       3
 
+    # Calculates Fibonacci number using tail recursion for efficiency.
     [n] > fibonacci
       if. > @
         n.lt 3
         small n
         rec n 1 1
 
+      # Handles small Fibonacci numbers (n less than 3) as base case.
       [n] > small
         if. > @
           n.eq 2
           1
           n
 
+      # Tail recursive helper accumulating Fibonacci values down to base.
       [n minus1 minus2] > rec
         if. > @
           n.eq 3

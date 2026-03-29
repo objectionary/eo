@@ -15,10 +15,11 @@
     matched.exists.not
     reinit
     rec-replaced matched "" matched.start
-  text > self-as-bytes!
-  string self-as-bytes > reinit
+  text > bts!
+  string bts > reinit
   (target.match reinit).next > matched
 
+  # Recursively replaces matched blocks with replacement string in text.
   [block accum start] > rec-replaced
     if. > @
       block.exists

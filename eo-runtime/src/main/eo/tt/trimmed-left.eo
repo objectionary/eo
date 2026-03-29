@@ -17,14 +17,14 @@
   text > bts!
   bts.size > len!
   first-non-space-index 0 > idx!
-  20- > space
 
+  # Recursively finds index of the first non-space character from left.
   [index] > first-non-space-index
     if. > @
       len.eq index
       index
       if.
-        char.eq space
+        char.eq 20-
         first-non-space-index (index.plus 1).as-number
         index
     bts.slice index 1 > char!

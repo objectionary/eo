@@ -8,20 +8,14 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object:51
-+unlint redundant-object:66
-+unlint redundant-object:69
-+unlint redundant-object:74
-+unlint redundant-object:117
-+unlint redundant-object:118
-+unlint redundant-object:123
-+unlint redundant-object:124
-+unlint redundant-object:140
++unlint redundant-object
++unlint decorated-formation
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 [pairs] > map
+  # Initializes the map by rebuilding pairs into internal structure.
   [] > @
     initialized > @
       if.
@@ -30,9 +24,9 @@
         entries.
           rec-rebuild
             pairs
-
+    # Pair of entries tuple and hashes list.
     [entries hashes] > couple
-
+    # Recursively rebuilds pairs into map structure.
     [tup] > rec-rebuild
       if. > @
         tup.length.eq 0
@@ -99,7 +93,7 @@
         not-found
         rec-key-search entries
       hash-code-of key > hash!
-
+      # Recursively searches for key in tuple.
       [tup] > rec-key-search
         if. > @
           tup.length.eq 0
@@ -114,7 +108,7 @@
                 tup.head.value > get
               not-found
         (rec-key-search tup.tail).@ > prev
-
+      # Result when key is not found in map.
       [] > not-found
         false > exists
         error > get
