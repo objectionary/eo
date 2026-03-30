@@ -56,7 +56,7 @@
     is-nan. +> @
       sqrt -0.1
 
-  # Tests that square root calculation works correctly for float input.
+  # Tests that square root calculation works correctly for number input.
   [] +> tests-sqrt-check-float-input
     lt. +> @
       abs
@@ -64,16 +64,6 @@
           minus.
             2
             sqrt 4
-      0.00000000001
-
-  # Tests that square root calculation works correctly for integer input.
-  [] +> tests-sqrt-check-int-input
-    lt. +> @
-      abs
-        real
-          minus.
-            9
-            sqrt 81
       0.00000000001
 
   # Tests that square root of NaN returns NaN.
