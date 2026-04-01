@@ -18,17 +18,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
  * All catalogs in one place, to avoid making multiple objects.
  *
  * @since 0.29
- * @todo #4884:30min Use ReentranLock instead of synchronized block in the code.
- *  It will be more efficient and will not cause deadlocks.
- *  Don't forget to remove the PMD suppression after that.
  */
-@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class Catalogs {
 
     /**
@@ -40,9 +37,9 @@ final class Catalogs {
      * Singleton.
      */
     private static final Unchecked<Boolean> TESTING = new Unchecked<>(
-        new Sticky<>(
-            () -> {
-                synchronized (Catalogs.class) {
+        new Synced<>(
+            new Sticky<>(
+                () -> {
                     boolean tests;
                     try {
                         Class.forName("org.junit.jupiter.api.Test");
@@ -52,7 +49,7 @@ final class Catalogs {
                     }
                     return tests;
                 }
-            }
+            )
         )
     );
 
