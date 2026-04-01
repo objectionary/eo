@@ -47,7 +47,7 @@
 
   # Tests that natural logarithm of a fraction (0 < x < 1) is negative.
   [] +> tests-ln-fraction
-    lt. > @
+    lt. +> @
       abs
         minus.
           ln 0.5
@@ -56,22 +56,22 @@
 
   # Tests that natural logarithm of positive infinity equals positive infinity.
   [] +> tests-ln-positive-infinity
-    eq. > @
+    eq. +> @
       ln positive-infinity
       positive-infinity
 
   # Tests that natural logarithm of negative infinity returns NaN.
   [] +> tests-ln-negative-infinity
-    is-nan. > @
+    is-nan. +> @
       ln negative-infinity
 
   # Tests that natural logarithm of NaN returns NaN.
   [] +> tests-ln-nan
-    is-nan. > @
+    is-nan. +> @
       ln nan
 
   # Tests that natural logarithm is monotonically increasing.
   [] +> tests-ln-monotonic
-    lt. > @
+    lt. +> @
       ln 2
       ln 3
