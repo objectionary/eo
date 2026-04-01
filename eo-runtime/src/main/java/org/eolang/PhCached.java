@@ -6,6 +6,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Cached Phi.
@@ -13,10 +14,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>It's highly recommended to use it with {@link PhComposite}.</p>
  *
  * @since 0.1
- * @todo #4884:30min Replace 'synchronized' with ReentrantLock.
- *  We need to replace 'synchronized' with ReentrantLock to avoid potential
- *  deadlocks when multiple threads are trying to access the cache simultaneously.
- *  Moreover, 'synchronized' keyword is forbidden by qulice.
  */
 public final class PhCached implements Phi {
 
@@ -31,12 +28,18 @@ public final class PhCached implements Phi {
     private final AtomicReference<Phi> cached;
 
     /**
+     * Reentrant lock for thread-safe cache initialization.
+     */
+    private final ReentrantLock lock;
+
+    /**
      * Ctor.
      * @param attr Origin attribute
      */
     public PhCached(final Phi attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>();
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -50,14 +53,21 @@ public final class PhCached implements Phi {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public Phi take(final String name) {
-        synchronized (this.cached) {
-            if (this.cached.get() == null) {
-                this.cached.set(this.origin.take(name));
+        Phi result = this.cached.get();
+        if (result == null) {
+            this.lock.lock();
+            try {
+                result = this.cached.get();
+                if (result == null) {
+                    result = this.origin.take(name);
+                    this.cached.set(result);
+                }
+            } finally {
+                this.lock.unlock();
             }
         }
-        return this.cached.get();
+        return result;
     }
 
     @Override
