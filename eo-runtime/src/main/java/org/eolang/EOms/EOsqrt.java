@@ -9,6 +9,7 @@
  */
 package org.eolang.EOms; // NOPMD
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -16,18 +17,25 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Real.sqrt.
+ * Sqrt.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "real.sqrt")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOreal$EOsqrt extends PhDefault implements Atom {
+@XmirObject(oname = "sqrt")
+public final class EOsqrt extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+    public EOsqrt() {
+        this.add("num", new AtVoid("num"));
+    }
+
     @Override
     public Phi lambda() {
         return new ToPhi(
-            Math.sqrt(new Dataized(this.take(Phi.RHO)).asNumber())
+            Math.sqrt(new Dataized(this.take("num")).asNumber())
         );
     }
 }
