@@ -1,0 +1,77 @@
++alias ms.abs
++alias ms.e
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns the natural logarithm `num` with base `e` as `org.eolang.number`.
+[num] > ln ?
+  # Tests that natural logarithm of negative float returns NaN.
+  [] +> tests-ln-of-negative-float-is-nan
+    is-nan. +> @
+      ln -2.2
+
+  # Tests that natural logarithm of zero equals negative infinity.
+  [] +> tests-ln-of-zero-is-negative-infinity
+    eq. +> @
+      ln 0
+      negative-infinity
+
+  # Tests that natural logarithm of 1 equals zero.
+  [] +> tests-ln-of-one-is-zero
+    eq. +> @
+      ln 1
+      0
+
+  # Tests that natural logarithm of e equals 1.
+  [] +> tests-ln-of-e-one-is-one
+    eq. +> @
+      ln e
+      1
+
+  # Tests that natural logarithm of -42 equals NaN.
+  [] +> tests-ln-of-negative-int-is-nan
+    is-nan. +> @
+      ln -42
+
+  # Tests that natural logarithm of a positive number > 1.
+  [] +> tests-ln-of-twenty
+    eq. +> @
+      ln 20
+      2.995732273553991
+
+  # Tests that natural logarithm of a fraction (0 < x < 1) is negative.
+  [] +> tests-ln-fraction
+    lt. +> @
+      abs
+        minus.
+          ln 0.5
+          -0.6931471805599453
+      0.00000000001
+
+  # Tests that natural logarithm of positive infinity equals positive infinity.
+  [] +> tests-ln-positive-infinity
+    eq. +> @
+      ln positive-infinity
+      positive-infinity
+
+  # Tests that natural logarithm of negative infinity returns NaN.
+  [] +> tests-ln-negative-infinity
+    is-nan. +> @
+      ln negative-infinity
+
+  # Tests that natural logarithm of NaN returns NaN.
+  [] +> tests-ln-nan
+    is-nan. +> @
+      ln nan
+
+  # Tests that natural logarithm is monotonically increasing.
+  [] +> tests-ln-monotonic
+    lt. +> @
+      ln 2
+      ln 3
