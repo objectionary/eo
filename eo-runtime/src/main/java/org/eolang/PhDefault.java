@@ -205,7 +205,10 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.class.getSimpleName().equals(name)) {
             form = "[]";
         } else {
-            form = String.format("%s.%s", PhPackage.GLOBAL, name);
+            form = String.format(
+                "%s.%s",
+                PhPackage.GLOBAL, name
+            );
         }
         return form;
     }
