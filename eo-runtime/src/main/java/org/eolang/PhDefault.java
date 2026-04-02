@@ -41,11 +41,6 @@ public class PhDefault implements Phi, Cloneable {
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
-     * From Java package name to forma.
-     */
-    private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
-
-    /**
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
@@ -210,14 +205,7 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.class.getSimpleName().equals(name)) {
             form = "[]";
         } else {
-            form = String.join(
-                ".",
-                PhPackage.GLOBAL,
-                PhDefault.TO_FORMA.matcher(
-                    this.getClass().getPackageName()
-                ).replaceAll("$1"),
-                name
-            );
+            form = String.format("%s.%s", PhPackage.GLOBAL, name);
         }
         return form;
     }
