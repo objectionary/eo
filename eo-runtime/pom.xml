@@ -254,13 +254,6 @@
                       ignore @to-do markers. See: https://github.com/objectionary/lints/issues/805
                 -->
                 <lint>comment-not-capitalized</lint>
-                <!--
-                @todo #4538:30min. Enable `object-has-data` lint.
-                      The lint incorrectly flags all objects with bytes inside because they
-                      don't have @base='Φ.org.eolang.bytes'. It was changed in
-                      https://github.com/objectionary/eo/issues/4538. Right now we have just Φ.bytes
-                -->
-                <lint>object-has-data</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
