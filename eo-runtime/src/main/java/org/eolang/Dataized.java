@@ -83,11 +83,6 @@ public final class Dataized {
             raw.addAll(ex.messages());
             Collections.reverse(raw);
             final Phi enc = ex.enclosure();
-            System.out.println("____________________________+");
-            System.out.println("enc.forma() = " + enc.forma());
-            System.out.println("____________________________+");
-            //if ("go.to.token.jump".equals(enc.forma())) {
-            //if ("go.to.token.jump".equals(enc.forma()) || String.format("%s.go.to.token.jump", PhPackage.GLOBAL).equals(enc.forma())) {
             if (enc.forma().endsWith("go.to.token.jump")) {
                 throw new EOerror.ExError(enc);
             }

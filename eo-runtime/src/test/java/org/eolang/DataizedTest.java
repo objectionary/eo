@@ -22,20 +22,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for {@link Dataized}.
  *
  * @since 0.22
- * @todo #4538:30min Enable the test {@link DataizedTest#doesNotLogGoToTokenJump}.
- *  The test was disabled because we've moved EO objects from default package 'org.eolang'
- *  to Q, but java classes are placed in 'org.eolang' java package. That's why the method
- *  {@link PhDefault#forma()} and {@link PhSafe#forma()} started to work incorrectly and
- *  show 'org.eolang'. Need to fix these methods, make sure they work as expected and enable
- *  the test.
- * @todo #4538:30min Enable the test {@link DataizedTest#logsAllLocationsWithPhSafe()}.
- *  The test was disabled because we've moved EO objects from default package 'org.eolang'
- *  to Q. This somehow affected {@link PhSafe} and {@link PhDefault} classes.
- *  Need to fix it and enable the test
  */
 @Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
-    //@Disabled
+
     @Test
     @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void logsAllLocationsWithPhSafe() {
