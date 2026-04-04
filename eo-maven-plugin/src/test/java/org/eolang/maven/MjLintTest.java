@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.31.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
@@ -73,10 +73,7 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsErrorsSuccessfullyEvenAfterSecondRun(
         @Mktmp final Path temp
     ) throws IOException {
