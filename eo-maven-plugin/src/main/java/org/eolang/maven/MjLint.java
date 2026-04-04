@@ -164,17 +164,23 @@ public final class MjLint extends MjSafe {
                     src -> this.linted(
                         tojo.identifier(),
                         xmir,
-                        counts,
                         unlints
                     ).toString()
                 )
             ).apply(source, target, base.relativize(target));
         } else {
             new Saved(
-                this.linted(tojo.identifier(), xmir, counts, unlints)
-                    .toString(),
+                this.linted(tojo.identifier(), xmir, unlints).toString(),
                 target
             ).value();
+        }
+        final Xnav checked = new Xnav(target);
+        final Collection<Defect> defects = MjLint.existing(tojo.identifier(), checked);
+        for (final Defect defect : defects) {
+            if (MjLint.notSuppressed(checked, defect)) {
+                counts.compute(defect.severity(), (sev, before) -> before + 1);
+                MjLint.logOne(defect);
+            }
         }
         tojo.withLinted(target);
         return 1;
@@ -228,7 +234,6 @@ public final class MjLint extends MjSafe {
      * Find all possible linting defects and add them to the XMIR.
      * @param program Program identifier
      * @param xmir The XML before linting
-     * @param counts Counts of errors, warnings, and critical
      * @param unlints Lints to skip
      * @return XML after linting
      * @checkstyle ParameterNumberCheck (40 lines)
@@ -236,12 +241,10 @@ public final class MjLint extends MjSafe {
     private XML linted(
         final String program,
         final XML xmir,
-        final Map<Severity, Integer> counts,
         final String... unlints
     ) {
         final Node node = xmir.inner();
-        final Xnav xnav = new Xnav(node);
-        final Collection<Defect> defects = MjLint.existing(program, xnav);
+        final Collection<Defect> defects = MjLint.existing(program, new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
             .without(unlints)
             .defects()
@@ -257,10 +260,6 @@ public final class MjLint extends MjSafe {
         for (final Defect defect : defects) {
             if (found.contains(defect)) {
                 MjLint.embedded(dirs, defect);
-            }
-            if (MjLint.notSuppressed(xnav, defect)) {
-                counts.compute(defect.severity(), (sev, before) -> before + 1);
-                MjLint.logOne(defect);
             }
         }
         new Xembler(dirs).applyQuietly(node);

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.31.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
@@ -69,6 +69,30 @@ final class MjLintTest {
                 maven.programTojo().linted()
             ).path("/object/errors/error[@severity='error']").count(),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    void detectsErrorsSuccessfullyEvenAfterSecondRun(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "Program with noname attributes should have failed or error for the first time, but it didn't"
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "We expect that even if the result was cached, we still get the same error"
         );
     }
 
