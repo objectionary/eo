@@ -73,6 +73,33 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings({
+        "PMD.UnitTestContainsTooManyAsserts",
+        "PMD.UnnecessaryLocalRule"
+    })
+    void detectsErrorsSuccessfullyEvenAfterSecondRun(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "Program with noname attributes should have failed or error for the first time, but it didn't"
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "We expect that even if the result was cached, we still get the same error"
+        );
+    }
+
+    @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
