@@ -88,9 +88,9 @@ public final class Dataized {
             }
             if (enc.forma().endsWith(".string")) {
                 raw.add(
-                        String.format(
-                                "\"%s\"",
-                                new Dataized(enc).take(String.class)
+                    String.format(
+                        "\"%s\"",
+                            new Dataized(enc).take(String.class)
                         )
                 );
             }
