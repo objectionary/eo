@@ -90,8 +90,8 @@ public final class Dataized {
                 raw.add(
                     String.format(
                         "\"%s\"",
-                            new Dataized(enc).take(String.class)
-                        )
+                        new Dataized(enc).take(String.class)
+                    )
                 );
             }
             final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
