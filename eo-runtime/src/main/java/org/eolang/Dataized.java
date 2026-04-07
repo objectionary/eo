@@ -86,12 +86,12 @@ public final class Dataized {
             if (enc.forma().endsWith("go.to.token.jump")) {
                 throw new EOerror.ExError(enc);
             }
-            if (String.format("%s.org.eolang.string", PhPackage.GLOBAL).equals(enc.forma())) {
+            if (enc.forma().endsWith(".string")) {
                 raw.add(
-                    String.format(
-                        "\"%s\"",
-                        new Dataized(enc).take(String.class)
-                    )
+                        String.format(
+                                "\"%s\"",
+                                new Dataized(enc).take(String.class)
+                        )
                 );
             }
             final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
