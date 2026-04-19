@@ -1,8 +1,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.59.7
++rt jvm org.eolang:eo-runtime:0.59.8
 +rt node eo2js-runtime:0.0.0
-+version 0.59.7
++version 0.59.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint idempotent-attribute-is-not-first
@@ -290,11 +290,14 @@
                 b.put
                   (m.read 0 3).eq "XYX"
 
-  # Tests that malloc throws an error when writing beyond allocated memory bounds with offset.
-  [] +> throws-on-writing-more-than-allocated-to-malloc-with-offset
+  # Tests that malloc resizes the block when writing beyond allocated memory bounds with offset.
+  [] +> writes-beyond-offset-and-resizes
     malloc.of > @
       1
-      m.write 1 true > [m]
+      [m]
+        seq * > @
+          m.write 1 true
+          m.size.eq 2
 
   # Tests that malloc can read data from specific offset with specified length correctly.
   [] +> tests-malloc-reads-with-offset-and-length
@@ -379,11 +382,14 @@
       0
       m.copy 9 1 1 > [m]
 
-  # Tests that malloc throws an error when copying to an invalid target offset.
-  [] +> throws-on-copying-with-wrong-target
+  # Tests that malloc resizes the block when copying to a target offset beyond allocated memory.
+  [] +> copies-and-resizes-to-target
     malloc.for > @
       0
-      m.copy 3 9 1 > [m]
+      [m]
+        seq * > @
+          m.copy 3 9 1
+          m.size.eq 10
 
   # Tests that malloc throws an error when copying with an invalid length parameter.
   [] +> throws-on-copying-with-wrong-length

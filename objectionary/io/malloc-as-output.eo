@@ -1,7 +1,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package io
-+version 0.59.7
++version 0.59.8
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -60,23 +60,13 @@
               mem
       01-02-03-04-05-06-07-08-09-A0
 
-  # Tests that writing more bytes than allocated memory throws an error.
-  [] +> throws-on-writing-more-than-allocated
-    malloc.of > @
-      2
-      [m]
-        (malloc-as-output m).write 01-02-03 > @
-
-  # @todo #4475:35min Enable `writes-larger-data-than-provided-block` after resize will be implemented.
-  #  If the provided memory block is not large enough for the data to write, a runtime error happens.
-  #  However we can use `malloc.of.allocated.resized` to increase the size of the block.
-  [] > writes-larger-data-than-provided-block
+  # Tests that writing more bytes than allocated resizes the block and stores all bytes.
+  [] +> writes-larger-data-than-provided-block
     eq. > @
       malloc.of
         2
         [mem]
-          seq > @
-            *
-              (malloc-as-output mem).write 01-02-03
-              mem
+          seq * > @
+            (malloc-as-output mem).write 01-02-03
+            mem
       01-02-03
