@@ -1,9 +1,9 @@
 +alias tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.59.8
++rt jvm org.eolang:eo-runtime:0.59.9
 +rt node eo2js-runtime:0.0.0
-+version 0.59.8
++version 0.59.9
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -503,6 +503,10 @@
   # Tests that conversion to i64 throws error for wrong-sized bytes.
   [] +> throws-on-bytes-of-wrong-size-as-i64
     01-01-01-01.as-i64 > @
+
+  # Tests that slicing out of bounds throws an error.
+  [] +> throws-on-out-of-bounds-slice
+    20-1F-EE-B5-90.slice 3 10 > @
 
   # Tests that bytes can be correctly converted to i64 integer.
   [] +> tests-bytes-converts-to-i64
