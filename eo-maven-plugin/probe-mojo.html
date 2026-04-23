@@ -74,11 +74,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.59.6</strong>
+                                    <strong itemprop="version">0.61.0</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-03-23">
-                                        23-Mar-2026
+                                    <time itemprop="datePublished" datetime="2026-04-23">
+                                        23-Apr-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -89,7 +89,7 @@
                             <section><a id="eo.3Aprobe"></a>
 <h1>eo:probe</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.59.6:probe</p>
+<p>org.eolang:eo-maven-plugin:0.61.0:probe</p>
 <p><strong>Description</strong>:</p>
 <p>Go through all `probe` and `also` metas in XMIR files, try to locate the objects pointed by `probe` in Objectionary, and if found, register them in the catalog. More about the purpose of this Mojo is in <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>. 
 <p>This goal just modifies the "foreign" catalog by adding newly discovered objects to it. It does not download or pull the sources of these objects, that is the job of <code>MjPull</code><!-- no javadoc sites associated --> goal which usually goes after this one. This goal does not create any files on the disk either.</p></p>
@@ -138,76 +138,71 @@
 <td>Add eo-runtime dependency to the classpath. 
 <p>That property is useful only for eo-runtime library compilation. When you compile eo-runtime, you don't want to add eo-runtime from foreign sources (since you compile an eo-runtime library and classpath will anyway have all required classes) and in this case, you should set this property to true. In any other cases, the eo-runtime dependency will be downloaded and added to the classpath automatically.</p><br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreRuntime</code></td></tr>
 <tr class="b">
-<td><a href="#ignoreTransitive"><code>&lt;ignoreTransitive&gt;</code></a></td>
-<td><code>boolean</code></td>
-<td><code>-</code></td>
-<td>Fail resolution process on transitive dependencies.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreTransitive</code></td></tr>
-<tr class="a">
 <td><a href="#ignoreVersionConflicts"><code>&lt;ignoreVersionConflicts&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.1.0</code></td>
 <td>Fail resolution process on conflicting dependencies.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.ignoreVersionConflicts</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#lintAsPackage"><code>&lt;lintAsPackage&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>-</code></td>
 <td>Whether we should lint all the sources together as package.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.lintAsPackage</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#offline"><code>&lt;offline&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.32.0</code></td>
 <td>If we are offline and not able to download anything from the internet.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.offline</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#overWrite"><code>&lt;overWrite&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.10.0</code></td>
 <td>Pull again even if the .eo file is already present?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.overWrite</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#placed"><code>&lt;placed&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>0.11.0</code></td>
 <td>The path to a text file where paths of all added .class (and maybe others) files are placed.<br /><strong>Default</strong>: <code>${project.build.directory}/eo-placed.json</code><br /><strong>User Property</strong>: <code>eo.placed</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#placedFormat"><code>&lt;placedFormat&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>-</code></td>
 <td>Format of "placed" file ("json" or "csv").<br /><strong>Default</strong>: <code>json</code><br /><strong>User Property</strong>: <code>eo.placedFormat</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#skipExperimentalLints"><code>&lt;skipExperimentalLints&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.57.0</code></td>
 <td>If set to TRUE, experimental lints are skipped during the linting.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.skipExperimentalLints</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#skipLinting"><code>&lt;skipLinting&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>-</code></td>
 <td>Whether we should skip linting at all.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.skipLinting</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#skipZeroVersions"><code>&lt;skipZeroVersions&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.9.0</code></td>
 <td>Skip artifact with the version 0.0.0.<br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.skipZeroVersions</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#sourcesDir"><code>&lt;sourcesDir&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Directory in which .eo files are located.<br /><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code><br /><strong>User Property</strong>: <code>eo.sourcesDir</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#tag"><code>&lt;tag&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>0.21.0</code></td>
 <td>The Git tag to pull objects from, in objectionary.<br /><strong>Default</strong>: <code>master</code><br /><strong>User Property</strong>: <code>eo.tag</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#targetDir"><code>&lt;targetDir&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Target directory.<br /><strong>Default</strong>: <code>${project.build.directory}/eo</code><br /><strong>User Property</strong>: <code>eo.targetDir</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#trackTransformationSteps"><code>&lt;trackTransformationSteps&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.24.0</code></td>
 <td>Track optimization steps into intermediate XMIR files?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.trackTransformationSteps</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#xslMeasures"><code>&lt;xslMeasures&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>0.41.0</code></td>
@@ -337,13 +332,6 @@
 <li><strong>Type</strong>: <code>boolean</code></li>
 <li><strong>Required</strong>: <code>Yes</code></li>
 <li><strong>User Property</strong>: <code>eo.ignoreRuntime</code></li>
-<li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="ignoreTransitive"></a><section><a id="a.3CignoreTransitive.3E"></a>
-<h3>&lt;ignoreTransitive&gt;</h3>
-<div>Fail resolution process on transitive dependencies.</div>
-<ul>
-<li><strong>Type</strong>: <code>boolean</code></li>
-<li><strong>Required</strong>: <code>Yes</code></li>
-<li><strong>User Property</strong>: <code>eo.ignoreTransitive</code></li>
 <li><strong>Default</strong>: <code>false</code></li></ul><hr /></section><a id="ignoreVersionConflicts"></a><section><a id="a.3CignoreVersionConflicts.3E"></a>
 <h3>&lt;ignoreVersionConflicts&gt;</h3>
 <div>Fail resolution process on conflicting dependencies.</div>

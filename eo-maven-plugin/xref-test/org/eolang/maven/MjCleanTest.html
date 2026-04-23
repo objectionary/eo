@@ -63,17 +63,16 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              .with(<span class="jxr_string">"cache"</span>, temp.resolve(<span class="jxr_string">"cache/parsed"</span>).toFile())
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>              .with(<span class="jxr_string">"skipZeroVersions"</span>, <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>              .with(<span class="jxr_string">"central"</span>, Central.EMPTY)
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>              .with(<span class="jxr_string">"ignoreTransitive"</span>, <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>              .execute(MjRegister.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>              .execute(MjAssemble.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>              .execute(MjClean.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          MatcherAssert.assertThat(
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <span class="jxr_string">"CleanMojo should delete all files after full compiling lifecycle, but it doesn't"</span>,
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              temp.resolve(<span class="jxr_string">"target"</span>).toFile().exists(),
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              Matchers.is(false)
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          );
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>              .execute(MjRegister.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>              .execute(MjAssemble.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>              .execute(MjClean.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <span class="jxr_string">"CleanMojo should delete all files after full compiling lifecycle, but it doesn't"</span>,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              temp.resolve(<span class="jxr_string">"target"</span>).toFile().exists(),
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>              Matchers.is(false)
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          );
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

@@ -75,15 +75,15 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      @SuppressWarnings(<span class="jxr_string">"PMD.UnnecessaryLocalRule"</span>)
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">void</strong> deletesInnerGeneratedClasses(@Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">final</strong> FakeMaven maven = <strong class="jxr_keyword">new</strong> FakeMaven(temp);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">new</strong> Saved(<span class="jxr_string">"outer"</span>, maven.generatedPath().resolve(<span class="jxr_string">"EOorg/EOnumber.java"</span>)).value();
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">new</strong> Saved(<span class="jxr_string">"outer"</span>, maven.generatedPath().resolve(<span class="jxr_string">"org/EOnumber.java"</span>)).value();
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">final</strong> Path clazz = <strong class="jxr_keyword">new</strong> Saved(
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>              <span class="jxr_string">"clz"</span>, maven.classesPath().resolve(<span class="jxr_string">"EOorg/EOnumber.class"</span>)
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              <span class="jxr_string">"clz"</span>, maven.classesPath().resolve(<span class="jxr_string">"org/EOnumber.class"</span>)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          ).value();
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">final</strong> Path <strong class="jxr_keyword">inner</strong> = <strong class="jxr_keyword">new</strong> Saved(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              <span class="jxr_string">"inner"</span>, maven.classesPath().resolve(<span class="jxr_string">"EOorg/EOnumber$1$2$3.class"</span>)
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              <span class="jxr_string">"inner"</span>, maven.classesPath().resolve(<span class="jxr_string">"org/EOnumber$1$2$3.class"</span>)
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          ).value();
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">final</strong> Path located = <strong class="jxr_keyword">new</strong> Saved(
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>              <span class="jxr_string">"clss"</span>, maven.classesPath().resolve(<span class="jxr_string">"EOorg/EOnumber$EOΦorgeolanginner.class"</span>)
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>              <span class="jxr_string">"clss"</span>, maven.classesPath().resolve(<span class="jxr_string">"org/EOnumber$EOΦorgeolanginner.class"</span>)
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          ).value();
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          MatcherAssert.assertThat(
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>              <span class="jxr_string">"UnspileMojo must delete inner auto generated classes"</span>,
