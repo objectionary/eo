@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -106,41 +105,46 @@ final class AtWithRhoTest {
 
     @Test
     void returnsSameInstanceToConcurrentCallers() throws InterruptedException {
-        final int threads = 16;
-        final Attr attr = new AtWithRho(
-            new AtComposite(new PhDefault(), phi -> phi),
-            new PhDefault()
-        );
-        final Set<Phi> results = ConcurrentHashMap.newKeySet();
-        final CountDownLatch start = new CountDownLatch(1);
-        final CountDownLatch done = new CountDownLatch(threads);
-        final ExecutorService pool = Executors.newFixedThreadPool(threads);
-        try {
-            for (int idx = 0; idx < threads; ++idx) {
-                pool.submit(() -> {
-                    try {
-                        start.await();
-                        results.add(attr.get());
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    } finally {
-                        done.countDown();
-                    }
-                });
-            }
-            start.countDown();
-            MatcherAssert.assertThat(
-                "all threads must finish",
-                done.await(10L, TimeUnit.SECONDS),
-                Matchers.is(true)
-            );
-        } finally {
-            pool.shutdownNow();
-        }
         MatcherAssert.assertThat(
             "AtWithRho.get() must return the same instance for all concurrent callers",
-            results,
+            AtWithRhoTest.collectConcurrentGet(
+                new AtWithRho(
+                    new AtComposite(new PhDefault(), phi -> phi),
+                    new PhDefault()
+                ),
+                16
+            ),
             Matchers.hasSize(1)
         );
+    }
+
+    /**
+     * Invoke {@link Attr#get()} concurrently from many threads released
+     * simultaneously and return the distinct instances observed.
+     * @param attr Attribute to query
+     * @param threads Number of concurrent callers
+     * @return Distinct {@link Phi} instances returned across threads
+     * @throws InterruptedException If interrupted while waiting
+     */
+    private static Set<Phi> collectConcurrentGet(final Attr attr, final int threads)
+        throws InterruptedException {
+        final Set<Phi> results = ConcurrentHashMap.newKeySet();
+        final CountDownLatch start = new CountDownLatch(1);
+        try (ExecutorService pool = Executors.newFixedThreadPool(threads)) {
+            for (int idx = 0; idx < threads; ++idx) {
+                pool.submit(
+                    () -> {
+                        try {
+                            start.await();
+                            results.add(attr.get());
+                        } catch (final InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                );
+            }
+            start.countDown();
+        }
+        return results;
     }
 }

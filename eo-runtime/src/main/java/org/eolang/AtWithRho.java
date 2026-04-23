@@ -56,29 +56,48 @@ final class AtWithRho implements Attr {
 
     @Override
     public Phi get() {
-        Phi ret = this.cached.get();
-        if (ret == null) {
-            this.lock.lock();
-            try {
-                ret = this.cached.get();
-                if (ret == null) {
-                    ret = this.original.get();
-                    if (!ret.hasRho()) {
-                        ret = ret.copy();
-                        ret.put(Phi.RHO, this.rho);
-                    }
-                    this.cached.set(ret);
-                }
-            } finally {
-                this.lock.unlock();
-            }
+        final Phi ret = this.cached.get();
+        if (ret != null) {
+            return ret;
         }
-        return ret;
+        return this.initialize();
     }
 
     @Override
     public void put(final Phi phi) {
         this.cached.set(null);
         this.original.put(phi);
+    }
+
+    /**
+     * Initialize the cached value under the lock, using double-checked locking.
+     * @return Cached {@link Phi}
+     */
+    private Phi initialize() {
+        this.lock.lock();
+        try {
+            Phi ret = this.cached.get();
+            if (ret == null) {
+                ret = this.withRho(this.original.get());
+                this.cached.set(ret);
+            }
+            return ret;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Return the given object with {@link Phi#RHO} attached, copying it if needed.
+     * @param phi Original object
+     * @return Object with {@code \rho} set
+     */
+    private Phi withRho(final Phi phi) {
+        if (phi.hasRho()) {
+            return phi;
+        }
+        final Phi copy = phi.copy();
+        copy.put(Phi.RHO, this.rho);
+        return copy;
     }
 }
