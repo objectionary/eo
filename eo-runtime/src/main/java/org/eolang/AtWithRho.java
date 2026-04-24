@@ -56,11 +56,11 @@ final class AtWithRho implements Attr {
 
     @Override
     public Phi get() {
-        final Phi ret = this.cached.get();
-        if (ret != null) {
-            return ret;
+        Phi ret = this.cached.get();
+        if (ret == null) {
+            ret = this.initialize();
         }
-        return this.initialize();
+        return ret;
     }
 
     @Override
@@ -93,11 +93,11 @@ final class AtWithRho implements Attr {
      * @return Object with {@code \rho} set
      */
     private Phi withRho(final Phi phi) {
-        if (phi.hasRho()) {
-            return phi;
+        Phi ret = phi;
+        if (!ret.hasRho()) {
+            ret = ret.copy();
+            ret.put(Phi.RHO, this.rho);
         }
-        final Phi copy = phi.copy();
-        copy.put(Phi.RHO, this.rho);
-        return copy;
+        return ret;
     }
 }

@@ -107,36 +107,36 @@ final class AtWithRhoTest {
     void returnsSameInstanceToConcurrentCallers() throws InterruptedException {
         MatcherAssert.assertThat(
             "AtWithRho.get() must return the same instance for all concurrent callers",
-            AtWithRhoTest.collectConcurrentGet(
+            AtWithRhoTest.distinctConcurrentGets(
                 new AtWithRho(
                     new AtComposite(new PhDefault(), phi -> phi),
                     new PhDefault()
                 ),
                 16
             ),
-            Matchers.hasSize(1)
+            Matchers.is(1)
         );
     }
 
     /**
      * Invoke {@link Attr#get()} concurrently from many threads released
-     * simultaneously and return the distinct instances observed.
+     * simultaneously and return the number of distinct instances observed.
      * @param attr Attribute to query
      * @param threads Number of concurrent callers
-     * @return Distinct {@link Phi} instances returned across threads
+     * @return Count of distinct {@link Phi} instances returned across threads
      * @throws InterruptedException If interrupted while waiting
      */
-    private static Set<Phi> collectConcurrentGet(final Attr attr, final int threads)
+    private static int distinctConcurrentGets(final Attr attr, final int threads)
         throws InterruptedException {
-        final Set<Phi> results = ConcurrentHashMap.newKeySet();
         final CountDownLatch start = new CountDownLatch(1);
+        final Set<Phi> sink = ConcurrentHashMap.newKeySet();
         try (ExecutorService pool = Executors.newFixedThreadPool(threads)) {
             for (int idx = 0; idx < threads; ++idx) {
                 pool.submit(
                     () -> {
                         try {
                             start.await();
-                            results.add(attr.get());
+                            sink.add(attr.get());
                         } catch (final InterruptedException ex) {
                             Thread.currentThread().interrupt();
                         }
@@ -145,6 +145,6 @@ final class AtWithRhoTest {
             }
             start.countDown();
         }
-        return results;
+        return sink.size();
     }
 }
