@@ -21,10 +21,10 @@
   (Q.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory /bytes
+  [] > is-directory /true
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists /bytes
+  [] > exists /true
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -41,7 +41,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > touch /bytes
+    [] > touch /true
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -57,7 +57,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > delete /bytes
+    [] > delete /true
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   [] > size /number
@@ -165,7 +165,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
-    [] > process-file /bytes
+    [] > process-file /true
 
     # File stream.
     # The objects provides an API for using file as input or output.
@@ -242,7 +242,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes /bytes
+        [buffer] > written-bytes /true
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory

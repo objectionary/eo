@@ -34,7 +34,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use it programmatically outside of `dir` object.
-    [] > mkdir /bytes
+    [] > mkdir /true
 
   # Goes through all files in the directory, recursively
   # finding them with the `glob` provided.

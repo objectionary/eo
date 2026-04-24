@@ -113,7 +113,7 @@
 
       # Write `data` with `offset` to the allocated block in memory
       # and return `org.eolang.true`.
-      [offset data] > write /bytes
+      [offset data] > write /true
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

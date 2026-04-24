@@ -53,7 +53,7 @@
 
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` must be an `org.eolang.i64` object.
-  [x] > gt /bytes
+  [x] > gt /true
 
   # Returns `org.eolang.true` if `$` >= `x`.
   # Here `x` must be an `org.eolang.i64` object.
