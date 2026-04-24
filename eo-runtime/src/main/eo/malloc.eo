@@ -82,7 +82,7 @@
   # written into memory.
   [size scope] > of
     # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
-    [] > @ ?
+    [] > @ /bytes
 
     # Allocated block in memory that provides an API for writing and reading.
     [id] > allocated
@@ -91,13 +91,13 @@
       read 0 size > get
 
       # Returns size of allocated block in memory as `org.eolang.number`.
-      [] > size ?
+      [] > size /number
 
       # Resizes allocated block in memory and returns `true`.
       # Here `size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
       # Returns `org.eolang.malloc.of.allocated` object.
-      [size] > resized ?
+      [size] > resized /allocated
 
       # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
@@ -109,11 +109,11 @@
 
       # Read `length` bytes with `offset` from the allocated block in memory and return them
       # as `org.eolang.bytes`.
-      [offset length] > read ?
+      [offset length] > read /bytes
 
       # Write `data` with `offset` to the allocated block in memory
       # and return `org.eolang.true`.
-      [offset data] > write ?
+      [offset data] > write /bytes
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

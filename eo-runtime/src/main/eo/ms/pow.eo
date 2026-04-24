@@ -9,7 +9,7 @@
 +unlint idempotent-attribute-is-not-first
 
 # An operation that raises `num` to the power of `x`.
-[num x] > pow ?
+[num x] > pow /number
   # Tests that power operation works correctly for 2^4.
   [] +> tests-pow-test
     eq. +> @

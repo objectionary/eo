@@ -21,7 +21,7 @@
 [name args] > win32
   # Makes an actual function call to operating system
   # Returns `org.eolang.sm.win32.return` object.
-  [] > @ ?
+  [] > @ /return
   -10 > std-input-handle
   -11 > std-output-handle
   2 > af-inet

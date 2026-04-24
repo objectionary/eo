@@ -18,7 +18,7 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
-[format args] > sprintf ?
+[format args] > sprintf /string
   # Tests that sprintf formats string with single %s placeholder.
   [] +> tests-prints-simple-string
     eq. > @

@@ -10,7 +10,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 # Returns the natural logarithm `num` with base `e` as `org.eolang.number`.
-[num] > ln ?
+[num] > ln /number
   # Tests that natural logarithm of negative float returns NaN.
   [] +> tests-ln-of-negative-float-is-nan
     is-nan. +> @

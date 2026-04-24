@@ -19,7 +19,7 @@
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
-[format read] > sscanf ?
+[format read] > sscanf /tuple
   # Tests that sscanf parses string using %s format specifier.
   [] +> tests-sscanf-with-string
     eq. > @

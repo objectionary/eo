@@ -35,7 +35,7 @@ final class MjResolveTest {
                 "+rt jvm org.eolang:eo-runtime:0.7.0",
                 "+version 0.25.0\n",
                 "# No comments.",
-                "[] > main ?"
+                "[] > main /bytes"
             ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -174,7 +174,7 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             "+version 0.25.0\n",
             "# No comment.",
-            "[] > main ?"
+            "[] > main /bytes"
         ).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.0",
@@ -201,7 +201,7 @@ final class MjResolveTest {
                 "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
                 "# No comment.",
-                "[] > main ?"
+                "[] > main /bytes"
             ).withProgram(
                 "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",

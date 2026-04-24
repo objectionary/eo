@@ -68,9 +68,9 @@ just: beginner
     | finisher
     ;
 
-// Atom - abstract object with mandatory name
+// Atom - abstract object with mandatory name and return type
 // Can't contain inner objects
-atom: voids suffix SPACE QUESTION testsOrEol
+atom: voids suffix SPACE SLASH NAME testsOrEol
     ;
 
 // Formation - abstract object with mandatory name
@@ -486,6 +486,9 @@ STAR: '*'
 CONST
     : '!'
     ;
+SLASH
+    : '/'
+    ;
 COLON
     : ':'
     ;
@@ -498,9 +501,6 @@ PLUS: '+'
     ;
 MINUS
     : '-'
-    ;
-QUESTION
-    : '?'
     ;
 SPACE
     : ' '

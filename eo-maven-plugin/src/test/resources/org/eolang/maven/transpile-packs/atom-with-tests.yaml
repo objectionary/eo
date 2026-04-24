@@ -17,7 +17,7 @@ asserts:
   - //tests[contains(text(), 'void test_1()')]
 input: |
   # No comments.
-  [x] > foo ?
+  [x] > foo /bytes
     # Test.
     [] +> test-1
       foo > @

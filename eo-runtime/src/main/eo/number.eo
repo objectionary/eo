@@ -28,7 +28,7 @@
         eq negative-infinity
 
   # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
-  [] > as-i64 ?
+  [] > as-i64 /i64
 
   # Returns true if this number equals `x` when compared as byte sequences.
   # The parameter `x` can be a `number` or any object convertible to `bytes`
@@ -75,7 +75,7 @@
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > gt ?
+  [x] > gt /bytes
 
   # Returns `true` if `$` >= `x`.
   # Here `x` can be a `number` or any other object which
@@ -89,12 +89,12 @@
   # Multiplication of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > times ?
+  [x] > times /number
 
   # Sum of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > plus ?
+  [x] > plus /number
 
   # Difference between `$` and `x`.
   # Here `x` can be a `number` or any other object which
@@ -107,7 +107,7 @@
   # Quotient of the division of `$` by `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > div ?
+  [x] > div /number
 
   # The object rounds down the original `number` to the nearest
   # whole `number` that is less than or equal to it

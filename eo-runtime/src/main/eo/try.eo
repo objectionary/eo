@@ -23,7 +23,7 @@
 #   cleanup-action     # finally
 # ```
 # .
-[main catch finally] > try ?
+[main catch finally] > try /bytes
   # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception
     try > @

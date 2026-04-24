@@ -73,34 +73,34 @@
 
   # Returns `org.eolang.true` if current sequence of bytes equals another object.
   # Before the actual comparison the object `b` is dataized.
-  [b] > eq ?
+  [b] > eq /bytes
 
   # Returns total amount of current bytes as `org.eolang.number`.
-  [] > size ?
+  [] > size /number
 
   # Represents a sub-sequence of `org.eolang.bytes` inside the current one.
-  [start len] > slice ?
+  [start len] > slice /bytes
 
   # Calculates the bitwise AND operation and returns result as `org.eolang.bytes`.
-  [b] > and ?
+  [b] > and /bytes
 
   # Calculates the bitwise OR operation and returns result as `org.eolang.bytes`.
-  [b] > or ?
+  [b] > or /bytes
 
   # Calculates the bitwise XOR operation and returns result as `org.eolang.bytes`.
-  [b] > xor ?
+  [b] > xor /bytes
 
   # Calculates the bitwise NOT operation and returns result as `org.eolang.bytes`.
-  [] > not ?
+  [] > not /bytes
 
   # Calculates the bitwise left shift.
   right x.neg > [x] > left
 
   # Calculates the bitwise right shift and returns result as `org.eolang.bytes`.
-  [x] > right ?
+  [x] > right /bytes
 
   # Concatenation of two byte sequences and returns result as `org.eolang.bytes`.
-  [b] > concat ?
+  [b] > concat /bytes
 
   # Tests that a slice of bytes can be extracted from a larger byte sequence.
   [] +> tests-takes-part-of-bytes

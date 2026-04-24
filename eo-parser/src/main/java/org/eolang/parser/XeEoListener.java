@@ -237,6 +237,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         this.objects.enter()
             .start(ctx.getStart().getLine(), 0)
             .prop("name", "λ")
+            .prop("base", ctx.NAME() == null ? "" : ctx.NAME().getText())
             .leave()
             .leave();
     }

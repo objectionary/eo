@@ -11,7 +11,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 # Calculates arc cosine of a `num` as `org.eolang.number`.
-[num] > acos ?
+[num] > acos /number
   # Tests that arccosine of -1 equals pi.
   [] +> tests-arccos-negative-one-test
     eq. +> @

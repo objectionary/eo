@@ -11,7 +11,7 @@ origin: |
   [x x2 x3] > idiomatic
     5 > iTest_me
     # No comments.
-    [] > rr ?
+    [] > rr /number
     if. > @
       plus.
         this
@@ -37,7 +37,7 @@ printed: |
   [x x2 x3] > idiomatic
     5 > iTest_me
     # No comments.
-    [] > rr ?
+    [] > rr /number
     if. > @
       plus.
         this

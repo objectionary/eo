@@ -21,10 +21,10 @@
   (Q.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory ?
+  [] > is-directory /bytes
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists ?
+  [] > exists /bytes
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -41,7 +41,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > touch ?
+    [] > touch /bytes
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -57,10 +57,10 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > delete ?
+    [] > delete /bytes
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
-  [] > size ?
+  [] > size /number
 
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
@@ -73,7 +73,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > move ?
+    [] > move /string
 
   # Opens the file.
   #
@@ -165,7 +165,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
-    [] > process-file ?
+    [] > process-file /bytes
 
     # File stream.
     # The objects provides an API for using file as input or output.
@@ -204,7 +204,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [size] > chunk ?
+        [size] > chunk /bytes
 
       # Writes the given `buffer` to file output stream.
       # Here `buffer` is either a sequence of bytes or an object that can be
@@ -242,7 +242,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes ?
+        [buffer] > written-bytes /bytes
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory

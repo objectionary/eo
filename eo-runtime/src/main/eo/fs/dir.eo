@@ -34,12 +34,12 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use it programmatically outside of `dir` object.
-    [] > mkdir ?
+    [] > mkdir /bytes
 
   # Goes through all files in the directory, recursively
   # finding them with the `glob` provided.
   # Returns `org.eolang.tuple` of all files in the directory.
-  [glob] > walk ?
+  [glob] > walk /tuple
 
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
@@ -80,7 +80,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `dir` object.
-    [] > touch ?
+    [] > touch /string
 
   # Opens the file for I/O operations.
   # Since current file is a directory - returns an `error`.

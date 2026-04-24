@@ -133,7 +133,7 @@ final class MjTranspileTest {
                     "+package foo.x",
                     "+rt jvm org.eolang:eo-runtime:0.0.0\n",
                     "# Atom.",
-                    "[x y z] > main ?"
+                    "[x y z] > main /bytes"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
