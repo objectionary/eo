@@ -9,6 +9,7 @@
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
 +unlint redundant-object
++unlint not-empty-atom
 
 # The 64 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.

@@ -8,6 +8,7 @@
 +unlint redundant-object
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
++unlint not-empty-atom
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
