@@ -112,8 +112,16 @@
   # The object rounds down the original `number` to the nearest
   # whole `number` that is less than or equal to it
   # and returns the result as `org.eolang.number`.
+  # For non-finite inputs (NaN, ±infinity) the input is returned unchanged.
   [] > floor
-    as-i64.as-number > @
+    if. > @
+      is-finite.not
+      $
+      if.
+        trunc.gt $
+        trunc.minus 1
+        trunc
+    as-i64.as-number > trunc
 
   # Tests that less-than comparison returns true when first number is smaller.
   [] +> tests-int-less-true
@@ -351,7 +359,7 @@
     eq. > @
       floor.
         13.div -5
-      -2
+      -3
 
   # Tests that floor of a positive fractional number truncates toward zero.
   [] +> tests-floor-positive-fraction
@@ -359,17 +367,29 @@
       3.7.floor
       3
 
-  # Tests that floor of a negative fractional number truncates toward zero.
+  # Tests that floor of a negative fractional number rounds toward -infinity.
   [] +> tests-floor-negative-fraction
     eq. > @
       -3.7.floor
-      -3
+      -4
+
+  # Tests that floor of a small negative fraction rounds toward -infinity, not zero.
+  [] +> tests-floor-small-negative-fraction
+    eq. > @
+      -0.1.floor
+      -1
 
   # Tests that floor of a whole number returns the same number.
   [] +> tests-floor-of-integer
     eq. > @
       42.floor
       42
+
+  # Tests that floor of a negative whole number returns the same number.
+  [] +> tests-floor-of-negative-integer
+    eq. > @
+      -42.floor
+      -42
 
   # Tests that division result can be less than one.
   [] +> tests-div-less-than-one
