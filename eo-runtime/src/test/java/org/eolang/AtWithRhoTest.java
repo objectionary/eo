@@ -128,8 +128,20 @@ final class AtWithRhoTest {
      */
     private static int distinctConcurrentGets(final Attr attr, final int threads)
         throws InterruptedException {
+        return AtWithRhoTest.distinctGets(attr, threads, ConcurrentHashMap.newKeySet());
+    }
+
+    /**
+     * Run concurrent {@link Attr#get()} calls collecting results into the given sink.
+     * @param attr Attribute to query
+     * @param threads Number of concurrent callers
+     * @param sink Destination set collecting distinct instances
+     * @return Size of {@code sink} after all threads finish
+     * @throws InterruptedException If interrupted while waiting
+     */
+    private static int distinctGets(final Attr attr, final int threads, final Set<Phi> sink)
+        throws InterruptedException {
         final CountDownLatch start = new CountDownLatch(1);
-        final Set<Phi> sink = ConcurrentHashMap.newKeySet();
         try (ExecutorService pool = Executors.newFixedThreadPool(threads)) {
             for (int idx = 0; idx < threads; ++idx) {
                 pool.submit(
