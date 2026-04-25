@@ -33,7 +33,7 @@
 
   # Builds a `random` whose seed is derived from the wall-clock time provided by `clock`.
   # `clock` must expose a `millis` attribute returning an `i64` with milliseconds since the epoch.
-  [clock] > pseudo-with-clock
+  [clock] > clocked
     random > @
       as-number.
         plus.
@@ -57,7 +57,7 @@
 
   # New random with pseudo-random seed derived from the system clock.
   [] > pseudo
-    pseudo-with-clock system-clock > @
+    clocked system-clock > @
 
   # Tests that random numbers generated with the same seed are different in sequence.
   [] +> tests-random-with-seed
@@ -92,8 +92,8 @@
   [] +> tests-two-random-numbers-not-equal
     not. > @
       eq.
-        random.pseudo-with-clock fake-a
-        random.pseudo-with-clock fake-b
+        random.clocked fake-a
+        random.clocked fake-b
     [] > fake-a
       123.as-i64 > millis
     [] > fake-b
