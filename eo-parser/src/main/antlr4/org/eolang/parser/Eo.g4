@@ -70,7 +70,9 @@ just: beginner
 
 // Atom - abstract object with mandatory name and return type
 // Can't contain inner objects
-atom: voids suffix SPACE SLASH NAME testsOrEol
+// `QUESTION` form is the legacy syntax kept for backward compatibility
+// with already-published .eo files that have not migrated to `/name` yet.
+atom: voids suffix SPACE (SLASH NAME | QUESTION) testsOrEol
     ;
 
 // Formation - abstract object with mandatory name
@@ -501,6 +503,9 @@ PLUS: '+'
     ;
 MINUS
     : '-'
+    ;
+QUESTION
+    : '?'
     ;
 SPACE
     : ' '
