@@ -21,12 +21,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link EOregex$EOφ}.
+ * Tests for the regex atom.
  *
  * @since 0.57.4
- * @checkstyle TypeNameCheck (3 lines)
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidDollarSigns"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class RegexAtomTest {
 
     @Test
@@ -49,26 +48,23 @@ final class RegexAtomTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsClearErrorOnMissingClosingSlash() {
-        final ExAbstract error = Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Dataized(
-                new PhWith(
-                    new PhCopy(Phi.Φ.take("tt.regex")),
-                    "expression", new Data.ToPhi("/pattern")
-                ).take("compiled")
-            ).take(),
-            "regex without closing slash should throw a clear ExFailure, but did not"
-        );
         MatcherAssert.assertThat(
-            "Error should mention the missing closing slash, but it did not",
-            error.toString(),
-            Matchers.containsString("/")
-        );
-        MatcherAssert.assertThat(
-            "Error must not be an opaque IndexOutOfBoundsException",
-            error.toString(),
-            Matchers.not(Matchers.containsString("out of bounds"))
+            "regex without closing slash should throw a clear ExFailure that mentions \"/\" and is not an opaque IndexOutOfBoundsException",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhCopy(Phi.Φ.take("tt.regex")),
+                        "expression", new Data.ToPhi("/pattern")
+                    ).take("compiled")
+                ).take()
+            ).toString(),
+            Matchers.allOf(
+                Matchers.containsString("/"),
+                Matchers.not(Matchers.containsString("out of bounds"))
+            )
         );
     }
 }
