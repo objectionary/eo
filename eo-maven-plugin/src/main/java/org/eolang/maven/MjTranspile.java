@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -57,8 +58,6 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         new Transpile(
             this.scopedTojos().withXmir(),
-            this.project,
-            this.addSourcesRoot,
             this.targetDir.toPath(),
             this.generatedDir.toPath(),
             this.cache.toPath(),
@@ -68,5 +67,22 @@ public final class MjTranspile extends MjSafe {
             this.transpileTests,
             this.xslMeasures.toPath()
         ).exec();
+        if (this.addSourcesRoot) {
+            this.project.addCompileSourceRoot(
+                this.generatedDir.toPath().toAbsolutePath().toString()
+            );
+            Logger.info(
+                this, "The directory added to Maven 'compile-source-root': %[file]s",
+                this.generatedDir
+            );
+            final String gtests = this.generatedDir.toPath().getParent().resolve(
+                "generated-test-sources"
+            ).toAbsolutePath().toString();
+            this.project.addTestCompileSourceRoot(gtests);
+            Logger.info(
+                this, "The directory added to Maven 'test-compile-source-root': %[file]s",
+                gtests
+            );
+        }
     }
 }

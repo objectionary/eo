@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.apache.maven.project.MavenProject;
 import org.cactoos.func.StickyFunc;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
@@ -102,22 +101,6 @@ final class Transpile {
     private final Collection<TjForeign> sources;
 
     /**
-     * Maven project (used to register generated source roots).
-     * @todo #5061:30min Remove MavenProject dependency from Transpile class.
-     *  Currently Transpile depends on MavenProject to register generated source roots,
-     *  which prevents using it outside of a Maven environment.
-     *  The source-root registration should be moved back to MjTranspile,
-     *  leaving Transpile free of any Maven coupling.
-     */
-    private final MavenProject project;
-
-    /**
-     * Whether to add the generated directory to Maven's compile source roots.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final boolean addSourcesRoot;
-
-    /**
      * Target directory.
      * @checkstyle MemberNameCheck (5 lines)
      */
@@ -168,8 +151,6 @@ final class Transpile {
     /**
      * Constructor.
      * @param srcs XMIR sources to transpile
-     * @param prj Maven project
-     * @param roots Whether to add generated dir to compile source roots
      * @param target Target directory
      * @param generated Generated sources directory
      * @param cache Base cache directory
@@ -180,11 +161,8 @@ final class Transpile {
      * @param measures Path to the file where XSL measurements are stored
      * @checkstyle ParameterNumberCheck (15 lines)
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpile(
         final Collection<TjForeign> srcs,
-        final MavenProject prj,
-        final boolean roots,
         final Path target,
         final Path generated,
         final Path cache,
@@ -195,8 +173,6 @@ final class Transpile {
         final Path measures
     ) {
         this.sources = srcs;
-        this.project = prj;
-        this.addSourcesRoot = roots;
         this.targetDir = target;
         this.generatedDir = generated;
         this.cacheDir = cache;
@@ -222,21 +198,6 @@ final class Transpile {
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(), saved, this.generatedDir
         );
-        if (this.addSourcesRoot) {
-            this.project.addCompileSourceRoot(this.generatedDir.toAbsolutePath().toString());
-            Logger.info(
-                this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
-            );
-            final String gtests = this.generatedDir.getParent().resolve(
-                "generated-test-sources"
-            ).toAbsolutePath().toString();
-            this.project.addTestCompileSourceRoot(gtests);
-            Logger.info(
-                this, "The directory added to Maven 'test-compile-source-root': %[file]s",
-                gtests
-            );
-        }
         Logger.info(
             this,
             "Transpilation took %[ms]s in total",
