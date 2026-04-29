@@ -4,6 +4,9 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Path;
+import java.util.function.BiConsumer;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.Scalar;
@@ -41,6 +44,13 @@ public final class MjResolve extends MjSafe {
     static final String DIR = "4-resolve";
 
     /**
+     * The central.
+     *
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private BiConsumer<Dependency, Path> central;
+
+    /**
      * Resolve default JNA dependency or not.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -57,6 +67,9 @@ public final class MjResolve extends MjSafe {
 
     @Override
     public void exec() {
+        if (this.central == null) {
+            this.central = new CentralMaven(this.system);
+        }
         new Resolve(
             this.scopedTojos(),
             this.targetDir.toPath().resolve(MjResolve.DIR),

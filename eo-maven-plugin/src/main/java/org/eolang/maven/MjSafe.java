@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -22,8 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -57,6 +54,9 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Maven Resolver repository system.
+     * Do NOT move this field to a subclass: it is used in both
+     * {@link MjResolve} and {@link MjCompile} (indirectly), so it
+     * must be injected once here in the base class.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Component
@@ -415,14 +415,6 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
-     * The central.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    protected BiConsumer<Dependency, Path> central;
-
-    /**
      * The Git hash to pull objects from.
      * If not set, will be computed from {@code tag} field.
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -472,7 +464,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -483,9 +475,6 @@ abstract class MjSafe extends AbstractMojo {
             }
         } else {
             try {
-                if (this.central == null) {
-                    this.central = new CentralMaven(this.system);
-                }
                 final long start = System.nanoTime();
                 this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
