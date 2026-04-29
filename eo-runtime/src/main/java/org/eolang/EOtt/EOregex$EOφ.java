@@ -38,6 +38,9 @@ public final class EOregex$EOφ extends PhDefault implements Atom {
             throw new ExFailure("Wrong regex syntax: \"/\" is missing");
         }
         final int last = expression.lastIndexOf('/');
+        if (last == 0) {
+            throw new ExFailure("Wrong regex syntax: closing \"/\" is missing");
+        }
         final StringBuilder builder = new StringBuilder();
         if (!expression.endsWith("/")) {
             builder.append("(?").append(expression.substring(last + 1)).append(')');

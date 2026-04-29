@@ -247,6 +247,10 @@
   [] +> throws-on-missing-first-slash-in-regex
     (regex "(.)+").compiled > @
 
+  # Tests that regex compilation throws error when missing closing slash.
+  [] +> throws-on-missing-closing-slash-in-regex
+    (regex "/pattern").compiled > @
+
   # Tests that regex with capturing groups returns correct group count and content.
   [] +> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @
