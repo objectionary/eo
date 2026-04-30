@@ -304,7 +304,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
         final int total = 30;
@@ -323,8 +322,7 @@ final class MjTranspileTest {
                 maven
                     .execute(new FakeMaven.Transpile())
                     .generatedPath()
-                    .resolve("EOfoo")
-                    .resolve("EOx")
+                    .resolve("org/eolang/EOfoo/EOx")
             ).count(),
             Matchers.equalTo((long) total)
         );
