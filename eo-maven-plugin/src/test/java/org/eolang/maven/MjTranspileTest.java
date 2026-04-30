@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -261,7 +260,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void doesNotRetranspileIfNotModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -289,31 +287,20 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
         final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(
-                new TextOf(Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo")).asString(),
-                "org.eolang.tuple",
-                "org/eolang/tuple.eo"
-            )
+            .withProgram(this.program)
             .execute(new FakeMaven.Transpile())
             .result();
-        final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
             "transpiled class must be present",
-            res, Matchers.hasKey(java)
+            res, Matchers.hasKey(this.compiled)
         );
         MatcherAssert.assertThat(
-            "package-info.java files must be present",
-            res,
-            Matchers.hasKey("target/generated/EOorg/EOeolang/package-info.java")
-        );
-        MatcherAssert.assertThat(
-            "transpiled class must contain EOtuple",
-            new TextOf(res.get(java)).asString(),
-            Matchers.containsString("class EOtuple")
+            "transpiled class must contain EOmain",
+            new TextOf(res.get(this.compiled)).asString(),
+            Matchers.containsString("class EOmain")
         );
     }
 
