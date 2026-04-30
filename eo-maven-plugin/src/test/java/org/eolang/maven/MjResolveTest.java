@@ -31,7 +31,7 @@ final class MjResolveTest {
         new FakeMaven(temp).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.7.0",
-            "+version 0.25.0\n",
+            String.format("+version 0.25.0%n"),
             "# No comments.",
             "[] > main ?"
             ).execute(new FakeMaven.Resolve());
@@ -62,7 +62,7 @@ final class MjResolveTest {
     @Test
     void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "+package foo.x\n",
+            String.format("+package foo.x%n"),
             "# No comments.",
             "[a b] > main",
             "  plus. > @",
@@ -111,7 +111,7 @@ final class MjResolveTest {
         maven.withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
-            "+version 0.25.0\n",
+            String.format("+version 0.25.0%n"),
             "# No comments.",
             "[] > main"
         ).execute(new FakeMaven.Resolve());
@@ -128,7 +128,7 @@ final class MjResolveTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withProgram(
             "+package foo.x",
-            "+rt jvm org.eolang:eo-runtime:0.22.1\n",
+            String.format("+rt jvm org.eolang:eo-runtime:0.22.1%n"),
             "# Main.",
             "[] > main"
         ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
@@ -164,17 +164,18 @@ final class MjResolveTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
-            "+version 0.25.0\n",
+            String.format("+version 0.25.0%n"),
             "# No comment.",
             "[] > main ?"
         ).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.0",
-            "+version 0.25.0\n",
+            String.format("+version 0.25.0%n"),
             "# No comment.",
             "[] > main-1 ?"
         );
@@ -194,12 +195,12 @@ final class MjResolveTest {
     void resolvesWithConflictingDependenciesNoFail(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x",
-            "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
+            String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
             "# No comment.",
             "[] > main ?"
             ).withProgram(
                 "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
+                String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
                 "# No comment.",
                 "[] > main-1 ?"
             );

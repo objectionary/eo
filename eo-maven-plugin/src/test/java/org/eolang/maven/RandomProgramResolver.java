@@ -26,7 +26,7 @@ public final class RandomProgramResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(final ParameterContext context, final ExtensionContext ext) {
         return String.join(
-            "\n",
+            System.lineSeparator(),
             "# This is a random program in EO, which supposedly",
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",

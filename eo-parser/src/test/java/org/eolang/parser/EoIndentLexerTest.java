@@ -20,7 +20,9 @@ final class EoIndentLexerTest {
     void emitsTabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(
             "We expect the token to be a tab indentation with name 'TAB'",
-            new EoIndentLexer(new TextOf("\n  ")).getAllTokens().get(1).getText(),
+            EoIndentLexer.fromText(
+                new TextOf(String.format("%n  "))
+            ).getAllTokens().get(1).getText(),
             Matchers.equalTo("TAB")
         );
     }
@@ -29,14 +31,16 @@ final class EoIndentLexerTest {
     void emitsUntabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(
             "We expect the token to be an untab indentation with name 'UNTAB'",
-            new EoIndentLexer(new TextOf("\n  \n  \n")).getAllTokens().get(3).getText(),
+            EoIndentLexer.fromText(
+                new TextOf(String.format("%n  %n  %n"))
+            ).getAllTokens().get(3).getText(),
             Matchers.equalTo("UNTAB")
         );
     }
 
     @Test
     void emitsTab() throws IOException {
-        final EoIndentLexer lexer = new EoIndentLexer(new TextOf("\n  "));
+        final EoIndentLexer lexer = EoIndentLexer.fromText(new TextOf(String.format("%n  ")));
         lexer.nextToken();
         MatcherAssert.assertThat(
             "We expect the first token to be a new line, whereas the next token is tab indentation",
@@ -49,14 +53,14 @@ final class EoIndentLexerTest {
     void ensuresGrammarFile() throws IOException {
         MatcherAssert.assertThat(
             "We expect to retrieve the correct grammar file name",
-            new EoIndentLexer(new TextOf("")).getGrammarFileName(),
+            EoIndentLexer.fromText(new TextOf("")).getGrammarFileName(),
             Matchers.is("Eo.g4")
         );
     }
 
     @Test
     void emitsTabWhenEmptyLine() throws IOException {
-        final EoIndentLexer lexer = new EoIndentLexer(new TextOf("\n\n  "));
+        final EoIndentLexer lexer = EoIndentLexer.fromText(new TextOf(String.format("%n%n  ")));
         lexer.nextToken();
         MatcherAssert.assertThat(
             "We expect tab indentation to be emitted right after the first new line symbol",
@@ -67,7 +71,9 @@ final class EoIndentLexerTest {
 
     @Test
     void emitsUntab() throws IOException {
-        final EoIndentLexer lexer = new EoIndentLexer(new TextOf("\n  \n  \n"));
+        final EoIndentLexer lexer = EoIndentLexer.fromText(
+            new TextOf(String.format("%n  %n  %n"))
+        );
         lexer.nextToken();
         lexer.nextToken();
         lexer.nextToken();
@@ -82,7 +88,7 @@ final class EoIndentLexerTest {
     void readsEmptyString() throws IOException {
         MatcherAssert.assertThat(
             "We expect the lexer to return EOF token when the input is empty",
-            new EoIndentLexer(new TextOf("")).nextToken().getType(),
+            EoIndentLexer.fromText(new TextOf("")).nextToken().getType(),
             Matchers.is(EoParser.EOF)
         );
     }
@@ -91,7 +97,9 @@ final class EoIndentLexerTest {
     void emitsTabWithCorrectLine() throws IOException {
         MatcherAssert.assertThat(
             "We expect the token to be a tab indentation with line 2",
-            new EoIndentLexer(new TextOf("1.add 1 > x\n  (1.add 1) > y")).getAllTokens()
+            EoIndentLexer.fromText(
+                new TextOf(String.format("1.add 1 > x%n  (1.add 1) > y"))
+            ).getAllTokens()
                 .stream().filter(token -> token.getType() == EoParser.TAB)
                 .findFirst()
                 .orElseThrow()

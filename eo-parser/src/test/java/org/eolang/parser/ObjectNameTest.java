@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -23,10 +24,12 @@ final class ObjectNameTest {
     void retrievesSimpleName() throws ImpossibleModificationException {
         final String expected = "foo";
         final String retrieved = new OnDefault(
-            new XMLDocument(
-                new Xembler(
-                    new Directives().add("object").add("o").attr("name", expected)
-                ).xml()
+            new Xnav(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().add("object").add("o").attr("name", expected)
+                    ).xml()
+                ).inner()
             )
         ).get();
         MatcherAssert.assertThat(
@@ -43,19 +46,21 @@ final class ObjectNameTest {
     void retrievesPackagedName() throws ImpossibleModificationException {
         final String expected = "org.eolang.f.foo";
         final String retrieved = new OnDefault(
-            new XMLDocument(
-                new Xembler(
-                    new Directives().add("object")
-                        .add("o").attr("name", "foo")
-                        .up()
-                        .add("metas")
-                        .add("meta")
-                        .add("head")
-                        .set("package")
-                        .up()
-                        .add("tail")
-                        .set("org.eolang.f")
-                ).xml()
+            new Xnav(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().add("object")
+                            .add("o").attr("name", "foo")
+                            .up()
+                            .add("metas")
+                            .add("meta")
+                            .add("head")
+                            .set("package")
+                            .up()
+                            .add("tail")
+                            .set("org.eolang.f")
+                    ).xml()
+                ).inner()
             )
         ).get();
         MatcherAssert.assertThat(
@@ -73,17 +78,19 @@ final class ObjectNameTest {
         Assertions.assertThrows(
             Exception.class,
             () -> new OnDefault(
-                new XMLDocument(
-                    new Xembler(
-                        new Directives().add("object")
-                            .add("metas")
-                            .add("meta")
-                            .add("head")
-                            .set("package")
-                            .up()
-                            .add("tail")
-                            .set("org.eolang.fail")
-                    ).xml()
+                new Xnav(
+                    new XMLDocument(
+                        new Xembler(
+                            new Directives().add("object")
+                                .add("metas")
+                                .add("meta")
+                                .add("head")
+                                .set("package")
+                                .up()
+                                .add("tail")
+                                .set("org.eolang.fail")
+                        ).xml()
+                    ).inner()
                 )
             ).get(),
             "The exception is not thrown, thought XMIR is broken"
@@ -94,8 +101,12 @@ final class ObjectNameTest {
     void doesNotThrowExceptionWhenNameIsPresentButPackageIsMissing() {
         Assertions.assertDoesNotThrow(
             () -> new OnDefault(
-                new XMLDocument(
-                    new Xembler(new Directives().add("object").add("o").attr("name", "foo")).xml()
+                new Xnav(
+                    new XMLDocument(
+                        new Xembler(
+                            new Directives().add("object").add("o").attr("name", "foo")
+                        ).xml()
+                    ).inner()
                 )
             ).get(),
             "The exception was thrown, but it should not"

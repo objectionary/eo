@@ -40,10 +40,7 @@ final class DpsWithRuntime implements Dependencies {
      * @param dlg Dependencies delegate
      * @param sup Dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Dep sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Dep sup) {
         this(dlg, new Unchecked<>(() -> sup));
     }
 
@@ -52,10 +49,7 @@ final class DpsWithRuntime implements Dependencies {
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Scalar<Dep> sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Scalar<Dep> sup) {
         this(dlg, new Unchecked<>(sup));
     }
 
@@ -64,10 +58,7 @@ final class DpsWithRuntime implements Dependencies {
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Unchecked<Dep> sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Unchecked<Dep> sup) {
         this.delegate = dlg;
         this.supplied = sup;
     }

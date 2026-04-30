@@ -217,7 +217,7 @@ final class Transpile {
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Transpile.DIR);
         final Path target = new Place(
-            new OnDetailed(new OnDefault(xmir), source).get()
+            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
@@ -322,7 +322,7 @@ final class Transpile {
                     measured,
                     new StickyFunc<>(
                         doc -> new Place(
-                            new OnDetailed(new OnDefault(doc), source).get()
+                            new OnDetailed(new OnDefault(new Xnav(doc.inner())), source).get()
                         ).make(this.targetDir.resolve(Transpile.PRE), "")
                     )
                 )

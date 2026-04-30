@@ -22,6 +22,7 @@ final class EmptyDirectoriesIn {
     /**
      * Ctor.
      * @param root Root directory
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     EmptyDirectoriesIn(final Path root) {
         this(root.toFile());

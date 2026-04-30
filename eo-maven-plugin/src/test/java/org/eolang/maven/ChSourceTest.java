@@ -9,6 +9,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link ChSource}.
@@ -30,7 +31,10 @@ final class ChSourceTest {
         final Path file = dir.resolve("source.eo");
         Files.writeString(
             file,
-            "[] > main\n  (stdout \"Hello, EO!\") > @\n"
+            String.join(
+                String.valueOf((char) 10),
+                "[] > main", "  (stdout \"Hello, EO!\") > @", ""
+            )
         );
         MatcherAssert.assertThat(
             "We should compute the correct hash (SHA-1) for the source file",
@@ -40,17 +44,7 @@ final class ChSourceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "",
-            " ",
-            "    ",
-            "\n",
-            "\r\n",
-            "\t",
-            " \n\r\t "
-        }
-    )
+    @MethodSource("trickyValues")
     void computesHashForDifferentTrickyValues(final String original) {
         MatcherAssert.assertThat(
             "We should compute correct hash for tricky values",
@@ -75,6 +69,24 @@ final class ChSourceTest {
             "We should compute correct hash for different values",
             new ChSource(() -> original).value(),
             Matchers.equalTo(expected)
+        );
+    }
+
+    /**
+     * Tricky inputs for {@link ChSourceTest#computesHashForDifferentTrickyValues}.
+     * @return Inputs
+     */
+    private static Stream<String> trickyValues() {
+        final String eol = String.valueOf((char) 10);
+        final String cret = String.valueOf((char) 13);
+        return Stream.of(
+            "",
+            " ",
+            "    ",
+            eol,
+            cret.concat(eol),
+            "\t",
+            " ".concat(eol).concat(cret).concat("\t ")
         );
     }
 }

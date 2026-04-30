@@ -49,7 +49,7 @@ final class JavaPlacedTest {
     @SuppressWarnings("JTCOP.RuleNotContainsTestWord")
     void placesJavaTests(@Mktmp final Path temp) throws Exception {
         final String expected = String.join(
-            "\n",
+            System.lineSeparator(),
             "final class FooTest {",
             "  @Test",
             "  void testsSomething() {}",

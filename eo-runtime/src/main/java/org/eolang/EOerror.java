@@ -29,6 +29,7 @@ public final class EOerror extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOerror() {
@@ -67,6 +68,7 @@ public final class EOerror extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param enclosure Enclosure inside the error
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ExError(final Phi enclosure) {
             this(enclosure, Collections.emptyList());
@@ -76,6 +78,7 @@ public final class EOerror extends PhDefault implements Atom {
          * Ctor.
          * @param cause Previous error
          * @param message New message
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ExError(final Phi cause, final String message) {
             this(cause, Collections.singletonList(message));
@@ -85,6 +88,7 @@ public final class EOerror extends PhDefault implements Atom {
          * Ctor.
          * @param cause Previous error
          * @param message New message
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ExError(final ExError cause, final String message) {
             this(cause.enclosure(), concat(cause.trace, message));
@@ -94,6 +98,7 @@ public final class EOerror extends PhDefault implements Atom {
          * Ctor.
          * @param enclosure Enclosure inside the error
          * @param before Messages seen before
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ExError(final Phi enclosure, final Collection<String> before) {
             super(EOerror.ExError.safeMessage(enclosure));

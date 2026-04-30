@@ -177,7 +177,7 @@ public final class EoSyntax implements Syntax {
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
         final GeneralErrors spy = new GeneralErrors(lines);
-        final EoLexer lexer = new EoIndentLexer(this.normalize());
+        final EoLexer lexer = EoIndentLexer.fromText(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
         final EoParser parser = new EoParser(
@@ -218,9 +218,10 @@ public final class EoSyntax implements Syntax {
      * @return UNIX formatted text
      */
     private Text normalize() {
+        final String eol = String.valueOf((char) 10);
         return new FormattedText(
-            "%s\n",
-            new Joined(new TextOf("\n"), this.lines())
+            "%s".concat(eol),
+            new Joined(new TextOf(eol), this.lines())
         );
     }
 
@@ -229,6 +230,6 @@ public final class EoSyntax implements Syntax {
      * @return Lines without line breaks
      */
     private List<Text> lines() {
-        return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
+        return new ListOf<>(new Split(new TextOf(this.input), "\\r?\\n"));
     }
 }

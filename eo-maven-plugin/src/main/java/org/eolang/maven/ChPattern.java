@@ -39,10 +39,7 @@ final class ChPattern implements CommitHash {
      * @param pattern Pattern like *.*.* or 'master'
      * @param tag Particular tag to match
      */
-    ChPattern(
-        final String pattern,
-        final String tag
-    ) {
+    ChPattern(final String pattern, final String tag) {
         this.pattern = pattern;
         this.tag = tag;
     }
@@ -88,6 +85,7 @@ final class ChPattern implements CommitHash {
         /**
          * The main constructor.
          * @param raw Raw pattern like *.*.*:abcdefg
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         private Pattern(final String raw) {
             this(raw.split(":"));

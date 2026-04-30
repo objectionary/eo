@@ -20,43 +20,30 @@ import org.cactoos.io.InputStreamOf;
  * Indentation-aware Lexer.
  * @since 0.1.0
  */
+@SuppressWarnings("PMD.ConstructorShouldDoInitialization")
 final class EoIndentLexer extends EoLexer {
 
     /**
      * Generated tokes.
      */
-    private final Deque<Token> tokens;
+    private final Deque<Token> tokens = new LinkedList<>();
 
     /**
      * Indentation level.
      */
-    private final Deque<Integer> indent;
+    private final Deque<Integer> indent = new LinkedList<>(Collections.singletonList(0));
 
     /**
      * Spaces.
      */
-    private final Deque<String> spaces;
-
-    /**
-     * Ctor.
-     * @param txt Source code
-     * @throws IOException If fails.
-     */
-    EoIndentLexer(final Text txt) throws IOException {
-        this(CharStreams.fromStream(new InputStreamOf(txt)));
-    }
+    private final Deque<String> spaces = new ConcurrentLinkedDeque<>();
 
     /**
      * Ctor.
      * @param stream Char stream
      */
-    private EoIndentLexer(final CharStream stream) {
+    EoIndentLexer(final CharStream stream) {
         super(stream);
-        this.indent = new LinkedList<>(
-            Collections.singletonList(0)
-        );
-        this.tokens = new LinkedList<>();
-        this.spaces = new ConcurrentLinkedDeque<>();
     }
 
     @Override
@@ -65,6 +52,16 @@ final class EoIndentLexer extends EoLexer {
             this.lookAhead();
         }
         return this.tokens.poll();
+    }
+
+    /**
+     * Build a lexer from a {@link Text}.
+     * @param txt Source code
+     * @return Lexer
+     * @throws IOException If fails
+     */
+    static EoIndentLexer fromText(final Text txt) throws IOException {
+        return new EoIndentLexer(CharStreams.fromStream(new InputStreamOf(txt)));
     }
 
     /**
@@ -111,7 +108,7 @@ final class EoIndentLexer extends EoLexer {
      * @return Spaces from text
      */
     private String textSpaces() {
-        return this.getText().replaceAll("[\r\n]", "");
+        return this.getText().replaceAll("[\\r\\n]", "");
     }
 
     /**

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+// @checkstyle ConstructorsCodeFreeCheck disable
+
 /**
  * Test case for {@link PhDefault}.
  * @since 0.1

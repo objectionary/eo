@@ -118,7 +118,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             new FakeMaven(temp).withProgram(
-                "+package foo.x\n",
+                String.format("+package foo.x%n"),
                 "# Error.",
                 "[] > main",
                 "  seq *-1 > @",
@@ -135,7 +135,7 @@ final class MjParseTest {
     @Test
     void crashesIfWrongPackage(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
-            "+package wrong.package\n",
+            String.format("+package wrong.package%n"),
             "# Hello.",
             "[] > hello",
             "  42 > @"
@@ -184,7 +184,7 @@ final class MjParseTest {
         final int total = 50;
         for (int program = 0; program < total; ++program) {
             maven.withProgram(
-                String.format("+package foo.x\n\n# Program\n[] > main%s", FakeMaven.suffix(program))
+                String.format("+package foo.x%n%n# Program%n[] > main%s", FakeMaven.suffix(program))
             );
         }
         for (int program = 0; program < total; ++program) {
@@ -209,7 +209,7 @@ final class MjParseTest {
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
                 new FakeMaven(temp).withProgram(
-                    "# App.\n[] > app",
+                    String.format("# App.%n[] > app"),
                     "main"
                     )
                     .execute(new FakeMaven.Parse())
@@ -259,7 +259,7 @@ final class MjParseTest {
         final long after = parsed.lastModified();
         maven.withProgram(
             String.join(
-                "\n",
+                System.lineSeparator(),
                 "[] > foo",
                 "  boom > @"
             ),

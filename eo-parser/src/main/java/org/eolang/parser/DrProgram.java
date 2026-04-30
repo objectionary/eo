@@ -25,7 +25,7 @@ final class DrProgram implements Iterable<Directive> {
         final String when = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
         return new Directives().comment(
             String.join(
-                "\n  ",
+                String.format("%n  "),
                 "",
                 "This is XMIR, a dialect of XML, which is used to represent a parsed",
                 "EO program. For more information about XMIR format please visit:",

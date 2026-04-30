@@ -25,7 +25,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Fake hashes.
      */
     static final String FAKES = String.join(
-        "\n",
+        System.lineSeparator(),
         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
         "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17",
         "4b19944d86058e3c81e558340a3a13bc335a2b48 0.23.19",
@@ -69,6 +69,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
     /**
      * Ctor.
      * @param table Commit hashes table
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private CommitHashesMap(final Scalar<String> table) {
         super(CommitHashesMap.fromTable(table));
@@ -95,7 +96,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         )
                     );
                 },
-                new Split(table::value, "\n")
+                new Split(table::value, "\\n")
             )
         );
     }

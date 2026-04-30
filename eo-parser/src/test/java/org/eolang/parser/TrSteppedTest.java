@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
@@ -44,16 +43,6 @@ final class TrSteppedTest {
 
     @RepeatedTest(10)
     void addsSheetNameConcurrently() {
-        final XML doc = new XMLDocument("<object><concurrency>yes</concurrency></object>");
-        final Sticky<XSL> loading = new Sticky<>(
-            new TrStepped.Once<XSL>(
-                () -> new XSLDocument(
-                    new TextOf(
-                        () -> new ResourceOf("org/eolang/parser/_stepped.xsl").stream()
-                    ).asString()
-                )
-            )
-        );
         MatcherAssert.assertThat(
             "We expect the sheet name to be added successfully in concurrent environment",
             new Together<>(
@@ -62,9 +51,21 @@ final class TrSteppedTest {
                         new TrDefault<Shift>().with(
                             new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
                         ),
-                        loading
+                        new Sticky<>(
+                            new TrStepped.Once<XSL>(
+                                () -> new XSLDocument(
+                                    new TextOf(
+                                        () -> new ResourceOf(
+                                            "org/eolang/parser/_stepped.xsl"
+                                        ).stream()
+                                    ).asString()
+                                )
+                            )
+                        )
                     )
-                ).pass(doc).toString()
+                ).pass(
+                    new XMLDocument("<object><concurrency>yes</concurrency></object>")
+                ).toString()
             ).iterator().next(),
             XhtmlMatchers.hasXPath("/object/sheets/sheet[text()='wrap-data']")
         );

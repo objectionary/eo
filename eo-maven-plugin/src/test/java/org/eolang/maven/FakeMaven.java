@@ -289,7 +289,7 @@ final class FakeMaven {
      */
     FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
-            String.join("\n", program),
+            String.join(System.lineSeparator(), program),
             FakeMaven.tojoId(this.current.get())
         );
     }
@@ -334,10 +334,9 @@ final class FakeMaven {
     ) throws IOException {
         final Path src = this.workspace.resolve(source);
         new Saved(content, src).value();
-        final String scope = this.scope();
         this.foreignTojos()
             .add(object)
-            .withScope(scope)
+            .withScope(this.scope())
             .withVersion("0.25.0")
             .withSource(src);
         this.current.incrementAndGet();

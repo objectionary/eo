@@ -130,7 +130,7 @@ public final class Xmir implements XML {
      */
     private String converted(final Xsline train, final String node) {
         final XML xmir = train.pass(this.xml);
-        Logger.debug(this, "XMIR after converting to %s:\n%s", node, xmir);
+        Logger.debug(this, "XMIR after converting to %s:%n%s", node, xmir);
         return new Xnav(xmir.inner())
             .element("object")
             .element(node)

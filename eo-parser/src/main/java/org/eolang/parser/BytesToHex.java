@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
@@ -12,6 +11,7 @@ import java.util.function.Supplier;
  * Bytes to hex converter.
  * @since 0.44
  */
+@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 final class BytesToHex implements Supplier<String> {
 
     /**
@@ -24,7 +24,7 @@ final class BytesToHex implements Supplier<String> {
      * @param bts Bytes
      */
     BytesToHex(final byte[] bts) {
-        this.bytes = Arrays.copyOf(bts, bts.length);
+        this.bytes = bts;
     }
 
     @Override

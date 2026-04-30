@@ -29,6 +29,7 @@ final class TjsPlaced implements Closeable {
     /**
      * Ctor.
      * @param file Path to the tojos file
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     TjsPlaced(final Path file) {
         this(Catalogs.INSTANCE.make(file));

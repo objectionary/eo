@@ -99,7 +99,7 @@ final class ChText implements CommitHash {
                                     t -> t.asString().matches(
                                         String.format("^.+\\s\\Q%s\\E$", this.tag)
                                     ),
-                                    new Split(new TextOf(this.source), "\n")
+                                    new Split(new TextOf(this.source), "\\n")
                                 ),
                                 () -> {
                                     throw new ChText.NotFound(

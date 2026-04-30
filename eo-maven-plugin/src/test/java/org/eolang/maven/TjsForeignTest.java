@@ -29,6 +29,7 @@ final class TjsForeignTest {
 
     /**
      * Testable foreign tojos.
+     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
      */
     private TjsForeign tojos;
 
@@ -102,6 +103,7 @@ final class TjsForeignTest {
 
     @ParameterizedTest
     @MethodSource("tojoFunctionsWithoutDefaultValues")
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
         final Func<TjForeign, Object> method

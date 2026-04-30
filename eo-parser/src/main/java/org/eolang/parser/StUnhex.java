@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
-import org.w3c.dom.Node;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -48,9 +47,8 @@ final class StUnhex extends StEnvelope {
                 final double number = StUnhex.buffer(
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
-                final Node node = xnav.node();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    node.setTextContent(StUnhex.number(number));
+                    xnav.node().setTextContent(StUnhex.number(number));
                 }
             }
         ),

@@ -82,7 +82,7 @@ final class MjProbeTest {
     private static String[] program() {
         return new String[]{
             "+package foo.x",
-            "+also while\n",
+            String.format("+also while%n"),
             "# No comments.",
             "[] > main",
             "  Q.io.stdout > @",

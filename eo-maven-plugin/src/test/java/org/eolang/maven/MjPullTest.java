@@ -53,7 +53,7 @@ final class MjPullTest {
     @Disabled
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
-            "+package foo.x\n",
+            String.format("+package foo.x%n"),
             "# No comments.",
             "[] > main",
             "  Q.io.stdout > @",
@@ -125,6 +125,7 @@ final class MjPullTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
@@ -195,7 +196,7 @@ final class MjPullTest {
     void getsAlreadyPulledResultsFromCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        final String cached = "# test.\n[] > just-something\n";
+        final String cached = String.format("# test.%n[] > just-something%n");
         new Saved(
             cached,
             cache

@@ -157,7 +157,7 @@ public final class MjParse extends MjSafe {
         final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
         Logger.debug(
             MjParse.class,
-            "Parsed program '%s' from %[file]s:\n %s",
+            "Parsed program '%s' from %[file]s:%n %s",
             identifier, this.sourcesDir.toPath().relativize(source.toAbsolutePath()), xmir
         );
         if (xmir.broken()) {

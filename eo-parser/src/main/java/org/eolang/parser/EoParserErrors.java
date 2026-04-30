@@ -83,7 +83,8 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
             new ParsingException(
                 error,
                 line,
-                List.of(
+                String.join(
+                    String.format("%n"),
                     new MsgLocated(line, position, result).formatted(),
                     underlined
                 )

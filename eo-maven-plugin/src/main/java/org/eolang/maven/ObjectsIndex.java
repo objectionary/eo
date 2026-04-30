@@ -46,7 +46,7 @@ final class ObjectsIndex {
                         Text::asString,
                         new Split(
                             ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
-                            "\n"
+                            "\\n"
                         )
                     )
                 )

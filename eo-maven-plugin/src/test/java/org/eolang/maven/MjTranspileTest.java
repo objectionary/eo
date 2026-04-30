@@ -53,11 +53,13 @@ final class MjTranspileTest {
 
     /**
      * Test eo program from resources.
+     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
      */
     private String program;
 
     /**
      * Traspiled to java eo program from resources.
+     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
      */
     private String compiled;
 
@@ -76,7 +78,7 @@ final class MjTranspileTest {
                 new XtYaml(
                     yaml,
                     eo -> new EoSyntax(
-                        new InputOf(String.format("%s\n", eo))
+                        new InputOf(String.format("%s%n", eo))
                     ).parsed(),
                     new TrDefault<>()
                 )
@@ -90,7 +92,7 @@ final class MjTranspileTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp).withProgram(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "+architect yegor256@gmail.com",
                     "+package examples",
                     "",
@@ -132,7 +134,7 @@ final class MjTranspileTest {
             "TranspileMojo should not touch atoms, but it did",
             new FakeMaven(temp).withProgram(
                 "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:0.0.0\n",
+                String.format("+rt jvm org.eolang:eo-runtime:0.0.0%n"),
                 "# Atom.",
                 "[x y z] > main ?"
                 )
@@ -154,7 +156,7 @@ final class MjTranspileTest {
             "TranspileMojo must generate package-info.java files for all of the packages",
             new FakeMaven(temp).withProgram(
                 "+custom-meta",
-                "+package foo.x\n",
+                String.format("+package foo.x%n"),
                 "# Simple.",
                 "[] > main"
                 )
@@ -173,7 +175,7 @@ final class MjTranspileTest {
             "TranspileMojo must save valid content to package-info.java file",
             new TextOf(
                 new FakeMaven(temp).withProgram(
-                    "+package foo.x\n",
+                    String.format("+package foo.x%n"),
                     "# Simple.",
                     "[] > main",
                     "  true > @"
@@ -385,6 +387,7 @@ final class MjTranspileTest {
      * @return Set of classes
      * @throws IOException If fails.
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)

@@ -69,9 +69,9 @@ interface Objectionary {
             this(
                 s -> new InputOf(
                     String.join(
-                        "\n",
+                        System.lineSeparator(),
                         "# No comments.",
-                            "[] > sprintf\n"
+                        "[] > sprintf".concat(System.lineSeparator())
                     )
                 )
             );

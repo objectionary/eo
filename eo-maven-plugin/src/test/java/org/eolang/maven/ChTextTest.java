@@ -14,7 +14,6 @@ import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,20 +25,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @ExtendWith(MktmpResolver.class)
 final class ChTextTest {
-
-    /**
-     * Test file path in temp dir.
-     */
-    private Path file;
-
-    @BeforeEach
-    void setUp(@Mktmp final Path dir) throws IOException {
-        this.file = dir.resolve("tags.txt");
-        new Saved(
-            new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            this.file
-        ).value();
-    }
 
     @ParameterizedTest
     @CsvSource({
@@ -64,13 +49,13 @@ final class ChTextTest {
         "5f82cc1edffad67bf4ba816610191403eb18af5d, 0.28.7",
         "be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9"
     })
-    void readsCorrectHashByTagFromFile(
-        final String hash,
-        final String tag
-    ) {
+    void readsCorrectHashByTagFromFile(final String hash, final String tag, @Mktmp final Path dir)
+        throws IOException {
+        final Path file = dir.resolve("tags.txt");
+        new Saved(new ResourceOf("org/eolang/maven/commits/tags.txt"), file).value();
         MatcherAssert.assertThat(
             "ChText should read the correct hash by tag from the file, but it didn't",
-            new ChText(this.file, tag).value(),
+            new ChText(file, tag).value(),
             Matchers.equalTo(hash)
         );
     }

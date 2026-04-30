@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.regex.Pattern;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
@@ -14,26 +15,16 @@ import org.antlr.v4.runtime.Token;
 final class ParsingError extends RuntimeException {
 
     /**
-     * Ctor.
-     * @param ctx Context
-     * @param msg Message
+     * EOL pattern used for splitting input into lines.
      */
-    ParsingError(final ParserRuleContext ctx, final String msg) {
-        super(
-            new ParsingException(
-                ctx.getStart().getLine(),
-                new MsgLocated(
-                    ctx.getStart().getLine(),
-                    ctx.getStart().getCharPositionInLine(),
-                    msg
-                ).formatted(),
-                new MsgUnderlined(
-                    ParsingError.line(ctx),
-                    ctx.getStart().getCharPositionInLine(),
-                    ctx.getText().length()
-                ).formatted()
-            )
-        );
+    private static final Pattern EOL = Pattern.compile("\\r?\\n");
+
+    /**
+     * Ctor.
+     * @param cause Underlying parsing exception
+     */
+    ParsingError(final ParsingException cause) {
+        super(cause);
     }
 
     /**
@@ -45,6 +36,32 @@ final class ParsingError extends RuntimeException {
     }
 
     /**
+     * Build a {@link ParsingError} from the given context and message.
+     * @param ctx Context
+     * @param msg Message
+     * @return Parsing error
+     */
+    static ParsingError fromContext(final ParserRuleContext ctx, final String msg) {
+        final int line = ctx.getStart().getLine();
+        final int pos = ctx.getStart().getCharPositionInLine();
+        return new ParsingError(
+            new ParsingException(
+                new IllegalStateException("Parsing error"),
+                line,
+                String.join(
+                    String.format("%n"),
+                    new MsgLocated(line, pos, msg).formatted(),
+                    new MsgUnderlined(
+                        ParsingError.line(ctx),
+                        pos,
+                        ctx.getText().length()
+                    ).formatted()
+                )
+            )
+        );
+    }
+
+    /**
      * Get line from context.
      * @param ctx Context
      * @return Line
@@ -52,7 +69,7 @@ final class ParsingError extends RuntimeException {
     private static String line(final ParserRuleContext ctx) {
         final Token token = ctx.start;
         final int number = token.getLine();
-        final String[] lines = token.getInputStream().toString().split("\n");
+        final String[] lines = ParsingError.EOL.split(token.getInputStream().toString());
         if (number > 0 && number <= lines.length) {
             return lines[number - 1];
         } else {

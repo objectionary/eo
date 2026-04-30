@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
@@ -35,7 +36,7 @@ final class OnDetailedTest {
             "Exception message is not detailed, as it should be",
             Assertions.assertThrows(
                 Exception.class,
-                () -> new OnDetailed(new OnDefault(xmir), source).get(),
+                () -> new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get(),
                 "Exception was not thrown, but it should, since object name is not here"
             ).getLocalizedMessage(),
             Matchers.containsString(expected)

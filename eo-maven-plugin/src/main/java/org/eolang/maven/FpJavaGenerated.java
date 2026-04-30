@@ -33,9 +33,7 @@ final class FpJavaGenerated extends FpEnvelope {
      * @param clazz Transpiled Java class
      * @param generated Generated
      */
-    FpJavaGenerated(
-        final Xnav clazz, final FileGenerationReport generated
-    ) {
+    FpJavaGenerated(final Xnav clazz, final FileGenerationReport generated) {
         super(
             new FpGenerated(
                 src -> {

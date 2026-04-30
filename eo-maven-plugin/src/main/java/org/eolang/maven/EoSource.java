@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -65,7 +66,7 @@ final class EoSource {
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();
         final String name = new OnDetailed(
-            new OnDefault(xmir),
+            new OnDefault(new Xnav(document)),
             e -> EoSource.applyError("mandatory-object-name", e.getMessage(), document)
         ).get();
         if (!name.equals(this.identifier)) {
