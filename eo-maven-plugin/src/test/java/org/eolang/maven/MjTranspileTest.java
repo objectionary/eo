@@ -149,7 +149,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
@@ -164,8 +163,8 @@ final class MjTranspileTest {
                 .execute(new FakeMaven.Transpile())
                 .result(),
             Matchers.allOf(
-                Matchers.hasKey("target/generated/EOfoo/package-info.java"),
-                Matchers.hasKey("target/generated/EOfoo/EOx/package-info.java")
+                Matchers.hasKey("target/generated/org/eolang/EOfoo/package-info.java"),
+                Matchers.hasKey("target/generated/org/eolang/EOfoo/EOx/package-info.java")
             )
         );
     }
