@@ -46,6 +46,37 @@ final class MjLintTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            );
+        final IllegalStateException thrown = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "Program with errors should have failed, but it didn't"
+        );
+        Throwable root = thrown;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+        MatcherAssert.assertThat(
+            "Root exception message must include the program name so defects are visible in stacktrace",
+            root.getMessage(),
+            Matchers.containsString("foo.x.main")
+        );
+        MatcherAssert.assertThat(
+            "Root exception message must include the failing rule in parentheses",
+            root.getMessage(),
+            Matchers.containsString("(cti)")
+        );
+    }
+
+    @Test
     @SuppressWarnings({
         "PMD.UnitTestContainsTooManyAsserts",
         "PMD.UnnecessaryLocalRule"
