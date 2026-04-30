@@ -451,8 +451,8 @@ public final class MjLint extends MjSafe {
     private static List<Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
             node -> new Defect.Default(
-                node.attribute("check").text().orElseThrow(IllegalStateException::new),
-                Severity.parsed(node.attribute("severity").text().orElseThrow(IllegalStateException::new)),
+                node.attribute("check").text().orElseThrow(),
+                Severity.parsed(node.attribute("severity").text().orElseThrow()),
                 "",
                 0,
                 ""

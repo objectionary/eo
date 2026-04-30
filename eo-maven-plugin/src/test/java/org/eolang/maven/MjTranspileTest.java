@@ -29,7 +29,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,10 +37,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link MjTranspile}.
  *
  * @since 0.1
- * @todo #5061:60min Review all disabled tests in this class.
- *  There are several tests annotated with {@link org.junit.jupiter.api.Disabled}.
- *  Each one should be investigated to determine whether it is still relevant
- *  and either re-enabled (with any necessary fixes) or removed.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -328,7 +323,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void transpilesSourcesForDifferentScopesWithoutIntersections(
         @Mktmp final Path temp
