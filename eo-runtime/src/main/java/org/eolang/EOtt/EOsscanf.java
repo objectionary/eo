@@ -78,7 +78,7 @@ public final class EOsscanf extends PhDefault implements Atom {
                 if (literal) {
                     switch (sym) {
                         case 'd':
-                            regex.append("(\\d+)");
+                            regex.append("([+-]?\\d+)");
                             break;
                         case 'f':
                             regex.append("([+-]?\\d+(?:\\.\\d+)?)");
