@@ -42,7 +42,7 @@ final class MjParseTest {
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
         final String parsed = String.format(
             "target/%s/foo/x/main.%s",
-            MjParse.DIR,
+            Parse.DIR,
             MjAssemble.XMIR
         );
         MatcherAssert.assertThat(
@@ -89,10 +89,10 @@ final class MjParseTest {
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
-        final Path base = maven.targetPath().resolve(MjParse.DIR);
+        final Path base = maven.targetPath().resolve(Parse.DIR);
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
         new Cache(
-            cache.resolve(MjParse.CACHE)
+            cache.resolve(Parse.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash.value()),
             src -> expected
@@ -100,7 +100,7 @@ final class MjParseTest {
         target.toFile().delete();
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
-            MjParse.DIR,
+            Parse.DIR,
             MjAssemble.XMIR
         );
         MatcherAssert.assertThat(
@@ -130,7 +130,7 @@ final class MjParseTest {
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR)
+                String.format("target/%s/foo/x/main.%s", Parse.DIR, MjAssemble.XMIR)
             )
         );
     }
@@ -164,7 +164,7 @@ final class MjParseTest {
             .execute(new FakeMaven.Parse())
             .result();
         final File parsed = result.get(
-            String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", Parse.DIR, MjAssemble.XMIR)
         ).toFile();
         final long before = parsed.lastModified();
         maven.execute(MjParse.class);
@@ -198,7 +198,7 @@ final class MjParseTest {
                 Matchers.hasKey(
                     String.format(
                         "target/%s/foo/x/main%s.%s",
-                        MjParse.DIR,
+                        Parse.DIR,
                         FakeMaven.suffix(program),
                         MjAssemble.XMIR
                     )
@@ -219,7 +219,7 @@ final class MjParseTest {
                     )
                     .execute(new FakeMaven.Parse())
                     .result()
-                    .get(String.format("target/%s/main.%s", MjParse.DIR, MjAssemble.XMIR))
+                    .get(String.format("target/%s/main.%s", Parse.DIR, MjAssemble.XMIR))
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors[count(error)=1]",
@@ -254,7 +254,7 @@ final class MjParseTest {
         final File parsed = maven
             .withHelloWorld()
             .execute(new FakeMaven.Parse())
-            .result().get(String.format("target/%s/foo/x/main.%s", MjParse.DIR, MjAssemble.XMIR))
+            .result().get(String.format("target/%s/foo/x/main.%s", Parse.DIR, MjAssemble.XMIR))
             .toFile();
         Files.setLastModifiedTime(
             parsed.toPath(), FileTime.fromMillis(System.currentTimeMillis() + 60_000L)
