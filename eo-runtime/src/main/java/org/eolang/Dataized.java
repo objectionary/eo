@@ -83,10 +83,10 @@ public final class Dataized {
             raw.addAll(ex.messages());
             Collections.reverse(raw);
             final Phi enc = ex.enclosure();
-            if (enc.forma().endsWith("go.to.token.jump")) {
+            if (Dataized.isGoToTokenJump(enc)) {
                 throw new EOerror.ExError(enc);
             }
-            if (String.format("%s.org.eolang.string", PhPackage.GLOBAL).equals(enc.forma())) {
+            if (Dataized.isString(enc)) {
                 raw.add(
                     String.format(
                         "\"%s\"",
@@ -184,5 +184,23 @@ public final class Dataized {
      */
     public Bytes asBytes() {
         return new BytesOf(this.take());
+    }
+
+    /**
+     * Check if object is go.to.token.jump.
+     * @param phi The object
+     * @return True if it is go.to.token.jump
+     */
+    private static boolean isGoToTokenJump(final Phi phi) {
+        return phi.forma().endsWith(".go.to.token.jump");
+    }
+
+    /**
+     * Check if object is string.
+     * @param phi The object
+     * @return True if it is string
+     */
+    private static boolean isString(final Phi phi) {
+        return phi.forma().endsWith(".string");
     }
 }

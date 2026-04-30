@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.GodClass", "PMD.TooManyMethods"})
 public class PhDefault implements Phi, Cloneable {
     /**
      * Logger.
@@ -210,14 +210,20 @@ public class PhDefault implements Phi, Cloneable {
         if (PhDefault.class.getSimpleName().equals(name)) {
             form = "[]";
         } else {
-            form = String.join(
-                ".",
-                PhPackage.GLOBAL,
-                PhDefault.TO_FORMA.matcher(
-                    this.getClass().getPackageName()
-                ).replaceAll("$1"),
-                name
-            );
+            final String pkg = this.getClass().getPackageName();
+            final String simplified;
+            if ("org.eolang".equals(pkg)) {
+                simplified = "";
+            } else {
+                simplified = PhDefault.TO_FORMA.matcher(pkg).replaceAll("$1");
+            }
+            final String prefix;
+            if (simplified.isEmpty()) {
+                prefix = PhPackage.GLOBAL;
+            } else {
+                prefix = String.join(".", PhPackage.GLOBAL, simplified);
+            }
+            form = String.join(".", prefix, name);
         }
         return form;
     }
