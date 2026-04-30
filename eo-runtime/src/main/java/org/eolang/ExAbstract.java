@@ -25,7 +25,7 @@ public abstract class ExAbstract extends RuntimeException {
      * @param cause Exception cause
      */
     public ExAbstract(final String cause) {
-        super(cause);
+        this(cause, null);
     }
 
     /**

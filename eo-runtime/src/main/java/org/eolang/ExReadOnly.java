@@ -22,7 +22,7 @@ public final class ExReadOnly extends ExAbstract {
      * @param cause Cause description
      */
     public ExReadOnly(final String cause) {
-        super(cause);
+        this(cause, null);
     }
 
     /**

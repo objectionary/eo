@@ -176,7 +176,7 @@ public final class Main {
         if (Main.HELP.equals(opt)) {
             Main.LOGGER.info(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "Usage: java -cp target/classes org.eolang.Main [option...] class [argument...]",
                     "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",

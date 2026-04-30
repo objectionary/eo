@@ -78,30 +78,7 @@ public class Expect<T> {
     public Expect<T> otherwise(final String message) {
         return new Expect<>(
             this.subject,
-            () -> {
-                try {
-                    return this.sup.get();
-                } catch (final ExMust ex) {
-                    throw new Expect.ExOtherwise(
-                        String.format(
-                            "%s %s %s",
-                            this.subject,
-                            ex.getMessage(),
-                            message
-                        ),
-                        ex
-                    );
-                } catch (final ExThat ex) {
-                    throw new Expect.ExOtherwise(
-                        String.format(
-                            "%s %s",
-                            this.subject,
-                            message
-                        ),
-                        ex
-                    );
-                }
-            }
+            () -> this.applyOtherwise(message)
         );
     }
 
@@ -135,6 +112,37 @@ public class Expect<T> {
             return this.sup.get();
         } catch (final ExOtherwise ex) {
             throw new ExFailure(ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Apply the otherwise transformation, wrapping {@link ExMust} and {@link ExThat}
+     * exceptions into {@link Expect.ExOtherwise}.
+     * @param message The error message
+     * @return The supplied value, when no exception is thrown
+     */
+    private T applyOtherwise(final String message) {
+        try {
+            return this.sup.get();
+        } catch (final ExMust ex) {
+            throw new Expect.ExOtherwise(
+                String.format(
+                    "%s %s %s",
+                    this.subject,
+                    ex.getMessage(),
+                    message
+                ),
+                ex
+            );
+        } catch (final ExThat ex) {
+            throw new Expect.ExOtherwise(
+                String.format(
+                    "%s %s",
+                    this.subject,
+                    message
+                ),
+                ex
+            );
         }
     }
 

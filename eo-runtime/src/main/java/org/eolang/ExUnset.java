@@ -22,7 +22,7 @@ public final class ExUnset extends ExFailure {
      * @param cause Cause description
      */
     public ExUnset(final String cause) {
-        super(cause);
+        this(cause, null);
     }
 
     /**
