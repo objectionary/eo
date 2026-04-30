@@ -29,6 +29,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     threadSafe = true
 )
 public final class MjPull extends MjSafe {
+
     /**
      * The directory where to process to.
      */
@@ -60,7 +61,6 @@ public final class MjPull extends MjSafe {
      * @param objectionary Objectionary to pull from
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void pull(final OyIndexed objectionary) throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.scopedTojos().withoutSources();

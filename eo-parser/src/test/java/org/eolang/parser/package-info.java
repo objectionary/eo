@@ -5,7 +5,6 @@
 
 /**
  * EO Compiler, tests.
- *
  * @since 0.1
  */
 package org.eolang.parser;

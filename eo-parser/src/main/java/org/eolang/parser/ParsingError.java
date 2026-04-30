@@ -9,10 +9,10 @@ import org.antlr.v4.runtime.Token;
 
 /**
  * Parsing error from context.
- *
  * @since 0.56
  */
 final class ParsingError extends RuntimeException {
+
     /**
      * Ctor.
      * @param ctx Context

@@ -63,7 +63,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void readsFromCacheWhenUnchanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-directory");
         Files.createDirectories(base);
@@ -86,7 +85,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesAgainWhenChanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-base-dir");
         Files.createDirectories(base);
@@ -109,7 +107,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesIfHashExistsButCacheMissing(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-root");
         Files.createDirectories(base);

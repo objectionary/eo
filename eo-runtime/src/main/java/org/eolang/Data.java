@@ -9,12 +9,12 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * A data container.
- *
  * @since 0.1
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @FunctionalInterface
 public interface Data {
+
     /**
      * Take the data.
      * @return The data
@@ -39,6 +39,7 @@ public interface Data {
      * @since 0.1
      */
     final class ToPhi implements Phi {
+
         /**
          * Phi object.
          */

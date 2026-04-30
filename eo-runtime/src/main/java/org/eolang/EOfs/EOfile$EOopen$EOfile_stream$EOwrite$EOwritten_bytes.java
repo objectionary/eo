@@ -22,7 +22,6 @@ import org.eolang.XmirObject;
 
 /**
  * File.open.file-stream.write.written-bytes.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */

@@ -26,6 +26,7 @@ import org.eolang.Phi;
  * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  */
 public final class WSAStartupFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */
@@ -62,6 +63,7 @@ public final class WSAStartupFuncCall implements Syscall {
      * @checkstyle MemberNameCheck (100 lines)
      */
     public static final class WSAData extends Structure {
+
         /**
          * Version.
          */

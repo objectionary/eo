@@ -41,9 +41,9 @@ final class MsgUnderlined {
 
     /**
      * Ctor.
-     * @param origin The message.
-     * @param from The position from which to start underlining.
-     * @param length The length of the underline.
+     * @param origin The message
+     * @param from The position from which to start underlining
+     * @param length The length of the underline
      */
     MsgUnderlined(final String origin, final int from, final int length) {
         this.origin = origin;
@@ -53,11 +53,11 @@ final class MsgUnderlined {
 
     /**
      * Formatted message.
-     * @return The formatted message.
+     * @return The formatted message
      */
     String formatted() {
         return String.format(
-            "%s\n%s",
+            "%s%n%s",
             this.origin,
             this.underline()
         );
@@ -65,7 +65,7 @@ final class MsgUnderlined {
 
     /**
      * Underline.
-     * @return The underlined string.
+     * @return The underlined string
      */
     private String underline() {
         final String result;
@@ -85,9 +85,9 @@ final class MsgUnderlined {
 
     /**
      * Repeat a symbol n times.
-     * @param symbol The symbol.
-     * @param times The number of times to repeat the symbol.
-     * @return The repeated symbol.
+     * @param symbol The symbol
+     * @param times The number of times to repeat the symbol
+     * @return The repeated symbol
      */
     private static String repeat(final String symbol, final int times) {
         return String.join("", Collections.nCopies(times, symbol));

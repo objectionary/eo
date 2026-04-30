@@ -18,12 +18,12 @@ import org.eolang.XmirObject;
 
 /**
  * Ln.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "ln")
 public final class EOln extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

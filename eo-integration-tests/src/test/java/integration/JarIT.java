@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  and the remote catches up with the EO-level floor, drop this
  *  annotation.
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.UnitTestShouldIncludeAssert"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 @Disabled
 final class JarIT {
@@ -99,13 +99,13 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings({"PMD.UnnecessaryLocalRule",  "PMD.UnnecessaryVarargsArrayCreation"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 final String classpath = JarIT.compile(
                     f,
-                    new ElegantObject(
+                    new JarIT.ElegantObject(
                         "app",
                         new String[]{
                             "+package examples",
@@ -137,7 +137,7 @@ final class JarIT {
                             "    e.eq f",
                         }
                     ),
-                    new ElegantObject(
+                    new JarIT.ElegantObject(
                         "fibonacci",
                         new String[]{
                             "+package examples",
@@ -210,7 +210,7 @@ final class JarIT {
      * @throws IOException If fails to compile
      */
     private static String compile(final Farea farea, final String... program) throws IOException {
-        return JarIT.compile(farea, new ElegantObject(program));
+        return JarIT.compile(farea, new JarIT.ElegantObject(program));
     }
 
     /**
@@ -229,15 +229,14 @@ final class JarIT {
         for (final ElegantObject object : objects) {
             object.write(farea);
         }
-        farea.dependencies()
-            .append(
-                "org.eolang",
-                "eo-runtime",
-                System.getProperty(
-                    "eo.version",
-                    Manifests.read("EO-Version")
-                )
-            );
+        farea.dependencies().append(
+            "org.eolang",
+            "eo-runtime",
+            System.getProperty(
+                "eo.version",
+                Manifests.read("EO-Version")
+            )
+        );
         new EoMavenPlugin(farea)
             .appended()
             .execution("compile")
@@ -257,11 +256,9 @@ final class JarIT {
             "test-0.0.0.jar",
             Paths.get(System.getProperty("user.home")).resolve(".m2")
             .resolve("repository")
-            .resolve("org/eolang/eo-runtime")
-            .resolve(
+            .resolve("org/eolang/eo-runtime").resolve(
                 System.getProperty("eo.version", Manifests.read("EO-Version"))
-            )
-            .resolve(
+            ).resolve(
                 String.format(
                     "eo-runtime-%s.jar",
                     System.getProperty("eo.version", Manifests.read("EO-Version"))
@@ -276,6 +273,7 @@ final class JarIT {
      * @since 0.60
      */
     private static final class ElegantObject {
+
         /**
          * File name.
          */

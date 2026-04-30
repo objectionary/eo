@@ -24,6 +24,7 @@ import com.jcabi.log.Logger;
     "JTCOP.RuleInheritanceInTests"
 })
 public final class EOfailed extends PhDefault {
+
     /**
      * Ctor.
      * @param arg Argument

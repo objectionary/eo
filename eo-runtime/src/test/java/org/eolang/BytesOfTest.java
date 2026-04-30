@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link BytesOf}.
- *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")

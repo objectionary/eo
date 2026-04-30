@@ -7,7 +7,6 @@ package org.eolang;
 
 /**
  * Common exception.
- *
  * @since 0.21
  */
 public class ExFailure extends ExAbstract {

@@ -14,7 +14,6 @@ import org.cactoos.io.InputOf;
 
 /**
  * MD5 hash of a file (its content).
- *
  * @since 0.24
  */
 final class FileHash {

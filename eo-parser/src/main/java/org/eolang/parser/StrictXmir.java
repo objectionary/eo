@@ -49,6 +49,7 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
+
     /**
      * XSD for current EO version.
      */

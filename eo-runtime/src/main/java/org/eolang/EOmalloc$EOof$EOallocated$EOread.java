@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.allocated.read")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

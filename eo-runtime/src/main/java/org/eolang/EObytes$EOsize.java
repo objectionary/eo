@@ -11,14 +11,15 @@ package org.eolang;
 
 /**
  * BYTES.SIZE.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOsize extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(new Dataized(this.take(Phi.RHO)).take().length);
     }

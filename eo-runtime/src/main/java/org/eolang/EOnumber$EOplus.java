@@ -11,13 +11,13 @@ package org.eolang;
 
 /**
  * Number.plus.
- *
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.plus")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOnumber$EOplus extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

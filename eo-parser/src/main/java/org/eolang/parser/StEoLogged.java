@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 
 /**
  * Shift that logs the EO representation of the XML before throwing an exception.
- *
  * @since 0.30
  */
 final class StEoLogged implements Shift {

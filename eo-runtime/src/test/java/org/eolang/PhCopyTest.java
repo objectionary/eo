@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhCopy}.
- *
  * @since 0.16
  */
 final class PhCopyTest {

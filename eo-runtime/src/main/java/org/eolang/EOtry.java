@@ -11,12 +11,12 @@ package org.eolang;
 
 /**
  * TRY.
- *
  * @since 0.19
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "try")
 public final class EOtry extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

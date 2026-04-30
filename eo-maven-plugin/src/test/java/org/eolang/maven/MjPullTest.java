@@ -27,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjPull}.
- *
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
@@ -53,13 +52,12 @@ final class MjPullTest {
     @Test
     @Disabled
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  Q.io.stdout > @",
-                "    \"I am 18 years old\""
+        new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  Q.io.stdout > @",
+            "    \"I am 18 years old\""
             )
             .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
             .execute(new FakeMaven.Pull());
@@ -80,10 +78,9 @@ final class MjPullTest {
         maven.foreignTojos()
             .add(this.stdout())
             .withVersion("*.*.*");
-        maven.with("skip", false)
-            .with(
-                "hash",
-                new ChCached(new ChText(temp.resolve("tags.txt"), "master"))
+        maven.with("skip", false).with(
+            "hash",
+            new ChCached(new ChText(temp.resolve("tags.txt"), "master"))
             )
             .execute(MjPull.class);
         MatcherAssert.assertThat(
@@ -99,10 +96,9 @@ final class MjPullTest {
         maven.foreignTojos()
             .add(this.stdout())
             .withVersion("*.*.*");
-        maven.with("skip", false)
-            .with(
-                "hash",
-                new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+        maven.with("skip", false).with(
+            "hash",
+            new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
             )
             .execute(MjPull.class);
         MatcherAssert.assertThat(
@@ -218,12 +214,11 @@ final class MjPullTest {
             ),
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
-        new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x",
-                "# No comments.",
-                "[] > main",
-                "  Q.io.stdout > @"
+        new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "# No comments.",
+            "[] > main",
+            "  Q.io.stdout > @"
             )
             .with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
@@ -254,10 +249,9 @@ final class MjPullTest {
 
     /**
      * Check if the given source file exists in the target directory.
-     *
-     * @param temp Test temporary directory.
-     * @param source Source file.
-     * @return If given source file exists.
+     * @param temp Test temporary directory
+     * @param source Source file
+     * @return If given source file exists
      */
     private static boolean exists(final Path temp, final String source) {
         return Files.exists(temp.resolve("target").resolve(MjPullTest.path(source)));
@@ -265,11 +259,10 @@ final class MjPullTest {
 
     /**
      * Format given a source path.
-     * @param source Source path as object name.
-     * @return Formatted source path.
+     * @param source Source path as object name
+     * @return Formatted source path
      */
     private static Path path(final String source) {
         return new Place(source).make(Paths.get(MjPull.DIR), "eo");
     }
-
 }

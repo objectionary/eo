@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * When parsing fails.
- *
  * @since 0.1
  */
 final class ParsingException extends RuntimeException {
@@ -44,7 +43,6 @@ final class ParsingException extends RuntimeException {
 
     /**
      * Ctor.
-     *
      * @param cause The cause
      * @param line The place
      * @param msgs Messages
@@ -56,7 +54,6 @@ final class ParsingException extends RuntimeException {
 
     /**
      * Ctor.
-     *
      * @param cause Cause of failure
      * @param line The place
      * @param msg Message

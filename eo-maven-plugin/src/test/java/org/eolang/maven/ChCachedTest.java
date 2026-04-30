@@ -14,16 +14,11 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ChCached}.
- *
  * @since 0.28.11
  */
 final class ChCachedTest {
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
     void raisesException() {
         final String msg = "inner problem";
         MatcherAssert.assertThat(
@@ -42,7 +37,6 @@ final class ChCachedTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesHashAndInvokesDelegateOnlyOnce() {
         final AtomicInteger invocations = new AtomicInteger(0);
         final ChCached cached = new ChCached(
@@ -62,7 +56,6 @@ final class ChCachedTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesHashAndRemainsConsistentAcrossMultipleCalls() {
         final ChCached cached = new ChCached(
             () -> {

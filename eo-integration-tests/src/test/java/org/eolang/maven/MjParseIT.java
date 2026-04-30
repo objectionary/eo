@@ -18,14 +18,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:parse goal.
- *
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjParseIT {
+
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
+
     void parsesSimpleFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {

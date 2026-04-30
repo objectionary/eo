@@ -19,7 +19,6 @@ import org.xembly.Xembler;
 
 /**
  * Tests for {@link JavaPlaced}.
- *
  * @since 0.56.7
  */
 @ExtendWith(MktmpResolver.class)

@@ -35,7 +35,7 @@ final class MsgUnderlinedTest {
      * ANTLR {@link  org.antlr.v4.runtime.BaseErrorListener} returns strange line numbers
      * and positions like -1. Here I hide this problem intentionally to make all the rest
      * tests pass.
-     * @return Test cases.
+     * @return Test cases
      */
     private static Stream<Arguments> examples() {
         final String issue = "Problem is here";

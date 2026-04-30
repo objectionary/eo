@@ -13,13 +13,13 @@ import java.util.Arrays;
 
 /**
  * BYTES.SLICE.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.slice")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOslice extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
@@ -49,8 +49,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .otherwise("must be an integer")
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
-            .must(integer -> start + integer <= bytes.length)
-            .otherwise(
+            .must(integer -> start + integer <= bytes.length).otherwise(
                 String.format("is out of bounds for bytes of size %d", bytes.length)
             )
             .it();

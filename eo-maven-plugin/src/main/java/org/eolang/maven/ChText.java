@@ -45,9 +45,8 @@ final class ChText implements CommitHash {
 
     /**
      * Production constructor.
-     *
-     * @param file Path to offline file with hashes and tags.
-     * @param tag Lookup tag.
+     * @param file Path to offline file with hashes and tags
+     * @param tag Lookup tag
      */
     ChText(final Path file, final String tag) {
         this(() -> new TextOf(new InputOf(file)).asString(), tag);
@@ -55,10 +54,9 @@ final class ChText implements CommitHash {
 
     /**
      * Constructs an object that retries source invocations on failure.
-     *
-     * @param source Text source.
-     * @param tag Lookup tag.
-     * @param retries Number of retries (max attempts).
+     * @param source Text source
+     * @param tag Lookup tag
+     * @param retries Number of retries (max attempts)
      */
     ChText(final Scalar<String> source, final String tag, final Integer retries) {
         this(new Retry<>(source, retries), tag);
@@ -66,9 +64,8 @@ final class ChText implements CommitHash {
 
     /**
      * The main constructor.
-     *
-     * @param source Text source.
-     * @param tag Lookup tag.
+     * @param source Text source
+     * @param tag Lookup tag
      */
     ChText(final Scalar<String> source, final String tag) {
         this.source = source;
@@ -105,7 +102,7 @@ final class ChText implements CommitHash {
                                     new Split(new TextOf(this.source), "\n")
                                 ),
                                 () -> {
-                                    throw new NotFound(
+                                    throw new ChText.NotFound(
                                         String.format(
                                             "Git SHA not found for the '%s' tag, probably it doesn't exist in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                             this.tag
@@ -117,7 +114,7 @@ final class ChText implements CommitHash {
                         "\\s+"
                     ),
                     () -> {
-                        throw new NotFound(
+                        throw new ChText.NotFound(
                             String.format(
                                 "The tag '%s' was found, but there is no corresponding Git SHA for it in the line, most probably something is wrong in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                 this.tag
@@ -131,10 +128,10 @@ final class ChText implements CommitHash {
 
     /**
      * The exception for case when hash not found.
-     *
      * @since 0.28.11
      */
     static final class NotFound extends RuntimeException {
+
         /**
          * The main constructor.
          * @param cause The cause of it

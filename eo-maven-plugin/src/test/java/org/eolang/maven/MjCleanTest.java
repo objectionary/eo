@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjClean}.
- *
  * @since 0.28.6
  */
 @ExtendWith(MktmpResolver.class)
@@ -55,8 +54,7 @@ final class MjCleanTest {
             .with("classesDir", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
-            .with("skipZeroVersions", true)
-            .with(
+            .with("skipZeroVersions", true).with(
                 "central",
                 (BiConsumer<Dependency, Path>) (dependency, path) -> {
                     assert dependency != null;

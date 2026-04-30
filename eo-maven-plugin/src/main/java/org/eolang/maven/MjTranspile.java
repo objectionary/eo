@@ -38,7 +38,6 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.addSourcesRoot")
@@ -47,7 +46,6 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Whether to transpile tests.
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.transpileTests")

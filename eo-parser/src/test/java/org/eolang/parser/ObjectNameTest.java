@@ -15,7 +15,6 @@ import org.xembly.Xembler;
 
 /**
  * Tests for {@link OnDefault}.
- *
  * @since 0.56.1
  */
 final class ObjectNameTest {

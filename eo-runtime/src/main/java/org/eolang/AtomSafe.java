@@ -6,11 +6,11 @@ package org.eolang;
 
 /**
  * Atom that catches exceptions.
- *
  * @since 0.36.0
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 public final class AtomSafe implements Atom {
+
     /**
      * Original atom.
      */
@@ -18,7 +18,7 @@ public final class AtomSafe implements Atom {
 
     /**
      * Ctor.
-     * @param atom Phi as atom.
+     * @param atom Phi as atom
      */
     public AtomSafe(final Phi atom) {
         this.origin = (Atom) atom;

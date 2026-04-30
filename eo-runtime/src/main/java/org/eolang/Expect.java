@@ -11,11 +11,9 @@ import java.util.function.Supplier;
 /**
  * This wrapper helps us explain our expectations in an error
  * message that we throw.
- *
  * @param <T> The type of result
  * @since 0.41.0
  */
-@SuppressWarnings("PMD.ShortMethodName")
 public class Expect<T> {
 
     /**
@@ -66,7 +64,7 @@ public class Expect<T> {
                 try {
                     return fun.apply(this.sup.get());
                 } catch (final ExFailure ex) {
-                    throw new ExThat(ex.getMessage(), ex);
+                    throw new Expect.ExThat(ex.getMessage(), ex);
                 }
             }
         );
@@ -84,7 +82,7 @@ public class Expect<T> {
                 try {
                     return this.sup.get();
                 } catch (final ExMust ex) {
-                    throw new ExOtherwise(
+                    throw new Expect.ExOtherwise(
                         String.format(
                             "%s %s %s",
                             this.subject,
@@ -94,7 +92,7 @@ public class Expect<T> {
                         ex
                     );
                 } catch (final ExThat ex) {
-                    throw new ExOtherwise(
+                    throw new Expect.ExOtherwise(
                         String.format(
                             "%s %s",
                             this.subject,
@@ -109,7 +107,7 @@ public class Expect<T> {
 
     /**
      * Assert on it.
-     * @param fun The check.
+     * @param fun The check
      * @return Next object
      */
     public Expect<T> must(final Function<T, Boolean> fun) {
@@ -118,7 +116,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new ExMust(
+                    throw new Expect.ExMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -143,10 +141,10 @@ public class Expect<T> {
     /**
      * This exception is used to enhance the error message
      * in the {@link Expect#otherwise(String)} method.
-     *
      * @since 0.51
      */
     private static final class ExMust extends RuntimeException {
+
         /**
          * Ctor.
          * @param cause Exception cause
@@ -160,10 +158,10 @@ public class Expect<T> {
     /**
      * This exception is used to enhance the error message
      * in the {@link Expect#otherwise(String)} method.
-     *
      * @since 0.51
      */
     private static final class ExThat extends RuntimeException {
+
         /**
          * Ctor.
          * @param cause Exception cause
@@ -177,10 +175,10 @@ public class Expect<T> {
     /**
      * This exception is used to enhance the error message
      * in the {@link Expect#it()} method.
-     *
      * @since 0.51
      */
     private static final class ExOtherwise extends RuntimeException {
+
         /**
          * Ctor.
          * @param cause Exception cause
@@ -193,7 +191,6 @@ public class Expect<T> {
 
     /**
      * Transform Expect to Number.
-     *
      * @since 0.51
      */
     public static final class Number {
@@ -226,7 +223,6 @@ public class Expect<T> {
 
     /**
      * Transform Expect to Integer.
-     *
      * @since 0.51
      */
     public static final class Int {
@@ -263,7 +259,6 @@ public class Expect<T> {
     /**
      * Transform Expect to Natural number.
      * Natural number is integer greater or equal to zero.
-     *
      * @since 0.51
      */
     public static final class Natural {
@@ -298,5 +293,4 @@ public class Expect<T> {
                 .it();
         }
     }
-
 }

@@ -22,6 +22,7 @@ import com.sun.jna.PointerType;
  */
 @SuppressWarnings({"PMD.LongVariable", "PMD.ConstantsInInterface"})
 public interface WinNT extends WinDef, WinBase, BaseTSD {
+
     /**
      * This flag specifies the file's attributes. FILE_ATTRIBUTE_NORMAL indicates that the file
      * does not have any special attributes.
@@ -71,6 +72,7 @@ public interface WinNT extends WinDef, WinBase, BaseTSD {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     final class HANDLE extends PointerType {
+
         /**
          * Whether pointer is immutable.
          */

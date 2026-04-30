@@ -45,7 +45,6 @@ final class ReadmeSnippetsIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
@@ -53,18 +52,16 @@ final class ReadmeSnippetsIT {
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.files()
-                    .file(String.format("src/main/eo/%s.eo", "app"))
-                    .write(
-                        String.format("%s\n", snippet).getBytes(StandardCharsets.UTF_8)
+                    .file(String.format("src/main/eo/%s.eo", "app")).write(
+                        String.format("%s%n", snippet).getBytes(StandardCharsets.UTF_8)
                     );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
+                f.dependencies().append(
+                    "org.eolang",
+                    "eo-runtime",
+                    System.getProperty(
+                        "eo.version",
+                        Manifests.read("EO-Version")
+                    )
                     );
                 f.build()
                     .properties()
@@ -73,7 +70,7 @@ final class ReadmeSnippetsIT {
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     String.format(
-                        "EO snippet was not been executed as expected:\n%s",
+                        "EO snippet was not been executed as expected:%n%s",
                         snippet
                     ),
                     f.log().content(),

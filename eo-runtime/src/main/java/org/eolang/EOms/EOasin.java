@@ -18,12 +18,12 @@ import org.eolang.XmirObject;
 
 /**
  * Asin.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "asin")
 public final class EOasin extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

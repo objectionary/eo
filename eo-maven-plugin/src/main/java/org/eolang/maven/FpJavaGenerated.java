@@ -17,6 +17,7 @@ import org.cactoos.text.Joined;
  * @since 0.56.7
  */
 final class FpJavaGenerated extends FpEnvelope {
+
     /**
      * Ctor.
      * @param clazz Transpiled Java class

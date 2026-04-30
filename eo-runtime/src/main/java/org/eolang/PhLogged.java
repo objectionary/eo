@@ -10,6 +10,7 @@ package org.eolang;
  * for debugging purposes).
  *
  * <p>This class is thread-safe.</p>
+ *
  * @since 0.24
  */
 @SuppressWarnings("PMD.SystemPrintln")

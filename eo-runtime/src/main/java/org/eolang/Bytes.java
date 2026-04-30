@@ -14,32 +14,32 @@ package org.eolang;
  * @since 0.1.0
  */
 public interface Bytes {
+
     /**
      * NOT operation.
-     * @return Bytes.
+     * @return Bytes
      */
     Bytes not();
 
     /**
      * AND operation.
-     * @param other Bytes.
-     * @return Bytes.
+     * @param other Bytes
+     * @return Bytes
      */
     Bytes and(Bytes other);
 
     /**
      * OR operation.
-     * @param other Bytes.
-     * @return Bytes.
+     * @param other Bytes
+     * @return Bytes
      * @checkstyle MethodNameCheck (3 lines)
      */
-    @SuppressWarnings("PMD.ShortMethodName")
     Bytes or(Bytes other);
 
     /**
      * XOR operation.
-     * @param other Bytes.
-     * @return Bytes.
+     * @param other Bytes
+     * @return Bytes
      */
     Bytes xor(Bytes other);
 
@@ -47,9 +47,8 @@ public interface Bytes {
      * Big-endian unsigned shift.
      * Shifts left if value is positive, or right otherwise.
      * Does not perform sign extension.
-     *
-     * @param bits Bits to shift, negative to shift left.
-     * @return Bytes.
+     * @param bits Bits to shift, negative to shift left
+     * @return Bytes
      */
     Bytes shift(int bits);
 
@@ -58,15 +57,14 @@ public interface Bytes {
      * Performs sign extension, i.e. it will
      * fill the top bits with 1 if the first bit is 1
      * and with 0 otherwise.
-     *
-     * @param bits Bits to shift, negative value causes exception.
-     * @return Bytes.
+     * @param bits Bits to shift, negative value causes exception
+     * @return Bytes
      */
     Bytes sshift(int bits);
 
     /**
      * Convert to double number.
-     * @return Number.
+     * @return Number
      */
     Double asNumber();
 
@@ -80,13 +78,13 @@ public interface Bytes {
 
     /**
      * Convert to string.
-     * @return String.
+     * @return String
      */
     String asString();
 
     /**
      * Get bytes itself.
-     * @return Bytes.
+     * @return Bytes
      */
     byte[] take();
 }

@@ -11,13 +11,13 @@ package org.eolang;
 
 /**
  * Number.gt object.
- *
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.gt")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOnumber$EOgt extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

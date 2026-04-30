@@ -18,14 +18,15 @@ import org.eolang.XmirObject;
 
 /**
  * Angle.cos.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "angle.cos")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOangle$EOcos extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             Math.cos(new Dataized(this.take(Phi.RHO)).asNumber())

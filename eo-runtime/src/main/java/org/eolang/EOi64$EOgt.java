@@ -11,13 +11,13 @@ package org.eolang;
 
 /**
  * The i64.gt object.
- *
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "i64.gt")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi64$EOgt extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

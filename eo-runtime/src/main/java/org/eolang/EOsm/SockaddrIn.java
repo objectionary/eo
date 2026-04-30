@@ -20,6 +20,7 @@ import java.util.List;
  */
 @SuppressWarnings("PMD.OnlyOneConstructorShouldDoInitialization")
 public final class SockaddrIn extends Structure {
+
     /**
      * Address family (e.g., AF_INET).
      */

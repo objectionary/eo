@@ -25,7 +25,6 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link StrictXmir}.
- *
  * @since 0.5
  */
 final class StrictXmirTest {
@@ -208,8 +207,7 @@ final class StrictXmirTest {
                 new Directives()
                     .append(new DrProgram())
                     .xpath("/object")
-                    .attr("author", "noname")
-                    .attr(
+                    .attr("author", "noname").attr(
                         "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
                         schema
                     )

@@ -18,6 +18,7 @@ import java.util.Optional;
  * @since 0.52
  */
 public final class OnDefault implements ObjectName {
+
     /**
      * Navigator.
      */
@@ -40,18 +41,15 @@ public final class OnDefault implements ObjectName {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public String get() {
-        final String obj = this.name()
-            .orElseThrow(
-                () -> new IllegalStateException(
-                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
-                )
+        final String obj = this.name().orElseThrow(
+            () -> new IllegalStateException(
+                "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
+            )
             );
         return this.xnav.element("object")
             .elements(Filter.withName("metas"))
-            .findFirst()
-            .map(
+            .findFirst().map(
                 metas -> metas.elements(
                     Filter.all(
                         Filter.withName("meta"),
@@ -62,8 +60,7 @@ public final class OnDefault implements ObjectName {
                             .orElse(false)
                     )
                 )
-                .findFirst()
-                .map(
+                .findFirst().map(
                     meta -> meta.element("tail").text().map(
                         pckg -> String.join(".", pckg, obj)
                     ).orElse(obj)
@@ -83,8 +80,7 @@ public final class OnDefault implements ObjectName {
                 .element("object")
                 .element("o")
                 .attribute("name")
-                .text()
-                .orElseGet(
+                .text().orElseGet(
                     () -> this.xnav.strict("/object/class/@name", 1)
                         .findFirst()
                         .flatMap(Xnav::text)

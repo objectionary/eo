@@ -18,6 +18,7 @@ import org.eolang.Phi;
  * @since 0.40
  */
 public final class GetenvSyscall implements Syscall {
+
     /**
      * Posix object.
      */

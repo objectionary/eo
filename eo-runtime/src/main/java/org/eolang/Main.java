@@ -65,7 +65,6 @@ public final class Main {
 
     /**
      * The method called by JVM when the program starts.
-     *
      * @param args Command line args
      * @throws Exception If fails
      */
@@ -116,7 +115,6 @@ public final class Main {
 
     /**
      * Report exception.
-     *
      * @param opts The options
      * @param thr  The cause
      */
@@ -130,7 +128,6 @@ public final class Main {
 
     /**
      * Print exception line.
-     *
      * @param thr The cause
      */
     private static void print(final Throwable thr) {
@@ -246,5 +243,4 @@ public final class Main {
             return input.lines().findFirst().orElse("N/A");
         }
     }
-
 }

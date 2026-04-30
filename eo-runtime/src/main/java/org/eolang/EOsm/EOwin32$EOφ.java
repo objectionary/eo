@@ -37,13 +37,13 @@ import org.eolang.XmirObject;
 
 /**
  * Win32 function call.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "win32.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOwin32$EOφ extends PhDefault implements Atom {
+
     /**
      * Function calls map.
      */

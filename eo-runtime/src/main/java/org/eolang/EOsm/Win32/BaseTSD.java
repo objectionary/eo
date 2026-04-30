@@ -19,6 +19,7 @@ import com.sun.jna.Pointer;
  * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
  */
 public interface BaseTSD {
+
     /**
      * Unsigned long ptr.
      * @since 0.40
@@ -26,6 +27,7 @@ public interface BaseTSD {
      * @checkstyle TypeNameCheck (5 lines)
      */
     final class ULONG_PTR extends IntegerType {
+
         /**
          * Ctor.
          * @param value Long value

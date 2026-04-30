@@ -18,10 +18,10 @@ import org.cactoos.io.InputStreamOf;
 
 /**
  * Indentation-aware Lexer.
- *
  * @since 0.1.0
  */
 final class EoIndentLexer extends EoLexer {
+
     /**
      * Generated tokes.
      */
@@ -39,7 +39,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Ctor.
-     * @param txt Source code.
+     * @param txt Source code
      * @throws IOException If fails.
      */
     EoIndentLexer(final Text txt) throws IOException {
@@ -48,7 +48,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Ctor.
-     * @param stream Char stream.
+     * @param stream Char stream
      */
     private EoIndentLexer(final CharStream stream) {
         super(stream);
@@ -91,8 +91,8 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Calculate shifts and emit corresponding token.
-     * @param tabs Current amount of tabs.
-     * @param next Next token.
+     * @param tabs Current amount of tabs
+     * @param next Next token
      */
     private void handleTabs(final int tabs, final Token next) {
         final int last = this.indent.peekLast();
@@ -108,7 +108,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Get string with spaces from current text.
-     * @return Spaces from text.
+     * @return Spaces from text
      */
     private String textSpaces() {
         return this.getText().replaceAll("[\r\n]", "");
@@ -116,7 +116,6 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Indent.
-     *
      * @param shift Number of tabs
      */
     private void emitIndent(final int shift) {
@@ -127,8 +126,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * De-indent.
-     *
-     * @param shift Number of un-tabs.
+     * @param shift Number of un-tabs
      */
     private void emitDedent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
@@ -138,8 +136,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Emit token at the next line.
-     *
-     * @param type Type.
+     * @param type Type
      */
     private void emitToken(final int type) {
         final CommonToken tkn = new CommonToken(type, EoParser.VOCABULARY.getSymbolicName(type));

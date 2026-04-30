@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:transpile goal.
- *
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -27,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjTranspileIT {
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void transpilesWithPackage(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -86,7 +84,6 @@ final class MjTranspileIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void transpilesSimpleApp(@Mktmp final Path temp)
         throws Exception {
         final String prog = String.join(

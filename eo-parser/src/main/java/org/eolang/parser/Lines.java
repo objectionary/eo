@@ -30,8 +30,8 @@ final class Lines {
 
     /**
      * Get the line by number.
-     * @param number The line number.
-     * @return The line.
+     * @param number The line number
+     * @return The line
      */
     String line(final int number) {
         final Optional<String> result;

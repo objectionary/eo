@@ -14,7 +14,6 @@ import java.nio.file.StandardOpenOption;
 
 /**
  * Shift that measures and saves stats into a file.
- *
  * @since 0.30
  */
 final class StMeasured implements Shift {
@@ -53,7 +52,7 @@ final class StMeasured implements Shift {
             Files.write(
                 this.path,
                 String.format(
-                    "%s,%d\n",
+                    "%s,%d%n",
                     this.origin.uid(),
                     System.currentTimeMillis() - start
                 ).getBytes(StandardCharsets.UTF_8),

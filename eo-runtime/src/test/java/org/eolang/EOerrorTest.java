@@ -21,7 +21,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link EOerror}.
- *
  * @since 0.26
  */
 final class EOerrorTest {
@@ -43,13 +42,12 @@ final class EOerrorTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void getsReadableError(final byte[] cnst, final String text) {
         MatcherAssert.assertThat(
             "Bytes must be translated to string correctly",
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new Dataized(new MyError(cnst)).take()
+                () -> new Dataized(new EOerrorTest.MyError(cnst)).take()
             ).toString(),
             Matchers.containsString(text)
         );
@@ -57,7 +55,7 @@ final class EOerrorTest {
 
     /**
      * Static method providing sources for parameterized test.
-     * @return Stream of sources.
+     * @return Stream of sources
      */
     private static Stream<Arguments> getTestSources() {
         return Stream.of(
@@ -85,7 +83,7 @@ final class EOerrorTest {
 
         /**
          * Ctor.
-         * @param data The data inside error.
+         * @param data The data inside error
          */
         MyError(final Object data) {
             this.add(
@@ -105,5 +103,4 @@ final class EOerrorTest {
             );
         }
     }
-
 }

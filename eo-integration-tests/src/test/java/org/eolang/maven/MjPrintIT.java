@@ -18,14 +18,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:parse goal.
- *
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjPrintIT {
+
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
+
     void printsSimpleObject(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -41,8 +41,7 @@ final class MjPrintIT {
                     .goals("register", "parse");
                 f.exec("compile");
                 f.files()
-                    .file("src/main/xmir/foo.xmir")
-                    .save(
+                    .file("src/main/xmir/foo.xmir").save(
                         f.files()
                             .file("target/eo/1-parse/foo.xmir")
                             .path()

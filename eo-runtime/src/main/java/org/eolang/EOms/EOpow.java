@@ -18,12 +18,12 @@ import org.eolang.XmirObject;
 
 /**
  * Real.pow.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "pow")
 public final class EOpow extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

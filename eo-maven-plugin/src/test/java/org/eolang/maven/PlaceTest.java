@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Place}.
- *
  * @since 0.11
  */
 final class PlaceTest {

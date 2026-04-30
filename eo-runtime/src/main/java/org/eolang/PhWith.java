@@ -7,14 +7,12 @@ package org.eolang;
 
 /**
  * A attr-putting object.
- *
  * @since 0.1
  */
 public final class PhWith extends PhOnce {
 
     /**
      * Ctor.
-     *
      * @param phi The object
      * @param name The name of attr
      * @param attr The value
@@ -30,7 +28,6 @@ public final class PhWith extends PhOnce {
 
     /**
      * Ctor.
-     *
      * @param phi The object
      * @param pos The position
      * @param attr The value
@@ -43,5 +40,4 @@ public final class PhWith extends PhOnce {
             }
         );
     }
-
 }

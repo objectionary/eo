@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link OnDefault}.
- *
  * @since 0.60
  */
 final class OnDefaultTest {
@@ -64,7 +63,6 @@ final class OnDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWhenMoreThanOneClassNamePresent() {
         MatcherAssert.assertThat(
             "We should fail when more than one '/object/class/@name' is present in XMIR",
@@ -80,7 +78,6 @@ final class OnDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsWhenNeitherONameNorClassNamePresent() {
         MatcherAssert.assertThat(
             "We should fail when neither '/object/o/@name' nor '/object/class/@name' is present in XMIR",

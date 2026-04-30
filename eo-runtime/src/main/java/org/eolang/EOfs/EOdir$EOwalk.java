@@ -26,13 +26,13 @@ import org.eolang.XmirObject;
 
 /**
  * Dir.walk.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "dir.walk")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdir$EOwalk extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
@@ -61,8 +61,7 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
                 paths
                     .map(p -> p.toAbsolutePath().toString())
                     .map(p -> p.substring(p.indexOf(path.toString())))
-                    .filter(p -> matcher.matches(Paths.get(p)))
-                    .map(
+                    .filter(p -> matcher.matches(Paths.get(p))).map(
                         p -> {
                             final Phi file = Phi.Φ.take("fs.file").copy();
                             file.put(0, new ToPhi(p));

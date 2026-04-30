@@ -21,7 +21,6 @@ import org.xembly.Xembler;
 
 /**
  * Tests for {@link FpJavaGenerated}.
- *
  * @since 0.56.7
  */
 @ExtendWith(MktmpResolver.class)

@@ -18,7 +18,6 @@ import org.cactoos.list.ListEnvelope;
 
 /**
  * Walk through files in a directory.
- *
  * @since 0.1
  */
 final class Walk extends ListEnvelope<Path> {
@@ -30,7 +29,6 @@ final class Walk extends ListEnvelope<Path> {
 
     /**
      * Ctor.
-     *
      * @param dir The directory
      */
     Walk(final Path dir) {
@@ -39,7 +37,6 @@ final class Walk extends ListEnvelope<Path> {
 
     /**
      * Ctor.
-     *
      * @param dir The directory
      * @param list The list
      */
@@ -57,11 +54,10 @@ final class Walk extends ListEnvelope<Path> {
     Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
-            this.stream()
-                .filter(
-                    file -> globs.stream().anyMatch(
-                        glob -> this.matches(glob, file)
-                    )
+            this.stream().filter(
+                file -> globs.stream().anyMatch(
+                    glob -> this.matches(glob, file)
+                )
                 )
                 .collect(Collectors.toList())
         );
@@ -76,11 +72,10 @@ final class Walk extends ListEnvelope<Path> {
     Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
-            this.stream()
-                .filter(
-                    file -> globs.stream().noneMatch(
-                        glob -> this.matches(glob, file)
-                    )
+            this.stream().filter(
+                file -> globs.stream().noneMatch(
+                    glob -> this.matches(glob, file)
+                )
                 )
                 .collect(Collectors.toList())
         );
@@ -108,8 +103,8 @@ final class Walk extends ListEnvelope<Path> {
 
     /**
      * Get regular files from directory.
-     * @param dir The dir.
-     * @return Collection of files.
+     * @param dir The dir
+     * @return Collection of files
      * @throws IOException If fails.
      */
     private static Collection<Path> regular(final Path dir) throws IOException {

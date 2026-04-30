@@ -22,7 +22,6 @@ import org.cactoos.set.SetOf;
 
 /**
  * Mutable mojo builder.
- *
  * @param <T> Type of mojo
  * @since 0.1
  */
@@ -40,7 +39,6 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Ctor.
-     *
      * @param mojo The type of Mojo
      */
     Moja(final Class<T> mojo) {
@@ -55,7 +53,6 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Add one more attribute and return self.
-     *
      * @param attr The name
      * @param value The value
      * @return Itself
@@ -67,7 +64,6 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Copy attributes from the given Mojo.
-     *
      * @param mojo Another mojo
      * @return Itself
      */
@@ -137,9 +133,9 @@ final class Moja<T extends AbstractMojo> {
      * @param clazz The mojo class
      * @param mojo The mojo
      * @param entry Field name and value
-     * @throws java.lang.IllegalAccessException If can't set field.
+     * @throws IllegalAccessException If can't set field
      */
-    @SuppressWarnings({"PMD.AvoidAccessibilityAlteration", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private void initField(
         final Class<?> clazz,
         final AbstractMojo mojo,
@@ -163,9 +159,8 @@ final class Moja<T extends AbstractMojo> {
                         this.type.getCanonicalName()
                     )
                 );
-            } else {
-                this.initField(parent, mojo, entry);
             }
+            this.initField(parent, mojo, entry);
         }
     }
 }

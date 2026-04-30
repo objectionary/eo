@@ -17,14 +17,12 @@ import org.cactoos.Func;
 
 /**
  * Train that spies.
- *
  * @since 0.23
  */
 final class TrSpy extends TrEnvelope {
 
     /**
      * Ctor.
-     *
      * @param train Original one
      * @param dir The dir to save
      */
@@ -44,7 +42,7 @@ final class TrSpy extends TrEnvelope {
                             ).value();
                             if (Logger.isDebugEnabled(TrSpy.class)) {
                                 Logger.debug(
-                                    TrSpy.class, "Step #%d by %s:\n%s",
+                                    TrSpy.class, "Step #%d by %s:%n%s",
                                     pos, log, xml
                                 );
                             }

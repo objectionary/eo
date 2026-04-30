@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 
 /**
  * Make program name from a path.
- *
  * @since 0.1
  */
 final class Unplace {
+
     /**
      * Pattern to catch .eo files.
      */

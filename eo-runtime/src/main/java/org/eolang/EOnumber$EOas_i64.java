@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "number.as-i64")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
+
     @Override
     public Phi lambda() {
         final Phi num = Phi.Φ.take("i64").copy();

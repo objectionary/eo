@@ -32,6 +32,7 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "sscanf")
 public final class EOsscanf extends PhDefault implements Atom {
+
     /**
      * Character conversion.
      */

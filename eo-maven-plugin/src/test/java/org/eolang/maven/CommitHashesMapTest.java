@@ -11,15 +11,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link CommitHashesMap}.
- *
  * @since 0.29.5
  */
 final class CommitHashesMapTest {
 
     /**
      * Check if commit hashes as map contains given tag as key and hash by tag.
-     * @param tag Tag.
-     * @param hash Hash.
+     * @param tag Tag
+     * @param hash Hash
      * @checkstyle AnnotationUseStyleCheck (40 lines)
      */
     @ParameterizedTest

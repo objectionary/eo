@@ -21,6 +21,7 @@ import org.eolang.Phi;
  * @since 0.40
  */
 public final class AcceptSyscall implements Syscall {
+
     /**
      * Posix object.
      */

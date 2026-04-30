@@ -34,8 +34,7 @@ final class RtCentral implements Scalar<Dep> {
 
     /**
      * Runtime dependency source from Maven Central.
-     *
-     * @return Runtime dependency from Maven Central.
+     * @return Runtime dependency from Maven Central
      */
     private static Unchecked<Dep> mavenDependency() {
         final String url =
@@ -62,9 +61,8 @@ final class RtCentral implements Scalar<Dep> {
 
     /**
      * Runtime dependency source.
-     *
      * @param version Version of eo-runtime
-     * @return Maven Dependency.
+     * @return Maven Dependency
      */
     private static Unchecked<Dep> dependency(final Supplier<String> version) {
         return new Unchecked<>(

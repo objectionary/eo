@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @since 0.29.0
  */
 final class DpsDefault implements Dependencies {
+
     /**
      * JNA dependency.
      */
@@ -112,7 +113,6 @@ final class DpsDefault implements Dependencies {
 
     /**
      * Find the artifact required by this EO XML.
-     *
      * @param file EO file
      * @return List of artifact needed
      */
@@ -149,8 +149,7 @@ final class DpsDefault implements Dependencies {
         return new Xnav(file)
             .element("object")
             .elements(Filter.withName("metas"))
-            .findFirst()
-            .map(
+            .findFirst().map(
                 metas -> metas.elements(
                     Filter.all(
                         Filter.withName("meta"),
@@ -164,8 +163,7 @@ final class DpsDefault implements Dependencies {
                                 && part.get().text().map("jvm"::equals).orElse(false);
                         }
                     )
-                )
-                .map(
+                ).map(
                     meta -> meta
                         .elements(Filter.withName("part"))
                         .limit(2)

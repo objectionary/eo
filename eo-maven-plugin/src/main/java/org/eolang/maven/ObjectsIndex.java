@@ -19,7 +19,6 @@ import org.cactoos.text.TextOf;
 
 /**
  * The objects index that contains all available EO objects.
- *
  * @see <a href="https://github.com/objectionary/home/blob/gh-pages/objectionary.lst">Example</a>
  * @since 0.29
  */
@@ -57,7 +56,7 @@ final class ObjectsIndex {
 
     /**
      * Ctor.
-     * @param all All objects index.
+     * @param all All objects index
      */
     ObjectsIndex(final Scalar<? extends Set<String>> all) {
         this.objects = new Sticky<>(all);
@@ -65,9 +64,8 @@ final class ObjectsIndex {
 
     /**
      * Checks whether object index contains the object.
-     *
-     * @param name Object name.
-     * @return True if object index contains the object.
+     * @param name Object name
+     * @return True if object index contains the object
      * @throws Exception If something unexpected happened.
      */
     boolean contains(final String name) throws Exception {
@@ -85,8 +83,8 @@ final class ObjectsIndex {
      * Converts object name to the format that is used in the objectionary.
      * - "objects/array.eo" -> "array"
      * - "objects/io/stdout.eo" -> "io.stdout"
-     * @param name Object name in raw format.
-     * @return Object name in objectionary format.
+     * @param name Object name in raw format
+     * @return Object name in objectionary format
      */
     private static String convert(final String name) {
         return name.substring(0, name.length() - 3)

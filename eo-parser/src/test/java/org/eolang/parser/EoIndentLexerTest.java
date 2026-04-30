@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link EoIndentLexer}.
- *
  * @since 0.1.0
  */
 final class EoIndentLexerTest {
+
     @Test
     void emitsTabWithCorrectName() throws IOException {
         MatcherAssert.assertThat(

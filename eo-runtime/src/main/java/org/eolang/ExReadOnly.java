@@ -8,7 +8,6 @@ package org.eolang;
 /**
  * The exception raised when trying to put() an attribute,
  * which is read-only.
- *
  * @since 0.21
  */
 public final class ExReadOnly extends ExAbstract {
@@ -34,5 +33,4 @@ public final class ExReadOnly extends ExAbstract {
     public ExReadOnly(final String cause, final Throwable root) {
         super(cause, root);
     }
-
 }

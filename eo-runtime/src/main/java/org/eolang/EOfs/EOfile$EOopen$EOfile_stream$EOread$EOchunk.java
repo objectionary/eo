@@ -21,7 +21,6 @@ import org.eolang.XmirObject;
 
 /**
  * File.open.file-stream.read.chunk.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */

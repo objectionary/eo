@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link SprintfArgs}.
- *
  * @since 0.57.4
  */
 final class SprintfArgsTest {

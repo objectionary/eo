@@ -56,13 +56,13 @@ final class EOsocketTest {
 
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
-        final RandomServer server = new RandomServer().started();
+        final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
         try {
             final Phi socket = Phi.Φ.take("nk.socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
-            connected.put(0, new Simple());
+            connected.put(0, new EOsocketTest.Simple());
             final byte[] actual = new Dataized(connected).take();
             MatcherAssert.assertThat(
                 String.format(
@@ -82,7 +82,7 @@ final class EOsocketTest {
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final RandomServer random = new RandomServer().started();
+        final EOsocketTest.RandomServer random = new EOsocketTest.RandomServer().started();
         random.stop();
         final int port = random.port;
         final Thread server = new Thread(
@@ -91,7 +91,7 @@ final class EOsocketTest {
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
-                listened.put(0, new Server(msg.length()));
+                listened.put(0, new EOsocketTest.Server(msg.length()));
                 bytes.set(new Dataized(listened).take());
             }
         );
@@ -101,7 +101,7 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
-        connected.put(0, new Client(msg));
+        connected.put(0, new EOsocketTest.Client(msg));
         final int sent = new Dataized(connected).asNumber().intValue();
         server.join();
         MatcherAssert.assertThat(
@@ -150,9 +150,10 @@ final class EOsocketTest {
     @Execution(ExecutionMode.SAME_THREAD)
     @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class WindowsSocketTest {
+
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final RandomServer server = new RandomServer().started();
+            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
             final int started = this.startup();
             try {
                 this.ensure(started == 0);
@@ -513,9 +514,10 @@ final class EOsocketTest {
     @Execution(ExecutionMode.SAME_THREAD)
     @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class PosixSocketTest {
+
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final RandomServer server = new RandomServer().started();
+            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
@@ -588,7 +590,6 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
@@ -648,7 +649,6 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
@@ -726,7 +726,7 @@ final class EOsocketTest {
 
         /**
          * Open posix socket.
-         * @return Posix socket descriptor.
+         * @return Posix socket descriptor
          */
         private int openSocket() {
             final int sock = CStdLib.INSTANCE.socket(
@@ -803,6 +803,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class RandomServer {
+
         /**
          * Server socket.
          */
@@ -815,7 +816,7 @@ final class EOsocketTest {
 
         /**
          * Start server on random port.
-         * @return Self.
+         * @return Self
          */
         RandomServer started() {
             boolean bound = false;
@@ -850,6 +851,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Simple extends PhDefault implements Atom {
+
         /**
          * Ctor.
          */
@@ -873,6 +875,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Server extends PhDefault implements Atom {
+
         /**
          * Received message size.
          */
@@ -891,7 +894,7 @@ final class EOsocketTest {
         @Override
         public Phi lambda() {
             final Phi accept = this.take("s").take("accept").copy();
-            accept.put(0, new Receiver(this.received));
+            accept.put(0, new EOsocketTest.Receiver(this.received));
             return accept;
         }
     }
@@ -902,6 +905,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Receiver extends PhDefault implements Atom {
+
         /**
          * Received message size.
          */
@@ -931,6 +935,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Client extends PhDefault implements Atom {
+
         /**
          * Message to send.
          */

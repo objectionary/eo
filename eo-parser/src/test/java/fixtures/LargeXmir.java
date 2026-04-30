@@ -18,7 +18,6 @@ import org.xembly.Xembler;
 
 /**
  * Large XMIR document.
- *
  * @since 0.51
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
@@ -43,7 +42,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
-     * @param nme Program name.
+     * @param nme Program name
      */
     public LargeXmir(final String nme) {
         this(nme, "com/sun/jna/Pointer.class");
@@ -51,7 +50,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
-     * @param nme Program name.
+     * @param nme Program name
      * @param path The path to the file
      */
     public LargeXmir(final String nme, final String path) {
@@ -81,8 +80,7 @@ public final class LargeXmir {
             f -> {
                 f.clean();
                 f.files()
-                    .file(String.format("target/classes/%s", this.file))
-                    .write(
+                    .file(String.format("target/classes/%s", this.file)).write(
                         new UncheckedBytes(
                             new BytesOf(
                                 new ResourceOf(this.file)

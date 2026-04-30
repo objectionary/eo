@@ -296,7 +296,7 @@ final class PhDefaultTest {
             new SetOf<>(
                 new Together<>(
                     threads,
-                    t -> new Int()
+                    t -> new PhDefaultTest.Int()
                 )
             ),
             Matchers.iterableWithSize(threads)
@@ -326,7 +326,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo();
@@ -448,7 +447,7 @@ final class PhDefaultTest {
 
     @Test
     void injectsPhi() {
-        final Phi phi = new WithVoidPhi();
+        final Phi phi = new PhDefaultTest.WithVoidPhi();
         phi.put(0, new Data.ToPhi(5));
         MatcherAssert.assertThat(
             "Object must be injected to phi attribute and dataized",
@@ -463,7 +462,7 @@ final class PhDefaultTest {
             new PhMethod(
                 new PhWith(
                     new PhMethod(
-                        new Rnd(), this.plus()
+                        new PhDefaultTest.Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -479,7 +478,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
@@ -536,7 +534,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int cnt = 100;
@@ -621,6 +618,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     private static final class Rnd extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -640,6 +638,7 @@ final class PhDefaultTest {
      * @since 0.36.0
      */
     private static final class Int extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -679,6 +678,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Foo extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -695,6 +695,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class WithVoidPhi extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -709,6 +710,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Counter extends PhDefault {
+
         /**
          * Count.
          */
@@ -739,6 +741,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Kid extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -754,6 +757,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class EndlessRecursion extends PhDefault {
+
         /**
          * Count.
          */
@@ -788,6 +792,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class RecursivePhi extends PhDefault {
+
         /**
          * Count.
          */
@@ -822,6 +827,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class RecursivePhiViaNew extends PhDefault {
+
         /**
          * Count.
          */
@@ -845,7 +851,7 @@ final class PhDefaultTest {
                         } else {
                             result = new Data.ToPhi(
                                 new Dataized(
-                                    new RecursivePhiViaNew()
+                                    new PhDefaultTest.RecursivePhiViaNew()
                                 ).asNumber()
                             );
                         }

@@ -32,11 +32,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
+
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "snippets", glob = "**.yaml")
-    @SuppressWarnings({"unchecked", "PMD.UnitTestShouldIncludeAssert"})
+    @SuppressWarnings("unchecked")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
@@ -47,21 +48,19 @@ final class SnippetIT {
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.files()
-                    .file(String.format("src/main/eo/%s", file))
-                    .write(
+                    .file(String.format("src/main/eo/%s", file)).write(
                         String.format(
-                            "%s\n",
+                            "%s%n",
                             xtory.map().get("eo")
                         ).getBytes(StandardCharsets.UTF_8)
                     );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
+                f.dependencies().append(
+                    "org.eolang",
+                    "eo-runtime",
+                    System.getProperty(
+                        "eo.version",
+                        Manifests.read("EO-Version")
+                    )
                     );
                 final String target;
                 if (xtory.map().containsKey("target")) {

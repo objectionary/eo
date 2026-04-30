@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 /**
  * Bytes.
- *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -23,7 +22,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param str UTF-8 Text.
+     * @param str UTF-8 Text
      */
     public BytesOf(final String str) {
         this(str.getBytes(StandardCharsets.UTF_8));
@@ -31,7 +30,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param number Integer number.
+     * @param number Integer number
      */
     public BytesOf(final int number) {
         this(ByteBuffer.allocate(Integer.BYTES).putInt(number).array());
@@ -39,7 +38,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param chr Character.
+     * @param chr Character
      */
     public BytesOf(final char chr) {
         this(ByteBuffer.allocate(Character.BYTES).putChar(chr).array());
@@ -47,7 +46,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param number Long number.
+     * @param number Long number
      */
     public BytesOf(final long number) {
         this(ByteBuffer.allocate(Long.BYTES).putLong(number).array());
@@ -55,7 +54,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param number Double number.
+     * @param number Double number
      */
     public BytesOf(final double number) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(number).array());
@@ -63,7 +62,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param data Data.
+     * @param data Data
      */
     public BytesOf(final byte[] data) {
         this(new BytesRaw(Arrays.copyOf(data, data.length)));
@@ -71,7 +70,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
-     * @param bytes Bytes.
+     * @param bytes Bytes
      */
     public BytesOf(final Bytes bytes) {
         this.bytes = bytes;
@@ -88,7 +87,6 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
-    @SuppressWarnings("PMD.ShortMethodName")
     public Bytes or(final Bytes other) {
         return this.bytes.or(other);
     }

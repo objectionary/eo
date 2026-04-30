@@ -23,6 +23,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.41.0
  */
 final class Saved implements Scalar<Path> {
+
     /**
      * Absolute path to save content to.
      */

@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 /**
  * Bytes to hex converter.
- *
  * @since 0.44
  */
 final class BytesToHex implements Supplier<String> {

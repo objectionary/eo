@@ -14,15 +14,14 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOmalloc}.
- *
  * @since 0.1
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOmallocTest {
+
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void freesMemory() {
-        final Dummy dummy = new Dummy();
+        final EOmallocTest.Dummy dummy = new EOmallocTest.Dummy();
         new Dataized(
             EOmallocTest.allocated(
                 new Data.ToPhi(1L),
@@ -37,9 +36,8 @@ final class EOmallocTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void freesMemoryIfErrorIsOccurred() {
-        final ErrorDummy dummy = new ErrorDummy();
+        final EOmallocTest.ErrorDummy dummy = new EOmallocTest.ErrorDummy();
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
@@ -75,6 +73,7 @@ final class EOmallocTest {
      * @since 0.37.0
      */
     private static final class Dummy extends PhDefault {
+
         /**
          * Id.
          */
@@ -106,6 +105,7 @@ final class EOmallocTest {
      * @since 0.36.0
      */
     private static final class ErrorDummy extends PhDefault {
+
         /**
          * Id.
          */

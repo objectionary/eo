@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "i64.div")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi64$EOdiv extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

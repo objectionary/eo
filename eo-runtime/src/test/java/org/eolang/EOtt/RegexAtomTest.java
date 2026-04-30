@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the regex atom.
- *
  * @since 0.57.4
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -48,7 +47,6 @@ final class RegexAtomTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsClearErrorOnMissingClosingSlash() {
         MatcherAssert.assertThat(
             "regex without closing slash should throw a clear ExFailure that mentions \"/\" and is not an opaque IndexOutOfBoundsException",

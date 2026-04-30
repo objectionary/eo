@@ -34,6 +34,7 @@ import org.cactoos.scalar.Unchecked;
     threadSafe = true
 )
 public final class MjPlace extends MjSafe {
+
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(MjResolve.DIR);
@@ -90,7 +91,6 @@ public final class MjPlace extends MjSafe {
 
     /**
      * Dependency which binaries we are going to place.
-     *
      * @since 0.30
      */
     private final class PlacedDependency implements Supplier<Long> {
@@ -140,8 +140,8 @@ public final class MjPlace extends MjSafe {
 
         /**
          * Check if the file is not already placed.
-         * @param file The file to check.
-         * @return True if the file is not already placed.
+         * @param file The file to check
+         * @return True if the file is not already placed
          */
         private boolean isNotAlreadyPlaced(final Path file) {
             final Path target = MjPlace.this.classesDir.toPath().resolve(
@@ -167,7 +167,7 @@ public final class MjPlace extends MjSafe {
 
         /**
          * Print log info about placing class.
-         * @param file The file to place.
+         * @param file The file to place
          */
         private void printLogInfoAboutBinary(final Path file) {
             final Path target = MjPlace.this.classesDir.toPath().resolve(

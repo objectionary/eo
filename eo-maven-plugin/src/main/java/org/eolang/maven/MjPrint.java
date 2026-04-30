@@ -33,6 +33,7 @@ import org.eolang.parser.Xmir;
     threadSafe = true
 )
 public final class MjPrint extends MjSafe {
+
     /**
      * Directory with XMIR sources to print.
      * @checkstyle MemberNameCheck (10 lines)

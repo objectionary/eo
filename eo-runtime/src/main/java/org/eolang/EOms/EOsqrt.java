@@ -18,12 +18,12 @@ import org.eolang.XmirObject;
 
 /**
  * Sqrt.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "sqrt")
 public final class EOsqrt extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

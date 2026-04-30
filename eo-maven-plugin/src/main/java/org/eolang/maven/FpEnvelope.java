@@ -13,6 +13,7 @@ import java.nio.file.Path;
  * @checkstyle DesignForExtensionCheck (50 lines)
  */
 class FpEnvelope implements Footprint {
+
     /**
      * Wrapped footprint.
      */

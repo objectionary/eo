@@ -26,6 +26,7 @@ import java.util.Collections;
  */
 @XmirObject(oname = "error")
 public final class EOerror extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
@@ -36,7 +37,7 @@ public final class EOerror extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        throw new ExError(this.take("message"));
+        throw new EOerror.ExError(this.take("message"));
     }
 
     /**
@@ -143,8 +144,8 @@ public final class EOerror extends PhDefault implements Atom {
 
         /**
          * Retrieve message from enclosure safely.
-         * @param enclosure Enclosure.
-         * @return String message.
+         * @param enclosure Enclosure
+         * @return String message
          * @checkstyle IllegalCatchCheck (55 lines)
          */
         @SuppressWarnings("PMD.AvoidCatchingGenericException")

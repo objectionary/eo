@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjResolve}.
- *
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
@@ -29,13 +28,12 @@ final class MjResolveTest {
 
     @Test
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:0.7.0",
-                "+version 0.25.0\n",
-                "# No comments.",
-                "[] > main ?"
+        new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.7.0",
+            "+version 0.25.0\n",
+            "# No comments.",
+            "[] > main ?"
             ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -162,12 +160,10 @@ final class MjResolveTest {
 
     /**
      * Test conflicts.
-     *
      * @param temp Temp folder
      * @throws IOException In case of I/O issues.
      */
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x",
@@ -196,12 +192,11 @@ final class MjResolveTest {
 
     @Test
     void resolvesWithConflictingDependenciesNoFail(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
-                "# No comment.",
-                "[] > main ?"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",
+            "# No comment.",
+            "[] > main ?"
             ).withProgram(
                 "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1\n",

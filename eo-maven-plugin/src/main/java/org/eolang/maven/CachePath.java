@@ -12,6 +12,7 @@ import java.util.function.Supplier;
  * @since 0.41
  */
 final class CachePath implements Supplier<Path> {
+
     /**
      * Cache base directory.
      */

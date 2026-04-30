@@ -37,7 +37,6 @@ public interface Phi extends Data {
 
     /**
      * The global scope object, which owns all other objects.
-     *
      * @checkstyle ConstantNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.FieldNamingConventions")
@@ -45,7 +44,6 @@ public interface Phi extends Data {
 
     /**
      * Make a copy, leaving it at the same parent.
-     *
      * @return A copy
      */
     Phi copy();
@@ -65,14 +63,14 @@ public interface Phi extends Data {
 
     /**
      * Put object by position of the attribute.
-     * @param pos The position of the attribute.
+     * @param pos The position of the attribute
      * @param object The object to put
      */
     void put(int pos, Phi object);
 
     /**
      * Put object by name of the attribute.
-     * @param name The name of the attribute.
+     * @param name The name of the attribute
      * @param object The object to put
      */
     void put(String name, Phi object);
@@ -85,7 +83,7 @@ public interface Phi extends Data {
 
     /**
      * Get forma of the phi.
-     * @return Forma of it as {@link String}.
+     * @return Forma of it as {@link String}
      */
     String forma();
 }

@@ -25,7 +25,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link Probes}.
- *
  * @since 0.53
  */
 final class ProbesTest {

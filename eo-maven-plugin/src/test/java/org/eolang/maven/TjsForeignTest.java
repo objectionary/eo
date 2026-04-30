@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests from {@link TjsForeign}.
- *
  * @since 0.29.5
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -82,7 +81,6 @@ final class TjsForeignTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfTojoWasNotFound() {
         final String id = "absent";
         Assertions.assertThrows(
@@ -117,7 +115,6 @@ final class TjsForeignTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void getsExceptionMessageIfKeyWasNotFoundInTojo() {
         Assertions.assertEquals(
             "There is no 'XMIR' attribute in the tojo",

@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link PhPackage}.
- *
  * @since 0.24
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -92,7 +91,6 @@ final class PhPackageTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsExceptionIfCantFindPackageInfo() {
         MatcherAssert.assertThat(
             "Exception message must mention missing package-info.class",

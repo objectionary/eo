@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 0.1
  */
 public final class PhVoid implements Phi {
+
     /**
      * Name of the attribute.
      */

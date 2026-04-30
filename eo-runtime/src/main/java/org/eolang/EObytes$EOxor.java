@@ -11,13 +11,13 @@ package org.eolang;
 
 /**
  * BYTES.XOR.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.xor")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOxor extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

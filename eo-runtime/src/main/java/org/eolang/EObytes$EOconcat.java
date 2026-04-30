@@ -11,13 +11,13 @@ package org.eolang;
 
 /**
  * BYTES.CONCAT.
- *
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.concat")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOconcat extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public class PhDefault implements Phi, Cloneable {
+
     /**
      * Logger.
      */
@@ -315,10 +316,9 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Padding according to current {@link #NESTING} level.
-     * @return Padding string.
+     * @return Padding string
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
-
 }

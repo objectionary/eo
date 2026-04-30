@@ -35,6 +35,7 @@ import org.cactoos.set.SetOf;
 )
 @SuppressWarnings("PMD.ImmutableField")
 public final class MjRegister extends MjSafe {
+
     /**
      * Pattern for .eo files.
      */
@@ -44,7 +45,6 @@ public final class MjRegister extends MjSafe {
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
-     *
      * @implNote {@code property} attribute is omitted for collection
      * properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
@@ -56,7 +56,6 @@ public final class MjRegister extends MjSafe {
      * List of exclusion GLOB filters for finding EO files
      * in the {@code &lt;includeSources&gt;} directory, which can be
      * pretty global (or even a root one).
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -64,7 +63,6 @@ public final class MjRegister extends MjSafe {
 
     /**
      * Whether it should fail on file names not matching required pattern.
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(

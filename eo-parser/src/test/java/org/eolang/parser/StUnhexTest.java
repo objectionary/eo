@@ -17,7 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link StUnhex}.
- *
  * @since 0.29.0
  */
 final class StUnhexTest {

@@ -16,6 +16,7 @@ package org.eolang.EOsm.Win32; // NOPMD
  */
 @SuppressWarnings("PMD.ConstantsInInterface")
 public interface Wincon {
+
     /**
      * Standard input handle.
      */

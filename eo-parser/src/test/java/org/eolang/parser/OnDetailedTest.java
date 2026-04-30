@@ -20,17 +20,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link OnDetailed}.
- *
  * @since 0.56.5
  */
 @ExtendWith(MktmpResolver.class)
 final class OnDetailedTest {
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnnecessaryLocalRule",
-        "PMD.UnitTestContainsTooManyAsserts"
-    })
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
         final XML xmir = new XMLDocument("<nothing/>");
         final String expected = "f.xmir";

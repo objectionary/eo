@@ -15,7 +15,6 @@ import org.cactoos.list.ListOf;
 
 /**
  * Accumulates all parsing errors.
- *
  * @since 0.30.0
  */
 final class GeneralErrors extends BaseErrorListener implements Iterable<ParsingException> {

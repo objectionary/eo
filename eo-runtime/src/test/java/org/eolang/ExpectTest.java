@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link Expect}.
- *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -32,7 +31,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceWithOneError() {
         MatcherAssert.assertThat(
             "Throw error in first 'must'. Error message is correct",
@@ -49,7 +47,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceWithTwoErrors() {
         MatcherAssert.assertThat(
             "Throw error in first 'must'. Not add error about second 'must'",
@@ -68,7 +65,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceWithOneOkAndOneError() {
         MatcherAssert.assertThat(
             "Throw error in second 'must'. First 'must' passes check",
@@ -87,17 +83,15 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceWithExFailureInThat() {
         MatcherAssert.assertThat(
             "Take error message from 'otherwise', not from original error",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>("attr", () -> 42.2)
-                    .that(
-                        i -> {
-                            throw new ExFailure("Some error in operation");
-                        }
+                () -> new Expect<>("attr", () -> 42.2).that(
+                    i -> {
+                        throw new ExFailure("Some error in operation");
+                    }
                     )
                     .otherwise("must be converted to something")
                     .it(),
@@ -108,21 +102,19 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceWithExFailureInThatForParsing() {
         MatcherAssert.assertThat(
             "Take error message from 'otherwise', not from original error",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect<>("attr", () -> "string")
-                    .that(
-                        i -> {
-                            try {
-                                return Integer.parseInt(i);
-                            } catch (final NumberFormatException ex) {
-                                throw new ExFailure("Can't parse to integer", ex);
-                            }
+                () -> new Expect<>("attr", () -> "string").that(
+                    i -> {
+                        try {
+                            return Integer.parseInt(i);
+                        } catch (final NumberFormatException ex) {
+                            throw new ExFailure("Can't parse to integer", ex);
                         }
+                    }
                     )
                     .otherwise("must be an integer")
                     .it(),
@@ -133,7 +125,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWithCorrectTraceForMustAndThat() {
         MatcherAssert.assertThat(
             "Take error message from must",
@@ -152,7 +143,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToNumberForNotNumber() {
         MatcherAssert.assertThat(
             "inner class Number working throws error if attr is not a number",
@@ -175,7 +165,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToIntegerForNotNumber() {
         MatcherAssert.assertThat(
             "inner class Integer throws error for not a number",
@@ -198,7 +187,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToIntegerForNotInteger() {
         MatcherAssert.assertThat(
             "inner class Integer throws error for not an integer number",
@@ -221,7 +209,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToNonNegativeIntegerForNotNumber() {
         MatcherAssert.assertThat(
             "inner class NonNegativeInteger throws error for not a number",
@@ -244,7 +231,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToNonNegativeIntegerForNotInteger() {
         MatcherAssert.assertThat(
             "inner class NonNegativeInteger throws error for not an integer number",
@@ -267,7 +253,6 @@ final class ExpectTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsInTransformingToNonNegativeIntegerForNegative() {
         MatcherAssert.assertThat(
             "inner class NonNegativeInteger throws error for a negative integer",
@@ -288,5 +273,4 @@ final class ExpectTest {
             Matchers.equalTo("the 'ρ' attribute (-42) must be greater or equal to zero")
         );
     }
-
 }

@@ -15,6 +15,7 @@ import org.cactoos.BiFunc;
  */
 @FunctionalInterface
 interface Footprint extends BiFunc<Path, Path, Path> {
+
     @Override
     Path apply(Path source, Path target) throws IOException;
 }

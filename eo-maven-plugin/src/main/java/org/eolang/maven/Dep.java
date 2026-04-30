@@ -10,7 +10,6 @@ import org.apache.maven.model.Dependency;
 
 /**
  * Wrapped for maven model {@link Dependency}.
- *
  * @since 0.54
  */
 final class Dep implements Comparable<Dep>, Supplier<Dependency> {

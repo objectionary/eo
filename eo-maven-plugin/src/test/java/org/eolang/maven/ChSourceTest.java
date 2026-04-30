@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link ChSource}.
- *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)

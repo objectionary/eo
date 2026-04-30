@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:lint goal.
- *
  * @since 0.52
  * @todo #4394:35min Enable MjLints related tests after `lints` will be adjusted with `Φ` object.
  *  For now, lints checks for `Q` instead of `Φ`. After new version of lints released, we should
@@ -42,7 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjLintIT {
 
     @Test
-    @SuppressWarnings({"PMD.UnitTestShouldIncludeAssert", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void lintsAgainAfterModification(@Mktmp final Path temp)
         throws Exception {
         final String source = "src/main/eo/foo.eo";
@@ -73,7 +72,6 @@ final class MjLintIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void printsLintsUrlWithVersion(@Mktmp final Path temp)
         throws IOException {
         final String program = MjLintIT.helloWorld();

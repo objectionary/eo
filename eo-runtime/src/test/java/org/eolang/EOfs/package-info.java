@@ -10,7 +10,6 @@
 
 /**
  * EO-fs, tests.
- *
  * @since 0.40
  */
 package org.eolang.EOfs; // NOPMD

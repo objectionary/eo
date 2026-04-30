@@ -67,8 +67,7 @@ final class ProxyIT {
             HttpClient.newBuilder()
             .proxy(ProxySelector.of(new InetSocketAddress("localhost", this.port)))
             .followRedirects(HttpClient.Redirect.NORMAL)
-            .build()
-            .send(
+            .build().send(
                 HttpRequest.newBuilder()
                     .uri(URI.create("https://objectionary.com/"))
                     .header("User-Agent", "test-client")
@@ -83,7 +82,6 @@ final class ProxyIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         new Farea(tmp).together(
             f -> {
@@ -149,8 +147,8 @@ final class ProxyIT {
 
     /**
      * Returns proxy settings XML with the given port.
-     * @param port Proxy port.
-     * @return Proxy settings XML.
+     * @param port Proxy port
+     * @return Proxy settings XML
      */
     private static String settings(final int port) {
         return new UncheckedText(new TextOf(new ResourceOf("proxy-settings.xml")))

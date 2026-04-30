@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.59.0
  */
 final class AtRhoTest {
+
     @Test
     void throwsOnEmptyRho() {
         Assertions.assertThrows(

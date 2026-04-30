@@ -23,7 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:register goal.
- *
  * @since 0.52
  */
 @SuppressWarnings(
@@ -35,8 +34,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 )
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjRegisterIT {
+
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
+
     void removesOldPulledFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -70,7 +70,6 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldResolvedFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -104,7 +103,6 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
@@ -164,7 +162,6 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {

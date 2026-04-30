@@ -24,14 +24,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjLint}.
- *
  * @since 0.31.0
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
+
     @Disabled
+
     @Test
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
@@ -48,12 +49,11 @@ final class MjLintTest {
     @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  cti true \"error\" \"msg\" > @"
             );
         final IllegalStateException thrown = Assertions.assertThrows(
             IllegalStateException.class,
@@ -77,17 +77,12 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  cti true \"error\" \"msg\" > @"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -104,10 +99,6 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
@@ -127,7 +118,6 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsWholeProgramAnalysisErrorsOnSecondRun(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
@@ -150,8 +140,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
             .allTojosWithHash(() -> "abcdefq")
-            .with("cache", cache.toFile())
-            .withProgram(
+            .with("cache", cache.toFile()).withProgram(
                 "+home https://www.eolang.org",
                 "+package foo.x",
                 "+version 0.0.0",
@@ -186,16 +175,14 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsErrorsSuccessfullyEvenAfterSecondRun(
         @Mktmp final Path temp
     ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  cti true \"error\" \"msg\" > @"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -212,12 +199,11 @@ final class MjLintTest {
     @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  cti true \"critical\" \"msg\" > @"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  cti true \"critical\" \"msg\" > @"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -239,19 +225,14 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
     void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  # No comments.",
-                "  [] > @",
-                "    \"Hello world\" > @"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  # No comments.",
+            "  [] > @",
+            "    \"Hello world\" > @"
             )
             .with("failOnWarning", true);
         Assertions.assertThrows(
@@ -272,13 +253,12 @@ final class MjLintTest {
     @Test
     void doesNotDetectWarningWithoutCorrespondingFlag(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package foo.x\n",
-                    "# No comments.",
-                    "[] > main",
-                    "  [] > x",
-                    "    \"Hello world\" > @"
+            () -> new FakeMaven(temp).withProgram(
+                "+package foo.x\n",
+                "# No comments.",
+                "[] > main",
+                "  [] > x",
+                "    \"Hello world\" > @"
                 )
                 .with("failOnWarning", false)
                 .execute(new FakeMaven.Lint()),
@@ -287,18 +267,13 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
     void failsParsingOnError(@Mktmp final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+package foo.x\n",
-                "# No comments.",
-                "[] > main",
-                "  seq *-1 > @",
-                "    true"
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x\n",
+            "# No comments.",
+            "[] > main",
+            "  seq *-1 > @",
+            "    true"
             );
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -340,7 +315,6 @@ final class MjLintTest {
 
     @Disabled
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
@@ -361,7 +335,6 @@ final class MjLintTest {
 
     @Disabled
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf input = new TextOf(
             new ResourceOf("org/eolang/maven/main.xml")

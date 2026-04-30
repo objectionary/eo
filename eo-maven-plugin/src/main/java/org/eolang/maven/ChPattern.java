@@ -36,9 +36,8 @@ final class ChPattern implements CommitHash {
 
     /**
      * The main constructor.
-     *
-     * @param pattern Pattern like *.*.* or 'master'.
-     * @param tag Particular tag to match.
+     * @param pattern Pattern like *.*.* or 'master'
+     * @param tag Particular tag to match
      */
     ChPattern(
         final String pattern,
@@ -72,7 +71,6 @@ final class ChPattern implements CommitHash {
 
     /**
      * The pattern class to check tag.
-     *
      * @since 0.28.11
      */
     private static final class Pattern {
@@ -89,8 +87,7 @@ final class ChPattern implements CommitHash {
 
         /**
          * The main constructor.
-         *
-         * @param raw Raw pattern like *.*.*:abcdefg.
+         * @param raw Raw pattern like *.*.*:abcdefg
          */
         private Pattern(final String raw) {
             this(raw.split(":"));
@@ -98,7 +95,6 @@ final class ChPattern implements CommitHash {
 
         /**
          * The cascade constructor.
-         *
          * @param raw Split pattern like ['*.*.*', 'abcdefg']
          */
         private Pattern(final String... raw) {
@@ -107,7 +103,6 @@ final class ChPattern implements CommitHash {
 
         /**
          * The default constructor.
-         *
          * @param template Pattern like '*.*.*'
          * @param hash Hash like 'abcdefg'
          */
@@ -118,9 +113,8 @@ final class ChPattern implements CommitHash {
 
         /**
          * How much the tag matches the pattern.
-         *
-         * @param tag Tag to compare with.
-         * @return Weigh - How much the tag matches the pattern.
+         * @param tag Tag to compare with
+         * @return Weigh - How much the tag matches the pattern
          */
         private int weight(final String tag) {
             final int weight;
@@ -138,8 +132,7 @@ final class ChPattern implements CommitHash {
          * 1.*.* = 1
          * 1.2.* = 2
          * 1.2.3 = 3
-         *
-         * @return Number of constant parts in pattern.
+         * @return Number of constant parts in pattern
          */
         private int numberOfConstants() {
             return (int) Stream.of(this.template.split("\\."))
@@ -148,8 +141,7 @@ final class ChPattern implements CommitHash {
 
         /**
          * Creates regex from pattern.
-         *
-         * @return Java regex.
+         * @return Java regex
          */
         private String regex() {
             final List<String> keys = new LinkedList<>();

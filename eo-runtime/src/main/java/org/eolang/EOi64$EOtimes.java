@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "i64.times")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi64$EOtimes extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

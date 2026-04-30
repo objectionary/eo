@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjProbe}.
- *
  * @since 0.28.11
  */
 @ExtendWith(WeAreOnline.class)

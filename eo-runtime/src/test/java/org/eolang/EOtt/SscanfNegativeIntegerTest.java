@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@code tt.sscanf} with signed integer inputs.
- *
  * @since 0.57.4
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

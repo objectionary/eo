@@ -17,6 +17,7 @@ import org.eolang.Phi;
  * @since 0.40.0
  */
 final class TupleToArray implements Supplier<Phi[]> {
+
     /**
      * Tuple of arguments.
      */
@@ -24,7 +25,7 @@ final class TupleToArray implements Supplier<Phi[]> {
 
     /**
      * Ctor.
-     * @param tup Tuple of arguments.
+     * @param tup Tuple of arguments
      */
     TupleToArray(final Phi tup) {
         this.tuple = tup;

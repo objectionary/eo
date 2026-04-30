@@ -20,14 +20,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.touched.touch.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.touched.touch")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOtouched$EOtouch extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(

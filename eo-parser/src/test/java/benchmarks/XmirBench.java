@@ -23,7 +23,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
  * Benchmark for XMIR to EO transformations.
- *
  * @since 0.41
  * @checkstyle DesignForExtensionCheck (100 lines)
  * @checkstyle NonStaticMethodCheck (100 lines)
@@ -48,7 +47,7 @@ public class XmirBench {
      * <p>{@code
      *   mvn jmh:benchmark
      * }</p>
-     * @param args Arguments.
+     * @param args Arguments
      * @throws RunnerException If something goes wrong.
      */
     public static void main(final String[] args) throws RunnerException {

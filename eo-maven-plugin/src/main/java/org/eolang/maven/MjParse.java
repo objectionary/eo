@@ -94,10 +94,9 @@ public final class MjParse extends MjSafe {
 
     /**
      * Parse EO file to XML.
-     *
      * @param tojo The tojo
      * @return Amount of parsed tojos
-     * @throws IOException If fails
+     * @throws Exception If fails
      */
     private int parsed(final TjForeign tojo) throws Exception {
         final Path source = tojo.source();
@@ -194,16 +193,14 @@ public final class MjParse extends MjSafe {
         }
         return new Xnav(node)
             .element("object")
-            .element("metas")
-            .elements(
+            .element("metas").elements(
                 Filter.all(
                     Filter.withName("meta"),
-                    meta -> new Xnav(meta)
-                        .elements(
-                            Filter.all(
-                                Filter.withName("head"),
-                                head -> head.text().map("version"::equals).orElse(false)
-                            )
+                    meta -> new Xnav(meta).elements(
+                        Filter.all(
+                            Filter.withName("head"),
+                            head -> head.text().map("version"::equals).orElse(false)
+                        )
                         )
                         .findAny()
                         .isPresent()

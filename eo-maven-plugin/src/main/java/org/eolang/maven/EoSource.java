@@ -77,7 +77,7 @@ final class EoSource {
             EoSource.applyError("validate-object-name", msg, document);
             errors.add(msg);
         }
-        return new Xmir(new XMLDocument(document), errors);
+        return new EoSource.Xmir(new XMLDocument(document), errors);
     }
 
     /**

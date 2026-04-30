@@ -18,12 +18,12 @@ import org.eolang.XmirObject;
 
 /**
  * Acos.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "acos")
 public final class EOacos extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */

@@ -73,6 +73,7 @@ import org.xembly.Xembler;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class EoSyntax implements Syntax {
+
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
      * @todo #3807:90min Refactor EoSyntax transformations to make them less coupled.
@@ -214,8 +215,7 @@ public final class EoSyntax implements Syntax {
     /**
      * Normalize input to UNIX format to ensure that EOL exists at the
      * end of the text.
-     *
-     * @return UNIX formatted text.
+     * @return UNIX formatted text
      */
     private Text normalize() {
         return new FormattedText(
@@ -226,7 +226,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Split input into lines.
-     * @return Lines without line breaks.
+     * @return Lines without line breaks
      */
     private List<Text> lines() {
         return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
