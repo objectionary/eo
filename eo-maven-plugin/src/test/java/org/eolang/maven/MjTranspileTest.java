@@ -65,7 +65,7 @@ final class MjTranspileTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "target/generated/EOfoo/EOx/EOmainTest.java";
+        this.compiled = "target/generated/org/eolang/EOfoo/EOx/EOmain.java";
     }
 
     @ParameterizedTest
@@ -192,7 +192,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
