@@ -214,7 +214,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void recompilesIfExpired(@Mktmp final Path temp) throws IOException {

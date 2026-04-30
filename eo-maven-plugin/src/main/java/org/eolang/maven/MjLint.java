@@ -12,6 +12,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -209,7 +210,7 @@ public final class MjLint extends MjSafe {
         }
         final List<Defect> defects;
         if (this.cacheEnabled) {
-            final Path wpa = Path.of("wpa.xmir");
+            final Path wpa = Paths.get("wpa.xmir");
             final Path target = this.targetDir.toPath().resolve(MjLint.DIR).resolve(wpa);
             new Cache(
                 this.cache.toPath().resolve(MjLint.CACHE),
@@ -450,8 +451,8 @@ public final class MjLint extends MjSafe {
     private static List<Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
             node -> new Defect.Default(
-                node.attribute("check").text().orElseThrow(),
-                Severity.parsed(node.attribute("severity").text().orElseThrow()),
+                node.attribute("check").text().orElseThrow(IllegalStateException::new),
+                Severity.parsed(node.attribute("severity").text().orElseThrow(IllegalStateException::new)),
                 "",
                 0,
                 ""
