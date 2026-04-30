@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 /**
@@ -40,7 +41,7 @@ final class CachePath implements Supplier<Path> {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     CachePath(final Path base, final String semver, final String hash) {
-        this(base, semver, () -> hash, Path.of("."));
+        this(base, semver, () -> hash, Paths.get("."));
     }
 
     /**

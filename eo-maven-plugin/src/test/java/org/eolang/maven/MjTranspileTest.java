@@ -127,7 +127,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
