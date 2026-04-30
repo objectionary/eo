@@ -46,11 +46,8 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnitTestContainsTooManyAsserts",
-        "PMD.UnnecessaryLocalRule"
-    })
-    void exceptionMessageContainsDefectDetails(@Mktmp final Path temp) throws IOException {
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package foo.x\n",

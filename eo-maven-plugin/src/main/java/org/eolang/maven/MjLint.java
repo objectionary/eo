@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -85,11 +86,13 @@ public final class MjLint extends MjSafe {
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
+        final Collection<Defect> seen = new ConcurrentLinkedQueue<>();
         if (!this.skipSourceLints.isEmpty()) {
             Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
         final int passed = new Threaded<>(
-            tojos, tojo -> this.lintOne(tojo, counts, this.skipSourceLints.toArray(new String[0]))
+            tojos,
+            tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
         ).total();
         if (tojos.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -98,7 +101,7 @@ public final class MjLint extends MjSafe {
             Logger.info(
                 this,
                 "XMIR programs linted as a package: %d",
-                this.lintAll(counts)
+                this.lintAll(counts, seen)
             );
         } else {
             Logger.info(
@@ -117,18 +120,26 @@ public final class MjLint extends MjSafe {
             "Read more about lints: https://www.objectionary.com/lints/%s",
             Manifests.read("Lints-Version")
         );
+        final String details = seen.stream()
+            .map(
+                defect -> String.format(
+                    "%s:%d %s (%s)",
+                    defect.object(), defect.line(), defect.text(), defect.rule()
+                )
+            )
+            .collect(Collectors.joining(System.lineSeparator()));
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
                 String.format(
-                    "In %d XMIR files, we found %s (must stop here)",
-                    tojos.size(), sum
+                    "In %d XMIR files, we found %s (must stop here):%n%s",
+                    tojos.size(), sum, details
                 )
             );
         } else if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
             throw new IllegalStateException(
                 String.format(
-                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore)",
-                    tojos.size(), sum
+                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
+                    tojos.size(), sum, details
                 )
             );
         }
@@ -138,13 +149,16 @@ public final class MjLint extends MjSafe {
      * XMIR verified to another XMIR.
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
+     * @param seen Defects seen so far across all files
      * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
+        final Collection<Defect> seen,
         final String... unlints
     ) throws Exception {
         final Path source = tojo.xmir();
@@ -179,6 +193,7 @@ public final class MjLint extends MjSafe {
         for (final Defect defect : defects) {
             if (MjLint.notSuppressed(checked, defect)) {
                 counts.compute(defect.severity(), (sev, before) -> before + 1);
+                seen.add(defect);
                 MjLint.logOne(defect);
             }
         }
@@ -189,10 +204,14 @@ public final class MjLint extends MjSafe {
     /**
      * Lint all XMIR files together.
      * @param counts Counts of errors, warnings, and critical
+     * @param seen Defects seen so far across all files
      * @return Amount of seen XMIR files
      * @throws IOException If failed to lint
      */
-    private int lintAll(final Map<Severity, Integer> counts) throws IOException {
+    private int lintAll(
+        final Map<Severity, Integer> counts,
+        final Collection<Defect> seen
+    ) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
         for (final TjForeign tojo : this.scopedTojos().withXmir()) {
             paths.put(tojo.identifier(), tojo.xmir());
@@ -235,6 +254,7 @@ public final class MjLint extends MjSafe {
         }
         for (final Defect defect : defects) {
             counts.compute(defect.severity(), (sev, before) -> before + 1);
+            seen.add(defect);
         }
         return pkg.size();
     }
@@ -452,9 +472,9 @@ public final class MjLint extends MjSafe {
             node -> new Defect.Default(
                 node.attribute("check").text().orElseThrow(),
                 Severity.parsed(node.attribute("severity").text().orElseThrow()),
-                "",
-                0,
-                ""
+                node.attribute("object").text().orElse(""),
+                Integer.parseInt(node.attribute("line").text().orElse("0")),
+                node.text().orElse("")
             )
         ).collect(Collectors.toList());
     }
