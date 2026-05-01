@@ -23,10 +23,11 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOslice() {
-        this.add("start", new AtVoid("start"));
-        this.add("len", new AtVoid("len"));
+        super(new Attrs(
+            new AttrEntry("start", new AtVoid("start")),
+            new AttrEntry("len", new AtVoid("len"))
+        ));
     }
 
     @Override

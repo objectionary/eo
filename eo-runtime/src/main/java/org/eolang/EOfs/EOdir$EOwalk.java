@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -36,9 +38,8 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOdir$EOwalk() {
-        this.add("glob", new AtVoid("glob"));
+        super(new Attrs(new AttrEntry("glob", new AtVoid("glob"))));
     }
 
     @Override

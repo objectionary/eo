@@ -23,9 +23,8 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOeq() {
-        this.add("b", new AtVoid("b"));
+        super(new Attrs(new AttrEntry("b", new AtVoid("b"))));
     }
 
     @Override

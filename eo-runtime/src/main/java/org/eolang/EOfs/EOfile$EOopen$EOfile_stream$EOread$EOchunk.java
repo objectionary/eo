@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -33,9 +35,8 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOchunk
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfile$EOopen$EOfile_stream$EOread$EOchunk() {
-        this.add("size", new AtVoid("size"));
+        super(new Attrs(new AttrEntry("size", new AtVoid("size"))));
     }
 
     @Override

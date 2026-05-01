@@ -11,6 +11,8 @@ package org.eolang.EOms; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -27,9 +29,8 @@ public final class EOacos extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOacos() {
-        this.add("num", new AtVoid("num"));
+        super(new Attrs(new AttrEntry("num", new AtVoid("num"))));
     }
 
     @Override

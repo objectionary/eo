@@ -21,9 +21,8 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOnumber$EOtimes() {
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
     }
 
     @Override

@@ -21,10 +21,11 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOmalloc$EOof$EOallocated$EOread() {
-        this.add("offset", new AtVoid("offset"));
-        this.add("length", new AtVoid("length"));
+        super(new Attrs(
+            new AttrEntry("offset", new AtVoid("offset")),
+            new AttrEntry("length", new AtVoid("length"))
+        ));
     }
 
     @Override

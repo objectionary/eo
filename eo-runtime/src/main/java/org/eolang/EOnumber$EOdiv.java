@@ -21,9 +21,8 @@ public final class EOnumber$EOdiv extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOnumber$EOdiv() {
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
     }
 
     @Override

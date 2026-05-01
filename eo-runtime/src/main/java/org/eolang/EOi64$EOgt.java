@@ -21,9 +21,8 @@ public final class EOi64$EOgt extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOi64$EOgt() {
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
     }
 
     @Override
