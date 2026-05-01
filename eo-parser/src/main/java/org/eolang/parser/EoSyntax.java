@@ -219,9 +219,14 @@ public final class EoSyntax implements Syntax {
      */
     private Text normalize() {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return new TextOf(
-            text.endsWith(String.valueOf((char) 10)) ? text : text.concat(String.valueOf((char) 10))
-        );
+        final String eol = String.valueOf((char) 10);
+        final String result;
+        if (text.endsWith(eol)) {
+            result = text;
+        } else {
+            result = text.concat(eol);
+        }
+        return new TextOf(result);
     }
 
     /**
