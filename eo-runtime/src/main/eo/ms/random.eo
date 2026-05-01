@@ -90,9 +90,5 @@
   [] +> tests-two-random-numbers-not-equal
     not. > @
       eq.
-        random.clocked fake-a
-        random.clocked fake-b
-    [] > fake-a
-      123.as-i64 > @
-    [] > fake-b
-      456.as-i64 > @
+        random.clocked 123.as-i64
+        random.clocked 456.as-i64
