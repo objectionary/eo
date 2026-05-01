@@ -273,6 +273,7 @@ final class FakeMaven {
             "+alias stdout org.eolang.io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
+            "+unlint object-has-data",
             "+version 0.0.0",
             "",
             "# No comments.",

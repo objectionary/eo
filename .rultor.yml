@@ -16,7 +16,7 @@ install: |
   pdd --file=/dev/null
 merge:
   script: |
-    mvn clean install -DskipTests -Pqulice --errors -Dstyle.color=never
+    mvn clean install -ntp -DskipTests -Pqulice --errors -Dstyle.color=never
 release:
   pre: false
   script: |-
@@ -26,5 +26,5 @@ release:
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
-    mvn clean install -DskipTests -Dinvoker.skip
-    mvn clean deploy -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean install -ntp -DskipTests -Dinvoker.skip
+    mvn clean deploy -ntp -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never

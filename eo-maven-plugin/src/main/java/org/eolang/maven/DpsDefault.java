@@ -79,7 +79,7 @@ final class DpsDefault implements Dependencies {
             deps.add(DpsDefault.JNA);
         }
         for (final TjForeign tojo : list) {
-            if (MjParse.ZERO.equals(tojo.version()) && !this.discover) {
+            if (Parse.ZERO.equals(tojo.version()) && !this.discover) {
                 Logger.debug(
                     this,
                     "Program %s skipped due to its zero version",
@@ -94,7 +94,7 @@ final class DpsDefault implements Dependencies {
             }
             final Dep dep = opt.get();
             final String coords = dep.toString();
-            if (this.skip && MjParse.ZERO.equals(dep.get().getVersion())) {
+            if (this.skip && Parse.ZERO.equals(dep.get().getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s skipped: %s",
                     tojo.description(), coords

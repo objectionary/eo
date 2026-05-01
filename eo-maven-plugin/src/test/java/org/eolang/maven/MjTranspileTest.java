@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,7 +29,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,10 +36,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test case for {@link MjTranspile}.
  * @since 0.1
- * @todo #5061:60min Review all disabled tests in this class.
- *  There are several tests annotated with {@link org.junit.jupiter.api.Disabled}.
- *  Each one should be investigated to determine whether it is still relevant
- *  and either re-enabled (with any necessary fixes) or removed.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -66,7 +60,7 @@ final class MjTranspileTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "target/generated/EOfoo/EOx/EOmainTest.java";
+        this.compiled = "target/generated/org/eolang/EOfoo/EOx/EOmain.java";
     }
 
     @ParameterizedTest
@@ -127,7 +121,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
@@ -149,7 +142,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
@@ -163,8 +155,8 @@ final class MjTranspileTest {
                 .execute(new FakeMaven.Transpile())
                 .result(),
             Matchers.allOf(
-                Matchers.hasKey("target/generated/EOfoo/package-info.java"),
-                Matchers.hasKey("target/generated/EOfoo/EOx/package-info.java")
+                Matchers.hasKey("target/generated/org/eolang/EOfoo/package-info.java"),
+                Matchers.hasKey("target/generated/org/eolang/EOfoo/EOx/package-info.java")
             )
         );
     }
@@ -191,7 +183,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -214,7 +205,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void recompilesIfExpired(@Mktmp final Path temp) throws IOException {
@@ -262,7 +252,6 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void doesNotRetranspileIfNotModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -290,34 +279,23 @@ final class MjTranspileTest {
         );
     }
 
-    @Disabled
     @Test
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
-        final Map<String, Path> res = new FakeMaven(temp).withProgram(
-            new TextOf(Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo")).asString(),
-            "org.eolang.tuple",
-            "org/eolang/tuple.eo"
-            )
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withProgram(this.program)
             .execute(new FakeMaven.Transpile())
             .result();
-        final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
             "transpiled class must be present",
-            res, Matchers.hasKey(java)
+            res, Matchers.hasKey(this.compiled)
         );
         MatcherAssert.assertThat(
-            "package-info.java files must be present",
-            res,
-            Matchers.hasKey("target/generated/EOorg/EOeolang/package-info.java")
-        );
-        MatcherAssert.assertThat(
-            "transpiled class must contain EOtuple",
-            new TextOf(res.get(java)).asString(),
-            Matchers.containsString("class EOtuple")
+            "transpiled class must contain EOmain",
+            new TextOf(res.get(this.compiled)).asString(),
+            Matchers.containsString("class EOmain")
         );
     }
 
-    @Disabled
     @Test
     void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
         final int total = 30;
@@ -336,14 +314,12 @@ final class MjTranspileTest {
                 maven
                     .execute(new FakeMaven.Transpile())
                     .generatedPath()
-                    .resolve("EOfoo")
-                    .resolve("EOx")
+                    .resolve("org/eolang/EOfoo/EOx")
             ).count(),
             Matchers.equalTo((long) total)
         );
     }
 
-    @Disabled
     @Test
     void transpilesSourcesForDifferentScopesWithoutIntersections(
         @Mktmp final Path temp
