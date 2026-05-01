@@ -20,6 +20,7 @@ public class ExFailure extends ExAbstract {
      * Ctor.
      * @param cause Exception cause
      * @param args Arguments for {@link String#format(String, Object...)}
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public ExFailure(final String cause, final Object... args) {
         this(String.format(cause, args), (Throwable) null);

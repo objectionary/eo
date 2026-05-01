@@ -97,6 +97,7 @@ public interface WinNT extends WinDef, WinBase, BaseTSD {
          * Ctor.
          * @param ptr Pointer
          * @param immutable Immutable
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         private HANDLE(final Pointer ptr, final boolean immutable) {
             super.setPointer(ptr);

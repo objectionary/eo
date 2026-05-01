@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Posix.CStdLib;
@@ -875,9 +877,8 @@ final class EOsocketTest {
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Simple() {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
         }
 
         @Override
@@ -905,9 +906,8 @@ final class EOsocketTest {
          * Ctor.
          * @param received Reseived message size
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Server(final int received) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.received = received;
         }
 
@@ -935,9 +935,8 @@ final class EOsocketTest {
          * Ctor.
          * @param received Reseived message size
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Receiver(final int received) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.received = received;
         }
 
@@ -965,9 +964,8 @@ final class EOsocketTest {
          * Ctor.
          * @param msg Message to send
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Client(final String msg) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.message = msg;
         }
 

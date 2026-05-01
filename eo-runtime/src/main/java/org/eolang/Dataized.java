@@ -41,6 +41,7 @@ public final class Dataized {
     /**
      * Ctor.
      * @param src The object
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public Dataized(final Phi src) {
         this(src, Logger.getLogger(Dataized.class.getName()));

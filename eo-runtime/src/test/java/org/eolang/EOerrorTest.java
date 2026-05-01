@@ -84,6 +84,7 @@ final class EOerrorTest {
         /**
          * Ctor.
          * @param data The data inside error
+         * @checkstyle ConstructorsCodeFreeCheck (20 lines)
          */
         MyError(final Object data) {
             this.add(

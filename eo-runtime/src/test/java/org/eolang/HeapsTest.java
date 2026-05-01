@@ -261,6 +261,7 @@ final class HeapsTest {
         /**
          * Ctor.
          * @param sup The function to return the real object
+         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhFake(final Supplier<Phi> sup) {

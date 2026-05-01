@@ -33,6 +33,7 @@ public abstract class ExAbstract extends RuntimeException {
     /**
      * Ctor.
      * @param root Root cause exception
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public ExAbstract(final Throwable root) {
         this(Objects.toString(root, null), root);

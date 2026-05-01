@@ -110,6 +110,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         MainWithCounter() {
             super();
@@ -134,6 +135,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         Main() {
             this.add(
@@ -156,6 +158,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         Broken() {
             this.add(
@@ -178,6 +181,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Catcher() {

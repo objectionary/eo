@@ -48,6 +48,7 @@ public interface Data {
         /**
          * Ctor.
          * @param obj Data
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ToPhi(final Object obj) {
             this.object = Data.ToPhi.toPhi(obj);

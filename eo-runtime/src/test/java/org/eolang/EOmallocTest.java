@@ -81,6 +81,7 @@ final class EOmallocTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (20 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
@@ -113,6 +114,7 @@ final class EOmallocTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (25 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {

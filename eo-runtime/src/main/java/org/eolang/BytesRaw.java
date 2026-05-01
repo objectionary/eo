@@ -22,6 +22,7 @@ final class BytesRaw implements Bytes {
     /**
      * Ctor.
      * @param data Data
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     BytesRaw(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);

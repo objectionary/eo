@@ -65,6 +65,7 @@ public interface WinBase extends WinDef, BaseTSD {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public SECURITY_ATTRIBUTES() {
             this.dwLength = new DWORD(size());

@@ -92,6 +92,7 @@ final class PhMethodTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (30 lines)
          */
         Dummy() {
             this.add(

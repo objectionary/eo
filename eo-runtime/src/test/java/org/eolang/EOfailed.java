@@ -28,6 +28,7 @@ public final class EOfailed extends PhDefault {
     /**
      * Ctor.
      * @param arg Argument
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfailed(final String arg) {
