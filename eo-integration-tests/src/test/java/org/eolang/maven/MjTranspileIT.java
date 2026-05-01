@@ -27,54 +27,21 @@ final class MjTranspileIT {
 
     @Test
     void transpilesWithPackage(@Mktmp final Path temp) throws Exception {
+        final String java = "EOfoo.java";
+        final String pname = "EOone";
+        final String pinfo = "package-info.java";
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files().file("src/main/eo/one/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "+package one",
-                        "",
-                        "# no comments.",
-                        "[] > foo",
-                        "  Q.io.stdout > @",
-                        "    \"Hello, world!\\n\""
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                new AppendedPlugin(f).value()
-                    .goals("register", "parse", "transpile");
-                f.exec("process-sources");
-                final String java = "EOfoo.java";
-                final String pname = "EOone";
-                final String pinfo = "package-info.java";
+                MjTranspileIT.transpile(f, "src/main/eo/one/foo.eo", MjTranspileIT.withPackage());
                 MatcherAssert.assertThat(
-                    String.format(
-                        "The %s file must be generated, but it didn't",
-                        java
-                    ),
-                    temp.resolve(
-                        String.format(
-                            "target/generated-sources/org/eolang/%s/%s",
-                            pname,
-                            java
-                        )
-                    ).toFile().exists(),
+                    String.format("The %s file must be generated, but it didn't", java),
+                    temp.resolve(MjTranspileIT.path(pname, java)).toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    String.format(
-                        "The %s file must contain the %s package name",
-                        pinfo,
-                        pname
-                    ),
+                    String.format("The %s file must contain the %s package name", pinfo, pname),
                     Files.readString(
-                        temp.resolve(
-                            String.format(
-                                "target/generated-sources/org/eolang/%s/%s",
-                                pname,
-                                pinfo
-                            )
-                        ),
+                        temp.resolve(MjTranspileIT.path(pname, pinfo)),
                         StandardCharsets.UTF_8
                     ),
                     Matchers.containsString(String.format("package org.eolang.%s;", pname))
@@ -84,10 +51,57 @@ final class MjTranspileIT {
     }
 
     @Test
-    void transpilesSimpleApp(@Mktmp final Path temp)
-        throws Exception {
-        final String prog = String.join(
-            "\n",
+    void transpilesSimpleApp(@Mktmp final Path temp) throws Exception {
+        final String java = "EOfoo.java";
+        final String pinfo = "package-info.java";
+        new Farea(temp).together(
+            f -> {
+                MjTranspileIT.transpile(f, "src/main/eo/foo.eo", MjTranspileIT.simpleApp());
+                MatcherAssert.assertThat(
+                    String.format("The %s file is re-generated", java),
+                    temp.resolve(String.format("target/generated-sources/org/eolang/%s", java))
+                        .toFile().exists(),
+                    Matchers.is(true)
+                );
+                MatcherAssert.assertThat(
+                    String.format("The %s file must exist, but it doesn't", pinfo),
+                    temp.resolve(String.format("target/generated-sources/org/eolang/%s", pinfo))
+                        .toFile().exists(),
+                    Matchers.is(true)
+                );
+            }
+        );
+    }
+
+    private static void transpile(
+        final Farea farea, final String path, final String source
+    ) throws java.io.IOException {
+        farea.clean();
+        farea.files().file(path).write(source.getBytes(StandardCharsets.UTF_8));
+        new AppendedPlugin(farea).value()
+            .goals("register", "parse", "transpile");
+        farea.exec("process-sources");
+    }
+
+    private static String path(final String pname, final String file) {
+        return String.format("target/generated-sources/org/eolang/%s/%s", pname, file);
+    }
+
+    private static String withPackage() {
+        return String.join(
+            System.lineSeparator(),
+            "+package one",
+            "",
+            "# no comments.",
+            "[] > foo",
+            "  Q.io.stdout > @",
+            "    \"Hello, world!\\n\""
+        );
+    }
+
+    private static String simpleApp() {
+        return String.join(
+            System.lineSeparator(),
             "# This is a random program in EO, which supposedly",
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",
@@ -95,43 +109,6 @@ final class MjTranspileIT {
             "  Q.io.stdout > @",
             "    \"Hello, world!\\n\"",
             ""
-        );
-        new Farea(temp).together(
-            f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(prog.getBytes(StandardCharsets.UTF_8));
-                new AppendedPlugin(f).value()
-                    .goals("register", "parse", "transpile");
-                f.exec("process-sources");
-                final String java = "EOfoo.java";
-                final String pinfo = "package-info.java";
-                MatcherAssert.assertThat(
-                    String.format(
-                        "The %s file is re-generated",
-                        java
-                    ),
-                    temp.resolve(
-                        String.format(
-                            "target/generated-sources/org/eolang/%s",
-                            java
-                        )
-                    ).toFile().exists(),
-                    Matchers.is(true)
-                );
-                MatcherAssert.assertThat(
-                    String.format(
-                        "The %s file must exist, but it doesn't",
-                        pinfo
-                    ),
-                    temp.resolve(
-                        String.format(
-                            "target/generated-sources/org/eolang/%s",
-                            pinfo
-                        )
-                    ).toFile().exists(),
-                    Matchers.is(true)
-                );
-            }
         );
     }
 }

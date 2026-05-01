@@ -25,16 +25,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjPrintIT {
 
     @Test
-
     void printsSimpleObject(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        " ",
-                        "# This unit test is supposed to check",
-                        "the functionality of the corresponding object.\n[] > foo\n"
+                    String.format(
+                        "# This unit test is supposed to check the corresponding object.%n[] > foo%n"
                     ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value()
@@ -47,12 +44,12 @@ final class MjPrintIT {
                             .path()
                     );
                 f.exec("eo:print");
-                MatcherAssert.assertThat(
-                    "the .eo file is generated",
-                    f.files().file("target/generated-sources/eo/foo.eo").exists(),
-                    Matchers.is(true)
-                );
             }
+        );
+        MatcherAssert.assertThat(
+            "the .eo file is generated",
+            temp.resolve("target/generated-sources/eo/foo.eo").toFile().exists(),
+            Matchers.is(true)
         );
     }
 }

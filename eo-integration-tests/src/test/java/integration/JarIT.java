@@ -43,132 +43,75 @@ final class JarIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "# No comments.",
-                    "[] > simple",
-                    "  Q.io.stdout > @",
-                    "    \"Hello, world!\""
-                );
-                MatcherAssert.assertThat(
-                    "simple program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "simple"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("Hello, world!")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "# No comments.",
+                "[] > simple",
+                "  Q.io.stdout > @",
+                "    \"Hello, world!\""
+            )
+        );
+        MatcherAssert.assertThat(
+            "simple program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "simple"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("Hello, world!")
         );
     }
 
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "+package examples",
-                    "",
-                    "# Program with a package.",
-                    "[args] > packaged",
-                    "  Q.io.stdout > @",
-                    "    \"Hello, world from a program with a package!\""
-                );
-                MatcherAssert.assertThat(
-                    "'packaged' program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "examples.packaged"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("Hello, world from a program with a package!")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "+package examples",
+                "",
+                "# Program with a package.",
+                "[args] > packaged",
+                "  Q.io.stdout > @",
+                "    \"Hello, world from a program with a package!\""
+            )
+        );
+        MatcherAssert.assertThat(
+            "'packaged' program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "examples.packaged"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("Hello, world from a program with a package!")
         );
     }
 
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    new JarIT.ElegantObject(
-                        "app",
-                        new String[]{
-                            "+package examples",
-                            "+alias examples.fibonacci",
-                            "+alias io.stdout",
-                            "+alias tt.sprintf",
-                            "+alias tt.sscanf",
-                            "+architect yegor256@gmail.com",
-                            "",
-                            "# Application.",
-                            "[args] > app",
-                            "  number > n",
-                            "    at. > nn!",
-                            "      Q.tt.sscanf",
-                            "        \"%d\"",
-                            "        args.at 0",
-                            "      0",
-                            "  at. > e!",
-                            "    Q.tt.sscanf",
-                            "      \"%d\"",
-                            "      args.at 1",
-                            "    0",
-                            "  fibonacci n > f!",
-                            "  and. > @",
-                            "    stdout",
-                            "      sprintf",
-                            "        \"%dth Fibonacci number is %d\\n\"",
-                            "        * n f",
-                            "    e.eq f",
-                        }
-                    ),
-                    new JarIT.ElegantObject(
-                        "fibonacci",
-                        new String[]{
-                            "+package examples",
-                            "+architect yegor256@gmail.com",
-                            "",
-                            "# This is the main abstract object that",
-                            "# represents n-th Fibonacci number",
-                            "[n] > fibonacci",
-                            "  if. > @",
-                            "    lt.",
-                            "      n",
-                            "      2",
-                            "    n",
-                            "    plus.",
-                            "      ^.fibonacci",
-                            "        n.minus 1",
-                            "      ^.fibonacci",
-                            "        n.minus 2",
-                        }
-                    )
-                );
-                MatcherAssert.assertThat(
-                    "'fibonacci' program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "examples.app", "6", "8"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("6th Fibonacci number is 8")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                JarIT.ElegantObject.made("app", JarIT.appProgram()),
+                JarIT.ElegantObject.made("fibonacci", JarIT.fibonacciProgram())
+            )
+        );
+        MatcherAssert.assertThat(
+            "'fibonacci' program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "examples.app", "6", "8"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("6th Fibonacci number is 8")
         );
     }
 
@@ -176,30 +119,83 @@ final class JarIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                MatcherAssert.assertThat(
-                    "the program must throw an error and print it to stderr",
-                    new Jaxec(
-                        "java", "-cp", JarIT.compile(
-                            f,
-                            "# No comments.",
-                            "[] > simple",
-                            "  unknown.io.stdout > @",
-                            "    \"Hello, world!\""
-                        ),
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "simple"
-                    ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
-                    Matchers.allOf(
-                        Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
-                        Matchers.containsString(
-                            "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
-                        )
-                    )
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "# No comments.",
+                "[] > simple",
+                "  unknown.io.stdout > @",
+                "    \"Hello, world!\""
+            )
         );
+        MatcherAssert.assertThat(
+            "the program must throw an error and print it to stderr",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "simple"
+            ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
+            Matchers.allOf(
+                Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
+                Matchers.containsString(
+                    "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
+                )
+            )
+        );
+    }
+
+    private static String[] appProgram() {
+        return new String[]{
+            "+package examples",
+            "+alias examples.fibonacci",
+            "+alias io.stdout",
+            "+alias tt.sprintf",
+            "+alias tt.sscanf",
+            "+architect yegor256@gmail.com",
+            "",
+            "# Application.",
+            "[args] > app",
+            "  number > n",
+            "    at. > nn!",
+            "      Q.tt.sscanf",
+            "        \"%d\"",
+            "        args.at 0",
+            "      0",
+            "  at. > e!",
+            "    Q.tt.sscanf",
+            "      \"%d\"",
+            "      args.at 1",
+            "    0",
+            "  fibonacci n > f!",
+            "  and. > @",
+            "    stdout",
+            "      sprintf",
+            "        \"%dth Fibonacci number is %d\\n\"",
+            "        * n f",
+            "    e.eq f",
+        };
+    }
+
+    private static String[] fibonacciProgram() {
+        return new String[]{
+            "+package examples",
+            "+architect yegor256@gmail.com",
+            "",
+            "# This is the main abstract object that",
+            "# represents n-th Fibonacci number",
+            "[n] > fibonacci",
+            "  if. > @",
+            "    lt.",
+            "      n",
+            "      2",
+            "    n",
+            "    plus.",
+            "      ^.fibonacci",
+            "        n.minus 1",
+            "      ^.fibonacci",
+            "        n.minus 2",
+        };
     }
 
     /**
@@ -210,7 +206,7 @@ final class JarIT {
      * @throws IOException If fails to compile
      */
     private static String compile(final Farea farea, final String... program) throws IOException {
-        return JarIT.compile(farea, new JarIT.ElegantObject(program));
+        return JarIT.compile(farea, JarIT.ElegantObject.made(program));
     }
 
     /**
@@ -286,20 +282,31 @@ final class JarIT {
 
         /**
          * Ctor.
-         * @param content File content
+         * @param file File name
+         * @param content Joined file content
          */
-        private ElegantObject(final String... content) {
-            this("simple", content);
+        private ElegantObject(final String file, final String content) {
+            this.file = file;
+            this.content = content;
         }
 
         /**
-         * Ctor.
-         * @param file File name
-         * @param content File content
+         * Factory.
+         * @param content File content lines
+         * @return New ElegantObject
          */
-        private ElegantObject(final String file, final String... content) {
-            this.file = file;
-            this.content = String.join("\n", content);
+        static JarIT.ElegantObject made(final String... content) {
+            return JarIT.ElegantObject.made("simple", content);
+        }
+
+        /**
+         * Factory.
+         * @param file File name
+         * @param content File content lines
+         * @return New ElegantObject
+         */
+        static JarIT.ElegantObject made(final String file, final String... content) {
+            return new JarIT.ElegantObject(file, String.join(System.lineSeparator(), content));
         }
 
         /**

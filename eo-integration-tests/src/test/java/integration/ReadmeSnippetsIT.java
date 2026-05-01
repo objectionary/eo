@@ -46,38 +46,33 @@ final class ReadmeSnippetsIT {
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
+        final String[] log = {""};
         new Farea(temp).together(
             f -> {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files()
-                    .file(String.format("src/main/eo/%s.eo", "app")).write(
-                        String.format("%s%n", snippet).getBytes(StandardCharsets.UTF_8)
-                    );
+                f.files().file("src/main/eo/app.eo").write(
+                    String.format("%s%n", snippet).getBytes(StandardCharsets.UTF_8)
+                );
                 f.dependencies().append(
-                    "org.eolang",
-                    "eo-runtime",
-                    System.getProperty(
-                        "eo.version",
-                        Manifests.read("EO-Version")
-                    )
-                    );
-                f.build()
-                    .properties()
-                    .set("directory", "target");
+                    "org.eolang", "eo-runtime", ReadmeSnippetsIT.runtimeVersion()
+                );
+                f.build().properties().set("directory", "target");
                 new EoSourceRun(f).exec("app");
                 f.exec("clean", "test");
-                MatcherAssert.assertThat(
-                    String.format(
-                        "EO snippet was not been executed as expected:%n%s",
-                        snippet
-                    ),
-                    f.log().content(),
-                    Matchers.containsString("BUILD SUCCESS")
-                );
+                log[0] = f.log().content();
             }
         );
+        MatcherAssert.assertThat(
+            String.format("EO snippet was not been executed as expected:%n%s", snippet),
+            log[0],
+            Matchers.containsString("BUILD SUCCESS")
+        );
+    }
+
+    private static String runtimeVersion() {
+        return System.getProperty("eo.version", Manifests.read("EO-Version"));
     }
 
     /**
