@@ -24,10 +24,9 @@ import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -213,15 +212,15 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Normalize input to UNIX format to ensure that EOL exists at the
-     * end of the text.
-     * @return UNIX formatted text
+     * Normalize input by ensuring that EOL exists at the end of the text.
+     * Original line endings (LF or CRLF) are preserved so that the listing
+     * captured by the lexer matches the original source byte-for-byte.
+     * @return Text with guaranteed trailing EOL
      */
     private Text normalize() {
-        final String eol = String.valueOf((char) 10);
-        return new FormattedText(
-            "%s".concat(eol),
-            new Joined(new TextOf(eol), this.lines())
+        final String text = new UncheckedText(new TextOf(this.input)).asString();
+        return new TextOf(
+            text.endsWith(String.valueOf((char) 10)) ? text : text.concat(String.valueOf((char) 10))
         );
     }
 
