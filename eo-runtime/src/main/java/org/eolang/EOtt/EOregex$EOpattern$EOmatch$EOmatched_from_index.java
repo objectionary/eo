@@ -72,7 +72,6 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         } catch (final IOException | ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         }
-        final Phi start = this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START);
         final boolean found = matcher.find(
             new Dataized(
                 this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
@@ -85,7 +84,10 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
                 EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
                 this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
             );
-            result.put(EOregex$EOpattern$EOmatch$EOmatched_from_index.START, start);
+            result.put(
+                EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            );
             result.put("from", new Data.ToPhi(matcher.start()));
             result.put("to", new Data.ToPhi(matcher.end()));
             final Phi[] groups;

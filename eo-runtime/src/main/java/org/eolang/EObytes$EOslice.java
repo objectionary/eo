@@ -41,18 +41,23 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
             .must(integer -> integer >= 0)
             .otherwise("must be a positive integer")
             .it();
-        final int length = Expect.at(this, "len")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .must(number -> number % 1 == 0)
-            .that(Double::intValue)
-            .otherwise("must be an integer")
-            .must(integer -> integer >= 0)
-            .otherwise("must be a positive integer")
-            .must(integer -> start + integer <= bytes.length).otherwise(
-                String.format("is out of bounds for bytes of size %d", bytes.length)
+        return new Data.ToPhi(
+            Arrays.copyOfRange(
+                bytes,
+                start,
+                start + Expect.at(this, "len")
+                    .that(phi -> new Dataized(phi).asNumber())
+                    .otherwise("must be a number")
+                    .must(number -> number % 1 == 0)
+                    .that(Double::intValue)
+                    .otherwise("must be an integer")
+                    .must(integer -> integer >= 0)
+                    .otherwise("must be a positive integer")
+                    .must(integer -> start + integer <= bytes.length).otherwise(
+                        String.format("is out of bounds for bytes of size %d", bytes.length)
+                    )
+                    .it()
             )
-            .it();
-        return new Data.ToPhi(Arrays.copyOfRange(bytes, start, start + length));
+        );
     }
 }

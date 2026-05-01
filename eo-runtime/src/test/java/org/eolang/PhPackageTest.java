@@ -135,11 +135,10 @@ final class PhPackageTest {
 
     @Test
     void findsAttributesInThreads() {
-        final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
-                thread -> pckg.take("go") instanceof PhPackage
+                thread -> Phi.Φ.take("go") instanceof PhPackage
             ),
             Matchers.allOf(
                 Matchers.not(Matchers.hasItem(true))

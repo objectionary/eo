@@ -22,7 +22,7 @@ public class ExFailure extends ExAbstract {
      * @param args Arguments for {@link String#format(String, Object...)}
      */
     public ExFailure(final String cause, final Object... args) {
-        super(String.format(cause, args));
+        this(String.format(cause, args), (Throwable) null);
     }
 
     /**

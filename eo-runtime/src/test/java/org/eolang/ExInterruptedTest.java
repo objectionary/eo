@@ -15,10 +15,9 @@ final class ExInterruptedTest {
 
     @Test
     void throwsRightException() {
-        final ExInterruptedTest.EOthrow phi = new ExInterruptedTest.EOthrow();
         Assertions.assertThrows(
             ExInterrupted.class,
-            () -> new Dataized(phi.take(Phi.PHI)).take(),
+            () -> new Dataized(new ExInterruptedTest.EOthrow().take(Phi.PHI)).take(),
             "EOthrow should throw when dataized, but it didn't"
         );
     }

@@ -5,6 +5,8 @@
 
 package org.eolang;
 
+import java.util.Objects;
+
 /**
  * Abstract exception.
  *
@@ -30,18 +32,18 @@ public abstract class ExAbstract extends RuntimeException {
 
     /**
      * Ctor.
+     * @param root Root cause exception
+     */
+    public ExAbstract(final Throwable root) {
+        this(Objects.toString(root, null), root);
+    }
+
+    /**
+     * Ctor.
      * @param cause Exception cause
      * @param root Root cause exception
      */
     public ExAbstract(final String cause, final Throwable root) {
         super(cause, root);
-    }
-
-    /**
-     * Ctor.
-     * @param root Root cause exception
-     */
-    public ExAbstract(final Throwable root) {
-        super(root);
     }
 }

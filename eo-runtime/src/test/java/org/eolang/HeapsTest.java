@@ -89,10 +89,11 @@ final class HeapsTest {
 
     @Test
     void failsOnReadIfOutOfBounds() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(idx, 1, 3),
+            () -> Heaps.INSTANCE.read(
+                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2), 1, 3
+            ),
             "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
     }
