@@ -32,7 +32,7 @@
           00-0F-FF-FF-FF-FF-FF-FF
 
   # Builds a `random` whose seed is derived from the wall-clock time provided by `clock`.
-  # `clock` must expose a `millis` attribute returning an `i64` with milliseconds since the epoch.
+  # `clock` must decorate an `i64` (via `@`) holding milliseconds since the Unix epoch.
   [clock] > clocked
     random > @
       as-number.
@@ -50,14 +50,12 @@
               and.
                 tbytes
                 ((one.left shift3).as-i64.minus one).as-bytes
-    clock.millis.as-bytes > tbytes
+    clock.as-bytes > tbytes
     35 > shift1
     17 > shift3
     00-00-00-00-00-00-00-01 > one
-
   # New random with pseudo-random seed derived from the system clock.
-  [] > pseudo
-    clocked system-clock > @
+  clocked system-clock > pseudo
 
   # Tests that random numbers generated with the same seed are different in sequence.
   [] +> tests-random-with-seed
@@ -95,6 +93,6 @@
         random.clocked fake-a
         random.clocked fake-b
     [] > fake-a
-      123.as-i64 > millis
+      123.as-i64 > @
     [] > fake-b
-      456.as-i64 > millis
+      456.as-i64 > @

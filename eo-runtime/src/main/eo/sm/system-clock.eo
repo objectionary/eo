@@ -10,9 +10,9 @@
 
 # Wall-clock time source backed by the operating system.
 # Reads the underlying syscall: `gettimeofday` on POSIX, `GetSystemTime` on Windows.
-# Exposes a single attribute `millis` — current time in milliseconds since the Unix epoch.
+# Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 [] > system-clock
-  as-i64. > millis
+  as-i64. > @
     if.
       os.is-windows
       (win32 "GetSystemTime" *).milliseconds
@@ -24,4 +24,4 @@
 
   # Tests that wall-clock time is readable and positive.
   [] +> tests-reads-positive-millis
-    system-clock.millis.gt 0 > @
+    system-clock.gt 0 > @
