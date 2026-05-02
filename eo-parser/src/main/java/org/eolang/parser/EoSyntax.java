@@ -233,9 +233,9 @@ public final class EoSyntax implements Syntax {
         if (text.length() >= 2
             && text.charAt(text.length() - 2) == '\r'
             && text.charAt(text.length() - 1) == '\n') {
-            ending = "\r\n";
+            ending = String.valueOf('\r').concat(String.valueOf('\n'));
         } else {
-            ending = "\n";
+            ending = String.valueOf('\n');
         }
         return new TextOf(text.substring(0, end).concat(ending));
     }
