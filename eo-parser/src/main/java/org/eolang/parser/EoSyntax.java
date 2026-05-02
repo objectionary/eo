@@ -212,21 +212,20 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Normalize input by ensuring that EOL exists at the end of the text.
-     * Original line endings (LF or CRLF) are preserved so that the listing
-     * captured by the lexer matches the original source byte-for-byte.
-     * @return Text with guaranteed trailing EOL
+     * Normalize input so that the text ends with exactly one LF.
+     * Internal line endings (LF or CRLF) are preserved so the listing
+     * captured by the lexer matches the original source. Any trailing
+     * CR or LF characters are collapsed into a single LF, otherwise
+     * the lexer reports an extraneous input error at EOF.
+     * @return Text with exactly one trailing LF
      */
     private Text normalize() {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        final String eol = String.valueOf((char) 10);
-        final String result;
-        if (text.endsWith(eol)) {
-            result = text;
-        } else {
-            result = text.concat(eol);
+        int end = text.length();
+        while (end > 0 && (text.charAt(end - 1) == '\n' || text.charAt(end - 1) == '\r')) {
+            end -= 1;
         }
-        return new TextOf(result);
+        return new TextOf(text.substring(0, end).concat(String.valueOf((char) 10)));
     }
 
     /**
