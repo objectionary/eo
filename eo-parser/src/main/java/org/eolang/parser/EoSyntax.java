@@ -212,14 +212,16 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Normalize input so that the text ends with exactly one platform
-     * line separator. Internal line endings are preserved so the listing
-     * captured by the lexer matches the original source. Any run of
-     * trailing CR or LF characters is collapsed into a single
-     * {@link System#lineSeparator()}, otherwise the lexer reports an
-     * extraneous input error at EOF when the source has a blank
-     * trailing line.
-     * @return Text with exactly one trailing line separator
+     * Normalize input so that the text ends with exactly one line break.
+     * Internal line endings are preserved so the listing captured by the
+     * lexer matches the original source byte-for-byte. Any run of trailing
+     * CR or LF characters is collapsed into a single line break of the
+     * same style as the last line ending in the source — CRLF if the
+     * source ended with CRLF, otherwise LF — so a Windows-style source
+     * keeps its CRLF and a Unix-style source keeps its LF. Without this
+     * collapse, the lexer reports an extraneous input error at EOF when
+     * the source has a blank trailing line.
+     * @return Text with exactly one trailing line break
      */
     private Text normalize() {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
@@ -227,7 +229,15 @@ public final class EoSyntax implements Syntax {
         while (end > 0 && (text.charAt(end - 1) == '\n' || text.charAt(end - 1) == '\r')) {
             end -= 1;
         }
-        return new TextOf(text.substring(0, end).concat(System.lineSeparator()));
+        final String ending;
+        if (text.length() >= 2
+            && text.charAt(text.length() - 2) == '\r'
+            && text.charAt(text.length() - 1) == '\n') {
+            ending = "\r\n";
+        } else {
+            ending = "\n";
+        }
+        return new TextOf(text.substring(0, end).concat(ending));
     }
 
     /**
