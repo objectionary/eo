@@ -20,7 +20,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link Dataized}.
- *
  * @since 0.22
  * @todo #4538:30min Enable the test {@link DataizedTest#doesNotLogGoToTokenJump}.
  *  The test was disabled because we've moved EO objects from default package 'org.eolang'
@@ -35,15 +34,16 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  */
 @Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
+
     @Disabled
     @Test
-    @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void logsAllLocationsWithPhSafe() {
         final Logger log = Logger.getLogger("logsWithPhSafe");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
+        final Handler hnd = new DataizedTest.Hnd(logs);
         log.addHandler(hnd);
         Assertions.assertThrows(
             EOerror.ExError.class,
@@ -94,13 +94,13 @@ final class DataizedTest {
 
     @Disabled
     @Test
-    @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotLogGoToTokenJump() {
         final Logger log = Logger.getLogger("logsWithPhSafe");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
+        final Handler hnd = new DataizedTest.Hnd(logs);
         log.addHandler(hnd);
         Assertions.assertThrows(
             EOerror.ExError.class,
@@ -131,10 +131,10 @@ final class DataizedTest {
 
     /**
      * Handler implementation for tests.
-     *
      * @since 0.1.0
      */
     private static final class Hnd extends Handler {
+
         /**
          * Logs.
          */
@@ -142,7 +142,6 @@ final class DataizedTest {
 
         /**
          * Ctor.
-         *
          * @param logs Logs
          */
         Hnd(final List<LogRecord> logs) {

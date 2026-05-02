@@ -30,6 +30,7 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "regex.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOregex$EOφ extends PhDefault implements Atom {
+
     @Override
     public Phi lambda() {
         final Phi regex = this.take(Phi.RHO);

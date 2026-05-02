@@ -11,20 +11,21 @@ package org.eolang;
 
 /**
  * TRY.
- *
  * @since 0.19
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "try")
 public final class EOtry extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOtry() {
-        this.add("main", new AtVoid("main"));
-        this.add("catch", new AtVoid("catch"));
-        this.add("finally", new AtVoid("finally"));
+        super(new Attrs(
+            new AttrEntry("main", new AtVoid("main")),
+            new AttrEntry("catch", new AtVoid("catch")),
+            new AttrEntry("finally", new AtVoid("finally"))
+        ));
     }
 
     @Override

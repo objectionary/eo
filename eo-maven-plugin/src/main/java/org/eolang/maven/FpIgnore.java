@@ -9,6 +9,7 @@ package org.eolang.maven;
  * @since 0.41
  */
 final class FpIgnore extends FpEnvelope {
+
     /**
      * Ctor.
      */

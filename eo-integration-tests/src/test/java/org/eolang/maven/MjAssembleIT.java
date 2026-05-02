@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
- *
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -29,32 +28,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjAssembleIT {
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/io/stdout.%s";
         final String parsed = String.format(stdout, "1-parse", "xmir");
         final String pulled = String.format(stdout, "2-pull", "eo");
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files()
-                    .file("src/main/eo/foo/x/main.eo")
-                    .write(MjAssembleIT.program().getBytes(StandardCharsets.UTF_8));
-                MjAssembleIT.registerAssemble(f);
+                MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
                 f.exec("package");
                 MatcherAssert.assertThat(
-                    String.format(
-                        "AssembleMojo should have parsed stdout object %s, but didn't",
-                        parsed
-                    ),
+                    String.format("AssembleMojo should have parsed stdout %s, but didn't", parsed),
                     f.files().file(parsed).exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    String.format(
-                        "AssembleMojo should have pulled stdout object %s, but didn't",
-                        pulled
-                    ),
+                    String.format("AssembleMojo should have pulled stdout %s, but didn't", pulled),
                     f.files().file(pulled).exists(),
                     Matchers.is(true)
                 );
@@ -63,26 +51,10 @@ final class MjAssembleIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
-        final String prog = String.join(
-            "\n",
-            "+alias stdout io.stdout",
-            "+home https://github.com/objectionary/eo",
-            "+package one",
-            "+version 0.0.0\n",
-            "# The seq *-1 leads to error.",
-            "[x] > main",
-            "  seq *-1 > @",
-            "    true"
-        );
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files()
-                    .file("src/main/eo/one/main.eo")
-                    .write(prog.getBytes(StandardCharsets.UTF_8));
-                MjAssembleIT.registerAssemble(f);
+                MjAssembleIT.prepare(f, "src/main/eo/one/main.eo", MjAssembleIT.failing());
                 f.exec("test");
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
@@ -93,9 +65,32 @@ final class MjAssembleIT {
         );
     }
 
+    private static void prepare(
+        final Farea farea, final String path, final String source
+    ) throws IOException {
+        farea.clean();
+        farea.files().file(path).write(source.getBytes(StandardCharsets.UTF_8));
+        MjAssembleIT.registerAssemble(farea);
+    }
+
+    private static String failing() {
+        return String.join(
+            System.lineSeparator(),
+            "+alias stdout io.stdout",
+            "+home https://github.com/objectionary/eo",
+            "+package one",
+            "+version 0.0.0",
+            "",
+            "# The seq *-1 leads to error.",
+            "[x] > main",
+            "  seq *-1 > @",
+            "    true"
+        );
+    }
+
     private static String program() {
         return String.join(
-            "\n",
+            System.lineSeparator(),
             "+alias stdout io.stdout",
             "+package foo.x",
             "+version 0.1.1",

@@ -16,7 +16,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Dynamic memory.
- *
  * @since 0.19
  */
 final class Heaps {

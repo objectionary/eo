@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
  * @since 0.29
  */
 final class JavaPath {
+
     /**
      * Phi pattern.
      */
@@ -37,8 +38,7 @@ final class JavaPath {
 
     /**
      * Ctor.
-     *
-     * @param obj Object name.
+     * @param obj Object name
      */
     JavaPath(final String obj) {
         this.object = obj;

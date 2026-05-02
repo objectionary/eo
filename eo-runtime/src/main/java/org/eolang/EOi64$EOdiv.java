@@ -17,12 +17,12 @@ package org.eolang;
 @XmirObject(oname = "i64.div")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi64$EOdiv extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOi64$EOdiv() {
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
     }
 
     @Override

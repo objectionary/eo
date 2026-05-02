@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjPlace}.
- *
  * @since 0.11
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -56,9 +55,8 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp)
-                .withPlacedBinary(
-                    temp.resolve(this.targetClasses()).resolve(binary)
+            new FakeMaven(temp).withPlacedBinary(
+                temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
             .result()
@@ -156,7 +154,6 @@ final class MjPlaceTest {
      * Test case for {@link MjPlace#execute()}.
      * Since for tests we are using dummy maven central, then instead of unpacking
      * of classes from jar it just copies the just simple .class files to target/classes folder.
-     *
      * @param temp Temporary directory
      * @throws IOException If fails
      */
@@ -230,9 +227,8 @@ final class MjPlaceTest {
     /**
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
-     *
-     * @param temp   Temp test directory.
-     * @param binary Binary name.
+     * @param temp   Temp test directory
+     * @param binary Binary name
      * @throws IOException In case of error.
      */
     private static void saveBinary(final Path temp, final String binary) throws IOException {
@@ -242,10 +238,9 @@ final class MjPlaceTest {
     /**
      * Save binary to {@link MjResolve#DIR} folder.
      * The method emulates the situation when we have some resolved binaries.
-     *
-     * @param temp    Temp test directory.
-     * @param content Content of the binary.
-     * @param binary  Binary name.
+     * @param temp    Temp test directory
+     * @param content Content of the binary
+     * @param binary  Binary name
      * @throws IOException In case of error.
      */
     private static void saveBinary(
@@ -264,9 +259,8 @@ final class MjPlaceTest {
     /**
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
-     *
-     * @param temp   Temp test directory.
-     * @param binary Binary name.
+     * @param temp   Temp test directory
+     * @param binary Binary name
      * @throws IOException In case of error.
      */
     private static void saveAlreadyPlacedBinary(
@@ -279,10 +273,9 @@ final class MjPlaceTest {
     /**
      * Save binary to classes folder.
      * The method emulates the situation when we already have some placed binaries.
-     *
-     * @param temp    Temp test directory.
-     * @param content Content of the binary.
-     * @param binary  Binary name.
+     * @param temp    Temp test directory
+     * @param content Content of the binary
+     * @param binary  Binary name
      * @throws IOException In case of error.
      */
     private static void saveAlreadyPlacedBinary(
@@ -298,10 +291,9 @@ final class MjPlaceTest {
 
     /**
      * Path to the placed binary.
-     *
      * @param temp   Temp test directory
-     * @param binary Binary name.
-     * @return Path to the placed binary.
+     * @param binary Binary name
+     * @return Path to the placed binary
      */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
         return temp.resolve("target/classes").resolve(binary);

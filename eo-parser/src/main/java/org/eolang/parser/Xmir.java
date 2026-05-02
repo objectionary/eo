@@ -33,6 +33,7 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Xmir implements XML {
+
     /**
      * Train of transformations that prepare XMIR for conversion to EO.
      */
@@ -125,16 +126,15 @@ public final class Xmir implements XML {
      * Converts XMIR.
      * @param train Train of transformations that prepares XMIR
      * @param node XML node name
-     * @return XMIR in other representation as {@link String}.
+     * @return XMIR in other representation as {@link String}
      */
     private String converted(final Xsline train, final String node) {
         final XML xmir = train.pass(this.xml);
-        Logger.debug(this, "XMIR after converting to %s:\n%s", node, xmir);
+        Logger.debug(this, "XMIR after converting to %s:%n%s", node, xmir);
         return new Xnav(xmir.inner())
             .element("object")
             .element(node)
-            .text()
-            .orElseThrow(
+            .text().orElseThrow(
                 () -> new IllegalStateException(
                     String.format(
                         "Couldn't find element '/object/%s' after converting to %s",

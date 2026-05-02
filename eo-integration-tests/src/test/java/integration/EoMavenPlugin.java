@@ -14,6 +14,7 @@ import java.io.IOException;
  * @since 0.54
  */
 final class EoMavenPlugin {
+
     /**
      * Farea.
      */
@@ -35,8 +36,7 @@ final class EoMavenPlugin {
     Plugin appended() throws IOException {
         return this.farea
             .build()
-            .plugins()
-            .append(
+            .plugins().append(
                 "org.eolang",
                 "eo-maven-plugin",
                 System.getProperty(

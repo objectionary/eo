@@ -8,7 +8,6 @@ package org.eolang;
 /**
  * The exception raised when trying to get() an attribute,
  * which is still abstract.
- *
  * @since 0.21
  */
 public final class ExUnset extends ExFailure {
@@ -23,7 +22,7 @@ public final class ExUnset extends ExFailure {
      * @param cause Cause description
      */
     public ExUnset(final String cause) {
-        super(cause);
+        this(cause, null);
     }
 
     /**

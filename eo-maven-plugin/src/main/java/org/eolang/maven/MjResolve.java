@@ -29,6 +29,7 @@ import org.cactoos.Scalar;
  *     unpacks them and places the resulting files to the
  *     {@link MjResolve#DIR} directory.
  * </p>
+ *
  * @since 0.1
  */
 @Mojo(
@@ -45,14 +46,12 @@ public final class MjResolve extends MjSafe {
 
     /**
      * The central.
-     *
      * @checkstyle MemberNameCheck (5 lines)
      */
     private BiConsumer<Dependency, Path> central;
 
     /**
      * Resolve default JNA dependency or not.
-     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")

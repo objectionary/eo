@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link OyIndexed}.
- *
  * @since 0.29
  */
 final class OyIndexedTest {
@@ -26,7 +25,12 @@ final class OyIndexedTest {
             "OyIndexed must get a line of program, but it doesn't",
             new TextOf(new OyIndexed(new Objectionary.Fake()).get("foo")).asString(),
             Matchers.equalTo(
-                "# No comments.\n[] > sprintf\n"
+                String.join(
+                    System.lineSeparator(),
+                    "# No comments.",
+                    "[] > sprintf",
+                    ""
+                )
             )
         );
     }

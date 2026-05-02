@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link EOnumber}.
- *
  * @since 0.39
  * @checkstyle TypeNameCheck (4 lines)
  */
@@ -53,13 +52,14 @@ final class EOnumberTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {
-        EOnumber$EOdiv.class,
-        EOnumber$EOgt.class,
-        EOnumber$EOplus.class,
-        EOnumber$EOtimes.class
-    })
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    @ValueSource(
+        classes = {
+            EOnumber$EOdiv.class,
+            EOnumber$EOgt.class,
+            EOnumber$EOplus.class,
+            EOnumber$EOtimes.class
+        }
+    )
     void throwsCorrectErrorForXAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -83,14 +83,15 @@ final class EOnumberTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {
-        EOnumber$EOdiv.class,
-        EOnumber$EOgt.class,
-        EOnumber$EOplus.class,
-        EOnumber$EOtimes.class,
-        EOnumber$EOas_i64.class
-    })
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    @ValueSource(
+        classes = {
+            EOnumber$EOdiv.class,
+            EOnumber$EOgt.class,
+            EOnumber$EOplus.class,
+            EOnumber$EOtimes.class,
+            EOnumber$EOas_i64.class
+        }
+    )
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",

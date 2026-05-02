@@ -49,6 +49,7 @@ import org.xml.sax.SAXParseException;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
+
     /**
      * XSD for current EO version.
      */
@@ -63,6 +64,11 @@ public final class StrictXmir implements XML {
     private static final Lock LOCK = new ReentrantLock();
 
     /**
+     * Default directory for cached XSD schemas.
+     */
+    private static final Path XSD_DIR = Paths.get("target/xsd");
+
+    /**
      * The XML.
      */
     private final Unchecked<XML> xml;
@@ -72,7 +78,7 @@ public final class StrictXmir implements XML {
      * @param src The source
      */
     public StrictXmir(final XML src) {
-        this(src, Paths.get("target/xsd"));
+        this(src, StrictXmir.XSD_DIR);
     }
 
     /**

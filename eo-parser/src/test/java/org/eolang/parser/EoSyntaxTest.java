@@ -31,10 +31,8 @@ import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,30 +47,12 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Test case for {@link EoSyntax}.
- *
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
-
-    /**
-     * Log level before test.
-     */
-    private Level before;
-
-    @BeforeEach
-    void setUp() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
-        this.before = logger.getLevel();
-    }
-
-    @AfterEach
-    void tearDown() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
-        logger.setLevel(this.before);
-    }
 
     @Test
     void parsesSimpleCode() throws Exception {
@@ -96,19 +76,25 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void parsesSimpleCodeWithDebugMode() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
+        final Level previous = logger.getLevel();
         logger.setLevel(Level.DEBUG);
-        Assertions.assertDoesNotThrow(
-            new EoSyntax(
-                String.join(
-                    "\n",
-                    "# No comments.",
-                    "[] > x-н, 1\n"
-                )
-            )::parsed,
-            "EO syntax should not fail in debug mode when program has errors"
-        );
+        try {
+            Assertions.assertDoesNotThrow(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "# No comments.",
+                        "[] > x-н, 1".concat(System.lineSeparator())
+                    )
+                )::parsed,
+                "EO syntax should not fail in debug mode when program has errors"
+            );
+        } finally {
+            logger.setLevel(previous);
+        }
     }
 
     @Test
@@ -119,7 +105,17 @@ final class EoSyntaxTest {
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
-                        new InputOf("# No comments.\n[] > foo\n\n\n\n")
+                        new InputOf(
+                            String.join(
+                                System.lineSeparator(),
+                                "# No comments.",
+                                "[] > foo",
+                                "",
+                                "",
+                                "",
+                                ""
+                            )
+                        )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
@@ -131,9 +127,9 @@ final class EoSyntaxTest {
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = String.join(
-            "\n",
+            System.lineSeparator(),
             "# No comments.",
-            "[] > x-н, 1\n"
+            "[] > x-н, 1".concat(System.lineSeparator())
         );
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
@@ -174,17 +170,7 @@ final class EoSyntaxTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "1 > x\n2 > y",
-            "1 > x\r\n2 > y",
-            "1 > x\r\n\r\n2 > y",
-            "1 > x\n2 > y\n",
-            "1 > x\n\n2 > y",
-            "# No comments.\n[] > x",
-            "# No comments.\n[] > x\n  x ^ > @"
-        }
-    )
+    @MethodSource("parsesSuccessfullyArgs")
     void parsesSuccessfully(final String code) {
         Assertions.assertDoesNotThrow(
             new EoSyntax(
@@ -214,14 +200,14 @@ final class EoSyntaxTest {
             new EoSyntax(
                 new InputOf(
                     String.join(
-                        "\n",
+                        System.lineSeparator(),
                         "# No comments.",
                         "[] > base",
                         "  memory 0 > x",
                         "  # No comments.",
                         "  [self] > f",
                         "    v > @",
-                        "      v\n"
+                        "      v".concat(System.lineSeparator())
                     )
                 )
             ).parsed(),
@@ -252,7 +238,9 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "We expect EO object as method call is parsed successfully",
             new EoSyntax(
-                new InputOf("add. > foo\n  0\n  true")
+                new InputOf(
+                    String.join(System.lineSeparator(), "add. > foo", "  0", "  true")
+                )
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@base='.add']",
@@ -287,7 +275,7 @@ final class EoSyntaxTest {
         final Xtory story = new XtSticky(
             new XtYaml(
                 yaml,
-                eo -> new EoSyntax(new InputOf(String.format("%s\n", eo))).parsed()
+                eo -> new EoSyntax(new InputOf(String.format("%s%n", eo))).parsed()
             )
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
@@ -308,10 +296,10 @@ final class EoSyntaxTest {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(story.after()).toString(),
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     after.path("/object/errors/error").map(error -> error.text().get())
                         .collect(Collectors.toList())
-                ).replaceAll("\r", ""),
+                ).replaceAll("\\r", ""),
                 Matchers.containsString(story.map().get(msg).toString())
             );
         }
@@ -327,7 +315,7 @@ final class EoSyntaxTest {
                     new XtYaml(
                         yaml,
                         eo -> new EoSyntax(
-                            String.format("%s\n", eo), new TrDefault<>()
+                            String.format("%s%n", eo), new TrDefault<>()
                         ).parsed(),
                         new TrFull()
                     )
@@ -346,7 +334,7 @@ final class EoSyntaxTest {
                 new XtSticky(
                     new XtYaml(
                         yaml,
-                        eo -> new EoSyntax(String.format("%s\n", eo)).parsed()
+                        eo -> new EoSyntax(String.format("%s%n", eo)).parsed()
                     )
                 )
             ),
@@ -361,7 +349,7 @@ final class EoSyntaxTest {
             new XtYaml(
                 yaml,
                 eo -> new EoSyntax(
-                    new InputOf(String.format("%s\n", eo))
+                    new InputOf(String.format("%s%n", eo))
                 ).parsed()
             )
         );
@@ -391,7 +379,7 @@ final class EoSyntaxTest {
             new EoSyntax(
                 new InputOf(
                     String.join(
-                        "\n",
+                        System.lineSeparator(),
                         "# Foo.",
                         "# Bar.",
                         "# Xyz.",
@@ -420,7 +408,7 @@ final class EoSyntaxTest {
             String.format("Failed to understand string: %s", input),
             new EoSyntax(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "# App.",
                     "[] > app",
                     String.format("  Q.io.stdout \"%s\" > @", input)
@@ -445,7 +433,7 @@ final class EoSyntaxTest {
                 new EoSyntax(
                     new InputOf(
                         String.join(
-                            "\n",
+                            System.lineSeparator(),
                             "# Top comment.",
                             comment,
                             "[] > foo"
@@ -465,7 +453,7 @@ final class EoSyntaxTest {
                 new EoSyntax(
                     new InputOf(
                         String.join(
-                            "\n",
+                            System.lineSeparator(),
                             "#",
                             "[] > foo"
                         )
@@ -485,8 +473,8 @@ final class EoSyntaxTest {
                     new EoSyntax(
                         new InputOf(
                             String.join(
-                                "\n",
-                                "[] > foo\uD83C\uDF35bar\n"
+                                System.lineSeparator(),
+                                "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -508,9 +496,9 @@ final class EoSyntaxTest {
                     new EoSyntax(
                         new InputOf(
                             String.join(
-                                "\n",
+                                System.lineSeparator(),
                                 "[] > app",
-                                "  x > a\uD83C\uDF3565\n"
+                                "  x > a\uD83C\uDF3565".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -532,9 +520,9 @@ final class EoSyntaxTest {
                     new EoSyntax(
                         new InputOf(
                             String.join(
-                                "\n",
+                                System.lineSeparator(),
                                 "[] > x",
-                                "  \uD83C\uDF35 > y\n"
+                                "  \uD83C\uDF35 > y".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -556,5 +544,23 @@ final class EoSyntaxTest {
         return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
+    }
+
+    /**
+     * Inputs for {@link EoSyntaxTest#parsesSuccessfully}.
+     * @return Test cases
+     */
+    private static Stream<String> parsesSuccessfullyArgs() {
+        final String eol = String.valueOf((char) 10);
+        final String crlf = String.valueOf((char) 13).concat(eol);
+        return Stream.of(
+            String.join(eol, "1 > x", "2 > y"),
+            String.join(crlf, "1 > x", "2 > y"),
+            String.join(crlf.concat(crlf), "1 > x", "2 > y"),
+            String.join(eol, "1 > x", "2 > y").concat(eol),
+            String.join(eol.concat(eol), "1 > x", "2 > y"),
+            String.join(eol, "# No comments.", "[] > x"),
+            String.join(eol, "# No comments.", "[] > x", "  x ^ > @")
+        );
     }
 }

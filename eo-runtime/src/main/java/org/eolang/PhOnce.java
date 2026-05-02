@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
- *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (100 lines)
  */
@@ -34,7 +33,6 @@ public class PhOnce implements Phi {
 
     /**
      * Ctor.
-     *
      * @param obj The object
      */
     public PhOnce(final Supplier<Phi> obj) {

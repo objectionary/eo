@@ -34,13 +34,14 @@ final class RtCentral implements Scalar<Dep> {
 
     /**
      * Runtime dependency source from Maven Central.
-     *
-     * @return Runtime dependency from Maven Central.
+     * @return Runtime dependency from Maven Central
      */
     private static Unchecked<Dep> mavenDependency() {
-        final String url =
-            "https://repo.maven.apache.org/maven2/org/eolang/eo-runtime/maven-metadata.xml";
-        return RtCentral.dependency(() -> RtCentral.download(url));
+        return RtCentral.dependency(
+            () -> RtCentral.download(
+                "https://repo.maven.apache.org/maven2/org/eolang/eo-runtime/maven-metadata.xml"
+            )
+        );
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
@@ -62,9 +63,8 @@ final class RtCentral implements Scalar<Dep> {
 
     /**
      * Runtime dependency source.
-     *
      * @param version Version of eo-runtime
-     * @return Maven Dependency.
+     * @return Maven Dependency
      */
     private static Unchecked<Dep> dependency(final Supplier<String> version) {
         return new Unchecked<>(

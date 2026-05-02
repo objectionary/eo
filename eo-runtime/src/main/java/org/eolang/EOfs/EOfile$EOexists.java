@@ -20,14 +20,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.exists.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.exists")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOexists extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             Files.exists(

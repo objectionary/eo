@@ -35,7 +35,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link MjTranspile}.
- *
  * @since 0.1
  */
 @SuppressWarnings({
@@ -48,11 +47,13 @@ final class MjTranspileTest {
 
     /**
      * Test eo program from resources.
+     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
      */
     private String program;
 
     /**
      * Traspiled to java eo program from resources.
+     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
      */
     private String compiled;
 
@@ -71,7 +72,7 @@ final class MjTranspileTest {
                 new XtYaml(
                     yaml,
                     eo -> new EoSyntax(
-                        new InputOf(String.format("%s\n", eo))
+                        new InputOf(String.format("%s%n", eo))
                     ).parsed(),
                     new TrDefault<>()
                 )
@@ -83,16 +84,15 @@ final class MjTranspileTest {
     @Test
     void transpilesSimpleProgram(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    String.join(
-                        "\n",
-                        "+architect yegor256@gmail.com",
-                        "+package examples",
-                        "",
-                        "# This is the main abstract object",
-                        "[] > x"
-                    )
+            () -> new FakeMaven(temp).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+architect yegor256@gmail.com",
+                    "+package examples",
+                    "",
+                    "# This is the main abstract object",
+                    "[] > x"
+                )
                 ).with("trackTransformationSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class),
@@ -125,12 +125,11 @@ final class MjTranspileTest {
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "TranspileMojo should not touch atoms, but it did",
-            new FakeMaven(temp)
-                .withProgram(
-                    "+package foo.x",
-                    "+rt jvm org.eolang:eo-runtime:0.0.0\n",
-                    "# Atom.",
-                    "[x y z] > main ?"
+            new FakeMaven(temp).withProgram(
+                "+package foo.x",
+                String.format("+rt jvm org.eolang:eo-runtime:0.0.0%n"),
+                "# Atom.",
+                "[x y z] > main ?"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
@@ -147,12 +146,11 @@ final class MjTranspileTest {
     void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "TranspileMojo must generate package-info.java files for all of the packages",
-            new FakeMaven(temp)
-                .withProgram(
-                    "+custom-meta",
-                    "+package foo.x\n",
-                    "# Simple.",
-                    "[] > main"
+            new FakeMaven(temp).withProgram(
+                "+custom-meta",
+                String.format("+package foo.x%n"),
+                "# Simple.",
+                "[] > main"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
@@ -168,12 +166,11 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "TranspileMojo must save valid content to package-info.java file",
             new TextOf(
-                new FakeMaven(temp)
-                    .withProgram(
-                        "+package foo.x\n",
-                        "# Simple.",
-                        "[] > main",
-                        "  true > @"
+                new FakeMaven(temp).withProgram(
+                    String.format("+package foo.x%n"),
+                    "# Simple.",
+                    "[] > main",
+                    "  true > @"
                     )
                     .execute(new FakeMaven.Transpile())
                     .result()
@@ -339,8 +336,7 @@ final class MjTranspileTest {
         maven
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
-            .with("targetDir", target.resolve("eo-test-sources").toFile())
-            .withProgram(
+            .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
                 this.program.replace("main", "main-1")
             )
             .execute(new FakeMaven.Transpile());
@@ -363,10 +359,11 @@ final class MjTranspileTest {
 
     /**
      * Get all classes in directory.
-     * @param root Directory to get classes from.
-     * @return Set of classes.
+     * @param root Directory to get classes from
+     * @return Set of classes
      * @throws IOException If fails.
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)
@@ -377,8 +374,8 @@ final class MjTranspileTest {
 
     /**
      * Is java file.
-     * @param path Path to check.
-     * @return True if path is java file.
+     * @param path Path to check
+     * @return True if path is java file
      */
     private static boolean isJava(final Path path) {
         return Files.isRegularFile(path) && path.toString().endsWith(".java");
@@ -386,8 +383,8 @@ final class MjTranspileTest {
 
     /**
      * Get filename.
-     * @param path Path to get filename from.
-     * @return Filename.
+     * @param path Path to get filename from
+     * @return Filename
      */
     private static String filename(final Path path) {
         return path.getFileName().toString();

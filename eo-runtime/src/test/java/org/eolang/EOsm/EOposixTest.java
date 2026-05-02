@@ -26,6 +26,7 @@ import org.junit.jupiter.api.condition.OS;
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOposixTest {
+
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void invokesGetpidCorrectly() {

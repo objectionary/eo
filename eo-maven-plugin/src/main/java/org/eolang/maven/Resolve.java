@@ -23,7 +23,6 @@ import org.cactoos.text.Joined;
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
  * unpacks and places them into the target directory.
- *
  * @since 0.63.0
  * @checkstyle ParameterNumberCheck (100 lines)
  */

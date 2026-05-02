@@ -26,12 +26,12 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link EOwin32}.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOwin32Test {
+
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})
     void invokesGetCurrentProcessIdCorrectly() {
@@ -66,6 +66,7 @@ final class EOwin32Test {
     @Execution(ExecutionMode.SAME_THREAD)
     @DisabledOnOs({OS.LINUX, OS.MAC})
     final class WinsockTest {
+
         @Test
         void initializesWinsockLibrary() {
             MatcherAssert.assertThat(

@@ -16,6 +16,7 @@ import com.sun.jna.IntegerType;
  * @since 0.40
  */
 public interface WinDef {
+
     /**
      * The 16-bit unsigned integer.
      * @since 0.40
@@ -50,6 +51,7 @@ public interface WinDef {
      */
     @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     final class DWORD extends IntegerType implements Comparable<DWORD> {
+
         /**
          * Constant size.
          */
@@ -65,20 +67,20 @@ public interface WinDef {
 
         /**
          * Low WORD.
-         * @return Low WORD.
+         * @return Low WORD
          * @checkstyle NonStaticMethodCheck (5 lines)
          */
         public WORD getLow() {
-            return new WORD(longValue() & 0xFFFF);
+            return new WinDef.WORD(longValue() & 0xFFFF);
         }
 
         /**
          * High WORD.
-         * @return High WORD.
+         * @return High WORD
          * @checkstyle NonStaticMethodCheck (5 lines)
          */
         public WORD getHigh() {
-            return new WORD((longValue() >> 16) & 0xFFFF);
+            return new WinDef.WORD((longValue() >> 16) & 0xFFFF);
         }
 
         @Override

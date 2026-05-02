@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test for checking validity of parsed EO as XMIR documents.
- *
  * @since 0.58.3
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -27,7 +26,6 @@ final class XmirIT {
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void validatesWithXsd() throws IOException {
         Files.walk(
             Paths.get("").toAbsolutePath().getParent()
@@ -36,8 +34,7 @@ final class XmirIT {
                 .resolve("eo")
                 .resolve("1-parse")
             )
-            .filter(Files::isRegularFile)
-            .forEach(
+            .filter(Files::isRegularFile).forEach(
                 xmir -> {
                     try {
                         Assertions.assertDoesNotThrow(

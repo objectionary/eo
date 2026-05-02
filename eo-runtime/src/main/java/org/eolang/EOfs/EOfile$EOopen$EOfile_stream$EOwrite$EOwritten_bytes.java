@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -22,7 +24,6 @@ import org.eolang.XmirObject;
 
 /**
  * File.open.file-stream.write.written-bytes.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
@@ -35,9 +36,8 @@ public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes() {
-        this.add("buffer", new AtVoid("buffer"));
+        super(new Attrs(new AttrEntry("buffer", new AtVoid("buffer"))));
     }
 
     @Override

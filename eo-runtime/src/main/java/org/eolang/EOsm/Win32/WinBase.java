@@ -21,6 +21,7 @@ import com.sun.jna.Structure;
  */
 @SuppressWarnings({"PMD.ConstantsInInterface", "PMD.LongVariable", "PMD.DataClass"})
 public interface WinBase extends WinDef, BaseTSD {
+
     /**
      * Constant value representing an invalid {@link WinNT.HANDLE}.
      * @checkstyle AvoidInlineConditionalsCheck (5 lines)
@@ -39,6 +40,7 @@ public interface WinBase extends WinDef, BaseTSD {
      */
     @Structure.FieldOrder({"dwLength", "lpSecurityDescriptor", "bInheritHandle"})
     final class SECURITY_ATTRIBUTES extends Structure {
+
         /**
          * The size of the structure, in bytes.
          * @checkstyle VisibilityModifierCheck (6 lines)
@@ -63,6 +65,7 @@ public interface WinBase extends WinDef, BaseTSD {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public SECURITY_ATTRIBUTES() {
             this.dwLength = new DWORD(size());
@@ -79,6 +82,7 @@ public interface WinBase extends WinDef, BaseTSD {
     @Structure.FieldOrder({"Internal", "InternalHigh", "Offset", "OffsetHigh", "hEvent"})
     @SuppressWarnings("PMD.FieldNamingConventions")
     final class OVERLAPPED extends Structure {
+
         /**
          * Internal.
          */

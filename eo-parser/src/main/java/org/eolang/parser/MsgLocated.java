@@ -27,9 +27,9 @@ final class MsgLocated {
 
     /**
      * Ctor.
-     * @param line The line where the error occurred.
-     * @param position The position in the line where the error occurred.
-     * @param message The error message.
+     * @param line The line where the error occurred
+     * @param position The position in the line where the error occurred
+     * @param message The error message
      */
     MsgLocated(final int line, final int position, final String message) {
         this.line = line;
@@ -39,7 +39,7 @@ final class MsgLocated {
 
     /**
      * Formats the error message.
-     * @return The formatted error message.
+     * @return The formatted error message
      */
     String formatted() {
         return String.format("[%d:%d] error: '%s'", this.line, this.position, this.message);

@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhWith}.
- *
  * @since 0.16
  */
 final class PhWithTest {
@@ -60,7 +59,7 @@ final class PhWithTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsInThreads(final String data) {
         final String attr = "foo";
-        final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
+        final Phi ref = new PhWith(new PhWithTest.DummyWithAtFree(attr), 0, new Data.ToPhi(data));
         MatcherAssert.assertThat(
             "works in multiple threads",
             new Together<>(
@@ -79,7 +78,7 @@ final class PhWithTest {
 
     @Test
     void hasTheSameFormaWithBoundAttribute() {
-        final Phi dummy = new DummyWithAtFree("x");
+        final Phi dummy = new PhWithTest.DummyWithAtFree("x");
         MatcherAssert.assertThat(
             "forma of PhWith with bound attribute should be same as forma of original, but it didn't",
             dummy.forma(),
@@ -99,9 +98,8 @@ final class PhWithTest {
          * Ctor.
          * @param attr Free attribute name
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
-            this.add(attr, new AtVoid(attr));
+            super(new Attrs(new AttrEntry(attr, new AtVoid(attr))));
         }
     }
 
@@ -113,6 +111,7 @@ final class PhWithTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         Dummy() {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));

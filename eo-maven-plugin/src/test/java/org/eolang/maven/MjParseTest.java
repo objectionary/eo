@@ -28,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjParse}.
- *
  * @since 0.1
  */
 @SuppressWarnings({
@@ -79,7 +78,6 @@ final class MjParseTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void parsesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
@@ -119,13 +117,12 @@ final class MjParseTest {
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
-            new FakeMaven(temp)
-                .withProgram(
-                    "+package foo.x\n",
-                    "# Error.",
-                    "[] > main",
-                    "  seq *-1 > @",
-                    "    true"
+            new FakeMaven(temp).withProgram(
+                String.format("+package foo.x%n"),
+                "# Error.",
+                "[] > main",
+                "  seq *-1 > @",
+                "    true"
                 )
                 .execute(new FakeMaven.Parse())
                 .result(),
@@ -137,12 +134,11 @@ final class MjParseTest {
 
     @Test
     void crashesIfWrongPackage(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withProgram(
-                "+package wrong.package\n",
-                "# Hello.",
-                "[] > hello",
-                "  42 > @"
+        new FakeMaven(temp).withProgram(
+            String.format("+package wrong.package%n"),
+            "# Hello.",
+            "[] > hello",
+            "  42 > @"
             )
             .execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
@@ -179,7 +175,7 @@ final class MjParseTest {
     /**
      * The test with high number of eo programs reveals concurrency problems of the ParseMojo.
      * Since other tests works only with single program - it's hard to find concurrency mistakes.
-     * @param temp Test directory.
+     * @param temp Test directory
      * @throws IOException If problem with filesystem happened.
      */
     @Test
@@ -188,7 +184,7 @@ final class MjParseTest {
         final int total = 50;
         for (int program = 0; program < total; ++program) {
             maven.withProgram(
-                String.format("+package foo.x\n\n# Program\n[] > main%s", FakeMaven.suffix(program))
+                String.format("+package foo.x%n%n# Program%n[] > main%s", FakeMaven.suffix(program))
             );
         }
         for (int program = 0; program < total; ++program) {
@@ -212,10 +208,9 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                new FakeMaven(temp)
-                    .withProgram(
-                        "# App.\n[] > app",
-                        "main"
+                new FakeMaven(temp).withProgram(
+                    String.format("# App.%n[] > app"),
+                    "main"
                     )
                     .execute(new FakeMaven.Parse())
                     .result()
@@ -264,7 +259,7 @@ final class MjParseTest {
         final long after = parsed.lastModified();
         maven.withProgram(
             String.join(
-                "\n",
+                System.lineSeparator(),
                 "[] > foo",
                 "  boom > @"
             ),
@@ -287,6 +282,7 @@ final class MjParseTest {
      */
     @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)
     private static final class Infinite extends MjSafe {
+
         @Override
         public void exec() {
             try {

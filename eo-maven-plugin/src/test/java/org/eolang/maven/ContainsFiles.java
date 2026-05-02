@@ -22,6 +22,7 @@ import org.hamcrest.TypeSafeMatcher;
     "JTCOP.RuleInheritanceInTests"
 })
 final class ContainsFiles extends TypeSafeMatcher<Path> {
+
     /**
      * Patterns.
      */
@@ -30,6 +31,7 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
     /**
      * Ctor.
      * @param glbs Patterns
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     ContainsFiles(final String... glbs) {
         this.globs = Arrays.copyOf(glbs, glbs.length);
@@ -42,33 +44,30 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
 
     @Override
     public boolean matchesSafely(final Path path) {
-        return Arrays.stream(this.globs)
-            .anyMatch(
-                glob -> ContainsFiles.matchesGlob(
-                    path,
-                    glob
-                )
+        return Arrays.stream(this.globs).anyMatch(
+            glob -> ContainsFiles.matchesGlob(
+                path,
+                glob
+            )
             );
     }
 
     /**
      * Returns whether a path matches a file pattern.
-     * @param item The path.
-     * @param glob The file pattern.
-     * @return True if the item matches the glob.
+     * @param item The path
+     * @param glob The file pattern
+     * @return True if the item matches the glob
      */
     private static boolean matchesGlob(final Path item, final String glob) {
         try {
-            return Files.walk(item)
-                .anyMatch(
-                    FileSystems
-                        .getDefault()
-                        .getPathMatcher(
-                            String.format(
-                                "glob:%s",
-                                glob
-                            )
-                        )::matches
+            return Files.walk(item).anyMatch(
+                FileSystems
+                    .getDefault().getPathMatcher(
+                        String.format(
+                            "glob:%s",
+                            glob
+                        )
+                    )::matches
                 );
         } catch (final IOException ex) {
             throw new IllegalStateException(

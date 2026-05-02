@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjProbe}.
- *
  * @since 0.28.11
  */
 @ExtendWith(WeAreOnline.class)
@@ -83,7 +82,7 @@ final class MjProbeTest {
     private static String[] program() {
         return new String[]{
             "+package foo.x",
-            "+also while\n",
+            String.format("+also while%n"),
             "# No comments.",
             "[] > main",
             "  Q.io.stdout > @",

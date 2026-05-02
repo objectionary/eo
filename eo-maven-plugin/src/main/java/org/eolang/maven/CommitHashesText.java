@@ -38,7 +38,7 @@ final class CommitHashesText extends TextEnvelope {
 
     /**
      * Constructor.
-     * @param source Text source.
+     * @param source Text source
      */
     private CommitHashesText(final Text source) {
         super(new Synced(new Sticky(source)));
@@ -46,7 +46,6 @@ final class CommitHashesText extends TextEnvelope {
 
     /**
      * Download from the URL and return the content.
-     *
      * @return The body of the web page
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)

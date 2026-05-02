@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 /**
  * Makes a {@link String} byte array that can represent bool,
  * double, int or {@link String}.
- *
  * @since 0.36
  */
 public final class VerboseBytesAsString implements Supplier<String> {
@@ -28,7 +27,8 @@ public final class VerboseBytesAsString implements Supplier<String> {
 
     /**
      * Ctor.
-     * @param data Data.
+     * @param data Data
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public VerboseBytesAsString(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);
@@ -97,5 +97,4 @@ public final class VerboseBytesAsString implements Supplier<String> {
         }
         return out.toString();
     }
-
 }

@@ -54,8 +54,9 @@ import org.xembly.Xembler;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public final class MjLint extends MjSafe {
+
     /**
      * The directory where to transpile to.
      */
@@ -121,12 +122,11 @@ public final class MjLint extends MjSafe {
             "Read more about lints: https://www.objectionary.com/lints/%s",
             Manifests.read("Lints-Version")
         );
-        final String details = seen.stream()
-            .map(
-                defect -> String.format(
-                    "%s:%d %s (%s)",
-                    defect.object(), defect.line(), defect.text(), defect.rule()
-                )
+        final String details = seen.stream().map(
+            defect -> String.format(
+                "%s:%d %s (%s)",
+                defect.object(), defect.line(), defect.text(), defect.rule()
+            )
             )
             .collect(Collectors.joining(System.lineSeparator()));
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
@@ -136,7 +136,8 @@ public final class MjLint extends MjSafe {
                     tojos.size(), sum, details
                 )
             );
-        } else if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
+        }
+        if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
             throw new IllegalStateException(
                 String.format(
                     "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
@@ -166,7 +167,7 @@ public final class MjLint extends MjSafe {
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.toPath().resolve(MjLint.DIR);
         final Path target = new Place(
-            new OnDetailed(new OnDefault(xmir), source).get()
+            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         if (this.cacheEnabled) {
             new ConcurrentCache(
@@ -266,8 +267,7 @@ public final class MjLint extends MjSafe {
             .without(this.skipProgramLints.toArray(new String[0]))
             .defects()
             .stream()
-            .filter(defect -> this.skipExperimentalLints || !defect.experimental())
-            .forEach(
+            .filter(defect -> this.skipExperimentalLints || !defect.experimental()).forEach(
                 defect -> {
                     final Node node = pkg.get(defect.object()).inner();
                     new Xembler(
@@ -303,8 +303,7 @@ public final class MjLint extends MjSafe {
         final Collection<Defect> found = new Source(xmir)
             .without(unlints)
             .defects()
-            .stream()
-            .filter(
+            .stream().filter(
                 defect -> this.skipExperimentalLints || !defect.experimental()
             ).collect(Collectors.toList());
         defects.addAll(found);
@@ -412,38 +411,45 @@ public final class MjLint extends MjSafe {
         return xnav
             .element("object")
             .elements(Filter.withName("errors"))
-            .findFirst()
-            .map(
+            .findFirst().map(
                 errors -> errors
                     .elements(Filter.withName("error"))
-                    .map(
-                        error -> (Defect) new Defect.Default(
-                            error.attribute("check").text().orElseThrow(
-                                () -> new IllegalArgumentException(
-                                    "The <error> element in XMIR must contain 'check' attribute"
-                                )
-                            ),
-                            Severity.parsed(
-                                error.attribute("severity").text().orElseThrow(
-                                    () -> new IllegalArgumentException(
-                                        "The <error> element in XMIR must contain 'severity' attribute"
-                                    )
-                                )
-                            ),
-                            program,
-                            Integer.parseInt(
-                                error.attribute("line").text().orElse("0")
-                            ),
-                            error.text().orElseThrow(
-                                () -> new IllegalStateException(
-                                    "The <error> element in XMIR must contain text message"
-                                )
-                            )
-                        )
-                    )
+                    .map(error -> MjLint.toDefect(program, error))
                     .collect(Collectors.toList())
             )
             .orElse(new ListOf<>());
+    }
+
+    /**
+     * Convert XMIR error element to a {@link Defect}.
+     * @param program Program name
+     * @param error The error element
+     * @return Defect
+     */
+    private static Defect toDefect(final String program, final Xnav error) {
+        return new Defect.Default(
+            error.attribute("check").text().orElseThrow(
+                () -> new IllegalArgumentException(
+                    "The <error> element in XMIR must contain 'check' attribute"
+                )
+            ),
+            Severity.parsed(
+                error.attribute("severity").text().orElseThrow(
+                    () -> new IllegalArgumentException(
+                        "The <error> element in XMIR must contain 'severity' attribute"
+                    )
+                )
+            ),
+            program,
+            Integer.parseInt(
+                error.attribute("line").text().orElse("0")
+            ),
+            error.text().orElseThrow(
+                () -> new IllegalStateException(
+                    "The <error> element in XMIR must contain text message"
+                )
+            )
+        );
     }
 
     /**

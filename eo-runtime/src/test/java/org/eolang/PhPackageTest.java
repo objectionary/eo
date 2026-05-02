@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link PhPackage}.
- *
  * @since 0.24
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -92,7 +91,6 @@ final class PhPackageTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsExceptionIfCantFindPackageInfo() {
         MatcherAssert.assertThat(
             "Exception message must mention missing package-info.class",
@@ -137,11 +135,10 @@ final class PhPackageTest {
 
     @Test
     void findsAttributesInThreads() {
-        final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
-                thread -> pckg.take("go") instanceof PhPackage
+                thread -> Phi.Φ.take("go") instanceof PhPackage
             ),
             Matchers.allOf(
                 Matchers.not(Matchers.hasItem(true))

@@ -22,7 +22,7 @@ final class DrErrors implements Iterable<Directive> {
 
     /**
      * Ctor.
-     * @param errors The errors.
+     * @param errors The errors
      */
     DrErrors(final Iterable<ParsingException> errors) {
         this.errors = errors;

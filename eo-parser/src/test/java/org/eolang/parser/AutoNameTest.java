@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link AutoName}.
- *
  * @since 0.58.1
  */
 final class AutoNameTest {

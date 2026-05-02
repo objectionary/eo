@@ -18,14 +18,15 @@ import org.eolang.XmirObject;
 
 /**
  * Angle.sin.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "angle.sin")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOangle$EOsin extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             Math.sin(new Dataized(this.take(Phi.RHO)).asNumber())

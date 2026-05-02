@@ -552,7 +552,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 || number < 0
             ) {
                 this.errors.add(
-                    new ParsingError(
+                    ParsingError.fromContext(
                         ctx,
                         "Index after '*' must be a positive integer without leading zero or arithmetic signs"
                     ).cause()
@@ -869,7 +869,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects.enter().prop("name", new AutoName(ctx).asString());
+        this.objects.enter().prop(
+            "name",
+            new AutoName(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()).asString()
+        );
         if (ctx.CONST() != null) {
             this.objects.prop("const");
         }
@@ -1143,7 +1146,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     private String alphaAttr(final ParserRuleContext ctx, final String msg) {
         final int index = Integer.parseInt(ctx.getToken(EoParser.INT, 0).getText());
         if (index < 0) {
-            this.errors.add(new ParsingError(ctx, msg).cause());
+            this.errors.add(ParsingError.fromContext(ctx, msg).cause());
         }
         return String.format("α%d", index);
     }

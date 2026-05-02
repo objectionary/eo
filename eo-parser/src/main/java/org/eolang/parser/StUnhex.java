@@ -9,21 +9,26 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
-import org.w3c.dom.Node;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
  * into EO-printable data.
- *
  * @since 0.29.0
  */
 final class StUnhex extends StEnvelope {
+
     /**
      * Xpath for finding bytes.
      */
     private static final String BYTES =
         "//o[@base='Φ.bytes' and o[1][string-length(normalize-space(text()))>0]]";
+
+    /**
+     * Regex for splitting hex pairs.
+     */
+    private static final Pattern HEX_PAIR = Pattern.compile("(?<=\\G.{2})");
 
     /**
      * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
@@ -42,9 +47,8 @@ final class StUnhex extends StEnvelope {
                 final double number = StUnhex.buffer(
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
-                final Node node = xnav.node();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    node.setTextContent(StUnhex.number(number));
+                    xnav.node().setTextContent(StUnhex.number(number));
                 }
             }
         ),
@@ -111,7 +115,7 @@ final class StUnhex extends StEnvelope {
         if (txt.isEmpty()) {
             buffer = ByteBuffer.allocate(0);
         } else {
-            final String[] parts = txt.split("(?<=\\G.{2})");
+            final String[] parts = StUnhex.HEX_PAIR.split(txt);
             buffer = ByteBuffer.allocate(parts.length);
             for (final String pair : parts) {
                 buffer.put((byte) Integer.parseInt(pair, 16));

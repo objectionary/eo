@@ -21,14 +21,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.open.process-file.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.process-file")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         final Phi open = this.take(Phi.RHO);
         final Path path = Paths.get(

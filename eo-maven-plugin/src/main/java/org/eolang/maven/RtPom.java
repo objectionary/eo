@@ -31,8 +31,7 @@ final class RtPom implements Scalar<Dep> {
     @Override
     public Dep value() {
         return this.runtimeFromPom()
-            .map(Dep::new)
-            .orElseThrow(
+            .map(Dep::new).orElseThrow(
                 () -> new IllegalStateException("Runtime dependency not found in pom.xml")
             );
     }
@@ -72,5 +71,4 @@ final class RtPom implements Scalar<Dep> {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
     }
-
 }

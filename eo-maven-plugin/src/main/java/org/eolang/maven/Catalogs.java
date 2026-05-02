@@ -23,7 +23,6 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * All catalogs in one place, to avoid making multiple objects.
- *
  * @since 0.29
  */
 final class Catalogs {

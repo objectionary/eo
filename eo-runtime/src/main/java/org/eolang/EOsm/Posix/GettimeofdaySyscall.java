@@ -21,6 +21,7 @@ import org.eolang.Phi;
  * @since 0.40
  */
 public final class GettimeofdaySyscall implements Syscall {
+
     /**
      * Posix object.
      */
@@ -52,6 +53,7 @@ public final class GettimeofdaySyscall implements Syscall {
      * @checkstyle VisibilityModifierCheck (30 lines)
      */
     public static final class Timeval extends Structure {
+
         /**
          * Seconds since Jan. 1, 1970
          */

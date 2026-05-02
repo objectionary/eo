@@ -145,7 +145,6 @@ final class Parse {
 
     /**
      * Parse EO file to XML.
-     *
      * @param tojo The tojo
      * @return Amount of parsed tojos
      * @throws Exception If fails
@@ -209,7 +208,7 @@ final class Parse {
         final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
         Logger.debug(
             Parse.class,
-            "Parsed program '%s' from %[file]s:\n %s",
+            "Parsed program '%s' from %[file]s:%n %s",
             identifier, this.sourcesDir.relativize(source.toAbsolutePath()), xmir
         );
         if (xmir.broken()) {
@@ -245,16 +244,14 @@ final class Parse {
         }
         return new Xnav(node)
             .element("object")
-            .element("metas")
-            .elements(
+            .element("metas").elements(
                 Filter.all(
                     Filter.withName("meta"),
-                    meta -> new Xnav(meta)
-                        .elements(
-                            Filter.all(
-                                Filter.withName("head"),
-                                head -> head.text().map("version"::equals).orElse(false)
-                            )
+                    meta -> new Xnav(meta).elements(
+                        Filter.all(
+                            Filter.withName("head"),
+                            head -> head.text().map("version"::equals).orElse(false)
+                        )
                         )
                         .findAny()
                         .isPresent()

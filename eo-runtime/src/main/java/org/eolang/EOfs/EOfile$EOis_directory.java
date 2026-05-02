@@ -19,14 +19,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.is-directory.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.is-directory")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOis_directory extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             Paths.get(

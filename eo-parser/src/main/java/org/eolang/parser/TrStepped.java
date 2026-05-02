@@ -21,7 +21,6 @@ import org.cactoos.text.TextOf;
 
 /**
  * Train that adds sheet names that were processed.
- *
  * @since 0.1
  */
 final class TrStepped extends TrEnvelope {
@@ -30,7 +29,7 @@ final class TrStepped extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final Scalar<XSL> STEPPED = new Sticky<>(
-        new Once<XSL>(
+        new TrStepped.Once<XSL>(
             () -> new XSLDocument(
                 new TextOf(
                     new ResourceOf("org/eolang/parser/_stepped.xsl")
@@ -41,7 +40,6 @@ final class TrStepped extends TrEnvelope {
 
     /**
      * Ctor.
-     *
      * @param train Original train
      */
     TrStepped(final Train<Shift> train) {
@@ -50,7 +48,6 @@ final class TrStepped extends TrEnvelope {
 
     /**
      * Ctor.
-     *
      * @param train Original train
      * @param stepped XSL to apply
      */
@@ -74,7 +71,6 @@ final class TrStepped extends TrEnvelope {
 
     /**
      * Scalar that loads the value only once.
-     *
      * @param <T> Type of the value
      * @since 0.51
      */
@@ -92,7 +88,6 @@ final class TrStepped extends TrEnvelope {
 
         /**
          * Ctor.
-         *
          * @param origin Origin scalar
          */
         Once(final Scalar<T> origin) {
@@ -101,7 +96,6 @@ final class TrStepped extends TrEnvelope {
 
         /**
          * Ctor.
-         *
          * @param origin Origin scalar
          * @param latch Latch to count down
          */

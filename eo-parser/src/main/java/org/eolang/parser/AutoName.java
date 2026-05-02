@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.cactoos.Text;
 
 /**
@@ -22,14 +21,6 @@ final class AutoName implements Text {
      * The Position in line.
      */
     private final int position;
-
-    /**
-     * Ctor.
-     * @param context Context
-     */
-    AutoName(final ParserRuleContext context) {
-        this(context.getStart().getLine(), context.getStart().getCharPositionInLine());
-    }
 
     /**
      * Ctor.

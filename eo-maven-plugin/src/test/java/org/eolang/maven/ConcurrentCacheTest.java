@@ -34,7 +34,10 @@ final class ConcurrentCacheTest {
             )
         );
         final Path source = temp.resolve("program.eo");
-        new Saved("[] > main\n  (stdout \"Hello, EO!\") > @\n", source).value();
+        new Saved(
+            String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"),
+            source
+        ).value();
         final Path target = temp.resolve("program.xmir");
         new Threaded<>(
             IntStream.range(0, 100).boxed().collect(Collectors.toList()), ignored -> {

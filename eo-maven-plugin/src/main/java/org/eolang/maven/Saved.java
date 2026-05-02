@@ -23,6 +23,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.41.0
  */
 final class Saved implements Scalar<Path> {
+
     /**
      * Absolute path to save content to.
      */
@@ -37,6 +38,7 @@ final class Saved implements Scalar<Path> {
      * Ctor.
      * @param content Content as string
      * @param target Path to save content to
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Saved(final String content, final Path target) {
         this(content.getBytes(StandardCharsets.UTF_8), target);

@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhMethod}.
- *
  * @since 0.16
  */
 final class PhMethodTest {
+
     @Test
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
@@ -25,9 +25,8 @@ final class PhMethodTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void calculatesPhiJustOnce() {
-        final Dummy dummy = new Dummy();
+        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
         final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
@@ -41,9 +40,8 @@ final class PhMethodTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void calculatesLocalJustOnce() {
-        final Dummy dummy = new Dummy();
+        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
@@ -58,7 +56,7 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiOnce() {
-        final Dummy dummy = new Dummy();
+        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
         new Dataized(new PhMethod(dummy, "neg")).take();
         MatcherAssert.assertThat(
             "Neg should be calculated only once, but it wasn't",
@@ -69,7 +67,7 @@ final class PhMethodTest {
 
     @Test
     void hasDifferentFormasWithOwnMethod() {
-        final Phi dummy = new Dummy();
+        final Phi dummy = new PhMethodTest.Dummy();
         MatcherAssert.assertThat(
             "Forma of PhMethod should be differ from original, but it wasn't",
             dummy.forma(),
@@ -86,6 +84,7 @@ final class PhMethodTest {
      * @since 0.1.0
      */
     static final class Dummy extends PhDefault {
+
         /**
          * Count.
          */
@@ -93,6 +92,7 @@ final class PhMethodTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (30 lines)
          */
         Dummy() {
             this.add(

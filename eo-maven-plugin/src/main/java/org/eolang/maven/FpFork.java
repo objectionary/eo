@@ -14,6 +14,7 @@ import org.cactoos.func.UncheckedBiFunc;
  * @since 0.41
  */
 final class FpFork extends FpEnvelope {
+
     /**
      * Ctor.
      * @param condition Condition as boolean

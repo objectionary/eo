@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.59.0
  */
 final class AtCompositeTest {
+
     @Test
     void throwsOnPut() {
         Assertions.assertThrows(
@@ -25,7 +26,6 @@ final class AtCompositeTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void executesExpression() {
         final AtomicInteger count = new AtomicInteger();
         new AtComposite(

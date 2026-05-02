@@ -23,6 +23,7 @@ import org.eolang.Phi;
  * @since 0.40.0
  */
 public final class AcceptFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */

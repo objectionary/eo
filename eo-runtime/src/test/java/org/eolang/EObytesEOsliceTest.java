@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EObytes}.
- *
  * @since 0.23
  * @checkstyle TypeNameCheck (4 lines)
  */
@@ -47,7 +46,6 @@ final class EObytesEOsliceTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsOnOutOfBoundsSlice() {
         MatcherAssert.assertThat(
             "error message is correct for out of bounds slice",
@@ -78,7 +76,6 @@ final class EObytesEOsliceTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void takesWrongSlice() {
         MatcherAssert.assertThat(
             "error message is correct",
@@ -107,5 +104,4 @@ final class EObytesEOsliceTest {
             Matchers.containsString("the 'len' attribute (-5) must be a positive integer")
         );
     }
-
 }

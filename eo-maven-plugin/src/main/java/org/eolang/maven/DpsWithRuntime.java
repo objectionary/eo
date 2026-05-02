@@ -13,7 +13,6 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Add runtime dependency to the list of dependencies, if it is absent there.
- *
  * @since 0.28.11
  */
 final class DpsWithRuntime implements Dependencies {
@@ -30,8 +29,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
-     *
-     * @param dlg Dependencies delegate.
+     * @param dlg Dependencies delegate
      */
     DpsWithRuntime(final Iterable<Dep> dlg) {
         this(dlg, new Unchecked<>(new RtCentral()));
@@ -39,40 +37,28 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
-     *
-     * @param dlg Dependencies delegate.
-     * @param sup Dependency.
+     * @param dlg Dependencies delegate
+     * @param sup Dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Dep sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Dep sup) {
         this(dlg, new Unchecked<>(() -> sup));
     }
 
     /**
      * The main constructor.
-     *
-     * @param dlg Dependencies delegate.
-     * @param sup Supplier of the eo-runtime dependency.
+     * @param dlg Dependencies delegate
+     * @param sup Supplier of the eo-runtime dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Scalar<Dep> sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Scalar<Dep> sup) {
         this(dlg, new Unchecked<>(sup));
     }
 
     /**
      * The main constructor.
-     *
-     * @param dlg Dependencies delegate.
-     * @param sup Supplier of the eo-runtime dependency.
+     * @param dlg Dependencies delegate
+     * @param sup Supplier of the eo-runtime dependency
      */
-    DpsWithRuntime(
-        final Iterable<Dep> dlg,
-        final Unchecked<Dep> sup
-    ) {
+    DpsWithRuntime(final Iterable<Dep> dlg, final Unchecked<Dep> sup) {
         this.delegate = dlg;
         this.supplied = sup;
     }

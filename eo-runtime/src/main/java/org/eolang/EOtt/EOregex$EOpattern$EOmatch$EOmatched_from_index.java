@@ -16,6 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -45,15 +47,18 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
-        this.add(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
-        );
-        this.add(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+        super(
+            new Attrs(
+                new AttrEntry(
+                    EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+                    new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+                ),
+                new AttrEntry(
+                    EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+                    new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+                )
+            )
         );
     }
 
@@ -72,7 +77,6 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         } catch (final IOException | ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         }
-        final Phi start = this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START);
         final boolean found = matcher.find(
             new Dataized(
                 this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
@@ -85,7 +89,10 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
                 EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
                 this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
             );
-            result.put(EOregex$EOpattern$EOmatch$EOmatched_from_index.START, start);
+            result.put(
+                EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            );
             result.put("from", new Data.ToPhi(matcher.start()));
             result.put("to", new Data.ToPhi(matcher.end()));
             final Phi[] groups;

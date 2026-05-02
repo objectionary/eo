@@ -23,6 +23,7 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "os.name")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOos$EOname extends PhDefault implements Atom {
+
     /**
      * Operating system name as {@link Phi}.
      */

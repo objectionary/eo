@@ -15,6 +15,7 @@ import java.util.function.Function;
  * @since 0.1
  */
 public final class AtComposite implements Attr {
+
     /**
      * The argument of the expression.
      */

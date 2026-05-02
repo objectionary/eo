@@ -18,45 +18,32 @@ import org.cactoos.io.InputStreamOf;
 
 /**
  * Indentation-aware Lexer.
- *
  * @since 0.1.0
  */
+@SuppressWarnings("PMD.ConstructorShouldDoInitialization")
 final class EoIndentLexer extends EoLexer {
+
     /**
      * Generated tokes.
      */
-    private final Deque<Token> tokens;
+    private final Deque<Token> tokens = new LinkedList<>();
 
     /**
      * Indentation level.
      */
-    private final Deque<Integer> indent;
+    private final Deque<Integer> indent = new LinkedList<>(Collections.singletonList(0));
 
     /**
      * Spaces.
      */
-    private final Deque<String> spaces;
+    private final Deque<String> spaces = new ConcurrentLinkedDeque<>();
 
     /**
      * Ctor.
-     * @param txt Source code.
-     * @throws IOException If fails.
+     * @param stream Char stream
      */
-    EoIndentLexer(final Text txt) throws IOException {
-        this(CharStreams.fromStream(new InputStreamOf(txt)));
-    }
-
-    /**
-     * Ctor.
-     * @param stream Char stream.
-     */
-    private EoIndentLexer(final CharStream stream) {
+    EoIndentLexer(final CharStream stream) {
         super(stream);
-        this.indent = new LinkedList<>(
-            Collections.singletonList(0)
-        );
-        this.tokens = new LinkedList<>();
-        this.spaces = new ConcurrentLinkedDeque<>();
     }
 
     @Override
@@ -65,6 +52,16 @@ final class EoIndentLexer extends EoLexer {
             this.lookAhead();
         }
         return this.tokens.poll();
+    }
+
+    /**
+     * Build a lexer from a {@link Text}.
+     * @param txt Source code
+     * @return Lexer
+     * @throws IOException If fails
+     */
+    static EoIndentLexer fromText(final Text txt) throws IOException {
+        return new EoIndentLexer(CharStreams.fromStream(new InputStreamOf(txt)));
     }
 
     /**
@@ -91,8 +88,8 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Calculate shifts and emit corresponding token.
-     * @param tabs Current amount of tabs.
-     * @param next Next token.
+     * @param tabs Current amount of tabs
+     * @param next Next token
      */
     private void handleTabs(final int tabs, final Token next) {
         final int last = this.indent.peekLast();
@@ -108,15 +105,14 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Get string with spaces from current text.
-     * @return Spaces from text.
+     * @return Spaces from text
      */
     private String textSpaces() {
-        return this.getText().replaceAll("[\r\n]", "");
+        return this.getText().replaceAll("[\\r\\n]", "");
     }
 
     /**
      * Indent.
-     *
      * @param shift Number of tabs
      */
     private void emitIndent(final int shift) {
@@ -127,8 +123,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * De-indent.
-     *
-     * @param shift Number of un-tabs.
+     * @param shift Number of un-tabs
      */
     private void emitDedent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
@@ -138,8 +133,7 @@ final class EoIndentLexer extends EoLexer {
 
     /**
      * Emit token at the next line.
-     *
-     * @param type Type.
+     * @param type Type
      */
     private void emitToken(final int type) {
         final CommonToken tkn = new CommonToken(type, EoParser.VOCABULARY.getSymbolicName(type));

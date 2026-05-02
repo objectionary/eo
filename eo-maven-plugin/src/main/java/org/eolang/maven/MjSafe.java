@@ -38,7 +38,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Abstract Mojo for all others.
- *
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
@@ -95,7 +94,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Directory in which .eo files are located.
-     *
      * @checkstyle VisibilityModifierCheck (10 lines)
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -183,7 +181,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Track optimization steps into intermediate XMIR files?
-     *
      * @since 0.24.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -267,7 +264,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Skip artifact with the version 0.0.0.
-     *
      * @since 0.9.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -277,7 +273,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Fail resolution process on conflicting dependencies.
-     *
      * @since 0.1.0
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
@@ -288,7 +283,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
-     *
      * @since 0.12.0
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
@@ -362,7 +356,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should fail on warning.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -371,7 +364,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should lint all the sources together as package.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -380,7 +372,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should skip linting at all.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -428,7 +419,7 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.50
      * @checkstyle MemberNameCheck (5 lines)
      */
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
+    @SuppressWarnings("PMD.ImmutableField")
     private Scalar<Objectionary> objectionary = new Synced<>(
         new Sticky<>(
             () -> new OyIndexed(
@@ -542,15 +533,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Get active proxy from Maven settings.
-     * @return Proxy if any.
+     * @return Proxy if any
      */
     Proxy[] proxies() {
         return Optional.ofNullable(this.settings)
             .map(Settings::getProxies)
             .orElse(List.of())
             .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive)
-            .map(
+            .filter(org.apache.maven.settings.Proxy::isActive).map(
                 p -> new Proxy(
                     Proxy.Type.HTTP,
                     new InetSocketAddress(p.getHost(), p.getPort())
@@ -560,7 +550,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Runs exec command with timeout if needed.
-     *
      * @throws ExecutionException If unexpected exception happened during execution
      * @throws TimeoutException If timeout limit reached
      */

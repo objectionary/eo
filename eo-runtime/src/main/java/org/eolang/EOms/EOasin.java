@@ -11,6 +11,8 @@ package org.eolang.EOms; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -18,18 +20,17 @@ import org.eolang.XmirObject;
 
 /**
  * Asin.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "asin")
 public final class EOasin extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOasin() {
-        this.add("num", new AtVoid("num"));
+        super(new Attrs(new AttrEntry("num", new AtVoid("num"))));
     }
 
     @Override

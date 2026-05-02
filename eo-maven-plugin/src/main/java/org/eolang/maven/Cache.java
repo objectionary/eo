@@ -44,6 +44,7 @@ final class Cache {
      * Constructor.
      * @param path Cache path
      * @param compilation Compilation function
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Cache(final CachePath path, final Func<Path, String> compilation) {
         this(path.get(), compilation);
@@ -60,9 +61,9 @@ final class Cache {
 
     /**
      * Constructor.
-     * @param base Base cache directory.
-     * @param compilation Compilation function.
-     * @param filter Filter for files.
+     * @param base Base cache directory
+     * @param compilation Compilation function
+     * @param filter Filter for files
      */
     Cache(
         final Path base,
@@ -136,8 +137,8 @@ final class Cache {
 
     /**
      * Calculate SHA-256 hash of a directory by hashing all regular files inside it.
-     * @param dir Directory path.
-     * @return Base64-encoded SHA-256 hash of the directory contents.
+     * @param dir Directory path
+     * @return Base64-encoded SHA-256 hash of the directory contents
      */
     private String dirSha(final Path dir) {
         try {
@@ -168,8 +169,6 @@ final class Cache {
      * Calculate SHA-256 hash of a file and return it as Base64 string.
      * @param file File path
      * @return Base64-encoded SHA-256 hash
-     * @throws IllegalStateException If SHA-256 algorithm is not available
-     * @throws IllegalStateException If an I/O error occurs reading the file
      */
     private static String fileSha(final Path file) {
         try {

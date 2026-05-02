@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:lint goal.
- *
  * @since 0.52
  * @todo #4394:35min Enable MjLints related tests after `lints` will be adjusted with `Φ` object.
  *  For now, lints checks for `Q` instead of `Φ`. After new version of lints released, we should
@@ -42,16 +41,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjLintIT {
 
     @Test
-    @SuppressWarnings({"PMD.UnitTestShouldIncludeAssert", "PMD.UnnecessaryLocalRule"})
-    void lintsAgainAfterModification(@Mktmp final Path temp)
-        throws Exception {
+    void lintsAgainAfterModification(@Mktmp final Path temp) throws Exception {
         final String source = "src/main/eo/foo.eo";
-        final String program = MjLintIT.helloWorld();
         final String xmir = "target/eo/3-lint/foo.xmir";
+        final byte[] prog = MjLintIT.helloWorld().getBytes(StandardCharsets.UTF_8);
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
+                f.files().file(source).write(prog);
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -61,10 +58,10 @@ final class MjLintIT {
                     .path()
                     .toFile()
                     .lastModified();
-                f.files().file(source).write(program.getBytes(StandardCharsets.UTF_8));
+                f.files().file(source).write(prog);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
-                    "the .xmir file is re-generated",
+                    String.format("the .xmir file is re-generated past %d", before),
                     f.files().file(xmir).path().toFile().lastModified(),
                     Matchers.not(Matchers.equalTo(before))
                 );
@@ -73,16 +70,13 @@ final class MjLintIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
-    void printsLintsUrlWithVersion(@Mktmp final Path temp)
-        throws IOException {
-        final String program = MjLintIT.helloWorld();
+    void printsLintsUrlWithVersion(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.clean();
                 f.files()
                     .file("src/main/eo/foo.eo")
-                    .write(program.getBytes(StandardCharsets.UTF_8));
+                    .write(MjLintIT.helloWorld().getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -90,13 +84,7 @@ final class MjLintIT {
                 MatcherAssert.assertThat(
                     "Lints URL was not printed, but it should",
                     f.log().content(),
-                    Matchers.matchesPattern(
-                        String.join(
-                            " ",
-                            "(?s).*\\[INFO] Read more about lints:",
-                            "https://www\\.objectionary\\.com/lints/\\d+\\.\\d+\\.\\d+.*"
-                        )
-                    )
+                    Matchers.matchesPattern(MjLintIT.lintsUrl())
                 );
             }
         );
@@ -104,7 +92,7 @@ final class MjLintIT {
 
     private static String helloWorld() {
         return String.join(
-            "\n",
+            System.lineSeparator(),
             "+alias stdout io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
@@ -113,6 +101,14 @@ final class MjLintIT {
             "# No comments.",
             "[x] > main",
             "  (stdout \"Hello!\" x).print > @"
+        );
+    }
+
+    private static String lintsUrl() {
+        return String.join(
+            " ",
+            "(?s).*\\[INFO] Read more about lints:",
+            "https://www\\.objectionary\\.com/lints/\\d+\\.\\d+\\.\\d+.*"
         );
     }
 

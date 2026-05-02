@@ -11,19 +11,18 @@ package org.eolang;
 
 /**
  * BYTES.AND.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.and")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOand extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOand() {
-        this.add("b", new AtVoid("b"));
+        super(new Attrs(new AttrEntry("b", new AtVoid("b"))));
     }
 
     @Override

@@ -21,7 +21,6 @@ import org.openjdk.jmh.annotations.Warmup;
 
 /**
  * Benchmark for XSL transformations.
- *
  * @since 0.41
  * @checkstyle NonStaticMethodCheck (100 lines)
  */

@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
+
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);

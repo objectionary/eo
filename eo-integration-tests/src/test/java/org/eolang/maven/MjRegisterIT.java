@@ -14,8 +14,11 @@ import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.TjSynchronized;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -23,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:register goal.
- *
  * @since 0.52
  */
 @SuppressWarnings(
@@ -35,29 +37,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 )
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjRegisterIT {
+
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldPulledFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# Foo.",
-                        "[] > foo",
-                        "  \"Pull\" > @"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# Foo.",
-                        "[] > foo",
-                        "  41 > @"
-                    ).getBytes(StandardCharsets.UTF_8)
+                MjRegisterIT.run(
+                    f,
+                    new String[]{"  \"Pull\" > @", "  41 > @"},
+                    "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
@@ -70,28 +58,13 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldResolvedFiles(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# Foo.",
-                        "[] > foo",
-                        "  \"Resolve\" > @"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# Foo.",
-                        "[] > foo",
-                        "  42 > @"
-                    ).getBytes(StandardCharsets.UTF_8)
+                MjRegisterIT.run(
+                    f,
+                    new String[]{"  \"Resolve\" > @", "  42 > @"},
+                    "eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve"
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
@@ -104,59 +77,24 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "+rt jvm org.eolang:eo-runtime:0.25.0\n",
-                        "# In this program, we refer to the 'String'",
-                        "[] > foo",
-                        "  \"42\" > @"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# In this program, we refer to the 'Number'.",
-                        "[] > foo",
-                        "  42 > @"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
-                final TjSmart foreign = MjRegisterIT.foreign(
-                    temp.resolve("target/eo-foreign.json")
-                );
+                MjRegisterIT.runForeign(f);
+                final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
                     "Foreign must contain only 3 references to objects, but it doesn't",
                     foreign.size(),
                     Matchers.equalTo(3)
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must contain reference to the Number object, but it doesn't",
-                    foreign.getById("number").exists("id"),
-                    Matchers.is(true)
-                );
-                MatcherAssert.assertThat(
-                    "Foreign must contain reference to the Bytes object, but it doesn't",
-                    foreign.getById("bytes").exists("id"),
-                    Matchers.is(true)
-                );
-                MatcherAssert.assertThat(
-                    "Foreign must contain reference to the current object, but it doesn't",
-                    foreign.getById("foo").exists("id"),
-                    Matchers.is(true)
+                    "Foreign must contain refs to Number, Bytes, and current object",
+                    MjRegisterIT.existences(foreign, "number", "bytes", "foo"),
+                    Matchers.everyItem(Matchers.is(true))
                 );
                 MatcherAssert.assertThat(
                     "Foreign must not contain a reference to an old object",
-                    foreign.select(
-                        tojo -> "string".equals(tojo.get("id"))
-                    ).isEmpty(),
+                    foreign.select(tojo -> "string".equals(tojo.get("id"))).isEmpty(),
                     Matchers.is(true)
                 );
             }
@@ -164,28 +102,13 @@ final class MjRegisterIT {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
-                f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# In this program, we refer to the 'String' object by mistake.",
-                        "[] > foo",
-                        "  \"Hello\" > @"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
-                new AppendedPlugin(f).value();
-                f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.join(
-                        "\n",
-                        "# Now, this program, doesn't refer to the 'String' object",
-                        "[] > foo",
-                        "  42 > @"
-                    ).getBytes(StandardCharsets.UTF_8)
+                MjRegisterIT.run(
+                    f,
+                    new String[]{"  \"Hello\" > @", "  42 > @"},
+                    "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
@@ -202,7 +125,64 @@ final class MjRegisterIT {
         );
     }
 
-    private static TjSmart foreign(final Path path) {
-        return new TjSmart(new TjSynchronized(new TjCached(new TjDefault(new MnCsv(path)))));
+    private static void run(
+        final Farea farea, final String[] bodies, final String... goals
+    ) throws IOException {
+        farea.clean();
+        farea.files().file("src/main/eo/foo.eo").write(
+            MjRegisterIT.program("# Foo.", "[] > foo", bodies[0])
+        );
+        new AppendedPlugin(farea).value();
+        farea.exec(goals);
+        farea.files().file("src/main/eo/foo.eo").write(
+            MjRegisterIT.program("# Foo.", "[] > foo", bodies[1])
+        );
+    }
+
+    private static void runForeign(final Farea farea) throws IOException {
+        farea.clean();
+        farea.files().file("src/main/eo/foo.eo").write(
+            MjRegisterIT.program(
+                "+rt jvm org.eolang:eo-runtime:0.25.0",
+                "",
+                "# In this program, we refer to the 'String'",
+                "[] > foo",
+                "  \"42\" > @"
+            )
+        );
+        new AppendedPlugin(farea).value();
+        farea.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
+        farea.files().file("src/main/eo/foo.eo").write(
+            MjRegisterIT.program(
+                "# In this program, we refer to the 'Number'.",
+                "[] > foo",
+                "  42 > @"
+            )
+        );
+        farea.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
+    }
+
+    private static byte[] program(final String... lines) {
+        return String.join(System.lineSeparator(), lines).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static TjSmart loadForeign(final Path temp) {
+        return new TjSmart(
+            new TjSynchronized(
+                new TjCached(
+                    new TjDefault(
+                        new MnCsv(temp.resolve("target/eo-foreign.json"))
+                    )
+                )
+            )
+        );
+    }
+
+    private static java.util.List<Boolean> existences(
+        final TjSmart foreign, final String... ids
+    ) {
+        return Stream.of(ids)
+            .map(id -> foreign.getById(id).exists("id"))
+            .collect(Collectors.toList());
     }
 }
