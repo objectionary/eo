@@ -6,7 +6,7 @@ sheets:
   - /org/eolang/parser/parse/const-to-dataized.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
-  - //o[@name='λ' and @base]
+  - //o[@name='λ' and @atom]
   - //o[o[@name='λ'] and o[@base='∅']]
 input: |
   # No comments.

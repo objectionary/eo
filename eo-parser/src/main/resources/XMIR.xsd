@@ -144,6 +144,15 @@
     </xs:attribute>
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="loc" type="locator"/>
+    <xs:attribute name="atom" type="fqn">
+      <xs:annotation>
+        <xs:appinfo>The FQN of the return-type object for an atom</xs:appinfo>
+        <xs:documentation>
+          Used only on the lambda marker (name="λ") of an atom. Holds the
+          fully qualified name of the object that the atom returns.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>

@@ -235,10 +235,16 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
         final EoParser.AtomBaseContext base = ctx.atomBase();
+        final String fqn;
+        if (base == null) {
+            fqn = "";
+        } else {
+            fqn = XeEoListener.qqToGlobalPhi(base.getText());
+        }
         this.objects.enter()
             .start(ctx.getStart().getLine(), 0)
             .prop("name", "λ")
-            .prop("base", base == null ? "" : XeEoListener.qqToGlobalPhi(base.getText()))
+            .prop("atom", fqn)
             .leave()
             .leave();
     }

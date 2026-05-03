@@ -155,13 +155,13 @@
       </xsl:if>
       <xsl:if test="eo:atom(.)">
         <xsl:text> /</xsl:text>
-        <xsl:variable name="lambda-base" select="string(./o[@name=$eo:lambda]/@base)"/>
+        <xsl:variable name="lambda-atom" select="string(./o[@name=$eo:lambda]/@atom)"/>
         <xsl:choose>
-          <xsl:when test="starts-with($lambda-base, 'Φ.')">
-            <xsl:value-of select="substring-after($lambda-base, 'Φ.')"/>
+          <xsl:when test="starts-with($lambda-atom, 'Φ.')">
+            <xsl:value-of select="substring-after($lambda-atom, 'Φ.')"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$lambda-base"/>
+            <xsl:value-of select="$lambda-atom"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
