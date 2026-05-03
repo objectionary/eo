@@ -7,6 +7,8 @@ name: benchmark
   push:
     branches:
       - master
+    paths-ignore:
+      - README.md
 concurrency:
   group: benchmark-${{ github.ref }}
   cancel-in-progress: true
