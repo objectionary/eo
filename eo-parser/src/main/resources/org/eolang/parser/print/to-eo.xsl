@@ -156,7 +156,14 @@
       <xsl:if test="eo:atom(.)">
         <xsl:text> /</xsl:text>
         <xsl:variable name="lambda-base" select="string(./o[@name=$eo:lambda]/@base)"/>
-        <xsl:value-of select="tokenize($lambda-base, '\.')[last()]"/>
+        <xsl:choose>
+          <xsl:when test="starts-with($lambda-base, 'Φ.')">
+            <xsl:value-of select="substring-after($lambda-base, 'Φ.')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$lambda-base"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:if>
     </xsl:if>
   </xsl:template>
