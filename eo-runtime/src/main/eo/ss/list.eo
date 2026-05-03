@@ -2,6 +2,7 @@
 +alias ss.list
 +alias ss.reduced
 +alias ss.reducedi
++alias ss.withouti
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ss
@@ -53,18 +54,6 @@
     eachi > @
       ^
       func item > [item index] >>
-
-  # Create a new list without the i-th element.
-  [i] > withouti
-    list > @
-      reducedi
-        ^
-        *
-        [accum item idx] >>
-          if. > @
-            i.eq idx
-            accum
-            accum.with item
 
   # Create a new list without the `element` which is `.eq` to given one.
   [element] > without
@@ -264,36 +253,6 @@
             ^.m.put (^.m.as-number.plus i) > [i] >>
       6
 
-  # Tests that removing an element by index works correctly.
-  [] +> tests-list-withouti
-    eq. > @
-      withouti.
-        list
-          * 1 2 3
-        1
-      * 1 3
-
-  # Tests that removing an element by index works in complex scenarios.
-  [] +> tests-list-withouti-complex-case
-    eq. > @
-      foo
-        * 1 "text" "f"
-      * "text" "f"
-    # Helper function that removes first element from given tuple.
-    [a] > foo
-      withouti. > @
-        list a
-        0
-
-  # Tests that removing an element by index works with nested arrays.
-  [] +> tests-list-withouti-nested-array
-    eq. > @
-      withouti.
-        list
-          * "smthg" 27 (* 3 2 1)
-        2
-      * "smthg" 27
-
   # Tests that removing all occurrences of a value works correctly.
   [] +> tests-list-without
     eq. > @
@@ -327,7 +286,7 @@
       eq.
         list3
         * 1 2 3
-    withouti. > list3
+    withouti > list3
       concat.
         list (* 0 1)
         list (* 2 3)
