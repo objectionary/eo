@@ -27,6 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     threadSafe = true
 )
 public final class MjCompile extends MjSafe {
+
     /**
      * Mojas to execute.
      */

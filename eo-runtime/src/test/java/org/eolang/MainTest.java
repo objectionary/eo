@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Main}.
- *
  * @since 0.1
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -203,5 +202,4 @@ final class MainTest {
             Main.class.getCanonicalName()
         ).with(cmds).withCheck(false).exec();
     }
-
 }

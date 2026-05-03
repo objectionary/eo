@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+// @checkstyle ConstructorsCodeFreeCheck disable
+
 /**
  * Test case for {@link PhDefault}.
  * @since 0.1
@@ -49,29 +51,26 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Phi.RHO),
+            () -> new PhSafe(new PhDefaultTest.Int()).take(Phi.RHO),
             String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
         );
     }
 
     @Test
     void setsRhoAfterDispatch() {
-        final Phi kid = new PhDefaultTest.Int().take(this.plus());
         Assertions.assertDoesNotThrow(
-            () -> kid.take(Phi.RHO),
+            () -> new PhDefaultTest.Int().take(this.plus()).take(Phi.RHO),
             String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
         );
     }
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> phi.take(Phi.RHO),
+            () -> new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.RHO),
             String.format("Object should not give %s attribute after copying", Phi.RHO)
         );
     }
@@ -147,13 +146,12 @@ final class PhDefaultTest {
     @Test
     void changesKidRhoAfterSelfCopyingKidShouldReferToOriginal() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of original object kid should refer to original object", Phi.RHO
             ),
             phi.take(this.plus()).take(Phi.RHO),
-            Matchers.not(Matchers.equalTo(copy.take(this.plus()).take(Phi.RHO)))
+            Matchers.not(Matchers.equalTo(phi.copy().take(this.plus()).take(Phi.RHO)))
         );
     }
 
@@ -203,11 +201,9 @@ final class PhDefaultTest {
 
     @Test
     void copiesUnsetVoidAttribute() {
-        final Phi phi = new PhSafe(new PhDefaultTest.Int());
-        final Phi copy = phi.copy();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> copy.take(this.getVoid()),
+            () -> new PhSafe(new PhDefaultTest.Int()).copy().take(this.getVoid()),
             "Unset void attribute should be copied with unset value"
         );
     }
@@ -216,12 +212,11 @@ final class PhDefaultTest {
     void copiesSetVoidAttributeOnCopy() {
         final Phi phi = new PhDefaultTest.Int();
         phi.put(this.getVoid(), new Data.ToPhi(10L));
-        final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
             phi.take(this.getVoid()),
             Matchers.not(
-                Matchers.equalTo(copy.take(this.getVoid()))
+                Matchers.equalTo(phi.copy().take(this.getVoid()))
             )
         );
     }
@@ -269,9 +264,10 @@ final class PhDefaultTest {
 
     @Test
     void hasContextedChildWithSetRhoWhenFormed() {
-        final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context-hasContextedChildWithSetRhoWhenFormed").take(Phi.RHO),
+            () -> new PhDefaultTest.Int()
+                .take("context-hasContextedChildWithSetRhoWhenFormed")
+                .take(Phi.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
                 Phi.RHO
@@ -296,7 +292,7 @@ final class PhDefaultTest {
             new SetOf<>(
                 new Together<>(
                     threads,
-                    t -> new Int()
+                    t -> new PhDefaultTest.Int()
                 )
             ),
             Matchers.iterableWithSize(threads)
@@ -317,16 +313,14 @@ final class PhDefaultTest {
         final String data = "Hello";
         final Phi phi = new PhDefaultTest.Int();
         phi.put(0, new Data.ToPhi(data));
-        final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied Phi should contain the same data, but it didn't",
-            new Dataized(copy).asString(),
+            new Dataized(phi.copy()).asString(),
             Matchers.equalTo(data)
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo();
@@ -448,7 +442,7 @@ final class PhDefaultTest {
 
     @Test
     void injectsPhi() {
-        final Phi phi = new WithVoidPhi();
+        final Phi phi = new PhDefaultTest.WithVoidPhi();
         phi.put(0, new Data.ToPhi(5));
         MatcherAssert.assertThat(
             "Object must be injected to phi attribute and dataized",
@@ -463,7 +457,7 @@ final class PhDefaultTest {
             new PhMethod(
                 new PhWith(
                     new PhMethod(
-                        new Rnd(), this.plus()
+                        new PhDefaultTest.Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -479,7 +473,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
@@ -494,32 +487,30 @@ final class PhDefaultTest {
 
     @Test
     void verifiesThreadLocalNesting() {
-        final Phi phi = this.phiWithContextAttribute("context-verifiesThreadLocalNesting");
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context-verifiesThreadLocalNesting"),
+            () -> this.phiWithContextAttribute("context-verifiesThreadLocalNesting")
+                .take("context-verifiesThreadLocalNesting"),
             "Nesting should be properly managed without exceptions"
         );
     }
 
     @Test
     void verifiesThreadLocalNestingWithExceptionsThrows() {
-        final Phi phi = this.phiWithContextAttribute(
-            "context-verifiesThreadLocalNestingWithExceptions"
-        );
         Assertions.assertThrows(
             ExUnset.class,
-            () -> phi.take("non-existent-attribute"),
+            () -> this.phiWithContextAttribute(
+                "context-verifiesThreadLocalNestingWithExceptions"
+            ).take("non-existent-attribute"),
             "Should throw exception for non-existent attribute"
         );
     }
 
     @Test
     void verifiesThreadLocalNestingWithExceptionsDoesNotThrow() {
-        final Phi phi = this.phiWithContextAttribute(
-            "context-verifiesThreadLocalNestingWithExceptions"
-        );
         Assertions.assertDoesNotThrow(
-            () -> phi.take("context-verifiesThreadLocalNestingWithExceptions"),
+            () -> this.phiWithContextAttribute(
+                "context-verifiesThreadLocalNestingWithExceptions"
+            ).take("context-verifiesThreadLocalNestingWithExceptions"),
             "Should still work after exception"
         );
     }
@@ -536,7 +527,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int cnt = 100;
@@ -621,6 +611,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     private static final class Rnd extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -640,6 +631,7 @@ final class PhDefaultTest {
      * @since 0.36.0
      */
     private static final class Int extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -679,6 +671,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Foo extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -695,6 +688,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class WithVoidPhi extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -709,6 +703,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Counter extends PhDefault {
+
         /**
          * Count.
          */
@@ -739,6 +734,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class Kid extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -754,6 +750,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class EndlessRecursion extends PhDefault {
+
         /**
          * Count.
          */
@@ -788,6 +785,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class RecursivePhi extends PhDefault {
+
         /**
          * Count.
          */
@@ -822,6 +820,7 @@ final class PhDefaultTest {
      * @since 0.1.0
      */
     static final class RecursivePhiViaNew extends PhDefault {
+
         /**
          * Count.
          */
@@ -845,7 +844,7 @@ final class PhDefaultTest {
                         } else {
                             result = new Data.ToPhi(
                                 new Dataized(
-                                    new RecursivePhiViaNew()
+                                    new PhDefaultTest.RecursivePhiViaNew()
                                 ).asNumber()
                             );
                         }

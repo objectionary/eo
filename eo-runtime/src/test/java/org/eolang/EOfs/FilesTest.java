@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class FilesTest {
+
     @Test
     void throwsOnReadingWithoutOpening(@Mktmp final Path dir) {
         Assertions.assertThrows(

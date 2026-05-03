@@ -11,19 +11,18 @@ package org.eolang;
 
 /**
  * BYTES.RIGHT.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (15 lines)
  */
 @XmirObject(oname = "bytes.right")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOright extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOright() {
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
     }
 
     @Override

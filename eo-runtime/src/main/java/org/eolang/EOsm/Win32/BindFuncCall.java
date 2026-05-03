@@ -22,6 +22,7 @@ import org.eolang.Phi;
  * @since 0.40.0
  */
 public final class BindFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */

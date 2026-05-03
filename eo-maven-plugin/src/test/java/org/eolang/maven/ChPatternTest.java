@@ -11,14 +11,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ChPattern}.
- *
  * @since 0.28.11
  */
 class ChPatternTest {
 
     /**
      * Get hash by tag using pattern test.
-     *
      * @param pattern Pattern
      * @param tag Tag
      * @param expected Expected Hash

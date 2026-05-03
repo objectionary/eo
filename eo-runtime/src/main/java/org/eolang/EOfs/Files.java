@@ -9,7 +9,6 @@
  */
 package org.eolang.EOfs; // NOPMD
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,10 +23,10 @@ import org.eolang.ExFailure;
 
 /**
  * File streams.
- *
  * @since 0.40
  */
 final class Files {
+
     /**
      * Files instance.
      */
@@ -55,7 +54,7 @@ final class Files {
     /**
      * Open file for reading and writing.
      * @param name Name of the file
-     * @throws FileNotFoundException If can't open file
+     * @throws IOException If can't open file
      */
     @SuppressWarnings("java:S2095")
     void open(final String name) throws IOException {

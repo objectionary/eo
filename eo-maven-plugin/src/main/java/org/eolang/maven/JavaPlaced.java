@@ -65,11 +65,10 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         final Path tests = this.generated.getParent().resolve(
             "generated-test-sources"
         );
-        final Path base = Arrays.stream(jparts, 0, jparts.length - 1)
-            .reduce(
-                tests,
-                Path::resolve,
-                Path::resolve
+        final Path base = Arrays.stream(jparts, 0, jparts.length - 1).reduce(
+            tests,
+            Path::resolve,
+            Path::resolve
             );
         final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
         final Path resolved = base.resolve(origin);

@@ -25,7 +25,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class CatalogsTest {
+
     @RepeatedTest(10)
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void readsFromTojosConcurrently(@Mktmp final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
         MatcherAssert.assertThat(

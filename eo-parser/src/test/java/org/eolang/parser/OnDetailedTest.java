@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
@@ -20,17 +21,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link OnDetailed}.
- *
  * @since 0.56.5
  */
 @ExtendWith(MktmpResolver.class)
 final class OnDetailedTest {
 
     @Test
-    @SuppressWarnings({
-        "PMD.UnnecessaryLocalRule",
-        "PMD.UnitTestContainsTooManyAsserts"
-    })
     void reportsMoreClearly(@Mktmp final Path temp) throws IOException {
         final XML xmir = new XMLDocument("<nothing/>");
         final String expected = "f.xmir";
@@ -40,7 +36,7 @@ final class OnDetailedTest {
             "Exception message is not detailed, as it should be",
             Assertions.assertThrows(
                 Exception.class,
-                () -> new OnDetailed(new OnDefault(xmir), source).get(),
+                () -> new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get(),
                 "Exception was not thrown, but it should, since object name is not here"
             ).getLocalizedMessage(),
             Matchers.containsString(expected)

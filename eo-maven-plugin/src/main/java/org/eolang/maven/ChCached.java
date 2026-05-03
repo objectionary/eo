@@ -10,7 +10,6 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Cached commit hash.
- *
  * @since 0.28.11
  */
 final class ChCached implements CommitHash {
@@ -22,7 +21,6 @@ final class ChCached implements CommitHash {
 
     /**
      * Default constructor.
-     *
      * @param delegate Delegate
      */
     ChCached(final CommitHash delegate) {

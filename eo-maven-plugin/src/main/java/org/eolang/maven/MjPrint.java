@@ -33,6 +33,7 @@ import org.eolang.parser.Xmir;
     threadSafe = true
 )
 public final class MjPrint extends MjSafe {
+
     /**
      * Directory with XMIR sources to print.
      * @checkstyle MemberNameCheck (10 lines)
@@ -57,35 +58,43 @@ public final class MjPrint extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = this.printOutputDir.toPath();
         final int total = new Threaded<>(
             new Walk(this.printSourcesDir.toPath()),
-            source -> {
-                final Path relative = Paths.get(
-                    this.printSourcesDir.toPath().relativize(source).toString()
-                        .replace(".xmir", ".eo")
-                );
-                new Saved(
-                    new Xmir(
-                        new XMLDocument(new TextOf(source).asString())
-                    ).toEO(),
-                    home.resolve(relative)
-                ).value();
-                Logger.info(
-                    this,
-                    "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",
-                    source,
-                    source.toFile().length(),
-                    this.printOutputDir.toPath().resolve(relative),
-                    this.printOutputDir.toPath().resolve(relative).toFile().length()
-                );
-                return 1;
-            }
+            this::print
         ).total();
         if (total == 0) {
             Logger.info(this, "No XMIR sources found");
         } else {
             Logger.info(this, "Printed %d XMIR sources into EO", total);
         }
+    }
+
+    /**
+     * Print a single XMIR file as EO.
+     * @param source The XMIR source path
+     * @return Always 1, to count the number of printed files
+     * @throws Exception If fails
+     */
+    private int print(final Path source) throws Exception {
+        final Path home = this.printOutputDir.toPath();
+        final Path relative = Paths.get(
+            this.printSourcesDir.toPath().relativize(source).toString()
+                .replace(".xmir", ".eo")
+        );
+        new Saved(
+            new Xmir(
+                new XMLDocument(new TextOf(source).asString())
+            ).toEO(),
+            home.resolve(relative)
+        ).value();
+        Logger.info(
+            this,
+            "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",
+            source,
+            source.toFile().length(),
+            home.resolve(relative),
+            home.resolve(relative).toFile().length()
+        );
+        return 1;
     }
 }

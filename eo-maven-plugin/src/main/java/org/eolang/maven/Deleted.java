@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 
 /**
  * Deleting a directory with files or just a file.
- *
  * @since 0.52
  */
 final class Deleted implements Supplier<Boolean> {
+
     /**
      * Target file or directory to be deleted.
      */
@@ -34,7 +34,6 @@ final class Deleted implements Supplier<Boolean> {
 
     /**
      * Recursive deletion.
-     *
      * @param dir File or directory to be deleted
      * @return State {@code true} if deleted, {@code false} otherwise
      */

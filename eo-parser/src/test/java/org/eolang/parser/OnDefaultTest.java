@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link OnDefault}.
- *
  * @since 0.60
  */
 final class OnDefaultTest {
@@ -21,7 +21,9 @@ final class OnDefaultTest {
     void returnsObjectNameWhenOnlyONamePresent() {
         MatcherAssert.assertThat(
             "We should get object name 'hello'",
-            new OnDefault(new XMLDocument("<object><o name='hello'/></object>")).get(),
+            new OnDefault(
+                new Xnav(new XMLDocument("<object><o name='hello'/></object>").inner())
+            ).get(),
             Matchers.equalTo("hello")
         );
     }
@@ -31,19 +33,21 @@ final class OnDefaultTest {
         MatcherAssert.assertThat(
             "We should get 'org.example.world' when package meta is present",
             new OnDefault(
-                new XMLDocument(
-                    String.join(
-                        "\n",
-                        "<object>",
-                        "    <o name='world'/>",
-                        "    <metas>",
-                        "      <meta>",
-                        "        <head>package</head>",
-                        "        <tail>org.example</tail>",
-                        "      </meta>",
-                        "    </metas>",
-                        "</object>"
-                    )
+                new Xnav(
+                    new XMLDocument(
+                        String.join(
+                            String.format("%n"),
+                            "<object>",
+                            "    <o name='world'/>",
+                            "    <metas>",
+                            "      <meta>",
+                            "        <head>package</head>",
+                            "        <tail>org.example</tail>",
+                            "      </meta>",
+                            "    </metas>",
+                            "</object>"
+                        )
+                    ).inner()
                 )
             ).get(),
             Matchers.equalTo("org.example.world")
@@ -55,8 +59,10 @@ final class OnDefaultTest {
         MatcherAssert.assertThat(
             "We should get class name 'Clazz' when o name is missing",
             new OnDefault(
-                new XMLDocument(
-                    "<object><class name='Clazz'/></object>"
+                new Xnav(
+                    new XMLDocument(
+                        "<object><class name='Clazz'/></object>"
+                    ).inner()
                 )
             ).get(),
             Matchers.equalTo("Clazz")
@@ -64,14 +70,17 @@ final class OnDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void failsWhenMoreThanOneClassNamePresent() {
         MatcherAssert.assertThat(
             "We should fail when more than one '/object/class/@name' is present in XMIR",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new OnDefault(
-                    new XMLDocument("<object><class name='A'/><class name='B'/></object>")
+                    new Xnav(
+                        new XMLDocument(
+                            "<object><class name='A'/><class name='B'/></object>"
+                        ).inner()
+                    )
                 ).get(),
                 "We should fail fast on multiple class names"
             ).getMessage(),
@@ -80,13 +89,14 @@ final class OnDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void throwsWhenNeitherONameNorClassNamePresent() {
         MatcherAssert.assertThat(
             "We should fail when neither '/object/o/@name' nor '/object/class/@name' is present in XMIR",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new OnDefault(new XMLDocument("<object></object>")).get(),
+                () -> new OnDefault(
+                    new Xnav(new XMLDocument("<object></object>").inner())
+                ).get(),
                 "We should fail fast when no object name can be derived"
             ).getMessage(),
             Matchers.containsString("found 0")
@@ -98,19 +108,21 @@ final class OnDefaultTest {
         MatcherAssert.assertThat(
             "We should get object name 'o' when non-package meta is present",
             new OnDefault(
-                new XMLDocument(
-                    String.join(
-                        "\n",
-                        "<object>",
-                        "    <o name='o'/>",
-                        "    <metas>",
-                        "      <meta>",
-                        "        <head>author</head>",
-                        "        <tail>me</tail>",
-                        "      </meta>",
-                        "    </metas>",
-                        "</object>"
-                    )
+                new Xnav(
+                    new XMLDocument(
+                        String.join(
+                            String.format("%n"),
+                            "<object>",
+                            "    <o name='o'/>",
+                            "    <metas>",
+                            "      <meta>",
+                            "        <head>author</head>",
+                            "        <tail>me</tail>",
+                            "      </meta>",
+                            "    </metas>",
+                            "</object>"
+                        )
+                    ).inner()
                 )
             ).get(),
             Matchers.equalTo("o")
@@ -122,18 +134,20 @@ final class OnDefaultTest {
         MatcherAssert.assertThat(
             "We should get object name 'o' when package meta has no tail",
             new OnDefault(
-                new XMLDocument(
-                    String.join(
-                        "\n",
-                        "<object>",
-                        "    <o name='x'/>",
-                        "    <metas>",
-                        "      <meta>",
-                        "        <head>package</head>",
-                        "      </meta>",
-                        "    </metas>",
-                        "</object>"
-                    )
+                new Xnav(
+                    new XMLDocument(
+                        String.join(
+                            String.format("%n"),
+                            "<object>",
+                            "    <o name='x'/>",
+                            "    <metas>",
+                            "      <meta>",
+                            "        <head>package</head>",
+                            "      </meta>",
+                            "    </metas>",
+                            "</object>"
+                        )
+                    ).inner()
                 )
             ).get(),
             Matchers.equalTo("x")

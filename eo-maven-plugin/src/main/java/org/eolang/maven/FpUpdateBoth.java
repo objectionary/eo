@@ -14,6 +14,7 @@ import org.cactoos.text.TextOf;
  * @since 0.41
  */
 final class FpUpdateBoth extends FpEnvelope {
+
     /**
      * Ctor.
      * @param origin Original footprint that updates target from source

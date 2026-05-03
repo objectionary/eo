@@ -26,6 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     threadSafe = true
 )
 public final class MjAssemble extends MjSafe {
+
     /**
      * The intermediate representation extension.
      */

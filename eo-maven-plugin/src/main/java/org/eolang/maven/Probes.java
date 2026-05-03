@@ -22,7 +22,6 @@ import org.cactoos.iterable.Mapped;
  * Possible objects.
  * This class represent a list of possible objects that were detected in
  * a XMIR file.
- *
  * @since 0.53
  */
 final class Probes implements Iterable<String> {
@@ -72,8 +71,7 @@ final class Probes implements Iterable<String> {
             new Xnav(Probes.ADD_PROBES.apply(0, this.xmir).inner())
                 .element("object")
                 .elements(Filter.withName("metas"))
-                .findFirst()
-                .map(
+                .findFirst().map(
                     all -> all.elements(Filter.all(Filter.withName("meta"), Probes::probeOrAlso))
                         .map(meta -> meta.element("tail").text().orElse(""))
                         .filter(meta -> !meta.isEmpty())

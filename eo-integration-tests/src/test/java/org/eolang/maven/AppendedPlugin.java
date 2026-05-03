@@ -15,6 +15,7 @@ import org.cactoos.Scalar;
  * @since 0.52
  */
 final class AppendedPlugin implements Scalar<Execution> {
+
     /**
      * The Farea object.
      */
@@ -31,8 +32,7 @@ final class AppendedPlugin implements Scalar<Execution> {
     @Override
     public Execution value() throws IOException {
         return this.farea.build()
-            .plugins()
-            .append(
+            .plugins().append(
                 "org.eolang",
                 "eo-maven-plugin",
                 System.getProperty(

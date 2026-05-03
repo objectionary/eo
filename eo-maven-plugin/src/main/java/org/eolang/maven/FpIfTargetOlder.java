@@ -16,6 +16,7 @@ import org.cactoos.Func;
  * @since 0.41
  */
 public final class FpIfTargetOlder extends FpEnvelope {
+
     /**
      * Ctor.
      * @param destination Function that modifies result target path

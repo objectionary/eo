@@ -17,7 +17,6 @@ import org.cactoos.text.Split;
  * Commit hashes table as a map.
  * The keys - tags
  * The values - narrow hashes (7 chars)
- *
  * @since 0.29.6
  */
 final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
@@ -26,7 +25,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Fake hashes.
      */
     static final String FAKES = String.join(
-        "\n",
+        System.lineSeparator(),
         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
         "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17",
         "4b19944d86058e3c81e558340a3a13bc335a2b48 0.23.19",
@@ -61,7 +60,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
     /**
      * Ctor.
-     * @param table Commit hashes table as string.
+     * @param table Commit hashes table as string
      */
     private CommitHashesMap(final String table) {
         this(() -> table);
@@ -69,7 +68,8 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
     /**
      * Ctor.
-     * @param table Commit hashes table.
+     * @param table Commit hashes table
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private CommitHashesMap(final Scalar<String> table) {
         super(CommitHashesMap.fromTable(table));
@@ -79,8 +79,8 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Prestructor from hashes table.
      * You can read more about prestructors and why they are needed right
      * <a href="https://www.yegor256.com/2021/08/04/prestructors.html">here</a>
-     * @param table Commit hashes table as string value.
-     * @return Map of commit hashes.
+     * @param table Commit hashes table as string value
+     * @return Map of commit hashes
      */
     private static Map<String, CommitHash> fromTable(final Scalar<String> table) {
         return new MapOf<>(
@@ -96,17 +96,17 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         )
                     );
                 },
-                new Split(table::value, "\n")
+                new Split(table::value, "\\n")
             )
         );
     }
 
     /**
      * Fake commit hashes hash-table.
-     *
      * @since 0.29.6
      */
     static final class Fake extends MapEnvelope<String, CommitHash> {
+
         /**
          * Ctor.
          */

@@ -22,6 +22,7 @@ import org.eolang.Phi;
  * @since 0.40.0
  */
 public final class GetSystemTimeFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */
@@ -60,6 +61,7 @@ public final class GetSystemTimeFuncCall implements Syscall {
      * @checkstyle VisibilityModifierCheck (100 lines)
      */
     public static final class SystemTime extends Structure {
+
         /**
          * Year.
          */

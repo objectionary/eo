@@ -22,14 +22,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.deleted.delete.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.deleted.delete")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOdeleted$EOdelete extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(

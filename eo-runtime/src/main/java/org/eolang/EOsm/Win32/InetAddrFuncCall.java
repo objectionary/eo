@@ -25,6 +25,7 @@ import org.eolang.Phi;
  * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  */
 public final class InetAddrFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */

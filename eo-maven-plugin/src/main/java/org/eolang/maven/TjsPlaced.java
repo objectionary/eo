@@ -17,7 +17,6 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * PlacedTojos encapsulates tojos logic and keeps short information about all placed files.
- *
  * @since 0.30
  */
 final class TjsPlaced implements Closeable {
@@ -29,7 +28,8 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
-     * @param file Path to the tojos file.
+     * @param file Path to the tojos file
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     TjsPlaced(final Path file) {
         this(Catalogs.INSTANCE.make(file));
@@ -37,7 +37,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
-     * @param tojos Tojos source.
+     * @param tojos Tojos source
      */
     TjsPlaced(final Sticky<? extends Tojos> tojos) {
         this(new Unchecked<>(tojos));
@@ -45,7 +45,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
-     * @param tojos Tojos.
+     * @param tojos Tojos
      */
     private TjsPlaced(final Tojos tojos) {
         this(new Sticky<>(() -> tojos));
@@ -53,7 +53,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * The main ctor.
-     * @param tojos Tojos unchecked source.
+     * @param tojos Tojos unchecked source
      */
     private TjsPlaced(final Unchecked<? extends Tojos> tojos) {
         this.all = tojos;
@@ -66,7 +66,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all classes.
-     * @return All classes.
+     * @return All classes
      */
     Collection<TjPlaced> classes() {
         return this.allBinaries()
@@ -77,7 +77,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all jars.
-     * @return All jars.
+     * @return All jars
      */
     Collection<TjPlaced> jars() {
         return this.allBinaries()
@@ -88,7 +88,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all binaries.
-     * @return All binaries jars with classes.
+     * @return All binaries jars with classes
      */
     List<TjPlaced> allBinaries() {
         return this.all.value()
@@ -100,8 +100,8 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Find jar by dependency identifier.
-     * @param dep Dependency identifier.
-     * @return Placed jar.
+     * @param dep Dependency identifier
+     * @return Placed jar
      */
     Optional<TjPlaced> findJar(final String dep) {
         return this.jars()
@@ -112,8 +112,8 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Find placed tojo by path.
-     * @param target Path.
-     * @return Placed tojo.
+     * @param target Path
+     * @return Placed tojo
      */
     Optional<TjPlaced> find(final Path target) {
         return this.allBinaries().stream().filter(
@@ -123,9 +123,9 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Place class into placed tojos file.
-     * @param target Path to the class.
-     * @param related Related.
-     * @param dep Dependency.
+     * @param target Path to the class
+     * @param related Related
+     * @param dep Dependency
      */
     void placeClass(
         final Path target,
@@ -150,7 +150,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Check whether tojos is empty.
-     * @return True if empty.
+     * @return True if empty
      */
     boolean isEmpty() {
         return this.all.value().select(row -> true).isEmpty();
@@ -158,7 +158,6 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Placed tojo attributes.
-     *
      * @since 0.30
      */
     enum Attribute {
@@ -200,7 +199,7 @@ final class TjsPlaced implements Closeable {
 
         /**
          * Ctor.
-         * @param attribute Key in a file.
+         * @param attribute Key in a file
          */
         Attribute(final String attribute) {
             this.key = attribute;
@@ -208,7 +207,7 @@ final class TjsPlaced implements Closeable {
 
         /**
          * Get attribute key.
-         * @return Key.
+         * @return Key
          */
         String getKey() {
             return this.key;

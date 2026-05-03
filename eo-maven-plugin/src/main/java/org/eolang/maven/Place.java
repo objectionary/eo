@@ -10,10 +10,10 @@ import java.nio.file.Paths;
 
 /**
  * Make the place for the object.
- *
  * @since 0.1
  */
 final class Place {
+
     /**
      * Name of the object.
      */
@@ -50,5 +50,4 @@ final class Place {
         }
         return dir.resolve(out.toString());
     }
-
 }

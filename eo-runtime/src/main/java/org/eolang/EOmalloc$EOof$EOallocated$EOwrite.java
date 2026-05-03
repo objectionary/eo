@@ -17,13 +17,15 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.allocated.write")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOmalloc$EOof$EOallocated$EOwrite() {
-        this.add("offset", new AtVoid("offset"));
-        this.add("data", new AtVoid("data"));
+        super(new Attrs(
+            new AttrEntry("offset", new AtVoid("offset")),
+            new AttrEntry("data", new AtVoid("data"))
+        ));
     }
 
     @Override

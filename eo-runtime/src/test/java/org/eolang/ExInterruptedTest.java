@@ -9,27 +9,25 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ExInterrupted}.
- *
  * @since 0.28.3
  */
 final class ExInterruptedTest {
 
     @Test
     void throwsRightException() {
-        final EOthrow phi = new EOthrow();
         Assertions.assertThrows(
             ExInterrupted.class,
-            () -> new Dataized(phi.take(Phi.PHI)).take(),
+            () -> new Dataized(new ExInterruptedTest.EOthrow().take(Phi.PHI)).take(),
             "EOthrow should throw when dataized, but it didn't"
         );
     }
 
     /**
      * Phi object that throw InterruptedException.
-     *
      * @since 0.28.3
      */
     private static final class EOthrow extends PhDefault implements Atom {
+
         @Override
         public Phi lambda() throws Exception {
             throw new InterruptedException();

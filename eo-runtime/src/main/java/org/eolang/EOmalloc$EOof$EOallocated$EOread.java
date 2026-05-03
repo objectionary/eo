@@ -17,13 +17,15 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.allocated.read")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOmalloc$EOof$EOallocated$EOread() {
-        this.add("offset", new AtVoid("offset"));
-        this.add("length", new AtVoid("length"));
+        super(new Attrs(
+            new AttrEntry("offset", new AtVoid("offset")),
+            new AttrEntry("length", new AtVoid("length"))
+        ));
     }
 
     @Override

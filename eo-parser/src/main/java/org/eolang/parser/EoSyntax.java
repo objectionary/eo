@@ -24,10 +24,9 @@ import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.FormattedText;
-import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -73,6 +72,7 @@ import org.xembly.Xembler;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class EoSyntax implements Syntax {
+
     /**
      * Set of optimizations that builds canonical XMIR from parsed EO.
      * @todo #3807:90min Refactor EoSyntax transformations to make them less coupled.
@@ -176,7 +176,7 @@ public final class EoSyntax implements Syntax {
     public XML parsed() throws IOException {
         final List<Text> lines = this.lines();
         final GeneralErrors spy = new GeneralErrors(lines);
-        final EoLexer lexer = new EoIndentLexer(this.normalize());
+        final EoLexer lexer = EoIndentLexer.fromText(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
         final EoParser parser = new EoParser(
@@ -212,23 +212,39 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Normalize input to UNIX format to ensure that EOL exists at the
-     * end of the text.
-     *
-     * @return UNIX formatted text.
+     * Normalize input so that the text ends with exactly one line break.
+     * Internal line endings are preserved so the listing captured by the
+     * lexer matches the original source byte-for-byte. Any run of trailing
+     * CR or LF characters is collapsed into a single line break of the
+     * same style as the last line ending in the source — CRLF if the
+     * source ended with CRLF, otherwise LF — so a Windows-style source
+     * keeps its CRLF and a Unix-style source keeps its LF. Without this
+     * collapse, the lexer reports an extraneous input error at EOF when
+     * the source has a blank trailing line.
+     * @return Text with exactly one trailing line break
      */
     private Text normalize() {
-        return new FormattedText(
-            "%s\n",
-            new Joined(new TextOf("\n"), this.lines())
-        );
+        final String text = new UncheckedText(new TextOf(this.input)).asString();
+        int end = text.length();
+        while (end > 0 && (text.charAt(end - 1) == '\n' || text.charAt(end - 1) == '\r')) {
+            end -= 1;
+        }
+        final String ending;
+        if (text.length() >= 2
+            && text.charAt(text.length() - 2) == '\r'
+            && text.charAt(text.length() - 1) == '\n') {
+            ending = String.valueOf('\r').concat(String.valueOf('\n'));
+        } else {
+            ending = String.valueOf('\n');
+        }
+        return new TextOf(text.substring(0, end).concat(ending));
     }
 
     /**
      * Split input into lines.
-     * @return Lines without line breaks.
+     * @return Lines without line breaks
      */
     private List<Text> lines() {
-        return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
+        return new ListOf<>(new Split(new TextOf(this.input), "\\r?\\n"));
     }
 }

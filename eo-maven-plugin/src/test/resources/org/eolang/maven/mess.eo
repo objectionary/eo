@@ -1,16 +1,16 @@
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+tests
 +package foo.x
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint empty-object
++unlint object-has-data
++unlint unit-test-missing
 +version 0.0.0
 
-# No comments.
+# A simple abstract object used for testing the transpilation process.
 [n x] > main
-  # No comments.
-  [a] > test /bytes
+  # Returns hello greeting by applying hello to n with the given arguments.
   n.hello > @
     "Hello, world!"
     x

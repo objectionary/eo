@@ -24,7 +24,6 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link StEoLogged}.
- *
  * @since 0.30
  */
 final class StEoLoggedTest {
@@ -46,7 +45,7 @@ final class StEoLoggedTest {
     void delegatesWithoutException() throws ImpossibleModificationException {
         MatcherAssert.assertThat(
             "We expect that shift will successfully generate output xml",
-            new StEoLogged(new StUnhex(), new FakeLog())
+            new StEoLogged(new StUnhex(), new StEoLoggedTest.FakeLog())
                 .apply(1, StEoLoggedTest.example()),
             Matchers.notNullValue()
         );
@@ -54,7 +53,7 @@ final class StEoLoggedTest {
 
     @Test
     void delegatesWithoutLogs() throws ImpossibleModificationException {
-        final FakeLog log = new FakeLog();
+        final StEoLoggedTest.FakeLog log = new StEoLoggedTest.FakeLog();
         new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example());
         MatcherAssert.assertThat(
             String.format(
@@ -71,7 +70,7 @@ final class StEoLoggedTest {
      */
     @Test
     void printsMessageWithEoIfExceptionIsThrown() {
-        final FakeLog log = new FakeLog();
+        final StEoLoggedTest.FakeLog log = new StEoLoggedTest.FakeLog();
         StEoLoggedTest.safe(
             ignore -> new StEoLogged(new StFailure(), log)
                 .apply(1, StEoLoggedTest.example())
@@ -90,7 +89,7 @@ final class StEoLoggedTest {
     void throwsExceptionIfFailure() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new StEoLogged(new StFailure(), new FakeLog())
+            () -> new StEoLogged(new StFailure(), new StEoLoggedTest.FakeLog())
                 .apply(1, StEoLoggedTest.example()),
             "We expect that shift will throw an exception, but xml didn't"
         );
@@ -105,7 +104,6 @@ final class StEoLoggedTest {
      *   false > y
      * }
      * </p>
-     *
      * @return XML
      */
     private static XML example() throws ImpossibleModificationException {
@@ -135,7 +133,6 @@ final class StEoLoggedTest {
     /**
      * Fake log.
      * <p>Used for testing purposes.</p>
-     *
      * @since 0.30
      */
     private static final class FakeLog implements Consumer<String> {

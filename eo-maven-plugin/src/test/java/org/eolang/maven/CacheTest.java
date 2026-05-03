@@ -34,7 +34,7 @@ final class CacheTest {
         final Path base = temp.resolve("cache-folder");
         Files.createDirectories(base);
         final Path source = temp.resolve("source.eo");
-        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path target = temp.resolve("target.xmir");
         final Path tail = source.getFileName();
         final String content = "compiled";
@@ -51,7 +51,7 @@ final class CacheTest {
         final Path base = temp.resolve("cache-root");
         Files.createDirectories(base);
         final Path source = temp.resolve("source.eo");
-        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path tail = source.getFileName();
         new Cache(base, p -> "compiled").apply(source, temp.resolve("target.xmir"), tail);
         MatcherAssert.assertThat(
@@ -63,12 +63,11 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void readsFromCacheWhenUnchanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-directory");
         Files.createDirectories(base);
         final Path source = temp.resolve("stdin.eo");
-        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path target = temp.resolve("stdin.xmir");
         final AtomicInteger counter = new AtomicInteger(0);
         final Cache cache = new Cache(
@@ -86,12 +85,11 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesAgainWhenChanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-base-dir");
         Files.createDirectories(base);
         final Path source = temp.resolve("stdout.eo");
-        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO!\") > @\n");
+        Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path target = temp.resolve("stdout.xmir");
         final AtomicInteger counter = new AtomicInteger(0);
         final Cache cache = new Cache(
@@ -99,7 +97,10 @@ final class CacheTest {
             p -> String.format("compiled %d", counter.incrementAndGet())
         );
         cache.apply(source, target, source.getFileName());
-        Files.writeString(source, "[] > main\n  (stdout \"Hello, EO! Modified\") > @\n");
+        Files.writeString(
+            source,
+            String.format("[] > main%n  (stdout \"Hello, EO! Modified\") > @%n")
+        );
         cache.apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Compilation should happen again after source change",
@@ -109,12 +110,11 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesIfHashExistsButCacheMissing(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-root");
         Files.createDirectories(base);
         final Path source = temp.resolve("data.eo");
-        Files.writeString(source, "[] > main\n  (stdout \"Data EO\") > @\n");
+        Files.writeString(source, String.format("[] > main%n  (stdout \"Data EO\") > @%n"));
         final Path target = temp.resolve("data.xmir");
         final AtomicInteger counter = new AtomicInteger(0);
         final Cache cache = new Cache(
@@ -207,6 +207,7 @@ final class CacheTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void generatesCorrectHashForEntireFolderWithSeveralFiles(
         @Mktmp final Path temp
     ) throws IOException, NoSuchAlgorithmException {

@@ -14,11 +14,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link StHex}.
- *
  * @since 0.54.0
  */
 final class StHexTest {
+
     @ParameterizedTest
+
     @CsvSource({
         "1, 3F-F0-00-00-00-00-00-00",
         "2, 40-00-00-00-00-00-00-00",

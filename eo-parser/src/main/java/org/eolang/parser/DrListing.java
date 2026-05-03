@@ -13,7 +13,6 @@ import org.xembly.Directives;
 
 /**
  * Source text of parser context.
- *
  * @since 0.34.0
  */
 final class DrListing implements Iterable<Directive> {
@@ -35,8 +34,7 @@ final class DrListing implements Iterable<Directive> {
     public Iterator<Directive> iterator() {
         return new Directives()
             .xpath("/object")
-            .strict(1).add("listing")
-            .set(
+            .strict(1).add("listing").set(
                 StringEscapeUtils.escapeXml11(
                     this.context.getStart().getInputStream().getText(
                         new Interval(

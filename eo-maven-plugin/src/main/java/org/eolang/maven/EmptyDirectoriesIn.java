@@ -10,10 +10,10 @@ import java.nio.file.Path;
 
 /**
  * Delete empty directories in provided root.
- *
  * @since 0.55
  */
 final class EmptyDirectoriesIn {
+
     /**
      * Root path.
      */
@@ -21,7 +21,8 @@ final class EmptyDirectoriesIn {
 
     /**
      * Ctor.
-     * @param root Root directory.
+     * @param root Root directory
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     EmptyDirectoriesIn(final Path root) {
         this(root.toFile());

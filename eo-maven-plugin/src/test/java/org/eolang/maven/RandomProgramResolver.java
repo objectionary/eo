@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  * This class is instantiated and then called by JUnit when
  * an argument of a test method is marked with the {@link RandomProgram}
  * annotation.
- *
  * @since 0.42.0
  */
 public final class RandomProgramResolver implements ParameterResolver {
@@ -27,7 +26,7 @@ public final class RandomProgramResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(final ParameterContext context, final ExtensionContext ext) {
         return String.join(
-            "\n",
+            System.lineSeparator(),
             "# This is a random program in EO, which supposedly",
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",
@@ -37,5 +36,4 @@ public final class RandomProgramResolver implements ParameterResolver {
             ""
         );
     }
-
 }

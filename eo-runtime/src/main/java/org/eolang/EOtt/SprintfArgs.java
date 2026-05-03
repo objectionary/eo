@@ -27,6 +27,7 @@ import org.eolang.Phi;
  * @since 0.57.4
  */
 final class SprintfArgs {
+
     /**
      * Character conversion.
      */

@@ -19,14 +19,15 @@ import org.eolang.XmirObject;
 
 /**
  * Dir.made.mkdir.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "dir.made.mkdir")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdir$EOmade$EOmkdir extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             Paths.get(

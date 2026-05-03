@@ -7,7 +7,6 @@ package org.eolang;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -20,8 +19,9 @@ import java.util.regex.Pattern;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public class PhDefault implements Phi, Cloneable {
+
     /**
      * Logger.
      */
@@ -46,15 +46,25 @@ public class PhDefault implements Phi, Cloneable {
     private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
 
     /**
+     * No initial attributes.
+     */
+    private static final Map<String, Attr> NONE = Collections.emptyMap();
+
+    /**
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    private final Optional<byte[]> data;
+    private final byte[] data;
+
+    /**
+     * Initial attributes supplied via constructor; wrapped lazily.
+     */
+    private final Map<String, Attr> initial;
 
     /**
      * Order of their names.
      */
-    private final Map<Integer, String> order;
+    private Map<Integer, String> order;
 
     /**
      * Attributes.
@@ -65,7 +75,15 @@ public class PhDefault implements Phi, Cloneable {
      * Default ctor.
      */
     public PhDefault() {
-        this(null);
+        this(null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with initial attributes.
+     * @param attributes Initial attributes to register
+     */
+    public PhDefault(final Map<String, Attr> attributes) {
+        this(null, attributes);
     }
 
     /**
@@ -73,9 +91,18 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
-        this.data = Optional.ofNullable(dta);
-        this.attrs = PhDefault.defaults();
-        this.order = new HashMap<>(0);
+        this(dta, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor.
+     * @param dta Object data
+     * @param attributes Initial attributes to register
+     */
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
+    public PhDefault(final byte[] dta, final Map<String, Attr> attributes) {
+        this.data = dta;
+        this.initial = attributes;
     }
 
     @Override
@@ -91,6 +118,7 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public final Phi copy() {
         try {
+            this.activate();
             final PhDefault copy = (PhDefault) this.clone();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
@@ -105,6 +133,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public boolean hasRho() {
+        this.activate();
         boolean has = true;
         try {
             this.attrs.get(Phi.RHO).get();
@@ -121,6 +150,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
+        this.activate();
         if (!this.attrs.containsKey(name)) {
             throw new ExUnset(
                 String.format(
@@ -134,6 +164,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
+        this.activate();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi object;
@@ -180,9 +211,10 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public byte[] delta() {
+        this.activate();
         final byte[] bytes;
-        if (this.data.isPresent()) {
-            bytes = this.data.get();
+        if (this.data != null) {
+            bytes = this.data;
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
         } else if (this.attrs.containsKey(Phi.PHI)) {
@@ -233,6 +265,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     public final void add(final String name, final Attr attr) {
+        this.activate();
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
@@ -245,6 +278,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Attribute name
      */
     private String attr(final int pos) {
+        this.activate();
         if (0 > pos) {
             throw new ExFailure(
                 String.format(
@@ -291,6 +325,20 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     /**
+     * Activate the lazy state: initialize attrs/order from the constructor-supplied
+     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     */
+    private void activate() {
+        if (this.attrs == null) {
+            this.attrs = PhDefault.defaults();
+            this.order = new HashMap<>(0);
+            for (final Map.Entry<String, Attr> ent : this.initial.entrySet()) {
+                this.add(ent.getKey(), ent.getValue());
+            }
+        }
+    }
+
+    /**
      * Default attributes hash map with RHO attribute put.
      * @return Default attributes hash map
      */
@@ -315,10 +363,9 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Padding according to current {@link #NESTING} level.
-     * @return Padding string.
+     * @return Padding string
      */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }
-
 }

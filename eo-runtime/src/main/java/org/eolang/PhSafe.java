@@ -57,7 +57,6 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
-     *
      * @param phi The object
      * @checkstyle ParameterNumberCheck (5 lines)
      */
@@ -67,7 +66,6 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
-     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line
@@ -80,7 +78,6 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
-     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line

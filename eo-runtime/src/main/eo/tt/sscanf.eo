@@ -35,6 +35,20 @@
       head.
         sscanf "%d" "33"
 
+  # Tests that sscanf preserves the minus sign for negative integers.
+  [] +> tests-sscanf-with-negative-int
+    eq. > @
+      -42
+      head.
+        sscanf "%d" "-42"
+
+  # Tests that sscanf accepts an optional leading plus sign for integers.
+  [] +> tests-sscanf-with-positive-signed-int
+    eq. > @
+      42
+      head.
+        sscanf "%d" "+42"
+
   # Tests that sscanf parses floating point number using %f format specifier.
   [] +> tests-sscanf-with-float
     eq. > @

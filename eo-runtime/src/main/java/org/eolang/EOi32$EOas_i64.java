@@ -18,6 +18,7 @@ package org.eolang;
 
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi32$EOas_i64 extends PhDefault implements Atom {
+
     @Override
     public Phi lambda() {
         final Phi num = Phi.Φ.take("i64").copy();

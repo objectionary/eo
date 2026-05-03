@@ -14,7 +14,6 @@ import org.cactoos.list.ListOf;
 /**
  * A decorator of a list of dependencies that throws an exception
  * if any dependency has a duplicate with a different version.
- *
  * @since 0.28.11
  */
 final class DpsUniquelyVersioned implements Dependencies {
@@ -26,8 +25,7 @@ final class DpsUniquelyVersioned implements Dependencies {
 
     /**
      * The main constructor.
-     *
-     * @param dlg Source of dependencies.
+     * @param dlg Source of dependencies
      */
     DpsUniquelyVersioned(final Dependencies dlg) {
         this.delegate = dlg;
@@ -37,8 +35,7 @@ final class DpsUniquelyVersioned implements Dependencies {
     public Iterator<Dep> iterator() {
         final Collection<Dep> deps = new ListOf<>(this.delegate.iterator());
         final Map<String, Set<String>> conflicts = deps
-            .stream()
-            .collect(
+            .stream().collect(
                 Collectors.groupingBy(
                     dep -> dep.get().getManagementKey(),
                     Collectors.mapping(
@@ -49,8 +46,7 @@ final class DpsUniquelyVersioned implements Dependencies {
             )
             .entrySet()
             .stream()
-            .filter(e -> e.getValue().size() > 1)
-            .collect(
+            .filter(e -> e.getValue().size() > 1).collect(
                 Collectors.toMap(
                     Map.Entry::getKey,
                     Map.Entry::getValue

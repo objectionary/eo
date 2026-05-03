@@ -65,7 +65,6 @@ public final class Main {
 
     /**
      * The method called by JVM when the program starts.
-     *
      * @param args Command line args
      * @throws Exception If fails
      */
@@ -116,7 +115,6 @@ public final class Main {
 
     /**
      * Report exception.
-     *
      * @param opts The options
      * @param thr  The cause
      */
@@ -130,7 +128,6 @@ public final class Main {
 
     /**
      * Print exception line.
-     *
      * @param thr The cause
      */
     private static void print(final Throwable thr) {
@@ -179,7 +176,7 @@ public final class Main {
         if (Main.HELP.equals(opt)) {
             Main.LOGGER.info(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "Usage: java -cp target/classes org.eolang.Main [option...] class [argument...]",
                     "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
@@ -246,5 +243,4 @@ public final class Main {
             return input.lines().findFirst().orElse("N/A");
         }
     }
-
 }

@@ -17,6 +17,7 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.allocated.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOsize extends PhDefault implements Atom {
+
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

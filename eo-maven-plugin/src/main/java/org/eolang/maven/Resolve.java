@@ -11,12 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.project.MavenProject;
+import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Joined;
@@ -24,7 +23,6 @@ import org.cactoos.text.Joined;
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
  * unpacks and places them into the target directory.
- *
  * @since 0.63.0
  * @checkstyle ParameterNumberCheck (100 lines)
  */
@@ -66,19 +64,9 @@ final class Resolve {
     private final boolean noruntime;
 
     /**
-     * Maven project (may be null).
-     * @todo #4989:30min Remove MavenProject dependency from Resolve class.
-     *  Currently Resolve depends on MavenProject to find the eo-runtime version
-     *  declared in pom.xml. Extract that lookup into a plain {@code Optional<Dependency>}
-     *  parameter so Resolve has no Maven API dependency at all.
-     *  Don't forget to update MjResolve accordingly.
+     * Maven runtime dependency supplier.
      */
-    private final MavenProject project;
-
-    /**
-     * Resolve dependencies in central.
-     */
-    private final boolean incentral;
+    private final Scalar<Dep> runtime;
 
     /**
      * Ignore version conflicts.
@@ -94,12 +82,10 @@ final class Resolve {
      * @param zero Skip zero versions
      * @param jnadep Resolve default JNA
      * @param norun Ignore runtime
-     * @param proj Maven project
-     * @param central Resolve in central
+     * @param runtime EO runtime dependency supplier
      * @param noconf Ignore version conflicts
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Resolve(
         final TjsForeign tjs,
         final Path tgt,
@@ -108,8 +94,7 @@ final class Resolve {
         final boolean zero,
         final boolean jnadep,
         final boolean norun,
-        final MavenProject proj,
-        final boolean central,
+        final Scalar<Dep> runtime,
         final boolean noconf
     ) {
         this.tojos = tjs;
@@ -119,8 +104,7 @@ final class Resolve {
         this.skipzero = zero;
         this.jna = jnadep;
         this.noruntime = norun;
-        this.project = proj;
-        this.incentral = central;
+        this.runtime = runtime;
         this.noconflicts = noconf;
     }
 
@@ -235,21 +219,7 @@ final class Resolve {
             Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
             result = new DpsWithoutRuntime(result);
         } else {
-            final Optional<Dependency> runtime = this.runtimeFromPom();
-            if (runtime.isPresent()) {
-                result = new DpsWithRuntime(result, new Dep(runtime.get()));
-                Logger.info(
-                    this,
-                    "Runtime dependency added from pom with version: %s",
-                    runtime.get().getVersion()
-                );
-            } else {
-                if (this.incentral) {
-                    result = new DpsWithRuntime(result);
-                } else {
-                    result = new DpsOfflineRuntime(result);
-                }
-            }
+            result = new DpsWithRuntime(result, this.runtime);
         }
         if (!this.noconflicts) {
             result = new DpsUniquelyVersioned(result);
@@ -259,34 +229,6 @@ final class Resolve {
             .sorted()
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    /**
-     * Runtime dependency from pom.xml.
-     * @return Dependency if found
-     */
-    private Optional<Dependency> runtimeFromPom() {
-        final Optional<Dependency> res;
-        if (this.project == null) {
-            res = Optional.empty();
-        } else {
-            res = this.project
-                .getDependencies()
-                .stream()
-                .filter(Resolve::isRuntime)
-                .findFirst();
-        }
-        return res;
-    }
-
-    /**
-     * Checks if dependency is the eo-runtime artifact.
-     * @param dep Dependency
-     * @return True if runtime
-     */
-    private static boolean isRuntime(final Dependency dep) {
-        return "org.eolang".equals(dep.getGroupId())
-            && "eo-runtime".equals(dep.getArtifactId());
     }
 
     /**

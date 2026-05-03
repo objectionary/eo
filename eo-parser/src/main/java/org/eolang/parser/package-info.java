@@ -5,7 +5,6 @@
 
 /**
  * EO parser.
- *
  * @since 0.1
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>

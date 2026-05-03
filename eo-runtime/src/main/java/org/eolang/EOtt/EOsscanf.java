@@ -18,6 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -32,6 +34,7 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "sscanf")
 public final class EOsscanf extends PhDefault implements Atom {
+
     /**
      * Character conversion.
      */
@@ -53,17 +56,18 @@ public final class EOsscanf extends PhDefault implements Atom {
      * @checkstyle CyclomaticComplexityCheck (75 lines)
      * @checkstyle NestedIfDepthCheck (75 lines)
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOsscanf() {
-        this.add("format", new AtVoid("format"));
-        this.add("read", new AtVoid("read"));
+        super(new Attrs(
+            new AttrEntry("format", new AtVoid("format")),
+            new AttrEntry("read", new AtVoid("read"))
+        ));
     }
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
     public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
-        final StringBuilder regex = new StringBuilder(30);
+        final StringBuilder regex = new StringBuilder(64);
         boolean literal = false;
         for (int idx = 0; idx < format.length(); ++idx) {
             final char sym = format.charAt(idx);
@@ -78,7 +82,7 @@ public final class EOsscanf extends PhDefault implements Atom {
                 if (literal) {
                     switch (sym) {
                         case 'd':
-                            regex.append("(\\d+)");
+                            regex.append("([+-]?\\d+)");
                             break;
                         case 'f':
                             regex.append("([+-]?\\d+(?:\\.\\d+)?)");

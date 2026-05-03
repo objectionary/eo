@@ -25,7 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link CentralMaven}.
- *
  * @since 0.55
  */
 @ExtendWith({MktmpResolver.class, WeAreOnline.class})

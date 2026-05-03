@@ -13,7 +13,6 @@ import org.cactoos.proc.UncheckedProc;
  * Object name that catches and re-throws an exception if original one fails.
  * If {@link ObjectName} throw an exception, this object catches it, and executes supplied
  * procedure.
- *
  * @since 0.56.5
  */
 public final class OnDetailed implements ObjectName {
@@ -58,7 +57,6 @@ public final class OnDetailed implements ObjectName {
 
     /**
      * Ctor.
-     *
      * @param orgn Origin
      * @param fail If fails
      */

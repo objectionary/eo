@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.16
  */
 final class AtVoidTest {
+
     @Test
     void copiesWithoutStateAndException() {
         Assertions.assertDoesNotThrow(

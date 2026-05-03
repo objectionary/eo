@@ -27,7 +27,7 @@ jobs:
           key: ${{ runner.os }}-eo-maven-plugin-site-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-eo-maven-plugin-site-
-      - run: mvn clean install -pl eo-parser -DskipTests -am
+      - run: mvn clean install -ntp -pl eo-parser -DskipTests -am
       - run: mvn clean site -Psite -pl eo-maven-plugin
       - uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:

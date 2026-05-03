@@ -19,14 +19,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.size.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOsize extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         return new Data.ToPhi(
             new File(

@@ -13,10 +13,10 @@ import org.w3c.dom.Node;
 /**
  * This {@link Shift} turns regular data (numbers) inside XMIR
  * into hexadecimal representation.
- *
  * @since 0.54
  */
 final class StHex extends StEnvelope {
+
     /**
      * Ctor.
      */

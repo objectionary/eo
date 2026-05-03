@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link XmirObject}.
- *
  * @since 0.38
  */
 final class XmirObjectTest {
@@ -28,13 +27,11 @@ final class XmirObjectTest {
             "All top-level EOxx classes must be public",
             ClassPath.from(ClassLoader.getSystemClassLoader())
                 .getAllClasses()
-                .stream()
-                .filter(
+                .stream().filter(
                     clazz -> "EOorg.EOeolang".equals(clazz.getPackageName())
                         && clazz.getSimpleName().startsWith("EO")
                 )
-                .map(ClassPath.ClassInfo::load)
-                .filter(
+                .map(ClassPath.ClassInfo::load).filter(
                     clazz -> !Modifier.isPublic(clazz.getModifiers())
                         && !(clazz.isMemberClass() || clazz.isLocalClass())
                         && Phi.class.isAssignableFrom(clazz)
