@@ -27,6 +27,9 @@
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
+  <xsl:template match="o[@atom]">
+    <xsl:apply-templates select="." mode="with-atom"/>
+  </xsl:template>
   <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>
   </xsl:template>
@@ -56,6 +59,21 @@
         <xsl:value-of select="@base"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|@* except @base"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[not(contains(@atom, '.'))]" mode="with-atom">
+    <xsl:apply-templates select="." mode="atom-no-dots"/>
+  </xsl:template>
+  <xsl:template match="o[@atom!=$eo:phi and @atom!=$eo:program and @atom!=$eo:rho and @atom!=$eo:empty and @atom!=$eo:xi]" mode="atom-no-dots">
+    <xsl:apply-templates select="." mode="atom-no-specials"/>
+  </xsl:template>
+  <xsl:template match="o[not(@atom=/object/metas/meta[head='alias']/part[1])]" mode="atom-no-specials">
+    <xsl:copy>
+      <xsl:attribute name="atom">
+        <xsl:text>Φ.</xsl:text>
+        <xsl:value-of select="@atom"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()|@* except @atom"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
