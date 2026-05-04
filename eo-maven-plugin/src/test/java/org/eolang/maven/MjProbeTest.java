@@ -56,8 +56,7 @@ final class MjProbeTest {
         final String tag = "0.23.15";
         final String expected = "3";
         final String found = new FakeMaven(temp)
-            .with("tag", tag)
-            .with(
+            .with("tag", tag).with(
                 "objectionary",
                 (Scalar<Objectionary>) () -> new OyIndexed(new OyRemote(new ChRemote(tag)))
             )

@@ -16,7 +16,6 @@ import org.cactoos.list.ListOf;
  * Goes through all {@code probe} and {@code also} metas in XMIR files,
  * tries to locate the objects pointed by {@code probe} in Objectionary,
  * and if found, registers them in the catalog.
- *
  * @since 0.67.0
  */
 final class Probe {
@@ -56,37 +55,46 @@ final class Probe {
         if (this.online) {
             final Collection<TjForeign> unprobed = this.tojos.unprobed();
             if (unprobed.isEmpty()) {
-                if (this.tojos.size() == 0) {
-                    Logger.warn(this, "Nothing to probe, since there are no programs");
-                } else {
-                    Logger.info(
-                        this,
-                        "Nothing to probe, all %d programs checked already",
-                        this.tojos.size()
-                    );
-                }
+                this.logEmpty();
             } else {
-                final long start = System.currentTimeMillis();
-                final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
-                if (this.probed(unprobed, probed) == 0) {
-                    Logger.info(
-                        this,
-                        "No probes found in %d programs",
-                        unprobed.size()
-                    );
-                } else {
-                    Logger.info(
-                        this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
-                        probed.size(), unprobed.size(),
-                        System.currentTimeMillis() - start,
-                        probed.keySet()
-                    );
-                }
+                this.probe(unprobed);
             }
         } else {
             Logger.info(
                 this,
                 "No programs were probed because eo.offline flag is TRUE"
+            );
+        }
+    }
+
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    private void probe(final Collection<TjForeign> unprobed) {
+        final long start = System.currentTimeMillis();
+        final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
+        if (this.probed(unprobed, probed) == 0) {
+            Logger.info(
+                this,
+                "No probes found in %d programs",
+                unprobed.size()
+            );
+        } else {
+            Logger.info(
+                this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
+                probed.size(), unprobed.size(),
+                System.currentTimeMillis() - start,
+                probed.keySet()
+            );
+        }
+    }
+
+    private void logEmpty() {
+        if (this.tojos.size() == 0) {
+            Logger.warn(this, "Nothing to probe, since there are no programs");
+        } else {
+            Logger.info(
+                this,
+                "Nothing to probe, all %d programs checked already",
+                this.tojos.size()
             );
         }
     }
