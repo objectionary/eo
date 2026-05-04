@@ -15,6 +15,7 @@ import org.cactoos.func.UncheckedFunc;
  * @since 0.41
  */
 final class FpGenerated implements Footprint {
+
     /**
      * Content function.
      */

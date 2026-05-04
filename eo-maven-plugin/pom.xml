@@ -14,6 +14,9 @@
   <packaging>maven-plugin</packaging>
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
+  <properties>
+    <maven.resolver.version>1.9.27</maven.resolver.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -78,6 +81,24 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-supplier</artifactId>
+      <version>${maven.resolver.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+      <version>${maven.resolver.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-resolver-provider</artifactId>
+      <version>3.9.15</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>3.9.15</version>
@@ -118,11 +139,6 @@
       <artifactId>maven-compat</artifactId>
       <version>3.9.15</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.twdata.maven</groupId>
-      <artifactId>mojo-executor</artifactId>
-      <version>2.4.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
@@ -210,11 +226,6 @@
       <scope>provided</scope>
       <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.6.1</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

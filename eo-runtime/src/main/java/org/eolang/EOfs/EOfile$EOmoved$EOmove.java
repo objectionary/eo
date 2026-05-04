@@ -22,14 +22,15 @@ import org.eolang.XmirObject;
 
 /**
  * File.moved.move.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.moved.move")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOmoved$EOmove extends PhDefault implements Atom {
+
     @Override
+
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
         final Path target = Paths.get(

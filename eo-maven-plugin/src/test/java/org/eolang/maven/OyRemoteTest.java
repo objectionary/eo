@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link OyRemote}.
- *
  * @since 0.1.0
  */
 final class OyRemoteTest {
@@ -28,9 +27,9 @@ final class OyRemoteTest {
             new OyRemote.UrlOy(
                 "https://raw/objectionary/home/%s/objects/%s.eo",
                 "abcde"
-            ).value("org.eolang.app"),
+            ).value("org.eolang.io.stdout"),
             Matchers.is(
-                new URL("https://raw/objectionary/home/abcde/objects/org/eolang/app.eo")
+                new URL("https://raw/objectionary/home/abcde/objects/io/stdout.eo")
             )
         );
     }
@@ -42,9 +41,9 @@ final class OyRemoteTest {
             new OyRemote.UrlOy(
                 "https://github.com/objectionary/home/tree/%s/objects/%s",
                 "abcde"
-            ).value("org.eolang.test"),
+            ).value("org.eolang.ss"),
             Matchers.is(
-                new URL("https://github.com/objectionary/home/tree/abcde/objects/org/eolang/test")
+                new URL("https://github.com/objectionary/home/tree/abcde/objects/ss")
             )
         );
     }

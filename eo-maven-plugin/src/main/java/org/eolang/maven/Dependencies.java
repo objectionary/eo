@@ -19,6 +19,7 @@ import java.util.stream.Stream;
  */
 @FunctionalInterface
 interface Dependencies extends Iterable<Dep> {
+
     /**
      * Fake dependencies.
      * @since 0.54.0
@@ -32,6 +33,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         Fake() {
             this(
@@ -43,7 +45,8 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
-         * @param size Number of fake dependencies.
+         * @param size Number of fake dependencies
+         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         Fake(final int size) {
             this(
@@ -55,7 +58,8 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
-         * @param deps Dependencies.
+         * @param deps Dependencies
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         Fake(final Dep... deps) {
             this(Arrays.asList(deps));
@@ -63,7 +67,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
-         * @param deps Dependencies.
+         * @param deps Dependencies
          */
         private Fake(final Collection<Dep> deps) {
             this.dependencies = deps;
@@ -76,8 +80,8 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a random dependency with specified scope.
-         * @param scope Scope.
-         * @return Dependency.
+         * @param scope Scope
+         * @return Dependency
          */
         static Dep randDep(final String scope) {
             return Dependencies.Fake.dep(
@@ -90,7 +94,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a eo-runtime dependency.
-         * @return Dependency.
+         * @return Dependency
          */
         static Dep runtimeDep() {
             return Dependencies.Fake.dep(
@@ -103,7 +107,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a random dependency.
-         * @return Dependency.
+         * @return Dependency
          */
         private static Dep randDep() {
             final Random rand = new SecureRandom();
@@ -117,11 +121,11 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a dependency.
-         * @param group Group ID.
-         * @param artifact Artifact ID.
-         * @param version Version.
-         * @param scope Scope.
-         * @return Dependency.
+         * @param group Group ID
+         * @param artifact Artifact ID
+         * @param version Version
+         * @param scope Scope
+         * @return Dependency
          * @checkstyle ParameterNumberCheck (5 lines)
          */
         private static Dep dep(

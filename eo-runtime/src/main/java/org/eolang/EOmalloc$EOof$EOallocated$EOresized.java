@@ -17,12 +17,12 @@ package org.eolang;
 @XmirObject(oname = "malloc.of.allocated.resized")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOmalloc$EOof$EOallocated$EOresized() {
-        this.add("new-size", new AtVoid("new-size"));
+        super(new Attrs(new AttrEntry("new-size", new AtVoid("new-size"))));
     }
 
     @Override

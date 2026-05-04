@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhSafeTest}.
- *
  * @since 0.36.0
  */
 final class PhSafeTest {
@@ -27,7 +26,6 @@ final class PhSafeTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
             "rethrows correctly",
@@ -52,7 +50,6 @@ final class PhSafeTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void rendersMultiLayeredErrorMessageCorrectly() {
         MatcherAssert.assertThat(
             "rethrows correctly",
@@ -74,7 +71,6 @@ final class PhSafeTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void showsFileNameAndLineNumber() {
         MatcherAssert.assertThat(
             "shows file name and line number",
@@ -95,5 +91,4 @@ final class PhSafeTest {
             Matchers.equalTo("intentional error")
         );
     }
-
 }

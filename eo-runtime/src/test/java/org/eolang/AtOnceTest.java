@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.59.0
  */
 final class AtOnceTest {
+
     @Test
     void throwsOnPut() {
         Assertions.assertThrows(
@@ -25,7 +26,6 @@ final class AtOnceTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesAttribute() {
         final AtomicInteger count = new AtomicInteger();
         final Attr attr = new AtOnce(
@@ -47,7 +47,6 @@ final class AtOnceTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void resetsCacheOnCopy() {
         final AtomicInteger count = new AtomicInteger();
         final Attr attr = new AtOnce(

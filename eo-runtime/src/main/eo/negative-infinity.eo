@@ -500,7 +500,7 @@
 
   # Tests that negative infinity floor equals itself.
   [] +> tests-negative-infinity-floor-is-equal-to-self
-    negative-infinity.@.eq negative-infinity > @
+    negative-infinity.floor.eq negative-infinity > @
 
   # Tests that negative infinity is not NaN.
   [] +> tests-negative-infinity-is-not-nan

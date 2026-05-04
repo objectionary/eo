@@ -40,7 +40,6 @@ final class OyCachedTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void goesToOriginWhenCacheDoesNotHaveIt() throws IOException {
         final Input expected = new InputOf("Hello from origin!");
         MatcherAssert.assertThat(
@@ -53,7 +52,6 @@ final class OyCachedTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void savesInCacheWhenCacheDoesNotHaveIt() throws IOException {
         final String key = "jeff";
         final Input value = new InputOf("[] > jeff");

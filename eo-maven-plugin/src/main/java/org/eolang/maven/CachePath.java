@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 /**
@@ -12,6 +13,7 @@ import java.util.function.Supplier;
  * @since 0.41
  */
 final class CachePath implements Supplier<Path> {
+
     /**
      * Cache base directory.
      */
@@ -38,9 +40,10 @@ final class CachePath implements Supplier<Path> {
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
      * @checkstyle ParameterNumberCheck (5 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     CachePath(final Path base, final String semver, final String hash) {
-        this(base, semver, () -> hash, Path.of("."));
+        this(base, semver, () -> hash, Paths.get("."));
     }
 
     /**

@@ -13,19 +13,18 @@ import java.util.Arrays;
 
 /**
  * BYTES.EQ.
- *
  * @since 0.1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.eq")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOeq extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOeq() {
-        this.add("b", new AtVoid("b"));
+        super(new Attrs(new AttrEntry("b", new AtVoid("b"))));
     }
 
     @Override

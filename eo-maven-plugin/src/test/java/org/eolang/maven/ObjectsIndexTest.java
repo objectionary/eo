@@ -15,46 +15,44 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link ObjectsIndex}.
- *
  * @since 0.29
  */
 final class ObjectsIndexTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsContainsWithOnlyOneCallToDecoratedObject() throws Exception {
         final AtomicInteger calls = new AtomicInteger(0);
-        final String object = "org.eolang.io.stderr";
         final ObjectsIndex index = new ObjectsIndex(
             new ScalarOf<>(
                 () -> {
                     calls.incrementAndGet();
-                    return Collections.singleton(object);
+                    return Collections.singleton("io.stderr");
                 }
             )
         );
-        index.contains(object);
-        index.contains(object);
+        index.contains("org.eolang.io.stderr");
+        index.contains("org.eolang.io.stderr");
         MatcherAssert.assertThat(
-            "The number of calls should be 1",
+            String.format(
+                "Scalar was called %d times instead of exactly once",
+                calls.get()
+            ),
             calls.get(),
             Matchers.is(1)
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsContainsSuccessfully() throws Exception {
-        final String object = "org.eolang.io.stderr";
         MatcherAssert.assertThat(
             "The object must contain the value",
             new ObjectsIndex(
                 new ScalarOf<>(
                     () -> {
-                        return Collections.singleton(object);
+                        return Collections.singleton("io.stderr");
                     }
                 )
-            ).contains(object),
+            ).contains("org.eolang.io.stderr"),
             Matchers.is(true)
         );
     }
@@ -66,7 +64,7 @@ final class ObjectsIndexTest {
             new ObjectsIndex(
                 new ScalarOf<>(
                     () -> {
-                        return Collections.singleton("org.eolang.io.stderr");
+                        return Collections.singleton("io.stderr");
                     }
                 )
             ).contains("unknown"),

@@ -21,6 +21,7 @@ import org.eolang.Phi;
  * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
  */
 public final class WSACleanupFuncCall implements Syscall {
+
     /**
      * Win32 object.
      */

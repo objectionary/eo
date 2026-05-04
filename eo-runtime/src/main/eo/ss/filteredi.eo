@@ -1,0 +1,72 @@
++alias ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ss
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Filter `lst` with index with the function `func`.
+# Here `func` must be an abstract
+# object with two attributes. The first
+# one for the element, the second one
+# for the index. The result of dataization
+# the `func` should be boolean, that is `true` or `false`.
+[lst func] > filteredi
+  list > @
+    recfilter lst
+
+  # Recursively filters tuple elements using predicate function with index.
+  [tup] > recfilter
+    if. > @
+      tup.length.eq 0
+      *
+      if.
+        func tup.head tup.tail.length
+        next.with tup.head
+        next
+    recfilter tup.tail > next
+
+  # Tests that filtering with index using less-than comparison works correctly.
+  [] +> tests-filteredi-with-lt
+    eq. > @
+      filteredi
+        list
+          * 3 1 4 2 5
+        v.lt 3 > [v i]
+      * 1 2
+
+  # Tests that filtering with index based on string length works correctly.
+  [] +> tests-filteredi-with-string-length
+    eq. > @
+      filteredi
+        list
+          * "Hello" "Name" "EO" "List"
+        v.length.gt 4 > [v i]
+      * "Hello"
+
+  # Tests that filtering an empty list with index returns an empty list.
+  [] +> tests-filteredi-with-empty-list
+    is-empty. > @
+      filteredi
+        list
+          *
+        v.lt 3 > [v i]
+
+  # Tests that filtering elements by their index position works correctly.
+  [] +> tests-filteredi-by-index
+    eq. > @
+      filteredi
+        list
+          * 3 1 4
+        i.gt 0 > [v i]
+      * 1 4
+
+  # Tests that filtering boolean values with index works correctly.
+  [] +> tests-filteredi-with-bools
+    eq. > @
+      filteredi
+        list
+          * true false true
+        v.not > [v i]
+      * false

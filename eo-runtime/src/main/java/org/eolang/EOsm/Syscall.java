@@ -12,16 +12,15 @@ import org.eolang.Phi;
 
 /**
  * System call that can be made with EO objects ({@link Phi}) as arguments.
- *
  * @since 0.40
  */
 @FunctionalInterface
 public interface Syscall {
+
     /**
      * Makes native method call.
-     *
-     * @param params Native methods parameters.
-     * @return Methods return code.
+     * @param params Native methods parameters
+     * @return Methods return code
      */
     Phi make(Phi... params);
 }

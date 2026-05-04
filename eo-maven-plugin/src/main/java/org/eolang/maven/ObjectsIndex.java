@@ -19,7 +19,6 @@ import org.cactoos.text.TextOf;
 
 /**
  * The objects index that contains all available EO objects.
- *
  * @see <a href="https://github.com/objectionary/home/blob/gh-pages/objectionary.lst">Example</a>
  * @since 0.29
  */
@@ -47,7 +46,7 @@ final class ObjectsIndex {
                         Text::asString,
                         new Split(
                             ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
-                            "\n"
+                            "\\n"
                         )
                     )
                 )
@@ -57,7 +56,7 @@ final class ObjectsIndex {
 
     /**
      * Ctor.
-     * @param all All objects index.
+     * @param all All objects index
      */
     ObjectsIndex(final Scalar<? extends Set<String>> all) {
         this.objects = new Sticky<>(all);
@@ -65,21 +64,27 @@ final class ObjectsIndex {
 
     /**
      * Checks whether object index contains the object.
-     *
-     * @param name Object name.
-     * @return True if object index contains the object.
+     * @param name Object name
+     * @return True if object index contains the object
      * @throws Exception If something unexpected happened.
      */
-    public boolean contains(final String name) throws Exception {
-        return this.objects.value().contains(name);
+    boolean contains(final String name) throws Exception {
+        final String prefix = "org.eolang.";
+        final String stripped;
+        if (name.startsWith(prefix)) {
+            stripped = name.substring(prefix.length());
+        } else {
+            stripped = name;
+        }
+        return this.objects.value().contains(stripped);
     }
 
     /**
      * Converts object name to the format that is used in the objectionary.
-     * - "objects/org/eolang/array.eo" -> "org.eolang.array"
-     * - "tests/org/eolang/seq-tests.eo" -> "org.eolang.seq-tests"
-     * @param name Object name in raw format.
-     * @return Object name in objectionary format.
+     * - "objects/array.eo" -> "array"
+     * - "objects/io/stdout.eo" -> "io.stdout"
+     * @param name Object name in raw format
+     * @return Object name in objectionary format
      */
     private static String convert(final String name) {
         return name.substring(0, name.length() - 3)

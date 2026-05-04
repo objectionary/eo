@@ -234,11 +234,29 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitAtom(final EoParser.AtomContext ctx) {
+        final EoParser.AtomBaseContext base = ctx.atomBase();
+        final String fqn;
+        if (base == null) {
+            fqn = "";
+        } else {
+            fqn = XeEoListener.qqToGlobalPhi(base.getText());
+        }
         this.objects.enter()
             .start(ctx.getStart().getLine(), 0)
             .prop("name", "λ")
+            .prop("atom", fqn)
             .leave()
             .leave();
+    }
+
+    @Override
+    public void enterAtomBase(final EoParser.AtomBaseContext ctx) {
+        // No-op: atomBase text is consumed in exitAtom.
+    }
+
+    @Override
+    public void exitAtomBase(final EoParser.AtomBaseContext ctx) {
+        // No-op: atomBase text is consumed in exitAtom.
     }
 
     @Override
@@ -552,7 +570,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
                 || number < 0
             ) {
                 this.errors.add(
-                    new ParsingError(
+                    ParsingError.fromContext(
                         ctx,
                         "Index after '*' must be a positive integer without leading zero or arithmetic signs"
                     ).cause()
@@ -869,7 +887,10 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterAname(final EoParser.AnameContext ctx) {
-        this.objects.enter().prop("name", new AutoName(ctx).asString());
+        this.objects.enter().prop(
+            "name",
+            new AutoName(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()).asString()
+        );
         if (ctx.CONST() != null) {
             this.objects.prop("const");
         }
@@ -1143,7 +1164,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
     private String alphaAttr(final ParserRuleContext ctx, final String msg) {
         final int index = Integer.parseInt(ctx.getToken(EoParser.INT, 0).getText());
         if (index < 0) {
-            this.errors.add(new ParsingError(ctx, msg).cause());
+            this.errors.add(ParsingError.fromContext(ctx, msg).cause());
         }
         return String.format("α%d", index);
     }

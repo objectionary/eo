@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Phi}.
- *
  * @since 0.22
  */
 final class PhiTest {

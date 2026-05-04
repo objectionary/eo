@@ -5,15 +5,11 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrLambda;
-import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -25,11 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
@@ -41,11 +33,11 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
+import org.eclipse.aether.RepositorySystem;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Abstract Mojo for all others.
- *
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
@@ -60,18 +52,14 @@ abstract class MjSafe extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * Maven session.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Parameter(defaultValue = "${session}", readonly = true)
-    protected MavenSession session;
-
-    /**
-     * Maven plugin manager.
+     * Maven Resolver repository system.
+     * Do NOT move this field to a subclass: it is used in both
+     * {@link MjResolve} and {@link MjCompile} (indirectly), so it
+     * must be injected once here in the base class.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Component
-    protected BuildPluginManager manager;
+    protected RepositorySystem system;
 
     /**
      * Directory where classes are stored in target.
@@ -106,7 +94,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Directory in which .eo files are located.
-     *
      * @checkstyle VisibilityModifierCheck (10 lines)
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -194,7 +181,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Track optimization steps into intermediate XMIR files?
-     *
      * @since 0.24.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -278,7 +264,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Skip artifact with the version 0.0.0.
-     *
      * @since 0.9.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -288,7 +273,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Fail resolution process on conflicting dependencies.
-     *
      * @since 0.1.0
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
@@ -299,7 +283,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
-     *
      * @since 0.12.0
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
@@ -373,7 +356,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should fail on warning.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -382,7 +364,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should lint all the sources together as package.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -391,7 +372,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should skip linting at all.
-     *
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
@@ -426,14 +406,6 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
-     * The central.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    protected BiConsumer<Dependency, Path> central;
-
-    /**
      * The Git hash to pull objects from.
      * If not set, will be computed from {@code tag} field.
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -447,7 +419,7 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.50
      * @checkstyle MemberNameCheck (5 lines)
      */
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidFieldNameMatchingMethodName"})
+    @SuppressWarnings("PMD.ImmutableField")
     private Scalar<Objectionary> objectionary = new Synced<>(
         new Sticky<>(
             () -> new OyIndexed(
@@ -483,7 +455,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.UnnecessaryLocalRule"})
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -494,9 +466,6 @@ abstract class MjSafe extends AbstractMojo {
             }
         } else {
             try {
-                if (this.central == null) {
-                    this.central = new Central(this.project, this.session, this.manager);
-                }
                 final long start = System.nanoTime();
                 this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
@@ -553,41 +522,6 @@ abstract class MjSafe extends AbstractMojo {
     }
 
     /**
-     * Make a measured train from another train.
-     * @param train The train
-     * @return Measured train
-     */
-    protected final Train<Shift> measured(final Train<Shift> train) {
-        if (this.xslMeasures.getParentFile().mkdirs()) {
-            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
-        }
-        if (!this.xslMeasures.getParentFile().exists()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "For some reason, the directory %s is absent, can't write measures to %s",
-                    this.xslMeasures.getParentFile(),
-                    this.xslMeasures
-                )
-            );
-        }
-        if (this.xslMeasures.isDirectory()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "This is not a file but a directory, can't write to it: %s",
-                    this.xslMeasures
-                )
-            );
-        }
-        return new TrLambda(
-            train,
-            shift -> new StMeasured(
-                shift,
-                this.xslMeasures.toPath()
-            )
-        );
-    }
-
-    /**
      * Exec it.
      * @throws IOException If fails
      */
@@ -599,15 +533,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Get active proxy from Maven settings.
-     * @return Proxy if any.
+     * @return Proxy if any
      */
     Proxy[] proxies() {
         return Optional.ofNullable(this.settings)
             .map(Settings::getProxies)
             .orElse(List.of())
             .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive)
-            .map(
+            .filter(org.apache.maven.settings.Proxy::isActive).map(
                 p -> new Proxy(
                     Proxy.Type.HTTP,
                     new InetSocketAddress(p.getHost(), p.getPort())
@@ -617,7 +550,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Runs exec command with timeout if needed.
-     *
      * @throws ExecutionException If unexpected exception happened during execution
      * @throws TimeoutException If timeout limit reached
      */

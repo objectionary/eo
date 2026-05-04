@@ -17,14 +17,12 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Heaps}.
- *
  * @since 0.19
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class HeapsTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void allocatesMemory() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertDoesNotThrow(
@@ -91,10 +89,11 @@ final class HeapsTest {
 
     @Test
     void failsOnReadIfOutOfBounds() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(idx, 1, 3),
+            () -> Heaps.INSTANCE.read(
+                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2), 1, 3
+            ),
             "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
     }
@@ -148,7 +147,6 @@ final class HeapsTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void freesSuccessfully() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         Heaps.INSTANCE.free(idx);
@@ -189,7 +187,6 @@ final class HeapsTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsOnChangingSizeToNegative() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         Assertions.assertThrows(
@@ -250,10 +247,10 @@ final class HeapsTest {
 
     /**
      * Fake object, mostly for unit tests.
-     *
      * @since 0.29
      */
     private static final class PhFake extends PhDefault {
+
         /**
          * Ctor.
          */
@@ -264,6 +261,7 @@ final class HeapsTest {
         /**
          * Ctor.
          * @param sup The function to return the real object
+         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhFake(final Supplier<Phi> sup) {

@@ -17,6 +17,7 @@ import org.cactoos.text.Joined;
  * @since 0.56.7
  */
 final class FpJavaGenerated extends FpEnvelope {
+
     /**
      * Ctor.
      * @param clazz Transpiled Java class
@@ -32,9 +33,7 @@ final class FpJavaGenerated extends FpEnvelope {
      * @param clazz Transpiled Java class
      * @param generated Generated
      */
-    FpJavaGenerated(
-        final Xnav clazz, final FileGenerationReport generated
-    ) {
+    FpJavaGenerated(final Xnav clazz, final FileGenerationReport generated) {
         super(
             new FpGenerated(
                 src -> {

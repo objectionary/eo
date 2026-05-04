@@ -1,3 +1,5 @@
++alias ss.contains
++alias ss.filtered
 +alias ss.hash-code-of
 +alias ss.list
 +alias ss.mapped
@@ -32,7 +34,7 @@
         tup.length.eq 0
         couple * (list *)
         if.
-          prev.hashes.contains hash
+          contains prev.hashes hash
           prev
           couple
             prev.entries.with
@@ -122,7 +124,7 @@
       map.initialized > @
         with.
           origin.
-            filtered.
+            filtered
               list entries
               (hash.eq entry.hash).not > [entry] >>
           [] >>
@@ -136,7 +138,7 @@
     [key] > without
       map.initialized > @
         origin.
-          filtered.
+          filtered
             list entries
             (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!

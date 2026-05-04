@@ -7,13 +7,12 @@ package org.eolang;
 
 /**
  * Attribute.
- *
  * @since 0.1
  */
 public interface Attr {
+
     /**
      * Make a copy of it.
-     *
      * @param self The object that this attribute will belong to
      * @return A copy
      */
@@ -30,7 +29,6 @@ public interface Attr {
 
     /**
      * Put a new object in.
-     *
      * @param phi The object to put
      */
     void put(Phi phi);

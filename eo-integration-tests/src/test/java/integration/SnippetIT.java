@@ -33,61 +33,67 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
+
     @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "snippets", glob = "**.yaml")
-    @SuppressWarnings({"unchecked", "PMD.UnitTestShouldIncludeAssert"})
+    @SuppressWarnings("unchecked")
+    // @todo #4707:30min Re-enable SnippetIT.runsAllSnippets after the public
+    //  objectionary registry (https://github.com/objectionary/home) migrates
+    //  atom return types from the legacy `?` syntax to the new `/name` form.
+    //  This PR drops the `?` branch from the EO grammar; until the registry
+    //  catches up, MjPull fetches `.eo` files that fail to parse here.
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
-        final String file = xtory.map().get("file").toString();
+        final String[] log = {""};
         new Farea(temp).together(
             f -> {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.files()
-                    .file(String.format("src/main/eo/%s", file))
-                    .write(
-                        String.format(
-                            "%s\n",
-                            xtory.map().get("eo")
-                        ).getBytes(StandardCharsets.UTF_8)
-                    );
-                f.dependencies()
-                    .append(
-                        "org.eolang",
-                        "eo-runtime",
-                        System.getProperty(
-                            "eo.version",
-                            Manifests.read("EO-Version")
-                        )
-                    );
-                final String target;
-                if (xtory.map().containsKey("target")) {
-                    target = xtory.map().get("target").toString();
-                } else {
-                    target = "target";
-                }
-                f.build()
-                    .properties()
-                    .set("directory", target);
-                new EoSourceRun(f).exec(xtory.map().get("args"));
-                MatcherAssert.assertThat(
-                    String.format("'%s' printed something wrong", yml),
-                    f.log().content(),
-                    Matchers.allOf(
-                        new Mapped<>(
-                            ptn -> Matchers.matchesPattern(
-                                Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
-                            ),
-                            (Iterable<String>) xtory.map().get("out")
-                        )
-                    )
+                    .file(String.format("src/main/eo/%s", xtory.map().get("file")))
+                    .write(SnippetIT.eoBytes(xtory));
+                f.dependencies().append(
+                    "org.eolang", "eo-runtime", SnippetIT.runtimeVersion()
                 );
+                f.build().properties().set("directory", SnippetIT.targetDir(xtory));
+                new EoSourceRun(f).exec(xtory.map().get("args"));
+                log[0] = f.log().content();
             }
         );
+        MatcherAssert.assertThat(
+            String.format("'%s' printed something wrong", yml),
+            log[0],
+            Matchers.allOf(
+                new Mapped<>(
+                    ptn -> Matchers.matchesPattern(
+                        Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                    ),
+                    (Iterable<String>) xtory.map().get("out")
+                )
+            )
+        );
+    }
+
+    private static byte[] eoBytes(final Xtory xtory) {
+        return String.format("%s%n", xtory.map().get("eo")).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static String targetDir(final Xtory xtory) {
+        final String dir;
+        if (xtory.map().containsKey("target")) {
+            dir = xtory.map().get("target").toString();
+        } else {
+            dir = "target";
+        }
+        return dir;
+    }
+
+    private static String runtimeVersion() {
+        return System.getProperty("eo.version", Manifests.read("EO-Version"));
     }
 }

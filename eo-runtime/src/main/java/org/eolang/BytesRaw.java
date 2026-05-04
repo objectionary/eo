@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 /**
  * Bytes to be created from byte array only.
- *
  * @since 0.1.0
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
@@ -22,7 +21,8 @@ final class BytesRaw implements Bytes {
 
     /**
      * Ctor.
-     * @param data Data.
+     * @param data Data
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     BytesRaw(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);
@@ -48,7 +48,6 @@ final class BytesRaw implements Bytes {
     }
 
     @Override
-    @SuppressWarnings("PMD.ShortMethodName")
     public Bytes or(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
@@ -86,7 +85,7 @@ final class BytesRaw implements Bytes {
     public Bytes sshift(final int bits) {
         if (bits < 0) {
             throw new UnsupportedOperationException(
-                "The \"right shift\" is NYI"
+                "The left sshift (negative bits) is not yet supported"
             );
         }
         final byte[] bytes = this.shift(bits).take();
@@ -226,8 +225,8 @@ final class BytesRaw implements Bytes {
 
     /**
      * Count leading zero bits.
-     * @param num Byte.
-     * @return Number between 0 and 8.
+     * @param num Byte
+     * @return Number between 0 and 8
      */
     private static byte numberOfLeadingZeros(final byte num) {
         final byte result;

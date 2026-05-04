@@ -513,7 +513,7 @@
 
   # Tests that positive infinity floor equals itself.
   [] +> tests-positive-infinity-floor-is-equal-to-self
-    positive-infinity.@.eq positive-infinity > @
+    positive-infinity.floor.eq positive-infinity > @
 
   # Tests that positive infinity is not NaN.
   [] +> tests-positive-infinity-is-not-nan

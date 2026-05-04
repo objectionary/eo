@@ -7,10 +7,10 @@ package org.eolang;
 
 /**
  * Exception to control threads interruptions.
- *
  * @since 0.28.3
  */
 public class ExInterrupted extends ExAbstract {
+
     /**
      * Serialization identifier.
      */

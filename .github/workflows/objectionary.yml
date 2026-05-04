@@ -25,5 +25,11 @@ jobs:
       - uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
           branch: gh-pages
+          folder: gh-pages-objectionary
+          target-folder: objectionary
+          clean: true
+      - uses: JamesIves/github-pages-deploy-action@v4.8.0
+        with:
+          branch: gh-pages
           folder: gh-pages
           clean: false

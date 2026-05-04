@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link VerboseBytesAsString}.
- *
  * @since 0.1
  */
 final class VerboseBytesAsStringTest {
@@ -31,7 +30,7 @@ final class VerboseBytesAsStringTest {
 
     /**
      * Static method providing sources for parameterized test.
-     * @return Stream of sources.
+     * @return Stream of sources
      */
     private static Stream<Arguments> getTestSources() {
         return Stream.of(

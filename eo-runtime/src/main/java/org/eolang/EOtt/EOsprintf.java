@@ -12,6 +12,8 @@ package org.eolang.EOtt; // NOPMD
 import java.util.Locale;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
@@ -30,10 +32,11 @@ public final class EOsprintf extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOsprintf() {
-        this.add("format", new AtVoid("format"));
-        this.add("args", new AtVoid("args"));
+        super(new Attrs(
+            new AttrEntry("format", new AtVoid("format")),
+            new AttrEntry("args", new AtVoid("args"))
+        ));
     }
 
     @Override

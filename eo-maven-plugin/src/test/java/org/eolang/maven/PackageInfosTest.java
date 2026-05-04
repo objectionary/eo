@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link PackageInfos}.
- *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)

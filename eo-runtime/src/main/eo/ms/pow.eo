@@ -7,9 +7,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint idempotent-attribute-is-not-first
++unlint not-empty-atom
 
 # An operation that raises `num` to the power of `x`.
-[num x] > pow ?
+[num x] > pow /number
   # Tests that power operation works correctly for 2^4.
   [] +> tests-pow-test
     eq. +> @

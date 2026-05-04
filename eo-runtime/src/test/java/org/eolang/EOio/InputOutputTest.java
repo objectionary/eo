@@ -50,6 +50,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(MktmpResolver.class)
 final class InputOutputTest {
+
     /**
      * Operating system name.
      */
@@ -275,6 +276,7 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class ConsoleTest {
+
         @Test
         void dataizesConsoleWriteAsTrue() {
             Assertions.assertTrue(
@@ -290,7 +292,6 @@ final class InputOutputTest {
         }
 
         @Test
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void writesToConsole(@Mktmp final Path temp) throws IOException {
             final String msg = "writes to console";
             MatcherAssert.assertThat(
@@ -415,6 +416,7 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class StdinTest {
+
         @Test
         void dataizesOneLineOnOneLineInputViaStdin(@Mktmp final Path temp) throws IOException {
             final String content = "this is a test input1";
@@ -567,6 +569,7 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class PosixReadSyscallTest {
+
         @Test
         @DisabledOnOs(OS.WINDOWS)
         void readsFromStdinViaPosixReadSyscall(@Mktmp final Path temp) throws IOException {
@@ -709,6 +712,7 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileReadSyscallTest {
+
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
         void readsFromStdinViaWindowsFileReadSyscall(@Mktmp final Path temp) throws IOException {
@@ -852,9 +856,9 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class PosixWriteSyscallTest {
+
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void writesToStdoutViaPosixWriteSyscall(@Mktmp final Path temp) throws IOException {
             final String msg = "writes to posix stdout";
             MatcherAssert.assertThat(
@@ -924,9 +928,9 @@ final class InputOutputTest {
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileWriteSyscallTest {
+
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void writesToStdoutViaWindowsWriteFileFunction(@Mktmp final Path temp)
             throws IOException {
             final String msg = "writes to windows stdout";

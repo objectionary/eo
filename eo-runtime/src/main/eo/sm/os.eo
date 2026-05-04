@@ -10,6 +10,7 @@
 +unlint redundant-object
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
++unlint not-empty-atom
 
 # Represents the current operating system.
 [] > os
@@ -25,7 +26,7 @@
   ((regex "/mac/i").matches name).as-bool > is-macos
 
   # Returns the name of the current operation system as `org.eolang.string`.
-  [] > name ?
+  [] > name /string
 
   # Tests that the operating system belongs to the supported OS families (Windows, macOS, or Linux).
   [] +> tests-checks-os-family

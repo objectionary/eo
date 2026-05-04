@@ -8,6 +8,7 @@
 +unlint redundant-object
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
++unlint not-empty-atom
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
@@ -28,7 +29,7 @@
         eq negative-infinity
 
   # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
-  [] > as-i64 ?
+  [] > as-i64 /i64
 
   # Returns true if this number equals `x` when compared as byte sequences.
   # The parameter `x` can be a `number` or any object convertible to `bytes`
@@ -75,7 +76,7 @@
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > gt ?
+  [x] > gt /true
 
   # Returns `true` if `$` >= `x`.
   # Here `x` can be a `number` or any other object which
@@ -89,12 +90,12 @@
   # Multiplication of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > times ?
+  [x] > times /number
 
   # Sum of `$` and `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > plus ?
+  [x] > plus /number
 
   # Difference between `$` and `x`.
   # Here `x` can be a `number` or any other object which
@@ -107,12 +108,25 @@
   # Quotient of the division of `$` by `x` as `org.eolang.number`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > div ?
+  [x] > div /number
 
   # The object rounds down the original `number` to the nearest
   # whole `number` that is less than or equal to it
   # and returns the result as `org.eolang.number`.
-  [] > floor ?
+  # For non-finite values (`nan`, `+inf`, `-inf`) the input is returned
+  # unchanged. For finite inputs we truncate toward zero via `as-i64`,
+  # which matches mathematical floor for every value except negative
+  # non-integers — where the truncated result is strictly greater than
+  # the original, so we subtract `1` in that single case.
+  [] > floor
+    if. > @
+      ^.is-finite.not
+      ^
+      if.
+        trunc.gt ^
+        trunc.minus 1
+        trunc
+    ^.as-i64.as-number > trunc
 
   # Tests that less-than comparison returns true when first number is smaller.
   [] +> tests-int-less-true
@@ -350,7 +364,43 @@
     eq. > @
       floor.
         13.div -5
-      -2
+      -3
+
+  # Tests that floor of a positive fractional number truncates toward zero.
+  [] +> tests-floor-positive-fraction
+    eq. > @
+      3.7.floor
+      3
+
+  # Tests that floor of a negative fractional number rounds toward negative infinity.
+  [] +> tests-floor-negative-fraction
+    eq. > @
+      -3.7.floor
+      -4
+
+  # Tests that floor of a small negative fractional number rounds toward negative infinity.
+  [] +> tests-floor-negative-small-fraction
+    eq. > @
+      -0.1.floor
+      -1
+
+  # Tests that floor of a whole number returns the same number.
+  [] +> tests-floor-of-integer
+    eq. > @
+      42.floor
+      42
+
+  # Tests that floor of a negative whole number returns the same number.
+  [] +> tests-floor-of-negative-integer
+    eq. > @
+      -5.floor
+      -5
+
+  # Tests that floor of zero returns zero.
+  [] +> tests-floor-of-zero
+    eq. > @
+      0.floor
+      0
 
   # Tests that division result can be less than one.
   [] +> tests-div-less-than-one

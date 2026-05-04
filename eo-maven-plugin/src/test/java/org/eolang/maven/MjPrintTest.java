@@ -84,6 +84,7 @@ final class MjPrintTest {
      * @return Result printed EO
      * @throws Exception If fails to execute {@link MjPrint}
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
         throws Exception {
         new Saved(

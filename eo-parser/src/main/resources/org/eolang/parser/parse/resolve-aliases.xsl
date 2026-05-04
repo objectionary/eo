@@ -27,6 +27,23 @@
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="o[@atom and not(contains(@atom, '.'))]">
+    <xsl:variable name="o" select="."/>
+    <xsl:copy>
+      <xsl:attribute name="atom">
+        <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = $o/@atom]"/>
+        <xsl:choose>
+          <xsl:when test="$meta">
+            <xsl:value-of select="$meta/part[last()]"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$o/@atom"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()|@* except @atom"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>
     <xsl:copy>

@@ -7,7 +7,6 @@ package org.eolang;
 
 /**
  * Common exception.
- *
  * @since 0.21
  */
 public class ExFailure extends ExAbstract {
@@ -21,9 +20,10 @@ public class ExFailure extends ExAbstract {
      * Ctor.
      * @param cause Exception cause
      * @param args Arguments for {@link String#format(String, Object...)}
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public ExFailure(final String cause, final Object... args) {
-        super(String.format(cause, args));
+        this(String.format(cause, args), (Throwable) null);
     }
 
     /**

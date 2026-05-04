@@ -1,0 +1,72 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: lock-closed-issues
+'on':
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+permissions:
+  issues: write
+concurrency:
+  group: lock-threads
+jobs:
+  lock-closed-issues:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Lock closed issues after 7 days of inactivity
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const deadline = new Date();
+            deadline.setDate(deadline.getDate() - 7);
+            const comment = `This issue has been automatically locked since it was closed and has not had any activity for 7 days. If you're experiencing a similar issue, please file a new issue and reference this one if it's relevant.`;
+            let page = 1;
+            let more = true;
+            let total = 0;
+            while (more) {
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'closed',
+                sort: 'updated',
+                direction: 'asc',
+                per_page: 100,
+                page: page
+              });
+              if (issues.length === 0) {
+                more = false;
+                break;
+              }
+              for (const issue of issues) {
+                if (issue.locked) continue;
+                if (issue.pull_request) continue;
+                const updated = new Date(issue.updated_at);
+                if (updated > deadline) {
+                  more = false;
+                  break;
+                }
+                try {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    body: comment
+                  });
+                  await github.rest.issues.lock({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    lock_reason: 'resolved'
+                  });
+                  total++;
+                  console.log(`Locked issue #${issue.number}: ${issue.title}`);
+                } catch (err) {
+                  console.error(`Failed to lock issue #${issue.number}: ${err.message}`);
+                }
+              }
+              page++;
+            }
+            console.log(`Total issues locked: ${total}`);

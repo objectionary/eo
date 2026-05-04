@@ -209,6 +209,7 @@
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>false</failOnWarning>
           <offline>true</offline>
+          <ignoreRuntime>true</ignoreRuntime>
         </configuration>
         <executions>
           <execution>
@@ -265,162 +266,12 @@
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
-              <!--
-                @todo #4987:30min. Reduce keepBinaries back to package-info entries only.
-                  Due to incorrect default value of classesDir in MjSafe (fixed in #4987),
-                  MjUnplace and MjUnspile were not working properly, so all classes —
-                  hand-written, generated, and placed — were published to Maven Central by
-                  mistake (see #4538). As a result, when eo-runtime resolves itself as a
-                  dependency, all those extra classes get placed into target/classes and
-                  would be included in the JAR unless explicitly kept here. Once a release
-                  with the fix is published to Maven Central and this module stops resolving
-                  the bloated artifact, this list can be reduced back to the five
-                  package-info.class entries.
-              -->
               <keepBinaries>
-                <glob>org/eolang/AtComposite.class</glob>
-                <glob>org/eolang/Atom.class</glob>
-                <glob>org/eolang/AtomSafe.class</glob>
-                <glob>org/eolang/AtOnce.class</glob>
-                <glob>org/eolang/AtRho.class</glob>
-                <glob>org/eolang/Attr.class</glob>
-                <glob>org/eolang/AtVoid.class</glob>
-                <glob>org/eolang/AtWithRho.class</glob>
-                <glob>org/eolang/Bytes.class</glob>
-                <glob>org/eolang/BytesOf.class</glob>
-                <glob>org/eolang/BytesRaw.class</glob>
-                <glob>org/eolang/Data.class</glob>
-                <glob>org/eolang/Dataized.class</glob>
-                <glob>org/eolang/EObytes$EOand.class</glob>
-                <glob>org/eolang/EObytes$EOconcat.class</glob>
-                <glob>org/eolang/EObytes$EOeq.class</glob>
-                <glob>org/eolang/EObytes$EOnot.class</glob>
-                <glob>org/eolang/EObytes$EOor.class</glob>
-                <glob>org/eolang/EObytes$EOright.class</glob>
-                <glob>org/eolang/EObytes$EOsize.class</glob>
-                <glob>org/eolang/EObytes$EOslice.class</glob>
-                <glob>org/eolang/EObytes$EOxor.class</glob>
-                <glob>org/eolang/EOerror.class</glob>
-                <glob>org/eolang/EOfs/EOdir$EOmade$EOmkdir.class</glob>
-                <glob>org/eolang/EOfs/EOdir$EOtmpfile$EOtouch.class</glob>
-                <glob>org/eolang/EOfs/EOdir$EOwalk.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOdeleted$EOdelete.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOexists.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOis_directory.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOmoved$EOmove.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOopen$EOfile_stream$EOread$EOchunk.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOopen$EOprocess_file.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOsize.class</glob>
-                <glob>org/eolang/EOfs/EOfile$EOtouched$EOtouch.class</glob>
-                <glob>org/eolang/EOfs/Files.class</glob>
                 <glob>org/eolang/EOfs/package-info.class</glob>
-                <glob>org/eolang/EOi16$EOas_i32.class</glob>
-                <glob>org/eolang/EOi32$EOas_i64.class</glob>
-                <glob>org/eolang/EOi64$EOas_number.class</glob>
-                <glob>org/eolang/EOi64$EOdiv.class</glob>
-                <glob>org/eolang/EOi64$EOgt.class</glob>
-                <glob>org/eolang/EOi64$EOplus.class</glob>
-                <glob>org/eolang/EOi64$EOtimes.class</glob>
-                <glob>org/eolang/EOmalloc$EOof$EOφ.class</glob>
-                <glob>org/eolang/EOmalloc$EOof$EOallocated$EOread.class</glob>
-                <glob>org/eolang/EOmalloc$EOof$EOallocated$EOresized.class</glob>
-                <glob>org/eolang/EOmalloc$EOof$EOallocated$EOsize.class</glob>
-                <glob>org/eolang/EOmalloc$EOof$EOallocated$EOwrite.class</glob>
-                <glob>org/eolang/EOms/EOacos.class</glob>
-                <glob>org/eolang/EOms/EOangle$EOcos.class</glob>
-                <glob>org/eolang/EOms/EOangle$EOsin.class</glob>
-                <glob>org/eolang/EOms/EOasin.class</glob>
-                <glob>org/eolang/EOms/EOln.class</glob>
-                <glob>org/eolang/EOms/EOpow.class</glob>
-                <glob>org/eolang/EOms/EOsqrt.class</glob>
                 <glob>org/eolang/EOms/package-info.class</glob>
-                <glob>org/eolang/EOnumber$EOas_i64.class</glob>
-                <glob>org/eolang/EOnumber$EOdiv.class</glob>
-                <glob>org/eolang/EOnumber$EOfloor.class</glob>
-                <glob>org/eolang/EOnumber$EOgt.class</glob>
-                <glob>org/eolang/EOnumber$EOplus.class</glob>
-                <glob>org/eolang/EOnumber$EOtimes.class</glob>
-                <glob>org/eolang/EOsm/EOos$EOname.class</glob>
-                <glob>org/eolang/EOsm/EOposix$EOφ.class</glob>
-                <glob>org/eolang/EOsm/EOwin32$EOφ.class</glob>
                 <glob>org/eolang/EOsm/package-info.class</glob>
-                <glob>org/eolang/EOsm/Posix/AcceptSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/BindSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/CloseSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/ConnectSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/CStdLib.class</glob>
-                <glob>org/eolang/EOsm/Posix/ErrnoSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/GetenvSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/GetpidSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/GettimeofdaySyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/InetAddrSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/ListenSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/package-info.class</glob>
-                <glob>org/eolang/EOsm/Posix/ReadSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/RecvSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/SendSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/SocketSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/StrerrorSyscall.class</glob>
-                <glob>org/eolang/EOsm/Posix/WriteSyscall.class</glob>
-                <glob>org/eolang/EOsm/SockaddrIn.class</glob>
-                <glob>org/eolang/EOsm/Syscall.class</glob>
-                <glob>org/eolang/EOsm/TupleToArray.class</glob>
-                <glob>org/eolang/EOsm/Win32/AcceptFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/BaseTSD.class</glob>
-                <glob>org/eolang/EOsm/Win32/BindFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/ClosesocketFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/ConnectFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/GetCurrentProcessIdFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/GetEnvironmentVariableFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/GetSystemTimeFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/InetAddrFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/Kernel32.class</glob>
-                <glob>org/eolang/EOsm/Win32/ListenFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/package-info.class</glob>
-                <glob>org/eolang/EOsm/Win32/ReadFileFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/RecvFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/SendFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/SocketFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/WinBase.class</glob>
-                <glob>org/eolang/EOsm/Win32/Wincon.class</glob>
-                <glob>org/eolang/EOsm/Win32/WinDef.class</glob>
-                <glob>org/eolang/EOsm/Win32/WinNT.class</glob>
-                <glob>org/eolang/EOsm/Win32/Winsock.class</glob>
-                <glob>org/eolang/EOsm/Win32/WriteFileFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/WSACleanupFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/WSAGetLastErrorFuncCall.class</glob>
-                <glob>org/eolang/EOsm/Win32/WSAStartupFuncCall.class</glob>
-                <glob>org/eolang/EOtry.class</glob>
-                <glob>org/eolang/EOtt/EOregex$EOφ.class</glob>
-                <glob>org/eolang/EOtt/EOregex$EOpattern$EOmatch$EOmatched_from_index.class</glob>
-                <glob>org/eolang/EOtt/EOsprintf.class</glob>
-                <glob>org/eolang/EOtt/EOsscanf.class</glob>
                 <glob>org/eolang/EOtt/package-info.class</glob>
-                <glob>org/eolang/EOtt/SprintfArgs.class</glob>
-                <glob>org/eolang/ExAbstract.class</glob>
-                <glob>org/eolang/ExFailure.class</glob>
-                <glob>org/eolang/ExInterrupted.class</glob>
-                <glob>org/eolang/Expect.class</glob>
-                <glob>org/eolang/ExReadOnly.class</glob>
-                <glob>org/eolang/ExUnset.class</glob>
-                <glob>org/eolang/Heaps.class</glob>
-                <glob>org/eolang/JavaPath.class</glob>
-                <glob>org/eolang/Main.class</glob>
                 <glob>org/eolang/package-info.class</glob>
-                <glob>org/eolang/PhCached.class</glob>
-                <glob>org/eolang/PhCopy.class</glob>
-                <glob>org/eolang/PhDefault.class</glob>
-                <glob>org/eolang/Phi.class</glob>
-                <glob>org/eolang/PhLogged.class</glob>
-                <glob>org/eolang/PhMethod.class</glob>
-                <glob>org/eolang/PhOnce.class</glob>
-                <glob>org/eolang/PhPackage.class</glob>
-                <glob>org/eolang/PhSafe.class</glob>
-                <glob>org/eolang/PhVoid.class</glob>
-                <glob>org/eolang/PhWith.class</glob>
-                <glob>org/eolang/VerboseBytesAsString.class</glob>
-                <glob>org/eolang/XmirObject.class</glob>
               </keepBinaries>
             </configuration>
           </execution>
@@ -571,7 +422,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.23.3</version>
+            <version>0.25.0</version>
             <executions>
               <execution>
                 <goals>

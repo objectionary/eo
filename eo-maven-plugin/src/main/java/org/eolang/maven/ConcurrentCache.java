@@ -7,17 +7,13 @@ package org.eolang.maven;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Concurrent cache wrapper for Cache.
  * Wrap {@link Cache} to make it thread-safe.
  * @since 0.60
- * @todo #4884:30min Use ReentrantLock instead of synchronized block.
- *  This is the suggestion from qulice.
- *  Dont' forget to remove the PMD suppression for AvoidSynchronizedStatement
- *  after that.
  */
-@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class ConcurrentCache {
 
     /**
@@ -28,7 +24,7 @@ final class ConcurrentCache {
     /**
      * Locks for each cache entry.
      */
-    private final ConcurrentMap<? super Path, Object> locks;
+    private final ConcurrentMap<Path, ReentrantLock> locks;
 
     /**
      * Ctor.
@@ -43,7 +39,7 @@ final class ConcurrentCache {
      * @param original Original cache
      * @param locks Locks map
      */
-    private ConcurrentCache(final Cache original, final ConcurrentMap<? super Path, Object> locks) {
+    private ConcurrentCache(final Cache original, final ConcurrentMap<Path, ReentrantLock> locks) {
         this.original = original;
         this.locks = locks;
     }
@@ -55,9 +51,14 @@ final class ConcurrentCache {
      * @param tail Tail path in cache
      */
     void apply(final Path source, final Path target, final Path tail) {
-        final Object loc = this.locks.computeIfAbsent(tail.normalize(), k -> new Object());
-        synchronized (loc) {
+        final ReentrantLock lock = this.locks.computeIfAbsent(
+            tail.normalize(), k -> new ReentrantLock()
+        );
+        lock.lock();
+        try {
             this.original.apply(source, target, tail.normalize());
+        } finally {
+            lock.unlock();
         }
     }
 }

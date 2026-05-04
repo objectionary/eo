@@ -2,6 +2,7 @@
 +alias ss.list
 +alias ss.reduced
 +alias ss.reducedi
++alias ss.withouti
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ss
@@ -54,18 +55,6 @@
       ^
       func item > [item index] >>
 
-  # Create a new list without the i-th element.
-  [i] > withouti
-    list > @
-      reducedi
-        ^
-        *
-        [accum item idx] >>
-          if. > @
-            i.eq idx
-            accum
-            accum.with item
-
   # Create a new list without the `element` which is `.eq` to given one.
   [element] > without
     list > @
@@ -102,79 +91,6 @@
       list passed
       ^
       accum.with item > [accum item index]
-
-  # Returns index of the first particular item in list.
-  # If the list has no this item, index-of returns -1.
-  [wanted] > index-of
-    number > @
-      recidx origin
-
-    # Recursively searches for wanted element returning its index.
-    [tup] > recidx
-      if. > @
-        tup.length.eq 0
-        -1
-        if.
-          next.eq -1
-          if.
-            tup.head.eq wanted
-            tup.tail.length
-            -1
-          next
-      recidx tup.tail > next!
-
-  # Returns index of the last particular item in list.
-  # If the list has no this item, returns -1.
-  [wanted] > last-index-of
-    reclast origin > @
-
-    # Recursively searches for last occurrence of wanted element.
-    [tup] > reclast
-      if. > @
-        tup.length.eq 0
-        -1
-        if.
-          tup.head.eq wanted
-          tup.tail.length
-          reclast tup.tail
-
-  # Returns `true` if the list contains `element`.
-  # Otherwise, `false`.
-  [element] > contains
-    not. > @
-      eq.
-        -1
-        index-of element
-
-  # Filter list with index with the function `func`.
-  # Here `func` must be an abstract
-  # object with two attributes. The first
-  # one for the element, the second one
-  # for the index. The result of dataization
-  # the `func` should be boolean, that is `true` or `false`.
-  [func] > filteredi
-    list > @
-      recfilter origin
-
-    # Recursively filters tuple elements using predicate function with index.
-    [tup] > recfilter
-      if. > @
-        tup.length.eq 0
-        *
-        if.
-          func tup.head tup.tail.length
-          next.with tup.head
-          next
-      recfilter tup.tail > next
-
-  # Filter list without index with the function `func`.
-  # Here `func` must be an abstract object
-  # with one attribute for the element.
-  # The result of dataization the `func`
-  # should be boolean, that is `true` or `false`.
-  [func] > filtered
-    filteredi > @
-      func item > [item index] >>
 
   # Get the first `index` elements from the start of the list.
   [index] > front
@@ -337,36 +253,6 @@
             ^.m.put (^.m.as-number.plus i) > [i] >>
       6
 
-  # Tests that removing an element by index works correctly.
-  [] +> tests-list-withouti
-    eq. > @
-      withouti.
-        list
-          * 1 2 3
-        1
-      * 1 3
-
-  # Tests that removing an element by index works in complex scenarios.
-  [] +> tests-list-withouti-complex-case
-    eq. > @
-      foo
-        * 1 "text" "f"
-      * "text" "f"
-    # Helper function that removes first element from given tuple.
-    [a] > foo
-      withouti. > @
-        list a
-        0
-
-  # Tests that removing an element by index works with nested arrays.
-  [] +> tests-list-withouti-nested-array
-    eq. > @
-      withouti.
-        list
-          * "smthg" 27 (* 3 2 1)
-        2
-      * "smthg" 27
-
   # Tests that removing all occurrences of a value works correctly.
   [] +> tests-list-without
     eq. > @
@@ -400,7 +286,7 @@
       eq.
         list3
         * 1 2 3
-    withouti. > list3
+    withouti > list3
       concat.
         list (* 0 1)
         list (* 2 3)
@@ -414,170 +300,6 @@
           * 0 1
         * 2 4
       * 0 1 2 4
-
-  # Tests that finding the index of an element works correctly.
-  [] +> tests-returns-index-of
-    eq. > @
-      1
-      index-of.
-        list
-          * 1 2 3
-        2
-
-  # Tests that finding the first index of a duplicated element works correctly.
-  [] +> tests-returns-first-index-of-element
-    eq. > @
-      0
-      index-of.
-        list
-          * -1 2 -1
-        -1
-
-  # Tests that index-of returns -1 for non-existent elements.
-  [] +> tests-does-not-find-index-of
-    eq. > @
-      -1
-      index-of.
-        list
-          * "qwerty" 2 3
-        7
-
-  # Tests that finding the index of a string element works correctly.
-  [] +> tests-finds-index-of-string
-    eq. > @
-      1
-      index-of.
-        list
-          * "asdfgh" "qwerty" 3
-        "qwerty"
-
-  # Tests that finding the last index of an element works correctly.
-  [] +> tests-finds-last-index-of
-    eq. > @
-      1
-      last-index-of.
-        list
-          * "qwerty" 2 3
-        2
-
-  # Tests that finding the last index of a repeated element works correctly.
-  [] +> tests-finds-last-index-of-repeated
-    eq. > @
-      2
-      last-index-of.
-        list
-          * 24 42 24
-        24
-
-  # Tests that last-index-of returns -1 for non-existent elements.
-  [] +> tests-last-index-of-not-found
-    eq. > @
-      -1
-      last-index-of.
-        list
-          * 1 2 3
-        0
-
-  # Tests that last-index-of returns -1 for empty lists.
-  [] +> tests-last-index-of-empty
-    eq. > @
-      -1
-      last-index-of.
-        list *
-        "abc"
-
-  # Tests that finding the last index of unicode strings works correctly.
-  [] +> tests-last-index-of-unicode
-    eq. > @
-      3
-      last-index-of.
-        list
-          * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
-        "Привет"
-
-  # Tests that checking if a list contains a string works correctly.
-  [] +> tests-list-contains-string
-    contains. > @
-      list
-        * "qwerty" "asdfgh" 3 "qwerty"
-      "qwerty"
-
-  # Tests that checking if a list contains a number works correctly.
-  [] +> tests-list-contains-number
-    contains. > @
-      list
-        * "qwerty" "asdfgh" 3 "qwerty"
-      3
-
-  # Tests that checking if a list does not contain an element works correctly.
-  [] +> tests-list-does-not-contain
-    not. > @
-      contains.
-        list
-          * "Привет" "asdfgh" 3 "qwerty"
-        "Hi"
-
-  # Tests that filtering with index using less-than comparison works correctly.
-  [] +> tests-filteredi-with-lt
-    eq. > @
-      filteredi.
-        list
-          * 3 1 4 2 5
-        v.lt 3 > [v i]
-      * 1 2
-
-  # Tests that filtering with index based on string length works correctly.
-  [] +> tests-filteredi-with-string-length
-    eq. > @
-      filteredi.
-        list
-          * "Hello" "Name" "EO" "List"
-        v.length.gt 4 > [v i]
-      * "Hello"
-
-  # Tests that filtering an empty list with index returns an empty list.
-  [] +> tests-filteredi-with-empty-list
-    is-empty. > @
-      filteredi.
-        list
-          *
-        v.lt 3 > [v i]
-
-  # Tests that filtering elements by their index position works correctly.
-  [] +> tests-filteredi-by-index
-    eq. > @
-      filteredi.
-        list
-          * 3 1 4
-        i.gt 0 > [v i]
-      * 1 4
-
-  # Tests that filtering boolean values with index works correctly.
-  [] +> tests-filteredi-with-bools
-    eq. > @
-      filteredi.
-        list
-          * true false true
-        v.not > [v i]
-      * false
-
-  # Tests that filtering without index using greater-than comparison works correctly.
-  [] +> tests-simple-filtered
-    eq. > @
-      filtered.
-        list
-          * 3 1 4 2 5
-        v.gt 2 > [v]
-      * 3 4 5
-
-  # Tests that filtering boolean values without index works correctly.
-  [] +> tests-filtered-with-bools
-    eq. > @
-      filtered.
-        list
-          * true false true
-        v.not > [v]
-      * false
 
   # Tests that getting the first element from a list works correctly.
   [] +> tests-simple-front

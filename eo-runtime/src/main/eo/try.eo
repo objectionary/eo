@@ -6,6 +6,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint idempotent-attribute-is-not-first
++unlint not-empty-atom
 
 # Exception handling mechanism that catches errors during dataization.
 # When `try` is dataized, it attempts to dataize the `main` attribute first.
@@ -23,7 +24,7 @@
 #   cleanup-action     # finally
 # ```
 # .
-[main catch finally] > try ?
+[main catch finally] > try /bytes
   # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception
     try > @

@@ -15,9 +15,10 @@ package org.eolang;
  */
 @FunctionalInterface
 public interface Atom {
+
     /**
      * Executes λ function and calculates object.
-     * @return Object calculated from λ function.
+     * @return Object calculated from λ function
      */
     Phi lambda() throws Exception;
 }

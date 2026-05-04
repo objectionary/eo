@@ -18,20 +18,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:parse goal.
- *
  * @since 0.52
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjParseIT {
+
     @Test
-    @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
     void parsesSimpleFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "# Simple object.\n[] > foo\n".getBytes(StandardCharsets.UTF_8)
+                    String.format("# Simple object.%n[] > foo%n").getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value()
                     .goals("register", "parse");

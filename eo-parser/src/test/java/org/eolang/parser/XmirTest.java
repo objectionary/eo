@@ -24,7 +24,6 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Xmir}.
- *
  * @since 0.5
  */
 final class XmirTest {
@@ -36,7 +35,7 @@ final class XmirTest {
         final Xmir xmir = this.asXmir((String) xtory.map().get("origin"));
         MatcherAssert.assertThat(
             String.format(
-                "Result EO should be equal to original EO, XMIR is:\n%s",
+                "Result EO should be equal to original EO, XMIR is:%n%s",
                 xmir
             ),
             xmir.toEO(),

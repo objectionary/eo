@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ChNarrow}.
- *
  * @since 0.28.11
  */
 final class ChNarrowTest {

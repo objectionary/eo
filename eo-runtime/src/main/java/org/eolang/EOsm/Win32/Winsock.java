@@ -24,6 +24,7 @@ import org.eolang.EOsm.SockaddrIn;
  */
 @SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
 public interface Winsock extends StdCallLibrary {
+
     /**
      * Instance.
      */
@@ -70,15 +71,15 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Initializes winsock usage by DLL process.
-     * @param version Highest Windows socket specification version.
+     * @param version Highest Windows socket specification version
      * @param data Data with info about socket structure
-     * @return Zero on success, error code on error.
+     * @return Zero on success, error code on error
      */
     int WSAStartup(short version, WSAStartupFuncCall.WSAData data);
 
     /**
      * Stops usage of Winsock 2 by DLL.
-     * @return Zero on success, SOCKET_ERROR on error.
+     * @return Zero on success, SOCKET_ERROR on error
      */
     int WSACleanup();
 
@@ -94,7 +95,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Closes a socket.
      * @param socket Socket descriptor
-     * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
+     * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
     int closesocket(int socket);
 
@@ -103,7 +104,7 @@ public interface Winsock extends StdCallLibrary {
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
-     * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
+     * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
     int connect(int sockfd, SockaddrIn addr, int addrlen);
 
@@ -132,7 +133,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addr Address structure
      * @param addrlen The size of the address structure
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
-     *  is returned. On error, -1 is returned.
+     *  is returned. On error, -1 is returned
      */
     int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
 
@@ -160,7 +161,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Retrieve the last error from winsock.
-     * @return The code of the last winsock error.
+     * @return The code of the last winsock error
      */
     int WSAGetLastError();
 }

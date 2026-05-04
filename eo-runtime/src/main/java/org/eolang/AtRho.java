@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 0.36.0
  */
 final class AtRho implements Attr {
+
     /**
      * Rho.
      */
@@ -29,7 +30,7 @@ final class AtRho implements Attr {
 
     /**
      * Ctor.
-     * @param rho Rho.
+     * @param rho Rho
      */
     private AtRho(final Phi rho) {
         this.rho = new AtomicReference<>(rho);

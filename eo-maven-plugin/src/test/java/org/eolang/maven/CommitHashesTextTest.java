@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link CommitHashesText}.
- *
  * @since 0.37.0
  */
 @ExtendWith(WeAreOnline.class)
@@ -29,6 +28,7 @@ final class CommitHashesTextTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void isThreadSafe() {
         final CommitHashesText text = new CommitHashesText();
         MatcherAssert.assertThat(

@@ -10,7 +10,6 @@ import org.cactoos.Input;
 
 /**
  * Objectionary with index.
- *
  * @since 0.29
  */
 final class OyIndexed implements Objectionary {

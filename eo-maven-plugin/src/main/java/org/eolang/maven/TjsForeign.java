@@ -25,7 +25,6 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Foreign tojos.
- *
  * @since 0.30
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -68,8 +67,8 @@ final class TjsForeign implements Closeable {
 
     /**
      * Main constructor.
-     * @param tojos The tojos.
-     * @param scope The scope.
+     * @param tojos The tojos
+     * @param scope The scope
      */
     private TjsForeign(
         final Unchecked<Tojos> tojos,
@@ -86,8 +85,8 @@ final class TjsForeign implements Closeable {
 
     /**
      * Add a foreign tojo.
-     * @param name The name of the tojo.
-     * @return The tojo.
+     * @param name The name of the tojo
+     * @return The tojo
      */
     TjForeign add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
@@ -99,16 +98,15 @@ final class TjsForeign implements Closeable {
 
     /**
      * Find tojo by tojo id.
-     * @param id The id of the tojo.
-     * @return The tojo.
+     * @param id The id of the tojo
+     * @return The tojo
      */
     TjForeign find(final String id) {
         return new TjForeign(
             this.tojos.value()
                 .select(tojo -> tojo.get(Attribute.ID.getKey()).equals(id))
                 .stream()
-                .findFirst()
-                .orElseThrow(
+                .findFirst().orElseThrow(
                     () -> new IllegalArgumentException(
                         String.format("Tojo '%s' not found", id)
                     )
@@ -118,7 +116,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have corresponding xmir.
-     * @return The tojos.
+     * @return The tojos
      */
     Collection<TjForeign> withXmir() {
         return this.select(row -> row.exists(Attribute.XMIR.getKey()));
@@ -126,7 +124,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that doesn't have dependency.
-     * @return The tojos.
+     * @return The tojos
      */
     Collection<TjForeign> dependencies() {
         return this.select(
@@ -138,7 +136,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have corresponding eo file.
-     * @return The tojos.
+     * @return The tojos
      */
     Collection<TjForeign> withSources() {
         return this.select(row -> row.exists(Attribute.EO.getKey()));
@@ -146,7 +144,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that do not have corresponding eo and xmir.
-     * @return The tojos.
+     * @return The tojos
      */
     Collection<TjForeign> withoutSources() {
         return this.select(
@@ -157,7 +155,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have not probed yet.
-     * @return The tojos.
+     * @return The tojos
      */
     Collection<TjForeign> unprobed() {
         return this.select(
@@ -167,7 +165,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get all tojos as a collection.
-     * @return Collection of tojos.
+     * @return Collection of tojos
      */
     Collection<TjForeign> all() {
         return this.select(all -> true).stream()
@@ -177,8 +175,8 @@ final class TjsForeign implements Closeable {
 
     /**
      * Check if the tojos contains a foreign tojo with name.
-     * @param name The name of the tojo.
-     * @return True if the tojo exists.
+     * @param name The name of the tojo
+     * @return True if the tojo exists
      */
     boolean contains(final String name) {
         return !this.select(tojo -> tojo.get(Attribute.ID.getKey()).equals(name)).isEmpty();
@@ -186,7 +184,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the size of the tojos.
-     * @return The size of the tojos.
+     * @return The size of the tojos
      */
     int size() {
         return this.select(all -> true).size();
@@ -217,15 +215,14 @@ final class TjsForeign implements Closeable {
 
     /**
      * Select tojos.
-     * @param filter Filter.
-     * @return Selected tojos.
+     * @param filter Filter
+     * @return Selected tojos
      */
     private Collection<TjForeign> select(final Predicate<? super Tojo> filter) {
-        final Predicate<Tojo> scoped = t ->
-            t.get(Attribute.SCOPE.getKey()).equals(this.scope.get());
-        return this.tojos.value()
-            .select(t -> filter.test(t) && scoped.test(t))
-            .stream().map(TjForeign::new).collect(Collectors.toList());
+        return this.tojos.value().select(
+            t -> filter.test(t)
+                && t.get(Attribute.SCOPE.getKey()).equals(this.scope.get())
+        ).stream().map(TjForeign::new).collect(Collectors.toList());
     }
 
     /**
@@ -308,7 +305,7 @@ final class TjsForeign implements Closeable {
 
         /**
          * Ctor.
-         * @param attribute The attribute name.
+         * @param attribute The attribute name
          */
         Attribute(final String attribute) {
             this.key = attribute;
@@ -316,7 +313,7 @@ final class TjsForeign implements Closeable {
 
         /**
          * Get the attribute name.
-         * @return The attribute name.
+         * @return The attribute name
          */
         String getKey() {
             return this.key;

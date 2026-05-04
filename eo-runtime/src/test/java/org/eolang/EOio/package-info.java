@@ -10,7 +10,6 @@
 
 /**
  * EO-io, tests.
- *
  * @since 0.1
  */
 package org.eolang.EOio; // NOPMD

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+
 *.iml
 .aider*
 .aidy
@@ -12,11 +15,12 @@
 .settings
 .vscode/
 /.aidy/
+ajcore.*
+build.log
 eo-maven-plugin/lib
 eo-runtime/lib
 eo-runtime/measures.csv
+interpolated-pom.xml
 node_modules/
 target/
 xs3p.xsl_*
-build.log
-interpolated-pom.xml

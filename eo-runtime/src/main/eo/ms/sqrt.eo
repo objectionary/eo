@@ -8,9 +8,10 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint not-empty-atom
 
 # Returns the positive square root of a `num` as `org.eolang.number`.
-[num] > sqrt ?
+[num] > sqrt /number
   # Tests that sqrt of zero is zero.
   [] +> tests-sqrt-zero
     eq. > @

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for architectural conventions.
- *
  * @since 0.51.0
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleAssertionMessage"})
@@ -45,7 +44,7 @@ final class ArchitectureTest {
 
     /**
      * All the project Mojos.
-     * @return Mojos classes conjunction.
+     * @return Mojos classes conjunction
      */
     private static GivenClassesConjunction mojos() {
         return ArchRuleDefinition.classes()

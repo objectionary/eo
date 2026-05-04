@@ -79,7 +79,7 @@ public interface CStdLib extends Library {
 
     /**
      * The "getpid" syscall.
-     * @return Process ID.
+     * @return Process ID
      */
     int getpid();
 
@@ -100,19 +100,19 @@ public interface CStdLib extends Library {
 
     /**
      * Writes given bytes buffer to file descriptor.
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be written.
-     * @return Number of bytes was written.
+     * @param descriptor File descriptor
+     * @param buf Buffer
+     * @param size Number of bytes to be written
+     * @return Number of bytes was written
      */
     int write(int descriptor, String buf, int size);
 
     /**
      * Read bytes from file descriptor.
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be read.
-     * @return Number of bytes was read.
+     * @param descriptor File descriptor
+     * @param buf Buffer
+     * @param size Number of bytes to be read
+     * @return Number of bytes was read
      */
     int read(int descriptor, byte[] buf, int size);
 
@@ -174,7 +174,7 @@ public interface CStdLib extends Library {
      * @param addr Address structure
      * @param addrlen The size of the address structure
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
-     *  is returned. On error, -1 is returned.
+     *  is returned. On error, -1 is returned
      */
     int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
 

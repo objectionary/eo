@@ -164,6 +164,12 @@
       nan.as-bytes
       (0.0.div 0.0).as-bytes
 
+  # Tests that floor of NaN returns NaN.
+  [] +> tests-nan-floor-is-nan
+    eq. > @
+      nan.floor.as-bytes
+      nan.as-bytes
+
   # Tests that NaN is detected as NaN.
   nan.is-nan > [] +> nan-is-nan
 

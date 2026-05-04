@@ -15,4 +15,4 @@ asserts:
   - /object[not(class) and not(//attr)]
 input: |
   # No comments.
-  [x y z] > global-atom ?
+  [x y z] > global-atom /bytes

@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link BytesOf}.
- *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -148,11 +147,11 @@ final class BytesOfTest {
     }
 
     @Test
-    void doesNotSupportRightShift() {
+    void doesNotSupportNegativeBits() {
         Assertions.assertThrows(
             UnsupportedOperationException.class,
             () -> new BytesOf(Integer.MAX_VALUE).sshift(-1),
-            "Integer.MAX_VALUE << 1 should throw exception, but it didn't"
+            "sshift with negative bits should throw exception, but it didn't"
         );
     }
 }

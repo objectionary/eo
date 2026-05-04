@@ -20,7 +20,6 @@ import org.cactoos.io.InputWithFallback;
 /**
  * The simple HTTP Objectionary server.
  * <p>This class is supposed to be used together with {@link OyCached}.</p>
- *
  * @since 0.1
  */
 final class OyRemote implements Objectionary {
@@ -44,13 +43,14 @@ final class OyRemote implements Objectionary {
      * Constructor.
      * @param hash Commit hash
      * @param proxies Proxies to use
+     * @checkstyle ConstructorsCodeFreeCheck (15 lines)
      */
     OyRemote(final CommitHash hash, final Proxy... proxies) {
-        this.program = new UrlOy(
+        this.program = new OyRemote.UrlOy(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash
         );
-        this.directory = new UrlOy(
+        this.directory = new OyRemote.UrlOy(
             "https://github.com/objectionary/home/tree/%s/objects/%s",
             hash
         );
@@ -60,7 +60,7 @@ final class OyRemote implements Objectionary {
     @Override
     public String toString() {
         return String.format(
-            "Program template: %s\nDirectory template: %s",
+            "Program template: %s%nDirectory template: %s",
             this.program,
             this.directory
         );
@@ -157,12 +157,17 @@ final class OyRemote implements Objectionary {
 
         /**
          * Ctor.
-         * @param template URL template.
-         * @param hash Objects version hash.
+         * @param template URL template
+         * @param hash Objects version hash
          */
         UrlOy(final String template, final CommitHash hash) {
             this.template = template;
             this.hash = hash;
+        }
+
+        @Override
+        public String toString() {
+            return this.template;
         }
 
         /**
@@ -171,20 +176,21 @@ final class OyRemote implements Objectionary {
          * @return URL
          * @throws MalformedURLException in case of incorrect URL
          */
-        public URL value(final String name) throws MalformedURLException {
+        URL value(final String name) throws MalformedURLException {
+            final String prefix = "org.eolang.";
+            final String stripped;
+            if (name.startsWith(prefix)) {
+                stripped = name.substring(prefix.length());
+            } else {
+                stripped = name;
+            }
             return new URL(
                 String.format(
                     this.template,
                     this.hash.value(),
-                    name.replace(".", "/")
+                    stripped.replace(".", "/")
                 )
             );
         }
-
-        @Override
-        public String toString() {
-            return this.template;
-        }
     }
-
 }

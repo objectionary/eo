@@ -36,13 +36,13 @@ import org.eolang.XmirObject;
 
 /**
  * Posix syscall.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "posix.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOposix$EOφ extends PhDefault implements Atom {
+
     /**
      * System calls map.
      */

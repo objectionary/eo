@@ -19,13 +19,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjUnplace}.
- *
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
 @ExtendWith(MktmpResolver.class)
 final class MjUnplaceTest {
+
     @Test
+
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cleansAllTheFiles(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);

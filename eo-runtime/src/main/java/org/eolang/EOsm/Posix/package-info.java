@@ -5,7 +5,6 @@
 
 /**
  * EO runtime, posix.
- *
  * @since 0.40
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)

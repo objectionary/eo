@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @since 0.29.0
  */
 final class DpsDefault implements Dependencies {
+
     /**
      * JNA dependency.
      */
@@ -78,7 +79,7 @@ final class DpsDefault implements Dependencies {
             deps.add(DpsDefault.JNA);
         }
         for (final TjForeign tojo : list) {
-            if (MjParse.ZERO.equals(tojo.version()) && !this.discover) {
+            if (Parse.ZERO.equals(tojo.version()) && !this.discover) {
                 Logger.debug(
                     this,
                     "Program %s skipped due to its zero version",
@@ -93,7 +94,7 @@ final class DpsDefault implements Dependencies {
             }
             final Dep dep = opt.get();
             final String coords = dep.toString();
-            if (this.skip && MjParse.ZERO.equals(dep.get().getVersion())) {
+            if (this.skip && Parse.ZERO.equals(dep.get().getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s skipped: %s",
                     tojo.description(), coords
@@ -112,7 +113,6 @@ final class DpsDefault implements Dependencies {
 
     /**
      * Find the artifact required by this EO XML.
-     *
      * @param file EO file
      * @return List of artifact needed
      */
@@ -149,32 +149,38 @@ final class DpsDefault implements Dependencies {
         return new Xnav(file)
             .element("object")
             .elements(Filter.withName("metas"))
-            .findFirst()
-            .map(
-                metas -> metas.elements(
-                    Filter.all(
-                        Filter.withName("meta"),
-                        meta -> {
-                            final Xnav xnav = new Xnav(meta);
-                            final Optional<Xnav> part = xnav.elements(
-                                Filter.withName("part")
-                            ).findFirst();
-                            return xnav.element("head").text().map("rt"::equals).orElse(false)
-                                && part.isPresent()
-                                && part.get().text().map("jvm"::equals).orElse(false);
-                        }
-                    )
-                )
-                .map(
-                    meta -> meta
-                        .elements(Filter.withName("part"))
-                        .limit(2)
-                        .reduce((first, second) -> second)
-                        .get()
-                        .text()
-                        .get()
-                )
-                .collect(Collectors.toList())
-            ).orElse(List.of());
+            .findFirst().map(DpsDefault::jvmMetas)
+            .orElse(List.of());
+    }
+
+    /**
+     * Extract JVM runtime meta names from a {@code metas} element.
+     * @param metas The {@code metas} element
+     * @return JVM runtime meta names
+     */
+    private static Collection<String> jvmMetas(final Xnav metas) {
+        return metas.elements(
+            Filter.all(
+                Filter.withName("meta"),
+                meta -> {
+                    final Xnav xnav = new Xnav(meta);
+                    final Optional<Xnav> part = xnav.elements(
+                        Filter.withName("part")
+                    ).findFirst();
+                    return xnav.element("head").text().map("rt"::equals).orElse(false)
+                        && part.isPresent()
+                        && part.get().text().map("jvm"::equals).orElse(false);
+                }
+            )
+        ).map(
+            meta -> meta
+                .elements(Filter.withName("part"))
+                .limit(2)
+                .reduce((first, second) -> second)
+                .get()
+                .text()
+                .get()
+        )
+        .collect(Collectors.toList());
     }
 }

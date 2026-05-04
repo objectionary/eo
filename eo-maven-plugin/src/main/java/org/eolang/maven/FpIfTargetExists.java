@@ -14,6 +14,7 @@ import org.cactoos.Func;
  * @since 0.41
  */
 final class FpIfTargetExists extends FpEnvelope {
+
     /**
      * Ctor.
      * @param first First wrapped footprint

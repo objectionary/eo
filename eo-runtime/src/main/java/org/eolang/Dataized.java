@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("java:S5164")
 public final class Dataized {
+
     /**
      * The object to dataize.
      */
@@ -40,6 +41,7 @@ public final class Dataized {
     /**
      * Ctor.
      * @param src The object
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public Dataized(final Phi src) {
         this(src, Logger.getLogger(Dataized.class.getName()));
@@ -74,7 +76,7 @@ public final class Dataized {
      *
      * @return The data
      */
-    @SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.PreserveStackTrace"})
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public byte[] take() {
         try {
             return this.phi.delta();
@@ -106,7 +108,7 @@ public final class Dataized {
                 String.format(
                     "Dataized to 'error' with %s inside, at:%n  ⇢ %s",
                     enc.forma(),
-                    String.join("\n  ⇢ ", clean)
+                    String.join("%n  ⇢ ", clean)
                 )
             );
             throw new EOerror.ExError(enc);

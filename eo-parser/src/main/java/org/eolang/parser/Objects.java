@@ -28,7 +28,7 @@ final class Objects implements Iterable<Directive> {
     /**
      * Start new object.
      * @param ctx Context
-     * @return Self.
+     * @return Self
      */
     Objects start(final ParserRuleContext ctx) {
         return this.start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
@@ -36,9 +36,9 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Start new object.
-     * @param line At line.
-     * @param pos At position.
-     * @return Self.
+     * @param line At line
+     * @param pos At position
+     * @return Self
      */
     Objects start(final int line, final int pos) {
         this.dirs.add("o");
@@ -47,8 +47,8 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Add data.
-     * @param data Data.
-     * @return Self.
+     * @param data Data
+     * @return Self
      */
     Objects data(final String data) {
         this.dirs.set(data);
@@ -57,9 +57,9 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Property.
-     * @param key Key.
-     * @param type Type.
-     * @return Self.
+     * @param key Key
+     * @param type Type
+     * @return Self
      */
     Objects prop(final String key, final Object type) {
         this.dirs.attr(key, type);
@@ -68,8 +68,8 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Empty property.
-     * @param key Key.
-     * @return Self.
+     * @param key Key
+     * @return Self
      */
     Objects prop(final String key) {
         return this.prop(key, "");
@@ -77,9 +77,9 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Change property by given xpath.
-     * @param key Key.
-     * @param xpath Xpath.
-     * @return Self.
+     * @param key Key
+     * @param xpath Xpath
+     * @return Self
      */
     Objects xprop(final String key, final Object xpath) {
         this.dirs.xattr(key, xpath);
@@ -88,7 +88,7 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Enter last object.
-     * @return Self.
+     * @return Self
      */
     Objects enter() {
         this.dirs.xpath("o[last()]").strict(1);
@@ -97,7 +97,7 @@ final class Objects implements Iterable<Directive> {
 
     /**
      * Leave current object.
-     * @return Self.
+     * @return Self
      */
     Objects leave() {
         this.dirs.up();

@@ -7,6 +7,8 @@ name: benchmark
   push:
     branches:
       - master
+    paths-ignore:
+      - README.md
 concurrency:
   group: benchmark-${{ github.ref }}
   cancel-in-progress: true
@@ -25,7 +27,7 @@ jobs:
           path: ~/.m2/repository
           key: ubuntu-benchmark-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-benchmark-jdk-21-maven-
-      - run: mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
+      - run: mvn clean install -ntp --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
       - run: |
           set -x
           sum=$(

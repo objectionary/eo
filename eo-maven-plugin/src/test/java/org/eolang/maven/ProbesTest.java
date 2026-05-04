@@ -25,7 +25,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link Probes}.
- *
  * @since 0.53
  */
 final class ProbesTest {
@@ -76,7 +75,7 @@ final class ProbesTest {
             xmir,
             new EoSyntax(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "# No comments.",
                     "[] > simple",
                     "  Q.io.stdout > @",
@@ -106,8 +105,8 @@ final class ProbesTest {
             new Probes(
                 new EoSyntax(
                     String.join(
-                        "\n",
-                        "+alias Q.io.stdout\n",
+                        System.lineSeparator(),
+                        String.format("+alias Q.io.stdout%n"),
                         "stdout \"Hello, world!\" > simple"
                     )
                 ).parsed()
@@ -127,10 +126,10 @@ final class ProbesTest {
     private static XML xmir() throws IOException {
         return new EoSyntax(
             String.join(
-                "\n",
+                System.lineSeparator(),
                 new String[]{
                     "+package foo.x",
-                    "+also while\n",
+                    String.format("+also while%n"),
                     "# No comments.",
                     "[] > main",
                     "  Q.io.stdout > @",

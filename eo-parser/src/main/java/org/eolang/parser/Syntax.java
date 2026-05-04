@@ -24,6 +24,7 @@ import java.io.IOException;
  */
 @FunctionalInterface
 interface Syntax {
+
     /**
      * Parses the source input and transforms it into XMIR format.
      *

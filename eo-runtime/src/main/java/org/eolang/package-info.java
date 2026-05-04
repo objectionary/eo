@@ -5,7 +5,6 @@
 
 /**
  * EO runtime.
- *
  * @since 0.2
  */
 package org.eolang;

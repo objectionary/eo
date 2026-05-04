@@ -26,178 +26,176 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
- * @todo #4987:30min Enable JarIt integration tests. The tests were disabled because of this ticket:
- *  https://github.com/objectionary/eo/issues/4987?issue=objectionary%7Ceo%7C4538. When new release
- *  is made, we should try to enable them. Don't forget to remove the puzzle.
+ * @todo #4750:30min Re-enable JarIT after next release.
+ *  The suite is temporarily disabled because its sandbox transpiles
+ *  eo-runtime objects pulled from the remote objectionary, where
+ *  number.floor is still defined as a Java atom. That transpilation
+ *  emits a reference to EOnumber$EOfloor, which has been removed from
+ *  the runtime in this branch, so javac fails. Once a release is cut
+ *  and the remote catches up with the EO-level floor, drop this
+ *  annotation.
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.UnitTestShouldIncludeAssert"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
+@Disabled
 final class JarIT {
 
-    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "# No comments.",
-                    "[] > simple",
-                    "  Q.io.stdout > @",
-                    "    \"Hello, world!\""
-                );
-                MatcherAssert.assertThat(
-                    "simple program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "simple"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("Hello, world!")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "# No comments.",
+                "[] > simple",
+                "  Q.io.stdout > @",
+                "    \"Hello, world!\""
+            )
+        );
+        MatcherAssert.assertThat(
+            "simple program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "simple"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("Hello, world!")
         );
     }
 
-    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    "+package examples",
-                    "",
-                    "# Program with a package.",
-                    "[args] > packaged",
-                    "  Q.io.stdout > @",
-                    "    \"Hello, world from a program with a package!\""
-                );
-                MatcherAssert.assertThat(
-                    "'packaged' program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "examples.packaged"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("Hello, world from a program with a package!")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "+package examples",
+                "",
+                "# Program with a package.",
+                "[args] > packaged",
+                "  Q.io.stdout > @",
+                "    \"Hello, world from a program with a package!\""
+            )
+        );
+        MatcherAssert.assertThat(
+            "'packaged' program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "examples.packaged"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("Hello, world from a program with a package!")
         );
     }
 
-    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    @SuppressWarnings({"PMD.UnnecessaryLocalRule",  "PMD.UnnecessaryVarargsArrayCreation"})
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                final String classpath = JarIT.compile(
-                    f,
-                    new ElegantObject(
-                        "app",
-                        new String[]{
-                            "+package examples",
-                            "+alias examples.fibonacci",
-                            "+alias io.stdout",
-                            "+alias tt.sprintf",
-                            "+alias tt.sscanf",
-                            "+architect yegor256@gmail.com",
-                            "",
-                            "# Application.",
-                            "[args] > app",
-                            "  number > n",
-                            "    at. > nn!",
-                            "      Q.tt.sscanf",
-                            "        \"%d\"",
-                            "        args.at 0",
-                            "      0",
-                            "  at. > e!",
-                            "    Q.tt.sscanf",
-                            "      \"%d\"",
-                            "      args.at 1",
-                            "    0",
-                            "  fibonacci n > f!",
-                            "  and. > @",
-                            "    stdout",
-                            "      sprintf",
-                            "        \"%dth Fibonacci number is %d\\n\"",
-                            "        * n f",
-                            "    e.eq f",
-                        }
-                    ),
-                    new ElegantObject(
-                        "fibonacci",
-                        new String[]{
-                            "+package examples",
-                            "+architect yegor256@gmail.com",
-                            "",
-                            "# This is the main abstract object that",
-                            "# represents n-th Fibonacci number",
-                            "[n] > fibonacci",
-                            "  if. > @",
-                            "    lt.",
-                            "      n",
-                            "      2",
-                            "    n",
-                            "    plus.",
-                            "      ^.fibonacci",
-                            "        n.minus 1",
-                            "      ^.fibonacci",
-                            "        n.minus 2",
-                        }
-                    )
-                );
-                MatcherAssert.assertThat(
-                    "'fibonacci' program must be successfully executed",
-                    new Jaxec(
-                        "java", "-cp", classpath,
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "examples.app", "6", "8"
-                    ).withHome(temp.resolve("target")).exec().stdout(),
-                    Matchers.containsString("6th Fibonacci number is 8")
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                JarIT.ElegantObject.made("app", JarIT.appProgram()),
+                JarIT.ElegantObject.made("fibonacci", JarIT.fibonacciProgram())
+            )
+        );
+        MatcherAssert.assertThat(
+            "'fibonacci' program must be successfully executed",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "examples.app", "6", "8"
+            ).withHome(temp.resolve("target")).exec().stdout(),
+            Matchers.containsString("6th Fibonacci number is 8")
         );
     }
 
-    @Disabled
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
+        final String[] classpath = {""};
         new Farea(temp).together(
-            f -> {
-                MatcherAssert.assertThat(
-                    "the program must throw an error and print it to stderr",
-                    new Jaxec(
-                        "java", "-cp", JarIT.compile(
-                            f,
-                            "# No comments.",
-                            "[] > simple",
-                            "  unknown.io.stdout > @",
-                            "    \"Hello, world!\""
-                        ),
-                        "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
-                        "org.eolang.Main", "simple"
-                    ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
-                    Matchers.allOf(
-                        Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
-                        Matchers.containsString(
-                            "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
-                        )
-                    )
-                );
-            }
+            f -> classpath[0] = JarIT.compile(
+                f,
+                "# No comments.",
+                "[] > simple",
+                "  unknown.io.stdout > @",
+                "    \"Hello, world!\""
+            )
         );
+        MatcherAssert.assertThat(
+            "the program must throw an error and print it to stderr",
+            new Jaxec(
+                "java", "-cp", classpath[0],
+                "-Dfile.encoding=UTF-8", "-Xss64M", "-Xms64M",
+                "org.eolang.Main", "simple"
+            ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
+            Matchers.allOf(
+                Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
+                Matchers.containsString(
+                    "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
+                )
+            )
+        );
+    }
+
+    private static String[] appProgram() {
+        return new String[]{
+            "+package examples",
+            "+alias examples.fibonacci",
+            "+alias io.stdout",
+            "+alias tt.sprintf",
+            "+alias tt.sscanf",
+            "+architect yegor256@gmail.com",
+            "",
+            "# Application.",
+            "[args] > app",
+            "  number > n",
+            "    at. > nn!",
+            "      Q.tt.sscanf",
+            "        \"%d\"",
+            "        args.at 0",
+            "      0",
+            "  at. > e!",
+            "    Q.tt.sscanf",
+            "      \"%d\"",
+            "      args.at 1",
+            "    0",
+            "  fibonacci n > f!",
+            "  and. > @",
+            "    stdout",
+            "      sprintf",
+            "        \"%dth Fibonacci number is %d\\n\"",
+            "        * n f",
+            "    e.eq f",
+        };
+    }
+
+    private static String[] fibonacciProgram() {
+        return new String[]{
+            "+package examples",
+            "+architect yegor256@gmail.com",
+            "",
+            "# This is the main abstract object that",
+            "# represents n-th Fibonacci number",
+            "[n] > fibonacci",
+            "  if. > @",
+            "    lt.",
+            "      n",
+            "      2",
+            "    n",
+            "    plus.",
+            "      ^.fibonacci",
+            "        n.minus 1",
+            "      ^.fibonacci",
+            "        n.minus 2",
+        };
     }
 
     /**
@@ -208,7 +206,7 @@ final class JarIT {
      * @throws IOException If fails to compile
      */
     private static String compile(final Farea farea, final String... program) throws IOException {
-        return JarIT.compile(farea, new ElegantObject(program));
+        return JarIT.compile(farea, JarIT.ElegantObject.made(program));
     }
 
     /**
@@ -227,15 +225,14 @@ final class JarIT {
         for (final ElegantObject object : objects) {
             object.write(farea);
         }
-        farea.dependencies()
-            .append(
-                "org.eolang",
-                "eo-runtime",
-                System.getProperty(
-                    "eo.version",
-                    Manifests.read("EO-Version")
-                )
-            );
+        farea.dependencies().append(
+            "org.eolang",
+            "eo-runtime",
+            System.getProperty(
+                "eo.version",
+                Manifests.read("EO-Version")
+            )
+        );
         new EoMavenPlugin(farea)
             .appended()
             .execution("compile")
@@ -255,11 +252,9 @@ final class JarIT {
             "test-0.0.0.jar",
             Paths.get(System.getProperty("user.home")).resolve(".m2")
             .resolve("repository")
-            .resolve("org/eolang/eo-runtime")
-            .resolve(
+            .resolve("org/eolang/eo-runtime").resolve(
                 System.getProperty("eo.version", Manifests.read("EO-Version"))
-            )
-            .resolve(
+            ).resolve(
                 String.format(
                     "eo-runtime-%s.jar",
                     System.getProperty("eo.version", Manifests.read("EO-Version"))
@@ -274,6 +269,7 @@ final class JarIT {
      * @since 0.60
      */
     private static final class ElegantObject {
+
         /**
          * File name.
          */
@@ -286,20 +282,31 @@ final class JarIT {
 
         /**
          * Ctor.
-         * @param content File content
+         * @param file File name
+         * @param content Joined file content
          */
-        private ElegantObject(final String... content) {
-            this("simple", content);
+        private ElegantObject(final String file, final String content) {
+            this.file = file;
+            this.content = content;
         }
 
         /**
-         * Ctor.
-         * @param file File name
-         * @param content File content
+         * Factory.
+         * @param content File content lines
+         * @return New ElegantObject
          */
-        private ElegantObject(final String file, final String... content) {
-            this.file = file;
-            this.content = String.join("\n", content);
+        static JarIT.ElegantObject made(final String... content) {
+            return JarIT.ElegantObject.made("simple", content);
+        }
+
+        /**
+         * Factory.
+         * @param file File name
+         * @param content File content lines
+         * @return New ElegantObject
+         */
+        static JarIT.ElegantObject made(final String file, final String... content) {
+            return new JarIT.ElegantObject(file, String.join(System.lineSeparator(), content));
         }
 
         /**

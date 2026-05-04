@@ -27,6 +27,7 @@ import org.eolang.Phi;
  * @since 0.57.4
  */
 final class SprintfArgs {
+
     /**
      * Character conversion.
      */
@@ -72,7 +73,7 @@ final class SprintfArgs {
         this.retriever = phi;
     }
 
-    public List<Object> formatted() {
+    List<Object> formatted() {
         final List<Object> arguments = new ArrayList<>(0);
         final Matcher matcher = Pattern.compile("%(\\d+\\$)?([a-zA-Z%])").matcher(this.format);
         long auto = 0L;

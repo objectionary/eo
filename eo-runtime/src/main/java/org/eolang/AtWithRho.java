@@ -14,6 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 0.36.0
  */
 final class AtWithRho implements Attr {
+
     /**
      * Original attribute.
      */

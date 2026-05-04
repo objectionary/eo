@@ -68,9 +68,17 @@ just: beginner
     | finisher
     ;
 
-// Atom - abstract object with mandatory name
+// Atom - abstract object with mandatory name and return type
 // Can't contain inner objects
-atom: voids suffix SPACE QUESTION testsOrEol
+atom: voids suffix SPACE SLASH atomBase testsOrEol
+    ;
+
+// Return type FQN of an atom
+// Mirrors the dotted forms accepted for regular base references:
+// either a single name (resolved via aliases / default package),
+// or a fully qualified name optionally rooted at Q (mapped to Φ).
+atomBase
+    : (ROOT | NAME) (DOT NAME)*
     ;
 
 // Formation - abstract object with mandatory name
@@ -486,6 +494,9 @@ STAR: '*'
 CONST
     : '!'
     ;
+SLASH
+    : '/'
+    ;
 COLON
     : ':'
     ;
@@ -498,9 +509,6 @@ PLUS: '+'
     ;
 MINUS
     : '-'
-    ;
-QUESTION
-    : '?'
     ;
 SPACE
     : ' '

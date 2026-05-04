@@ -59,16 +59,17 @@
       mod 16 -200
       16
 
-  # Tests mathematical equality A = ((A div B) * B) + (A mod B).
-  # Checks mathematical equality
-  # A = ((A div B) * B) + (A mod B).
+  # Tests mathematical equality A = (trunc(A / B) * B) + (A mod B).
+  # `mod` follows the sign of the dividend (truncated remainder, like C `%`),
+  # so the matching quotient is truncation toward zero (`as-i64`), not
+  # mathematical floor.
   [] +> tests-div-mod-compatibility
     eq. +> @
       plus.
         mod dividend divisor
         times.
           divisor
-          (dividend.div divisor).floor
+          (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor

@@ -51,6 +51,7 @@ final class ChRemoteTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void isThreadSafe() {
         final int threads = 200;
         final String sample = new ChRemote("0.40.5").value();

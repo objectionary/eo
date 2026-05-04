@@ -9,6 +9,7 @@
 +unlint redundant-object
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
++unlint not-empty-atom
 
 # Regular expression in Perl format.
 # Here `expression` is a string pattern.
@@ -43,7 +44,7 @@
   # ptn2.matches "hello"                # doesn't recompile regex
   # ```
   # Returns `org.eolang.tt.regex.pattern` object.
-  [] > @ ?
+  [] > @ /pattern
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
@@ -65,7 +66,7 @@
       #
       # Attention! The object is for internal usage only, please
       # don't use the object programmatically outside of `regex` object.
-      [position start] > matched-from-index ?
+      [position start] > matched-from-index /matched
 
       # Block matched the pattern.
       # Here:
@@ -246,6 +247,10 @@
   # Tests that regex compilation throws error when missing opening slash.
   [] +> throws-on-missing-first-slash-in-regex
     (regex "(.)+").compiled > @
+
+  # Tests that regex compilation throws error when missing closing slash.
+  [] +> throws-on-missing-closing-slash-in-regex
+    (regex "/pattern").compiled > @
 
   # Tests that regex with capturing groups returns correct group count and content.
   [] +> tests-regex-contains-valid-groups-on-each-matched-block

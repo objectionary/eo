@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-skip: true
-out: []
+out:
+  - ".*Jeff.*"
 file: snippets/auto.eo
 args: ["snippets.auto"]
 eo: |
@@ -12,9 +12,7 @@ eo: |
 
   # No comments.
   [] > auto
-    malloc.of > @
-      8
-      [m]
-        while > @
-          m.get.eq 42 >> [i]
-          m.put 42 >> [i]
+    "Hi, Jeff" > str
+    malloc.for > @
+      str
+      m.slice 4 4 > [m] >>

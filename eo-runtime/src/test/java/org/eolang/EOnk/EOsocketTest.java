@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Posix.CStdLib;
@@ -56,13 +58,13 @@ final class EOsocketTest {
 
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
-        final RandomServer server = new RandomServer().started();
+        final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
         try {
             final Phi socket = Phi.Φ.take("nk.socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
-            connected.put(0, new Simple());
+            connected.put(0, new EOsocketTest.Simple());
             final byte[] actual = new Dataized(connected).take();
             MatcherAssert.assertThat(
                 String.format(
@@ -82,7 +84,7 @@ final class EOsocketTest {
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final RandomServer random = new RandomServer().started();
+        final EOsocketTest.RandomServer random = new EOsocketTest.RandomServer().started();
         random.stop();
         final int port = random.port;
         final Thread server = new Thread(
@@ -91,7 +93,7 @@ final class EOsocketTest {
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
-                listened.put(0, new Server(msg.length()));
+                listened.put(0, new EOsocketTest.Server(msg.length()));
                 bytes.set(new Dataized(listened).take());
             }
         );
@@ -101,7 +103,7 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
-        connected.put(0, new Client(msg));
+        connected.put(0, new EOsocketTest.Client(msg));
         final int sent = new Dataized(connected).asNumber().intValue();
         server.join();
         MatcherAssert.assertThat(
@@ -150,12 +152,12 @@ final class EOsocketTest {
     @Execution(ExecutionMode.SAME_THREAD)
     @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class WindowsSocketTest {
+
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final RandomServer server = new RandomServer().started();
-            final int started = this.startup();
+            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
@@ -256,7 +258,7 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.UnnecessaryLocalRule"})
+        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void acceptsConnectionOnSocket() throws InterruptedException, UnknownHostException {
             final int started = this.startup();
             try {
@@ -265,32 +267,7 @@ final class EOsocketTest {
                 final AtomicInteger error = new AtomicInteger();
                 final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
                 final Thread server = new Thread(
-                    () -> {
-                        final int socket = this.openSocket();
-                        try {
-                            this.ensure(socket > 0);
-                            while (this.bindSocket(socket, port.get()) != 0) {
-                                port.set(EOsocketTest.randomPort());
-                            }
-                            this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
-                            final SockaddrIn addr = new SockaddrIn();
-                            final int accepted = Winsock.INSTANCE.accept(
-                                socket, addr, new IntByReference(addr.size())
-                            );
-                            Logger.debug(this, "Accepted socket: %d", accepted);
-                            accept.set(accepted);
-                            if (accepted < 0) {
-                                error.set(this.getError());
-                            }
-                        } catch (final UnknownHostException exception) {
-                            throw new RuntimeException(exception);
-                        } finally {
-                            if (accept.get() > 0) {
-                                this.closeSocket(accept.get());
-                            }
-                            this.closeSocket(socket);
-                        }
-                    }
+                    () -> this.acceptViaWinsock(port, accept, error)
                 );
                 server.start();
                 Thread.sleep(2000);
@@ -324,7 +301,7 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.UnnecessaryLocalRule"})
+        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void sendsAndReceivesMessagesViaSyscalls()
             throws InterruptedException, UnknownHostException {
             final int started = this.startup();
@@ -334,31 +311,7 @@ final class EOsocketTest {
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
                 final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
                 final Thread server = new Thread(
-                    () -> {
-                        final int socket = this.openSocket();
-                        int accepted = 0;
-                        try {
-                            this.ensure(socket > 0);
-                            while (this.bindSocket(socket, port.get()) != 0) {
-                                port.set(EOsocketTest.randomPort());
-                            }
-                            this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
-                            final SockaddrIn addr = new SockaddrIn();
-                            accepted = Winsock.INSTANCE.accept(
-                                socket, addr, new IntByReference(addr.size())
-                            );
-                            Logger.debug(this, "Accepted socket: %d", accepted);
-                            this.ensure(accepted > 0);
-                            final byte[] buf = new byte[1024];
-                            received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
-                            bytes.set(Arrays.copyOf(buf, received.get()));
-                        } catch (final UnknownHostException exception) {
-                            throw new RuntimeException(exception);
-                        } finally {
-                            this.closeSocket(accepted);
-                            this.closeSocket(socket);
-                        }
-                    }
+                    () -> this.recvViaWinsock(port, received, bytes)
                 );
                 server.start();
                 Thread.sleep(2000);
@@ -502,6 +455,66 @@ final class EOsocketTest {
                 this.inetAddr("127.0.0.1")
             );
         }
+
+        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+        private void acceptViaWinsock(
+            final AtomicInteger port, final AtomicInteger accept, final AtomicInteger error
+        ) {
+            final int socket = this.openSocket();
+            try {
+                this.ensure(socket > 0);
+                while (this.bindSocket(socket, port.get()) != 0) {
+                    port.set(EOsocketTest.randomPort());
+                }
+                this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                final SockaddrIn addr = new SockaddrIn();
+                final int accepted = Winsock.INSTANCE.accept(
+                    socket, addr, new IntByReference(addr.size())
+                );
+                Logger.debug(this, "Accepted socket: %d", accepted);
+                accept.set(accepted);
+                if (accepted < 0) {
+                    error.set(this.getError());
+                }
+            } catch (final UnknownHostException exception) {
+                throw new RuntimeException(exception);
+            } finally {
+                if (accept.get() > 0) {
+                    this.closeSocket(accept.get());
+                }
+                this.closeSocket(socket);
+            }
+        }
+
+        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+        private void recvViaWinsock(
+            final AtomicInteger port, final AtomicInteger received,
+            final AtomicReference<byte[]> bytes
+        ) {
+            final int socket = this.openSocket();
+            int accepted = 0;
+            try {
+                this.ensure(socket > 0);
+                while (this.bindSocket(socket, port.get()) != 0) {
+                    port.set(EOsocketTest.randomPort());
+                }
+                this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                final SockaddrIn addr = new SockaddrIn();
+                accepted = Winsock.INSTANCE.accept(
+                    socket, addr, new IntByReference(addr.size())
+                );
+                Logger.debug(this, "Accepted socket: %d", accepted);
+                this.ensure(accepted > 0);
+                final byte[] buf = new byte[1024];
+                received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
+                bytes.set(Arrays.copyOf(buf, received.get()));
+            } catch (final UnknownHostException exception) {
+                throw new RuntimeException(exception);
+            } finally {
+                this.closeSocket(accepted);
+                this.closeSocket(socket);
+            }
+        }
     }
 
     /**
@@ -513,9 +526,10 @@ final class EOsocketTest {
     @Execution(ExecutionMode.SAME_THREAD)
     @SuppressWarnings("PMD.TestClassWithoutTestCases")
     final class PosixSocketTest {
+
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final RandomServer server = new RandomServer().started();
+            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
@@ -588,36 +602,12 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
             final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
             final Thread server = new Thread(
-                () -> {
-                    final int socket = this.openSocket();
-                    try {
-                        this.ensure(socket > 0);
-                        while (this.bindSocket(socket, port.get()) != 0) {
-                            port.set(EOsocketTest.randomPort());
-                        }
-                        this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
-                        final SockaddrIn addr = new SockaddrIn();
-                        final int accepted = CStdLib.INSTANCE.accept(
-                            socket, addr, new IntByReference(addr.size())
-                        );
-                        Logger.debug(this, "Accepted socket: %d", accepted);
-                        accept.set(accepted);
-                        if (accepted < 0) {
-                            error.set(this.getError());
-                        }
-                    } finally {
-                        if (accept.get() > 0) {
-                            this.closeSocket(accept.get());
-                        }
-                        this.closeSocket(socket);
-                    }
-                }
+                () -> this.acceptViaCStdLib(port, accept, error)
             );
             server.start();
             Thread.sleep(2000);
@@ -648,35 +638,12 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
             final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
             final Thread server = new Thread(
-                () -> {
-                    final int socket = this.openSocket();
-                    int accepted = 0;
-                    try {
-                        this.ensure(socket > 0);
-                        while (this.bindSocket(socket, port.get()) != 0) {
-                            port.set(EOsocketTest.randomPort());
-                        }
-                        this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
-                        final SockaddrIn addr = new SockaddrIn();
-                        accepted = CStdLib.INSTANCE.accept(
-                            socket, addr, new IntByReference(addr.size())
-                        );
-                        Logger.debug(this, "Accepted socket: %d", accepted);
-                        this.ensure(accepted > 0);
-                        final byte[] buf = new byte[1024];
-                        received.set(CStdLib.INSTANCE.recv(accepted, buf, buf.length, 0));
-                        bytes.set(Arrays.copyOf(buf, received.get()));
-                    } finally {
-                        this.closeSocket(accepted);
-                        this.closeSocket(socket);
-                    }
-                }
+                () -> this.recvViaCStdLib(port, received, bytes)
             );
             server.start();
             Thread.sleep(2000);
@@ -726,7 +693,7 @@ final class EOsocketTest {
 
         /**
          * Open posix socket.
-         * @return Posix socket descriptor.
+         * @return Posix socket descriptor
          */
         private int openSocket() {
             final int sock = CStdLib.INSTANCE.socket(
@@ -796,6 +763,61 @@ final class EOsocketTest {
                 this.inetAddr("127.0.0.1")
             );
         }
+
+        private void acceptViaCStdLib(
+            final AtomicInteger port, final AtomicInteger accept,
+            final AtomicReference<String> error
+        ) {
+            final int socket = this.openSocket();
+            try {
+                this.ensure(socket > 0);
+                while (this.bindSocket(socket, port.get()) != 0) {
+                    port.set(EOsocketTest.randomPort());
+                }
+                this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
+                final SockaddrIn addr = new SockaddrIn();
+                final int accepted = CStdLib.INSTANCE.accept(
+                    socket, addr, new IntByReference(addr.size())
+                );
+                Logger.debug(this, "Accepted socket: %d", accepted);
+                accept.set(accepted);
+                if (accepted < 0) {
+                    error.set(this.getError());
+                }
+            } finally {
+                if (accept.get() > 0) {
+                    this.closeSocket(accept.get());
+                }
+                this.closeSocket(socket);
+            }
+        }
+
+        private void recvViaCStdLib(
+            final AtomicInteger port, final AtomicInteger received,
+            final AtomicReference<byte[]> bytes
+        ) {
+            final int socket = this.openSocket();
+            int accepted = 0;
+            try {
+                this.ensure(socket > 0);
+                while (this.bindSocket(socket, port.get()) != 0) {
+                    port.set(EOsocketTest.randomPort());
+                }
+                this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
+                final SockaddrIn addr = new SockaddrIn();
+                accepted = CStdLib.INSTANCE.accept(
+                    socket, addr, new IntByReference(addr.size())
+                );
+                Logger.debug(this, "Accepted socket: %d", accepted);
+                this.ensure(accepted > 0);
+                final byte[] buf = new byte[1024];
+                received.set(CStdLib.INSTANCE.recv(accepted, buf, buf.length, 0));
+                bytes.set(Arrays.copyOf(buf, received.get()));
+            } finally {
+                this.closeSocket(accepted);
+                this.closeSocket(socket);
+            }
+        }
     }
 
     /**
@@ -803,6 +825,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class RandomServer {
+
         /**
          * Server socket.
          */
@@ -815,7 +838,7 @@ final class EOsocketTest {
 
         /**
          * Start server on random port.
-         * @return Self.
+         * @return Self
          */
         RandomServer started() {
             boolean bound = false;
@@ -850,12 +873,12 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Simple extends PhDefault implements Atom {
+
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Simple() {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
         }
 
         @Override
@@ -873,6 +896,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Server extends PhDefault implements Atom {
+
         /**
          * Received message size.
          */
@@ -882,16 +906,15 @@ final class EOsocketTest {
          * Ctor.
          * @param received Reseived message size
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Server(final int received) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.received = received;
         }
 
         @Override
         public Phi lambda() {
             final Phi accept = this.take("s").take("accept").copy();
-            accept.put(0, new Receiver(this.received));
+            accept.put(0, new EOsocketTest.Receiver(this.received));
             return accept;
         }
     }
@@ -902,6 +925,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Receiver extends PhDefault implements Atom {
+
         /**
          * Received message size.
          */
@@ -911,9 +935,8 @@ final class EOsocketTest {
          * Ctor.
          * @param received Reseived message size
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Receiver(final int received) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.received = received;
         }
 
@@ -931,6 +954,7 @@ final class EOsocketTest {
      * @since 0.40.0
      */
     private static final class Client extends PhDefault implements Atom {
+
         /**
          * Message to send.
          */
@@ -940,9 +964,8 @@ final class EOsocketTest {
          * Ctor.
          * @param msg Message to send
          */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Client(final String msg) {
-            this.add("s", new AtVoid("s"));
+            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
             this.message = msg;
         }
 

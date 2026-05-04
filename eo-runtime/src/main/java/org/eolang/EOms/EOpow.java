@@ -11,6 +11,8 @@ package org.eolang.EOms; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.AttrEntry;
+import org.eolang.Attrs;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -18,19 +20,20 @@ import org.eolang.XmirObject;
 
 /**
  * Real.pow.
- *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "pow")
 public final class EOpow extends PhDefault implements Atom {
+
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOpow() {
-        this.add("num", new AtVoid("num"));
-        this.add("x", new AtVoid("x"));
+        super(new Attrs(
+            new AttrEntry("num", new AtVoid("num")),
+            new AttrEntry("x", new AtVoid("x"))
+        ));
     }
 
     @Override

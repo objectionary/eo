@@ -18,7 +18,6 @@ import org.xembly.Xembler;
 
 /**
  * Large XMIR document.
- *
  * @since 0.51
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
@@ -43,7 +42,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
-     * @param nme Program name.
+     * @param nme Program name
      */
     public LargeXmir(final String nme) {
         this(nme, "com/sun/jna/Pointer.class");
@@ -51,7 +50,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
-     * @param nme Program name.
+     * @param nme Program name
      * @param path The path to the file
      */
     public LargeXmir(final String nme, final String path) {
@@ -77,41 +76,46 @@ public final class LargeXmir {
      */
     private XML unsafe() throws IOException {
         final AtomicReference<XML> ref = new AtomicReference<>();
-        new Farea(Files.createTempDirectory("tmp")).together(
-            f -> {
-                f.clean();
-                f.files()
-                    .file(String.format("target/classes/%s", this.file))
-                    .write(
-                        new UncheckedBytes(
-                            new BytesOf(
-                                new ResourceOf(this.file)
-                            )
-                        ).asBytes()
-                    );
-                f.build()
-                    .plugins()
-                    .append("org.eolang", "jeo-maven-plugin", "0.10.0")
-                    .execution("default")
-                    .phase("process-classes")
-                    .goals("disassemble");
-                f.exec("process-classes");
-                ref.set(
-                    new XMLDocument(
-                        f.files().file(
-                            String.format(
-                                "target/generated-sources/jeo-xmir/%s",
-                                this.file.replace(".class", ".xmir")
-                            )
-                        ).path()
-                    )
-                );
-            }
-        );
+        new Farea(Files.createTempDirectory("tmp")).together(f -> this.assemble(f, ref));
         final XML xml = ref.get();
         new Xembler(
             new Directives().xpath("/program").attr("name", this.name)
         ).applyQuietly(xml.inner());
         return xml;
+    }
+
+    /**
+     * Run the assembly inside the temp project.
+     * @param farea The temporary project
+     * @param ref Reference to capture the XMIR
+     * @throws IOException If fails
+     */
+    private void assemble(final Farea farea, final AtomicReference<XML> ref) throws IOException {
+        farea.clean();
+        farea.files()
+            .file(String.format("target/classes/%s", this.file)).write(
+                new UncheckedBytes(
+                    new BytesOf(
+                        new ResourceOf(this.file)
+                    )
+                ).asBytes()
+            );
+        farea.build()
+            .plugins()
+            .append("org.eolang", "jeo-maven-plugin", "0.10.0")
+            .execution("default")
+            .phase("process-classes")
+            .goals("disassemble");
+        farea.exec("process-classes");
+        ref.set(
+            new XMLDocument(
+                farea.files().file(
+                    String.format(
+                        "target/generated-sources/jeo-xmir/%s",
+                        this.file.replace(".class", ".xmir")
+                    )
+                ).path()
+            )
+        );
     }
 }

@@ -1,0 +1,37 @@
++alias ss.index-of
++alias ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ss
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns `true` if `lst` contains `element`, `false` otherwise.
+[lst element] > contains
+  not. > @
+    eq.
+      -1
+      index-of lst element
+
+  # Tests that checking if a list contains a string works correctly.
+  [] +> tests-list-contains-string
+    contains > @
+      list
+        * "qwerty" "asdfgh" 3 "qwerty"
+      "qwerty"
+
+  # Tests that checking if a list contains a number works correctly.
+  [] +> tests-list-contains-number
+    contains > @
+      list
+        * "qwerty" "asdfgh" 3 "qwerty"
+      3
+
+  # Tests that checking if a list does not contain an element works correctly.
+  [] +> tests-list-does-not-contain
+    not. > @
+      contains
+        list
+          * "Привет" "asdfgh" 3 "qwerty"
+        "Hi"

@@ -20,7 +20,6 @@ import org.cactoos.text.TextOf;
  * This hash is used in build process for local sources that we are compiling
  * right now. Since there is no real commit hash for such sources, we need to
  * generate them to apply caching mechanisms properly.
- *
  * @since 0.60
  */
 final class ChSource implements CommitHash {
@@ -33,6 +32,7 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source path
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     ChSource(final Path src) {
         this(src.toFile());
@@ -49,6 +49,7 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source file
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private ChSource(final File src) {
         this(new TextOf(src));

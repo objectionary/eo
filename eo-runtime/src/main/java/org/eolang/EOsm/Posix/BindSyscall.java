@@ -20,6 +20,7 @@ import org.eolang.Phi;
  * @since 0.40
  */
 public final class BindSyscall implements Syscall {
+
     /**
      * Posix object.
      */

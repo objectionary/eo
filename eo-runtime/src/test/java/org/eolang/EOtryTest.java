@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOtry}.
- *
  * @since 0.19
  */
 final class EOtryTest {
@@ -29,9 +28,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhSafe(new Broken())
+                            0, new PhSafe(new EOtryTest.Broken())
                         ),
-                        1, new Catcher()
+                        1, new EOtryTest.Catcher()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -50,9 +49,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new PhSafe(new Broken())
+                            0, new PhSafe(new EOtryTest.Broken())
                         ),
-                        1, new Catcher()
+                        1, new EOtryTest.Catcher()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -71,9 +70,9 @@ final class EOtryTest {
                     new PhWith(
                         new PhWith(
                             new EOtry(),
-                            0, new Main()
+                            0, new EOtryTest.Main()
                         ),
-                        1, new Catcher()
+                        1, new EOtryTest.Catcher()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -86,9 +85,9 @@ final class EOtryTest {
     @Test
     void doesNotDataizeBodyTwice() {
         final Phi trier = new EOtry();
-        final MainWithCounter main = new MainWithCounter();
+        final EOtryTest.MainWithCounter main = new EOtryTest.MainWithCounter();
         trier.put(0, main);
-        trier.put(1, new Catcher());
+        trier.put(1, new EOtryTest.Catcher());
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
@@ -103,6 +102,7 @@ final class EOtryTest {
      * @since 0.36.0
      */
     private static final class MainWithCounter extends PhDefault {
+
         /**
          * Counter.
          */
@@ -110,6 +110,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         MainWithCounter() {
             super();
@@ -134,6 +135,7 @@ final class EOtryTest {
 
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         Main() {
             this.add(
@@ -153,8 +155,10 @@ final class EOtryTest {
      * @since 0.1.0
      */
     private static final class Broken extends PhDefault {
+
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         Broken() {
             this.add(
@@ -174,8 +178,10 @@ final class EOtryTest {
      * @since 0.1.0
      */
     private static final class Catcher extends PhDefault {
+
         /**
          * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (15 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Catcher() {

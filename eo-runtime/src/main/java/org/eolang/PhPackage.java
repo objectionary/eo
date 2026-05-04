@@ -11,16 +11,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package object, coming from {@link Phi}.
- *
  * @since 0.22
  */
 final class PhPackage implements Phi {
+
     /**
      * Global package.
      * @checkstyle VisibilityModifierCheck (3 lines)
      * @checkstyle StaticVariableNameCheck (3 lines)
      */
-    public static final String GLOBAL = "Φ";
+    static final String GLOBAL = "Φ";
 
     /**
      * The name of the Java package.

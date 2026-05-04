@@ -10,6 +10,7 @@
 +unlint redundant-object
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
++unlint not-empty-atom
 
 # Makes a Unix syscall by `name` with POSIX interface.
 # Here `args` is a `org.eolang.tuple` of arguments required for
@@ -18,7 +19,7 @@
 [name args] > posix
   # Makes an actual syscall to operating system
   # Returns `org.eolang.sm.posix.return` object.
-  [] > @ ?
+  [] > @ /return
   0 > stdin-fileno
   1 > stdout-fileno
   2 > af-inet

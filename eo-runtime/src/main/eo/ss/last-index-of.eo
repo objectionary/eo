@@ -1,0 +1,66 @@
++alias ss.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ss
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Returns index of the last occurrence of `wanted` in `lst`.
+# If `lst` has no such element, returns -1.
+[lst wanted] > last-index-of
+  reclast lst > @
+
+  # Recursively searches for last occurrence of wanted element.
+  [tup] > reclast
+    if. > @
+      tup.length.eq 0
+      -1
+      if.
+        tup.head.eq wanted
+        tup.tail.length
+        reclast tup.tail
+
+  # Tests that finding the last index of an element works correctly.
+  [] +> tests-finds-last-index-of
+    eq. > @
+      1
+      last-index-of
+        list
+          * "qwerty" 2 3
+        2
+
+  # Tests that finding the last index of a repeated element works correctly.
+  [] +> tests-finds-last-index-of-repeated
+    eq. > @
+      2
+      last-index-of
+        list
+          * 24 42 24
+        24
+
+  # Tests that last-index-of returns -1 for non-existent elements.
+  [] +> tests-last-index-of-not-found
+    eq. > @
+      -1
+      last-index-of
+        list
+          * 1 2 3
+        0
+
+  # Tests that last-index-of returns -1 for empty lists.
+  [] +> tests-last-index-of-empty
+    eq. > @
+      -1
+      last-index-of
+        list *
+        "abc"
+
+  # Tests that finding the last index of unicode strings works correctly.
+  [] +> tests-last-index-of-unicode
+    eq. > @
+      3
+      last-index-of
+        list
+          * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+        "Привет"

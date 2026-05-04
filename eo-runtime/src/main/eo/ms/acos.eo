@@ -9,9 +9,10 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint not-empty-atom
 
 # Calculates arc cosine of a `num` as `org.eolang.number`.
-[num] > acos ?
+[num] > acos /number
   # Tests that arccosine of -1 equals pi.
   [] +> tests-arccos-negative-one-test
     eq. +> @

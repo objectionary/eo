@@ -31,9 +31,9 @@ final class DepDirs extends ListEnvelope<String> {
 
     /**
      * Ctor.
-     *
      * @param dir The directory
      * @throws IOException If fails
+     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     DepDirs(final Path dir) throws IOException {
         super(DepDirs.list(dir));

@@ -10,6 +10,8 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
+import org.apache.maven.model.Dependency;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjClean}.
- *
  * @since 0.28.6
  */
 @ExtendWith(MktmpResolver.class)
@@ -53,8 +54,12 @@ final class MjCleanTest {
             .with("classesDir", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
-            .with("skipZeroVersions", true)
-            .with("central", Central.EMPTY)
+            .with("skipZeroVersions", true).with(
+                "central",
+                (BiConsumer<Dependency, Path>) (dependency, path) -> {
+                    assert dependency != null;
+                }
+            )
             .execute(MjRegister.class)
             .execute(MjAssemble.class)
             .execute(MjClean.class);

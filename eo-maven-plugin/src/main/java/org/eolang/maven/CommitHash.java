@@ -8,11 +8,11 @@ import org.cactoos.Scalar;
 
 /**
  * Hash of tag.
- *
  * @since 0.28.11
  */
 @FunctionalInterface
 interface CommitHash extends Scalar<String> {
+
     /**
      * Fake commit hash for testing.
      */
@@ -23,7 +23,6 @@ interface CommitHash extends Scalar<String> {
 
     /**
      * Hardcoded commit hash.
-     *
      * @since 0.28.11
      */
     final class ChConstant implements CommitHash {
@@ -35,8 +34,7 @@ interface CommitHash extends Scalar<String> {
 
         /**
          * The main constructor.
-         *
-         * @param hash Hardcoded value.
+         * @param hash Hardcoded value
          */
         ChConstant(final String hash) {
             this.hash = hash;

@@ -14,10 +14,10 @@ import org.w3c.dom.Node;
 /**
  * This {@link Shift} finds all XPath matches and replaces them
  * with what a function suggests using {@link com.github.lombrozo.xnav.Xnav}.
- *
  * @since 0.53.0
  */
 final class StXnav implements Shift {
+
     /**
      * XPath to search for.
      */
