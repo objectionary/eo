@@ -69,7 +69,11 @@ final class Probe {
                 final long start = System.currentTimeMillis();
                 final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
                 if (this.probed(unprobed, probed) == 0) {
-                    Logger.info(this, "No probes found in %d programs", unprobed.size());
+                    Logger.info(
+                        this,
+                        "No probes found in %d programs",
+                        unprobed.size()
+                    );
                 } else {
                     Logger.info(
                         this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
