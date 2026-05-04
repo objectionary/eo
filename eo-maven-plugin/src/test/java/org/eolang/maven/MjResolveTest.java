@@ -33,7 +33,7 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.7.0",
             String.format("+version 0.25.0%n"),
             "# No comments.",
-            "[] > main ?"
+            "[] > main /bytes"
             ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -171,13 +171,13 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             String.format("+version 0.25.0%n"),
             "# No comment.",
-            "[] > main ?"
+            "[] > main /bytes"
         ).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.0",
             String.format("+version 0.25.0%n"),
             "# No comment.",
-            "[] > main-1 ?"
+            "[] > main-1 /bytes"
         );
         MatcherAssert.assertThat(
             "Expected that conflicting dependencies were found, but they were not",
@@ -197,12 +197,12 @@ final class MjResolveTest {
             "+package foo.x",
             String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
             "# No comment.",
-            "[] > main ?"
+            "[] > main /bytes"
             ).withProgram(
                 "+package foo.x",
                 String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
                 "# No comment.",
-                "[] > main-1 ?"
+                "[] > main-1 /bytes"
             );
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());

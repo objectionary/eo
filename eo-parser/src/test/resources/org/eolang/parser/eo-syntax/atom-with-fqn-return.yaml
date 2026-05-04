@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='dotted']/o[@name='λ' and @atom='org.eolang.number']
+  - //o[@name='rooted']/o[@name='λ' and @atom='Φ.org.eolang.number']
+  - //o[@name='deep']/o[@name='λ' and @atom='x.y.z']
+input: |-
+  # Atoms with various return-type FQN forms.
+  [] > parent
+    # Multi-segment FQN return type.
+    [] > dotted /org.eolang.number
+
+    # Rooted FQN: leading Q is mapped to Phi by the listener.
+    [] > rooted /Q.org.eolang.number
+
+    # Arbitrary multi-segment FQN.
+    [] > deep /x.y.z

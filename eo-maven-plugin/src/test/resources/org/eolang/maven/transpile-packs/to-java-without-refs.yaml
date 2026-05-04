@@ -19,10 +19,10 @@ input: |
   [void-attr] > object
     5.plus 5 > bound-attr
 
-    [] > atom ?
+    [] > atom /bytes
 
     [] > abstract-object
-      [] > inner-atom ?
+      [] > inner-atom /bytes
       [] > inner-abstract
       if. > @
         true > some

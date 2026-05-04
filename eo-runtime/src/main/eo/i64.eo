@@ -9,6 +9,7 @@
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
 +unlint redundant-object
++unlint not-empty-atom
 
 # The 64 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -33,7 +34,7 @@
     (as-bytes.slice 0 4).as-bytes > left
 
   # Convert this `org.eolang.i64` to `org.eolang.number` object and return it.
-  [] > as-number ?
+  [] > as-number /number
 
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i64` object.
@@ -53,7 +54,7 @@
 
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` must be an `org.eolang.i64` object.
-  [x] > gt ?
+  [x] > gt /true
 
   # Returns `org.eolang.true` if `$` >= `x`.
   # Here `x` must be an `org.eolang.i64` object.
@@ -65,11 +66,11 @@
 
   # Multiplication of `$` and `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
-  [x] > times ?
+  [x] > times /i64
 
   # Sum of `$` and `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
-  [x] > plus ?
+  [x] > plus /i64
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `i64` object.
@@ -80,7 +81,7 @@
   # Quotient of the division of `$` by `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
   # An `org.eolang.error` is returned if `x` is equal to 0.
-  [x] > div ?
+  [x] > div /i64
 
   # Tests that i64 number has correct byte representation.
   [] +> tests-i64-has-valid-bytes

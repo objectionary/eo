@@ -9,6 +9,7 @@
 +unlint idempotent-attribute-is-not-first
 +unlint compound-name
 +unlint redundant-object
++unlint not-empty-atom
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -22,7 +23,7 @@
   # The object is an atom because it's not possible to check what
   # bytes should be added from left so the number is valid.
   # The different bytes should be added if number is positive and negative.
-  [] > as-i32 ?
+  [] > as-i32 /i32
 
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i16` object.

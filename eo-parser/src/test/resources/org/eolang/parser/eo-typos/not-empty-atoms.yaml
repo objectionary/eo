@@ -10,6 +10,6 @@ line: 5
 #  https://github.com/objectionary/eo/issues/4106.
 input: |
   # No comments.
-  [] > test ?
+  [] > test /bytes
     # No comments.
     [] > inner

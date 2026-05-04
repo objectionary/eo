@@ -127,9 +127,11 @@ final class MjTranspileTest {
             "TranspileMojo should not touch atoms, but it did",
             new FakeMaven(temp).withProgram(
                 "+package foo.x",
-                String.format("+rt jvm org.eolang:eo-runtime:0.0.0%n"),
+                "+rt jvm org.eolang:eo-runtime:0.0.0",
+                "+unlint not-empty-atom",
+                String.format("+version 0.0.0%n"),
                 "# Atom.",
-                "[x y z] > main ?"
+                "[x y z] > main /bytes"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
