@@ -17,6 +17,10 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test cases for {@link Probe}.
  * @since 0.67.0
+ * @todo #5084:30min Create a reusable test helper that represents a standard EO program
+ *  (like the hello-world one) for use across tests like {@link ProbeTest} and
+ *  {@link MjProbeTest} and {@link FakeMaven#withHelloWorld()}, so we don't duplicate
+ *  the EO source inline in multiple places.
  */
 final class ProbeTest {
 
