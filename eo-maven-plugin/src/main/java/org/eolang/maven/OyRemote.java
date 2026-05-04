@@ -112,6 +112,11 @@ final class OyRemote implements Objectionary {
         } else {
             code = ((HttpURLConnection) url.openConnection(this.proxies.get(0))).getResponseCode();
         }
+        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
+            throw new IOException(
+                String.format("Transient HTTP error %d for %s, will retry", code, url)
+            );
+        }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
