@@ -255,6 +255,83 @@ awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
  eo-runtime/measures.csv | sort -g -k 2 | tail -16 | column -t | head "-16"
 ```
 
+## Architecture
+
+The language is formally grounded in
+  [φ-calculus](https://arxiv.org/abs/2111.13384),
+  a mathematical model where every entity is an object
+  with named attributes, and objects are formed by
+  applying other objects to free attributes.
+Unlike languages based on
+  [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus)
+  (e.g. [Haskell](https://www.haskell.org/))
+  or class-based models
+  (e.g. [Java](https://en.wikipedia.org/wiki/Java_(programming_language)),
+  [C++](https://en.wikipedia.org/wiki/C%2B%2B)),
+  EO has no types, no classes, no static methods,
+  no implementation inheritance, no NULL, and no operators.
+Everything a programmer needs to express is an object,
+  and the only way to reuse behavior is through decoration:
+  an object's `φ` (`@`) attribute points to another object
+  whose attributes are transparently forwarded,
+  replacing class inheritance entirely.
+
+The compiler pipeline uses
+  [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html)
+  (XML Intermediate Representation) as its sole pivot format
+  between parsing and code generation.
+Unlike traditional compilers that manipulate an in-memory AST
+  (as in [GCC](https://gcc.gnu.org/),
+  [LLVM](https://llvm.org/), or
+  [javac](https://openjdk.org/projects/compiler-grammar/)),
+  every compilation artifact in EO is a serializable XML document
+  governed by an [XSD schema](https://www.eolang.org/XMIR.xsd).
+This makes every intermediate state inspectable with
+  standard XML tools and independently testable.
+
+All transformations at both parse-time normalization
+  and transpile-time code generation are implemented as
+  pipelines of [XSLT 2.0](https://www.w3.org/TR/xslt20/) stylesheets
+  rather than visitor passes written in the host language.
+In most compilers transformations are encoded as Java/C++ AST visitors
+  (e.g. [Eclipse JDT](https://eclipse.dev/jdt/),
+  [Roslyn](https://github.com/dotnet/roslyn));
+  here each transformation step is a self-contained `.xsl` file
+  that can be tested, measured, and replaced without touching Java code.
+The benchmark section above reflects the measurable cost of each
+  stylesheet.
+
+The build system integration uses
+  [Apache Maven](https://maven.apache.org/) as the compilation driver.
+EO is compiled as part of a Maven lifecycle:
+  the `eo-maven-plugin` module exposes mojos
+  (`parse`, `assemble`, `transpile`, etc.)
+  that run during `generate-sources` and `process-sources` phases,
+  integrating EO into the existing Java toolchain
+  without a separate build tool—unlike languages with custom toolchains
+  such as [Rust](https://www.rust-lang.org/) (`cargo`)
+  or [Go](https://go.dev/) (`go build`).
+
+External EO objects are resolved from
+  [Objectionary](https://github.com/objectionary/home),
+  a Git-hosted registry of canonical objects,
+  not from a binary artifact repository like
+  [Maven Central](https://search.maven.org/) or
+  [npm](https://www.npmjs.com/).
+The `MjPull` mojo fetches missing `.eo` sources from Objectionary
+  at build time and caches them locally,
+  so dependencies are always available as readable source,
+  not opaque compiled artifacts.
+
+The standard library is written in EO itself.
+Objects such as `bytes`, `number`, `string`, `tuple`, and `seq`
+  live in `eo-runtime/src/main/eo/` as plain `.eo` files,
+  compiled by the same pipeline and shipped in the runtime JAR.
+This self-hosting constraint forces the compiler and runtime
+  to be correct for the subset of EO used by the standard library,
+  and it means a new contributor can read and modify
+  primitive behavior without touching Java.
+
 ## How to Contribute
 
 Fork repository, make changes, then send us a [pull request][guidelines].
