@@ -39,7 +39,7 @@ public class XmirBench {
     /**
      * Large XMIR document.
      */
-    private static final XML XMIR = new LargeXmir("noname", "com/sun/jna/Klass.class").xml();
+    private static final XML XMIR = new LargeXmir("noname", "com/sun/jna/Native.class").xml();
 
     /**
      * This main method allows to run the benchmark from IDE.
