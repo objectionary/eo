@@ -76,6 +76,11 @@ final class Pull {
     private final boolean cacheEnabled;
 
     /**
+     * Whether we are in offline mode.
+     */
+    private final boolean offline;
+
+    /**
      * Constructor.
      * @param tjs Tojos without sources
      * @param dir Base target directory
@@ -85,6 +90,7 @@ final class Pull {
      * @param ver Plugin version
      * @param rewrite Whether to overwrite existing sources
      * @param enabled Whether caching is enabled
+     * @param off Whether offline mode is active
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Pull(
@@ -95,7 +101,8 @@ final class Pull {
         final Path cache,
         final String ver,
         final boolean rewrite,
-        final boolean enabled
+        final boolean enabled,
+        final boolean off
     ) {
         this.tojos = tjs;
         this.base = dir;
@@ -105,6 +112,7 @@ final class Pull {
         this.version = ver;
         this.overWrite = rewrite;
         this.cacheEnabled = enabled;
+        this.offline = off;
     }
 
     /**
@@ -112,6 +120,13 @@ final class Pull {
      * @throws IOException If fails
      */
     void exec() throws IOException {
+        if (this.offline) {
+            Logger.info(
+                this,
+                "No programs were pulled because eo.offline flag is TRUE"
+            );
+            return;
+        }
         final long start = System.currentTimeMillis();
         final Collection<String> names = new ArrayList<>(0);
         final String hsh = this.hash.value();
