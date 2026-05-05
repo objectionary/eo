@@ -127,7 +127,8 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
      * @return The detailed message
      */
     private static String mismatch(final Parser parser, final String msg) {
-        final String rule = parser.getRuleInvocationStack().get(0);
+        final List<String> stack = parser.getRuleInvocationStack();
+        final String rule = stack.get(0);
         final String[] names = parser.getRuleNames();
         final String detailed;
         if (names[EoParser.RULE_program].equals(rule)) {
@@ -136,6 +137,10 @@ final class EoParserErrors extends BaseErrorListener implements Iterable<Parsing
         } else if (names[EoParser.RULE_object].equals(rule)) {
             detailed =
                 "We expected a object here but encountered something unexpected";
+        } else if (stack.contains(names[EoParser.RULE_atom])
+            && stack.contains(names[EoParser.RULE_tests])) {
+            detailed =
+                "Atom cannot contain inner objects, only test objects are allowed in its body";
         } else {
             detailed = msg;
         }
