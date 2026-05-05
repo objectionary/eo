@@ -21,7 +21,6 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,7 +49,6 @@ final class MjPullTest {
     }
 
     @Test
-    @Disabled
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
@@ -168,7 +166,6 @@ final class MjPullTest {
     }
 
     @Test
-    @Disabled
     void savesPulledResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final CommitHash hash = new ChCached(
@@ -186,7 +183,7 @@ final class MjPullTest {
             cache.resolve(Pull.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash.value())
-                .resolve("org/eolang/bytes.eo")
+                .resolve("bytes.eo")
                 .toFile(),
             FileMatchers.anExistingFile()
         );

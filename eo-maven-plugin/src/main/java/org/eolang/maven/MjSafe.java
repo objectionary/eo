@@ -423,7 +423,7 @@ abstract class MjSafe extends AbstractMojo {
     private Scalar<Objectionary> objectionary = new Synced<>(
         new Sticky<>(
             () -> new OyIndexed(
-                new OyCached(new OyRemote(this.hash))
+                new OyCached(new OyRemote(this.hash, this.proxies()))
             )
         )
     );

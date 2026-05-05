@@ -58,7 +58,7 @@ final class Pull {
     /**
      * Cache directory (cache + CACHE).
      */
-    private final Path cacheDir;
+    private final Path cdir;
 
     /**
      * Plugin version string.
@@ -68,12 +68,12 @@ final class Pull {
     /**
      * Whether to overwrite already pulled sources.
      */
-    private final boolean overWrite;
+    private final boolean overwrite;
 
     /**
      * Whether caching is enabled.
      */
-    private final boolean cacheEnabled;
+    private final boolean cenabled;
 
     /**
      * Whether we are in offline mode.
@@ -108,10 +108,10 @@ final class Pull {
         this.base = dir;
         this.hash = hsh;
         this.objectionary = obj;
-        this.cacheDir = cache;
+        this.cdir = cache;
         this.version = ver;
-        this.overWrite = rewrite;
-        this.cacheEnabled = enabled;
+        this.overwrite = rewrite;
+        this.cenabled = enabled;
         this.offline = off;
     }
 
@@ -177,7 +177,7 @@ final class Pull {
     private Path pulled(final String object, final String hsh) throws IOException {
         final Path target = new Place(object).make(this.base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
-            this.cacheDir,
+            this.cdir,
             this.version,
             hsh,
             this.base.relativize(target)
@@ -197,19 +197,19 @@ final class Pull {
             hsh,
             new FpFork(
                 (src, tgt) -> {
-                    if (this.overWrite) {
+                    if (this.overwrite) {
                         Logger.debug(
                             this,
                             "Pulling sources again because \"eo.overWrite=TRUE\""
                         );
                     }
-                    return this.overWrite;
+                    return this.overwrite;
                 },
-                new FpFork(this.cacheEnabled, both, generated),
+                new FpFork(this.cenabled, both, generated),
                 new FpIfTargetExists(
                     new FpIgnore(),
                     new FpFork(
-                        this.cacheEnabled,
+                        this.cenabled,
                         new FpIfTargetExists(tgt -> che.get(), new FpUpdateFromCache(che), both),
                         generated
                     )
