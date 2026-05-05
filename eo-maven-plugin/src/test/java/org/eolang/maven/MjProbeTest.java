@@ -9,10 +9,10 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -30,15 +30,15 @@ final class MjProbeTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             temp.resolve("tags.txt")
         ).value();
-        final String expected = "9";
+        final String expected = "7";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
                 expected
             ),
             new FakeMaven(temp)
-                .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), "master")))
-                .withProgram(MjProbeTest.program())
+                .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), "0.23.15")))
+                .withHelloWorld()
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
@@ -50,22 +50,17 @@ final class MjProbeTest {
      * Finds probes in objectionary remote repository.
      * @param temp Temporary folder
      * @throws IOException If some problem inside
-     * @todo #4526:90min Fix flaky {@link #findsProbesInOyRemote(Path)} test.
-     *  The test sometimes fails with the following error:
-     *  MjProbeTest.findsProbesInOyRemote:62 We should find 10 objects in
-     *  git repository with tag '0.50.0', but 9 found.
-     *  This might happen because the remote repository structure changes over time.
-     *  We need to investigate this issue and fix the test to make it stable.
      */
     @Test
-    @Disabled
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
-        final String tag = "0.50.0";
-        final String expected = "10";
+        final String tag = "0.23.15";
+        final String expected = "3";
         final String found = new FakeMaven(temp)
-            .with("tag", tag)
-            .with("objectionary", new OyRemote(new ChRemote(tag)))
-            .withProgram(MjProbeTest.program())
+            .with("tag", tag).with(
+                "objectionary",
+                (Scalar<Objectionary>) () -> new OyIndexed(new OyRemote(new ChRemote(tag)))
+            )
+            .withHelloWorld()
             .execute(new FakeMaven.Probe())
             .programTojo()
             .probed();
@@ -77,20 +72,5 @@ final class MjProbeTest {
             found,
             Matchers.equalTo(expected)
         );
-    }
-
-    private static String[] program() {
-        return new String[]{
-            "+package foo.x",
-            String.format("+also while%n"),
-            "# No comments.",
-            "[] > main",
-            "  Q.io.stdout > @",
-            "    Q.txt.sprintf",
-            "      \"I am %d years old\"",
-            "      plus.",
-            "        1337",
-            "        228",
-        };
     }
 }
