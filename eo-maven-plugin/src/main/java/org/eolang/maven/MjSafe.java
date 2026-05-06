@@ -430,6 +430,12 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Cached tojos.
+     * @todo #5098:90min Extract tojos lifecycle out of MjSafe.
+     *  TjsForeign and TjsPlaced are created, scoped, and closed here,
+     *  mixing Maven plumbing with catalog state management. Move their
+     *  construction and closing into each Mojo (or a dedicated owner)
+     *  so MjSafe is not responsible for their lifecycle. Ensure that
+     *  close() is still guaranteed even when exec() throws.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     private final TjsForeign tojos = new TjsForeign(

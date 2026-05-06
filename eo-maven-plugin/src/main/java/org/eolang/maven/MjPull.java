@@ -27,7 +27,7 @@ public final class MjPull extends MjSafe {
     @Override
     public void exec() throws IOException {
         new Pull(
-            this.scopedTojos().withoutSources(),
+            this.scopedTojos(),
             this.targetDir.toPath().resolve(Pull.DIR),
             this.hash,
             this.objectionary(),

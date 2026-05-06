@@ -10,7 +10,6 @@ import java.io.IOException;
 /**
  * Assembles EO sources by running Parse, Probe, and Pull in a loop
  * until no new objects are discovered.
- *
  * @since 0.67.0
  */
 final class Assemble {

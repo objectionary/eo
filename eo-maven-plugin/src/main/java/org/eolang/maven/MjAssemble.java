@@ -42,7 +42,7 @@ public final class MjAssemble extends MjSafe {
         new Assemble(
             this.scopedTojos(),
             new Parse(
-                this.scopedTojos().withSources(),
+                this.scopedTojos(),
                 this.targetDir.toPath(),
                 this.cache.toPath(),
                 this.cacheEnabled,
@@ -51,7 +51,7 @@ public final class MjAssemble extends MjSafe {
             ),
             new Probe(this.scopedTojos(), this.objectionary(), !this.offline),
             new Pull(
-                this.scopedTojos().withoutSources(),
+                this.scopedTojos(),
                 this.targetDir.toPath().resolve(Pull.DIR),
                 this.hash,
                 this.objectionary(),

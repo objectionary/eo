@@ -53,9 +53,9 @@ final class Parse {
     static final String CACHE = "parsed";
 
     /**
-     * EO sources to parse.
+     * Foreign tojos catalog.
      */
-    private final Collection<TjForeign> tojos;
+    private final TjsForeign tojos;
 
     /**
      * Target directory.
@@ -88,7 +88,7 @@ final class Parse {
 
     /**
      * Constructor.
-     * @param srcs EO sources to parse
+     * @param srcs Foreign tojos catalog
      * @param target Target directory
      * @param cache Base cache directory
      * @param enabled Whether caching is enabled
@@ -97,7 +97,7 @@ final class Parse {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Parse(
-        final Collection<TjForeign> srcs,
+        final TjsForeign srcs,
         final Path target,
         final Path cache,
         final boolean enabled,
@@ -118,12 +118,13 @@ final class Parse {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() {
         final long start = System.currentTimeMillis();
+        final Collection<TjForeign> sources = this.tojos.withSources();
         final int total = new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, this.tojos),
+            new Filtered<>(TjForeign::notParsed, sources),
             this::parsed
         ).total();
         if (0 == total) {
-            if (this.tojos.isEmpty()) {
+            if (sources.isEmpty()) {
                 Logger.info(
                     this,
                     "No .eo sources registered, nothing to be parsed to XMIRs (maybe you forgot to execute the \"register\" goal?)"
@@ -132,13 +133,13 @@ final class Parse {
                 Logger.info(
                     this,
                     "No new .eo sources out of %d parsed to XMIRs",
-                    this.tojos.size()
+                    sources.size()
                 );
             }
         } else {
             Logger.info(
                 this, "Parsed %d new .eo sources out of %d to XMIRs in %[ms]s",
-                total, this.tojos.size(), System.currentTimeMillis() - start
+                total, sources.size(), System.currentTimeMillis() - start
             );
         }
     }
