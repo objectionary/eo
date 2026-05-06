@@ -4,7 +4,7 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
+import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -37,48 +37,30 @@ public final class MjAssemble extends MjSafe {
      */
     static final String EO = "eo";
 
-    /**
-     * Mojas to execute.
-     */
-    private static final Moja<?>[] MOJAS = {
-        new Moja<>(MjParse.class),
-        new Moja<>(MjProbe.class),
-        new Moja<>(MjPull.class),
-    };
-
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    public void exec() {
-        final long begin = System.currentTimeMillis();
-        String before = this.scopedTojos().status();
-        int cycle = 0;
-        while (true) {
-            final long start = System.currentTimeMillis();
-            for (final Moja<?> moja : MjAssemble.MOJAS) {
-                moja.copy(this).execute();
-            }
-            final String after = this.scopedTojos().status();
-            ++cycle;
-            if (after.equals(before)) {
-                Logger.info(
-                    this, "Last assemble cycle #%d (%s), took %[ms]s",
-                    cycle, after, System.currentTimeMillis() - start
-                );
-                break;
-            } else {
-                Logger.info(
-                    this, "Assemble cycle #%d (%s -> %s), took %[ms]s",
-                    cycle, before, after, System.currentTimeMillis() - start
-                );
-            }
-            before = after;
-        }
-        Logger.info(
-            this,
-            "%d assemble cycle(s) produced some new object(s) in %[ms]s: %s",
-            cycle,
-            System.currentTimeMillis() - begin,
-            before
-        );
+    public void exec() throws IOException {
+        new Assemble(
+            this.scopedTojos(),
+            new Parse(
+                this.scopedTojos().withSources(),
+                this.targetDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.sourcesDir.toPath()
+            ),
+            new Probe(this.scopedTojos(), this.objectionary(), !this.offline),
+            new Pull(
+                this.scopedTojos().withoutSources(),
+                this.targetDir.toPath().resolve(Pull.DIR),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pull.CACHE),
+                this.plugin.getVersion(),
+                this.overWrite,
+                this.cacheEnabled,
+                this.offline
+            )
+        ).exec();
     }
 }
