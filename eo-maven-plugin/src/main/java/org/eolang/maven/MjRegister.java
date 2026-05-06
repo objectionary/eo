@@ -138,7 +138,7 @@ public final class MjRegister extends MjSafe {
     private void removeOldFiles() {
         final File[] files = {
             this.foreign,
-            this.targetDir.toPath().resolve(MjPull.DIR).toFile(),
+            this.targetDir.toPath().resolve(Pull.DIR).toFile(),
             this.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
         };
         for (final File file : files) {

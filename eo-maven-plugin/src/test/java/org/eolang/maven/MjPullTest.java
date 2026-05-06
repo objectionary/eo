@@ -21,7 +21,6 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,7 +49,6 @@ final class MjPullTest {
     }
 
     @Test
-    @Disabled
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
@@ -137,14 +135,14 @@ final class MjPullTest {
         MatcherAssert.assertThat(
             String.format(
                 "%s folder should not contain %s and %s file, but it did",
-                MjPull.DIR,
+                Pull.DIR,
                 stdout,
                 string
             ),
             result,
             Matchers.allOf(
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, stdout))),
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", MjPull.DIR, string)))
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pull.DIR, stdout))),
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pull.DIR, string)))
             )
         );
     }
@@ -156,7 +154,7 @@ final class MjPullTest {
             .withHelloWorld()
             .execute(new FakeMaven.Pull());
         final Path path = maven.result().get(
-            String.format("target/%s/bytes.%s", MjPull.DIR, MjAssemble.EO)
+            String.format("target/%s/bytes.%s", Pull.DIR, MjAssemble.EO)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(MjPull.class);
@@ -168,7 +166,6 @@ final class MjPullTest {
     }
 
     @Test
-    @Disabled
     void savesPulledResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final CommitHash hash = new ChCached(
@@ -183,10 +180,10 @@ final class MjPullTest {
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "Pulled results must be saved to cache",
-            cache.resolve(MjPull.CACHE)
+            cache.resolve(Pull.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash.value())
-                .resolve("org/eolang/bytes.eo")
+                .resolve("bytes.eo")
                 .toFile(),
             FileMatchers.anExistingFile()
         );
@@ -200,7 +197,7 @@ final class MjPullTest {
         new Saved(
             cached,
             cache
-                .resolve(MjPull.CACHE)
+                .resolve(Pull.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("io/stdout.eo")
@@ -208,7 +205,7 @@ final class MjPullTest {
         Files.setLastModifiedTime(
             cache.resolve(
                 Paths
-                    .get(MjPull.CACHE)
+                    .get(Pull.CACHE)
                     .resolve(FakeMaven.pluginVersion())
                     .resolve(hash)
                     .resolve("io/stdout.eo")
@@ -231,7 +228,7 @@ final class MjPullTest {
                     temp.resolve(
                         String.format(
                             "target/%s/io/stdout.%s",
-                            MjPull.DIR,
+                            Pull.DIR,
                             MjAssemble.EO
                         )
                     )
@@ -264,6 +261,6 @@ final class MjPullTest {
      * @return Formatted source path
      */
     private static Path path(final String source) {
-        return new Place(source).make(Paths.get(MjPull.DIR), "eo");
+        return new Place(source).make(Paths.get(Pull.DIR), "eo");
     }
 }
