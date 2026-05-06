@@ -36,9 +36,9 @@ final class Pull {
     static final String CACHE = "pulled";
 
     /**
-     * Tojos without sources to pull.
+     * Foreign tojos catalog.
      */
-    private final Collection<TjForeign> tojos;
+    private final TjsForeign tojos;
 
     /**
      * Base target directory (targetDir + DIR).
@@ -82,7 +82,7 @@ final class Pull {
 
     /**
      * Constructor.
-     * @param tjs Tojos without sources
+     * @param tjs Foreign tojos catalog
      * @param dir Base target directory
      * @param hsh Commit hash
      * @param obj Objectionary
@@ -94,7 +94,7 @@ final class Pull {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Pull(
-        final Collection<TjForeign> tjs,
+        final TjsForeign tjs,
         final Path dir,
         final CommitHash hsh,
         final Objectionary obj,
@@ -128,9 +128,10 @@ final class Pull {
             return;
         }
         final long start = System.currentTimeMillis();
+        final Collection<TjForeign> sources = this.tojos.withoutSources();
         final Collection<String> names = new ArrayList<>(0);
         final String hsh = this.hash.value();
-        for (final TjForeign tojo : this.tojos) {
+        for (final TjForeign tojo : sources) {
             final String object = tojo.identifier();
             if (this.objectionary.isDirectory(object)) {
                 continue;
@@ -150,7 +151,7 @@ final class Pull {
             }
             names.add(object);
         }
-        if (this.tojos.isEmpty()) {
+        if (sources.isEmpty()) {
             Logger.info(
                 this,
                 "No programs were pulled in %[ms]s",
@@ -160,7 +161,7 @@ final class Pull {
             Logger.info(
                 this,
                 "%d program(s) were pulled in %[ms]s: %s",
-                this.tojos.size(),
+                sources.size(),
                 System.currentTimeMillis() - start,
                 names
             );

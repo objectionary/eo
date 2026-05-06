@@ -36,7 +36,7 @@ public final class MjParse extends MjSafe {
     @Override
     public void exec() {
         new Parse(
-            this.scopedTojos().withSources(),
+            this.scopedTojos(),
             this.targetDir.toPath(),
             this.cache.toPath(),
             this.cacheEnabled,
