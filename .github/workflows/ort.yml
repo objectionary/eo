@@ -16,4 +16,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+      # @todo #5102:30min Upgrade ORT once the SPDX crash is fixed upstream.
+      #  ORT 85.1.0 introduced a stricter SPDX reporter that throws
+      #  NoSuchElementException when the dependency graph is incomplete, triggered by
+      #  eo-integration-tests/src/it/fibonacci/pom.xml using the @project.version@
+      #  Maven filter placeholder which is unresolvable outside a Maven build.
+      #  Rolled back to 85.0.0. Upgrade once ORT fixes the SPDX reporter crash, or
+      #  once the fibonacci invoker template is updated to use resolvable versions.
       - uses: oss-review-toolkit/ort-ci-github-action@v1
+        with:
+          image: 'ghcr.io/oss-review-toolkit/ort:85.0.0'
