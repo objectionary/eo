@@ -108,6 +108,7 @@ final class Lint {
      * Whether to skip experimental lints.
      * @checkstyle MemberNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.LongVariable")
     private final boolean skipExperimentalLints;
 
     /**
@@ -151,6 +152,7 @@ final class Lint {
      * @param skip Whether to skip linting entirely
      * @checkstyle ParameterNumberCheck (20 lines)
      */
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     Lint(
         final TjsForeign srcs,
         final TjsForeign compiled,
@@ -185,7 +187,6 @@ final class Lint {
      * Execute linting.
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() throws IOException {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
@@ -194,9 +195,10 @@ final class Lint {
         }
     }
 
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void lint() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> tojos = this.tojos.withXmir();
+        final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
@@ -206,10 +208,10 @@ final class Lint {
             Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
         final int passed = new Threaded<>(
-            tojos,
+            programs,
             tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
         ).total();
-        if (tojos.isEmpty()) {
+        if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
         if (this.lintAsPackage) {
@@ -228,7 +230,7 @@ final class Lint {
         Logger.info(
             this,
             "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
-            passed, tojos.size(), tojos.size(), System.currentTimeMillis() - start, sum
+            passed, programs.size(), programs.size(), System.currentTimeMillis() - start, sum
         );
         Logger.info(
             this,
@@ -236,17 +238,17 @@ final class Lint {
             Manifests.read("Lints-Version")
         );
         final String details = seen.stream().map(
-                defect -> String.format(
-                    "%s:%d %s (%s)",
-                    defect.object(), defect.line(), defect.text(), defect.rule()
-                )
+            defect -> String.format(
+                "%s:%d %s (%s)",
+                defect.object(), defect.line(), defect.text(), defect.rule()
+            )
             )
             .collect(Collectors.joining(System.lineSeparator()));
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
                 String.format(
                     "In %d XMIR files, we found %s (must stop here):%n%s",
-                    tojos.size(), sum, details
+                    programs.size(), sum, details
                 )
             );
         }
@@ -254,7 +256,7 @@ final class Lint {
             throw new IllegalStateException(
                 String.format(
                     "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
-                    tojos.size(), sum, details
+                    programs.size(), sum, details
                 )
             );
         }
