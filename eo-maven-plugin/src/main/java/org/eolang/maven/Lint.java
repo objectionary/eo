@@ -129,6 +129,12 @@ final class Lint {
     private final Path sourcesDir;
 
     /**
+     * Whether to skip linting entirely.
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private final boolean skipLinting;
+
+    /**
      * Constructor.
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
@@ -142,7 +148,8 @@ final class Lint {
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
      * @param sources EO sources directory
-     * @checkstyle ParameterNumberCheck (15 lines)
+     * @param skip Whether to skip linting entirely
+     * @checkstyle ParameterNumberCheck (20 lines)
      */
     Lint(
         final TjsForeign srcs,
@@ -156,7 +163,8 @@ final class Lint {
         final boolean experimental,
         final boolean warning,
         final boolean pkg,
-        final Path sources
+        final Path sources,
+        final boolean skip
     ) {
         this.tojos = srcs;
         this.compile = compiled;
@@ -170,6 +178,7 @@ final class Lint {
         this.failOnWarning = warning;
         this.lintAsPackage = pkg;
         this.sourcesDir = sources;
+        this.skipLinting = skip;
     }
 
     /**
@@ -178,6 +187,14 @@ final class Lint {
      */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() throws IOException {
+        if (this.skipLinting) {
+            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+        } else {
+            this.lint();
+        }
+    }
+
+    private void lint() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> tojos = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -219,10 +236,10 @@ final class Lint {
             Manifests.read("Lints-Version")
         );
         final String details = seen.stream().map(
-            defect -> String.format(
-                "%s:%d %s (%s)",
-                defect.object(), defect.line(), defect.text(), defect.rule()
-            )
+                defect -> String.format(
+                    "%s:%d %s (%s)",
+                    defect.object(), defect.line(), defect.text(), defect.rule()
+                )
             )
             .collect(Collectors.joining(System.lineSeparator()));
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {

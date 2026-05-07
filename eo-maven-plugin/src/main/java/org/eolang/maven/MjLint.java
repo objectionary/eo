@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -33,23 +32,20 @@ public final class MjLint extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        if (this.skipLinting) {
-            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
-        } else {
-            new Lint(
-                this.scopedTojos(),
-                this.compileTojos(),
-                this.targetDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
-                this.plugin.getVersion(),
-                this.skipSourceLints,
-                this.skipProgramLints,
-                this.skipExperimentalLints,
-                this.failOnWarning,
-                this.lintAsPackage,
-                this.sourcesDir.toPath()
-            ).exec();
-        }
+        new Lint(
+            this.scopedTojos(),
+            this.compileTojos(),
+            this.targetDir.toPath(),
+            this.cache.toPath(),
+            this.cacheEnabled,
+            this.plugin.getVersion(),
+            this.skipSourceLints,
+            this.skipProgramLints,
+            this.skipExperimentalLints,
+            this.failOnWarning,
+            this.lintAsPackage,
+            this.sourcesDir.toPath(),
+            this.skipLinting
+        ).exec();
     }
 }
