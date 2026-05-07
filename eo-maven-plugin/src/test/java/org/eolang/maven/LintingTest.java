@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test cases for {@link Lint}.
+ * Test cases for {@link Linting}.
  * @since 0.31.0
  */
-final class LintTest {
+final class LintingTest {
 
     @Test
     void skipsLintingWhenFlagIsSet(@TempDir final Path temp) {
         final TjsForeign tojos = new TjsForeign();
         Assertions.assertDoesNotThrow(
-            () -> new Lint(
+            () -> new Linting(
                 tojos,
                 tojos,
                 temp,

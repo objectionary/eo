@@ -44,10 +44,17 @@ import org.xembly.Xembler;
  *     Cached files are stored in the {@link #CACHE} directory.
  *     The results of linting are saved in the {@link #DIR} directory.
  * </p>
+ * <p>
+ *     Note: this class is intentionally named {@code Linting} rather than {@code Lint} to avoid
+ *     a conflict with Maven's Plexus configurator. When a class named {@code Lint} exists in the
+ *     plugin package, Plexus tries to instantiate it (via no-arg constructor) as the element type
+ *     for any {@code lint} XML child element it encounters in plugin configuration.
+ *     Naming the class {@code Linting} avoids this collision.
+ * </p>
  * @since 0.31.0
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
-final class Lint {
+final class Linting {
 
     /**
      * The directory where to lint to.
@@ -150,10 +157,14 @@ final class Lint {
      * @param pkg Whether to lint all sources as a package
      * @param sources EO sources directory
      * @param skip Whether to skip linting entirely
+     * @todo #5102:90min Reduce long parameter lists in Linting, Parse, Pull, and similar classes.
+     *  Linting currently takes 13 constructor parameters. Parse, Pull, and Probe have similar
+     *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
+     *  option requires updating every call site across the codebase.
      * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    Lint(
+    Linting(
         final TjsForeign srcs,
         final TjsForeign compiled,
         final Path target,
@@ -191,12 +202,12 @@ final class Lint {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {
-            this.lint();
+            this.linting();
         }
     }
 
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    private void lint() throws IOException {
+    private void linting() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -226,7 +237,7 @@ final class Lint {
                 "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
             );
         }
-        final String sum = Lint.summary(counts);
+        final String sum = Linting.summary(counts);
         Logger.info(
             this,
             "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
@@ -280,7 +291,7 @@ final class Lint {
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.targetDir.resolve(Lint.DIR);
+        final Path base = this.targetDir.resolve(Linting.DIR);
         final Path target = new Place(
             new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
@@ -288,7 +299,7 @@ final class Lint {
             new ConcurrentCache(
                 new Cache(
                     new CachePath(
-                        this.cacheDir.resolve(Lint.CACHE),
+                        this.cacheDir.resolve(Linting.CACHE),
                         this.version,
                         new TojoHash(tojo).get()
                     ),
@@ -306,12 +317,12 @@ final class Lint {
             ).value();
         }
         final Xnav checked = new Xnav(target);
-        final Collection<Defect> defects = Lint.existing(tojo.identifier(), checked);
+        final Collection<Defect> defects = Linting.existing(tojo.identifier(), checked);
         for (final Defect defect : defects) {
-            if (Lint.notSuppressed(checked, defect)) {
+            if (Linting.notSuppressed(checked, defect)) {
                 counts.compute(defect.severity(), (sev, before) -> before + 1);
                 seen.add(defect);
-                Lint.logOne(defect);
+                Linting.logOne(defect);
             }
         }
         tojo.withLinted(target);
@@ -346,14 +357,14 @@ final class Lint {
         final List<Defect> defects;
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
-            final Path target = this.targetDir.resolve(Lint.DIR).resolve(wpa);
+            final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
             new Cache(
-                this.cacheDir.resolve(Lint.CACHE),
+                this.cacheDir.resolve(Linting.CACHE),
                 root -> {
                     Logger.info(this, "Linting a package");
                     final Directives all = new Directives().add("defects");
                     for (final Defect defect : this.wpa(pkg)) {
-                        Lint.embedded(all, defect);
+                        Linting.embedded(all, defect);
                     }
                     all.up();
                     return new Xembler(all).xmlQuietly();
@@ -361,7 +372,7 @@ final class Lint {
                 p -> p.getFileName().toString().endsWith(".xmir")
                     && !p.getFileName().equals(wpa)
             ).apply(this.sourcesDir, target, wpa);
-            defects = Lint.read(target);
+            defects = Linting.read(target);
         } else {
             Logger.info(
                 this,
@@ -391,14 +402,14 @@ final class Lint {
                 defect -> {
                     final Node node = pkg.get(defect.object()).inner();
                     new Xembler(
-                        Lint.embedded(
+                        Linting.embedded(
                             new Directives().xpath("/object").addIf("errors").strict(1),
                             defect
                         )
                     ).applyQuietly(node);
-                    if (Lint.notSuppressed(new Xnav(node), defect)) {
+                    if (Linting.notSuppressed(new Xnav(node), defect)) {
                         defects.add(defect);
-                        Lint.logOne(defect);
+                        Linting.logOne(defect);
                     }
                 }
             );
@@ -419,7 +430,7 @@ final class Lint {
         final String... unlints
     ) {
         final Node node = xmir.inner();
-        final Collection<Defect> defects = Lint.existing(program, new Xnav(node));
+        final Collection<Defect> defects = Linting.existing(program, new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
             .without(unlints)
             .defects()
@@ -433,7 +444,7 @@ final class Lint {
         }
         for (final Defect defect : defects) {
             if (found.contains(defect)) {
-                Lint.embedded(dirs, defect);
+                Linting.embedded(dirs, defect);
             }
         }
         new Xembler(dirs).applyQuietly(node);
@@ -455,11 +466,11 @@ final class Lint {
             .append(')');
         switch (defect.severity()) {
             case WARNING:
-                Logger.warn(Lint.class, message.toString());
+                Logger.warn(Linting.class, message.toString());
                 break;
             case ERROR:
             case CRITICAL:
-                Logger.error(Lint.class, message.toString());
+                Logger.error(Linting.class, message.toString());
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -495,15 +506,15 @@ final class Lint {
         final List<String> parts = new ArrayList<>(0);
         final int critical = counts.get(Severity.CRITICAL);
         if (critical > 0) {
-            parts.add(Lint.plural(critical, "critical error"));
+            parts.add(Linting.plural(critical, "critical error"));
         }
         final int errors = counts.get(Severity.ERROR);
         if (errors > 0) {
-            parts.add(Lint.plural(errors, "error"));
+            parts.add(Linting.plural(errors, "error"));
         }
         final int warnings = counts.get(Severity.WARNING);
         if (warnings > 0) {
-            parts.add(Lint.plural(warnings, "warning"));
+            parts.add(Linting.plural(warnings, "warning"));
         }
         if (parts.isEmpty()) {
             parts.add("no complaints");
@@ -534,7 +545,7 @@ final class Lint {
             .findFirst().map(
                 errors -> errors
                     .elements(Filter.withName("error"))
-                    .map(error -> Lint.toDefect(program, error))
+                    .map(error -> Linting.toDefect(program, error))
                     .collect(Collectors.toList())
             )
             .orElse(new ListOf<>());

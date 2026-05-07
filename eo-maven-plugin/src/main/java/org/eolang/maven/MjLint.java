@@ -18,8 +18,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  *     and depending on the configuration, the build may fail.
  *     The linting results are also embedded back into the XMIR files for future reference.
  *     Lints might use caching to speed up the process on subsequent runs.
- *     Cached files are stored in the {@link Lint#CACHE} directory.
- *     The results of linting are saved in the {@link Lint#DIR} directory.
+ *     Cached files are stored in the {@link Linting#CACHE} directory.
+ *     The results of linting are saved in the {@link Linting#DIR} directory.
  * </p>
  * @since 0.31.0
  */
@@ -32,7 +32,7 @@ public final class MjLint extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Lint(
+        new Linting(
             this.scopedTojos(),
             this.compileTojos(),
             this.targetDir.toPath(),

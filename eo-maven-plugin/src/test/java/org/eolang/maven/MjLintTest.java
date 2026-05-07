@@ -157,7 +157,7 @@ final class MjLintTest {
         maven.execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
             "WPA results must be saved to cache",
-            cache.resolve(Lint.CACHE)
+            cache.resolve(Linting.CACHE)
                 .resolve("wpa.xmir").toFile(),
             FileMatchers.anExistingFile()
         );
@@ -297,7 +297,7 @@ final class MjLintTest {
             .allTojosWithHash(CommitHash.FAKE)
             .execute(new FakeMaven.Lint());
         final Path path = maven.result().get(
-            String.format("target/%s/foo/x/main.%s", Lint.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", Linting.DIR, MjAssemble.XMIR)
         );
         final String xpath = "/object/@time";
         final String before = new Xnav(path).one(xpath).text().orElseThrow();
@@ -325,7 +325,7 @@ final class MjLintTest {
             .execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
             "Verified results must be saved to cache",
-            cache.resolve(Lint.CACHE)
+            cache.resolve(Linting.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("foo/x/main.xmir").toFile(),
@@ -345,7 +345,7 @@ final class MjLintTest {
         new Saved(input, from).value();
         new Cache(
             new CachePath(
-                cache.resolve(Lint.CACHE),
+                cache.resolve(Linting.CACHE),
                 FakeMaven.pluginVersion(),
                 hash
             ),
@@ -363,7 +363,7 @@ final class MjLintTest {
                     temp.resolve(
                         String.format(
                             "target/%s/foo/x/main.%s",
-                            Lint.DIR,
+                            Linting.DIR,
                             MjAssemble.XMIR
                         )
                     )
@@ -371,7 +371,7 @@ final class MjLintTest {
             ),
             Matchers.is(
                 new XMLDocument(
-                    cache.resolve(Lint.CACHE)
+                    cache.resolve(Linting.CACHE)
                         .resolve(FakeMaven.pluginVersion())
                         .resolve(hash)
                         .resolve("foo/x/main.xmir")
