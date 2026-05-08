@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+      - run: git fetch origin master --depth=1
       - uses: maidsafe/pr_size_checker@v3
         with:
           target_branch: master
