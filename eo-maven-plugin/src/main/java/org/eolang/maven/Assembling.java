@@ -8,11 +8,11 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 
 /**
- * Assembles EO sources by running Parse, Probe, and Pull in a loop
+ * Assembles EO sources by running Parsing, Probing, and Pulling in a loop
  * until no new objects are discovered.
  * @since 0.67.0
  */
-final class Assemble {
+final class Assembling {
 
     /**
      * Tojos to check assembly status.
@@ -22,17 +22,17 @@ final class Assemble {
     /**
      * Parse step.
      */
-    private final Parse parse;
+    private final Parsing parse;
 
     /**
      * Probe step.
      */
-    private final Probe probe;
+    private final Probing probe;
 
     /**
      * Pull step.
      */
-    private final Pull pull;
+    private final Pulling pull;
 
     /**
      * Constructor.
@@ -42,11 +42,11 @@ final class Assemble {
      * @param pll Pull step
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    Assemble(
+    Assembling(
         final TjsForeign tjs,
-        final Parse prs,
-        final Probe prb,
-        final Pull pll
+        final Parsing prs,
+        final Probing prb,
+        final Pulling pll
     ) {
         this.tojos = tjs;
         this.parse = prs;

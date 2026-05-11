@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  *
  * @since 0.67.0
  */
-final class Pull {
+final class Pulling {
 
     /**
      * The directory where to store pulled sources.
@@ -93,7 +93,7 @@ final class Pull {
      * @param off Whether offline mode is active
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    Pull(
+    Pulling(
         final TjsForeign tjs,
         final Path dir,
         final CommitHash hsh,

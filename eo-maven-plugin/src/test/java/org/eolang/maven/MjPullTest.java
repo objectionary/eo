@@ -135,14 +135,14 @@ final class MjPullTest {
         MatcherAssert.assertThat(
             String.format(
                 "%s folder should not contain %s and %s file, but it did",
-                Pull.DIR,
+                Pulling.DIR,
                 stdout,
                 string
             ),
             result,
             Matchers.allOf(
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pull.DIR, stdout))),
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pull.DIR, string)))
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pulling.DIR, stdout))),
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pulling.DIR, string)))
             )
         );
     }
@@ -154,7 +154,7 @@ final class MjPullTest {
             .withHelloWorld()
             .execute(new FakeMaven.Pull());
         final Path path = maven.result().get(
-            String.format("target/%s/bytes.%s", Pull.DIR, MjAssemble.EO)
+            String.format("target/%s/bytes.%s", Pulling.DIR, MjAssemble.EO)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(MjPull.class);
@@ -180,7 +180,7 @@ final class MjPullTest {
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "Pulled results must be saved to cache",
-            cache.resolve(Pull.CACHE)
+            cache.resolve(Pulling.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash.value())
                 .resolve("bytes.eo")
@@ -197,7 +197,7 @@ final class MjPullTest {
         new Saved(
             cached,
             cache
-                .resolve(Pull.CACHE)
+                .resolve(Pulling.CACHE)
                 .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("io/stdout.eo")
@@ -205,7 +205,7 @@ final class MjPullTest {
         Files.setLastModifiedTime(
             cache.resolve(
                 Paths
-                    .get(Pull.CACHE)
+                    .get(Pulling.CACHE)
                     .resolve(FakeMaven.pluginVersion())
                     .resolve(hash)
                     .resolve("io/stdout.eo")
@@ -228,7 +228,7 @@ final class MjPullTest {
                     temp.resolve(
                         String.format(
                             "target/%s/io/stdout.%s",
-                            Pull.DIR,
+                            Pulling.DIR,
                             MjAssemble.EO
                         )
                     )
@@ -261,6 +261,6 @@ final class MjPullTest {
      * @return Formatted source path
      */
     private static Path path(final String source) {
-        return new Place(source).make(Paths.get(Pull.DIR), "eo");
+        return new Place(source).make(Paths.get(Pulling.DIR), "eo");
     }
 }

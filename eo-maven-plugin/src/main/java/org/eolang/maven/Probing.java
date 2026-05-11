@@ -18,7 +18,7 @@ import org.cactoos.list.ListOf;
  * and if found, registers them in the catalog.
  * @since 0.67.0
  */
-final class Probe {
+final class Probing {
 
     /**
      * Tojos to probe.
@@ -41,7 +41,7 @@ final class Probe {
      * @param obj Objectionary
      * @param net Whether we are online
      */
-    Probe(final TjsForeign tjs, final Objectionary obj, final boolean net) {
+    Probing(final TjsForeign tjs, final Objectionary obj, final boolean net) {
         this.tojos = tjs;
         this.objectionary = obj;
         this.online = net;

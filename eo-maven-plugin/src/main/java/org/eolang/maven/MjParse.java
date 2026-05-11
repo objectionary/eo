@@ -20,7 +20,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *    The goal scans all the EO sources registered in the foreign file catalog
  *    (see {@link MjRegister} and {@link MjPull}) and then parses those that were not parsed
  *    before (i.e. do not have XMIRs yet) to XMIR format.
- *    The resulting XMIR files are stored in the {@link Parse#DIR} directory.
+ *    The resulting XMIR files are stored in the {@link Parsing#DIR} directory.
  * </p>
  *
  * @since 0.1
@@ -35,7 +35,7 @@ public final class MjParse extends MjSafe {
 
     @Override
     public void exec() {
-        new Parse(
+        new Parsing(
             this.scopedTojos(),
             this.targetDir.toPath(),
             this.cache.toPath(),
