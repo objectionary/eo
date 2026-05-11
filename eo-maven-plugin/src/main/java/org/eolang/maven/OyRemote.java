@@ -8,9 +8,15 @@ import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
@@ -77,7 +83,18 @@ final class OyRemote implements Objectionary {
         if (this.proxies.isEmpty()) {
             remote = new InputOf(url);
         } else {
-            remote = () -> url.openConnection(this.proxies.get(0)).getInputStream();
+            remote = () -> {
+                try {
+                    return OyRemote.clientWith(this.proxies.get(0))
+                        .send(
+                            HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
+                            HttpResponse.BodyHandlers.ofInputStream()
+                        ).body();
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException(ex);
+                }
+            };
         }
         return new InputWithFallback(
             remote,
@@ -110,7 +127,16 @@ final class OyRemote implements Objectionary {
         if (this.proxies.isEmpty()) {
             code = ((HttpURLConnection) url.openConnection()).getResponseCode();
         } else {
-            code = ((HttpURLConnection) url.openConnection(this.proxies.get(0))).getResponseCode();
+            try {
+                code = OyRemote.clientWith(this.proxies.get(0))
+                    .send(
+                        HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
+                        HttpResponse.BodyHandlers.discarding()
+                    ).statusCode();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IOException(ex);
+            }
         }
         if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
             throw new IOException(
@@ -118,6 +144,13 @@ final class OyRemote implements Objectionary {
             );
         }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
+    }
+
+    private static HttpClient clientWith(final Proxy proxy) {
+        return HttpClient.newBuilder()
+            .proxy(ProxySelector.of((InetSocketAddress) proxy.address()))
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .build();
     }
 
     /**
