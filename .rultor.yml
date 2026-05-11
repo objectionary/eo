@@ -23,7 +23,7 @@ release:
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
 
     mvn flatten:flatten
-    mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
+    mvn -ntp versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
     mvn clean install -ntp -DskipTests -Dinvoker.skip
