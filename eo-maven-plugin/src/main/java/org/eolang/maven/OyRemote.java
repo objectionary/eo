@@ -17,10 +17,8 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
 
 /**
@@ -41,9 +39,9 @@ final class OyRemote implements Objectionary {
     private final UrlOy directory;
 
     /**
-     * Proxies list to use for HTTP if needed.
+     * HTTP client, configured with proxy when provided.
      */
-    private final List<Proxy> proxies;
+    private final HttpClient http;
 
     /**
      * Constructor.
@@ -60,7 +58,7 @@ final class OyRemote implements Objectionary {
             "https://github.com/objectionary/home/tree/%s/objects/%s",
             hash
         );
-        this.proxies = List.of(proxies);
+        this.http = OyRemote.client(proxies);
     }
 
     @Override
@@ -79,25 +77,8 @@ final class OyRemote implements Objectionary {
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
-        final Input remote;
-        if (this.proxies.isEmpty()) {
-            remote = new InputOf(url);
-        } else {
-            remote = () -> {
-                try {
-                    return OyRemote.clientWith(this.proxies.get(0))
-                        .send(
-                            HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
-                            HttpResponse.BodyHandlers.ofInputStream()
-                        ).body();
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    throw new IOException(ex);
-                }
-            };
-        }
         return new InputWithFallback(
-            remote,
+            () -> this.send(url, HttpResponse.BodyHandlers.ofInputStream()).body(),
             input -> {
                 throw new IOException(
                     String.format(
@@ -123,21 +104,7 @@ final class OyRemote implements Objectionary {
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private boolean exists(final URL url) throws IOException {
-        final int code;
-        if (this.proxies.isEmpty()) {
-            code = ((HttpURLConnection) url.openConnection()).getResponseCode();
-        } else {
-            try {
-                code = OyRemote.clientWith(this.proxies.get(0))
-                    .send(
-                        HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
-                        HttpResponse.BodyHandlers.discarding()
-                    ).statusCode();
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new IOException(ex);
-            }
-        }
+        final int code = this.send(url, HttpResponse.BodyHandlers.discarding()).statusCode();
         if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
             throw new IOException(
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
@@ -146,11 +113,27 @@ final class OyRemote implements Objectionary {
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
-    private static HttpClient clientWith(final Proxy proxy) {
-        return HttpClient.newBuilder()
-            .proxy(ProxySelector.of((InetSocketAddress) proxy.address()))
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .build();
+    private <T> HttpResponse<T> send(
+        final URL url, final HttpResponse.BodyHandler<T> handler
+    ) throws IOException {
+        try {
+            return this.http.send(
+                HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
+                handler
+            );
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IOException(ex);
+        }
+    }
+
+    private static HttpClient client(final Proxy... proxies) {
+        final HttpClient.Builder builder = HttpClient.newBuilder()
+            .followRedirects(HttpClient.Redirect.NORMAL);
+        if (proxies.length > 0) {
+            builder.proxy(ProxySelector.of((InetSocketAddress) proxies[0].address()));
+        }
+        return builder.build();
     }
 
     /**
