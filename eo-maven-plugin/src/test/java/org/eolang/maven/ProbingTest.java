@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test cases for {@link Probe}.
+ * Test cases for {@link Probing}.
  * @since 0.67.0
  * @todo #5084:30min Create a reusable test helper that represents a standard EO program
- *  (like the hello-world one) for use across tests like {@link ProbeTest} and
+ *  (like the hello-world one) for use across tests like {@link ProbingTest} and
  *  {@link MjProbeTest} and {@link FakeMaven#withHelloWorld()}, so we don't duplicate
  *  the EO source inline in multiple places.
  */
-final class ProbeTest {
+final class ProbingTest {
 
     @Test
     void probesSuccessfully(@TempDir final Path temp) throws IOException {
@@ -46,7 +46,7 @@ final class ProbeTest {
         );
         final TjsForeign tojos = new TjsForeign();
         tojos.add("test").withXmir(xmir);
-        new Probe(tojos, new Objectionary.Fake(), true).exec();
+        new Probing(tojos, new Objectionary.Fake(), true).exec();
         MatcherAssert.assertThat(
             "Probe should have found and registered objects from the objectionary",
             tojos.size(),
@@ -71,7 +71,7 @@ final class ProbeTest {
         );
         final TjsForeign tojos = new TjsForeign();
         tojos.add("test").withXmir(xmir);
-        new Probe(tojos, new Objectionary.Fake(), false).exec();
+        new Probing(tojos, new Objectionary.Fake(), false).exec();
         MatcherAssert.assertThat(
             "Probe should not register any objects when offline",
             tojos.size(),

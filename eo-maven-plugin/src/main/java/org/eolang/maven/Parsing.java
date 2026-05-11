@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
  *
  * @since 0.1
  */
-final class Parse {
+final class Parsing {
 
     /**
      * Zero version.
@@ -96,7 +96,7 @@ final class Parse {
      * @param sources EO sources directory
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    Parse(
+    Parsing(
         final TjsForeign srcs,
         final Path target,
         final Path cache,
@@ -153,14 +153,14 @@ final class Parse {
     private int parsed(final TjForeign tojo) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = this.targetDir.resolve(Parse.DIR);
+        final Path base = this.targetDir.resolve(Parsing.DIR);
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         if (this.cacheEnabled) {
             new ConcurrentCache(
                 new Cache(
                     new CachePath(
-                        this.cacheDir.resolve(Parse.CACHE),
+                        this.cacheDir.resolve(Parsing.CACHE),
                         this.version,
                         new TojoHash(tojo).get()
                     ),
@@ -176,7 +176,7 @@ final class Parse {
             new Saved(new XMLDocument(node).toString(), target).value();
             refs.add(node);
         }
-        tojo.withXmir(target).withVersion(Parse.tojoVersion(target, refs));
+        tojo.withXmir(target).withVersion(Parsing.tojoVersion(target, refs));
         final List<Xnav> errors = new Xnav(target)
             .element("object")
             .element("errors")
@@ -208,7 +208,7 @@ final class Parse {
     private Node parsed(final Path source, final String identifier) throws IOException {
         final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
         Logger.debug(
-            Parse.class,
+            Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
             identifier, this.sourcesDir.relativize(source.toAbsolutePath()), xmir
         );
@@ -259,7 +259,7 @@ final class Parse {
                 )
             )
             .findFirst()
-            .map(meta -> meta.element("tail").text().orElse(Parse.ZERO))
-            .orElse(Parse.ZERO);
+            .map(meta -> meta.element("tail").text().orElse(Parsing.ZERO))
+            .orElse(Parsing.ZERO);
     }
 }

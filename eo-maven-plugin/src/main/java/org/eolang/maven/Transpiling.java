@@ -49,7 +49,7 @@ import org.eolang.parser.TrFull;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-final class Transpile {
+final class Transpiling {
 
     /**
      * The directory where to transpile to.
@@ -161,7 +161,7 @@ final class Transpile {
      * @param measures Path to the file where XSL measurements are stored
      * @checkstyle ParameterNumberCheck (15 lines)
      */
-    Transpile(
+    Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
         final Path generated,
@@ -215,14 +215,14 @@ final class Transpile {
     private int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.targetDir.resolve(Transpile.DIR);
+        final Path base = this.targetDir.resolve(Transpiling.DIR);
         final Path target = new Place(
             new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.transpilation(source);
-        final Path cdir = this.cacheDir.resolve(Transpile.CACHE);
+        final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
             new ConcurrentCache(
@@ -236,9 +236,9 @@ final class Transpile {
                             this,
                             "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
                             source,
-                            Transpile.info(source),
+                            Transpiling.info(source),
                             target,
-                            Transpile.info(target),
+                            Transpiling.info(target),
                             System.currentTimeMillis() - start,
                             this.version,
                             hsh.get(),
@@ -314,7 +314,7 @@ final class Transpile {
      * @return XSL transformation function
      */
     private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(Transpile.TRAIN);
+        final Train<Shift> measured = this.measured(Transpiling.TRAIN);
         final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
             func = xml -> new Xsline(
@@ -323,7 +323,7 @@ final class Transpile {
                     new StickyFunc<>(
                         doc -> new Place(
                             new OnDetailed(new OnDefault(new Xnav(doc.inner())), source).get()
-                        ).make(this.targetDir.resolve(Transpile.PRE), "")
+                        ).make(this.targetDir.resolve(Transpiling.PRE), "")
                     )
                 )
             ).pass(xml);
@@ -358,7 +358,7 @@ final class Transpile {
                 final String jname = clazz.attribute("java-name").text().get();
                 if (!atom || jname.endsWith("Test")) {
                     final Path tgt = new Place(jname).make(
-                        this.generatedDir, Transpile.JAVA
+                        this.generatedDir, Transpiling.JAVA
                     );
                     final Footprint java = new FpJavaGenerated(
                         clazz, new FileGenerationReport(saved, tgt, target)
@@ -396,12 +396,12 @@ final class Transpile {
      */
     private Supplier<Path> cached(final String hsh, final String jname) {
         return new CachePath(
-            this.cacheDir.resolve(Transpile.CACHE),
+            this.cacheDir.resolve(Transpiling.CACHE),
             this.version,
             hsh,
             this.generatedDir.relativize(
                 new Place(jname).make(
-                    this.generatedDir, Transpile.JAVA
+                    this.generatedDir, Transpiling.JAVA
                 )
             )
         );
