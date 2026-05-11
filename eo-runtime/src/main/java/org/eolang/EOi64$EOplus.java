@@ -26,12 +26,19 @@ public final class EOi64$EOplus extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
-        final Long left = new Expect.I64(Expect.at(this, Phi.RHO)).it();
-        final Long right = new Expect.I64(Expect.at(this, "x")).it();
         final Phi num = Phi.Φ.take("i64").copy();
-        num.put(0, new Data.ToPhi(new BytesOf(Long.sum(left, right)).take()));
+        num.put(
+            0,
+            new Data.ToPhi(
+                new BytesOf(
+                    Long.sum(
+                        new Expect.I64(Expect.at(this, Phi.RHO)).it(),
+                        new Expect.I64(Expect.at(this, "x")).it()
+                    )
+                ).take()
+            )
+        );
         return num;
     }
 }
