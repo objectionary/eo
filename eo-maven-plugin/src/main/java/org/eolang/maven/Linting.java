@@ -52,12 +52,6 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
- * @todo #5102:90min Rename all other decoupled core classes to use the {@code -ing} suffix.
- *  Currently {@code Parse}, {@code Probe}, {@code Pull}, {@code Assemble}, {@code Resolve},
- *  and {@code Transpile} all risk the same Plexus collision if a matching XML element appears
- *  in plugin configuration. Rename them to {@code Parsing}, {@code Probing}, {@code Pulling},
- *  {@code Assembling}, {@code Resolving}, and {@code Transpiling} (and update all references),
- *  so the naming convention is consistent across the plugin.
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Linting {

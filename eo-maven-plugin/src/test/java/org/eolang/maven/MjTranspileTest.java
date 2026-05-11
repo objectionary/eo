@@ -137,7 +137,7 @@ final class MjTranspileTest {
                 .result(),
             Matchers.not(
                 Matchers.allOf(
-                    Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", Transpile.DIR)),
+                    Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", Transpiling.DIR)),
                     Matchers.hasKey("target/generated/EOcom/EOexample/EOfoo.java")
                 )
             )
@@ -217,7 +217,7 @@ final class MjTranspileTest {
             .result();
         final Path java = res.get(this.compiled);
         final Path xmir = maven.targetPath().resolve(
-            String.format("%s/foo/x/main.xmir", Transpile.DIR)
+            String.format("%s/foo/x/main.xmir", Transpiling.DIR)
         );
         MatcherAssert.assertThat(
             "The Java file should exist after transpile",

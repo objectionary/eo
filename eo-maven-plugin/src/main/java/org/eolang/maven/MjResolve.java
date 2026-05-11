@@ -69,7 +69,7 @@ public final class MjResolve extends MjSafe {
         if (this.central == null) {
             this.central = new CentralMaven(this.system);
         }
-        new Resolve(
+        new Resolving(
             this.scopedTojos(),
             this.targetDir.toPath().resolve(MjResolve.DIR),
             this.central,

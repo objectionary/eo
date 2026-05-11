@@ -39,9 +39,9 @@ public final class MjAssemble extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Assemble(
+        new Assembling(
             this.scopedTojos(),
-            new Parse(
+            new Parsing(
                 this.scopedTojos(),
                 this.targetDir.toPath(),
                 this.cache.toPath(),
@@ -49,13 +49,13 @@ public final class MjAssemble extends MjSafe {
                 this.plugin.getVersion(),
                 this.sourcesDir.toPath()
             ),
-            new Probe(this.scopedTojos(), this.objectionary(), !this.offline),
-            new Pull(
+            new Probing(this.scopedTojos(), this.objectionary(), !this.offline),
+            new Pulling(
                 this.scopedTojos(),
-                this.targetDir.toPath().resolve(Pull.DIR),
+                this.targetDir.toPath().resolve(Pulling.DIR),
                 this.hash,
                 this.objectionary(),
-                this.cache.toPath().resolve(Pull.CACHE),
+                this.cache.toPath().resolve(Pulling.CACHE),
                 this.plugin.getVersion(),
                 this.overWrite,
                 this.cacheEnabled,

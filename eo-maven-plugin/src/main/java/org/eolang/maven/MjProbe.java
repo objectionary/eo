@@ -33,6 +33,6 @@ public final class MjProbe extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Probe(this.scopedTojos(), this.objectionary(), !this.offline).exec();
+        new Probing(this.scopedTojos(), this.objectionary(), !this.offline).exec();
     }
 }

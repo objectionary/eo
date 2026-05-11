@@ -26,7 +26,7 @@ import org.cactoos.text.Joined;
  * @since 0.63.0
  * @checkstyle ParameterNumberCheck (100 lines)
  */
-final class Resolve {
+final class Resolving {
 
     /**
      * Tojos.
@@ -86,7 +86,7 @@ final class Resolve {
      * @param noconf Ignore version conflicts
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    Resolve(
+    Resolving(
         final TjsForeign tjs,
         final Path tgt,
         final BiConsumer<Dependency, Path> cntrl,
@@ -167,7 +167,7 @@ final class Resolve {
             } else {
                 Logger.info(
                     this, "Found %d new file(s) (%d MB) after unpacking of %s",
-                    files, Resolve.folderSizeInMb(place), dep
+                    files, Resolving.folderSizeInMb(place), dep
                 );
             }
             total = 1;
