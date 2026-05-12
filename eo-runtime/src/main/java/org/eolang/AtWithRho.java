@@ -10,7 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
- *
  * @since 0.36.0
  */
 final class AtWithRho implements Attr {
