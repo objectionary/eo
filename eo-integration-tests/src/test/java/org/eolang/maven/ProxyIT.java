@@ -27,19 +27,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ConnectHandler;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
- * @todo #5102:60min Fix flaky proxy compilation test and re-enable it.
- *  The test {@code checksThatWeCanCompileTheProgramWithProxySet} fails with
- *  "BuildFailure build failed with exit code 0x0001" across multiple PRs,
- *  indicating a systemic issue unrelated to any specific change. Investigate
- *  why Farea.exec("package") exits with code 1 when routing through the local
- *  Jetty proxy, fix the root cause, remove @Disabled, and re-enable the test.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
@@ -66,7 +59,6 @@ final class ProxyIT {
         }
     }
 
-    @Disabled
     @Test
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         final int port = ProxyIT.free();
