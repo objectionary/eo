@@ -258,17 +258,7 @@ final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram(
-            "+alias stdout org.eolang.io.stdout",
-            "+home https://www.eolang.org",
-            "+package foo.x",
-            "+unlint object-has-data",
-            "+version 0.0.0",
-            "",
-            "# No comments.",
-            "[x] > main",
-            "  (stdout \"Hello!\" x).print > @"
-        );
+        return this.withProgram(new HelloWorld().asString());
     }
 
     /**
