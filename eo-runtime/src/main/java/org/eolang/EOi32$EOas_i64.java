@@ -26,7 +26,7 @@ public final class EOi32$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Dataized(this.take(Phi.RHO)).take(Integer.class).longValue()
+                    new Expect.I32(Expect.at(this, Phi.RHO)).it().longValue()
                 ).take()
             )
         );

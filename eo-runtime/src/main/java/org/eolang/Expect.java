@@ -268,6 +268,70 @@ public class Expect<T> {
     }
 
     /**
+     * Transform Expect to Short (i16).
+     * @since 0.51
+     */
+    public static final class I16 {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public I16(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Short it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).take(Short.class))
+                .otherwise("must be an i16")
+                .it();
+        }
+    }
+
+    /**
+     * Transform Expect to Integer (i32).
+     * @since 0.51
+     */
+    public static final class I32 {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public I32(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Integer it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).take(Integer.class))
+                .otherwise("must be an i32")
+                .it();
+        }
+    }
+
+    /**
      * Transform Expect to Long (i64).
      * @since 0.51
      */
