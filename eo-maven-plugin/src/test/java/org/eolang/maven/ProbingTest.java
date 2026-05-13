@@ -17,10 +17,6 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test cases for {@link Probing}.
  * @since 0.67.0
- * @todo #5084:30min Create a reusable test helper that represents a standard EO program
- *  (like the hello-world one) for use across tests like {@link ProbingTest} and
- *  {@link MjProbeTest} and {@link FakeMaven#withHelloWorld()}, so we don't duplicate
- *  the EO source inline in multiple places.
  */
 final class ProbingTest {
 
@@ -30,18 +26,7 @@ final class ProbingTest {
         Files.write(
             xmir,
             new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "+alias stdout org.eolang.io.stdout",
-                    "+home https://www.eolang.org",
-                    "+package foo.x",
-                    "+unlint object-has-data",
-                    "+version 0.0.0",
-                    "",
-                    "# No comments.",
-                    "[x] > main",
-                    "  (stdout \"Hello!\" x).print > @"
-                )
+                new HelloWorld().asString()
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
         final TjsForeign tojos = new TjsForeign();

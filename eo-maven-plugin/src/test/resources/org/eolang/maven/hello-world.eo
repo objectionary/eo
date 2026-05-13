@@ -1,0 +1,11 @@
++alias stdout org.eolang.io.stdout
++home https://www.eolang.org
++package foo.x
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint object-has-data
++version 0.0.0
+
+# No comments.
+[x] > main
+  (stdout "Hello!" x).print > @
