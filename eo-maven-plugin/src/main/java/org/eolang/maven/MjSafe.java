@@ -569,6 +569,36 @@ abstract class MjSafe extends AbstractMojo {
     }
 
     /**
+     * Build the assembling step from this mojo's configuration.
+     * @return Configured Assembling instance
+     */
+    Assembling assembling() {
+        return new Assembling(
+            this.scopedTojos(),
+            new Parsing(
+                this.scopedTojos(),
+                this.targetDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.sourcesDir.toPath()
+            ),
+            new Probing(this.scopedTojos(), this.objectionary(), !this.offline),
+            new Pulling(
+                this.scopedTojos(),
+                this.targetDir.toPath().resolve(Pulling.DIR),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overWrite,
+                this.cacheEnabled,
+                this.offline
+            )
+        );
+    }
+
+    /**
      * Get active proxy from Maven settings.
      * @return Proxy if any
      */
