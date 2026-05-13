@@ -1182,7 +1182,7 @@ final class XeEoListener implements EoListener, Iterable<Directive> {
         final String[] splitted = cutted.split("\n");
         StringBuilder res = new StringBuilder();
         for (final String line : splitted) {
-            res.append(line.replaceAll(String.format("[\\s]{%d}", indent), "")).append('\n');
+            res.append(line.replaceAll(String.format("^[\\s]{%d}", indent), "")).append('\n');
         }
         if (res.length() > 0 && res.charAt(0) == '\n') {
             res = new StringBuilder(res.substring(1));
