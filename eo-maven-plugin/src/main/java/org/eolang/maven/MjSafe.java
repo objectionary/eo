@@ -419,7 +419,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean resolveJna = true;
 
     /**
@@ -427,7 +426,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
     protected boolean resolveInCentral = true;
 
     /**

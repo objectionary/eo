@@ -18,69 +18,71 @@ import org.junit.jupiter.api.io.TempDir;
 final class CompilingTest {
 
     @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsWithoutExceptions(@TempDir final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new Compiling(
-                new Assembling(
-                    new TjsForeign(),
-                    new Parsing(
-                        new TjsForeign(),
-                        temp,
-                        temp,
-                        false,
-                        "0.0.0",
-                        temp
-                    ),
-                    new Probing(new TjsForeign(), new Objectionary.Fake(), false),
-                    new Pulling(
-                        new TjsForeign(),
-                        temp.resolve(Pulling.DIR),
-                        CommitHash.FAKE,
-                        new Objectionary.Fake(),
-                        temp.resolve(Pulling.CACHE),
-                        "0.0.0",
-                        false,
-                        false,
-                        true
-                    )
-                ),
-                new Linting(
-                    new TjsForeign(),
+        final Compiling compiling = new Compiling(
+            new Assembling(
+                new TjsForeign(),
+                new Parsing(
                     new TjsForeign(),
                     temp,
                     temp,
                     false,
                     "0.0.0",
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    false,
-                    false,
-                    false,
-                    temp,
-                    true
+                    temp
                 ),
-                new Resolving(
+                new Probing(new TjsForeign(), new Objectionary.Fake(), false),
+                new Pulling(
                     new TjsForeign(),
-                    temp.resolve("resolve"),
-                    (dep, path) -> { },
+                    temp.resolve(Pulling.DIR),
+                    CommitHash.FAKE,
+                    new Objectionary.Fake(),
+                    temp.resolve(Pulling.CACHE),
+                    "0.0.0",
                     false,
                     false,
-                    false,
-                    true,
-                    () -> {
-                        throw new IllegalStateException("no runtime expected");
-                    },
-                    false
-                ),
-                new Placing(
-                    new TjsPlaced(temp.resolve("placed.json")),
-                    temp.resolve("nonexistent"),
-                    temp,
-                    new SetOf<>("**"),
-                    new SetOf<>(),
-                    false
+                    true
                 )
-            ).exec(),
+            ),
+            new Linting(
+                new TjsForeign(),
+                new TjsForeign(),
+                temp,
+                temp,
+                false,
+                "0.0.0",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                false,
+                false,
+                false,
+                temp,
+                true
+            ),
+            new Resolving(
+                new TjsForeign(),
+                temp.resolve("resolve"),
+                (dep, path) -> { },
+                false,
+                false,
+                false,
+                true,
+                () -> {
+                    throw new IllegalStateException("no runtime expected");
+                },
+                false
+            ),
+            new Placing(
+                new TjsPlaced(temp.resolve("placed.json")),
+                temp.resolve("nonexistent"),
+                temp,
+                new SetOf<>("**"),
+                new SetOf<>(),
+                false
+            )
+        );
+        Assertions.assertDoesNotThrow(
+            compiling::exec,
             "Compiling must complete without exceptions for empty input"
         );
     }

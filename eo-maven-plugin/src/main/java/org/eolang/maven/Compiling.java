@@ -46,6 +46,7 @@ final class Compiling {
      * @param lnt Linting step
      * @param rslv Resolving step
      * @param plc Placing step
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Compiling(
         final Assembling asmbl,
