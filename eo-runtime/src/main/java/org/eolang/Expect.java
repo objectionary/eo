@@ -268,6 +268,38 @@ public class Expect<T> {
     }
 
     /**
+     * Transform Expect to Long (i64).
+     * @since 0.51
+     */
+    public static final class I64 {
+
+        /**
+         * Expect.
+         */
+        private final Expect<Phi> expect;
+
+        /**
+         * Ctor.
+         * @param expect Expect
+         */
+        public I64(final Expect<Phi> expect) {
+            this.expect = expect;
+        }
+
+        /**
+         * Return it.
+         * @return The token
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        public Long it() {
+            return this.expect
+                .that(phi -> new Dataized(phi).take(Long.class))
+                .otherwise("must be an i64")
+                .it();
+        }
+    }
+
+    /**
      * Transform Expect to Natural number.
      * Natural number is integer greater or equal to zero.
      * @since 0.51

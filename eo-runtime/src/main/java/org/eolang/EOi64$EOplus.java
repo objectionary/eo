@@ -33,8 +33,8 @@ public final class EOi64$EOplus extends PhDefault implements Atom {
             new Data.ToPhi(
                 new BytesOf(
                     Long.sum(
-                        new Dataized(this.take(Phi.RHO)).take(Long.class),
-                        new Dataized(this.take("x").take("as-i64")).take(Long.class)
+                        new Expect.I64(Expect.at(this, Phi.RHO)).it(),
+                        new Expect.I64(Expect.at(this, "x")).it()
                     )
                 ).take()
             )

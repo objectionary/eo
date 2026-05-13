@@ -28,8 +28,8 @@ public final class EOi64$EOgt extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Dataized(this.take(Phi.RHO)).take(Long.class)
-                > new Dataized(this.take("x").take("as-i64")).take(Long.class)
+            new Expect.I64(Expect.at(this, Phi.RHO)).it()
+            > new Expect.I64(Expect.at(this, "x")).it()
         );
     }
 }
