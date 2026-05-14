@@ -4,7 +4,7 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
+import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -28,27 +28,44 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjCompile extends MjSafe {
 
-    /**
-     * Mojas to execute.
-     */
-    private static final Moja<?>[] MOJAS = {
-        new Moja<>(MjAssemble.class),
-        new Moja<>(MjLint.class),
-        new Moja<>(MjResolve.class),
-        new Moja<>(MjPlace.class),
-    };
-
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    public void exec() {
-        final long begin = System.currentTimeMillis();
-        for (final Moja<?> moja : MjCompile.MOJAS) {
-            moja.copy(this).execute();
-        }
-        Logger.info(
-            this,
-            "Compilation process took %[ms]s",
-            System.currentTimeMillis() - begin
-        );
+    public void exec() throws IOException {
+        new Compiling(
+            this.assembling(),
+            new Linting(
+                this.scopedTojos(),
+                this.compileTojos(),
+                this.targetDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.skipSourceLints,
+                this.skipProgramLints,
+                this.skipExperimentalLints,
+                this.failOnWarning,
+                this.lintAsPackage,
+                this.sourcesDir.toPath(),
+                this.skipLinting
+            ),
+            new Resolving(
+                this.scopedTojos(),
+                this.targetDir.toPath().resolve(MjResolve.DIR),
+                new CentralMaven(this.system),
+                this.discoverSelf,
+                this.skipZeroVersions,
+                this.resolveJna,
+                this.ignoreRuntime,
+                this.runtime(),
+                this.ignoreVersionConflicts
+            ),
+            new Placing(
+                this.placedTojos,
+                this.targetDir.toPath().resolve(MjResolve.DIR),
+                this.classesDir.toPath(),
+                this.placeBinaries,
+                this.skipBinaries,
+                this.rewriteBinaries
+            )
+        ).exec();
     }
 }

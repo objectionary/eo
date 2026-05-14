@@ -415,6 +415,20 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
+     * Resolve default JNA dependency or not.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    protected boolean resolveJna = true;
+
+    /**
+     * Resolve dependencies in central or not.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    protected boolean resolveInCentral = true;
+
+    /**
      * Objectionary.
      * @since 0.50
      * @checkstyle MemberNameCheck (5 lines)
@@ -535,6 +549,53 @@ abstract class MjSafe extends AbstractMojo {
 
     Objectionary objectionary() {
         return new Unchecked<>(this.objectionary).value();
+    }
+
+    /**
+     * Select the Maven EO runtime dependency source.
+     * @return Scalar supplying the runtime dependency
+     */
+    Scalar<Dep> runtime() {
+        final Scalar<Dep> result;
+        final RtPom pom = new RtPom(this.project);
+        if (pom.isPresent()) {
+            result = pom;
+        } else if (this.resolveInCentral) {
+            result = new RtCentral();
+        } else {
+            result = new RtOffline();
+        }
+        return result;
+    }
+
+    /**
+     * Build the assembling step from this mojo's configuration.
+     * @return Configured Assembling instance
+     */
+    Assembling assembling() {
+        return new Assembling(
+            this.scopedTojos(),
+            new Parsing(
+                this.scopedTojos(),
+                this.targetDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.sourcesDir.toPath()
+            ),
+            new Probing(this.scopedTojos(), this.objectionary(), !this.offline),
+            new Pulling(
+                this.scopedTojos(),
+                this.targetDir.toPath().resolve(Pulling.DIR),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overWrite,
+                this.cacheEnabled,
+                this.offline
+            )
+        );
     }
 
     /**

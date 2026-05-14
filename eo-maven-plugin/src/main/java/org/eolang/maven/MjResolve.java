@@ -9,7 +9,6 @@ import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.cactoos.Scalar;
 
 /**
  * Find all required runtime dependencies, download
@@ -50,20 +49,6 @@ public final class MjResolve extends MjSafe {
      */
     private BiConsumer<Dependency, Path> central;
 
-    /**
-     * Resolve default JNA dependency or not.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean resolveJna = true;
-
-    /**
-     * Resolve dependencies in central or not.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean resolveInCentral = true;
-
     @Override
     public void exec() {
         if (this.central == null) {
@@ -80,18 +65,5 @@ public final class MjResolve extends MjSafe {
             this.runtime(),
             this.ignoreVersionConflicts
         ).exec();
-    }
-
-    private Scalar<Dep> runtime() {
-        final Scalar<Dep> result;
-        final RtPom pom = new RtPom(this.project);
-        if (pom.isPresent()) {
-            result = pom;
-        } else if (this.resolveInCentral) {
-            result = new RtCentral();
-        } else {
-            result = new RtOffline();
-        }
-        return result;
     }
 }
