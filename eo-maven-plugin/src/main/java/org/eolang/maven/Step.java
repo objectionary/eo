@@ -10,7 +10,9 @@ import java.io.IOException;
  * A single pipeline step.
  * @since 0.68.0
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 interface Step {
+
     /**
      * Execute this step.
      * @throws IOException If fails

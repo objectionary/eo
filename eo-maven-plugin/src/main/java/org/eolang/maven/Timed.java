@@ -12,10 +12,12 @@ import java.io.IOException;
  * @since 0.68.0
  */
 final class Timed implements Step {
+
     /**
      * The step to measure.
      */
     private final Step origin;
+
     /**
      * Label for logging.
      */
@@ -32,6 +34,7 @@ final class Timed implements Step {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
         final long start = System.currentTimeMillis();
         this.origin.exec();

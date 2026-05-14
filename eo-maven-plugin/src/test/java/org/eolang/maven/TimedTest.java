@@ -33,7 +33,9 @@ final class TimedTest {
         Assertions.assertThrows(
             IOException.class,
             () -> new Timed(
-                () -> { throw new IOException("simulated failure"); },
+                () -> {
+                    throw new IOException("simulated failure");
+                },
                 "failing step"
             ).exec(),
             "Timed must propagate IOException from the wrapped step"
