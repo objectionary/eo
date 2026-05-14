@@ -14,7 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Test cases for {@link Unspiling}.
  * @since 0.61.0
  */
-final class UnspillingTest {
+final class UnspilingTest {
 
     @Test
     void skipsWhenNoClassesExist(@TempDir final Path temp) {
