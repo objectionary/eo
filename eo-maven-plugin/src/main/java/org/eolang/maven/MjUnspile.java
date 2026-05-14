@@ -4,17 +4,7 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -31,78 +21,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjUnspile extends MjSafe {
 
-    /**
-     * Pattern for matching paths ended with .class.
-     */
-    private static final Pattern JAVA = Pattern.compile("\\.java$");
-
-    /**
-     * Inner auto generated classes.
-     * <p>These globs are used for inner classes which may look like:
-     * - EOorg/EOeolang/EOnumber$1$2$4.class
-     * - EOorg/EOeolang/EOsm/EOsocket$EOΦorgeolangsyssocketα0ρ.class</p>
-     */
-    private static final Collection<String> INNER = List.of(
-        "**/EO*$[1-9]*.class", "**/*$EOΦ*.class"
-    );
-
     @Override
     public void exec() throws IOException {
-        final Walk classes = new Walk(this.classesDir.toPath());
-        if (classes.isEmpty()) {
-            Logger.warn(this, "No .class files in %[file]s, nothing to unspile", this.classesDir);
-        } else {
-            this.unspile(classes);
-        }
-    }
-
-    /**
-     * Unspile classes.
-     * @param classes Collection of compiled classes
-     */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    private void unspile(final Walk classes) {
-        final Path generated = this.generatedDir.toPath();
-        final Set<String> included = new Walk(generated)
-            .stream().map(
-                path -> MjUnspile.JAVA.matcher(
-                    generated.relativize(path).toString()
-                ).replaceAll(".class").replace(File.separatorChar, '/')
-            )
-            .collect(Collectors.toSet());
-        included.addAll(MjUnspile.INNER);
-        final Collection<Path> filtered = new ArrayList<>(
-            classes.excludes(this.keepBinaries).includes(included)
-        );
-        if (filtered.isEmpty()) {
-            Logger.info(
-                this, "No .class files out of %d deleted in %[file]s",
-                classes.size(), this.classesDir.toPath()
-            );
-        } else {
-            final int unspiled = new Threaded<>(
-                filtered,
-                path -> {
-                    final int deleted;
-                    if (Files.deleteIfExists(path)) {
-                        Logger.debug(
-                            this,
-                            "Deleted %[file]s since was compiled from %[file]s",
-                            path, generated
-                        );
-                        deleted = 1;
-                    } else {
-                        deleted = 0;
-                    }
-                    return deleted;
-                }
-            ).total();
-            new EmptyDirectoriesIn(this.classesDir).clear();
-            Logger.info(
-                this,
-                "Deleted %d .class files in %[file]s",
-                unspiled, this.classesDir.toPath()
-            );
-        }
+        new Unspiling(
+            this.generatedDir.toPath(),
+            this.classesDir.toPath(),
+            this.keepBinaries
+        ).exec();
     }
 }
