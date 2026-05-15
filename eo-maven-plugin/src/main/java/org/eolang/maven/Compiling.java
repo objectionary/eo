@@ -22,22 +22,22 @@ final class Compiling implements Step {
     /**
      * Assembling step.
      */
-    private final Assembling assembling;
+    private final Step assembling;
 
     /**
      * Linting step.
      */
-    private final Linting linting;
+    private final Step linting;
 
     /**
      * Resolving step.
      */
-    private final Resolving resolving;
+    private final Step resolving;
 
     /**
      * Placing step.
      */
-    private final Placing placing;
+    private final Step placing;
 
     /**
      * Constructor.
@@ -48,10 +48,10 @@ final class Compiling implements Step {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     Compiling(
-        final Assembling asmbl,
-        final Linting lnt,
-        final Resolving rslv,
-        final Placing plc
+        final Step asmbl,
+        final Step lnt,
+        final Step rslv,
+        final Step plc
     ) {
         this.assembling = asmbl;
         this.linting = lnt;

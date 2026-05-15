@@ -22,17 +22,17 @@ final class Assembling implements Step {
     /**
      * Parse step.
      */
-    private final Parsing parse;
+    private final Step parse;
 
     /**
      * Probe step.
      */
-    private final Probing probe;
+    private final Step probe;
 
     /**
      * Pull step.
      */
-    private final Pulling pull;
+    private final Step pull;
 
     /**
      * Constructor.
@@ -44,9 +44,9 @@ final class Assembling implements Step {
      */
     Assembling(
         final TjsForeign tjs,
-        final Parsing prs,
-        final Probing prb,
-        final Pulling pll
+        final Step prs,
+        final Step prb,
+        final Step pll
     ) {
         this.tojos = tjs;
         this.parse = prs;

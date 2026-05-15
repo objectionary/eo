@@ -25,9 +25,9 @@ import org.cactoos.scalar.Unchecked;
  * </p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Placing {
+final class Placing implements Step {
 
     /**
      * Catalog of already-placed binaries.
@@ -89,7 +89,8 @@ final class Placing {
      * Execute placing.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (Files.exists(this.home)) {
             final Collection<String> deps = new DepDirs(this.home);
             final long copied = deps.stream()
@@ -141,7 +142,7 @@ final class Placing {
 
     /**
      * Dependency whose binaries are being placed.
-     * @since 0.67.0
+     * @since 0.61.0
      */
     private final class PlacedDependency implements Supplier<Long> {
 
