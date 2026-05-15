@@ -47,10 +47,6 @@ final class Probing implements Step {
         this.online = net;
     }
 
-    /**
-     * Run probing.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         if (this.online) {

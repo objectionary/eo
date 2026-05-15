@@ -54,10 +54,6 @@ final class Assembling implements Step {
         this.pull = pll;
     }
 
-    /**
-     * Run assembly cycles until stable.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         String before = this.tojos.status();

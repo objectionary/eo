@@ -59,10 +59,6 @@ final class Compiling implements Step {
         this.placing = plc;
     }
 
-    /**
-     * Execute the full compilation pipeline.
-     * @throws IOException If any step fails
-     */
     @Override
     public void exec() throws IOException {
         this.assembling.exec();

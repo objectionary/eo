@@ -183,11 +183,8 @@ final class Transpiling implements Step {
         this.xslMeasures = measures;
     }
 
-    /**
-     * Run transpilation of all sources.
-     * @throws IOException If any issues with I/O
-     */
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
         final int saved = new Threaded<>(
             this.sources,
@@ -333,7 +330,6 @@ final class Transpiling implements Step {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int javaGenerated(
         final boolean rewrite,
         final Path target,

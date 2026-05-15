@@ -69,10 +69,6 @@ final class Unspiling implements Step {
         this.keep = keep;
     }
 
-    /**
-     * Execute unspiling.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         final Walk walk = new Walk(this.classes);

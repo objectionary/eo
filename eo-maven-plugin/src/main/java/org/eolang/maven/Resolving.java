@@ -108,9 +108,6 @@ final class Resolving implements Step {
         this.noconflicts = noconf;
     }
 
-    /**
-     * Execute the resolve process.
-     */
     @Override
     public void exec() {
         final Collection<Dep> deps = this.deps();

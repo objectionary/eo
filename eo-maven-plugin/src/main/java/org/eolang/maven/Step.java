@@ -10,6 +10,7 @@ import java.io.IOException;
  * A single pipeline step that can be executed.
  * @since 0.61.0
  */
+@FunctionalInterface
 interface Step {
 
     /**

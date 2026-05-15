@@ -56,10 +56,6 @@ final class Unplacing implements Step {
         this.keep = keepbinaries;
     }
 
-    /**
-     * Execute unplacing.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         if (this.placed.isEmpty()) {

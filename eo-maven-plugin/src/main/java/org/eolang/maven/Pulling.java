@@ -115,10 +115,6 @@ final class Pulling implements Step {
         this.offline = off;
     }
 
-    /**
-     * Pull all objects.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         if (this.offline) {

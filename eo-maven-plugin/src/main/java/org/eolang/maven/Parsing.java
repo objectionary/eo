@@ -112,9 +112,6 @@ final class Parsing implements Step {
         this.sourcesDir = sources;
     }
 
-    /**
-     * Run parsing of all sources.
-     */
     @Override
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();

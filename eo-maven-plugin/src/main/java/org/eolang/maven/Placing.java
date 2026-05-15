@@ -85,10 +85,6 @@ final class Placing implements Step {
         this.rewrite = rewritebinaries;
     }
 
-    /**
-     * Execute placing.
-     * @throws IOException If fails
-     */
     @Override
     public void exec() throws IOException {
         if (Files.exists(this.home)) {

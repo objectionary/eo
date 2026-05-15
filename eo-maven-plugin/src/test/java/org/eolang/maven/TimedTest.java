@@ -16,12 +16,9 @@ import org.junit.jupiter.api.Test;
 final class TimedTest {
 
     @Test
-    void executesWrappedStep() {
+    void executesWrappedStep() throws IOException {
         final AtomicBoolean executed = new AtomicBoolean(false);
-        Assertions.assertDoesNotThrow(
-            () -> new Timed(() -> executed.set(true)).exec(),
-            "Timed must delegate execution to the wrapped step"
-        );
+        new Timed(() -> executed.set(true)).exec();
         Assertions.assertTrue(
             executed.get(),
             "The wrapped step must have been executed"
