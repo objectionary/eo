@@ -128,7 +128,6 @@ final class Pulling implements Step {
             );
             return;
         }
-        final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.tojos.withoutSources();
         final Collection<String> names = new ArrayList<>(0);
         final String hsh = this.hash.value();
@@ -153,17 +152,12 @@ final class Pulling implements Step {
             names.add(object);
         }
         if (sources.isEmpty()) {
-            Logger.info(
-                this,
-                "No programs were pulled in %[ms]s",
-                System.currentTimeMillis() - start
-            );
+            Logger.info(this, "No programs were pulled");
         } else {
             Logger.info(
                 this,
-                "%d program(s) were pulled in %[ms]s: %s",
+                "%d program(s) were pulled: %s",
                 sources.size(),
-                System.currentTimeMillis() - start,
                 names
             );
         }

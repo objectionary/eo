@@ -207,9 +207,7 @@ final class Linting implements Step {
         }
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void linting() throws IOException {
-        final long start = System.currentTimeMillis();
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
@@ -241,8 +239,8 @@ final class Linting implements Step {
         final String sum = Linting.summary(counts);
         Logger.info(
             this,
-            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
-            passed, programs.size(), programs.size(), System.currentTimeMillis() - start, sum
+            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
+            passed, programs.size(), programs.size(), sum
         );
         Logger.info(
             this,

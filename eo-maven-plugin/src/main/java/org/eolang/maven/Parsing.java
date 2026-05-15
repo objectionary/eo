@@ -116,9 +116,7 @@ final class Parsing implements Step {
      * Run parsing of all sources.
      */
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
-        final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.tojos.withSources();
         final int total = new Threaded<>(
             new Filtered<>(TjForeign::notParsed, sources),
@@ -139,8 +137,8 @@ final class Parsing implements Step {
             }
         } else {
             Logger.info(
-                this, "Parsed %d new .eo sources out of %d to XMIRs in %[ms]s",
-                total, sources.size(), System.currentTimeMillis() - start
+                this, "Parsed %d new .eo sources out of %d to XMIRs",
+                total, sources.size()
             );
         }
     }

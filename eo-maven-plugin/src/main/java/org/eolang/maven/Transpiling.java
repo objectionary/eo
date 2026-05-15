@@ -224,16 +224,14 @@ final class Transpiling implements Step {
                     new CachePath(cdir, this.version, hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
-                        final long start = System.currentTimeMillis();
                         final String res = transform.apply(xmir).toString();
                         Logger.debug(
                             this,
-                            "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
+                            "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
                             source,
                             Transpiling.info(source),
                             target,
                             Transpiling.info(target),
-                            System.currentTimeMillis() - start,
                             this.version,
                             hsh.get(),
                             tail,
@@ -341,7 +339,6 @@ final class Transpiling implements Step {
         final Path target,
         final String hsh
     ) throws IOException {
-        final long begin = System.currentTimeMillis();
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
             final Xnav object = new Xnav(target).element("object");
@@ -375,8 +372,8 @@ final class Transpiling implements Step {
             }
             Logger.debug(
                 this,
-                "Generated %d Java files from %[file]s in %[ms]s",
-                saved.get(), target, System.currentTimeMillis() - begin
+                "Generated %d Java files from %[file]s",
+                saved.get(), target
             );
         }
         return saved.get();

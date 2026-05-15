@@ -59,13 +59,10 @@ final class Assembling implements Step {
      * @throws IOException If fails
      */
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
         String before = this.tojos.status();
         int cycle = 0;
         while (true) {
-            final long start = System.currentTimeMillis();
             this.parse.exec();
             this.probe.exec();
             this.pull.exec();
@@ -73,23 +70,22 @@ final class Assembling implements Step {
             ++cycle;
             if (after.equals(before)) {
                 Logger.info(
-                    this, "Last assemble cycle #%d (%s), took %[ms]s",
-                    cycle, after, System.currentTimeMillis() - start
+                    this, "Last assemble cycle #%d (%s)",
+                    cycle, after
                 );
                 break;
             } else {
                 Logger.info(
-                    this, "Assemble cycle #%d (%s -> %s), took %[ms]s",
-                    cycle, before, after, System.currentTimeMillis() - start
+                    this, "Assemble cycle #%d (%s -> %s)",
+                    cycle, before, after
                 );
             }
             before = after;
         }
         Logger.info(
             this,
-            "%d assemble cycle(s) produced some new object(s) in %[ms]s: %s",
+            "%d assemble cycle(s) produced some new object(s): %s",
             cycle,
-            System.currentTimeMillis() - begin,
             before
         );
     }

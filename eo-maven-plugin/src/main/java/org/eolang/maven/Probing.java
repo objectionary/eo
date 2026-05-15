@@ -68,9 +68,7 @@ final class Probing implements Step {
         }
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void probe(final Collection<TjForeign> unprobed) {
-        final long start = System.currentTimeMillis();
         final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
         if (this.probed(unprobed, probed) == 0) {
             Logger.info(
@@ -80,9 +78,8 @@ final class Probing implements Step {
             );
         } else {
             Logger.info(
-                this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
+                this, "Found %d probe(s) in %d program(s): %s",
                 probed.size(), unprobed.size(),
-                System.currentTimeMillis() - start,
                 probed.keySet()
             );
         }
