@@ -22,10 +22,12 @@ public final class MjUnplace extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Unplacing(
-            this.placedTojos,
-            this.classesDir.toPath(),
-            this.keepBinaries
+        new Timed(
+            new Unplacing(
+                this.placedTojos,
+                this.classesDir.toPath(),
+                this.keepBinaries
+            )
         ).exec();
     }
 }

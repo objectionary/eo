@@ -16,9 +16,9 @@ import org.cactoos.list.ListOf;
  * Goes through all {@code probe} and {@code also} metas in XMIR files,
  * tries to locate the objects pointed by {@code probe} in Objectionary,
  * and if found, registers them in the catalog.
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Probing {
+final class Probing implements Step {
 
     /**
      * Tojos to probe.
@@ -51,7 +51,8 @@ final class Probing {
      * Run probing.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.online) {
             final Collection<TjForeign> unprobed = this.tojos.unprobed();
             if (unprobed.isEmpty()) {

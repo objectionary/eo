@@ -21,9 +21,9 @@ import java.util.function.Supplier;
  *     are stored in the {@link #DIR} directory.
  * </p>
  *
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Pulling {
+final class Pulling implements Step {
 
     /**
      * The directory where to store pulled sources.
@@ -119,7 +119,8 @@ final class Pulling {
      * Pull all objects.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.offline) {
             Logger.info(
                 this,

@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 
 /**
@@ -18,7 +17,7 @@ import java.io.IOException;
  *
  * @since 0.61.0
  */
-final class Compiling {
+final class Compiling implements Step {
 
     /**
      * Assembling step.
@@ -64,17 +63,11 @@ final class Compiling {
      * Execute the full compilation pipeline.
      * @throws IOException If any step fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
+    @Override
+    public void exec() throws IOException {
         this.assembling.exec();
         this.linting.exec();
         this.resolving.exec();
         this.placing.exec();
-        Logger.info(
-            this,
-            "Compilation process took %[ms]s",
-            System.currentTimeMillis() - begin
-        );
     }
 }

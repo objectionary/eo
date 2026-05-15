@@ -23,10 +23,12 @@ public final class MjUnspile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Unspiling(
-            this.generatedDir.toPath(),
-            this.classesDir.toPath(),
-            this.keepBinaries
+        new Timed(
+            new Unspiling(
+                this.generatedDir.toPath(),
+                this.classesDir.toPath(),
+                this.keepBinaries
+            )
         ).exec();
     }
 }

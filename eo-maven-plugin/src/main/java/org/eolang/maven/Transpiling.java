@@ -49,7 +49,7 @@ import org.eolang.parser.TrFull;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-final class Transpiling {
+final class Transpiling implements Step {
 
     /**
      * The directory where to transpile to.
@@ -187,9 +187,8 @@ final class Transpiling {
      * Run transpilation of all sources.
      * @throws IOException If any issues with I/O
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
+    @Override
+    public void exec() throws IOException {
         final int saved = new Threaded<>(
             this.sources,
             this::transpiled
@@ -197,11 +196,6 @@ final class Transpiling {
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(), saved, this.generatedDir
-        );
-        Logger.info(
-            this,
-            "Transpilation took %[ms]s in total",
-            System.currentTimeMillis() - begin
         );
     }
 

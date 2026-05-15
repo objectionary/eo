@@ -10,9 +10,9 @@ import java.io.IOException;
 /**
  * Assembles EO sources by running Parsing, Probing, and Pulling in a loop
  * until no new objects are discovered.
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Assembling {
+final class Assembling implements Step {
 
     /**
      * Tojos to check assembly status.
@@ -58,8 +58,9 @@ final class Assembling {
      * Run assembly cycles until stable.
      * @throws IOException If fails
      */
+    @Override
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
+    public void exec() throws IOException {
         final long begin = System.currentTimeMillis();
         String before = this.tojos.status();
         int cycle = 0;

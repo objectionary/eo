@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
  *
  * @since 0.1
  */
-final class Parsing {
+final class Parsing implements Step {
 
     /**
      * Zero version.
@@ -115,8 +115,9 @@ final class Parsing {
     /**
      * Run parsing of all sources.
      */
+    @Override
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() {
+    public void exec() {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.tojos.withSources();
         final int total = new Threaded<>(

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * so they are not included in the result JAR.
  * @since 0.61.0
  */
-final class Unspiling {
+final class Unspiling implements Step {
 
     /**
      * Pattern for matching paths ended with .class.
@@ -73,7 +73,8 @@ final class Unspiling {
      * Execute unspiling.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         final Walk walk = new Walk(this.classes);
         if (walk.isEmpty()) {
             Logger.warn(this, "No .class files in %[file]s, nothing to unspile", this.classes);

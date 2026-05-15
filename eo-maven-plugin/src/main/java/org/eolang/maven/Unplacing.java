@@ -23,7 +23,7 @@ import java.util.Set;
  * @since 0.61.0
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-final class Unplacing {
+final class Unplacing implements Step {
 
     /**
      * Catalog of placed binaries.
@@ -60,7 +60,8 @@ final class Unplacing {
      * Execute unplacing.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.placed.isEmpty()) {
             Logger.info(this, "The list of placed binaries is empty, nothing to unplace");
         } else {

@@ -54,7 +54,7 @@ import org.xembly.Xembler;
  * @since 0.31.0
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
-final class Linting {
+final class Linting implements Step {
 
     /**
      * The directory where to lint to.
@@ -198,7 +198,8 @@ final class Linting {
      * Execute linting.
      * @throws IOException If fails
      */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {

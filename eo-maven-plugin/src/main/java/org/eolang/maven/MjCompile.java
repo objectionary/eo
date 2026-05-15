@@ -30,6 +30,7 @@ public final class MjCompile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
+        new Timed(
         new Compiling(
             this.assembling(),
             new Linting(
@@ -66,6 +67,7 @@ public final class MjCompile extends MjSafe {
                 this.skipBinaries,
                 this.rewriteBinaries
             )
+        )
         ).exec();
     }
 }
