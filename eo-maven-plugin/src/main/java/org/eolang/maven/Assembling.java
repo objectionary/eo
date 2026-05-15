@@ -10,9 +10,9 @@ import java.io.IOException;
 /**
  * Assembles EO sources by running Parsing, Probing, and Pulling in a loop
  * until no new objects are discovered.
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Assembling {
+final class Assembling implements Step {
 
     /**
      * Tojos to check assembly status.
@@ -22,17 +22,17 @@ final class Assembling {
     /**
      * Parse step.
      */
-    private final Parsing parse;
+    private final Step parse;
 
     /**
      * Probe step.
      */
-    private final Probing probe;
+    private final Step probe;
 
     /**
      * Pull step.
      */
-    private final Pulling pull;
+    private final Step pull;
 
     /**
      * Constructor.
@@ -44,9 +44,9 @@ final class Assembling {
      */
     Assembling(
         final TjsForeign tjs,
-        final Parsing prs,
-        final Probing prb,
-        final Pulling pll
+        final Step prs,
+        final Step prb,
+        final Step pll
     ) {
         this.tojos = tjs;
         this.parse = prs;
@@ -54,17 +54,11 @@ final class Assembling {
         this.pull = pll;
     }
 
-    /**
-     * Run assembly cycles until stable.
-     * @throws IOException If fails
-     */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
+    @Override
+    public void exec() throws IOException {
         String before = this.tojos.status();
         int cycle = 0;
         while (true) {
-            final long start = System.currentTimeMillis();
             this.parse.exec();
             this.probe.exec();
             this.pull.exec();
@@ -72,23 +66,22 @@ final class Assembling {
             ++cycle;
             if (after.equals(before)) {
                 Logger.info(
-                    this, "Last assemble cycle #%d (%s), took %[ms]s",
-                    cycle, after, System.currentTimeMillis() - start
+                    this, "Last assemble cycle #%d (%s)",
+                    cycle, after
                 );
                 break;
             } else {
                 Logger.info(
-                    this, "Assemble cycle #%d (%s -> %s), took %[ms]s",
-                    cycle, before, after, System.currentTimeMillis() - start
+                    this, "Assemble cycle #%d (%s -> %s)",
+                    cycle, before, after
                 );
             }
             before = after;
         }
         Logger.info(
             this,
-            "%d assemble cycle(s) produced some new object(s) in %[ms]s: %s",
+            "%d assemble cycle(s) produced some new object(s): %s",
             cycle,
-            System.currentTimeMillis() - begin,
             before
         );
     }

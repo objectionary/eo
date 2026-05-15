@@ -21,9 +21,9 @@ import java.util.function.Supplier;
  *     are stored in the {@link #DIR} directory.
  * </p>
  *
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Pulling {
+final class Pulling implements Step {
 
     /**
      * The directory where to store pulled sources.
@@ -115,11 +115,8 @@ final class Pulling {
         this.offline = off;
     }
 
-    /**
-     * Pull all objects.
-     * @throws IOException If fails
-     */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.offline) {
             Logger.info(
                 this,
@@ -127,7 +124,6 @@ final class Pulling {
             );
             return;
         }
-        final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.tojos.withoutSources();
         final Collection<String> names = new ArrayList<>(0);
         final String hsh = this.hash.value();
@@ -152,17 +148,12 @@ final class Pulling {
             names.add(object);
         }
         if (sources.isEmpty()) {
-            Logger.info(
-                this,
-                "No programs were pulled in %[ms]s",
-                System.currentTimeMillis() - start
-            );
+            Logger.info(this, "No programs were pulled");
         } else {
             Logger.info(
                 this,
-                "%d program(s) were pulled in %[ms]s: %s",
+                "%d program(s) were pulled: %s",
                 sources.size(),
-                System.currentTimeMillis() - start,
                 names
             );
         }

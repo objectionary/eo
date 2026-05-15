@@ -54,7 +54,7 @@ import org.xembly.Xembler;
  * @since 0.31.0
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
-final class Linting {
+final class Linting implements Step {
 
     /**
      * The directory where to lint to.
@@ -194,11 +194,8 @@ final class Linting {
         this.skipLinting = skip;
     }
 
-    /**
-     * Execute linting.
-     * @throws IOException If fails
-     */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.skipLinting) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {
@@ -208,7 +205,6 @@ final class Linting {
 
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void linting() throws IOException {
-        final long start = System.currentTimeMillis();
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
@@ -240,8 +236,8 @@ final class Linting {
         final String sum = Linting.summary(counts);
         Logger.info(
             this,
-            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs) in %[ms]s: %s",
-            passed, programs.size(), programs.size(), System.currentTimeMillis() - start, sum
+            "Linted %d out of %d XMIR program(s) that needed this (out of %d total programs): %s",
+            passed, programs.size(), programs.size(), sum
         );
         Logger.info(
             this,

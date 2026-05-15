@@ -49,7 +49,7 @@ import org.eolang.parser.TrFull;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-final class Transpiling {
+final class Transpiling implements Step {
 
     /**
      * The directory where to transpile to.
@@ -183,13 +183,9 @@ final class Transpiling {
         this.xslMeasures = measures;
     }
 
-    /**
-     * Run transpilation of all sources.
-     * @throws IOException If any issues with I/O
-     */
+    @Override
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
+    public void exec() throws IOException {
         final int saved = new Threaded<>(
             this.sources,
             this::transpiled
@@ -197,11 +193,6 @@ final class Transpiling {
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(), saved, this.generatedDir
-        );
-        Logger.info(
-            this,
-            "Transpilation took %[ms]s in total",
-            System.currentTimeMillis() - begin
         );
     }
 
@@ -230,16 +221,14 @@ final class Transpiling {
                     new CachePath(cdir, this.version, hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
-                        final long start = System.currentTimeMillis();
                         final String res = transform.apply(xmir).toString();
                         Logger.debug(
                             this,
-                            "Transpiled %[file]s (%s) to %[file]s (%s) in %[ms]s (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
+                            "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
                             source,
                             Transpiling.info(source),
                             target,
                             Transpiling.info(target),
-                            System.currentTimeMillis() - start,
                             this.version,
                             hsh.get(),
                             tail,
@@ -341,13 +330,11 @@ final class Transpiling {
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int javaGenerated(
         final boolean rewrite,
         final Path target,
         final String hsh
     ) throws IOException {
-        final long begin = System.currentTimeMillis();
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
             final Xnav object = new Xnav(target).element("object");
@@ -381,8 +368,8 @@ final class Transpiling {
             }
             Logger.debug(
                 this,
-                "Generated %d Java files from %[file]s in %[ms]s",
-                saved.get(), target, System.currentTimeMillis() - begin
+                "Generated %d Java files from %[file]s",
+                saved.get(), target
             );
         }
         return saved.get();

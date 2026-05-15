@@ -16,9 +16,9 @@ import org.cactoos.list.ListOf;
  * Goes through all {@code probe} and {@code also} metas in XMIR files,
  * tries to locate the objects pointed by {@code probe} in Objectionary,
  * and if found, registers them in the catalog.
- * @since 0.67.0
+ * @since 0.61.0
  */
-final class Probing {
+final class Probing implements Step {
 
     /**
      * Tojos to probe.
@@ -47,11 +47,8 @@ final class Probing {
         this.online = net;
     }
 
-    /**
-     * Run probing.
-     * @throws IOException If fails
-     */
-    void exec() throws IOException {
+    @Override
+    public void exec() throws IOException {
         if (this.online) {
             final Collection<TjForeign> unprobed = this.tojos.unprobed();
             if (unprobed.isEmpty()) {
@@ -67,9 +64,7 @@ final class Probing {
         }
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void probe(final Collection<TjForeign> unprobed) {
-        final long start = System.currentTimeMillis();
         final Map<String, Boolean> probed = new ConcurrentHashMap<>(0);
         if (this.probed(unprobed, probed) == 0) {
             Logger.info(
@@ -79,9 +74,8 @@ final class Probing {
             );
         } else {
             Logger.info(
-                this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
+                this, "Found %d probe(s) in %d program(s): %s",
                 probed.size(), unprobed.size(),
-                System.currentTimeMillis() - start,
                 probed.keySet()
             );
         }

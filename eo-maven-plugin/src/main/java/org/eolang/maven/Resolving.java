@@ -23,10 +23,10 @@ import org.cactoos.text.Joined;
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
  * unpacks and places them into the target directory.
- * @since 0.63.0
+ * @since 0.61.0
  * @checkstyle ParameterNumberCheck (100 lines)
  */
-final class Resolving {
+final class Resolving implements Step {
 
     /**
      * Tojos.
@@ -108,10 +108,8 @@ final class Resolving {
         this.noconflicts = noconf;
     }
 
-    /**
-     * Execute the resolve process.
-     */
-    void exec() {
+    @Override
+    public void exec() {
         final Collection<Dep> deps = this.deps();
         if (deps.isEmpty()) {
             Logger.info(this, "No new dependencies unpacked");

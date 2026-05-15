@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
  *
  * @since 0.1
  */
-final class Parsing {
+final class Parsing implements Step {
 
     /**
      * Zero version.
@@ -112,12 +112,8 @@ final class Parsing {
         this.sourcesDir = sources;
     }
 
-    /**
-     * Run parsing of all sources.
-     */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() {
-        final long start = System.currentTimeMillis();
+    @Override
+    public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
         final int total = new Threaded<>(
             new Filtered<>(TjForeign::notParsed, sources),
@@ -138,8 +134,8 @@ final class Parsing {
             }
         } else {
             Logger.info(
-                this, "Parsed %d new .eo sources out of %d to XMIRs in %[ms]s",
-                total, sources.size(), System.currentTimeMillis() - start
+                this, "Parsed %d new .eo sources out of %d to XMIRs",
+                total, sources.size()
             );
         }
     }

@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 
 /**
@@ -18,27 +17,27 @@ import java.io.IOException;
  *
  * @since 0.61.0
  */
-final class Compiling {
+final class Compiling implements Step {
 
     /**
      * Assembling step.
      */
-    private final Assembling assembling;
+    private final Step assembling;
 
     /**
      * Linting step.
      */
-    private final Linting linting;
+    private final Step linting;
 
     /**
      * Resolving step.
      */
-    private final Resolving resolving;
+    private final Step resolving;
 
     /**
      * Placing step.
      */
-    private final Placing placing;
+    private final Step placing;
 
     /**
      * Constructor.
@@ -49,10 +48,10 @@ final class Compiling {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     Compiling(
-        final Assembling asmbl,
-        final Linting lnt,
-        final Resolving rslv,
-        final Placing plc
+        final Step asmbl,
+        final Step lnt,
+        final Step rslv,
+        final Step plc
     ) {
         this.assembling = asmbl;
         this.linting = lnt;
@@ -60,21 +59,11 @@ final class Compiling {
         this.placing = plc;
     }
 
-    /**
-     * Execute the full compilation pipeline.
-     * @throws IOException If any step fails
-     */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    void exec() throws IOException {
-        final long begin = System.currentTimeMillis();
+    @Override
+    public void exec() throws IOException {
         this.assembling.exec();
         this.linting.exec();
         this.resolving.exec();
         this.placing.exec();
-        Logger.info(
-            this,
-            "Compilation process took %[ms]s",
-            System.currentTimeMillis() - begin
-        );
     }
 }

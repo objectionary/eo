@@ -30,41 +30,49 @@ public final class MjCompile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Compiling(
-            this.assembling(),
-            new Linting(
-                this.scopedTojos(),
-                this.compileTojos(),
-                this.targetDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
-                this.plugin.getVersion(),
-                this.skipSourceLints,
-                this.skipProgramLints,
-                this.skipExperimentalLints,
-                this.failOnWarning,
-                this.lintAsPackage,
-                this.sourcesDir.toPath(),
-                this.skipLinting
-            ),
-            new Resolving(
-                this.scopedTojos(),
-                this.targetDir.toPath().resolve(MjResolve.DIR),
-                new CentralMaven(this.system),
-                this.discoverSelf,
-                this.skipZeroVersions,
-                this.resolveJna,
-                this.ignoreRuntime,
-                this.runtime(),
-                this.ignoreVersionConflicts
-            ),
-            new Placing(
-                this.placedTojos,
-                this.targetDir.toPath().resolve(MjResolve.DIR),
-                this.classesDir.toPath(),
-                this.placeBinaries,
-                this.skipBinaries,
-                this.rewriteBinaries
+        new Timed(
+            new Compiling(
+                new Timed(this.assembling()),
+                new Timed(
+                    new Linting(
+                        this.scopedTojos(),
+                        this.compileTojos(),
+                        this.targetDir.toPath(),
+                        this.cache.toPath(),
+                        this.cacheEnabled,
+                        this.plugin.getVersion(),
+                        this.skipSourceLints,
+                        this.skipProgramLints,
+                        this.skipExperimentalLints,
+                        this.failOnWarning,
+                        this.lintAsPackage,
+                        this.sourcesDir.toPath(),
+                        this.skipLinting
+                    )
+                ),
+                new Timed(
+                    new Resolving(
+                        this.scopedTojos(),
+                        this.targetDir.toPath().resolve(MjResolve.DIR),
+                        new CentralMaven(this.system),
+                        this.discoverSelf,
+                        this.skipZeroVersions,
+                        this.resolveJna,
+                        this.ignoreRuntime,
+                        this.runtime(),
+                        this.ignoreVersionConflicts
+                    )
+                ),
+                new Timed(
+                    new Placing(
+                        this.placedTojos,
+                        this.targetDir.toPath().resolve(MjResolve.DIR),
+                        this.classesDir.toPath(),
+                        this.placeBinaries,
+                        this.skipBinaries,
+                        this.rewriteBinaries
+                    )
+                )
             )
         ).exec();
     }

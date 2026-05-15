@@ -54,16 +54,18 @@ public final class MjTranspile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Transpiling(
-            this.scopedTojos().withXmir(),
-            this.targetDir.toPath(),
-            this.generatedDir.toPath(),
-            this.cache.toPath(),
-            this.cacheEnabled,
-            this.plugin.getVersion(),
-            this.trackTransformationSteps,
-            this.transpileTests,
-            this.xslMeasures.toPath()
+        new Timed(
+            new Transpiling(
+                this.scopedTojos().withXmir(),
+                this.targetDir.toPath(),
+                this.generatedDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.trackTransformationSteps,
+                this.transpileTests,
+                this.xslMeasures.toPath()
+            )
         ).exec();
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
