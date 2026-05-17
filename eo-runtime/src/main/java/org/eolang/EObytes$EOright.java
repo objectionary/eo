@@ -30,7 +30,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
         return new Data.ToPhi(
             new Dataized(this.take(Phi.RHO))
                 .asBytes()
-                .shift(new Dataized(this.take("x")).asNumber().intValue())
+                .shift(new Expect.Int(Expect.at(this, "x")).it())
                 .take()
         );
     }
