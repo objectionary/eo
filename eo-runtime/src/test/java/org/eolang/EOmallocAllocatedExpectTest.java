@@ -16,9 +16,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case verifying {@link Expect}-based error messages
- * raised by {@link EOmalloc$EOof$EOallocated$EOsize} and
- * {@link EOmalloc$EOof$EOallocated$EOread} when their integer
- * attributes are invalid.
+ * raised by {@link EOmalloc$EOof$EOallocated$EOsize},
+ * {@link EOmalloc$EOof$EOallocated$EOread}, and
+ * {@link EOmalloc$EOof$EOallocated$EOwrite} when their
+ * integer attributes are invalid.
  * @since 0.51
  * @checkstyle TypeNameCheck (5 lines)
  */
@@ -105,6 +106,40 @@ final class EOmallocAllocatedExpectTest {
         );
     }
 
+    @Test
+    void throwsCorrectErrorForNonNumericIdInWrite() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new EOmallocAllocatedExpectTest.Write(
+                        new Data.ToPhi(true), new Data.ToPhi(0)
+                    ).it()
+                ).take(),
+                "write with non-numeric id must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'id' attribute must be a number")
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForFractionalOffsetInWrite() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new EOmallocAllocatedExpectTest.Write(
+                        new Data.ToPhi(0), new Data.ToPhi(1.5)
+                    ).it()
+                ).take(),
+                "write with fractional offset must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (1.5) must be an integer")
+        );
+    }
+
     /**
      * Minimal Phi with a single {@code id} attribute used as a stand-in
      * for the {@code allocated} parent in tests.
@@ -161,6 +196,54 @@ final class EOmallocAllocatedExpectTest {
                 ),
                 "length",
                 this.length
+            );
+        }
+    }
+
+    /**
+     * A {@code malloc.of.allocated.write} Phi with a configurable id,
+     * configurable {@code offset}, and a fixed {@code data} payload.
+     * @since 0.51
+     */
+    private static final class Write {
+
+        /**
+         * Id attribute value placed on the rho stand-in.
+         */
+        private final Phi id;
+
+        /**
+         * Offset attribute value.
+         */
+        private final Phi offset;
+
+        Write(final Phi id, final Phi offset) {
+            this.id = id;
+            this.offset = offset;
+        }
+
+        /**
+         * Return it.
+         * @return The configured write Phi
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        Phi it() {
+            return new PhWith(
+                new PhWith(
+                    new PhWith(
+                        new EOmalloc$EOof$EOallocated$EOwrite(),
+                        Phi.RHO,
+                        new PhWith(
+                            new EOmallocAllocatedExpectTest.Dummy(),
+                            "id",
+                            this.id
+                        )
+                    ),
+                    "offset",
+                    this.offset
+                ),
+                "data",
+                new Data.ToPhi(0)
             );
         }
     }
