@@ -27,74 +27,98 @@ final class EOmallocWritePhiExpectTest {
 
     @Test
     void throwsCorrectErrorForNonNumericIdInWrite() {
-        new EOmallocWritePhiExpectTest.Throws(
-            new PhWith(
-                new EOmalloc$EOof$EOallocated$EOwrite(),
-                Phi.RHO,
-                new PhWith(
-                    new EOmallocWritePhiExpectTest.Dummy(),
-                    "id",
-                    new Data.ToPhi(true)
-                )
-            ),
-            "write with non-numeric id must fail with a proper message",
-            "the 'id' attribute must be a number"
-        ).verify();
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOmalloc$EOof$EOallocated$EOwrite(),
+                        Phi.RHO,
+                        new PhWith(
+                            new EOmallocWritePhiExpectTest.Dummy(),
+                            "id",
+                            new Data.ToPhi(true)
+                        )
+                    )
+                ).take(),
+                "write with non-numeric id must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'id' attribute must be a number")
+        );
     }
 
     @Test
     void throwsCorrectErrorForFractionalOffsetInWrite() {
-        new EOmallocWritePhiExpectTest.Throws(
-            new PhWith(
-                new PhWith(
-                    new EOmalloc$EOof$EOallocated$EOwrite(),
-                    Phi.RHO,
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
                     new PhWith(
-                        new EOmallocWritePhiExpectTest.Dummy(),
-                        "id",
-                        new Data.ToPhi(0)
+                        new PhWith(
+                            new EOmalloc$EOof$EOallocated$EOwrite(),
+                            Phi.RHO,
+                            new PhWith(
+                                new EOmallocWritePhiExpectTest.Dummy(),
+                                "id",
+                                new Data.ToPhi(0)
+                            )
+                        ),
+                        "offset",
+                        new Data.ToPhi(1.5)
                     )
-                ),
-                "offset",
-                new Data.ToPhi(1.5)
-            ),
-            "write with fractional offset must fail with a proper message",
-            "the 'offset' attribute (1.5) must be an integer"
-        ).verify();
+                ).take(),
+                "write with fractional offset must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'offset' attribute (1.5) must be an integer")
+        );
     }
 
     @Test
     void throwsCorrectErrorForNonNumericSize() {
-        new EOmallocWritePhiExpectTest.Throws(
-            new PhWith(
-                new EOmalloc$EOof$EOφ(),
-                Phi.RHO,
-                new PhWith(
-                    new EOmallocWritePhiExpectTest.SizedDummy(),
-                    "size",
-                    new Data.ToPhi(true)
-                )
-            ),
-            "malloc.of.@ with non-numeric size must fail with a proper message",
-            "the 'size' attribute must be a number"
-        ).verify();
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOmalloc$EOof$EOφ(),
+                        Phi.RHO,
+                        new PhWith(
+                            new EOmallocWritePhiExpectTest.SizedDummy(),
+                            "size",
+                            new Data.ToPhi(true)
+                        )
+                    )
+                ).take(),
+                "malloc.of.@ with non-numeric size must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'size' attribute must be a number")
+        );
     }
 
     @Test
     void throwsCorrectErrorForNegativeSize() {
-        new EOmallocWritePhiExpectTest.Throws(
-            new PhWith(
-                new EOmalloc$EOof$EOφ(),
-                Phi.RHO,
-                new PhWith(
-                    new EOmallocWritePhiExpectTest.SizedDummy(),
-                    "size",
-                    new Data.ToPhi(-1)
-                )
-            ),
-            "malloc.of.@ with negative size must fail with a proper message",
-            "the 'size' attribute (-1) must be greater or equal to zero"
-        ).verify();
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new EOmalloc$EOof$EOφ(),
+                        Phi.RHO,
+                        new PhWith(
+                            new EOmallocWritePhiExpectTest.SizedDummy(),
+                            "size",
+                            new Data.ToPhi(-1)
+                        )
+                    )
+                ).take(),
+                "malloc.of.@ with negative size must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'size' attribute (-1) must be greater or equal to zero")
+        );
     }
 
     /**
@@ -118,50 +142,6 @@ final class EOmallocWritePhiExpectTest {
 
         SizedDummy() {
             super(new Attrs(new AttrEntry("size", new AtVoid("size"))));
-        }
-    }
-
-    /**
-     * Asserts that dataizing the given Phi throws {@link ExAbstract} with
-     * the expected error message.
-     * @since 0.51
-     */
-    private static final class Throws {
-
-        /**
-         * Phi expected to throw on dataization.
-         */
-        private final Phi phi;
-
-        /**
-         * Reason passed to {@code assertThrows} for the scenario.
-         */
-        private final String scenario;
-
-        /**
-         * Expected exception message.
-         */
-        private final String expected;
-
-        Throws(final Phi phi, final String scenario, final String expected) {
-            this.phi = phi;
-            this.scenario = scenario;
-            this.expected = expected;
-        }
-
-        /**
-         * Run the assertion.
-         */
-        void verify() {
-            MatcherAssert.assertThat(
-                "the message in the error is correct",
-                Assertions.assertThrows(
-                    ExAbstract.class,
-                    () -> new Dataized(this.phi).take(),
-                    this.scenario
-                ).getMessage(),
-                Matchers.equalTo(this.expected)
-            );
         }
     }
 }
