@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case verifying {@link Expect}-based error messages
- * raised by {@link EOmalloc$EOof$EOφ} when its {@code size}
- * attribute is invalid.
+ * raised by the {@code malloc.of.@} atom when its
+ * {@code size} attribute is invalid.
  * @since 0.51
  * @checkstyle TypeNameCheck (5 lines)
  */

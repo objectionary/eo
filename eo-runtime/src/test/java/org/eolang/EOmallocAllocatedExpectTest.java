@@ -26,10 +26,16 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOmallocAllocatedExpectTest {
 
+    /**
+     * Reason string for {@link MatcherAssert#assertThat(String, Object,
+     * org.hamcrest.Matcher)} shared across cases.
+     */
+    private static final String CORRECT = "the message in the error is correct";
+
     @Test
     void throwsCorrectErrorForNegativeIdInSize() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -52,7 +58,7 @@ final class EOmallocAllocatedExpectTest {
     @Test
     void throwsCorrectErrorForNonNumericIdInRead() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -75,7 +81,7 @@ final class EOmallocAllocatedExpectTest {
     @Test
     void throwsCorrectErrorForFractionalOffsetInRead() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -92,7 +98,7 @@ final class EOmallocAllocatedExpectTest {
     @Test
     void throwsCorrectErrorForNegativeLengthInRead() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -109,7 +115,7 @@ final class EOmallocAllocatedExpectTest {
     @Test
     void throwsCorrectErrorForNonNumericIdInWrite() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -126,7 +132,7 @@ final class EOmallocAllocatedExpectTest {
     @Test
     void throwsCorrectErrorForFractionalOffsetInWrite() {
         MatcherAssert.assertThat(
-            "the message in the error is correct",
+            EOmallocAllocatedExpectTest.CORRECT,
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
