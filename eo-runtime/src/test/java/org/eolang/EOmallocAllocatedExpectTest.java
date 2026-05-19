@@ -26,124 +26,82 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOmallocAllocatedExpectTest {
 
-    /**
-     * Reason string for {@link MatcherAssert#assertThat(String, Object,
-     * org.hamcrest.Matcher)} shared across cases.
-     */
-    private static final String CORRECT = "the message in the error is correct";
-
     @Test
     void throwsCorrectErrorForNegativeIdInSize() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhWith(
-                        new EOmalloc$EOof$EOallocated$EOsize(),
-                        Phi.RHO,
-                        new PhWith(
-                            new EOmallocAllocatedExpectTest.Dummy(),
-                            "id",
-                            new Data.ToPhi(-42)
-                        )
-                    )
-                ).take(),
-                "size with negative id must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'id' attribute (-42) must be greater or equal to zero")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new PhWith(
+                new EOmalloc$EOof$EOallocated$EOsize(),
+                Phi.RHO,
+                new PhWith(
+                    new EOmallocAllocatedExpectTest.Dummy(),
+                    "id",
+                    new Data.ToPhi(-42)
+                )
+            ),
+            "size with negative id must fail with a proper message",
+            "the 'id' attribute (-42) must be greater or equal to zero"
+        ).verify();
     }
 
     @Test
     void throwsCorrectErrorForNonNumericIdInRead() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhWith(
-                        new EOmalloc$EOof$EOallocated$EOread(),
-                        Phi.RHO,
-                        new PhWith(
-                            new EOmallocAllocatedExpectTest.Dummy(),
-                            "id",
-                            new Data.ToPhi(true)
-                        )
-                    )
-                ).take(),
-                "read with non-numeric id must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'id' attribute must be a number")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new PhWith(
+                new EOmalloc$EOof$EOallocated$EOread(),
+                Phi.RHO,
+                new PhWith(
+                    new EOmallocAllocatedExpectTest.Dummy(),
+                    "id",
+                    new Data.ToPhi(true)
+                )
+            ),
+            "read with non-numeric id must fail with a proper message",
+            "the 'id' attribute must be a number"
+        ).verify();
     }
 
     @Test
     void throwsCorrectErrorForFractionalOffsetInRead() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new EOmallocAllocatedExpectTest.Read(
-                        new Data.ToPhi(1.5), new Data.ToPhi(0)
-                    ).it()
-                ).take(),
-                "read with fractional offset must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'offset' attribute (1.5) must be an integer")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new EOmallocAllocatedExpectTest.Read(
+                new Data.ToPhi(1.5), new Data.ToPhi(0)
+            ).it(),
+            "read with fractional offset must fail with a proper message",
+            "the 'offset' attribute (1.5) must be an integer"
+        ).verify();
     }
 
     @Test
     void throwsCorrectErrorForNegativeLengthInRead() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new EOmallocAllocatedExpectTest.Read(
-                        new Data.ToPhi(0), new Data.ToPhi(-1)
-                    ).it()
-                ).take(),
-                "read with negative length must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'length' attribute (-1) must be greater or equal to zero")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new EOmallocAllocatedExpectTest.Read(
+                new Data.ToPhi(0), new Data.ToPhi(-1)
+            ).it(),
+            "read with negative length must fail with a proper message",
+            "the 'length' attribute (-1) must be greater or equal to zero"
+        ).verify();
     }
 
     @Test
     void throwsCorrectErrorForNonNumericIdInWrite() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new EOmallocAllocatedExpectTest.Write(
-                        new Data.ToPhi(true), new Data.ToPhi(0)
-                    ).it()
-                ).take(),
-                "write with non-numeric id must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'id' attribute must be a number")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new EOmallocAllocatedExpectTest.Write(
+                new Data.ToPhi(true), new Data.ToPhi(0)
+            ).it(),
+            "write with non-numeric id must fail with a proper message",
+            "the 'id' attribute must be a number"
+        ).verify();
     }
 
     @Test
     void throwsCorrectErrorForFractionalOffsetInWrite() {
-        MatcherAssert.assertThat(
-            EOmallocAllocatedExpectTest.CORRECT,
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new EOmallocAllocatedExpectTest.Write(
-                        new Data.ToPhi(0), new Data.ToPhi(1.5)
-                    ).it()
-                ).take(),
-                "write with fractional offset must fail with a proper message"
-            ).getMessage(),
-            Matchers.equalTo("the 'offset' attribute (1.5) must be an integer")
-        );
+        new EOmallocAllocatedExpectTest.Throws(
+            new EOmallocAllocatedExpectTest.Write(
+                new Data.ToPhi(0), new Data.ToPhi(1.5)
+            ).it(),
+            "write with fractional offset must fail with a proper message",
+            "the 'offset' attribute (1.5) must be an integer"
+        ).verify();
     }
 
     /**
@@ -250,6 +208,50 @@ final class EOmallocAllocatedExpectTest {
                 ),
                 "data",
                 new Data.ToPhi(0)
+            );
+        }
+    }
+
+    /**
+     * Asserts that dataizing the given Phi throws {@link ExAbstract} with
+     * the expected error message.
+     * @since 0.51
+     */
+    private static final class Throws {
+
+        /**
+         * Phi expected to throw on dataization.
+         */
+        private final Phi phi;
+
+        /**
+         * Reason passed to {@code assertThrows} for the scenario.
+         */
+        private final String scenario;
+
+        /**
+         * Expected exception message.
+         */
+        private final String expected;
+
+        Throws(final Phi phi, final String scenario, final String expected) {
+            this.phi = phi;
+            this.scenario = scenario;
+            this.expected = expected;
+        }
+
+        /**
+         * Run the assertion.
+         */
+        void verify() {
+            MatcherAssert.assertThat(
+                "the message in the error is correct",
+                Assertions.assertThrows(
+                    ExAbstract.class,
+                    () -> new Dataized(this.phi).take(),
+                    this.scenario
+                ).getMessage(),
+                Matchers.equalTo(this.expected)
             );
         }
     }
