@@ -78,23 +78,9 @@ final class EOmallocAllocatedExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
-                            new PhWith(
-                                new EOmalloc$EOof$EOallocated$EOread(),
-                                Phi.RHO,
-                                new PhWith(
-                                    new EOmallocAllocatedExpectTest.Dummy(),
-                                    "id",
-                                    new Data.ToPhi(0)
-                                )
-                            ),
-                            "offset",
-                            new Data.ToPhi(1.5)
-                        ),
-                        "length",
-                        new Data.ToPhi(0)
-                    )
+                    new EOmallocAllocatedExpectTest.Read(
+                        new Data.ToPhi(1.5), new Data.ToPhi(0)
+                    ).it()
                 ).take(),
                 "read with fractional offset must fail with a proper message"
             ).getMessage(),
@@ -109,23 +95,9 @@ final class EOmallocAllocatedExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
-                            new PhWith(
-                                new EOmalloc$EOof$EOallocated$EOread(),
-                                Phi.RHO,
-                                new PhWith(
-                                    new EOmallocAllocatedExpectTest.Dummy(),
-                                    "id",
-                                    new Data.ToPhi(0)
-                                )
-                            ),
-                            "offset",
-                            new Data.ToPhi(0)
-                        ),
-                        "length",
-                        new Data.ToPhi(-1)
-                    )
+                    new EOmallocAllocatedExpectTest.Read(
+                        new Data.ToPhi(0), new Data.ToPhi(-1)
+                    ).it()
                 ).take(),
                 "read with negative length must fail with a proper message"
             ).getMessage(),
@@ -142,6 +114,54 @@ final class EOmallocAllocatedExpectTest {
 
         Dummy() {
             super(new Attrs(new AttrEntry("id", new AtVoid("id"))));
+        }
+    }
+
+    /**
+     * A {@code malloc.of.allocated.read} Phi with a valid id and the
+     * given {@code offset} and {@code length}.
+     * @since 0.51
+     */
+    private static final class Read {
+
+        /**
+         * Offset attribute value.
+         */
+        private final Phi offset;
+
+        /**
+         * Length attribute value.
+         */
+        private final Phi length;
+
+        Read(final Phi offset, final Phi length) {
+            this.offset = offset;
+            this.length = length;
+        }
+
+        /**
+         * Return it.
+         * @return The configured read Phi
+         * @checkstyle MethodNameCheck (5 lines)
+         */
+        Phi it() {
+            return new PhWith(
+                new PhWith(
+                    new PhWith(
+                        new EOmalloc$EOof$EOallocated$EOread(),
+                        Phi.RHO,
+                        new PhWith(
+                            new EOmallocAllocatedExpectTest.Dummy(),
+                            "id",
+                            new Data.ToPhi(0)
+                        )
+                    ),
+                    "offset",
+                    this.offset
+                ),
+                "length",
+                this.length
+            );
         }
     }
 }
