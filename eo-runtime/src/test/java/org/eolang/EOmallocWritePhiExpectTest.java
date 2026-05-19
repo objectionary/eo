@@ -2,11 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
@@ -20,7 +15,6 @@ import org.junit.jupiter.api.Test;
  * the {@code malloc.of.@} atom when their integer attributes
  * are invalid.
  * @since 0.51
- * @checkstyle TypeNameCheck (5 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOmallocWritePhiExpectTest {
