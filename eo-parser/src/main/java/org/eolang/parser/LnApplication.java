@@ -162,31 +162,7 @@ final class LnApplication implements Line {
         final Emit emit, final Suffix suffix, final Value head,
         final List<MethodChain> chain, final List<Value> args
     ) {
-        final String name = suffix.attribute(this.span.line(), this.span.indent());
-        if (chain.isEmpty()) {
-            Emissions.openValue(emit, name, head, this.span.line());
-            if (suffix.constant()) {
-                emit.constant();
-            }
-        } else {
-            Emissions.openValue(emit, null, head, this.span.line());
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), this.span.line(), link.dot());
-                emit.method();
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(
-                name, ".".concat(last.name()),
-                this.span.line(), last.dot()
-            );
-            emit.method();
-            if (suffix.constant()) {
-                emit.constant();
-            }
-        }
+        new ChainEmission(emit, this.span, head, chain, suffix).run();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
