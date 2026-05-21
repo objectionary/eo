@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 6
+message: |-
+  [6:2] error: 'blank line before a plain object is forbidden (R-6.5.4); only master objects (formations, atoms, only-phi formations, +> tests) may be preceded by a blank line'
+    x > a
+    ^
 input: |
   # No comments
   [] > main

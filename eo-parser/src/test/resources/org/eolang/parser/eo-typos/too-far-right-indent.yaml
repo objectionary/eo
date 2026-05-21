@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 4
+message: |-
+  [4:0] error: 'indent increased by more than one level'
+        sprintf
+  ^
 input: |
   # No comments
   [args] > app

@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 3
+message: |-
+  [3:2] error: 'expected value'
+    ~0. > disp
+    ^
 input: |
   # Foo.
   [] > foo

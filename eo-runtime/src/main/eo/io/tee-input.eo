@@ -75,12 +75,15 @@
         [m]
           seq > @
             *
-              tee-input
-                bytes-as-input 01-02-03-04-05
-                malloc-as-output m
-              .read 2
-              .read 2
-              .read 1
+              read.
+                read.
+                  read.
+                    tee-input
+                      bytes-as-input 01-02-03-04-05
+                      malloc-as-output m
+                    2
+                  2
+                1
               m
       01-02-03-04-05
 

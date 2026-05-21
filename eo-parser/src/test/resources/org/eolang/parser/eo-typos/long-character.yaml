@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 6
+message: |-
+  [6:6] error: 'line shape not yet implemented in spec parser'
+        'hello'
+        ^
 input: |
   # No comments
   [args] > app

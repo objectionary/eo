@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 2
+message: |-
+  [2:2] error: 'redundant parentheses around a single token — `(1)` should be written as `1`'
+    (1)
+    ^
 input: |
   add > x
     (1)

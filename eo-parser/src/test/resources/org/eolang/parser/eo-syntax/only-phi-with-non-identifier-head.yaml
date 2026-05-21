@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='and' and o[@name='φ' and @base='.eq' and o[@base='Φ.bytes'] and o[@as='α0' and @base='ξ.x']]]
+input: |
+  # No comments.
+  [] > true
+    01-.eq x > [x] > and

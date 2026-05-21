@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 5
+message: |-
+  [5:2] error: 'method continuation not allowed after horizontal application'
+    .with 2 > arr
+    ^
+input: |
+  # No comments.
+  [] > foo
+    *
+    .with 1
+    .with 2 > arr

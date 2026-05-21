@@ -420,8 +420,10 @@
   # Tests that the runtime handles recursion without arguments.
   [] +> tests-recursion-without-arguments
     eq. > @
-      malloc.for 4 [m]>>
-        func m > @
+      malloc.for
+        4
+        [m] >>
+          func m > @
       0
     # Decrements n until it reaches zero, then returns it.
     [n] > func
@@ -436,13 +438,15 @@
   # Tests that the runtime constants defend against side effects.
   [] +> tests-constant-defends-against-side-effects
     eq. > @
-      malloc.for 7 [m]>>
-        m.put > @
-          times.
-            num
-            num
-        number > num
-          ^.inc m > n!
+      malloc.for
+        7
+        [m] >>
+          m.put > @
+            times.
+              num
+              num
+          number > num
+            ^.inc m > n!
       64
     # Increments x and returns its new value.
     [x] > inc

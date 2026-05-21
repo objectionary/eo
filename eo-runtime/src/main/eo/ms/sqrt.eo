@@ -44,7 +44,7 @@
 
   # Tests that square root of zero equals zero.
   [] +> tests-sqrt-check-zero-input
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -54,12 +54,12 @@
 
   # Tests that square root of negative number returns NaN.
   [] +> tests-sqrt-check-negative-input
-    is-nan. +> @
+    is-nan. > @
       sqrt -0.1
 
   # Tests that square root calculation works correctly for number input.
   [] +> tests-sqrt-check-float-input
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -69,16 +69,16 @@
 
   # Tests that square root of NaN returns NaN.
   [] +> tests-sqrt-check-nan-input
-    is-nan. +> @
+    is-nan. > @
       sqrt nan
 
   # Tests that square root of positive infinity equals positive infinity.
   [] +> tests-sqrt-check-infinity-n1
-    eq. +> @
+    eq. > @
       sqrt positive-infinity
       positive-infinity
 
   # Tests that square root of negative infinity returns NaN.
   [] +> tests-sqrt-check-infinity-n2
-    is-nan. +> @
+    is-nan. > @
       sqrt negative-infinity

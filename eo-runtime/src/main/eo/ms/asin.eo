@@ -14,13 +14,13 @@
 [num] > asin /number
   # Tests that asin by zero equals zero.
   [] +> tests-asin-zero
-    eq. +> @
+    eq. > @
       asin 0
       0
 
   # Tests that asin of 1 equals pi/2.
   [] +> tests-asin-one
-    eq. +> @
+    eq. > @
       asin 1
       div.
         pi
@@ -28,7 +28,7 @@
 
   # Tests that asin of -1 equals -pi/2.
   [] +> tests-asin-negative-one
-    eq. +> @
+    eq. > @
       asin -1
       minus.
         0
@@ -38,7 +38,7 @@
 
   # Tests that asin of 0.5 equals 0.5235987756.
   [] +> tests-asin-positive-value
-    lt. +> @
+    lt. > @
       abs
         minus.
           asin 0.5
@@ -47,7 +47,7 @@
 
   # Tests that asin of -0.5 equals -0.5235987756.
   [] +> tests-asin-negative-value
-    lt. +> @
+    lt. > @
       abs
         minus.
           asin -0.5
@@ -56,25 +56,25 @@
 
   # Tests that asin of value > 1 equals NaN.
   [] +> tests-asin-out-of-range-positive
-    is-nan. +> @
+    is-nan. > @
       asin 2
 
   # Tests that asin of value < -1 equals NaN.
   [] +> tests-asin-out-of-range-negative
-    is-nan. +> @
+    is-nan. > @
       asin -2
 
   # Tests that asin of NaN equals NaN.
   [] +> tests-asin-nan
-    is-nan. +> @
+    is-nan. > @
       asin nan
 
   # Tests that asin of +inf equals NaN.
   [] +> tests-asin-positive-infinity
-    is-nan. +> @
+    is-nan. > @
       asin positive-infinity
 
   # Tests that asin of -inf equals NaN.
   [] +> tests-asin-negative-infinity
-    is-nan. +> @
+    is-nan. > @
       asin negative-infinity

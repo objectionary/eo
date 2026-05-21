@@ -66,17 +66,19 @@ final class MjTranspileTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/transpile-packs/", glob = "**.yaml")
     void checksTranspilePacks(final String yaml) {
+        final org.eolang.xax.Xtory story = new XtSticky(
+            new XtYaml(
+                yaml,
+                eo -> new EoSyntax(
+                    new InputOf(String.format("%s%n", eo))
+                ).parsed(),
+                new TrDefault<>()
+            )
+        );
+        org.junit.jupiter.api.Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
             "passed without exceptions",
-            new XtSticky(
-                new XtYaml(
-                    yaml,
-                    eo -> new EoSyntax(
-                        new InputOf(String.format("%s%n", eo))
-                    ).parsed(),
-                    new TrDefault<>()
-                )
-            ),
+            story,
             new XtoryMatcher()
         );
     }

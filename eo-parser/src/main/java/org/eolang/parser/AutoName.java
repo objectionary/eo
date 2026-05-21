@@ -34,6 +34,6 @@ final class AutoName implements Text {
 
     @Override
     public String asString() {
-        return String.format("a\uD83C\uDF35%d%d", this.line, this.position);
+        return String.format("a\uD83C\uDF35%d-%d", this.line, this.position);
     }
 }

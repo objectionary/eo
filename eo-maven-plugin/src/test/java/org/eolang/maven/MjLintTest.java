@@ -281,9 +281,9 @@ final class MjLintTest {
             "Program with invalid syntax should have failed, but it didn't"
         );
         MatcherAssert.assertThat(
-            "Parsing errors must exist in linted XMIR",
-            new Xnav(maven.programTojo().linted()).path(
-                "/object/errors/error[@severity='critical' and @check='eo-parser']"
+            "Parser errors must exist in the parsed XMIR (the lint stage aborts before producing a linted file when the source has parse errors)",
+            new Xnav(maven.programTojo().xmir()).path(
+                "/object/errors/error[@severity='error']"
             ).count(),
             Matchers.greaterThan(0L)
         );

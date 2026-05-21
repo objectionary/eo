@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 1
+message: |-
+  [1:0] error: 'unterminated paren group'
+  (a
+  ^
 input: |
   (a
   .b c).x

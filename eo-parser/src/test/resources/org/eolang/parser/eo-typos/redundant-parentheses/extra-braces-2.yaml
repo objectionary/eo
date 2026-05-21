@@ -3,5 +3,9 @@
 ---
 # yamllint disable rule:line-length
 line: 1
+message: |-
+  [1:0] error: 'redundant parentheses around a top-level expression — drop the outer `(` and `)`'
+  (1.add (a.add 5) 4) > x
+  ^
 input: |
   (1.add (a.add 5) 4) > x

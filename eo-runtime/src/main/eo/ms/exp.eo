@@ -15,7 +15,7 @@
 
   # Tests that exponential function e^1 approximately equals e.
   [] +> tests-exp-check-n0
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -25,7 +25,7 @@
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n1
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -35,7 +35,7 @@
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n2
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -45,7 +45,7 @@
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-n3
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -55,17 +55,17 @@
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-nan
-    is-nan. +> @
+    is-nan. > @
       exp nan
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-infinity-n1
-    eq. +> @
+    eq. > @
       exp positive-infinity
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-infinity-n2
-    eq. +> @
+    eq. > @
       exp negative-infinity
       0

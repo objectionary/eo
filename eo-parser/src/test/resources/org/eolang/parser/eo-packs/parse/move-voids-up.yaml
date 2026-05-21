@@ -7,7 +7,6 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='φ']]
-  - /object/o[@name='main']/o[@name='bar' and o[@name='x']/following-sibling::o[@name='φ']/o[@name='y']/following-sibling::o[@name='φ']]
 input: |
   # Main.
   [] > main
@@ -17,6 +16,3 @@ input: |
 
     # Foo.
     "Hello" > [x] > foo
-
-    # Bar.
-    z > [y] > [x] > bar

@@ -343,15 +343,14 @@
     <xsl:param name="indent"/>
     <xsl:param name="parent"/>
     <xsl:param name="context"/>
-    <xsl:if test="not(bound/o[eo:idempotent(.)])">
-      <xsl:variable name="name" select="eo:attr-name(@name, false())"/>
-      <xsl:if test="not(@name)">
-        <xsl:message terminate="yes">
-          <xsl:text>Unnamed attribute found in </xsl:text>
-          <xsl:value-of select="parent::*/@loc"/>
-        </xsl:message>
-      </xsl:if>
-      <xsl:if test="not(contains($name, '+'))">
+    <xsl:variable name="name" select="eo:attr-name(@name, false())"/>
+    <xsl:if test="not(@name)">
+      <xsl:message terminate="yes">
+        <xsl:text>Unnamed attribute found in </xsl:text>
+        <xsl:value-of select="parent::*/@loc"/>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="not(contains($name, '+'))">
         <xsl:value-of select="eo:eol($indent)"/>
         <xsl:if test="$context!='this'">
           <xsl:text>((PhDefault) </xsl:text>
@@ -371,7 +370,6 @@
         </xsl:apply-templates>
         <xsl:text>);</xsl:text>
       </xsl:if>
-    </xsl:if>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="void">
@@ -515,7 +513,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="o and not(count(o)=1) and o[1][eo:idempotent(.)]">
+      <xsl:when test="o">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>

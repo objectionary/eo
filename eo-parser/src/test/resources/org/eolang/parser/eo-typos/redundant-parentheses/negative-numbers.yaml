@@ -3,5 +3,9 @@
 ---
 # yamllint disable rule:line-length
 line: 1
+message: |-
+  [1:4] error: 'redundant parentheses around a single token — `(-4)` should be written as `-4`'
+  add (-4) (-5) > x
+      ^
 input: |
   add (-4) (-5) > x

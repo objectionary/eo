@@ -7,5 +7,5 @@ probes:
 eo: |
   # No comments.
   [] > test
-    ([] (^ > x)).plus.minus > s
-      int
+    [] >>
+      int > s

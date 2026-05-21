@@ -15,13 +15,13 @@
 [num] > acos /number
   # Tests that arccosine of -1 equals pi.
   [] +> tests-arccos-negative-one-test
-    eq. +> @
+    eq. > @
       acos -1.0
       pi
 
   # Tests that arccosine of 0 equals pi/2.
   [] +> tests-arccos-zero-test
-    eq. +> @
+    eq. > @
       acos 0
       div.
         pi
@@ -29,13 +29,13 @@
 
   # Tests that arccosine of 1 equals zero.
   [] +> tests-arccos-one-test
-    eq. +> @
+    eq. > @
       acos 1.0
       0
 
   # Tests acos calculation for a positive value inside [-1,1].
   [] +> tests-arccos-positive-calculated-test
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -45,7 +45,7 @@
 
   # Tests acos calculation for a negative value inside [-1,1].
   [] +> tests-arccos-negative-calculated-test
-    lt. +> @
+    lt. > @
       abs
         real
           minus.
@@ -55,25 +55,25 @@
 
   # Tests that acos returns NaN for a positive value outside [-1,1].
   [] +> tests-arccos-nan-positive-value-test
-    is-nan. +> @
+    is-nan. > @
       acos 2.0
 
   # Tests that acos returns NaN for a negative value outside [-1,1].
   [] +> tests-arccos-nan-negative-value-test
-    is-nan. +> @
+    is-nan. > @
       acos -2.0
 
   # Tests that arccosine of NaN is NaN.
   [] +> tests-arccos-nan-input
-    is-nan. +> @
+    is-nan. > @
       acos nan
 
   # Tests that arccosine of positive-infinity is NaN.
   [] +> tests-arccos-positive-infinity
-    is-nan. +> @
+    is-nan. > @
       acos positive-infinity
 
   # Tests that arccosine of negative-infinity is NaN.
   [] +> tests-arccos-negative-infinity
-    is-nan. +> @
+    is-nan. > @
       acos negative-infinity

@@ -29,10 +29,6 @@
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="starts-with($o/@name, '+')"/>
   </xsl:function>
-  <xsl:function name="eo:idempotent" as="xs:boolean">
-    <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="$o/@base = 'ξ' and $o/@name = 'xi🌵'"/>
-  </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>

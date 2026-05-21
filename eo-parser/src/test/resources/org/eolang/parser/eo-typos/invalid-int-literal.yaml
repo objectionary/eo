@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 6
+message: |-
+  [6:6] error: 'integer literal must not have leading zeros'
+        000000025
+        ^
 input: |
   # No comments
   [] > app

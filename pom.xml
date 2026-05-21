@@ -79,7 +79,6 @@
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <antlr.version>4.13.2</antlr.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
@@ -241,11 +240,6 @@
         <version>1.2.17</version>
       </dependency>
       <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-runtime</artifactId>
-        <version>${antlr.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>annotations</artifactId>
         <version>3.0.1u2</version>
@@ -387,14 +381,6 @@
             <compilerArgs>
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-maven-plugin</artifactId>
-          <version>${antlr.version}</version>
-          <configuration>
-            <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
         </plugin>
         <plugin>

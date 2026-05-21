@@ -19,7 +19,7 @@ final class AutoNameTest {
         MatcherAssert.assertThat(
             "Auto name does not match with expected",
             new AutoName(42, 13).asString(),
-            Matchers.equalTo("a\uD83C\uDF354213")
+            Matchers.equalTo("a\uD83C\uDF3542-13")
         );
     }
 }
