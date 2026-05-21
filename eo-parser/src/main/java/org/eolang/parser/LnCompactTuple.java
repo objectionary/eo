@@ -124,35 +124,8 @@ final class LnCompactTuple implements Line {
      * @return The pushed/replaced level
      */
     private Level transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            if (!stack.empty()
-                && this.span.indent() != stack.top().indent() + 2) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "indent increased by more than one level"
-                );
-            }
-            if (!stack.empty()
-                && stack.top().openness() != Openness.OPEN) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "unexpected deeper-indent line — previous expression is closed for children"
-                );
-            }
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.COMPACT_TUPLE, Openness.OPEN
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.COMPACT_TUPLE, Openness.OPEN
-            );
-        }
-        if (suffix.present()) {
-            level.name();
-        }
-        return level;
+        return new Transition(stack, this.span)
+            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, suffix.present());
     }
 
     /**

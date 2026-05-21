@@ -79,33 +79,8 @@ final class LnTextBlock implements Line {
      * @param suffix The parsed suffix
      */
     private void transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            if (!stack.empty()
-                && this.span.indent() != stack.top().indent() + 2) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "indent increased by more than one level"
-                );
-            }
-            if (!stack.empty()
-                && stack.top().openness() != Openness.OPEN) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "unexpected deeper-indent line — previous expression is closed for children"
-                );
-            }
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.TEXT_BLOCK, Openness.VERTICAL_COMPLETED
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.TEXT_BLOCK, Openness.VERTICAL_COMPLETED
-            );
-        }
-        if (suffix.present()) {
-            level.name();
-        }
+        new Transition(stack, this.span).apply(
+            Kind.TEXT_BLOCK, Openness.VERTICAL_COMPLETED, suffix.present()
+        );
     }
 }

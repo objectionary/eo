@@ -158,35 +158,11 @@ final class LnOnlyPhi implements Line {
      * @param suffix Right-hand-side suffix
      */
     private void transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            if (!stack.empty()
-                && this.span.indent() != stack.top().indent() + 2) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "indent increased by more than one level"
-                );
-            }
-            if (!stack.empty()
-                && stack.top().openness() != Openness.OPEN) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "unexpected deeper-indent line — previous expression is closed for children"
-                );
-            }
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.ONLY_PHI_FORMATION, Openness.HORIZONTAL_COMPLETED
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.ONLY_PHI_FORMATION,
-                Openness.HORIZONTAL_COMPLETED
-            );
-        }
-        if (suffix.present() || suffix.test()) {
-            level.name();
-        }
+        new Transition(stack, this.span).apply(
+            Kind.ONLY_PHI_FORMATION,
+            Openness.HORIZONTAL_COMPLETED,
+            suffix.present() || suffix.test()
+        );
     }
 
     /**

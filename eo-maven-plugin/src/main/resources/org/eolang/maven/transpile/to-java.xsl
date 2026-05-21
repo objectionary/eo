@@ -351,25 +351,25 @@
       </xsl:message>
     </xsl:if>
     <xsl:if test="not(contains($name, '+'))">
-        <xsl:value-of select="eo:eol($indent)"/>
-        <xsl:if test="$context!='this'">
-          <xsl:text>((PhDefault) </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="$context"/>
-        <xsl:if test="$context!='this'">
-          <xsl:text>)</xsl:text>
-        </xsl:if>
-        <xsl:text>.add("</xsl:text>
-        <xsl:value-of select="$name"/>
-        <xsl:text>", </xsl:text>
-        <xsl:apply-templates select="void|bound|atom|abstract">
-          <xsl:with-param name="indent" select="$indent"/>
-          <xsl:with-param name="name" select="$name"/>
-          <xsl:with-param name="parent" select="$parent"/>
-          <xsl:with-param name="context" select="$context"/>
-        </xsl:apply-templates>
-        <xsl:text>);</xsl:text>
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>((PhDefault) </xsl:text>
       </xsl:if>
+      <xsl:value-of select="$context"/>
+      <xsl:if test="$context!='this'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>.add("</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>", </xsl:text>
+      <xsl:apply-templates select="void|bound|atom|abstract">
+        <xsl:with-param name="indent" select="$indent"/>
+        <xsl:with-param name="name" select="$name"/>
+        <xsl:with-param name="parent" select="$parent"/>
+        <xsl:with-param name="context" select="$context"/>
+      </xsl:apply-templates>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="void">
