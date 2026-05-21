@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 5
+line: 4
 message: |-
-  [5:12] error: 'Invalid object declaration'
-      sprintwf
+  [4:4] error: 'comment must precede a named object'
+      # a comment here is prohibited
+      ^
 input: |
   # No comments
   [args] > app

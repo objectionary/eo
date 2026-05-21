@@ -45,12 +45,6 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <!-- version from parent POM -->
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->

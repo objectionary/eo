@@ -511,16 +511,18 @@
         f.write "Shrek is love" > [f]
       eq.
         "Shrek is love"
-        malloc.of 13 [m]>>
-          seq * > @
-            file
-              ^.src
-            .open
-              "r"
-              [f] >>
-                ^.m.put > @
-                  f.read 13
-            m
+        malloc.of
+          13
+          [m] >>
+            seq * > @
+              file
+                ^.src
+              .open
+                "r"
+                [f] >>
+                  ^.m.put > @
+                    f.read 13
+              m
     tmpdir.tmpfile > temp
     temp.path > src
 

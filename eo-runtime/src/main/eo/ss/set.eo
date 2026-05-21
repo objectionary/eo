@@ -47,18 +47,22 @@
 
   # Tests that set does not append an existing item.
   [] +> tests-does-not-append-existed-item-to-set
-    set
-      * 1 2
-    .with 1
-    .size
-    .eq 2 > @
+    eq. > @
+      size.
+        with.
+          set
+            * 1 2
+          1
+      2
 
   # Tests that set appends a new item.
   [] +> tests-appends-new-item-to-set
-    set
-      * 1 2
-    .with 3
-    .has 3 > @
+    has. > @
+      with.
+        set
+          * 1 2
+        3
+      3
 
   # Tests that empty set has size of zero.
   [] +> tests-empty-set-has-size-of-zero

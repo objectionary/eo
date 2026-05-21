@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[not(@base) and count(o)=2 and @name='aliases' and o[1][@base='ξ' and @name='xi🌵']]
+  - //o[not(@base) and count(o[not(@name='xi🌵')])=1 and @name='aliases']
 input: |
   # No comments.
   [] > aliases

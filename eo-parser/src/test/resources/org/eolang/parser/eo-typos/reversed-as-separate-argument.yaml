@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 3
+message: |-
+  [3:7] error: 'expected identifier'
+    a. b. c > x
+         ^
 input: |
   # No comments
   [] > foo

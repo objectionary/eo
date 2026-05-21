@@ -5,11 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[count(o)=5]
-  - /object/o[@name='foo']/o[@base='ξ' and @name='xi🌵']
-  - /object/o[@name='foo']/o[@name='+test-1']/o[not(@name='xi🌵')]
-  - /object/o[@name='foo']/o[@name='+test-2']/o[not(@base='xi🌵')]
-  - /object/o[@name='foo']/o[@name='+test-3']/o[not(@base='xi🌵')]
+  - /object/o[count(o[not(@name='xi🌵')])=4]
   - /object/o[@name='foo']/o[@name='λ']
 input: |-
   # Foo atom together with the tests.

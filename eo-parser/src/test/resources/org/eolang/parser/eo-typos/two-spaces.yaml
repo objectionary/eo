@@ -7,9 +7,9 @@ line: 5
 #  As you can see, we have multiple error messages that are the
 #  same. We should remove duplicates and keep only meaningful error messages.
 message: |-
-  [5:2] error: 'Invalid object declaration'
+  [5:0] error: 'unexpected odd indent'
      *
-    ^
+  ^
 input: |
   # This is a code snippet from the following issue:
   # https://github.com/objectionary/eo/issues/3332

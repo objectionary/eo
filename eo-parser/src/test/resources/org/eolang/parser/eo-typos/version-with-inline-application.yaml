@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 3
+message: |-
+  [3:2] error: 'object inside formation must have a name'
+    stdout|1.2.3 42
+    ^
 input: |
   # No comments
   [args] > app

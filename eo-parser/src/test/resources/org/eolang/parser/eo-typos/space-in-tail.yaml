@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 2
+message: |-
+  [2:6] error: 'trailing garbage after name suffix'
+  [] >  foo
+        ^
 input: |
   # No comments
   [] >  foo

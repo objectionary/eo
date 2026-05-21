@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -15,12 +14,8 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.xembly.Directives;
-import org.xembly.ImpossibleModificationException;
-import org.xembly.Xembler;
 
 /**
  * Test case for {@link Xmir}.
@@ -32,6 +27,7 @@ final class XmirTest {
     @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
+        Assumptions.assumeTrue(xtory.map().get("skip") == null);
         final Xmir xmir = this.asXmir((String) xtory.map().get("origin"));
         MatcherAssert.assertThat(
             String.format(
@@ -40,34 +36,6 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(xtory.map().get("printed"))
-        );
-    }
-
-    @Disabled
-    @Test
-    void restoresApostropheForIdempotency() throws ImpossibleModificationException {
-        MatcherAssert.assertThat(
-            "Apostrophe is not restored, but should be",
-            new Xmir(
-                new XMLDocument(
-                    new Xembler(
-                        new Directives()
-                            .add("object")
-                            .add("o")
-                            .attr("base", "Φ.org.eolang.start")
-                            .attr("name", "φ")
-                            .add("o")
-                            .attr("base", "Φ.org.eolang.random")
-                            .attr("name", "r")
-                            .add("o")
-                            .attr("base", "ξ")
-                            .attr("name", "xi🌵")
-                    ).xml()
-                )
-            ).toEO(),
-            Matchers.containsString(
-                "random > r'"
-            )
         );
     }
 

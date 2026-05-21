@@ -66,12 +66,12 @@
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[not(eo:void(.)) and not(eo:idempotent(.))]">
+    <xsl:apply-templates select="o[not(eo:void(.))]">
       <xsl:with-param name="indent" select="concat('  ', $indent)"/>
     </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[@base and not(eo:idempotent(.)) and not(eo:has-data(.))]" mode="head">
+  <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">

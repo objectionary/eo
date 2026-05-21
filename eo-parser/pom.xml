@@ -49,12 +49,6 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <!-- to make sure it stays in the "compile" scope no matter what profile is used -->
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <!-- version from parent POM -->
-    </dependency>
-    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->

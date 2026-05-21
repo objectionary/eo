@@ -205,39 +205,44 @@
 
   # Tests that searching for non-existent key returns false exists flag.
   [] +> tests-does-not-find-element-by-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .found "three"
-    .exists
-    .not > @
+    not. > @
+      exists.
+        found.
+          map
+            *
+              map.entry "one" 1
+              map.entry "two" 2
+          "three"
 
   # Tests that checking if map has an existing key returns true.
   [] +> tests-has-element-with-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .has "two" > @
+    has. > @
+      map
+        *
+          map.entry "one" 1
+          map.entry "two" 2
+      "two"
 
   # Tests that checking if map has non-existent key returns false.
   [] +> tests-does-not-have-element-by-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .has "three"
-    .not > @
+    not. > @
+      has.
+        map
+          *
+            map.entry "one" 1
+            map.entry "two" 2
+        "three"
 
   # Tests that removing non-existent key does not change the map size.
   [] +> tests-does-not-change-map-without-non-existed-element
-    map
-      *
-        map.entry "one" 1
-    .without "two"
-    .size
-    .eq 1 > @
+    eq. > @
+      size.
+        without.
+          map
+            *
+              map.entry "one" 1
+          "two"
+      1
 
   # Tests that removing an existing key from map works correctly.
   [] +> tests-removes-element-from-map-by-key

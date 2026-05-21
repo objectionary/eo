@@ -187,15 +187,14 @@ This code will print this:
 
 Got the idea?
 
-## Backus-Naur Form
+## Grammar
 
-This is our [EBNF] of EO language:
-
-![Grammar][EO-Grammar]
-
-The PNG image was
-[auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
-It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg).
+The EO language is defined by [`eo-parser/PARSER_SPEC.md`][parser-spec],
+  a spec-driven, line-by-line classification of every legal shape with
+  numbered rules (`R-N.M`) that the parser implementation references
+  directly.
+The reference implementation lives in `eo-parser/src/main/java/org/eolang/parser/`
+  and converts EO source to [XMIR] in a single pass with no intermediate AST.
 
 ## What's Next?
 
@@ -363,7 +362,6 @@ to enhance the performance of EO components:
 [C#]: https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29
 [C++]: https://en.wikipedia.org/wiki/C%2B%2B
 [composable decorators]: https://www.yegor256.com/2015/02/26/composable-decorators.html
-[EBNF]: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form
 [eo-maven-plugin]: https://github.com/objectionary/eo/tree/master/eo-maven-plugin
 [eoc]: https://github.com/objectionary/eoc
 [guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
@@ -386,4 +384,4 @@ to enhance the performance of EO components:
 [book]: http://www.yegor256.com/elegant-objects.html
 [𝜑-calculus]: https://arxiv.org/abs/2111.13384
 [Esperanto]: https://en.wikipedia.org/wiki/Esperanto
-[EO-Grammar]: https://raw.githubusercontent.com/objectionary/eo/gh-pages/ebnf/Eo.png
+[parser-spec]: https://github.com/objectionary/eo/blob/master/eo-parser/PARSER_SPEC.md

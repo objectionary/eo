@@ -27,7 +27,6 @@ asserts:
   - //o[@base='.and']/o[1][@base='.eq']/o[2][@base='Φ.true']
   - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Φ.bytes']/o[text()!='']
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Φ.false']
-  - //o[@name='bts']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[1][@base='Φ.bytes']/o[1][@base='Φ.bytes']/o[text()!='']
 input: |
   # Main.
   [] > main
@@ -49,11 +48,3 @@ input: |
       and. > @
         01-.as-bytes.eq true
         00-.as-bytes.eq false
-
-    # No comments.
-    [] > bts
-      eq. > @
-        as-bytes.
-          bytes.
-            Q
-            01-

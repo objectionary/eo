@@ -1,0 +1,531 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.parser;
+
+/**
+ * A parsed name suffix — §3.10 of the spec.
+ *
+ * <p>Recognises the four base forms (mutually exclusive on any line)
+ * plus the {@code !} const modifier and the {@code /sig} atom signature:
+ * </p>
+ *
+ * <ul>
+ *   <li>{@code > name} — explicit name binding.</li>
+ *   <li>{@code >>} — auto-generated name.</li>
+ *   <li>{@code +> name} — test attribute.</li>
+ *   <li>(empty) — no suffix.</li>
+ * </ul>
+ *
+ * <p>The composite only-phi forms ({@code > [params] > name}) are
+ * <em>not</em> parsed here; those are an only-phi-formation line
+ * shape (§4.5) with its own classifier. This class handles only the
+ * suffix portion of an already-classified non-only-phi line.</p>
+ *
+ * <p>Validation enforced at construction time:</p>
+ *
+ * <ul>
+ *   <li>R-3.10.2 — {@code >>} cannot carry {@code /sig}.</li>
+ *   <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
+ *   <li>R-3.10.10 — {@code /sig} must be a non-empty dotted name
+ *   (optionally rooted at {@code Q}); a bare {@code /} or {@code /Q}
+ *   alone is rejected.</li>
+ *   <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,
+ *   not {@code @} (PHI).</li>
+ * </ul>
+ *
+ * @since 0.1
+ */
+@SuppressWarnings("PMD.TooManyMethods")
+final class Suffix {
+
+    /**
+     * Additional NAME-only token boundaries beyond {@link #terminates}.
+     * §2.3 forbids these inside a NAME; signatures keep the loose
+     * {@link #terminates} so dotted FQNs are still consumed whole.
+     */
+    private static final String NAME_BOUNDARIES = ",.|':;?[]{}()";
+
+    /**
+     * Suffix form.
+     */
+    private final Form form;
+
+    /**
+     * Bound name for {@code NAME} / {@code TEST} forms; empty for
+     * {@code AUTO} / {@code NONE}.
+     */
+    private final String label;
+
+    /**
+     * Atom signature for {@code /sig}; empty if absent.
+     */
+    private final String sig;
+
+    /**
+     * True if the suffix carries the {@code !} const marker.
+     */
+    private final boolean constant;
+
+    /**
+     * Ctor — parses the given tail.
+     *
+     * <p>{@code tail} is the substring of the source line that follows
+     * the head expression. {@code span} is the containing line for
+     * error position reporting. {@code home} is the column in the
+     * source line at which {@code tail} begins.</p>
+     *
+     * @param tail Tail substring (may have leading whitespace)
+     * @param span Source span (for error reporting)
+     * @param home Source column where {@code tail} begins
+     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
+     */
+    Suffix(final String tail, final Span span, final int home) {
+        this(Suffix.parse(tail, span, home));
+    }
+
+    /**
+     * Primary ctor — copies fields from a parsed result.
+     * @param result Parsed result
+     */
+    private Suffix(final Parsed result) {
+        this.form = result.form;
+        this.label = result.label;
+        this.sig = result.sig;
+        this.constant = result.constant;
+    }
+
+    /**
+     * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
+     * {@code TEST}.
+     * @return Form
+     */
+    Form form() {
+        return this.form;
+    }
+
+    /**
+     * Bound name. Empty for {@code AUTO} and {@code NONE}.
+     * @return Name
+     */
+    String label() {
+        return this.label;
+    }
+
+    /**
+     * Atom signature. Empty if no {@code /sig} was present.
+     * @return Signature, with leading {@code Q} promoted to {@code Φ}
+     */
+    String sig() {
+        return this.sig;
+    }
+
+    /**
+     * Whether the {@code !} const marker is present.
+     * @return Const flag
+     */
+    boolean constant() {
+        return this.constant;
+    }
+
+    /**
+     * Resolve the {@code @name} attribute value for the line carrying
+     * this suffix, applying R-9.3 source-token mapping: {@code @} →
+     * {@code φ} for an explicit name.
+     *
+     * <p>This is the single source of truth for naming any line shape
+     * — formations, applications, method chains, reversed dispatches,
+     * compact tuples, only-phi formations, text blocks. Returns
+     * {@code null} for {@link Form#NONE} (no name attribute).</p>
+     *
+     * @param line Source line (for {@link Form#AUTO} naming)
+     * @param indent Source indent (for {@link Form#AUTO} naming)
+     * @return The {@code @name} value, or {@code null}
+     */
+    String attribute(final int line, final int indent) {
+        final String name;
+        if (this.form == Form.NAME) {
+            name = Suffix.phi(this.label);
+        } else if (this.form == Form.TEST) {
+            name = "+".concat(this.label);
+        } else if (this.form == Form.AUTO) {
+            name = new AutoName(line, indent).asString();
+        } else {
+            name = null;
+        }
+        return name;
+    }
+
+    /**
+     * Whether this suffix declares an atom (carries a non-empty
+     * {@code /sig}).
+     * @return Atom flag
+     */
+    boolean atom() {
+        return !this.sig.isEmpty();
+    }
+
+    /**
+     * Whether this suffix is a test attribute ({@code +> name}).
+     * @return Test flag
+     */
+    boolean test() {
+        return this.form == Form.TEST;
+    }
+
+    /**
+     * Whether this suffix is an auto-generated name ({@code >>}).
+     * @return Auto flag
+     */
+    boolean auto() {
+        return this.form == Form.AUTO;
+    }
+
+    /**
+     * Whether any suffix is present (form is not {@code NONE}).
+     * @return Present flag
+     */
+    boolean present() {
+        return this.form != Form.NONE;
+    }
+
+    /**
+     * Apply the R-9.3.1 source-token mapping {@code @} → {@code φ}
+     * for a name carried by an explicit {@code > name} suffix. Other
+     * names pass through unchanged.
+     * @param raw Source name
+     * @return Mapped XMIR name
+     */
+    private static String phi(final String raw) {
+        final String mapped;
+        if ("@".equals(raw)) {
+            mapped = "φ";
+        } else {
+            mapped = raw;
+        }
+        return mapped;
+    }
+
+    /**
+     * Parse a suffix tail into a result struct.
+     * @param tail Tail substring
+     * @param span Source span
+     * @param home Source column where {@code tail} begins
+     * @return Parsed result
+     */
+    private static Parsed parse(final String tail, final Span span, final int home) {
+        int idx = 0;
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        final Parsed result;
+        if (idx >= tail.length()) {
+            result = new Suffix.Parsed(Form.NONE, "", "", false);
+        } else if (tail.startsWith("+>", idx)) {
+            result = Suffix.test(tail, idx + 2, span, home);
+        } else if (tail.startsWith(">>", idx)) {
+            result = Suffix.auto(tail, idx + 2, span, home);
+        } else if (tail.charAt(idx) == '>') {
+            result = Suffix.named(tail, idx + 1, span, home);
+        } else {
+            result = new Suffix.Parsed(Form.NONE, "", "", false);
+        }
+        return result;
+    }
+
+    /**
+     * Parse a {@code +> name} suffix.
+     * @param tail Tail substring
+     * @param after Index immediately after {@code +>}
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @return Parsed result
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static Parsed test(
+        final String tail, final int after, final Span span, final int home
+    ) {
+        int idx = Suffix.skipSpace(tail, after);
+        if (idx < tail.length() && tail.charAt(idx) == '@') {
+            throw new ParseError(
+                span.line(), home + idx,
+                "test attribute name must be an identifier, not @"
+            );
+        }
+        final int start = idx;
+        while (idx < tail.length() && !Suffix.terminates(tail.charAt(idx))) {
+            idx = idx + 1;
+        }
+        if (start == idx) {
+            throw new ParseError(
+                span.line(), home + start,
+                "test attribute requires a name"
+            );
+        }
+        return new Suffix.Parsed(Form.TEST, tail.substring(start, idx), "", false);
+    }
+
+    /**
+     * Parse a {@code >>} (auto) suffix.
+     * @param tail Tail substring
+     * @param after Index immediately after {@code >>}
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @return Parsed result
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static Parsed auto(
+        final String tail, final int after, final Span span, final int home
+    ) {
+        int idx = after;
+        boolean cnst = false;
+        if (idx < tail.length() && tail.charAt(idx) == '!') {
+            cnst = true;
+            idx = idx + 1;
+        }
+        final int trailing = Suffix.skipSpace(tail, idx);
+        if (trailing < tail.length() && tail.charAt(trailing) == '/') {
+            throw new ParseError(
+                span.line(), home + trailing,
+                "auto-named atom is forbidden"
+            );
+        }
+        return new Suffix.Parsed(Form.AUTO, "", "", cnst);
+    }
+
+    /**
+     * Parse a {@code > name} suffix.
+     * @param tail Tail substring
+     * @param from Index immediately after the leading {@code >}
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @return Parsed result
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static Parsed named(
+        final String tail, final int from, final Span span, final int home
+    ) {
+        final int begin = Suffix.skipSpace(tail, from);
+        if (begin >= tail.length()) {
+            throw new ParseError(
+                span.line(), home + from,
+                "name suffix requires a name"
+            );
+        }
+        int idx = begin;
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
+            idx = idx + 1;
+        }
+        final String name = tail.substring(begin, idx);
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        boolean cnst = false;
+        if (idx < tail.length() && tail.charAt(idx) == '!') {
+            cnst = true;
+            idx = idx + 1;
+        }
+        final int next = Suffix.skipSpace(tail, idx);
+        final String signature;
+        final int rest;
+        if (next < tail.length() && tail.charAt(next) == '/') {
+            if (cnst) {
+                throw new ParseError(
+                    span.line(), home + next,
+                    "const and atom signature cannot be combined"
+                );
+            }
+            signature = Suffix.signature(tail, next + 1, span, home);
+            rest = next + 1 + signature.length();
+        } else {
+            signature = "";
+            rest = idx;
+        }
+        Suffix.endsClean(tail, rest, span, home);
+        return new Suffix.Parsed(Form.NAME, name, signature, cnst);
+    }
+
+    /**
+     * Verify the rest of {@code tail} from {@code from} onward contains
+     * only whitespace; otherwise raise a "trailing garbage" parse error.
+     * @param tail Tail substring
+     * @param from Index after the consumed suffix
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void endsClean(
+        final String tail, final int from, final Span span, final int home
+    ) {
+        int idx = from;
+        while (idx < tail.length()
+            && (tail.charAt(idx) == ' ' || tail.charAt(idx) == '\t')) {
+            idx = idx + 1;
+        }
+        if (idx < tail.length()) {
+            throw new ParseError(
+                span.line(), home + idx,
+                "trailing garbage after name suffix"
+            );
+        }
+    }
+
+    /**
+     * Read the atom signature after the {@code /} marker.
+     *
+     * <p>The signature is a single {@code NAME} or a dotted path of
+     * names, optionally rooted at {@code Q} (R-3.10.10). A leading
+     * {@code Q.} is promoted to {@code Φ.} per R-3.10.11 / R-9.3. A
+     * bare {@code Q} (root alone) is rejected.</p>
+     *
+     * @param tail Tail substring
+     * @param after Index immediately after {@code /}
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @return Promoted signature
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static String signature(
+        final String tail, final int after, final Span span, final int home
+    ) {
+        int idx = after;
+        while (idx < tail.length() && !Suffix.terminates(tail.charAt(idx))) {
+            idx = idx + 1;
+        }
+        if (idx == after) {
+            throw new ParseError(
+                span.line(), home + after,
+                "atom signature requires a name"
+            );
+        }
+        final String raw = tail.substring(after, idx);
+        if (raw.equals("Q")) {
+            throw new ParseError(
+                span.line(), home + after,
+                "atom signature requires a name"
+            );
+        }
+        final String promoted;
+        if (raw.startsWith("Q.")) {
+            promoted = "Φ".concat(raw.substring(1));
+        } else {
+            promoted = raw;
+        }
+        return promoted;
+    }
+
+    /**
+     * Skip exactly one space character.
+     * @param tail Tail substring
+     * @param from Current index
+     * @return Index after the single space (or unchanged if at end)
+     */
+    private static int skipSpace(final String tail, final int from) {
+        int idx = from;
+        if (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
+    }
+
+    /**
+     * Whether a character terminates a NAME / signature token. Mirrors
+     * the {@code NAME} token rule of §2.3 plus the suffix-specific
+     * separators ({@code !}, {@code /}).
+     * @param glyph The character
+     * @return True if the character ends the current token
+     */
+    private static boolean terminates(final char glyph) {
+        return glyph == ' '
+            || glyph == '\t'
+            || glyph == '!'
+            || glyph == '/';
+    }
+
+    /**
+     * Whether a character terminates a name (stricter than
+     * {@link #terminates}). NAME tokens forbid the separators
+     * enumerated in {@link #NAME_BOUNDARIES}.
+     * @param glyph The character
+     * @return True if the character ends the NAME token
+     */
+    private static boolean endsName(final char glyph) {
+        return Suffix.terminates(glyph)
+            || Suffix.NAME_BOUNDARIES.indexOf(glyph) >= 0;
+    }
+
+    /**
+     * Suffix form taxonomy.
+     * @since 0.1
+     */
+    enum Form {
+
+        /**
+         * No suffix.
+         */
+        NONE,
+
+        /**
+         * Explicit name binding ({@code > name}).
+         */
+        NAME,
+
+        /**
+         * Auto-generated name ({@code >>}).
+         */
+        AUTO,
+
+        /**
+         * Test attribute ({@code +> name}).
+         */
+        TEST
+    }
+
+    /**
+     * Internal parse result.
+     * @since 0.1
+     */
+    private static final class Parsed {
+
+        /**
+         * Form.
+         */
+        private final Form form;
+
+        /**
+         * Bound name.
+         */
+        private final String label;
+
+        /**
+         * Atom signature.
+         */
+        private final String sig;
+
+        /**
+         * Const marker.
+         */
+        private final boolean constant;
+
+        /**
+         * Ctor.
+         * @param sform Form
+         * @param slabel Label
+         * @param ssig Signature
+         * @param sconstant Const marker
+         * @checkstyle ParameterNumberCheck (10 lines)
+         */
+        private Parsed(
+            final Form sform, final String slabel, final String ssig, final boolean sconstant
+        ) {
+            this.form = sform;
+            this.label = slabel;
+            this.sig = ssig;
+            this.constant = sconstant;
+        }
+    }
+}

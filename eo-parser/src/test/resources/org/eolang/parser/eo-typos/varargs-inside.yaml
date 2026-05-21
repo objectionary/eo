@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
+line: 2
+message: |-
+  [2:2] error: 'object inside formation must have a name'
+    "hello"
+    ^
 input: |
   [a b... c] > hello
     "hello"

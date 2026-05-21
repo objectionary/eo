@@ -15,30 +15,30 @@
 
   # Tests that absolute value of positive integer is the integer itself.
   [] +> tests-abs-int-positive
-    eq. +> @
+    eq. > @
       abs 3
       3
 
   # Tests that absolute value of negative integer removes the sign.
   [] +> tests-abs-int-negative
-    eq. +> @
+    eq. > @
       abs -3
       3
 
   # Tests that absolute value of zero is zero.
   [] +> tests-abs-zero
-    eq. +> @
+    eq. > @
       abs 0
       0
 
   # Tests that absolute value of positive float is the float itself.
   [] +> tests-abs-float-positive
-    eq. +> @
+    eq. > @
       abs 13.5
       13.5
 
   # Tests that absolute value of negative float removes the sign.
   [] +> tests-abs-float-negative
-    eq. +> @
+    eq. > @
       abs -17.9
       17.9

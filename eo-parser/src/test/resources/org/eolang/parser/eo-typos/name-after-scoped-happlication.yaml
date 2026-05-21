@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 line: 4
 message: |-
-  [4:20] error: 'Invalid object declaration'
+  [4:15] error: 'expected value'
       malloc 100 [m]>> > @
-                      ^
+                 ^
 input: |
   # No comments
   [] > foo

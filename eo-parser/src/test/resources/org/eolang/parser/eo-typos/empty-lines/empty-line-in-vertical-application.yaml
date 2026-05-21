@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 5
+line: 6
+message: |-
+  [6:4] error: 'blank line before a plain object is forbidden (R-6.5.4); only master objects (formations, atoms, only-phi formations, +> tests) may be preceded by a blank line'
+      b
+      ^
 input: |
   # No comments
   [] > main

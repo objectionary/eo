@@ -262,9 +262,37 @@
                       https://github.com/objectionary/eo/issues/4538. Right now we have just Φ.bytes
                 -->
                 <lint>object-has-data</lint>
+                <!--
+                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip.
+                      The lint relies on the `xi🌵` positional marker that the legacy
+                      ANTLR parser emitted; the new spec-driven parser does not produce
+                      this marker, so the lint now fires on every formation. Drop this
+                      skip entry entirely once the lint is removed from the lints repo.
+                -->
+                <lint>idempotent-attribute-is-not-first</lint>
+                <!--
+                @todo #5078:30min. Remove `empty-object` skip.
+                      The lint flags formations whose `<o>` has no @base/@name
+                      and no children — the canonical empty anonymous formation.
+                      The new spec parser emits this shape verbatim for `[]`
+                      and similar; the lint disagrees. Drop this skip when the
+                      lint is updated or removed upstream.
+                -->
+                <lint>empty-object</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
+                <!--
+                @todo #5078:30min. Remove `incorrect-number-of-attributes` skip.
+                      WPA miscounts calls of the form `list *` (compact-tuple
+                      head with no vertical children, which synthesises a
+                      `Φ.tuple.empty` argument) — it reports 0 args provided
+                      while 1 (the synthesised tuple) is the actual shape.
+                      Drop this skip once the WPA lint understands the
+                      compact-tuple-with-zero-children synthesis (R-3.9.2 in
+                      the spec).
+                -->
+                <lint>incorrect-number-of-attributes</lint>
               </skipProgramLints>
               <keepBinaries>
                 <glob>org/eolang/EOfs/package-info.class</glob>

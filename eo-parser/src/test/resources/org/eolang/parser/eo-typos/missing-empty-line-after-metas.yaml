@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:0] error: 'Invalid meta declaration'
+  [3:0] error: 'missing blank line between meta header and the first non-meta line (R-6.5.5); exactly one blank must separate them'
   [] > main
   ^
 input: |

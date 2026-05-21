@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  [3:15] error: 'expected value'
+    malloc.for 4 [m]>>
+                 ^
+input: |
+  # No comments.
+  [] > foo
+    malloc.for 4 [m]>>
+      func m > @

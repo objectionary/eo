@@ -18,7 +18,7 @@ asserts:
   - //o[@base='Φ']
   - /object/metas/meta[head='also' and tail='Φ.x.number' and part='Φ.x.number']
   - /object/metas/meta[head='also' and tail='Φ.string' and part='Φ.string']
-  - /object/metas/meta[head='decorate' and tail='string Q.number foo.bar' and part='Φ.string' and part='Φ.number' and part='Φ.foo.bar']
+  - /object/metas/meta[head='decorate' and tail='string Φ.number foo.bar' and part='Φ.string' and part='Φ.number' and part='Φ.foo.bar']
 input: |
   +alias foo
   +alias scanner org.eolang.tt.scanner

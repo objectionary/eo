@@ -1,112 +1,116 @@
+<!-- markdownlint-disable MD013 MD043 -->
+
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parser.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parser)
 [![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-parser.svg)](https://www.javadoc.io/doc/org.eolang/eo-parser)
 
-# How to Test
+# eo-parser
 
-This documentation provides a step-by-step guide to test the `EO` code in `eo-parser` package. There
-are two files providing tests for `EO` files: `PacksTest` and `TyposTests`.
+A spec-driven EO → XMIR converter. Reads `.eo` source text line by line, classifies each line per the rules in [`PARSER_SPEC.md`](PARSER_SPEC.md), and emits XMIR via [Xembly](https://www.xembly.org). No ANTLR, no intermediate AST — one in-memory state shared by classification, cross-line validation, and emission.
 
-The `PacksTest` class contains two test methods:
+The public entry point is `EoSyntax`:
 
-1. `parsesPacks()` - This method tests if the packs are parsed correctly. It reads YAML files from
-the `org/eolang/parser/packs/` directory and checks if there are any failures. If there are any
-failures, the test is aborted.
-2. `createsXaxStoryWithXslStylesheets()` - This method tests if the XSL stylesheets are created
-correctly. It reads YAML files from the `org/eolang/parser/xax/` directory and creates an XaxStory
-object. The test passes if the object is created successfully.
+```java
+import com.jcabi.xml.XML;
+import org.cactoos.io.InputOf;
+import org.eolang.parser.EoSyntax;
 
-`TyposTests` contains only `checksPacks()` method with same functionality as `parsesPacks()`. But it
-takes YAML files from `org/eolang/parser/typos/` directory.
-
-To create YAML file, you can follow the following steps:
-
-1. Start by creating a brief introduction to the file and its purpose. In this case, the YAML file
-is used for defining the XSLT stylesheets and the tests for a program, as well as defining aliases
-and the main function.
-2. Next, provide a section that explains the different sections of the YAML file. In this case,
-there are three sections: `xsls`, `tests`, and `eo`.
-3. For the `xsls` section, explain that it is used to define the XSLT stylesheets that will be used
-for transforming the input program. Provide a brief explanation of each stylesheet listed in the
-section.
-4. For the `tests` section, explain that it is used for defining the tests that will be run on the
-program. Provide a brief explanation of each test listed in the section.
-5. For the `eo` section, explain that it is used for defining aliases and the main function for the
-program. Provide a brief explanation of each alias listed in the section, and how they can be used
-in the program. Also, explain the purpose of the `main` function and how it works.
-6. Finally, provide a conclusion that summarizes the purpose and contents of the YAML file. You can
-also include any additional information that might be helpful for users who are working with the
-file.
-
-Here is an example of what the YAML file might look like:
-
-## YAML File Documentation
-
-Considering the following `yaml` file:
-
-```yaml
-sheets:
-  - /org/eolang/parser/expand-aliases.xsl
-  - /org/eolang/parser/resolve-aliases.xsl
-  - /org/eolang/parser/add-default-package.xsl
-asserts:
-  - /object[not(errors)]
-  - /object[count(o)=1]
-  - //o[@base='org.eolang.and' and @line='8']
-  - //o[@base='foo']
-  - //o[@base='ξ']
-  - //o[@base='ρ']
-  - //o[@base='Q']
-input: |
-  +alias foo
-  +alias scanner org.eolang.tt.scanner
-  +alias stdin org.eolang.io.stdin
-  +alias stdout org.eolang.io.stdout
-  +foo Some other meta
-
-  [args] > main
-    and
-      (scanner stdin).next-line > line!
-      (stdout "You entered" line).print
-      $
-      ^.i
-      foo
-      Q.random
+final XML xmir = new EoSyntax(new InputOf("[] > foo\n")).parsed();
 ```
 
-### Sections
+## Parser pipeline
 
-This YAML file is used to define the XSLT stylesheets and tests for a program, as well as defining
-aliases and the main function. It consists of three sections: `xsls`, `tests`, and `eo`. The `xsls`
-section is used to define the XSLT stylesheets, the `tests` section is used for defining the tests,
-and the `eo` section is used for defining aliases and the main function.
+| Stage | Where |
+| --- | --- |
+| Line-by-line lex + classify + emit (direct EO → XMIR) | `Eo.java`, `Ln*` line shapes |
+| Post-parse XSL passes (alias resolution, FQN building, etc.) | `src/main/resources/org/eolang/parser/parse/*.xsl` |
+| Canonical printing (XMIR → EO round-trip) | `Xmir`, `src/main/resources/org/eolang/parser/print/*.xsl` |
 
-#### xsls
+## Design overview
 
-This section is used to define the XSLT stylesheets that will be used for transforming the input
-program. The following stylesheets are defined in this section:
+The parser is a **single-pass line-driven state machine**. There is no AST: each source line is classified, validated against an indent stack, and emitted as Xembly directives in the same step. The XMIR is the only structured artefact.
 
-- `/org/eolang/parser/expand-aliases.xsl`: This stylesheet is used to expand aliases in the program.
-- `/org/eolang/parser/resolve-aliases.xsl`: This stylesheet is used to resolve aliases in the
-program.
-- `/org/eolang/parser/add-default-package.xsl`: This stylesheet is used to add a default package to
-the program.
+The runtime collaboration is small — five objects, all package-private:
 
-#### tests
+| Class | Role |
+| --- | --- |
+| `Eo` | Top-level driver. Splits input into `Span`s (one per source line), classifies each via `Eo.classify`, dispatches to the chosen `Line`. Also runs end-of-file checks (text-block closure, dangling comments) and the close-time hooks for popping levels. |
+| `Line` (interface) | A single line's behaviour: `void into(Stack, Globals, Emit)`. Implemented by `LnApplication`, `LnFormation`, `LnReversed`, `LnOnlyPhi`, `LnCompactTuple`, `LnMethod`, `LnMeta`, `LnComment`, `LnBlank`, `LnTextBlock` — one class per spec line shape. Each one is the authoritative parser for its shape; classifier-level checks (e.g. `Eo.onlyPhi`) are shape *detectors* only. |
+| `Stack` + `Level` | The indent stack of §5 in the spec. One `Level` per occupied indent column, carrying `kind`, `openness`, `named?`, child counters, and per-kind state (compact-tuple `N`, bare-reversed receiver flag, etc.). `Stack.popDeeperThan(indent)` fires close-time hooks (`Eo.checkOnClose`) so each level reports its own R-5.3 violation. |
+| `Globals` | Cross-line transient state: pending comment block, in-flight text-block body, blank-line counter, "first object emitted" flag. Lets `Ln*` classes communicate without threading parameters through the line dispatch. |
+| `Emit` | Xembly-`Directives` sink. Line shapes call `object`, `voidParam`, `method`, `star`, `close`, `set`, `slot` against this surface; `Emit` also exposes `savepoint`/`rollback` so a `ParseError` thrown inside a single line rolls back just that line's directives, allowing recovery and continued parsing. |
 
-This section is used for defining the tests that will be run on the program. The following tests are
-defined in this section:
+Below the line layer, **`Tokens`** is the per-line lexer used by every `Ln*` (head + chain + args + suffix), and **`Emissions`** centralises all `Value`-to-XMIR rendering rules — single source of truth for §9.4 emission, escape decoding (§9.7.3), and inline-phi inside paren groups (§3.10.10a). `Value`, `MethodChain`, `Suffix`, `Span` are small structural holders.
 
-- `/object[not(errors)]`: This test checks that there are no errors in the program.
-- `/object[count(o)=1]`: This test checks that there is only one object in the program.
-- `//o[@base='org.eolang.and' and @line='8']`: This test checks that there is an object with the
-base `org.eolang.and` and the line number `8`.
-- `//o[@base='foo']`: This test checks that there is an object with the base `foo`.
-- `//o[@base='ξ']`: This test checks that there is an object with the base `ξ`.
-- `//o[@base='ρ']`: This test checks that there is an object with the base `ρ`.
-- `//o[@base='Q']`: This test checks that there is an object with the base `Q`.
+### Design choices
 
-#### eo
+- **No AST.** Classify-then-emit on the same line keeps the parser short and the source-to-XMIR mapping inspectable.
+- **One class per line shape.** Adding a new construct = adding one `Ln*` class and one classifier branch in `Eo`. No grammar regeneration.
+- **`Stack` owns cross-line semantics.** `Ln*` classes never look at sibling lines; they only consult/mutate the top of the stack via well-defined `push`/`replace`/`pop` hooks.
+- **Spec is the contract.** Every `Ln*` class header cites the §/R-rules it implements. Behaviour disagreements are bugs in one or the other — `PARSER_SPEC.md` and the code are kept in sync by deliberate audit (see the recent §3.6 / §3.10 / §9.7 reconciliations).
+- **Package-private surface.** Only `EoSyntax`, `Xmir`, `StrictXmir`, `TrFull`, `ObjectName`, `OnDefault`, `OnDetailed` are exported. Everything else is an implementation detail and free to change.
+- **Fail-fast at line scope.** Errors surface as `ParseError` with a `[line:col]` position; `Eo.dispatch` catches and rolls back the line's emissions, then the parser keeps going so a single malformed line doesn't poison the rest of the file.
 
-This section is used for EO code which should be tested.
+## How to Test
+
+All parser tests live in `org.eolang.parser.EoSyntaxTest`. The class drives four parameterized YAML directories under `src/test/resources/org/eolang/parser/`:
+
+| Method | YAML directory | Purpose |
+| --- | --- | --- |
+| `validatesEoSyntax` | `eo-syntax/` | Valid EO sources — the parser must produce the asserted XMIR shape with no errors. |
+| `checksEoPacks` | `eo-packs/` | End-to-end pipeline checks — XSL stylesheets listed in `sheets:` run after the parser. |
+| `checksTypoPacks` | `eo-typos/` | Intentionally invalid EO — the parser must emit an error at the expected `line:` with a message containing `message:`. |
+| `checksXsdMistakes` | `xsd-mistakes/` | XMIR that should fail XSD validation. |
+
+Additional suites cover round-trip printing (`XmirTest`, `print-packs/`) and strict XMIR validation (`StrictXmirTest`).
+
+## YAML pack format
+
+Each YAML pack is a single document with the following top-level keys:
+
+- `sheets` (list of strings, optional) — paths of XSL stylesheets to run after the parser, in order. Empty list means "parser output only".
+- `asserts` (list of XPath strings) — XPath expressions; every one must match against the resulting XMIR.
+- `input` (string) — EO source text. Use the YAML `|` block scalar so newlines and indentation are preserved.
+- `line` (int, typo packs only) — the line where the expected error occurs.
+- `message` (string, typo packs only) — substring the parser's error text must contain.
+- `skip: true` (optional) — temporarily quarantine a pack; the test treats it as skipped (`Assumptions.assumeTrue`).
+
+### Example: a valid-syntax pack
+
+```yaml
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object[@version != '']
+  - //o[@base='Φ.a' and @line='3']
+  - //o[@base='Φ.b-друг' and @line='4']
+  - //o[@base='Φ.c4-5' and @line='5']
+input: |
+  +package test
+
+  a > abc
+    b-друг
+      c4-5
+```
+
+### Example: a typo pack
+
+```yaml
+line: 1
+message: |-
+  [1:5] error: 'meta parts must be separated by exactly one space'
+input: |
+  +meta with  spaces
+```
+
+The parser emits errors in the canonical `[L:P] error: '<message>'` form (`MsgLocated`) followed by the offending source line and a caret pointer (`MsgUnderlined`). YAML `message:` only needs to be a substring — typically the `[L:P] error:` header is enough.
+
+## XSL stylesheets
+
+The `sheets:` paths are classpath-relative. Two main directories:
+
+- `/org/eolang/parser/parse/` — runs after the parser to enrich the XMIR (e.g. `expand-aliases.xsl`, `resolve-aliases.xsl`, `build-fqns.xsl`, `add-default-package.xsl`, `wrap-method-calls.xsl`).
+- `/org/eolang/parser/print/` — XMIR → EO round-trip passes used by `Xmir.toEO`.
+
+Inside `asserts:`, the rendered XMIR uses XMIR's R-9.3 token mapping: `Q` → `Φ`, `@` → `φ`, `^` → `ρ`, `$` → `ξ`. So a source `Q.foo` appears as `@base='Φ.foo'`, not `@base='Q.foo'`.

@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 7
+message: |-
+  [7:2] error: 'redundant parentheses around a top-level expression — drop the outer `(` and `)`'
+    (1.plus 2) > y
+    ^
 input: |
   +home https://github.com/objectionary/eo
   +package a.b.c

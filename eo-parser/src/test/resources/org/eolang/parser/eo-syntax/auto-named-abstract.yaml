@@ -5,9 +5,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[not(@base) and @name='a🌵47' and o[@name='five']]
-  - //o[not(@base) and @name='a🌵65' and o[@name='ten']]
-  - //o[not(@base) and @name='a🌵1013' and not(@as) and o[@name='eleven']]
+  - //o[not(@base) and @name='a🌵4-4' and o[@name='five']]
+  - //o[not(@base) and @name='a🌵6-2' and o[@name='ten']]
+  - //o[not(@base) and @name='a🌵10-4' and not(@as) and o[@name='eleven']]
 input: |
   # Main.
   [] > main
