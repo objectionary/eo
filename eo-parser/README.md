@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD013 MD043 -->
 
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 

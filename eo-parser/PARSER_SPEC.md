@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 MD038 MD040 MD043 -->
+<!-- markdownlint-disable MD007 MD012 MD013 MD032 MD038 MD040 MD043 -->
 
 # EO Parser Specification
 
