@@ -54,21 +54,21 @@ final class ChainEmission {
 
     /**
      * Ctor.
-     * @param emt The directives sink
+     * @param sink The directives sink
      * @param src The line span (line + indent for positions)
-     * @param hed The head value
-     * @param chn The dispatch chain
+     * @param start The head value of the chain
+     * @param links The dispatch chain
      * @param sfx The parsed suffix
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     ChainEmission(
-        final Emit emt, final Span src, final Value hed,
-        final List<MethodChain> chn, final Suffix sfx
+        final Emit sink, final Span src, final Value start,
+        final List<MethodChain> links, final Suffix sfx
     ) {
-        this.emit = emt;
+        this.emit = sink;
         this.span = src;
-        this.head = hed;
-        this.chain = chn;
+        this.head = start;
+        this.chain = links;
         this.suffix = sfx;
     }
 
