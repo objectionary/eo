@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 MD038 MD040 MD043 -->
+
 # EO Parser Specification
 
 This document is the complete contract for an EO parser. It defines the input language (EO source code), the output language (XMIR), and every rule that turns one into the other. The spec is self-sufficient: an implementer can build a conforming parser from this document alone.

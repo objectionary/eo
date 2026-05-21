@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 -->
+
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parser.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parser)
