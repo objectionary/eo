@@ -80,7 +80,7 @@ final class EOmallocWritePhiExpectTest {
                         new EOmalloc$EOof$EOφ(),
                         Phi.RHO,
                         new PhWith(
-                            new EOmallocWritePhiExpectTest.SizedDummy(),
+                            new EOmallocWritePhiExpectTest.Dummy(),
                             "size",
                             new Data.ToPhi(true)
                         )
@@ -103,7 +103,7 @@ final class EOmallocWritePhiExpectTest {
                         new EOmalloc$EOof$EOφ(),
                         Phi.RHO,
                         new PhWith(
-                            new EOmallocWritePhiExpectTest.SizedDummy(),
+                            new EOmallocWritePhiExpectTest.Dummy(),
                             "size",
                             new Data.ToPhi(-1)
                         )
@@ -116,26 +116,18 @@ final class EOmallocWritePhiExpectTest {
     }
 
     /**
-     * Minimal Phi with a single {@code id} attribute used as a stand-in
-     * for the {@code allocated} parent in write tests.
+     * Minimal Phi with {@code id} and {@code size} attributes,
+     * used as a stand-in for the {@code allocated} parent in write
+     * tests and the {@code malloc.of} parent in {@code malloc.of.@} tests.
      * @since 0.51
      */
     private static final class Dummy extends PhDefault {
 
         Dummy() {
-            super(new Attrs(new AttrEntry("id", new AtVoid("id"))));
-        }
-    }
-
-    /**
-     * Minimal Phi with a single {@code size} attribute used as a stand-in
-     * for the {@code malloc.of} parent in {@code malloc.of.@} tests.
-     * @since 0.51
-     */
-    private static final class SizedDummy extends PhDefault {
-
-        SizedDummy() {
-            super(new Attrs(new AttrEntry("size", new AtVoid("size"))));
+            super(new Attrs(
+                new AttrEntry("id", new AtVoid("id")),
+                new AttrEntry("size", new AtVoid("size"))
+            ));
         }
     }
 }
