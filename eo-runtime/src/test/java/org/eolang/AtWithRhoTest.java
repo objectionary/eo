@@ -4,6 +4,11 @@
  */
 package org.eolang;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -97,5 +102,62 @@ final class AtWithRhoTest {
             res,
             Matchers.not(Matchers.is(obj))
         );
+    }
+
+    @Test
+    void returnsSameInstanceToConcurrentCallers() throws InterruptedException {
+        MatcherAssert.assertThat(
+            "AtWithRho.get() must return the same instance for all concurrent callers",
+            AtWithRhoTest.distinctConcurrentGets(
+                new AtWithRho(
+                    new AtComposite(new PhDefault(), phi -> phi),
+                    new PhDefault()
+                ),
+                16
+            ),
+            Matchers.is(1)
+        );
+    }
+
+    /**
+     * Invoke {@link Attr#get()} concurrently from many threads released
+     * simultaneously and return the number of distinct instances observed.
+     * @param attr Attribute to query
+     * @param threads Number of concurrent callers
+     * @return Count of distinct {@link Phi} instances returned across threads
+     * @throws InterruptedException If interrupted while waiting
+     */
+    private static int distinctConcurrentGets(final Attr attr, final int threads)
+        throws InterruptedException {
+        return AtWithRhoTest.distinctGets(attr, threads, ConcurrentHashMap.newKeySet());
+    }
+
+    /**
+     * Run concurrent {@link Attr#get()} calls collecting results into the given sink.
+     * @param attr Attribute to query
+     * @param threads Number of concurrent callers
+     * @param sink Destination set collecting distinct instances
+     * @return Size of {@code sink} after all threads finish
+     * @throws InterruptedException If interrupted while waiting
+     */
+    private static int distinctGets(final Attr attr, final int threads, final Set<Phi> sink)
+        throws InterruptedException {
+        final CountDownLatch start = new CountDownLatch(1);
+        try (ExecutorService pool = Executors.newFixedThreadPool(threads)) {
+            for (int idx = 0; idx < threads; ++idx) {
+                pool.submit(
+                    () -> {
+                        try {
+                            start.await();
+                            sink.add(attr.get());
+                        } catch (final InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                );
+            }
+            start.countDown();
+        }
+        return sink.size();
     }
 }

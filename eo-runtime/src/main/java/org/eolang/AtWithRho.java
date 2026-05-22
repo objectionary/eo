@@ -5,17 +5,12 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
- * This attribute is NOT thread safe!
  * @since 0.36.0
- * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
- *  call get() concurrently when the underlying object lacks RHO, each thread will:
- *  1. Pass the !ret.hasRho() check
- *  2. Create its own copy via ret.copy()
- *  3. Attempt to set RHO on its copy
- *  This results in different threads receiving different copies, violating the expectation
- *  that get() returns a consistent view of the attribute's value.
  */
 final class AtWithRho implements Attr {
 
@@ -30,6 +25,16 @@ final class AtWithRho implements Attr {
     private final Phi rho;
 
     /**
+     * Cached result of {@link #get()} to guarantee a consistent view across threads.
+     */
+    private final AtomicReference<Phi> cached;
+
+    /**
+     * Lock guarding the first initialization of {@link #cached}.
+     */
+    private final ReentrantLock lock;
+
+    /**
      * Ctor.
      * @param attr Attribute
      * @param rho Rho
@@ -37,6 +42,8 @@ final class AtWithRho implements Attr {
     AtWithRho(final Attr attr, final Phi rho) {
         this.original = attr;
         this.rho = rho;
+        this.cached = new AtomicReference<>();
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -49,16 +56,48 @@ final class AtWithRho implements Attr {
 
     @Override
     public Phi get() {
-        Phi ret = this.original.get();
-        if (!ret.hasRho()) {
-            ret = ret.copy();
-            ret.put(Phi.RHO, this.rho);
+        Phi ret = this.cached.get();
+        if (ret == null) {
+            ret = this.initialize();
         }
         return ret;
     }
 
     @Override
     public void put(final Phi phi) {
+        this.cached.set(null);
         this.original.put(phi);
+    }
+
+    /**
+     * Initialize the cached value under the lock, using double-checked locking.
+     * @return Cached {@link Phi}
+     */
+    private Phi initialize() {
+        this.lock.lock();
+        try {
+            Phi ret = this.cached.get();
+            if (ret == null) {
+                ret = this.withRho(this.original.get());
+                this.cached.set(ret);
+            }
+            return ret;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Return the given object with {@link Phi#RHO} attached, copying it if needed.
+     * @param phi Original object
+     * @return Object with {@code \rho} set
+     */
+    private Phi withRho(final Phi phi) {
+        Phi ret = phi;
+        if (!ret.hasRho()) {
+            ret = ret.copy();
+            ret.put(Phi.RHO, this.rho);
+        }
+        return ret;
     }
 }
