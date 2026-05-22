@@ -288,9 +288,6 @@
     (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
   # Tests that resolving nested paths and touching files works correctly.
-  # @todo #4096:30min Enable tests-resolves-and-touches unit test.
-  #  Now its disabled because of: "Can't #take("path"), the attribute is absent among other test 34
-  #  attrs. After we fix it, we should enable the test.
   [] +> tests-resolves-and-touches
     and. > @
       f.exists
