@@ -291,19 +291,14 @@
   # @todo #4096:30min Enable tests-resolves-and-touches unit test.
   #  Now its disabled because of: "Can't #take("path"), the attribute is absent among other test 34
   #  attrs. After we fix it, we should enable the test.
-  [] > tests-resolves-and-touches
-    seq > @
-      *
-        resolved.deleted.made
-        and.
-          f.exists
-          contains.
-            f.path
-            joined.
-              path.separator
-              * "foo" "bar"
-    (tmpdir.as-path.resolved "foo/bar").@ > resolved
-    resolved.tmpfile > f
+  [] +> tests-resolves-and-touches
+    and. > @
+      f.exists
+      eq.
+        (Q.fs.path f.path).dirname
+        resolved.path
+    resolved.deleted.made.tmpfile > f
+    (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
 
   # Tests that moving a file to a new location works correctly.
   [] +> tests-moves-a-file
