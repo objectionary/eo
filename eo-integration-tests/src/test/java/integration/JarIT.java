@@ -19,25 +19,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
- * @todo #4750:30min Re-enable JarIT after next release.
- *  The suite is temporarily disabled because its sandbox transpiles
- *  eo-runtime objects pulled from the remote objectionary, where
- *  number.floor is still defined as a Java atom. That transpilation
- *  emits a reference to EOnumber$EOfloor, which has been removed from
- *  the runtime in this branch, so javac fails. Once a release is cut
- *  and the remote catches up with the EO-level floor, drop this
- *  annotation.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
-@Disabled
 final class JarIT {
 
     @Test
