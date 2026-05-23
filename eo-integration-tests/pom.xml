@@ -230,21 +230,11 @@
           </execution>
         </executions>
       </plugin>
-      <!--
-        @todo #4750:30min Re-enable invoker integration tests after next release.
-         Invoker tests were disabled because number.floor is no longer a Java
-         atom: it is implemented in EO now. Objects pulled from objectionary
-         for the invoker sandbox still carry the old atom-based definition,
-         which transpiles to a reference to EOnumber$EOfloor that no longer
-         exists in the runtime JAR. Once a fresh release is published and the
-         remote catches up, switch skipInstallation and skipInvocation back
-         to ${skipITs}.
-      -->
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration combine.self="override">
-          <skipInstallation>true</skipInstallation>
-          <skipInvocation>true</skipInvocation>
+          <skipInstallation>${skipITs}</skipInstallation>
+          <skipInvocation>${skipITs}</skipInvocation>
         </configuration>
       </plugin>
     </plugins>
