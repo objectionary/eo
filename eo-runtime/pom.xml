@@ -282,17 +282,6 @@
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
-                <!--
-                @todo #5078:30min. Remove `incorrect-number-of-attributes` skip.
-                      WPA miscounts calls of the form `list *` (compact-tuple
-                      head with no vertical children, which synthesises a
-                      `Φ.tuple.empty` argument) — it reports 0 args provided
-                      while 1 (the synthesised tuple) is the actual shape.
-                      Drop this skip once the WPA lint understands the
-                      compact-tuple-with-zero-children synthesis (R-3.9.2 in
-                      the spec).
-                -->
-                <lint>incorrect-number-of-attributes</lint>
               </skipProgramLints>
               <keepBinaries>
                 <glob>org/eolang/EOfs/package-info.class</glob>
