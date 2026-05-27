@@ -18,6 +18,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class PhWithTest {
 
     @Test
+    void rendersMethodApplicationOnNumberAsTerm() {
+        MatcherAssert.assertThat(
+            "Method application on a number must render readably in φ-term, but it didnt",
+            new PhWith(
+                new PhMethod(new Data.ToPhi(5L), "times"), 0, new Data.ToPhi(6L)
+            ).φTerm(),
+            Matchers.equalTo("5.times(0->6)")
+        );
+    }
+
+    @Test
     void rendersNumberConstructionAsValue() {
         MatcherAssert.assertThat(
             "Number construction chain must render as its value, but it didnt",
