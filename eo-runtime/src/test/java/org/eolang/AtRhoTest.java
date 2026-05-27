@@ -16,6 +16,15 @@ import org.junit.jupiter.api.Test;
 final class AtRhoTest {
 
     @Test
+    void printsCaretAsTerm() {
+        MatcherAssert.assertThat(
+            "AtRho must render as caret in φ-term, but it didnt",
+            new AtRho().φTerm(),
+            Matchers.equalTo("^")
+        );
+    }
+
+    @Test
     void throwsOnEmptyRho() {
         Assertions.assertThrows(
             ExUnset.class,
@@ -26,7 +35,7 @@ final class AtRhoTest {
 
     @Test
     void returnsSetRho() {
-        final Attr rho = new AtRho();
+        final Attribute rho = new AtRho();
         final Phi obj = new PhDefault();
         rho.put(obj);
         MatcherAssert.assertThat(
@@ -38,7 +47,7 @@ final class AtRhoTest {
 
     @Test
     void doesNotCopyObjectOnCopying() {
-        final Attr rho = new AtRho();
+        final Attribute rho = new AtRho();
         final Phi obj = new PhDefault();
         rho.put(obj);
         MatcherAssert.assertThat(
@@ -50,7 +59,7 @@ final class AtRhoTest {
 
     @Test
     void doesNotResetObject() {
-        final Attr rho = new AtRho();
+        final Attribute rho = new AtRho();
         final Phi obj = new PhDefault();
         rho.put(obj);
         rho.put(new PhDefault());

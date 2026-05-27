@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.36.0
  */
-final class AtRho implements Attr {
+final class AtRho implements Attribute {
 
     /**
      * Rho.
@@ -37,7 +37,7 @@ final class AtRho implements Attr {
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attribute copy(final Phi self) {
         return new AtRho(this.rho.get());
     }
 
@@ -54,5 +54,10 @@ final class AtRho implements Attr {
     @Override
     public void put(final Phi phi) {
         this.rho.compareAndSet(null, phi);
+    }
+
+    @Override
+    public String φTerm() {
+        return "^";
     }
 }

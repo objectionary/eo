@@ -22,7 +22,7 @@ public final class EOi64$EOgt extends PhDefault implements Atom {
      * Ctor.
      */
     public EOi64$EOgt() {
-        super(new Attrs(new AttrEntry("x", new AtVoid("x"))));
+        super(new Attrs(new Attr("x", new AtVoid("x"))));
     }
 
     @Override

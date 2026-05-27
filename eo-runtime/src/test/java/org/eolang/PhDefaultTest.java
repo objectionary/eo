@@ -23,6 +23,42 @@ import org.junit.jupiter.api.Test;
 final class PhDefaultTest {
 
     @Test
+    void printsEmptyObjectAsTerm() {
+        MatcherAssert.assertThat(
+            "Empty object must render as empty brackets in φ-term, but it didnt",
+            new PhDefault().φTerm(),
+            Matchers.equalTo("[]")
+        );
+    }
+
+    @Test
+    void printsDataAsTerm() {
+        MatcherAssert.assertThat(
+            "Object with data must render its bytes in φ-term, but it didnt",
+            new PhDefault(new byte[] {(byte) 0x01, (byte) 0x02}).φTerm(),
+            Matchers.equalTo("[D> 01-02]")
+        );
+    }
+
+    @Test
+    void printsVoidAttributeAsTerm() {
+        MatcherAssert.assertThat(
+            "Object with unset void attribute must render it as question mark, but it didnt",
+            new PhDefault(new Attrs(new Attr("x", new AtVoid("x")))).φTerm(),
+            Matchers.equalTo("[x->?]")
+        );
+    }
+
+    @Test
+    void printsUnsetNumberStructurally() {
+        MatcherAssert.assertThat(
+            "Number without injected bytes must fall back to its structural φ-term, but it didnt",
+            Phi.Φ.take("number").φTerm(),
+            Matchers.containsString("as-bytes->?")
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(

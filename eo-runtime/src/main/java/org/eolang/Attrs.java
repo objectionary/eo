@@ -24,18 +24,18 @@ import java.util.Set;
  *
  * @since 0.59
  */
-public final class Attrs extends AbstractMap<String, Attr> {
+public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
      * Initial entries supplied via constructor.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    private final Map.Entry<String, Attr>[] entries;
+    private final Map.Entry<String, Attribute>[] entries;
 
     /**
      * Lazily-resolved backing map.
      */
-    private Map<String, Attr> resolved;
+    private Map<String, Attribute> resolved;
 
     /**
      * Ctor.
@@ -43,13 +43,13 @@ public final class Attrs extends AbstractMap<String, Attr> {
      */
     @SafeVarargs
     @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-    public Attrs(final Map.Entry<String, Attr>... initial) {
+    public Attrs(final Map.Entry<String, Attribute>... initial) {
         super();
         this.entries = initial;
     }
 
     @Override
-    public Set<Map.Entry<String, Attr>> entrySet() {
+    public Set<Map.Entry<String, Attribute>> entrySet() {
         return this.resolve().entrySet();
     }
 
@@ -62,10 +62,10 @@ public final class Attrs extends AbstractMap<String, Attr> {
      * Resolve the entries into a backing map, lazily.
      * @return The backing map
      */
-    private Map<String, Attr> resolve() {
+    private Map<String, Attribute> resolve() {
         if (this.resolved == null) {
-            final Map<String, Attr> map = new LinkedHashMap<>(this.entries.length);
-            for (final Map.Entry<String, Attr> ent : this.entries) {
+            final Map<String, Attribute> map = new LinkedHashMap<>(this.entries.length);
+            for (final Map.Entry<String, Attribute> ent : this.entries) {
                 map.put(ent.getKey(), ent.getValue());
             }
             this.resolved = map;

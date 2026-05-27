@@ -17,6 +17,9 @@ public final class PhMethod extends PhOnce {
      * @param mtd The name of method
      */
     public PhMethod(final Phi phi, final String mtd) {
-        super(() -> phi.take(mtd));
+        super(
+            () -> phi.take(mtd),
+            () -> String.join(".", phi.φTerm(), mtd)
+        );
     }
 }

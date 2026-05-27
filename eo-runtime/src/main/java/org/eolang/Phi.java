@@ -12,12 +12,11 @@ package org.eolang;
  * name would be "Object", but it's already occupied by Java. That's why
  * we call it Phi.</p>
  *
- * <p>It is guaranteed that the hash codes of different Phi are different,
- * and equal to the vertex.</p>
+ * <p>It is guaranteed that the hash codes of different Phi are different.</p>
  *
  * @since 0.1
  */
-public interface Phi extends Data {
+public interface Phi extends Data, Term {
 
     /**
      * Lambda attribute.

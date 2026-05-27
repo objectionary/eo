@@ -14,12 +14,12 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @since 0.1
  */
-public final class AtOnce implements Attr {
+public final class AtOnce implements Attribute {
 
     /**
      * Origin attribute.
      */
-    private final Attr origin;
+    private final Attribute origin;
 
     /**
      * Cache.
@@ -35,14 +35,14 @@ public final class AtOnce implements Attr {
      * Ctor.
      * @param attr Origin attribute
      */
-    public AtOnce(final Attr attr) {
+    public AtOnce(final Attribute attr) {
         this.origin = attr;
         this.cached = new AtomicReference<>(null);
         this.lock = new ReentrantLock();
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attribute copy(final Phi self) {
         return new AtOnce(this.origin.copy(self));
     }
 
@@ -72,5 +72,10 @@ public final class AtOnce implements Attr {
                 this.origin
             )
         );
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

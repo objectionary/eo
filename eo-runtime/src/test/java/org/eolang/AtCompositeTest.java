@@ -17,6 +17,15 @@ import org.junit.jupiter.api.Test;
 final class AtCompositeTest {
 
     @Test
+    void printsLambdaAsTerm() {
+        MatcherAssert.assertThat(
+            "AtComposite must render as lambda marker in φ-term, but it didnt",
+            new AtComposite(new PhDefault(), self -> new Data.ToPhi(1L)).φTerm(),
+            Matchers.equalTo(Phi.LAMBDA)
+        );
+    }
+
+    @Test
     void throwsOnPut() {
         Assertions.assertThrows(
             ExReadOnly.class,
@@ -56,7 +65,7 @@ final class AtCompositeTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void changesArgumentOnCopying() {
         final Phi first = new PhDefault();
-        final Attr attr = new AtComposite(first, phi -> phi);
+        final Attribute attr = new AtComposite(first, phi -> phi);
         final Phi res = attr.get();
         final Phi copy = attr.copy(new PhDefault()).get();
         MatcherAssert.assertThat(

@@ -113,7 +113,7 @@ final class EOmallocAllocatedExpectTest {
     private static final class Dummy extends PhDefault {
 
         Dummy() {
-            super(new Attrs(new AttrEntry("id", new AtVoid("id"))));
+            super(new Attrs(new Attr("id", new AtVoid("id"))));
         }
     }
 

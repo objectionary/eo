@@ -13,7 +13,7 @@ package org.eolang;
  *
  * @since 0.24
  */
-@SuppressWarnings("PMD.SystemPrintln")
+@SuppressWarnings({"PMD.SystemPrintln", "PMD.TooManyMethods"})
 public final class PhLogged implements Phi {
 
     /**
@@ -95,5 +95,10 @@ public final class PhLogged implements Phi {
         final byte[] data = this.origin.delta();
         System.out.printf("%d.delta()!%n", this.hashCode());
         return data;
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

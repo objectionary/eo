@@ -17,6 +17,15 @@ import org.junit.jupiter.api.Test;
 final class AtOnceTest {
 
     @Test
+    void delegatesTermToOrigin() {
+        MatcherAssert.assertThat(
+            "AtOnce must delegate φ-term to its origin attribute, but it didnt",
+            new AtOnce(new AtVoid("x")).φTerm(),
+            Matchers.equalTo("?")
+        );
+    }
+
+    @Test
     void throwsOnPut() {
         Assertions.assertThrows(
             ExReadOnly.class,
@@ -28,7 +37,7 @@ final class AtOnceTest {
     @Test
     void cachesAttribute() {
         final AtomicInteger count = new AtomicInteger();
-        final Attr attr = new AtOnce(
+        final Attribute attr = new AtOnce(
             new AtComposite(
                 new PhDefault(),
                 phi -> {
@@ -49,7 +58,7 @@ final class AtOnceTest {
     @Test
     void resetsCacheOnCopy() {
         final AtomicInteger count = new AtomicInteger();
-        final Attr attr = new AtOnce(
+        final Attribute attr = new AtOnce(
             new AtComposite(
                 new PhDefault(),
                 phi -> {

@@ -23,8 +23,8 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
      */
     public EOmalloc$EOof$EOallocated$EOread() {
         super(new Attrs(
-            new AttrEntry("offset", new AtVoid("offset")),
-            new AttrEntry("length", new AtVoid("length"))
+            new Attr("offset", new AtVoid("offset")),
+            new Attr("length", new AtVoid("length"))
         ));
     }
 

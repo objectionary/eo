@@ -16,6 +16,15 @@ import org.junit.jupiter.api.Test;
 final class PhSafeTest {
 
     @Test
+    void delegatesTermToOrigin() {
+        MatcherAssert.assertThat(
+            "PhSafe must delegate φ-term to its origin, but it didnt",
+            new PhSafe(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
+            Matchers.equalTo("[D> 01]")
+        );
+    }
+
+    @Test
     void savesLocationAfterCopying() {
         final Phi located = new PhSafe(new Data.ToPhi(0L), "foo", 123, 124, "qwerty", "fqn");
         MatcherAssert.assertThat(

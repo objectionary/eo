@@ -16,6 +16,6 @@ public final class PhCopy extends PhOnce {
      * @param phi The object
      */
     public PhCopy(final Phi phi) {
-        super(phi::copy);
+        super(phi::copy, phi::φTerm);
     }
 }

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -878,7 +878,7 @@ final class EOsocketTest {
          * Ctor.
          */
         Simple() {
-            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s", new AtVoid("s"))));
         }
 
         @Override
@@ -907,7 +907,7 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Server(final int received) {
-            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s", new AtVoid("s"))));
             this.received = received;
         }
 
@@ -936,7 +936,7 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Receiver(final int received) {
-            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s", new AtVoid("s"))));
             this.received = received;
         }
 
@@ -965,7 +965,7 @@ final class EOsocketTest {
          * @param msg Message to send
          */
         Client(final String msg) {
-            super(new Attrs(new AttrEntry("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s", new AtVoid("s"))));
             this.message = msg;
         }
 

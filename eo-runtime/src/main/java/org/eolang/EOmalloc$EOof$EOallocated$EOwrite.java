@@ -23,8 +23,8 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
      */
     public EOmalloc$EOof$EOallocated$EOwrite() {
         super(new Attrs(
-            new AttrEntry("offset", new AtVoid("offset")),
-            new AttrEntry("data", new AtVoid("data"))
+            new Attr("offset", new AtVoid("offset")),
+            new Attr("data", new AtVoid("data"))
         ));
     }
 

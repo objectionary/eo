@@ -125,8 +125,8 @@ final class EOmallocWritePhiExpectTest {
 
         Dummy() {
             super(new Attrs(
-                new AttrEntry("id", new AtVoid("id")),
-                new AttrEntry("size", new AtVoid("size"))
+                new Attr("id", new AtVoid("id")),
+                new Attr("size", new AtVoid("size"))
             ));
         }
     }

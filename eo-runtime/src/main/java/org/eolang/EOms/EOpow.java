@@ -11,7 +11,7 @@ package org.eolang.EOms; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -31,8 +31,8 @@ public final class EOpow extends PhDefault implements Atom {
      */
     public EOpow() {
         super(new Attrs(
-            new AttrEntry("num", new AtVoid("num")),
-            new AttrEntry("x", new AtVoid("x"))
+            new Attr("num", new AtVoid("num")),
+            new Attr("x", new AtVoid("x"))
         ));
     }
 

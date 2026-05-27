@@ -15,6 +15,15 @@ import org.junit.jupiter.api.Test;
 final class PhCopyTest {
 
     @Test
+    void keepsOriginTermOnCopy() {
+        MatcherAssert.assertThat(
+            "PhCopy must render the same φ-term as the copied object, but it didnt",
+            new PhCopy(Phi.Φ).φTerm(),
+            Matchers.equalTo("Φ")
+        );
+    }
+
+    @Test
     void makesObjectCopy() {
         MatcherAssert.assertThat(
             "PhCopy should produce the number equal to the original's dataized number, but it didn't",

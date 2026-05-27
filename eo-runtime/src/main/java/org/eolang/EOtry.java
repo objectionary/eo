@@ -22,9 +22,9 @@ public final class EOtry extends PhDefault implements Atom {
      */
     public EOtry() {
         super(new Attrs(
-            new AttrEntry("main", new AtVoid("main")),
-            new AttrEntry("catch", new AtVoid("catch")),
-            new AttrEntry("finally", new AtVoid("finally"))
+            new Attr("main", new AtVoid("main")),
+            new Attr("catch", new AtVoid("catch")),
+            new Attr("finally", new AtVoid("finally"))
         ));
     }
 
