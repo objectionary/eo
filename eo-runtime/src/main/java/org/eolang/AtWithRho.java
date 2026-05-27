@@ -17,12 +17,12 @@ package org.eolang;
  *  This results in different threads receiving different copies, violating the expectation
  *  that get() returns a consistent view of the attribute's value.
  */
-final class AtWithRho implements Attr {
+final class AtWithRho implements Attribute {
 
     /**
      * Original attribute.
      */
-    private final Attr original;
+    private final Attribute original;
 
     /**
      * Rho.
@@ -34,13 +34,13 @@ final class AtWithRho implements Attr {
      * @param attr Attribute
      * @param rho Rho
      */
-    AtWithRho(final Attr attr, final Phi rho) {
+    AtWithRho(final Attribute attr, final Phi rho) {
         this.original = attr;
         this.rho = rho;
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attribute copy(final Phi self) {
         return new AtWithRho(
             this.original.copy(self),
             self
@@ -60,5 +60,10 @@ final class AtWithRho implements Attr {
     @Override
     public void put(final Phi phi) {
         this.original.put(phi);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.original.φTerm();
     }
 }

@@ -16,6 +16,26 @@ import org.junit.jupiter.api.Test;
 final class AtVoidTest {
 
     @Test
+    void printsQuestionMarkWhenUnset() {
+        MatcherAssert.assertThat(
+            "Unset void attribute must render as question mark in φ-term, but it didnt",
+            new AtVoid("x").φTerm(),
+            Matchers.equalTo("?")
+        );
+    }
+
+    @Test
+    void printsValueTermWhenSet() {
+        final Attribute attr = new AtVoid("x");
+        attr.put(new PhDefault(new byte[] {(byte) 0x01}));
+        MatcherAssert.assertThat(
+            "Set void attribute must render the value φ-term, but it didnt",
+            attr.φTerm(),
+            Matchers.equalTo("[D> 01]")
+        );
+    }
+
+    @Test
     void copiesWithoutStateAndException() {
         Assertions.assertDoesNotThrow(
             () -> new AtVoid("void").copy(new PhDefault()),
@@ -26,7 +46,7 @@ final class AtVoidTest {
     @Test
     void copiesInnerState() {
         final Phi state = new PhDefault();
-        final Attr attr = new AtVoid("first");
+        final Attribute attr = new AtVoid("first");
         attr.put(state);
         MatcherAssert.assertThat(
             "AtVoid must copy its inner state on copying self",
@@ -47,7 +67,7 @@ final class AtVoidTest {
     @Test
     void putsAndReturnsObject() {
         final Phi obj = new PhDefault();
-        final Attr attr = new AtVoid("foo");
+        final Attribute attr = new AtVoid("foo");
         attr.put(obj);
         MatcherAssert.assertThat(
             "AtVoid must return previously set object",
@@ -58,7 +78,7 @@ final class AtVoidTest {
 
     @Test
     void throwsOnReset() {
-        final Attr attr = new AtVoid("bar");
+        final Attribute attr = new AtVoid("bar");
         attr.put(new PhDefault());
         Assertions.assertThrows(
             ExReadOnly.class,

@@ -14,7 +14,7 @@ import java.util.function.Function;
  *
  * @since 0.1
  */
-public final class AtComposite implements Attr {
+public final class AtComposite implements Attribute {
 
     /**
      * The argument of the expression.
@@ -37,7 +37,7 @@ public final class AtComposite implements Attr {
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attribute copy(final Phi self) {
         return new AtComposite(self, this.expr);
     }
 
@@ -51,5 +51,10 @@ public final class AtComposite implements Attr {
         throw new ExReadOnly(
             "Can't overwrite lazy evaluated attribute"
         );
+    }
+
+    @Override
+    public String φTerm() {
+        return Phi.LAMBDA;
     }
 }

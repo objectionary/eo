@@ -22,7 +22,7 @@ public final class EObytes$EOand extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOand() {
-        super(new Attrs(new AttrEntry("b", new AtVoid("b"))));
+        super(new Attrs(new Attr("b", new AtVoid("b"))));
     }
 
     @Override

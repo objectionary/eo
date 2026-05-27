@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.1
  */
-public final class AtVoid implements Attr {
+public final class AtVoid implements Attribute {
 
     /**
      * Name of the attribute.
@@ -46,7 +46,7 @@ public final class AtVoid implements Attr {
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attribute copy(final Phi self) {
         final Phi obj = this.object.get();
         final Phi copy;
         if (obj == null) {
@@ -80,5 +80,17 @@ public final class AtVoid implements Attr {
                 )
             );
         }
+    }
+
+    @Override
+    public String φTerm() {
+        final Phi phi = this.object.get();
+        final String term;
+        if (phi == null) {
+            term = "?";
+        } else {
+            term = phi.φTerm();
+        }
+        return term;
     }
 }

@@ -22,6 +22,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class PhPackageTest {
 
     @Test
+    void printsGlobalScopeAsTerm() {
+        MatcherAssert.assertThat(
+            "Global package must render its name as φ-term, but it didnt",
+            Phi.Φ.φTerm(),
+            Matchers.equalTo("Φ")
+        );
+    }
+
+    @Test
     void copiesObject() {
         MatcherAssert.assertThat(
             "Every take() should return new instance, but it didn't",

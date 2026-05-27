@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -50,11 +50,11 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         super(
             new Attrs(
-                new AttrEntry(
+                new Attr(
                     EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
                     new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
                 ),
-                new AttrEntry(
+                new Attr(
                     EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
                     new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
                 )

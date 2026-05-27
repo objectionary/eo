@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -37,7 +37,7 @@ public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
      * Ctor.
      */
     public EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes() {
-        super(new Attrs(new AttrEntry("buffer", new AtVoid("buffer"))));
+        super(new Attrs(new Attr("buffer", new AtVoid("buffer"))));
     }
 
     @Override

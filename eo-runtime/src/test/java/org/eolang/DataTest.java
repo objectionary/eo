@@ -19,6 +19,51 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class DataTest {
 
     @Test
+    void printsWholeNumberValueAsTerm() {
+        MatcherAssert.assertThat(
+            "Whole number must render as an integer φ-term, but it didnt",
+            new Data.ToPhi(42L).φTerm(),
+            Matchers.equalTo("42")
+        );
+    }
+
+    @Test
+    void printsFractionalNumberValueAsTerm() {
+        MatcherAssert.assertThat(
+            "Fractional number must render with its decimals in φ-term, but it didnt",
+            new Data.ToPhi(2.5d).φTerm(),
+            Matchers.equalTo("2.5")
+        );
+    }
+
+    @Test
+    void printsStringValueAsTerm() {
+        MatcherAssert.assertThat(
+            "String must render as a quoted value in φ-term, but it didnt",
+            new Data.ToPhi("hello").φTerm(),
+            Matchers.equalTo("\"hello\"")
+        );
+    }
+
+    @Test
+    void distinguishesDifferentNumbersInTerm() {
+        MatcherAssert.assertThat(
+            "Different numbers must produce different φ-terms, but they didnt",
+            new Data.ToPhi(5L).φTerm(),
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(7L).φTerm()))
+        );
+    }
+
+    @Test
+    void producesEqualTermForEqualNumbers() {
+        MatcherAssert.assertThat(
+            "Equal numbers must produce equal φ-terms, but they didnt",
+            new Data.ToPhi(5L).φTerm(),
+            Matchers.equalTo(new Data.ToPhi(5L).φTerm())
+        );
+    }
+
+    @Test
     void comparesVertex() {
         MatcherAssert.assertThat(
             "Hash codes of two Data.ToPhi instances with the same value should differ, but they didn't",

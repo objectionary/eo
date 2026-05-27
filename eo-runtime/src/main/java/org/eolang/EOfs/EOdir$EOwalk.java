@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -39,7 +39,7 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
      * Ctor.
      */
     public EOdir$EOwalk() {
-        super(new Attrs(new AttrEntry("glob", new AtVoid("glob"))));
+        super(new Attrs(new Attr("glob", new AtVoid("glob"))));
     }
 
     @Override

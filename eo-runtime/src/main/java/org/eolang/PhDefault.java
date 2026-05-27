@@ -4,12 +4,16 @@
  */
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * A simple object.
@@ -48,7 +52,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * No initial attributes.
      */
-    private static final Map<String, Attr> NONE = Collections.emptyMap();
+    private static final Map<String, Attribute> NONE = Collections.emptyMap();
 
     /**
      * Data.
@@ -59,7 +63,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Initial attributes supplied via constructor; wrapped lazily.
      */
-    private final Map<String, Attr> initial;
+    private final Map<String, Attribute> initial;
 
     /**
      * Order of their names.
@@ -69,7 +73,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Attributes.
      */
-    private Map<String, Attr> attrs;
+    private Map<String, Attribute> attrs;
 
     /**
      * Default ctor.
@@ -82,7 +86,7 @@ public class PhDefault implements Phi, Cloneable {
      * Ctor with initial attributes.
      * @param attributes Initial attributes to register
      */
-    public PhDefault(final Map<String, Attr> attributes) {
+    public PhDefault(final Map<String, Attribute> attributes) {
         this(null, attributes);
     }
 
@@ -96,11 +100,11 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor.
-     * @param dta Object data
+     * @param dta        Object data
      * @param attributes Initial attributes to register
      */
     @SuppressWarnings("PMD.ArrayIsStoredDirectly")
-    public PhDefault(final byte[] dta, final Map<String, Attr> attributes) {
+    public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
         this.data = dta;
         this.initial = attributes;
     }
@@ -120,8 +124,8 @@ public class PhDefault implements Phi, Cloneable {
         try {
             this.activate();
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+            final Map<String, Attribute> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -264,12 +268,45 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    public final void add(final String name, final Attr attr) {
+    public final void add(final String name, final Attribute attr) {
         this.activate();
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, new AtWithRho(attr, this));
+    }
+
+    @Override
+    public String φTerm() {
+        this.activate();
+        final String name = this.oname();
+        final String result;
+        if (this.literal(name)) {
+            final byte[] raw = this.attrs.get("as-bytes").get().take("data").delta();
+            if ("string".equals(name)) {
+                result = String.format("\"%s\"", new String(raw, StandardCharsets.UTF_8));
+            } else {
+                result = PhDefault.numeral(new BytesOf(raw).asNumber());
+            }
+        } else {
+            result = this.structural();
+        }
+        return result;
+    }
+
+    /**
+     * Render a number value as a φ-term.
+     * @param value The number
+     * @return Whole values without a fraction, decimals otherwise
+     */
+    static String numeral(final double value) {
+        final String txt;
+        if (value == Math.floor(value) && !Double.isInfinite(value)) {
+            txt = Long.toString((long) value);
+        } else {
+            txt = Double.toString(value);
+        }
+        return txt;
     }
 
     /**
@@ -332,18 +369,56 @@ public class PhDefault implements Phi, Cloneable {
         if (this.attrs == null) {
             this.attrs = PhDefault.defaults();
             this.order = new HashMap<>(0);
-            for (final Map.Entry<String, Attr> ent : this.initial.entrySet()) {
+            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                 this.add(ent.getKey(), ent.getValue());
             }
         }
     }
 
     /**
+     * Is this a number or string object with injected bytes inside.
+     * @param name Object name, as in source code
+     * @return True if its value can be rendered directly
+     */
+    private boolean literal(final String name) {
+        return ("number".equals(name) || "string".equals(name))
+            && this.attrs.containsKey("as-bytes")
+            && !"?".equals(this.attrs.get("as-bytes").φTerm());
+    }
+
+    /**
+     * Structural φ-term, listing the attributes of this object.
+     * @return The φ-term
+     */
+    private String structural() {
+        final List<String> list = new ArrayList<>(this.attrs.size());
+        if (this.data != null) {
+            list.add(String.format("D> %s", new BytesOf(this.data).asString()));
+        }
+        for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet().stream().filter(
+            e -> !e.getKey().equals(Phi.RHO)
+        ).collect(Collectors.toList())) {
+            list.add(String.format("%s->%s", ent.getKey(), ent.getValue().φTerm()));
+        }
+        if (this instanceof Atom) {
+            list.add(String.format("L> %s", this.getClass().getSimpleName()));
+        }
+        Collections.sort(list);
+        final String term;
+        if (list.isEmpty()) {
+            term = "[]";
+        } else {
+            term = String.format("[%s]", String.join(",", list));
+        }
+        return term;
+    }
+
+    /**
      * Default attributes hash map with RHO attribute put.
      * @return Default attributes hash map
      */
-    private static Map<String, Attr> defaults() {
-        final Map<String, Attr> attrs = new HashMap<>(0);
+    private static Map<String, Attribute> defaults() {
+        final Map<String, Attribute> attrs = new HashMap<>(0);
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }

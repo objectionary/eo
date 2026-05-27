@@ -18,6 +18,70 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class PhWithTest {
 
     @Test
+    void rendersMethodApplicationOnNumberAsTerm() {
+        MatcherAssert.assertThat(
+            "Method application on a number must render readably in φ-term, but it didnt",
+            new PhWith(
+                new PhMethod(new Data.ToPhi(5L), "times"), 0, new Data.ToPhi(6L)
+            ).φTerm(),
+            Matchers.equalTo("5.times(0->6)")
+        );
+    }
+
+    @Test
+    void rendersNumberConstructionAsValue() {
+        MatcherAssert.assertThat(
+            "Number construction chain must render as its value, but it didnt",
+            new PhWith(
+                new PhCopy(new PhMethod(Phi.Φ, "number")), 0,
+                new PhWith(
+                    new PhCopy(new PhMethod(Phi.Φ, "bytes")), 0,
+                    new PhDefault(
+                        new byte[] {
+                            (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
+                            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                        }
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("42")
+        );
+    }
+
+    @Test
+    void rendersStringConstructionAsValue() {
+        MatcherAssert.assertThat(
+            "String construction chain must render as its quoted value, but it didnt",
+            new PhWith(
+                new PhCopy(new PhMethod(Phi.Φ, "string")), 0,
+                new PhWith(
+                    new PhCopy(new PhMethod(Phi.Φ, "bytes")), 0,
+                    new PhDefault(new byte[] {(byte) 0x68, (byte) 0x69})
+                )
+            ).φTerm(),
+            Matchers.equalTo("\"hi\"")
+        );
+    }
+
+    @Test
+    void rendersPositionalBindingAsTerm() {
+        MatcherAssert.assertThat(
+            "PhWith must render positional binding in φ-term, but it didnt",
+            new PhWith(new PhDefault(), 0, new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
+            Matchers.equalTo("[](0->[D> 2A])")
+        );
+    }
+
+    @Test
+    void rendersNamedBindingAsTerm() {
+        MatcherAssert.assertThat(
+            "PhWith must render named binding in φ-term, but it didnt",
+            new PhWith(new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
+            Matchers.equalTo("[](x->[D> 2A])")
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi dummy = new PhWith(
             new PhMethod(new PhWithTest.Dummy(), "plus"),
@@ -99,7 +163,7 @@ final class PhWithTest {
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
-            super(new Attrs(new AttrEntry(attr, new AtVoid(attr))));
+            super(new Attrs(new Attr(attr, new AtVoid(attr))));
         }
     }
 

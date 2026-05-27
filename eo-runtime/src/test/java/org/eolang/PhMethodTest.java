@@ -15,6 +15,15 @@ import org.junit.jupiter.api.Test;
 final class PhMethodTest {
 
     @Test
+    void rendersReceiverAndMethodAsTerm() {
+        MatcherAssert.assertThat(
+            "PhMethod must render φ-term as receiver dot method, but it didnt",
+            new PhMethod(Phi.Φ, "foo").φTerm(),
+            Matchers.equalTo("Φ.foo")
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(

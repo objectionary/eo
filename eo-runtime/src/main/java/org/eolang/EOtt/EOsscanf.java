@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -58,8 +58,8 @@ public final class EOsscanf extends PhDefault implements Atom {
      */
     public EOsscanf() {
         super(new Attrs(
-            new AttrEntry("format", new AtVoid("format")),
-            new AttrEntry("read", new AtVoid("read"))
+            new Attr("format", new AtVoid("format")),
+            new Attr("read", new AtVoid("read"))
         ));
     }
 

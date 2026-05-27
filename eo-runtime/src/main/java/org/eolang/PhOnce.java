@@ -12,8 +12,9 @@ import java.util.function.Supplier;
 /**
  * An object wrapping another one.
  * @since 0.1
- * @checkstyle DesignForExtensionCheck (100 lines)
+ * @checkstyle DesignForExtensionCheck (200 lines)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public class PhOnce implements Phi {
 
     /**
@@ -32,12 +33,27 @@ public class PhOnce implements Phi {
     private final ReentrantLock lock;
 
     /**
+     * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
+     */
+    private final Supplier<String> term;
+
+    /**
      * Ctor.
      * @param obj The object
      */
     public PhOnce(final Supplier<Phi> obj) {
+        this(obj, null);
+    }
+
+    /**
+     * Ctor.
+     * @param obj The object
+     * @param term Supplier of the φ-term
+     */
+    public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
         this.lock = new ReentrantLock();
+        this.term = term;
         this.object = () -> {
             if (this.ref.get() == null) {
                 this.lock.lock();
@@ -66,7 +82,8 @@ public class PhOnce implements Phi {
     @Override
     public Phi copy() {
         return new PhOnce(
-            () -> this.object.get().copy()
+            () -> this.object.get().copy(),
+            this.term
         );
     }
 
@@ -103,5 +120,16 @@ public class PhOnce implements Phi {
     @Override
     public byte[] delta() {
         return this.object.get().delta();
+    }
+
+    @Override
+    public String φTerm() {
+        final String result;
+        if (this.term == null) {
+            result = this.object.get().φTerm();
+        } else {
+            result = this.term.get();
+        }
+        return result;
     }
 }

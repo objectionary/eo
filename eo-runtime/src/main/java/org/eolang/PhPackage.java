@@ -111,6 +111,11 @@ final class PhPackage implements Phi {
         throw new ExFailure("Can't take #data() from package object \"%s\"", this.pkg);
     }
 
+    @Override
+    public String φTerm() {
+        return this.pkg;
+    }
+
     /**
      * Load phi object by package name from ClassLoader.
      * @param fqn FQN of the EO object

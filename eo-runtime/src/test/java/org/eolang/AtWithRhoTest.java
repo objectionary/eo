@@ -15,6 +15,15 @@ import org.junit.jupiter.api.Test;
 final class AtWithRhoTest {
 
     @Test
+    void delegatesTermToOriginal() {
+        MatcherAssert.assertThat(
+            "AtWithRho must delegate φ-term to its original attribute, but it didnt",
+            new AtWithRho(new AtVoid("x"), new PhDefault()).φTerm(),
+            Matchers.equalTo("?")
+        );
+    }
+
+    @Test
     void copiesAndSetsRhoIfNotSetMustSetRho() {
         final Phi rho = new PhDefault();
         MatcherAssert.assertThat(
@@ -38,9 +47,9 @@ final class AtWithRhoTest {
 
     @Test
     void putsObjectToOriginalAttribute() {
-        final Attr attr = new AtVoid("void");
+        final Attribute attr = new AtVoid("void");
         final Phi obj = new PhDefault();
-        final Attr rho = new AtWithRho(attr, new PhDefault());
+        final Attribute rho = new AtWithRho(attr, new PhDefault());
         rho.put(obj);
         MatcherAssert.assertThat(
             "AtWithRho must pass object on put() to original attribute",

@@ -16,6 +16,15 @@ import org.junit.jupiter.api.Test;
 final class PhLoggedTest {
 
     @Test
+    void delegatesTermToOrigin() {
+        MatcherAssert.assertThat(
+            "PhLogged must delegate φ-term to its origin, but it didnt",
+            new PhLogged(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
+            Matchers.equalTo("[D> 01]")
+        );
+    }
+
+    @Test
     void copiesOrigin() {
         MatcherAssert.assertThat(
             "Copy of PhLogged should return the original Phi, but it didn't",

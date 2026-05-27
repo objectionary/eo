@@ -22,7 +22,7 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
      * Ctor.
      */
     public EOmalloc$EOof$EOallocated$EOresized() {
-        super(new Attrs(new AttrEntry("new-size", new AtVoid("new-size"))));
+        super(new Attrs(new Attr("new-size", new AtVoid("new-size"))));
     }
 
     @Override

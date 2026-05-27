@@ -104,6 +104,11 @@ public interface Data {
             return this.object.delta();
         }
 
+        @Override
+        public String φTerm() {
+            return this.object.φTerm();
+        }
+
         /**
          * Convert to Phi object.
          * @param obj Object to convert

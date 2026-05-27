@@ -160,6 +160,11 @@ public final class PhSafe implements Phi, Atom {
         return this.through(new AtomSafe(this.origin)::lambda, ".λ");
     }
 
+    @Override
+    public String φTerm() {
+        return this.through(this.origin::φTerm);
+    }
+
     /**
      * Helper, for other methods.
      * @param action The action

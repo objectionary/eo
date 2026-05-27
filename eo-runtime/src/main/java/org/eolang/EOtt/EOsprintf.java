@@ -12,7 +12,7 @@ package org.eolang.EOtt; // NOPMD
 import java.util.Locale;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.AttrEntry;
+import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -34,8 +34,8 @@ public final class EOsprintf extends PhDefault implements Atom {
      */
     public EOsprintf() {
         super(new Attrs(
-            new AttrEntry("format", new AtVoid("format")),
-            new AttrEntry("args", new AtVoid("args"))
+            new Attr("format", new AtVoid("format")),
+            new Attr("args", new AtVoid("args"))
         ));
     }
 
