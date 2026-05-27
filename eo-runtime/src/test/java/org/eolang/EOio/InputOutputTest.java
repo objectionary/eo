@@ -24,9 +24,8 @@ import org.eolang.EOsm.Posix.CStdLib;
 import org.eolang.EOsm.Win32.Kernel32;
 import org.eolang.EOsm.Win32.WinBase;
 import org.eolang.EOsm.Win32.WinNT;
-import org.eolang.PhCopy;
-import org.eolang.PhMethod;
-import org.eolang.PhWith;
+import org.eolang.PhApplication;
+import org.eolang.PhDispatch;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -281,7 +280,7 @@ final class InputOutputTest {
         void dataizesConsoleWriteAsTrue() {
             Assertions.assertTrue(
                 new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
                         "buffer",
                         new Data.ToPhi("dataizes as true")
@@ -301,7 +300,7 @@ final class InputOutputTest {
                         InputOutputTest.redirectedStdout(
                             temp,
                             () -> new Dataized(
-                                new PhWith(
+                                new PhApplication(
                                     Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE)
                                         .copy(),
                                     "buffer",
@@ -325,16 +324,14 @@ final class InputOutputTest {
                             temp,
                             () -> {
                                 new Dataized(
-                                    new PhWith(
-                                        new PhCopy(
-                                            new PhMethod(
-                                                new PhWith(
-                                                    Phi.Φ.take(InputOutputTest.CONSOLE).take(
-                                                        InputOutputTest.WRITE
-                                                    ).copy(),
-                                                    0, new Data.ToPhi("Hey")
-                                                ), InputOutputTest.WRITE
-                                            )
+                                    new PhApplication(
+                                        new PhDispatch(
+                                            new PhApplication(
+                                                Phi.Φ.take(InputOutputTest.CONSOLE).take(
+                                                    InputOutputTest.WRITE
+                                                ).copy(),
+                                                0, new Data.ToPhi("Hey")
+                                            ), InputOutputTest.WRITE
                                         ),
                                         0, new Data.ToPhi("There")
                                     )
@@ -360,7 +357,7 @@ final class InputOutputTest {
                         temp,
                         content,
                         () -> new Dataized(
-                            new PhWith(
+                            new PhApplication(
                                 Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.READ)
                                     .copy(),
                                 0,
@@ -384,19 +381,15 @@ final class InputOutputTest {
                         "read sequentially from console",
                         () -> {
                             return new Dataized(
-                                new PhWith(
-                                    new PhCopy(
-                                        new PhMethod(
-                                            new PhWith(
-                                                new PhCopy(
-                                                    new PhMethod(
-                                                        Phi.Φ.take(InputOutputTest.CONSOLE),
-                                                        InputOutputTest.READ
-                                                    )
-                                                ),
-                                                0, new Data.ToPhi(18)
-                                            ), InputOutputTest.READ
-                                        )
+                                new PhApplication(
+                                    new PhDispatch(
+                                        new PhApplication(
+                                            new PhDispatch(
+                                                Phi.Φ.take(InputOutputTest.CONSOLE),
+                                                InputOutputTest.READ
+                                            ),
+                                            0, new Data.ToPhi(18)
+                                        ), InputOutputTest.READ
                                     ),
                                     0, new Data.ToPhi(18)
                                 )
@@ -582,8 +575,8 @@ final class InputOutputTest {
                         content,
                         () -> {
                             return new Dataized(
-                                new PhWith(
-                                    new PhWith(
+                                new PhApplication(
+                                    new PhApplication(
                                         Phi.Φ.take(InputOutputTest.POSIX).copy(),
                                         "name",
                                         new Data.ToPhi(InputOutputTest.READ)
@@ -617,8 +610,8 @@ final class InputOutputTest {
                         content,
                         () -> {
                             return new Dataized(
-                                new PhWith(
-                                    new PhWith(
+                                new PhApplication(
+                                    new PhApplication(
                                         Phi.Φ.take(InputOutputTest.POSIX).copy(),
                                         0,
                                         new Data.ToPhi(InputOutputTest.READ)
@@ -649,8 +642,8 @@ final class InputOutputTest {
                     "",
                     () -> {
                         return new Dataized(
-                            new PhWith(
-                                new PhWith(
+                            new PhApplication(
+                                new PhApplication(
                                     Phi.Φ.take(InputOutputTest.POSIX).copy(),
                                     0,
                                     new Data.ToPhi(InputOutputTest.READ)
@@ -681,8 +674,8 @@ final class InputOutputTest {
                         temp,
                         "helloworld",
                         () -> {
-                            final Phi read = new PhWith(
-                                new PhWith(
+                            final Phi read = new PhApplication(
+                                new PhApplication(
                                     Phi.Φ.take(InputOutputTest.POSIX).copy(),
                                     0,
                                     new Data.ToPhi(InputOutputTest.READ)
@@ -725,8 +718,8 @@ final class InputOutputTest {
                         content,
                         () -> {
                             return new Dataized(
-                                new PhWith(
-                                    new PhWith(
+                                new PhApplication(
+                                    new PhApplication(
                                         Phi.Φ.take(InputOutputTest.WIN).copy(),
                                         "name",
                                         new Data.ToPhi(InputOutputTest.READ_FILE)
@@ -760,8 +753,8 @@ final class InputOutputTest {
                         content,
                         () -> {
                             return new Dataized(
-                                new PhWith(
-                                    new PhWith(
+                                new PhApplication(
+                                    new PhApplication(
                                         Phi.Φ.take(InputOutputTest.WIN).copy(),
                                         0,
                                         new Data.ToPhi(InputOutputTest.READ_FILE)
@@ -793,8 +786,8 @@ final class InputOutputTest {
                     "",
                     () -> {
                         return new Dataized(
-                            new PhWith(
-                                new PhWith(
+                            new PhApplication(
+                                new PhApplication(
                                     Phi.Φ.take(InputOutputTest.WIN).copy(),
                                     0,
                                     new Data.ToPhi(InputOutputTest.READ_FILE)
@@ -825,8 +818,8 @@ final class InputOutputTest {
                         temp,
                         "helloworld",
                         () -> {
-                            final Phi read = new PhWith(
-                                new PhWith(
+                            final Phi read = new PhApplication(
+                                new PhApplication(
                                     Phi.Φ.take(InputOutputTest.WIN).copy(),
                                     0,
                                     new Data.ToPhi(InputOutputTest.READ_FILE)
@@ -869,8 +862,8 @@ final class InputOutputTest {
                             temp,
                             () -> {
                                 new Dataized(
-                                    new PhWith(
-                                        new PhWith(
+                                    new PhApplication(
+                                        new PhApplication(
                                             Phi.Φ.take(InputOutputTest.POSIX).copy(),
                                             0,
                                             new Data.ToPhi(InputOutputTest.WRITE)
@@ -900,8 +893,8 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The \"write\" system call was expected to work correctly",
                 new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             Phi.Φ.take(InputOutputTest.POSIX).copy(),
                             0,
                             new Data.ToPhi(InputOutputTest.WRITE)
@@ -942,8 +935,8 @@ final class InputOutputTest {
                             temp,
                             () -> {
                                 new Dataized(
-                                    new PhWith(
-                                        new PhWith(
+                                    new PhApplication(
+                                        new PhApplication(
                                             Phi.Φ.take("sm.win32").copy(),
                                             0,
                                             new Data.ToPhi("WriteFile")

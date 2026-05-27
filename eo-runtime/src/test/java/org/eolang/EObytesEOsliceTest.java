@@ -28,8 +28,8 @@ final class EObytesEOsliceTest {
         MatcherAssert.assertThat(
             "slice is taken correctly",
             new Dataized(
-                new PhWith(
-                    new PhWith(
+                new PhApplication(
+                    new PhApplication(
                         new Data.ToPhi("hello, world!")
                             .take("as-bytes")
                             .take("slice")
@@ -54,8 +54,8 @@ final class EObytesEOsliceTest {
                     Assertions.assertThrows(
                         EOerror.ExError.class,
                         () -> new Dataized(
-                            new PhWith(
-                                new PhWith(
+                            new PhApplication(
+                                new PhApplication(
                                     new Data.ToPhi("hello")
                                         .take("as-bytes")
                                         .take("slice")
@@ -84,8 +84,8 @@ final class EObytesEOsliceTest {
                     Assertions.assertThrows(
                         EOerror.ExError.class,
                         () -> new Dataized(
-                            new PhWith(
-                                new PhWith(
+                            new PhApplication(
+                                new PhApplication(
                                     new Data.ToPhi("hello, world!")
                                         .take("as-bytes")
                                         .take("slice")

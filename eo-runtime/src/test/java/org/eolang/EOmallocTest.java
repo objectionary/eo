@@ -127,10 +127,8 @@ final class EOmallocTest {
                         this.id = new Dataized(
                             this.take("m").take("id")
                         ).asNumber();
-                        return new PhWith(
-                            new PhCopy(
-                                Phi.Φ.take("error")
-                            ),
+                        return new PhApplication(
+                            Phi.Φ.take("error").copy(),
                             0, new Data.ToPhi("Some failure")
                         );
                     }

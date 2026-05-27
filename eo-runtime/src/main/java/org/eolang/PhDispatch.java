@@ -9,14 +9,14 @@ package org.eolang;
  * A method-calling object.
  * @since 0.1
  */
-public final class PhMethod extends PhOnce {
+public final class PhDispatch extends PhOnce {
 
     /**
      * Ctor.
      * @param phi The object
      * @param mtd The name of method
      */
-    public PhMethod(final Phi phi, final String mtd) {
+    public PhDispatch(final Phi phi, final String mtd) {
         super(
             () -> phi.take(mtd),
             () -> String.join(".", phi.φTerm(), mtd)

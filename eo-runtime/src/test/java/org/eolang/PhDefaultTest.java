@@ -407,7 +407,7 @@ final class PhDefaultTest {
         }
         MatcherAssert.assertThat(
             "Phi should not be read multiple times, but it was",
-            new Dataized(new PhMethod(phi, "count")).asNumber(),
+            new Dataized(new PhDispatch(phi, "count")).asNumber(),
             Matchers.equalTo(1.0)
         );
     }
@@ -447,7 +447,7 @@ final class PhDefaultTest {
             five.forma(),
             Matchers.not(
                 Matchers.equalTo(
-                    new PhWith(
+                    new PhApplication(
                         five.take(this.plus()).copy(),
                         "x",
                         new Data.ToPhi(5)
@@ -461,13 +461,13 @@ final class PhDefaultTest {
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
             "Similar Phis with different data should have the same forma, but they didn't",
-            new PhWith(
+            new PhApplication(
                 new Data.ToPhi(5L).take(this.plus()).copy(),
                 "x",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
-                new PhWith(
+                new PhApplication(
                     new Data.ToPhi(6L).take(this.plus()).copy(),
                     "x",
                     new Data.ToPhi(6L)
@@ -489,10 +489,10 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCalculateRandomTwice() {
-        final Phi rnd = new PhWith(
-            new PhMethod(
-                new PhWith(
-                    new PhMethod(
+        final Phi rnd = new PhApplication(
+            new PhDispatch(
+                new PhApplication(
+                    new PhDispatch(
                         new PhDefaultTest.Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
@@ -807,7 +807,7 @@ final class PhDefaultTest {
                         if (PhDefaultTest.EndlessRecursion.count <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
-                            result = new PhCopy(new PhDefaultTest.EndlessRecursion());
+                            result = new PhDefaultTest.EndlessRecursion().copy();
                         }
                         return result;
                     }

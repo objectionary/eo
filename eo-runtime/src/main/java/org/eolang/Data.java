@@ -30,9 +30,9 @@ public interface Data {
      * In auto-generated Java code we do:
      * {@code
      * Phi bytes = Phi.Φ.take("bytes").copy();
-     * Phi attached = new PhWith(bytes, 0, new byte[] {...});
+     * Phi attached = new PhApplication(bytes, 0, new byte[] {...});
      * Phi str = Phi.Φ.take("string").copy();
-     * Phi applied = new PhWith(str, 0, attached);
+     * Phi applied = new PhApplication(str, 0, attached);
      * return applied;
      * }
      *

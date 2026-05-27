@@ -66,8 +66,8 @@ final class EOnumberTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             (Phi) cls.getDeclaredConstructor().newInstance(),
                             Phi.RHO,
                             new Data.ToPhi(42)
@@ -98,7 +98,7 @@ final class EOnumberTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         (Phi) cls.getDeclaredConstructor().newInstance(),
                         Phi.RHO,
                         new Data.ToPhi(true)

@@ -11,7 +11,7 @@ package org.eolang.EOsm; // NOPMD
 import java.lang.management.ManagementFactory;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.PhApplication;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,8 +33,8 @@ final class EOposixTest {
         MatcherAssert.assertThat(
             "The \"getpid\" system call was expected to work correctly",
             new Dataized(
-                new PhWith(
-                    new PhWith(
+                new PhApplication(
+                    new PhApplication(
                         Phi.Φ.take("sm.posix").copy(),
                         "name",
                         new Data.ToPhi("getpid")

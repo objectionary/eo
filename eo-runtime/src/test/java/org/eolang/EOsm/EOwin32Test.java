@@ -13,7 +13,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
 import org.eolang.EOsm.Win32.Winsock;
-import org.eolang.PhWith;
+import org.eolang.PhApplication;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,8 +38,8 @@ final class EOwin32Test {
         MatcherAssert.assertThat(
             "The \"GetCurrentProcessId\" function call was expected to work correctly",
             new Dataized(
-                new PhWith(
-                    new PhWith(
+                new PhApplication(
+                    new PhApplication(
                         Phi.Φ.take("sm.win32").copy(),
                         "name",
                         new Data.ToPhi("GetCurrentProcessId")

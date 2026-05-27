@@ -49,7 +49,7 @@ final class DataizedTest {
             EOerror.ExError.class,
             () -> new Dataized(
                 new PhSafe(
-                    new PhMethod(
+                    new PhDispatch(
                         new PhDefault() {
                             @Override
                             public Phi take(final String name) {
@@ -82,7 +82,7 @@ final class DataizedTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
-                new PhWith(
+                new PhApplication(
                     new EOerror(),
                     "message",
                     new Data.ToPhi("hello")

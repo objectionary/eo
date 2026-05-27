@@ -9,16 +9,16 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhMethod}.
+ * Test case for {@link PhDispatch}.
  * @since 0.16
  */
-final class PhMethodTest {
+final class PhDispatchTest {
 
     @Test
     void rendersReceiverAndMethodAsTerm() {
         MatcherAssert.assertThat(
-            "PhMethod must render φ-term as receiver dot method, but it didnt",
-            new PhMethod(Phi.Φ, "foo").φTerm(),
+            "PhDispatch must render φ-term as receiver dot method, but it didnt",
+            new PhDispatch(Phi.Φ, "foo").φTerm(),
             Matchers.equalTo("Φ.foo")
         );
     }
@@ -35,8 +35,8 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiJustOnce() {
-        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
-        final Phi phi = new PhMethod(dummy, "φ");
+        final PhDispatchTest.Dummy dummy = new PhDispatchTest.Dummy();
+        final Phi phi = new PhDispatch(dummy, "φ");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -50,8 +50,8 @@ final class PhMethodTest {
 
     @Test
     void calculatesLocalJustOnce() {
-        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
-        final Phi phi = new PhMethod(dummy, "foo");
+        final PhDispatchTest.Dummy dummy = new PhDispatchTest.Dummy();
+        final Phi phi = new PhDispatch(dummy, "foo");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -65,8 +65,8 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiOnce() {
-        final PhMethodTest.Dummy dummy = new PhMethodTest.Dummy();
-        new Dataized(new PhMethod(dummy, "neg")).take();
+        final PhDispatchTest.Dummy dummy = new PhDispatchTest.Dummy();
+        new Dataized(new PhDispatch(dummy, "neg")).take();
         MatcherAssert.assertThat(
             "Neg should be calculated only once, but it wasn't",
             dummy.count,
@@ -76,13 +76,13 @@ final class PhMethodTest {
 
     @Test
     void hasDifferentFormasWithOwnMethod() {
-        final Phi dummy = new PhMethodTest.Dummy();
+        final Phi dummy = new PhDispatchTest.Dummy();
         MatcherAssert.assertThat(
-            "Forma of PhMethod should be differ from original, but it wasn't",
+            "Forma of PhDispatch should be differ from original, but it wasn't",
             dummy.forma(),
             Matchers.not(
                 Matchers.equalTo(
-                    new PhMethod(dummy, "foo").forma()
+                    new PhDispatch(dummy, "foo").forma()
                 )
             )
         );

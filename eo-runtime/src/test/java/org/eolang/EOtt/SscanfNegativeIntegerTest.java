@@ -11,8 +11,7 @@ package org.eolang.EOtt; // NOPMD
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhCopy;
-import org.eolang.PhWith;
+import org.eolang.PhApplication;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -59,9 +58,9 @@ final class SscanfNegativeIntegerTest {
      * @return Phi at index 0 of the resulting tuple
      */
     private static Phi first(final String format, final String read) {
-        final Phi item = new PhWith(
-            new PhWith(
-                new PhCopy(Phi.Φ.take("tt.sscanf")),
+        final Phi item = new PhApplication(
+            new PhApplication(
+                Phi.Φ.take("tt.sscanf").copy(),
                 "format", new Data.ToPhi(format)
             ),
             "read", new Data.ToPhi(read)

@@ -12,8 +12,7 @@ package org.eolang.EOtt; // NOPMD
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
-import org.eolang.PhCopy;
-import org.eolang.PhWith;
+import org.eolang.PhApplication;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,13 +31,11 @@ final class RegexAtomTest {
         MatcherAssert.assertThat(
             "regex \"/[a-z]+/\" should compile and match \"hello\"",
             new Dataized(
-                new PhWith(
-                    new PhCopy(
-                        new PhWith(
-                            new PhCopy(Phi.Φ.take("tt.regex")),
-                            "expression", new Data.ToPhi("/[a-z]+/")
-                        ).take("compiled").take("matches")
-                    ),
+                new PhApplication(
+                    new PhApplication(
+                        Phi.Φ.take("tt.regex").copy(),
+                        "expression", new Data.ToPhi("/[a-z]+/")
+                    ).take("compiled").take("matches").copy(),
                     "txt", new Data.ToPhi("hello")
                 )
             ).asBool(),
@@ -53,8 +50,8 @@ final class RegexAtomTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhCopy(Phi.Φ.take("tt.regex")),
+                    new PhApplication(
+                        Phi.Φ.take("tt.regex").copy(),
                         "expression", new Data.ToPhi("/pattern")
                     ).take("compiled")
                 ).take()

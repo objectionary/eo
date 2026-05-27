@@ -24,9 +24,9 @@ final class EOtryTest {
         MatcherAssert.assertThat(
             "catches exception",
             new Dataized(
-                new PhWith(
-                    new PhWith(
-                        new PhWith(
+                new PhApplication(
+                    new PhApplication(
+                        new PhApplication(
                             new EOtry(),
                             0, new PhSafe(new EOtryTest.Broken())
                         ),
@@ -45,9 +45,9 @@ final class EOtryTest {
         MatcherAssert.assertThat(
             "uses catcher's output",
             new Dataized(
-                new PhWith(
-                    new PhWith(
-                        new PhWith(
+                new PhApplication(
+                    new PhApplication(
+                        new PhApplication(
                             new EOtry(),
                             0, new PhSafe(new EOtryTest.Broken())
                         ),
@@ -66,9 +66,9 @@ final class EOtryTest {
         MatcherAssert.assertThat(
             "Main threw an exception",
             new Dataized(
-                new PhWith(
-                    new PhWith(
-                        new PhWith(
+                new PhApplication(
+                    new PhApplication(
+                        new PhApplication(
                             new EOtry(),
                             0, new EOtryTest.Main()
                         ),

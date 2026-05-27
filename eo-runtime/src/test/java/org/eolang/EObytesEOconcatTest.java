@@ -25,10 +25,10 @@ final class EObytesEOconcatTest {
         MatcherAssert.assertThat(
             "Concatenation of byte arrays should produce 'привет mr. ㄤㄠ!', but it didn't",
             new Dataized(
-                new PhWith(
+                new PhApplication(
                     Phi.Φ.take("string"),
                     0,
-                    new PhWith(
+                    new PhApplication(
                         new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),
                         "b",
                         new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes")

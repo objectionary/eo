@@ -11,8 +11,8 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java/text()[contains(., 'new PhWith(r, 0')]
-  - //java/text()[contains(., 'new PhWith(r, "text"')]
+  - //java/text()[contains(., 'new PhApplication(r, new Bind(0')]
+  - //java/text()[contains(., 'new PhApplication(r, new Bind("text"')]
 input: |
   # No comments.
   [] > main
