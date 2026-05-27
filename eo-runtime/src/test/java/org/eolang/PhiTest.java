@@ -19,20 +19,16 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from io.stdout package, but it didn't",
             new Dataized(
-                new PhCopy(
-                    new PhMethod(
-                        new PhWith(
-                            new PhCopy(
-                                new PhMethod(
-                                    Phi.Φ.take("io"),
-                                    "stdout"
-                                )
-                            ),
-                            0,
-                            new Data.ToPhi("Hello, world")
+                new PhDispatch(
+                    new PhApplication(
+                        new PhDispatch(
+                            Phi.Φ.take("io"),
+                            "stdout"
                         ),
-                        "text"
-                    )
+                        0,
+                        new Data.ToPhi("Hello, world")
+                    ),
+                    "text"
                 )
             ).asString(),
             Matchers.startsWith("Hello")
@@ -44,14 +40,12 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from org.eolang.io.stdout package, but it didn't",
             new Dataized(
-                new PhCopy(
-                    new PhMethod(
-                        new PhWith(
-                            new PhCopy(Phi.Φ.take("io.stdout")),
-                            0, new Data.ToPhi("Hello, world")
-                        ),
-                        "text"
-                    )
+                new PhDispatch(
+                    new PhApplication(
+                        Phi.Φ.take("io.stdout").copy(),
+                        0, new Data.ToPhi("Hello, world")
+                    ),
+                    "text"
                 )
             ).asString(),
             Matchers.startsWith("Hello")

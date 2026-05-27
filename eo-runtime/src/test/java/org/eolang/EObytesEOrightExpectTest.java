@@ -31,8 +31,8 @@ final class EObytesEOrightExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             new EObytes$EOright(),
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
@@ -54,8 +54,8 @@ final class EObytesEOrightExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             new EObytes$EOright(),
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})

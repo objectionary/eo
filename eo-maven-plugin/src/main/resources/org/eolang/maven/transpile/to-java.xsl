@@ -162,7 +162,7 @@
         <xsl:text>");</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>new PhMethod(</xsl:text>
+        <xsl:text>new PhDispatch(</xsl:text>
         <xsl:value-of select="$base"/>
         <xsl:text>, </xsl:text>
         <xsl:value-of select="eo:attr-name($mtd, true())"/>
@@ -626,14 +626,6 @@
     <xsl:param name="skip" select="0"/>
     <xsl:variable name="inners" select="o[position() &gt; $skip and not(@level)]"/>
     <xsl:for-each select="$inners">
-      <xsl:if test="position() = 1">
-        <xsl:value-of select="eo:eol($indent)"/>
-        <xsl:value-of select="$name"/>
-        <xsl:text> = </xsl:text>
-        <xsl:text>new PhCopy(</xsl:text>
-        <xsl:value-of select="$name"/>
-        <xsl:text>);</xsl:text>
-      </xsl:if>
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
         <xsl:value-of select="position()"/>
@@ -644,25 +636,28 @@
         <xsl:with-param name="rho" select="$rho"/>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="$inners">
+    <xsl:if test="$inners">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text> = new PhWith(</xsl:text>
+      <xsl:text> = new PhApplication(</xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>, </xsl:text>
-      <xsl:choose>
-        <xsl:when test="@as">
-          <xsl:value-of select="eo:attr-name(@as, true())"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="position() - 1"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>, </xsl:text>
-      <xsl:value-of select="$name"/>
-      <xsl:value-of select="position()"/>
+      <xsl:for-each select="$inners">
+        <xsl:text>, new Bind(</xsl:text>
+        <xsl:choose>
+          <xsl:when test="@as">
+            <xsl:value-of select="eo:attr-name(@as, true())"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="position() - 1"/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="$name"/>
+        <xsl:value-of select="position()"/>
+        <xsl:text>)</xsl:text>
+      </xsl:for-each>
       <xsl:text>);</xsl:text>
-    </xsl:for-each>
+    </xsl:if>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent">
@@ -675,7 +670,7 @@
     <xsl:param name="name"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhApplication(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>, 0, new PhDefault(</xsl:text>
     <xsl:value-of select="text()"/>

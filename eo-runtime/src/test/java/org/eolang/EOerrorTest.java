@@ -30,7 +30,7 @@ final class EOerrorTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
-                new PhWith(
+                new PhApplication(
                     new EOerror(),
                     "message",
                     new Data.ToPhi("intentional error")
@@ -92,10 +92,8 @@ final class EOerrorTest {
                 new AtOnce(
                     new AtComposite(
                         this,
-                        rho -> new PhWith(
-                            new PhCopy(
-                                Phi.Φ.take("error")
-                            ),
+                        rho -> new PhApplication(
+                            Phi.Φ.take("error").copy(),
                             "message",
                             new Data.ToPhi(data)
                         )

@@ -26,10 +26,10 @@ final class EOmallocWritePhiExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         new EOmalloc$EOof$EOallocated$EOwrite(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocWritePhiExpectTest.Dummy(),
                             "id",
                             new Data.ToPhi(true)
@@ -49,11 +49,11 @@ final class EOmallocWritePhiExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             new EOmalloc$EOof$EOallocated$EOwrite(),
                             Phi.RHO,
-                            new PhWith(
+                            new PhApplication(
                                 new EOmallocWritePhiExpectTest.Dummy(),
                                 "id",
                                 new Data.ToPhi(0)
@@ -76,10 +76,10 @@ final class EOmallocWritePhiExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         new EOmalloc$EOof$EOφ(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocWritePhiExpectTest.Dummy(),
                             "size",
                             new Data.ToPhi(true)
@@ -99,10 +99,10 @@ final class EOmallocWritePhiExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         new EOmalloc$EOof$EOφ(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocWritePhiExpectTest.Dummy(),
                             "size",
                             new Data.ToPhi(-1)

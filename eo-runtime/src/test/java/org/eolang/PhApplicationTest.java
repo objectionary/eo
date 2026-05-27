@@ -12,17 +12,48 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test case for {@link PhWith}.
+ * Test case for {@link PhApplication}.
  * @since 0.16
  */
-final class PhWithTest {
+@SuppressWarnings("PMD.TooManyMethods")
+final class PhApplicationTest {
+
+    @Test
+    void rendersSeveralBindingsAsTerm() {
+        MatcherAssert.assertThat(
+            "PhApplication with several bindings must render them comma-separated, but it didnt",
+            new PhApplication(
+                new PhDefault(),
+                new Bind(0, new PhDefault(new byte[] {(byte) 0x01})),
+                new Bind(1, new PhDefault(new byte[] {(byte) 0x02}))
+            ).φTerm(),
+            Matchers.equalTo("[](0->[D> 01],1->[D> 02])")
+        );
+    }
+
+    @Test
+    void appliesSeveralBindingsToObject() {
+        MatcherAssert.assertThat(
+            "PhApplication must bind every pair to the object, but it didnt",
+            new Dataized(
+                new PhApplication(
+                    new PhDefault(
+                        new Attrs(new Attr("a", new AtVoid("a")), new Attr("b", new AtVoid("b")))
+                    ),
+                    new Bind("a", new Data.ToPhi(1L)),
+                    new Bind("b", new Data.ToPhi(2L))
+                ).take("b")
+            ).asNumber(),
+            Matchers.equalTo(2.0)
+        );
+    }
 
     @Test
     void rendersMethodApplicationOnNumberAsTerm() {
         MatcherAssert.assertThat(
             "Method application on a number must render readably in φ-term, but it didnt",
-            new PhWith(
-                new PhMethod(new Data.ToPhi(5L), "times"), 0, new Data.ToPhi(6L)
+            new PhApplication(
+                new PhDispatch(new Data.ToPhi(5L), "times"), 0, new Data.ToPhi(6L)
             ).φTerm(),
             Matchers.equalTo("5.times(0->6)")
         );
@@ -32,10 +63,10 @@ final class PhWithTest {
     void rendersNumberConstructionAsValue() {
         MatcherAssert.assertThat(
             "Number construction chain must render as its value, but it didnt",
-            new PhWith(
-                new PhCopy(new PhMethod(Phi.Φ, "number")), 0,
-                new PhWith(
-                    new PhCopy(new PhMethod(Phi.Φ, "bytes")), 0,
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
                     new PhDefault(
                         new byte[] {
                             (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
@@ -52,10 +83,10 @@ final class PhWithTest {
     void rendersStringConstructionAsValue() {
         MatcherAssert.assertThat(
             "String construction chain must render as its quoted value, but it didnt",
-            new PhWith(
-                new PhCopy(new PhMethod(Phi.Φ, "string")), 0,
-                new PhWith(
-                    new PhCopy(new PhMethod(Phi.Φ, "bytes")), 0,
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
                     new PhDefault(new byte[] {(byte) 0x68, (byte) 0x69})
                 )
             ).φTerm(),
@@ -66,8 +97,8 @@ final class PhWithTest {
     @Test
     void rendersPositionalBindingAsTerm() {
         MatcherAssert.assertThat(
-            "PhWith must render positional binding in φ-term, but it didnt",
-            new PhWith(new PhDefault(), 0, new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
+            "PhApplication must render positional binding in φ-term, but it didnt",
+            new PhApplication(new PhDefault(), 0, new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
             Matchers.equalTo("[](0->[D> 2A])")
         );
     }
@@ -75,20 +106,22 @@ final class PhWithTest {
     @Test
     void rendersNamedBindingAsTerm() {
         MatcherAssert.assertThat(
-            "PhWith must render named binding in φ-term, but it didnt",
-            new PhWith(new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
+            "PhApplication must render named binding in φ-term, but it didnt",
+            new PhApplication(
+                new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})
+            ).φTerm(),
             Matchers.equalTo("[](x->[D> 2A])")
         );
     }
 
     @Test
     void comparesTwoObjects() {
-        final Phi dummy = new PhWith(
-            new PhMethod(new PhWithTest.Dummy(), "plus"),
+        final Phi dummy = new PhApplication(
+            new PhDispatch(new PhApplicationTest.Dummy(), "plus"),
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            "PhWith should be equal to itself, but it didn't",
+            "PhApplication should be equal to itself, but it didn't",
             dummy, Matchers.equalTo(dummy)
         );
     }
@@ -96,7 +129,7 @@ final class PhWithTest {
     @Test
     void takesMethod() {
         MatcherAssert.assertThat(
-            "PhWith should preserve inner method result from Dataized string, but it didn't",
+            "PhApplication should preserve inner method result from Dataized string, but it didn't",
             new Dataized(
                 new Data.ToPhi("Hello, world!")
             ).asString(),
@@ -107,10 +140,10 @@ final class PhWithTest {
     @Test
     void passesToSubObject() {
         MatcherAssert.assertThat(
-            "PhWith should pass attribute to sub-object and calculate correctly, but it didn't",
+            "PhApplication should pass attribute to sub-object correctly, but it didn't",
             new Dataized(
-                new PhWith(
-                    new PhCopy(new PhMethod(new PhWithTest.Dummy(), "plus")),
+                new PhApplication(
+                    new PhDispatch(new PhApplicationTest.Dummy(), "plus"),
                     0, new Data.ToPhi(1L)
                 )
             ).asNumber(),
@@ -123,13 +156,15 @@ final class PhWithTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsInThreads(final String data) {
         final String attr = "foo";
-        final Phi ref = new PhWith(new PhWithTest.DummyWithAtFree(attr), 0, new Data.ToPhi(data));
+        final Phi ref = new PhApplication(
+            new PhApplicationTest.DummyWithAtFree(attr), 0, new Data.ToPhi(data)
+        );
         MatcherAssert.assertThat(
             "works in multiple threads",
             new Together<>(
                 thread -> {
                     MatcherAssert.assertThat(
-                        "Attribute 'foo' should return the same string that was passed to Phi, but it didn't",
+                        "Attribute 'foo' must return the passed string, but it didn't",
                         new Dataized(ref.take(attr)).asString(),
                         Matchers.is(data)
                     );
@@ -142,12 +177,12 @@ final class PhWithTest {
 
     @Test
     void hasTheSameFormaWithBoundAttribute() {
-        final Phi dummy = new PhWithTest.DummyWithAtFree("x");
+        final Phi dummy = new PhApplicationTest.DummyWithAtFree("x");
         MatcherAssert.assertThat(
-            "forma of PhWith with bound attribute should be same as forma of original, but it didn't",
+            "forma of PhApplication with bound attribute should match the original, but it didn't",
             dummy.forma(),
             Matchers.equalTo(
-                new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()
+                new PhApplication(dummy, "x", new Data.ToPhi(5L)).forma()
             )
         );
     }

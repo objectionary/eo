@@ -32,10 +32,10 @@ final class EOmallocAllocatedExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         new EOmalloc$EOof$EOallocated$EOsize(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocAllocatedExpectTest.Dummy(),
                             "id",
                             new Data.ToPhi(-42)
@@ -55,10 +55,10 @@ final class EOmallocAllocatedExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         new EOmalloc$EOof$EOallocated$EOread(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocAllocatedExpectTest.Dummy(),
                             "id",
                             new Data.ToPhi(true)
@@ -145,12 +145,12 @@ final class EOmallocAllocatedExpectTest {
          * @checkstyle MethodNameCheck (5 lines)
          */
         Phi it() {
-            return new PhWith(
-                new PhWith(
-                    new PhWith(
+            return new PhApplication(
+                new PhApplication(
+                    new PhApplication(
                         new EOmalloc$EOof$EOallocated$EOread(),
                         Phi.RHO,
-                        new PhWith(
+                        new PhApplication(
                             new EOmallocAllocatedExpectTest.Dummy(),
                             "id",
                             new Data.ToPhi(0)

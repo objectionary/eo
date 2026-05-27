@@ -39,8 +39,8 @@ final class EOi64ExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
-                        new PhWith(
+                    new PhApplication(
+                        new PhApplication(
                             (Phi) cls.getDeclaredConstructor().newInstance(),
                             Phi.RHO,
                             new Data.ToPhi(42L)
@@ -70,7 +70,7 @@ final class EOi64ExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         (Phi) cls.getDeclaredConstructor().newInstance(),
                         Phi.RHO,
                         new Data.ToPhi(true)

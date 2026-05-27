@@ -65,7 +65,7 @@ final class PhSafeTest {
             Assertions.assertThrows(
                 EOerror.ExError.class,
                 () -> new PhSafe(
-                    new PhWith(
+                    new PhApplication(
                         new EOerror(),
                         "message",
                         new Data.ToPhi("oops")

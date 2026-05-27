@@ -34,7 +34,7 @@ final class EOiConvertersExpectTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhWith(
+                    new PhApplication(
                         (Phi) cls.getDeclaredConstructor().newInstance(),
                         Phi.RHO,
                         new Data.ToPhi(true)

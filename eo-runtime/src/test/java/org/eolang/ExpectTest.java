@@ -150,7 +150,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Number(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(true)
@@ -172,7 +172,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Int(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(true)
@@ -194,7 +194,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Int(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
@@ -216,7 +216,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Natural(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(true)
@@ -238,7 +238,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Natural(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
@@ -260,7 +260,7 @@ final class ExpectTest {
                 ExFailure.class,
                 () -> new Expect.Natural(
                     Expect.at(
-                        new PhWith(
+                        new PhApplication(
                             new PhDefault(),
                             Phi.RHO,
                             new Data.ToPhi(-42)
