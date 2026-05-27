@@ -11,8 +11,8 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - //java[contains(text(), 'Phi r = new PhMethod(Phi.Φ, "io");')]
-  - //java[contains(text(), 'r = new PhMethod(r, "stdout");')]
+  - //java[contains(text(), 'Phi r = new PhDispatch(Phi.Φ, "io");')]
+  - //java[contains(text(), 'r = new PhDispatch(r, "stdout");')]
 input: |
   # No comments.
   [args] > program
