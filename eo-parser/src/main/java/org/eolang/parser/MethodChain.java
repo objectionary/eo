@@ -13,6 +13,7 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.DataClass")
 final class MethodChain {
 
     /**
@@ -31,6 +32,11 @@ final class MethodChain {
     private final int end;
 
     /**
+     * True when the link uses safe navigation ({@code ?.method}).
+     */
+    private final boolean safe;
+
+    /**
      * Ctor.
      * @param ident Method name
      * @param dot Column of the dot
@@ -38,9 +44,22 @@ final class MethodChain {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     MethodChain(final String ident, final int dot, final int after) {
+        this(ident, dot, after, false);
+    }
+
+    /**
+     * Ctor.
+     * @param ident Method name
+     * @param dot Column of the dot
+     * @param after Index past this link
+     * @param navigation Safe navigation flag
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    MethodChain(final String ident, final int dot, final int after, final boolean navigation) {
         this.name = ident;
         this.dot = dot;
         this.end = after;
+        this.safe = navigation;
     }
 
     /**
@@ -65,5 +84,13 @@ final class MethodChain {
      */
     int end() {
         return this.end;
+    }
+
+    /**
+     * Whether this link is safe navigation ({@code ?.}).
+     * @return Safe flag
+     */
+    boolean safe() {
+        return this.safe;
     }
 }

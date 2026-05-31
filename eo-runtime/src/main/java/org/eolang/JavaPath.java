@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * - "Φ.org.eolang" -> "EOorg.EOeolang"
  * - "Φ.org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
  * - "Φ.org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
+ * - "Φ.on-error" -> "EOonError"
  * Since EOLANG allows using dashes in object names, they are converted to
  * underscores for Java.</p>
  *
@@ -52,6 +53,7 @@ final class JavaPath {
                 .replaceAll("$1EO$2")
                 .replace("$", "$EO")
                 .replace("-", "_")
+                .replace("EOon_error", "EOonError")
         );
     }
 }

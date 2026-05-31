@@ -86,22 +86,22 @@ final class ChainEmission {
             if (this.suffix.constant()) {
                 this.emit.constant();
             }
+            if (this.head.oerr()) {
+                this.emit.onError();
+            }
         } else {
             Emissions.openValue(this.emit, null, this.head, this.span.line());
             this.emit.close();
             for (int idx = 0; idx < this.chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = this.chain.get(idx);
-                this.emit.object(
-                    null, ".".concat(link.name()), this.span.line(), link.dot()
+                Emissions.emitMethodLink(
+                    this.emit, link, null, this.span.line()
                 );
-                this.emit.method();
                 this.emit.close();
             }
-            final MethodChain last = this.chain.get(this.chain.size() - 1);
-            this.emit.object(
-                name, ".".concat(last.name()), this.span.line(), last.dot()
+            Emissions.emitMethodLink(
+                this.emit, this.chain.get(this.chain.size() - 1), name, this.span.line()
             );
-            this.emit.method();
             if (this.suffix.constant()) {
                 this.emit.constant();
             }

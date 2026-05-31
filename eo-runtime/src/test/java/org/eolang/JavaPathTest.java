@@ -22,7 +22,8 @@ class JavaPathTest {
         "Φ.obj.sub, org.eolang.EOobj.EOsub",
         "Φ.obj.sub$attr, org.eolang.EOobj.EOsub$EOattr",
         "Φ.obj.sub-dashed$attr, org.eolang.EOobj.EOsub_dashed$EOattr",
-        "Φ.obj.sub-dashed$attr-dashed, org.eolang.EOobj.EOsub_dashed$EOattr_dashed"
+        "Φ.obj.sub-dashed$attr-dashed, org.eolang.EOobj.EOsub_dashed$EOattr_dashed",
+        "Φ.on-error, org.eolang.EOonError"
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(

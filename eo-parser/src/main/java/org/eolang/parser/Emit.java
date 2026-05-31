@@ -269,6 +269,22 @@ final class Emit {
     }
 
     /**
+     * Mark the most recently opened {@code <o>} as safe navigation
+     * ({@code ?.method}, issue #5166).
+     */
+    void safe() {
+        this.append(new Directives().attr("safe", ""));
+    }
+
+    /**
+     * Mark the most recently opened {@code <o>} as on-error replacement
+     * ({@code ident?}, issue #5166).
+     */
+    void onError() {
+        this.append(new Directives().attr("on-error", ""));
+    }
+
+    /**
      * Add the {@code @star=""} attribute to the most recently opened
      * {@code <o>} (§9.4 compact-tuple wrapper marker and §9.4.2 star
      * head).

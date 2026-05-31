@@ -29,7 +29,14 @@
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+    <xsl:choose>
+      <xsl:when test="$n = 'on-error'">
+        <xsl:value-of select="'EOonError'"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- Get object name with suffix -->
   <xsl:function name="eo:suffix" as="xs:string">
@@ -169,6 +176,16 @@
         <xsl:text>);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!-- Safe navigation method (#5166) -->
+  <xsl:function name="eo:safe-method">
+    <xsl:param name="base"/>
+    <xsl:param name="mtd"/>
+    <xsl:text>PhSafe.takeNav(</xsl:text>
+    <xsl:value-of select="$base"/>
+    <xsl:text>, </xsl:text>
+    <xsl:value-of select="eo:attr-name($mtd, true())"/>
+    <xsl:text>)</xsl:text>
   </xsl:function>
   <xsl:variable name="object-name">
     <xsl:variable name="pckg" select="/object/class/@package"/>
@@ -528,6 +545,7 @@
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
+    <xsl:variable name="safe" select="boolean(@safe)"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
@@ -541,10 +559,18 @@
         <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
         <xsl:value-of select="eo:method(eo:fqn-start($parts[1], $rho), $parts[2])"/>
         <xsl:for-each select="$parts[position()&gt;2]">
+          <xsl:variable name="last" select="position()=last()"/>
           <xsl:value-of select="eo:eol($indent)"/>
           <xsl:value-of select="$name"/>
           <xsl:text> = </xsl:text>
-          <xsl:value-of select="eo:method($name, .)"/>
+          <xsl:choose>
+            <xsl:when test="$safe and $last">
+              <xsl:value-of select="eo:safe-method($name, .)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="eo:method($name, .)"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -564,6 +590,7 @@
     <xsl:param name="name"/>
     <xsl:param name="rho"/>
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
+    <xsl:variable name="safe" select="boolean(@safe)"/>
     <xsl:if test="starts-with(@base, concat('.', $eo:alpha))">
       <xsl:message terminate="yes">
         <xsl:text>Dispatching alpha attributes is not supported in EO yet, found: </xsl:text>
@@ -582,7 +609,14 @@
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
-    <xsl:value-of select="eo:method(string-join(($name, 'b'), ''), $method)"/>
+    <xsl:choose>
+      <xsl:when test="$safe">
+        <xsl:value-of select="eo:safe-method(string-join(($name, 'b'), ''), $method)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="eo:method(string-join(($name, 'b'), ''), $method)"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>

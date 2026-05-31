@@ -61,7 +61,7 @@
   [] +> tests-opens-posix-tcp-socket
     or. > @
       os.is-windows
-      try
+      on-error
         sd.gt 0
         ex > [ex]
         code.

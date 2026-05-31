@@ -124,7 +124,7 @@ final class Tokens {
         } else if (Tokens.rootStart(first)) {
             value = this.readRoot();
         } else if (first >= 'a' && first <= 'z') {
-            value = this.readName();
+            value = this.withOnErrorSuffix(this.readName());
         } else {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
@@ -468,11 +468,19 @@ final class Tokens {
      */
     List<MethodChain> readChain() {
         final List<MethodChain> chain = new ArrayList<>(0);
-        while (!this.atEnd() && this.current() == '.') {
+        while (!this.atEnd()) {
+            boolean safe = false;
+            if (this.current() == '?') {
+                safe = true;
+                this.cursor = this.cursor + 1;
+            }
+            if (this.atEnd() || this.current() != '.') {
+                break;
+            }
             final int dot = this.span.indent() + this.cursor;
             this.cursor = this.cursor + 1;
             final Value name = this.readMethodName();
-            chain.add(new MethodChain(name.raw(), dot, name.end()));
+            chain.add(new MethodChain(name.raw(), dot, name.end(), safe));
         }
         return chain;
     }
@@ -600,6 +608,26 @@ final class Tokens {
      */
     String body() {
         return this.body;
+    }
+
+    /**
+     * Attach {@code on-error} suffix ({@code name?}) when not {@code ?.}.
+     * @param value Parsed identifier
+     * @return Value, possibly marked on-error
+     */
+    private Value withOnErrorSuffix(final Value value) {
+        Value result = value;
+        if (value.kind() == Value.Kind.IDENTIFIER && !this.atEnd()
+            && this.current() == '?'
+            && (this.cursor + 1 >= this.body.length()
+                || this.body.charAt(this.cursor + 1) != '.')) {
+            this.cursor = this.cursor + 1;
+            result = new Value(
+                value.kind(), value.raw(), value.pos(), this.cursor,
+                value.binding(), value.chain(), true
+            );
+        }
+        return result;
     }
 
     /**

@@ -63,16 +63,43 @@ final class Emissions {
             emit.close();
             for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method();
+                Emissions.emitMethodLink(emit, link, null, line);
                 emit.close();
             }
             final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(name, ".".concat(last.name()), line, last.dot());
-            emit.method();
+            Emissions.emitMethodLink(emit, last, name, line);
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
+        }
+    }
+
+    /**
+     * Emit one method-dispatch link ({@code .m} or {@code ?.m}).
+     * @param emit Emitter
+     * @param link Chain link
+     * @param name Optional name on the link
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    static void emitMethodLink(
+        final Emit emit, final MethodChain link, final String name, final int line
+    ) {
+        emit.object(name, ".".concat(link.name()), line, link.dot());
+        if (link.safe()) {
+            emit.safe();
+        }
+        emit.method();
+    }
+
+    /**
+     * Attach on-error marker to the most recently opened {@code <o>}.
+     * @param emit Emitter
+     * @param value Parsed value
+     */
+    static void markValue(final Emit emit, final Value value) {
+        if (value.oerr()) {
+            emit.onError();
         }
     }
 
@@ -151,6 +178,7 @@ final class Emissions {
             }
         } else {
             emit.object(name, value.raw(), line, value.pos());
+            Emissions.markValue(emit, value);
         }
     }
 
@@ -175,13 +203,11 @@ final class Emissions {
             emit.close();
             for (int idx = 0; idx < tail.size() - 1; idx = idx + 1) {
                 final MethodChain link = tail.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method();
+                Emissions.emitMethodLink(emit, link, null, line);
                 emit.close();
             }
             final MethodChain last = tail.get(tail.size() - 1);
-            emit.object(null, ".".concat(last.name()), line, last.dot());
-            emit.method();
+            Emissions.emitMethodLink(emit, last, null, line);
             if (value.binding() != null) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }

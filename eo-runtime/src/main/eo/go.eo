@@ -39,7 +39,7 @@
 
   # Executes body with jump token allowing forward and backward jumps.
   [body] > to
-    try > @
+    on-error > @
       body token
       [e] >>
         if. > @

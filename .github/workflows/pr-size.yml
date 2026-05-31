@@ -9,8 +9,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - run: git fetch origin master --depth=1
-      - uses: maidsafe/pr_size_checker@v3
-        with:
-          target_branch: master
-          max_lines_changed: 200
+      - name: Check PR size
+        env:
+          MAX_LINES: 200
+        run: |
+          git fetch origin master --depth=1
+          total=$(git diff --numstat origin/master...HEAD \
+            | grep -vE '\.lock$' \
+            | awk '{ add += $1; del += $2 } END { print add + del + 0 }')
+          echo "Total lines changed: $total (max $MAX_LINES)"
+          test "$total" -le "$MAX_LINES"

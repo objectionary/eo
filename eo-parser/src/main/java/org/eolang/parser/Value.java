@@ -67,6 +67,12 @@ final class Value {
     private final List<MethodChain> chain;
 
     /**
+     * True when the identifier carries {@code ?} on-error replacement
+     * ({@code book?}, issue #5166).
+     */
+    private final boolean oerr;
+
+    /**
      * Ctor — no binding, no chain.
      * @param tag Kind
      * @param text Raw text
@@ -75,7 +81,7 @@ final class Value {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(final Kind tag, final String text, final int column, final int after) {
-        this(tag, text, column, after, null, Value.NO_CHAIN);
+        this(tag, text, column, after, null, Value.NO_CHAIN, false);
     }
 
     /**
@@ -90,7 +96,7 @@ final class Value {
     Value(
         final Kind tag, final String text, final int column, final int after, final String tie
     ) {
-        this(tag, text, column, after, tie, Value.NO_CHAIN);
+        this(tag, text, column, after, tie, Value.NO_CHAIN, false);
     }
 
     /**
@@ -107,12 +113,31 @@ final class Value {
         final Kind tag, final String text, final int column, final int after,
         final String tie, final List<MethodChain> links
     ) {
+        this(tag, text, column, after, tie, links, false);
+    }
+
+    /**
+     * Primary ctor with on-error marker.
+     * @param tag Kind
+     * @param text Raw text
+     * @param column Start column
+     * @param after Index past the value
+     * @param tie Optional inline-binding label or N
+     * @param links Method-dispatch chain on this value (empty for a bare value)
+     * @param error On-error replacement flag
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    Value(
+        final Kind tag, final String text, final int column, final int after,
+        final String tie, final List<MethodChain> links, final boolean error
+    ) {
         this.kind = tag;
         this.raw = text;
         this.pos = column;
         this.end = after;
         this.binding = tie;
         this.chain = links;
+        this.oerr = error;
     }
 
     /**
@@ -164,6 +189,14 @@ final class Value {
      */
     List<MethodChain> chain() {
         return this.chain;
+    }
+
+    /**
+     * Whether this value uses on-error replacement ({@code ident?}).
+     * @return On-error flag
+     */
+    boolean oerr() {
+        return this.oerr;
     }
 
     /**
