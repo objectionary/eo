@@ -23,7 +23,7 @@ final class JanitorTest {
 
     @Test
     void doesNothingForReleasedVersion(@Mktmp final Path temp) {
-        new Janitor(temp, "1.0").exec();
+        new Janitor(temp, "1.0").clean();
         MatcherAssert.assertThat(
             "Fingerprint must not be created for released versions",
             Files.exists(temp.resolve(".snapshot-fingerprint")),
@@ -32,18 +32,22 @@ final class JanitorTest {
     }
 
     @Test
-    void wipesStageDirsAndWritesFingerprintOnFirstRun(@Mktmp final Path temp) throws Exception {
+    void wipesStageDirsOnFirstRun(@Mktmp final Path temp) throws Exception {
         final String version = "1.0-SNAPSHOT";
-        Files.createDirectories(temp.resolve("transpiled").resolve(version));
-        Files.createFile(
-            temp.resolve("transpiled").resolve(version).resolve("stale.xmir")
-        );
-        new Janitor(temp, version).exec();
+        new Saved("", JanitorTest.staleFile(temp, version)).value();
+        new Janitor(temp, version).clean();
         MatcherAssert.assertThat(
             "Stale SNAPSHOT cache must be wiped on first run",
-            Files.exists(temp.resolve("transpiled").resolve(version).resolve("stale.xmir")),
+            Files.exists(JanitorTest.staleFile(temp, version)),
             Matchers.is(false)
         );
+    }
+
+    @Test
+    void writesFingerprintOnFirstRun(@Mktmp final Path temp) throws Exception {
+        final String version = "1.0-SNAPSHOT";
+        new Saved("", JanitorTest.staleFile(temp, version)).value();
+        new Janitor(temp, version).clean();
         MatcherAssert.assertThat(
             "Fingerprint file must be written after wipe",
             Files.exists(temp.resolve(".snapshot-fingerprint")),
@@ -54,11 +58,10 @@ final class JanitorTest {
     @Test
     void doesNothingWhenFingerprintMatches(@Mktmp final Path temp) throws Exception {
         final String version = "1.0-SNAPSHOT";
-        new Janitor(temp, version).exec();
-        Files.createDirectories(temp.resolve("transpiled").resolve(version));
+        new Janitor(temp, version).clean();
         final Path kept = temp.resolve("transpiled").resolve(version).resolve("valid.xmir");
-        Files.createFile(kept);
-        new Janitor(temp, version).exec();
+        new Saved("", kept).value();
+        new Janitor(temp, version).clean();
         MatcherAssert.assertThat(
             "Cache must not be wiped when fingerprint matches",
             Files.exists(kept),
@@ -73,15 +76,22 @@ final class JanitorTest {
             temp.resolve(".snapshot-fingerprint"),
             "outdated-hash".getBytes(StandardCharsets.UTF_8)
         );
-        Files.createDirectories(temp.resolve("transpiled").resolve(version));
-        Files.createFile(
-            temp.resolve("transpiled").resolve(version).resolve("stale.xmir")
-        );
-        new Janitor(temp, version).exec();
+        new Saved("", JanitorTest.staleFile(temp, version)).value();
+        new Janitor(temp, version).clean();
         MatcherAssert.assertThat(
             "Stale cache must be wiped when fingerprint differs",
-            Files.exists(temp.resolve("transpiled").resolve(version).resolve("stale.xmir")),
+            Files.exists(JanitorTest.staleFile(temp, version)),
             Matchers.is(false)
         );
+    }
+
+    /**
+     * Builds the path to the stale transpiled file used in cache-wipe tests.
+     * @param temp Temporary directory
+     * @param version Plugin version
+     * @return Path to the stale file inside the transpiled stage cache
+     */
+    private static Path staleFile(final Path temp, final String version) {
+        return temp.resolve("transpiled").resolve(version).resolve("stale.xmir");
     }
 }

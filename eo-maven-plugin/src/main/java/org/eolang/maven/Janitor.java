@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,9 +14,10 @@ import java.util.Comparator;
 import java.util.stream.Stream;
 
 /**
- * Invalidates the local EO cache when the plugin code changes.
- * Only applies to SNAPSHOT versions — released versions use version-keyed
- * cache directories that never collide.
+ * Invalidates the local EO cache on every SNAPSHOT build.
+ * Released versions use version-keyed cache directories that never collide,
+ * so no invalidation is needed for them.
+ * @see <a href="https://github.com/objectionary/eo/issues/5179">issue #5179</a>
  * @since 0.62.0
  */
 final class Janitor {
@@ -53,41 +53,57 @@ final class Janitor {
     }
 
     /**
-     * Wipes all SNAPSHOT stage caches if the plugin code has changed since last build.
+     * Wipes all SNAPSHOT stage caches on every build.
+     * Does nothing for released versions.
      */
-    void exec() {
-        if (!this.version.contains("SNAPSHOT")) {
-            return;
-        }
-        try {
-            final String current = String.valueOf(Janitor.mtime());
-            final Path fingerprint = this.cache.resolve(Janitor.FINGERPRINT);
-            if (Files.exists(fingerprint)
-                && new String(Files.readAllBytes(fingerprint), StandardCharsets.UTF_8)
-                    .equals(current)) {
-                return;
+    void clean() {
+        if (this.version.contains("SNAPSHOT")) {
+            try {
+                this.invalidate();
+            } catch (final IOException | URISyntaxException ex) {
+                throw new IllegalStateException("Failed to clean SNAPSHOT cache", ex);
             }
-            for (final String stage : Janitor.STAGES) {
-                final Path dir = this.cache.resolve(stage).resolve(this.version);
-                if (Files.exists(dir)) {
-                    Logger.info(
-                        this,
-                        "Plugin code changed, invalidating SNAPSHOT cache at %[file]s",
-                        dir
-                    );
-                    Janitor.wipe(dir);
-                }
-            }
-            new Saved(current, fingerprint).value();
-        } catch (final IOException | URISyntaxException ex) {
-            throw new IllegalStateException("Failed to clean SNAPSHOT cache", ex);
         }
     }
 
     /**
-     * Returns the newest modification time across all files at the plugin code source location.
-     * Works for both a JAR file (production) and a classes directory (development).
-     * @return Newest last-modified timestamp in milliseconds
+     * Checks the fingerprint and wipes caches if it has changed.
+     * @throws IOException If an IO operation fails
+     * @throws URISyntaxException If the code source location URI is malformed
+     */
+    private void invalidate() throws IOException, URISyntaxException {
+        final String current = String.valueOf(Janitor.mtime());
+        final Path fingerprint = this.cache.resolve(Janitor.FINGERPRINT);
+        if (!Files.exists(fingerprint)
+            || !Files.readString(fingerprint).equals(current)) {
+            this.wipeCaches();
+            new Saved(current, fingerprint).value();
+        }
+    }
+
+    /**
+     * Deletes the versioned cache directory for each stage if it exists.
+     * @throws IOException If deletion fails
+     */
+    private void wipeCaches() throws IOException {
+        for (final String stage : Janitor.STAGES) {
+            final Path dir = this.cache.resolve(stage).resolve(this.version);
+            if (Files.exists(dir)) {
+                Logger.info(
+                    this,
+                    "Plugin code changed, invalidating SNAPSHOT cache at %[file]s",
+                    dir
+                );
+                Janitor.wipe(dir);
+            }
+        }
+    }
+
+    /**
+     * Returns the modification time of the plugin JAR or classes directory.
+     * Used as a build fingerprint: changes on every build, so comparing it
+     * to the stored value always detects a new build.
+     * @return Last-modified timestamp in milliseconds
      * @throws URISyntaxException If the code source location URI is malformed
      * @throws IOException If reading the directory fails
      */

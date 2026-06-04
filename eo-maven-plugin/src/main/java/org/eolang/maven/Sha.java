@@ -34,10 +34,6 @@ final class Sha {
         this.path = path;
     }
 
-    /**
-     * Returns Base64-encoded SHA-256 hash.
-     * @return Base64-encoded SHA-256 hash
-     */
     @Override
     public String toString() {
         try {
@@ -59,8 +55,7 @@ final class Sha {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
         try (Stream<Path> walk = Files.walk(path)) {
             walk.filter(Files::isRegularFile)
-                .sorted(Comparator.comparing(Path::toString))
-                .forEach(
+                .sorted(Comparator.comparing(Path::toString)).forEach(
                     file -> {
                         try (InputStream input = Files.newInputStream(file)) {
                             final byte[] buffer = new byte[8192];
