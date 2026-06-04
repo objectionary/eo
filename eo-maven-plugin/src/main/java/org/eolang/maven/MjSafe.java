@@ -487,6 +487,7 @@ abstract class MjSafe extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
+                new Janitor(this.cache.toPath(), this.plugin.getVersion()).exec();
                 this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(

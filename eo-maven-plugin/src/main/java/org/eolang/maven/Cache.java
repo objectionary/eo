@@ -126,7 +126,7 @@ final class Cache {
         if (Files.isDirectory(any)) {
             result = this.dirSha(any);
         } else if (Files.isRegularFile(any)) {
-            result = Cache.fileSha(any);
+            result = new Sha(any).toString();
         } else {
             throw new IllegalArgumentException(
                 String.format("Path '%s' is neither a regular file nor a directory", any)
@@ -147,7 +147,7 @@ final class Cache {
                 stream.filter(Files::isRegularFile)
                     .filter(this.filter::test)
                     .sorted(Comparator.comparing(Path::toString))
-                    .map(Cache::fileSha)
+                    .map(p -> new Sha(p).toString())
                     .map(s -> s.getBytes(StandardCharsets.UTF_8))
                     .forEach(digest::update);
             }
@@ -165,30 +165,5 @@ final class Cache {
         }
     }
 
-    /**
-     * Calculate SHA-256 hash of a file and return it as Base64 string.
-     * @param file File path
-     * @return Base64-encoded SHA-256 hash
-     */
-    private static String fileSha(final Path file) {
-        try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            try (InputStream stream = Files.newInputStream(file)) {
-                final byte[] buffer = new byte[8192];
-                int read = stream.read(buffer);
-                while (read != -1) {
-                    digest.update(buffer, 0, read);
-                    read = stream.read(buffer);
-                }
-            }
-            return Base64.getEncoder().encodeToString(digest.digest());
-        } catch (final NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 algorithm is not available", exception);
-        } catch (final IOException exception) {
-            throw new IllegalStateException(
-                String.format("Failed to read file '%s' for hashing", file),
-                exception
-            );
-        }
-    }
+
 }
