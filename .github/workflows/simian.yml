@@ -20,5 +20,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - run: wget --quiet http://public.yegor256.com/simian.jar -O /tmp/simian.jar
+      - run: wget --quiet https://public.yegor256.com/simian.jar -O /tmp/simian.jar
       - run: java -jar /tmp/simian.jar -threshold=15 "-excludes=**/EOsocketTest.java" "-excludes=**/gen" "-excludes=**/it" "**/*.java"
