@@ -98,6 +98,24 @@ public final class PhSafe implements Phi, Atom {
         this.oname = oname;
     }
 
+    /**
+     * Safe navigation: take attribute without throwing; on error return enclosure.
+     * @param receiver Object to take from
+     * @param attr Attribute name
+     * @return Attribute value or error object
+     * @since 0.57
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static Phi takeNav(final Phi receiver, final String attr) {
+        Phi result;
+        try {
+            result = receiver.take(attr);
+        } catch (final EOerror.ExError ex) {
+            result = ex.enclosure();
+        }
+        return result;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         return this.origin.equals(obj);

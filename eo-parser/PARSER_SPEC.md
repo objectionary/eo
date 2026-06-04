@@ -277,6 +277,12 @@ Outer kind: **`bare-formation`** (master; openness `open` for body).
 [a b] > foo /number                   ← atom declaration (§6.3)
 ```
 
+### 3.5.1 Safe navigation — `?.name` in a method chain
+
+R-3.5.1.1. After a `.` that starts a chain link, an optional `?` may appear before the method name: `book?.title` is one link with name `title` and the safe flag set.
+R-3.5.1.2. Safe navigation is distinct from on-error replacement `ident?` (§3.6.3): in `book?.title` the `?` is immediately followed by `.` or a method name; in `book?` it is not followed by `.`.
+R-3.5.1.3. XMIR: the parser emits `@safe=""` on the method link `<o base='.<name>' method=''>`; after `wrap-method-calls.xsl` and `roll-bases.xsl` the flag stays on the rolled head (e.g. `base='Φ.book.title'`). Transpilation uses `DataizedSafe.take`.
+
 ### 3.5 Method dispatch line — `.name [args] [> name]`
 
 A line that begins with `.` is a *method-dispatch line*. The classifier produces line shape `MethodDispatch` regardless of how the cross-line machinery later promotes it (§5.2.3 extends it into `vmethod` or `vmethod-with-hargs`).
@@ -313,6 +319,7 @@ After the head, zero or more space-separated arguments may follow. Each argument
 - An identifier head with optional method chain.
 
 R-3.6.1. Argument separation is by single space.
+R-3.6.3. **On-error replacement** — an identifier immediately followed by `?` (not `?.`) marks on-error replacement: `book?` in argument position, often with an only-phi handler `book? > [e] >>`. The parser emits `@on-error=""` on the only-phi formation and on the `φ` child. The parse pass `expand-on-error.xsl` (after `roll-bases.xsl`) lowers this shape to a `Φ.on-error` application with `α0` = main, `α1` = handler formation (default `Φ.true` over void `e` when no handler body is present), `α2` = `Φ.true` finally. Vertical handler lines under `book? > [e] >>` require a follow-up parser change (inline-phi currently closes with `horizontal-completed`).
 R-3.6.2. Inline binding `:label` or `:N` may follow an argument (§6.6).
 R-3.6.3. All-or-nothing binding rule (§6.6.2) applies to the argument list.
 R-3.6.4. The shape detector that classifies the line ignores characters inside parens and string literals — only top-level spaces and dots count.

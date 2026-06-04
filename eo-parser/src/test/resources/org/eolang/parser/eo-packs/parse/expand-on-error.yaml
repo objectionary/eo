@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/expand-on-error.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.on-error' and @name='φ']
+  - //o[@base='Φ.on-error']/o[@as='α0' and contains(@base,'book')]
+  - //o[@base='Φ.on-error']/o[@as='α1']/o[@name='e' and @base='∅']
+  - //o[@base='Φ.on-error']/o[@as='α2' and @base='Φ.true']
+input: |
+  +package test
+
+  [] > app
+    x. > y
+      book? > [e] >>

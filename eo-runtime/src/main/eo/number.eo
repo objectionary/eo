@@ -338,7 +338,7 @@
 
   # Checks that division by zero does not return an error object.
   [] +> tests-zero-division
-    try > @
+    on-error > @
       seq
         *
           2.div 0

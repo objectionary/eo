@@ -230,7 +230,7 @@
           sprintf
             "Couldn't create a socket because '%s'"
             * strerror.code
-        try
+        on-error
           scope
           error ex > [ex]
           closed-socket sd
@@ -288,7 +288,7 @@
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        try > @
+                        on-error > @
                           if.
                             client.eq -1
                             error
@@ -416,14 +416,14 @@
           sprintf
             "Couldn't initialize Winsock via 'WSAStartup' call, WSA error code: %d"
             * started
-        try
+        on-error
           if.
             sd.eq -1
             error
               sprintf
                 "Couldn't create a Win32 socket, WSA error code: %d"
                 * err.code
-            try
+            on-error
               scope
               error ex > [ex]
               closed-socket sd
@@ -490,7 +490,7 @@
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
                       [scope] > accept
-                        try > @
+                        on-error > @
                           if.
                             client.eq -1
                             error

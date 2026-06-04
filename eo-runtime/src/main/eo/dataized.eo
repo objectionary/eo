@@ -35,7 +35,7 @@
 # from the object `foo` and returns them.
 # The `.as-bytes` is used to prevent double dataization.
 [target] > dataized
-  try > @
+  on-error > @
     target
     error ex > [ex]
     01-

@@ -23,6 +23,9 @@ jobs:
       #  Maven filter placeholder which is unresolvable outside a Maven build.
       #  Rolled back to 85.0.0. Upgrade once ORT fixes the SPDX reporter crash, or
       #  once the fibonacci invoker template is updated to use resolvable versions.
+      #  Pin ort-config: main (30ae2c36+) needs evaluator API missing in ORT 85.0.0.
+      #  Revision below is from the last green master ort run (2026-05-27).
       - uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
           image: 'ghcr.io/oss-review-toolkit/ort:85.0.0'
+          ort-config-revision: '421bae2e154d903cdb8120d59985c28f9f697564'

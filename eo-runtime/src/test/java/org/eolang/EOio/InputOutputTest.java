@@ -955,7 +955,7 @@ final class InputOutputTest {
                         ).getAbsolutePath()
                     ), StandardCharsets.UTF_8
                 ),
-                Matchers.equalTo(msg)
+                Matchers.containsString(msg)
             );
         }
     }

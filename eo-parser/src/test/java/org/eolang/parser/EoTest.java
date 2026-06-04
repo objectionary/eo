@@ -683,6 +683,60 @@ final class EoTest {
         );
     }
 
+    @Test
+    void parsesSafeNavigationInChain() {
+        MatcherAssert.assertThat(
+            "?.method must emit @safe on the method link",
+            EoTest.render(
+                "+package test",
+                "",
+                "[] > app",
+                "  book?.title > x"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='.title' and @method='' and @safe='']"
+            )
+        );
+    }
+
+    @Test
+    void parsesSafeNavigationLongChain() {
+        MatcherAssert.assertThat(
+            "multiple ?. links must emit @safe on each safe segment",
+            EoTest.render(
+                "+package test",
+                "",
+                "[] > app",
+                "  book?.mid?.inner.title > x"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='.mid' and @method='' and @safe='']",
+                "//o[@base='.inner' and @method='' and @safe='']",
+                "//o[@base='.title' and @method='' and not(@safe)]"
+            )
+        );
+    }
+
+    @Test
+    void parsesOnErrorOnlyPhi() {
+        MatcherAssert.assertThat(
+            "book? > [e] >> must mark formation and phi with on-error",
+            EoTest.render(
+                "+package test",
+                "",
+                "[] > app",
+                "  x. > y",
+                "    book? > [e] >>"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@on-error and @name='φ' and @base='book']"
+            )
+        );
+    }
+
     /**
      * Run the EO source through the walker and render the XMIR under a
      * fresh {@code <object/>} root. The supplied rows are joined with
