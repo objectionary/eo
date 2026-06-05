@@ -279,6 +279,13 @@
                       lint is updated or removed upstream.
                 -->
                 <lint>empty-object</lint>
+                <!--
+                @todo #5183:30min. Enable `ascii-only` lint once objectionary/lints#927 is fixed.
+                      The lint flags characters with code < 32, which includes newlines
+                      embedded in multi-line XMIR <comment> elements. Newlines are valid
+                      ASCII control characters, so this is a false positive.
+                -->
+                <lint>ascii-only</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
