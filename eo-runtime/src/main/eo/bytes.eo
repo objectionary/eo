@@ -7,9 +7,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
-+unlint idempotent-attribute-is-not-first
-+unlint compound-name
-+unlint not-empty-atom
 
 # @todo #4707:60min Remove `+unlint not-empty-atom` from all `.eo` files in eo-runtime.
 #  After restoring the `/name` syntax for atom return types, the `λ` marker now carries

@@ -676,8 +676,11 @@ final class Linting implements Step {
      * @return TRUE if not suppressed
      */
     private static boolean notSuppressed(final Xnav xnav, final Defect defect) {
+        final String rule = defect.rule();
+        final int slash = rule.lastIndexOf('/');
+        final String base = slash >= 0 ? rule.substring(0, slash) : rule;
         return xnav.path(
-            String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
+            String.format("/object/metas/meta[head='unlint' and tail='%s']", base)
         ).findAny().isEmpty();
     }
 }
