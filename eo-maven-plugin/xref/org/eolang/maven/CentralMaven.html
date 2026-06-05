@@ -96,185 +96,189 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     * Standalone constructor with a custom local repository.</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @param local Path to the local Maven repository</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> Path local) {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">this</strong>(<strong class="jxr_keyword">new</strong> RepositorySystemSupplier().get(), local);
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">     * Constructor that accepts an optional repository system.</em>
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">     * Falls back to a fresh standalone system when {@code sys} is {@code null},</em>
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">     * which happens in tests that run without Maven injection.</em>
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">     * @param sys Repository system, or {@code null} to build one automatically</em>
-<a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys) {
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">this</strong>(CentralMaven.nonNull(sys), CentralMaven.LOCAL);
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">     * Private standalone constructor that builds the session from an already-created system.</em>
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">     * @param local Local repository path</em>
-<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">private</strong> <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> Path local) {
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         <strong class="jxr_keyword">this</strong>(sys, CentralMaven.standaloneSession(sys, local));
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
-<a class="jxr_linenumber" name="L114" href="#L114">114</a> 
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">     * Maven-plugin constructor. Reuses the already-configured components</em>
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">     * provided by Maven's dependency-injection, avoiding classloader issues.</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">     * @param sys Repository system injected by Maven</em>
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">     * @param sess Repository session injected by Maven</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">     * @param repos Remote repositories injected by Maven</em>
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">final</strong> RepositorySystem sys,
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>         <strong class="jxr_keyword">final</strong> RepositorySystemSession sess,
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">final</strong> List&lt;RemoteRepository&gt; repos
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     ) {
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>         <strong class="jxr_keyword">this</strong>.system = sys;
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">this</strong>.session = sess;
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">this</strong>.remotes = repos;
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>     }
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">     * Private constructor that wires the standalone remotes.</em>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">     * @param sess Repository session</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">private</strong> <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> DefaultRepositorySystemSession sess) {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">this</strong>(
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             sys,
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>             sess,
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             Collections.singletonList(
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 <strong class="jxr_keyword">new</strong> RemoteRepository.Builder(<span class="jxr_string">"central"</span>, <span class="jxr_string">"default"</span>, CentralMaven.CENTRAL).build()
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>             )
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         );
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     @Override
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> accept(<strong class="jxr_keyword">final</strong> Dependency dep, <strong class="jxr_keyword">final</strong> Path dest) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <strong class="jxr_keyword">final</strong> String classifier = Objects.requireNonNullElse(dep.getClassifier(), <span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>         <strong class="jxr_keyword">final</strong> Artifact artifact;
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>             artifact = <strong class="jxr_keyword">this</strong>.system.resolveArtifact(
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>                 <strong class="jxr_keyword">this</strong>.session,
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>                 <strong class="jxr_keyword">new</strong> ArtifactRequest(
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>                     <strong class="jxr_keyword">new</strong> DefaultArtifact(
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>                         dep.getGroupId(),
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>                         dep.getArtifactId(),
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>                         classifier,
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>                         <span class="jxr_string">"jar"</span>,
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>                         dep.getVersion()
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>                     ),
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>                     <strong class="jxr_keyword">this</strong>.remotes,
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>                 )
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>             ).getArtifact();
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ArtifactResolutionException ex) {
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 String.format(
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>                     <span class="jxr_string">"Failed to resolve %s:%s:%s"</span>,
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 ),
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 ex
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>             );
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         }
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         Logger.info(
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>             <strong class="jxr_keyword">this</strong>,
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>             <span class="jxr_string">"Resolved %s:%s:%s:%s to %s"</span>,
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>             dep.getGroupId(),
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>             dep.getArtifactId(),
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             classifier,
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>             dep.getVersion(),
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>             artifact.getFile()
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         );
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>             CentralMaven.unpack(artifact.getFile().toPath(), dest);
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException ex) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>                 String.format(
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>                     <span class="jxr_string">"Failed to unpack %s:%s:%s to %s"</span>,
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dest
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>                 ),
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>                 ex
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>             );
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         }
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         <strong class="jxr_keyword">if</strong> (classifier.isEmpty()) {
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>             Logger.info(
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>                 <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s:%s:%s unpacked to %[file]s"</span>,
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>                 dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dest
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>             );
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             Logger.info(
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>                 <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s:%s:%s:%s unpacked to %[file]s"</span>,
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>                 dep.getGroupId(), dep.getArtifactId(), classifier, dep.getVersion(), dest
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>             );
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         }
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>     }
-<a class="jxr_linenumber" name="L207" href="#L207">207</a> 
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>     @Override
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>     <strong class="jxr_keyword">public</strong> BiConsumer&lt;Dependency, Path&gt; andThen(
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         <strong class="jxr_keyword">final</strong> BiConsumer&lt;? <strong class="jxr_keyword">super</strong> Dependency, ? <strong class="jxr_keyword">super</strong> Path&gt; after
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>     ) {
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(<span class="jxr_string">"not implemented #andThen()"</span>);
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>     }
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> 
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">     * Returns the given system if non-null, otherwise creates a fresh one.</em>
-<a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">     * @param sys Repository system, or {@code null}</em>
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">     * @return Non-null repository system</em>
-<a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> RepositorySystem nonNull(<strong class="jxr_keyword">final</strong> RepositorySystem sys) {
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <strong class="jxr_keyword">final</strong> RepositorySystem result;
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>         <strong class="jxr_keyword">if</strong> (sys == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>             result = <strong class="jxr_keyword">new</strong> RepositorySystemSupplier().get();
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>             result = sys;
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>         }
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>         <strong class="jxr_keyword">return</strong> result;
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>     }
-<a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L231" href="#L231">231</a> <em class="jxr_javadoccomment">     * Builds a standalone session for the given system and local repository.</em>
-<a class="jxr_linenumber" name="L232" href="#L232">232</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
-<a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">     * @param local Local repository path</em>
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> <em class="jxr_javadoccomment">     * @return Configured session</em>
-<a class="jxr_linenumber" name="L235" href="#L235">235</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> DefaultRepositorySystemSession standaloneSession(
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>         <strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> Path local
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>     ) {
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>         <strong class="jxr_keyword">final</strong> DefaultRepositorySystemSession sess = MavenRepositorySystemUtils.newSession();
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>         sess.setLocalRepositoryManager(
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>             sys.newLocalRepositoryManager(sess, <strong class="jxr_keyword">new</strong> LocalRepository(local.toFile()))
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>         );
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>         <strong class="jxr_keyword">return</strong> sess;
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>     }
-<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L247" href="#L247">247</a> <em class="jxr_javadoccomment">     * Unpacks a JAR (ZIP) file into the given directory.</em>
-<a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">     * @param jar Path to the JAR file</em>
-<a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">     * @param dest Destination directory</em>
-<a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">     * @throws IOException If unpacking fails</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> unpack(<strong class="jxr_keyword">final</strong> Path jar, <strong class="jxr_keyword">final</strong> Path dest) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>         Files.createDirectories(dest);
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>         <strong class="jxr_keyword">try</strong> (ZipInputStream zis = <strong class="jxr_keyword">new</strong> ZipInputStream(Files.newInputStream(jar))) {
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>             ZipEntry entry = zis.getNextEntry();
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>             <strong class="jxr_keyword">while</strong> (entry != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 <strong class="jxr_keyword">final</strong> Path target = dest.resolve(entry.getName());
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>                 <strong class="jxr_keyword">if</strong> (entry.isDirectory()) {
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>                     Files.createDirectories(target);
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>                     Files.createDirectories(target.getParent());
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>                     Files.copy(zis, target, StandardCopyOption.REPLACE_EXISTING);
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>                 }
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>                 zis.closeEntry();
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>                 entry = zis.getNextEntry();
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>             }
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>         }
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>     }
-<a class="jxr_linenumber" name="L269" href="#L269">269</a> }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     * @checkstyle ConstructorsCodeFreeCheck (5 lines)</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> Path local) {
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">this</strong>(<strong class="jxr_keyword">new</strong> RepositorySystemSupplier().get(), local);
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">     * Constructor that accepts an optional repository system.</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">     * Falls back to a fresh standalone system when {@code sys} is {@code null},</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">     * which happens in tests that run without Maven injection.</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">     * @param sys Repository system, or {@code null} to build one automatically</em>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> <em class="jxr_javadoccomment">     * @checkstyle ConstructorsCodeFreeCheck (5 lines)</em>
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys) {
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">this</strong>(CentralMaven.nonNull(sys), CentralMaven.LOCAL);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">     * Private standalone constructor that builds the session from an already-created system.</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     * @param local Local repository path</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">     * @checkstyle ConstructorsCodeFreeCheck (5 lines)</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <strong class="jxr_keyword">private</strong> <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> Path local) {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         <strong class="jxr_keyword">this</strong>(sys, CentralMaven.standaloneSession(sys, local));
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">     * Private constructor that wires the standalone remotes.</em>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">     * @param sess Repository session</em>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_javadoccomment">     * @checkstyle ConstructorsCodeFreeCheck (10 lines)</em>
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">private</strong> <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(<strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> DefaultRepositorySystemSession sess) {
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">this</strong>(
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             sys,
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>             sess,
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>             Collections.singletonList(
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>                 <strong class="jxr_keyword">new</strong> RemoteRepository.Builder(<span class="jxr_string">"central"</span>, <span class="jxr_string">"default"</span>, CentralMaven.CENTRAL).build()
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             )
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         );
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">     * Maven-plugin constructor. Reuses the already-configured components</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * provided by Maven's dependency-injection, avoiding classloader issues.</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * @param sys Repository system injected by Maven</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     * @param sess Repository session injected by Maven</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">     * @param repos Remote repositories injected by Maven</em>
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <a name="CentralMaven" href="../../../org/eolang/maven/CentralMaven.html#CentralMaven">CentralMaven</a>(
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">final</strong> RepositorySystem sys,
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <strong class="jxr_keyword">final</strong> RepositorySystemSession sess,
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">final</strong> List&lt;RemoteRepository&gt; repos
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     ) {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         <strong class="jxr_keyword">this</strong>.system = sys;
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">this</strong>.session = sess;
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         <strong class="jxr_keyword">this</strong>.remotes = repos;
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> 
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     @Override
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> accept(<strong class="jxr_keyword">final</strong> Dependency dep, <strong class="jxr_keyword">final</strong> Path dest) {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>         <strong class="jxr_keyword">final</strong> String classifier = Objects.requireNonNullElse(dep.getClassifier(), <span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         <strong class="jxr_keyword">final</strong> Artifact artifact;
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>             artifact = <strong class="jxr_keyword">this</strong>.system.resolveArtifact(
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 <strong class="jxr_keyword">this</strong>.session,
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>                 <strong class="jxr_keyword">new</strong> ArtifactRequest(
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>                     <strong class="jxr_keyword">new</strong> DefaultArtifact(
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>                         dep.getGroupId(),
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                         dep.getArtifactId(),
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                         classifier,
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>                         <span class="jxr_string">"jar"</span>,
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>                         dep.getVersion()
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>                     ),
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>                     <strong class="jxr_keyword">this</strong>.remotes,
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>                     <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 )
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>             ).getArtifact();
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> ArtifactResolutionException ex) {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 String.format(
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                     <span class="jxr_string">"Failed to resolve %s:%s:%s"</span>,
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion()
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>                 ),
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>                 ex
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>             );
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         }
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         Logger.info(
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <strong class="jxr_keyword">this</strong>,
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <span class="jxr_string">"Resolved %s:%s:%s:%s to %s"</span>,
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>             dep.getGroupId(),
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             dep.getArtifactId(),
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>             classifier,
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>             dep.getVersion(),
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>             artifact.getFile()
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         );
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>             CentralMaven.unpack(artifact.getFile().toPath(), dest);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException ex) {
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>                 String.format(
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>                     <span class="jxr_string">"Failed to unpack %s:%s:%s to %s"</span>,
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>                     dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dest
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>                 ),
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>                 ex
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>             );
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         }
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         <strong class="jxr_keyword">if</strong> (classifier.isEmpty()) {
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>             Logger.info(
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>                 <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s:%s:%s unpacked to %[file]s"</span>,
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>                 dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dest
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>             );
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>             Logger.info(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 <strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s:%s:%s:%s unpacked to %[file]s"</span>,
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>                 dep.getGroupId(), dep.getArtifactId(), classifier, dep.getVersion(), dest
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>             );
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         }
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>     }
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> 
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>     @Override
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>     <strong class="jxr_keyword">public</strong> BiConsumer&lt;Dependency, Path&gt; andThen(
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>         <strong class="jxr_keyword">final</strong> BiConsumer&lt;? <strong class="jxr_keyword">super</strong> Dependency, ? <strong class="jxr_keyword">super</strong> Path&gt; after
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>     ) {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(<span class="jxr_string">"not implemented #andThen()"</span>);
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>     }
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L220" href="#L220">220</a> <em class="jxr_javadoccomment">     * Returns the given system if non-null, otherwise creates a fresh one.</em>
+<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">     * @param sys Repository system, or {@code null}</em>
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> <em class="jxr_javadoccomment">     * @return Non-null repository system</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> RepositorySystem nonNull(<strong class="jxr_keyword">final</strong> RepositorySystem sys) {
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>         <strong class="jxr_keyword">final</strong> RepositorySystem result;
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         <strong class="jxr_keyword">if</strong> (sys == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>             result = <strong class="jxr_keyword">new</strong> RepositorySystemSupplier().get();
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>             result = sys;
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>         }
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         <strong class="jxr_keyword">return</strong> result;
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     }
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> 
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> <em class="jxr_javadoccomment">     * Builds a standalone session for the given system and local repository.</em>
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">     * @param sys Repository system</em>
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">     * @param local Local repository path</em>
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">     * @return Configured session</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> DefaultRepositorySystemSession standaloneSession(
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         <strong class="jxr_keyword">final</strong> RepositorySystem sys, <strong class="jxr_keyword">final</strong> Path local
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>     ) {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         <strong class="jxr_keyword">final</strong> DefaultRepositorySystemSession sess = MavenRepositorySystemUtils.newSession();
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         sess.setLocalRepositoryManager(
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>             sys.newLocalRepositoryManager(sess, <strong class="jxr_keyword">new</strong> LocalRepository(local.toFile()))
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>         );
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         <strong class="jxr_keyword">return</strong> sess;
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>     }
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">     * Unpacks a JAR (ZIP) file into the given directory.</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">     * @param jar Path to the JAR file</em>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">     * @param dest Destination directory</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * @throws IOException If unpacking fails</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> unpack(<strong class="jxr_keyword">final</strong> Path jar, <strong class="jxr_keyword">final</strong> Path dest) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         Files.createDirectories(dest);
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         <strong class="jxr_keyword">try</strong> (ZipInputStream zis = <strong class="jxr_keyword">new</strong> ZipInputStream(Files.newInputStream(jar))) {
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>             ZipEntry entry = zis.getNextEntry();
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>             <strong class="jxr_keyword">while</strong> (entry != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>                 <strong class="jxr_keyword">final</strong> Path target = dest.resolve(entry.getName());
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>                 <strong class="jxr_keyword">if</strong> (entry.isDirectory()) {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>                     Files.createDirectories(target);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>                     Files.createDirectories(target.getParent());
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>                     Files.copy(zis, target, StandardCopyOption.REPLACE_EXISTING);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>                 }
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 zis.closeEntry();
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>                 entry = zis.getNextEntry();
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>         }
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>     }
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>
