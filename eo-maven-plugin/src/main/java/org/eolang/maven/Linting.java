@@ -25,9 +25,9 @@ import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.wpa.Program;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
+import org.eolang.wpa.Program;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -301,7 +301,7 @@ final class Linting implements Step {
             ).apply(source, target, base.relativize(target));
         } else {
             new Saved(
-                this.linted( xmir, unlints).toString(),
+                this.linted(xmir, unlints).toString(),
                 target
             ).value();
         }
@@ -313,7 +313,10 @@ final class Linting implements Step {
                 seen.add(
                     Linting.format(tojo.identifier(), defect.rule(), defect.line(), defect.text())
                 );
-                Linting.logOne(tojo.identifier(), defect);
+                Linting.logOne(
+                    defect.severity().mnemo(),
+                    Linting.format(tojo.identifier(), defect.rule(), defect.line(), defect.text())
+                );
             }
         }
         tojo.withLinted(target);
@@ -404,7 +407,12 @@ final class Linting implements Step {
                     ).applyQuietly(node);
                     if (Linting.notSuppressed(new Xnav(node), defect)) {
                         defects.add(defect);
-                        Linting.logOne(defect.object(), defect);
+                        Linting.logOne(
+                            defect.severity().mnemo(),
+                            Linting.format(
+                                defect.object(), defect.rule(), defect.line(), defect.text()
+                            )
+                        );
                     }
                 }
             );
@@ -418,10 +426,7 @@ final class Linting implements Step {
      * @return XML after linting
      * @checkstyle ParameterNumberCheck (40 lines)
      */
-    private XML linted(
-        final XML xmir,
-        final String... unlints
-    ) {
+    private XML linted(final XML xmir, final String... unlints) {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
@@ -445,66 +450,15 @@ final class Linting implements Step {
     }
 
     /**
-     * Log one defect.
-     * @param object Program identifier
-     * @param defect The defect to log
+     * Log one defect message.
+     * @param severity Severity mnemo (e.g. "warning", "error")
+     * @param message Formatted defect message
      */
-    private static void logOne(final String object, final Defect defect) {
-        final StringBuilder message = new StringBuilder()
-            .append(object)
-            .append(':').append(defect.line())
-            .append(' ')
-            .append(defect.text())
-            .append(" (")
-            .append(defect.rule())
-            .append(')');
-        switch (defect.severity()) {
-            case WARNING:
-                Logger.warn(Linting.class, message.toString());
-                break;
-            case ERROR:
-            case CRITICAL:
-                Logger.error(Linting.class, message.toString());
-                break;
-            default:
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Not yet supported severity: %s",
-                        defect.severity()
-                    )
-                );
-        }
-    }
-
-    /**
-     * Log one WPA defect.
-     * @param object Program identifier
-     * @param defect The WPA defect to log
-     */
-    private static void logOne(final String object, final org.eolang.wpa.Defect defect) {
-        final StringBuilder message = new StringBuilder()
-            .append(object)
-            .append(':').append(defect.line())
-            .append(' ')
-            .append(defect.text())
-            .append(" (")
-            .append(defect.rule())
-            .append(')');
-        switch (defect.severity()) {
-            case WARNING:
-                Logger.warn(Linting.class, message.toString());
-                break;
-            case ERROR:
-            case CRITICAL:
-                Logger.error(Linting.class, message.toString());
-                break;
-            default:
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Not yet supported severity: %s",
-                        defect.severity()
-                    )
-                );
+    private static void logOne(final String severity, final String message) {
+        if (Severity.WARNING.mnemo().equals(severity)) {
+            Logger.warn(Linting.class, message);
+        } else {
+            Logger.error(Linting.class, message);
         }
     }
 
@@ -644,6 +598,15 @@ final class Linting implements Step {
         ).findAny().isEmpty();
     }
 
+    /**
+     * Format a defect for display.
+     * @param object Program or object identifier
+     * @param rule Rule name
+     * @param line Line number
+     * @param text Defect message
+     * @return Formatted string
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
     private static String format(
         final String object, final String rule, final int line, final String text
     ) {
@@ -676,11 +639,27 @@ final class Linting implements Step {
      * @return TRUE if not suppressed
      */
     private static boolean notSuppressed(final Xnav xnav, final Defect defect) {
-        final String rule = defect.rule();
-        final int slash = rule.lastIndexOf('/');
-        final String base = slash >= 0 ? rule.substring(0, slash) : rule;
         return xnav.path(
-            String.format("/object/metas/meta[head='unlint' and tail='%s']", base)
+            String.format(
+                "/object/metas/meta[head='unlint' and tail='%s']",
+                Linting.baseRule(defect.rule())
+            )
         ).findAny().isEmpty();
+    }
+
+    /**
+     * Strip scope suffix (e.g. {@code /S}, {@code /W}) from a scoped rule name.
+     * @param rule Rule name, possibly scoped
+     * @return Base rule name without scope suffix
+     */
+    private static String baseRule(final String rule) {
+        final int slash = rule.lastIndexOf('/');
+        final String result;
+        if (slash >= 0) {
+            result = rule.substring(0, slash);
+        } else {
+            result = rule;
+        }
+        return result;
     }
 }
