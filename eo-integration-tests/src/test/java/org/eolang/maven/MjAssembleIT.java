@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjAssembleIT {
 
     @Test
+    @Disabled("registry still serves pre-spec EO sources")
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/io/stdout.%s";
         final String parsed = String.format(stdout, "1-parse", "xmir");
@@ -51,6 +53,7 @@ final class MjAssembleIT {
     }
 
     @Test
+    @Disabled("registry still serves pre-spec EO sources")
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
