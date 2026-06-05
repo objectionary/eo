@@ -1,9 +1,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint compound-name
 +unlint redundant-object
 
 # Negative infinity.
@@ -500,7 +499,7 @@
 
   # Tests that negative infinity floor equals itself.
   [] +> tests-negative-infinity-floor-is-equal-to-self
-    negative-infinity.@.eq negative-infinity > @
+    negative-infinity.floor.eq negative-infinity > @
 
   # Tests that negative infinity is not NaN.
   [] +> tests-negative-infinity-is-not-nan

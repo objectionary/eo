@@ -1,10 +1,8 @@
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
++alias sm.system-clock
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -33,8 +31,9 @@
               11
           00-0F-FF-FF-FF-FF-FF-FF
 
-  # New random with pseudo-random seed.
-  [] > pseudo
+  # Builds a `random` whose seed is derived from the wall-clock time provided by `clock`.
+  # `clock` must decorate an `i64` (via `@`) holding milliseconds since the Unix epoch.
+  [clock] > clocked
     random > @
       as-number.
         plus.
@@ -51,19 +50,12 @@
               and.
                 tbytes
                 ((one.left shift3).as-i64.minus one).as-bytes
-    (posix "gettimeofday" *).output > timeval
-    as-bytes. > tbytes
-      as-i64.
-        if.
-          os.is-windows
-          (win32 "GetSystemTime" *).milliseconds
-          plus.
-            timeval.tv-sec.times 1000
-            as-number.
-              timeval.tv-usec.as-i64.div 1000.as-i64
+    clock.as-bytes > tbytes
     35 > shift1
     17 > shift3
     00-00-00-00-00-00-00-01 > one
+  # New random with pseudo-random seed derived from the system clock.
+  clocked system-clock > pseudo
 
   # Tests that random numbers generated with the same seed are different in sequence.
   [] +> tests-random-with-seed
@@ -94,7 +86,9 @@
         (rand.next.next.lt 0).not
     (random 123).next > rand
 
-  # Tests that two pseudo-random numbers generated independently are not equal.
+  # Tests that two pseudo-random numbers seeded from distinct clocks are not equal.
   [] +> tests-two-random-numbers-not-equal
     not. > @
-      random.pseudo.eq random.pseudo
+      eq.
+        random.clocked 123.as-i64
+        random.clocked 456.as-i64

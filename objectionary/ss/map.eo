@@ -1,3 +1,5 @@
++alias ss.contains
++alias ss.filtered
 +alias ss.hash-code-of
 +alias ss.list
 +alias ss.mapped
@@ -5,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ss
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -32,7 +34,7 @@
         tup.length.eq 0
         couple * (list *)
         if.
-          prev.hashes.contains hash
+          contains prev.hashes hash
           prev
           couple
             prev.entries.with
@@ -122,7 +124,7 @@
       map.initialized > @
         with.
           origin.
-            filtered.
+            filtered
               list entries
               (hash.eq entry.hash).not > [entry] >>
           [] >>
@@ -136,7 +138,7 @@
     [key] > without
       map.initialized > @
         origin.
-          filtered.
+          filtered
             list entries
             (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!
@@ -203,39 +205,44 @@
 
   # Tests that searching for non-existent key returns false exists flag.
   [] +> tests-does-not-find-element-by-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .found "three"
-    .exists
-    .not > @
+    not. > @
+      exists.
+        found.
+          map
+            *
+              map.entry "one" 1
+              map.entry "two" 2
+          "three"
 
   # Tests that checking if map has an existing key returns true.
   [] +> tests-has-element-with-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .has "two" > @
+    has. > @
+      map
+        *
+          map.entry "one" 1
+          map.entry "two" 2
+      "two"
 
   # Tests that checking if map has non-existent key returns false.
   [] +> tests-does-not-have-element-by-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    .has "three"
-    .not > @
+    not. > @
+      has.
+        map
+          *
+            map.entry "one" 1
+            map.entry "two" 2
+        "three"
 
   # Tests that removing non-existent key does not change the map size.
   [] +> tests-does-not-change-map-without-non-existed-element
-    map
-      *
-        map.entry "one" 1
-    .without "two"
-    .size
-    .eq 1 > @
+    eq. > @
+      size.
+        without.
+          map
+            *
+              map.entry "one" 1
+          "two"
+      1
 
   # Tests that removing an existing key from map works correctly.
   [] +> tests-removes-element-from-map-by-key

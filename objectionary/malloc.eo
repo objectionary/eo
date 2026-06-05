@@ -1,11 +1,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.0
++rt jvm org.eolang:eo-runtime:0.61.1
 +rt node eo2js-runtime:0.0.0
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint idempotent-attribute-is-not-first
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -82,7 +81,7 @@
   # written into memory.
   [size scope] > of
     # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
-    [] > @ ?
+    [] > @ /bytes
 
     # Allocated block in memory that provides an API for writing and reading.
     [id] > allocated
@@ -91,13 +90,13 @@
       read 0 size > get
 
       # Returns size of allocated block in memory as `org.eolang.number`.
-      [] > size ?
+      [] > size /number
 
       # Resizes allocated block in memory and returns `true`.
       # Here `size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
       # Returns `org.eolang.malloc.of.allocated` object.
-      [size] > resized ?
+      [size] > resized /allocated
 
       # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
@@ -109,11 +108,11 @@
 
       # Read `length` bytes with `offset` from the allocated block in memory and return them
       # as `org.eolang.bytes`.
-      [offset length] > read ?
+      [offset length] > read /bytes
 
       # Write `data` with `offset` to the allocated block in memory
       # and return `org.eolang.true`.
-      [offset data] > write ?
+      [offset data] > write /true
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
@@ -419,8 +418,10 @@
   # Tests that the runtime handles recursion without arguments.
   [] +> tests-recursion-without-arguments
     eq. > @
-      malloc.for 4 [m]>>
-        func m > @
+      malloc.for
+        4
+        [m] >>
+          func m > @
       0
     # Decrements n until it reaches zero, then returns it.
     [n] > func
@@ -435,13 +436,15 @@
   # Tests that the runtime constants defend against side effects.
   [] +> tests-constant-defends-against-side-effects
     eq. > @
-      malloc.for 7 [m]>>
-        m.put > @
-          times.
-            num
-            num
-        number > num
-          ^.inc m > n!
+      malloc.for
+        7
+        [m] >>
+          m.put > @
+            times.
+              num
+              num
+          number > num
+            ^.inc m > n!
       64
     # Increments x and returns its new value.
     [x] > inc

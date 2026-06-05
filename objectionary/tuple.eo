@@ -1,6 +1,6 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -167,10 +167,7 @@
       eq.
         arr.at 2
         3
-    *
-    .with 1
-    .with 2
-    .with 3 > arr
+    ((*.with 1).with 2).with 3 > arr
 
   # Tests that the length of an explicitly created empty tuple is zero.
   [] +> tests-gets-lengths-of-empty-tuple
@@ -219,11 +216,7 @@
       eq.
         arr.at 2
         3
-    tuple
-    .empty
-    .with 1
-    .with 2
-    .with 3 > arr
+    ((tuple.empty.with 1).with 2).with 3 > arr
 
   # Tests that using negative index -1 correctly retrieves the last element of the tuple.
   [] +> tests-tuple-with-negative-index-gets-last

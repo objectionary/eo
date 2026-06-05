@@ -5,14 +5,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.61.0
++rt jvm org.eolang:eo-runtime:0.61.1
 +rt node eo2js-runtime:0.0.0
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
-+unlint idempotent-attribute-is-not-first
-+unlint compound-name
 
 # The file object in the filesystem.
 [path] > file
@@ -21,10 +19,10 @@
   (Q.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory ?
+  [] > is-directory /true
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists ?
+  [] > exists /true
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -41,7 +39,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > touch ?
+    [] > touch /true
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -57,10 +55,10 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > delete ?
+    [] > delete /true
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
-  [] > size ?
+  [] > size /number
 
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
@@ -73,7 +71,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > move ?
+    [] > move /string
 
   # Opens the file.
   #
@@ -165,7 +163,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
-    [] > process-file ?
+    [] > process-file /true
 
     # File stream.
     # The objects provides an API for using file as input or output.
@@ -204,7 +202,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [size] > chunk ?
+        [size] > chunk /bytes
 
       # Writes the given `buffer` to file output stream.
       # Here `buffer` is either a sequence of bytes or an object that can be
@@ -242,7 +240,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes ?
+        [buffer] > written-bytes /true
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
@@ -510,16 +508,18 @@
         f.write "Shrek is love" > [f]
       eq.
         "Shrek is love"
-        malloc.of 13 [m]>>
-          seq * > @
-            file
-              ^.src
-            .open
-              "r"
-              [f] >>
-                ^.m.put > @
-                  f.read 13
-            m
+        malloc.of
+          13
+          [m] >>
+            seq * > @
+              file
+                ^.src
+              .open
+                "r"
+                [f] >>
+                  ^.m.put > @
+                    f.read 13
+              m
     tmpdir.tmpfile > temp
     temp.path > src
 

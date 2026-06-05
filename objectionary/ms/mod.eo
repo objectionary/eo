@@ -2,7 +2,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -31,44 +31,45 @@
 
   # Tests that modulo operation works correctly for 1 mod 2.
   [] +> tests-mod-n1-n2
-    eq. +> @
+    eq. > @
       mod 1 2
       1
 
   # Tests that modulo operation works correctly for 0 mod 5.
   [] +> tests-mod-n0-n5
-    eq. +> @
+    eq. > @
       mod 0 5
       0
 
   # Tests that modulo operation works correctly for 0 mod -15.
   [] +> tests-mod-n0-n15-neg
-    eq. +> @
+    eq. > @
       mod 0 -15
       0
 
   # Tests that modulo operation works correctly for -1 mod 7.
   [] +> tests-mod-n1-neg-n7
-    eq. +> @
+    eq. > @
       mod -1 7
       -1
 
   # Tests that modulo operation works correctly for 16 mod -200.
   [] +> tests-mod-n16-n200-neg
-    eq. +> @
+    eq. > @
       mod 16 -200
       16
 
-  # Tests mathematical equality A = ((A div B) * B) + (A mod B).
-  # Checks mathematical equality
-  # A = ((A div B) * B) + (A mod B).
+  # Tests mathematical equality A = (trunc(A / B) * B) + (A mod B).
+  # `mod` follows the sign of the dividend (truncated remainder, like C `%`),
+  # so the matching quotient is truncation toward zero (`as-i64`), not
+  # mathematical floor.
   [] +> tests-div-mod-compatibility
-    eq. +> @
+    eq. > @
       plus.
         mod dividend divisor
         times.
           divisor
-          (dividend.div divisor).floor
+          (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor
@@ -76,13 +77,13 @@
   # Tests modulo operation when dividend is less than divisor.
   # Checks modulo: dividend < divisor.
   [] +> tests-mod-dividend-less-than-divisor
-    eq. +> @
+    eq. > @
       mod -1 5
       -1
 
   # Tests modulo operation when divisor is 1.
   # Checks modulo by 1.
   [] +> tests-mod-dividend-by-one
-    eq. +> @
+    eq. > @
       mod 133 1
       0

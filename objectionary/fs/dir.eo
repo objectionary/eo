@@ -3,13 +3,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.61.0
++rt jvm org.eolang:eo-runtime:0.61.1
 +rt node eo2js-runtime:0.0.0
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint idempotent-attribute-is-not-first
-+unlint compound-name
 +unlint redundant-object
 
 # Directory in the file system.
@@ -34,12 +32,12 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use it programmatically outside of `dir` object.
-    [] > mkdir ?
+    [] > mkdir /true
 
   # Goes through all files in the directory, recursively
   # finding them with the `glob` provided.
   # Returns `org.eolang.tuple` of all files in the directory.
-  [glob] > walk ?
+  [glob] > walk /tuple
 
   # Deletes directory and all files in it, recursively.
   # Returns the deleted directory.
@@ -80,7 +78,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `dir` object.
-    [] > touch ?
+    [] > touch /string
 
   # Opens the file for I/O operations.
   # Since current file is a directory - returns an `error`.

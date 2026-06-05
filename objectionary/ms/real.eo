@@ -2,10 +2,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint idempotent-attribute-is-not-first
 
 # Returns a floating point number.
 [num] > real
@@ -13,60 +12,60 @@
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow 42.5 positive-infinity
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-infinity-to-the-pow-of-positive-int-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow positive-infinity 42
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-infinity-to-the-pow-of-positive-float-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow positive-infinity 10.8
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-infinity-to-the-pow-of-positive-infinity-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow positive-infinity positive-infinity
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-negative-infinity-to-the-pow-of-positive-float-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow negative-infinity 9.9
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-negative-infinity-to-the-pow-of-even-positive-int-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow negative-infinity 10
       positive-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-negative-infinity-to-the-pow-of-odd-positive-int-is-positive-infinity
-    eq. +> @
+    eq. > @
       pow negative-infinity 9
       negative-infinity
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-int-to-the-pow-of-positive-int-is-int
-    eq. +> @
+    eq. > @
       pow 2 3
       8
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-float-to-the-pow-of-positive-int-is-float
-    eq. +> @
+    eq. > @
       pow 3.5 4
       150.0625
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-int-to-the-pow-of-positive-float-is-float
-    eq. +> @
+    eq. > @
       pow 4 5
       1024

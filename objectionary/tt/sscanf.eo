@@ -3,12 +3,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt
-+rt jvm org.eolang:eo-runtime:0.61.0
++rt jvm org.eolang:eo-runtime:0.61.1
 +rt node eo2js-runtime:0.0.0
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint idempotent-attribute-is-not-first
 
 # Reads formatted input from a string.
 # This object has two free attributes:
@@ -19,7 +18,7 @@
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
-[format read] > sscanf ?
+[format read] > sscanf /tuple
   # Tests that sscanf parses string using %s format specifier.
   [] +> tests-sscanf-with-string
     eq. > @
@@ -33,6 +32,20 @@
       33
       head.
         sscanf "%d" "33"
+
+  # Tests that sscanf preserves the minus sign for negative integers.
+  [] +> tests-sscanf-with-negative-int
+    eq. > @
+      -42
+      head.
+        sscanf "%d" "-42"
+
+  # Tests that sscanf accepts an optional leading plus sign for integers.
+  [] +> tests-sscanf-with-positive-signed-int
+    eq. > @
+      42
+      head.
+        sscanf "%d" "+42"
 
   # Tests that sscanf parses floating point number using %f format specifier.
   [] +> tests-sscanf-with-float

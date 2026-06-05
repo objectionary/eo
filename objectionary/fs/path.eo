@@ -11,11 +11,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
-+unlint compound-name
++unlint ascii-only
 
 # A `path` represents a path that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.

@@ -1,0 +1,27 @@
++alias sm.os
++alias sm.posix
++alias sm.win32
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package sm
++version 0.61.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Wall-clock time source backed by the operating system.
+# Reads the underlying syscall: `gettimeofday` on POSIX, `GetSystemTime` on Windows.
+# Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
+[] > system-clock
+  as-i64. > @
+    if.
+      os.is-windows
+      (win32 "GetSystemTime" *).milliseconds
+      plus.
+        timeval.tv-sec.times 1000
+        as-number.
+          timeval.tv-usec.as-i64.div 1000.as-i64
+  (posix "gettimeofday" *).output > timeval
+
+  # Tests that wall-clock time is readable and positive.
+  [] +> tests-reads-positive-millis
+    system-clock.gt 0 > @

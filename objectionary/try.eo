@@ -1,11 +1,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.0
++rt jvm org.eolang:eo-runtime:0.61.1
 +rt node eo2js-runtime:0.0.0
-+version 0.61.0
++version 0.61.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint idempotent-attribute-is-not-first
 
 # Exception handling mechanism that catches errors during dataization.
 # When `try` is dataized, it attempts to dataize the `main` attribute first.
@@ -23,7 +22,7 @@
 #   cleanup-action     # finally
 # ```
 # .
-[main catch finally] > try ?
+[main catch finally] > try /bytes
   # Tests that try-catch mechanism catches simple exceptions from string slice operations.
   [] +> tests-catches-simple-exception
     try > @
