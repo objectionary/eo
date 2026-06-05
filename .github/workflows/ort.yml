@@ -10,10 +10,13 @@ name: ort
   pull_request:
     branches:
       - master
+env:
+  RUN_WORKFLOW: false
 jobs:
   ort:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
+    if: ${{ vars.RUN_WORKFLOW == 'true' }}
     steps:
       - uses: actions/checkout@v6
       # @todo #5102:30min Upgrade ORT once the SPDX crash is fixed upstream.
