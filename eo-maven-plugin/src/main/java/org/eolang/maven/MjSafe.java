@@ -364,10 +364,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should lint all the sources together as package.
+     * @todo #5183:30min Re-enable WPA linting by default once the performance
+     *  issue is fixed in the lints library. Currently disabled due to CI hangs.
+     *  The issue is being investigated in
+     *  https://github.com/objectionary/eo/pull/5184
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
+    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "false")
     protected boolean lintAsPackage;
 
     /**
