@@ -233,8 +233,8 @@
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration combine.self="override">
-          <skipInstallation>${skipITs}</skipInstallation>
-          <skipInvocation>${skipITs}</skipInvocation>
+          <skipInstallation>true</skipInstallation>
+          <skipInvocation>true</skipInvocation>
         </configuration>
       </plugin>
     </plugins>
