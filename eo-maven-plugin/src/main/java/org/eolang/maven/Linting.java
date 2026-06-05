@@ -23,9 +23,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
-import org.eolang.lints.Program;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
+import org.eolang.wpa.Program;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
@@ -210,7 +210,7 @@ final class Linting implements Step {
         counts.putIfAbsent(Severity.CRITICAL, 0);
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
-        final Collection<Defect> seen = new ConcurrentLinkedQueue<>();
+        final Collection<String> seen = new ConcurrentLinkedQueue<>();
         if (!this.skipSourceLints.isEmpty()) {
             Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
@@ -244,13 +244,7 @@ final class Linting implements Step {
             "Read more about lints: https://www.objectionary.com/lints/%s",
             Manifests.read("Lints-Version")
         );
-        final String details = seen.stream().map(
-            defect -> String.format(
-                "%s:%d %s (%s)",
-                defect.object(), defect.line(), defect.text(), defect.rule()
-            )
-            )
-            .collect(Collectors.joining(System.lineSeparator()));
+        final String details = String.join(System.lineSeparator(), seen);
         if (counts.get(Severity.ERROR) > 0 || counts.get(Severity.CRITICAL) > 0) {
             throw new IllegalStateException(
                 String.format(
@@ -282,7 +276,7 @@ final class Linting implements Step {
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
-        final Collection<Defect> seen,
+        final Collection<String> seen,
         final String... unlints
     ) throws Exception {
         final Path source = tojo.xmir();
@@ -300,7 +294,6 @@ final class Linting implements Step {
                         new TojoHash(tojo).get()
                     ),
                     src -> this.linted(
-                        tojo.identifier(),
                         xmir,
                         unlints
                     ).toString()
@@ -308,17 +301,19 @@ final class Linting implements Step {
             ).apply(source, target, base.relativize(target));
         } else {
             new Saved(
-                this.linted(tojo.identifier(), xmir, unlints).toString(),
+                this.linted( xmir, unlints).toString(),
                 target
             ).value();
         }
         final Xnav checked = new Xnav(target);
-        final Collection<Defect> defects = Linting.existing(tojo.identifier(), checked);
+        final Collection<Defect> defects = Linting.existing(checked);
         for (final Defect defect : defects) {
             if (Linting.notSuppressed(checked, defect)) {
                 counts.compute(defect.severity(), (sev, before) -> before + 1);
-                seen.add(defect);
-                Linting.logOne(defect);
+                seen.add(
+                    Linting.format(tojo.identifier(), defect.rule(), defect.line(), defect.text())
+                );
+                Linting.logOne(tojo.identifier(), defect);
             }
         }
         tojo.withLinted(target);
@@ -334,7 +329,7 @@ final class Linting implements Step {
      */
     private int lintAll(
         final Map<Severity, Integer> counts,
-        final Collection<Defect> seen
+        final Collection<String> seen
     ) throws IOException {
         final Map<String, Path> paths = new HashMap<>();
         for (final TjForeign tojo : this.tojos.withXmir()) {
@@ -350,7 +345,7 @@ final class Linting implements Step {
         if (!this.skipProgramLints.isEmpty()) {
             Logger.info(this, "Unliting WPA lints: %[list]s", this.skipProgramLints);
         }
-        final List<Defect> defects;
+        final List<org.eolang.wpa.Defect> defects;
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
             final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
@@ -359,7 +354,7 @@ final class Linting implements Step {
                 root -> {
                     Logger.info(this, "Linting a package");
                     final Directives all = new Directives().add("defects");
-                    for (final Defect defect : this.wpa(pkg)) {
+                    for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
                         Linting.embedded(all, defect);
                     }
                     all.up();
@@ -376,9 +371,13 @@ final class Linting implements Step {
             );
             defects = this.wpa(pkg);
         }
-        for (final Defect defect : defects) {
-            counts.compute(defect.severity(), (sev, before) -> before + 1);
-            seen.add(defect);
+        for (final org.eolang.wpa.Defect defect : defects) {
+            counts.compute(
+                Severity.parsed(defect.severity().mnemo()), (sev, before) -> before + 1
+            );
+            seen.add(
+                Linting.format(defect.object(), defect.rule(), defect.line(), defect.text())
+            );
         }
         return pkg.size();
     }
@@ -388,8 +387,8 @@ final class Linting implements Step {
      * @param pkg Map of program identifiers to their XMIR
      * @return List of defects found
      */
-    private List<Defect> wpa(final Map<String, XML> pkg) {
-        final List<Defect> defects = new ArrayList<>(0);
+    private List<org.eolang.wpa.Defect> wpa(final Map<String, XML> pkg) {
+        final List<org.eolang.wpa.Defect> defects = new ArrayList<>(0);
         new Program(pkg)
             .without(this.skipProgramLints.toArray(new String[0]))
             .defects()
@@ -405,7 +404,7 @@ final class Linting implements Step {
                     ).applyQuietly(node);
                     if (Linting.notSuppressed(new Xnav(node), defect)) {
                         defects.add(defect);
-                        Linting.logOne(defect);
+                        Linting.logOne(defect.object(), defect);
                     }
                 }
             );
@@ -414,19 +413,17 @@ final class Linting implements Step {
 
     /**
      * Find all possible linting defects and add them to the XMIR.
-     * @param program Program identifier
      * @param xmir The XML before linting
      * @param unlints Lints to skip
      * @return XML after linting
      * @checkstyle ParameterNumberCheck (40 lines)
      */
     private XML linted(
-        final String program,
         final XML xmir,
         final String... unlints
     ) {
         final Node node = xmir.inner();
-        final Collection<Defect> defects = Linting.existing(program, new Xnav(node));
+        final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
             .without(unlints)
             .defects()
@@ -449,11 +446,44 @@ final class Linting implements Step {
 
     /**
      * Log one defect.
+     * @param object Program identifier
      * @param defect The defect to log
      */
-    private static void logOne(final Defect defect) {
+    private static void logOne(final String object, final Defect defect) {
         final StringBuilder message = new StringBuilder()
-            .append(defect.object())
+            .append(object)
+            .append(':').append(defect.line())
+            .append(' ')
+            .append(defect.text())
+            .append(" (")
+            .append(defect.rule())
+            .append(')');
+        switch (defect.severity()) {
+            case WARNING:
+                Logger.warn(Linting.class, message.toString());
+                break;
+            case ERROR:
+            case CRITICAL:
+                Logger.error(Linting.class, message.toString());
+                break;
+            default:
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Not yet supported severity: %s",
+                        defect.severity()
+                    )
+                );
+        }
+    }
+
+    /**
+     * Log one WPA defect.
+     * @param object Program identifier
+     * @param defect The WPA defect to log
+     */
+    private static void logOne(final String object, final org.eolang.wpa.Defect defect) {
+        final StringBuilder message = new StringBuilder()
+            .append(object)
             .append(':').append(defect.line())
             .append(' ')
             .append(defect.text())
@@ -530,18 +560,17 @@ final class Linting implements Step {
 
     /**
      * Collection of defects existing in XMIR before linting.
-     * @param program Program name
      * @param xnav XML node as Xnav
      * @return Collection of defects
      */
-    private static Collection<Defect> existing(final String program, final Xnav xnav) {
+    private static Collection<Defect> existing(final Xnav xnav) {
         return xnav
             .element("object")
             .elements(Filter.withName("errors"))
             .findFirst().map(
                 errors -> errors
                     .elements(Filter.withName("error"))
-                    .map(error -> Linting.toDefect(program, error))
+                    .map(Linting::toDefect)
                     .collect(Collectors.toList())
             )
             .orElse(new ListOf<>());
@@ -549,11 +578,10 @@ final class Linting implements Step {
 
     /**
      * Convert XMIR error element to a {@link Defect}.
-     * @param program Program name
      * @param error The error element
      * @return Defect
      */
-    private static Defect toDefect(final String program, final Xnav error) {
+    private static Defect toDefect(final Xnav error) {
         return new Defect.Default(
             error.attribute("check").text().orElseThrow(
                 () -> new IllegalArgumentException(
@@ -567,7 +595,6 @@ final class Linting implements Step {
                     )
                 )
             ),
-            program,
             Integer.parseInt(
                 error.attribute("line").text().orElse("0")
             ),
@@ -596,16 +623,45 @@ final class Linting implements Step {
         return dirs.up();
     }
 
+    private static Directives embedded(
+        final Directives dirs, final org.eolang.wpa.Defect defect
+    ) {
+        dirs.add("error")
+            .attr("check", defect.rule())
+            .attr("severity", defect.severity().mnemo())
+            .set(defect.text());
+        if (defect.line() > 0) {
+            dirs.attr("line", defect.line());
+        }
+        return dirs.up();
+    }
+
+    private static boolean notSuppressed(
+        final Xnav xnav, final org.eolang.wpa.Defect defect
+    ) {
+        return xnav.path(
+            String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
+        ).findAny().isEmpty();
+    }
+
+    private static String format(
+        final String object, final String rule, final int line, final String text
+    ) {
+        return String.format("%s:%d %s (%s)", object, line, text, rule);
+    }
+
     /**
      * Read defects from XMIR.
      * @param path Path to XMIR
      * @return Collection of defects
      */
-    private static List<Defect> read(final Path path) {
+    private static List<org.eolang.wpa.Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
-            node -> new Defect.Default(
+            node -> new org.eolang.wpa.Defect.Default(
                 node.attribute("check").text().orElseThrow(),
-                Severity.parsed(node.attribute("severity").text().orElseThrow()),
+                org.eolang.wpa.Severity.parsed(
+                    node.attribute("severity").text().orElseThrow()
+                ),
                 node.attribute("object").text().orElse(""),
                 Integer.parseInt(node.attribute("line").text().orElse("0")),
                 node.text().orElse("")
