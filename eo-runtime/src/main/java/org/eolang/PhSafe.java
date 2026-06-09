@@ -143,11 +143,7 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public String forma() {
-        return String.join(
-            ".",
-            this.getClass().getPackageName(),
-            this.oname
-        );
+        return this.origin.forma();
     }
 
     @Override
