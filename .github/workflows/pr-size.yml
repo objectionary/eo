@@ -4,9 +4,16 @@
 # yamllint disable rule:line-length
 name: pr-size
 on: pull_request
+env:
+  RUN_WORKFLOW: false
 jobs:
   pr-size:
     runs-on: ubuntu-24.04
+    # @todo #5186:30min Re-enable pr-size check once maidsafe/pr_size_checker
+    #  action is available again. The action's GitHub repository was not found
+    #  during the CI run, causing the check to fail unconditionally.
+    #  Replace or restore the action and remove this guard.
+    if: ${{ vars.RUN_WORKFLOW == 'true' }}
     steps:
       - uses: actions/checkout@v6
       - run: git fetch origin master --depth=1
