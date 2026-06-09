@@ -263,14 +263,6 @@
                 -->
                 <lint>object-has-data</lint>
                 <!--
-                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip.
-                      The lint relies on the `xi🌵` positional marker that the legacy
-                      ANTLR parser emitted; the new spec-driven parser does not produce
-                      this marker, so the lint now fires on every formation. Drop this
-                      skip entry entirely once the lint is removed from the lints repo.
-                -->
-                <lint>idempotent-attribute-is-not-first</lint>
-                <!--
                 @todo #5078:30min. Remove `empty-object` skip.
                       The lint flags formations whose `<o>` has no @base/@name
                       and no children — the canonical empty anonymous formation.
