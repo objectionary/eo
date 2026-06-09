@@ -82,16 +82,16 @@ final class PhiTest {
     @Test
     void getsForma() {
         MatcherAssert.assertThat(
-            "Phi should return correct forma, but it didn't",
+            "Phi should delegate forma to the wrapped object, but it didn't",
             new PhSafe(
-                Phi.Φ,
+                new Data.ToPhi(42L),
                 "foobar",
                 123,
                 56,
                 "Φ.org.eolang$obj",
                 "obj.x"
             ).forma(),
-            Matchers.equalTo("org.eolang.obj.x")
+            Matchers.equalTo("Φ.number")
         );
     }
 }
