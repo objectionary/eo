@@ -452,7 +452,13 @@
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$ctx"/>
-    <xsl:text> = new PhDefault();</xsl:text>
+    <xsl:text> = new PhDefault(</xsl:text>
+    <xsl:if test="@loc and not(contains(@loc, '🌵'))">
+      <xsl:text>"</xsl:text>
+      <xsl:value-of select="@loc"/>
+      <xsl:text>"</xsl:text>
+    </xsl:if>
+    <xsl:text>);</xsl:text>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="indent" select="$indent + 2"/>
       <xsl:with-param name="parent">

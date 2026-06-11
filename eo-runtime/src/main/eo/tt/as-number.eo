@@ -16,7 +16,7 @@
         "Can't convert text %s to number"
         * text
     scanned.head
-  (sscanf "%f" text).@ > scanned
+  (sscanf "%f" text).at.^ > scanned
 
   # Tests that as-number converts numeric string to number.
   [] +> tests-converts-text-to-number

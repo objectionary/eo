@@ -433,6 +433,15 @@ final class PhDefaultTest {
     }
 
     @Test
+    void rendersFormaFromXmirLocator() {
+        MatcherAssert.assertThat(
+            "Named nested object must report the forma taken from its XMIR locator, but it didnt",
+            new PhDefault("Φ.malloc.of.allocated").forma(),
+            Matchers.equalTo("Φ.malloc.of.allocated")
+        );
+    }
+
+    @Test
     void dropsRuntimeRootPackageFromForma() {
         MatcherAssert.assertThat(
             "forma of a root atom must drop the org.eolang runtime package, but it didnt",

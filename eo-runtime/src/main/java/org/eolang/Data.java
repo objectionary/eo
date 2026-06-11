@@ -126,9 +126,14 @@ public interface Data {
                 }
             } else if (obj instanceof Phi[]) {
                 Phi tuple = Phi.Φ.take("tuple").take("empty");
+                int length = 0;
                 for (final Phi element : (Phi[]) obj) {
-                    tuple = tuple.take("with");
-                    tuple.put(0, element);
+                    length += 1;
+                    final Phi cell = Phi.Φ.take("tuple").copy();
+                    cell.put(0, tuple);
+                    cell.put(1, element);
+                    cell.put(2, new Data.ToPhi(length));
+                    tuple = cell;
                 }
                 phi = tuple;
             } else if (obj instanceof byte[]) {
