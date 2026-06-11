@@ -263,15 +263,6 @@
                       skip entry entirely once the lint is removed from the lints repo.
                 -->
                 <lint>idempotent-attribute-is-not-first</lint>
-                <!--
-                @todo #5078:30min. Remove `empty-object` skip.
-                      The lint flags formations whose `<o>` has no @base/@name
-                      and no children — the canonical empty anonymous formation.
-                      The new spec parser emits this shape verbatim for `[]`
-                      and similar; the lint disagrees. Drop this skip when the
-                      lint is updated or removed upstream.
-                -->
-                <lint>empty-object</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
