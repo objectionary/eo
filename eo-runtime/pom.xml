@@ -210,6 +210,12 @@
           <failOnWarning>false</failOnWarning>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
+          <!--
+          Cache is disabled because it is keyed on the plugin version
+          (1.0-SNAPSHOT during development), so any plugin or configuration
+          change would be silently ignored until the cache is cleared manually.
+          -->
+          <cacheEnabled>false</cacheEnabled>
         </configuration>
         <executions>
           <execution>
