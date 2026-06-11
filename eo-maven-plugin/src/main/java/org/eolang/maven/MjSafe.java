@@ -491,7 +491,6 @@ abstract class MjSafe extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.invalidate();
                 this.execWithTimeout();
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
@@ -624,16 +623,6 @@ abstract class MjSafe extends AbstractMojo {
                     new InetSocketAddress(p.getHost(), p.getPort())
                 )
             ).toArray(Proxy[]::new);
-    }
-
-    /**
-     * Invalidates the SNAPSHOT cache if the plugin descriptor is available.
-     * The descriptor is absent in some test scenarios that use minimal setup.
-     */
-    private void invalidate() {
-        if (this.plugin != null) {
-            new Janitor(this.cache.toPath(), this.plugin.getVersion()).clean();
-        }
     }
 
     /**
