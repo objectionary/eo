@@ -96,7 +96,13 @@
       # Here `size` must be positive `number`.
       # The `error` returned if failed to resize block in memory.
       # Returns `org.eolang.malloc.of.allocated` object.
-      [size] > resized /allocated
+      # @todo #5189:30min Resolve atom return types using the current scope,
+      #  the same way regular FQNs are resolved. Here `/allocated` should mean
+      #  `Q.malloc.of.allocated`, but for now the full path is written explicitly.
+      #  The same applies to `matched-from-index` and `regex` `@` in `tt/regex.eo`,
+      #  which use explicit `/Q....` paths for the same reason and must be resolved
+      #  the same way.
+      [size] > resized /Q.malloc.of.allocated
 
       # Reads the data from block in memory with offset `source` and `length` and writes
       # to the block with offset `target`.
@@ -112,7 +118,7 @@
 
       # Write `data` with `offset` to the allocated block in memory
       # and return `org.eolang.true`.
-      [offset data] > write /true
+      [offset data] > write /bool
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

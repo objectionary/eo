@@ -4,6 +4,10 @@
  */
 package org.eolang;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +54,11 @@ public class PhDefault implements Phi, Cloneable {
     private static final Pattern ROOT = Pattern.compile("^org\\.eolang\\.?");
 
     /**
+     * Declared return types of all atoms, loaded once from the generated table.
+     */
+    private static final AtomTypes ATOMS = PhDefault.atoms();
+
+    /**
      * From Java package name to forma.
      */
     private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
@@ -64,6 +73,12 @@ public class PhDefault implements Phi, Cloneable {
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final byte[] data;
+
+    /**
+     * The forma of this object, taken from its XMIR locator; empty when the
+     * object is anonymous and forma is derived from the Java class instead.
+     */
+    private final String fqn;
 
     /**
      * Initial attributes supplied via constructor; wrapped lazily.
@@ -84,7 +99,15 @@ public class PhDefault implements Phi, Cloneable {
      * Default ctor.
      */
     public PhDefault() {
-        this(null, PhDefault.NONE);
+        this("", null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with the forma taken from XMIR.
+     * @param forma The forma of the object
+     */
+    public PhDefault(final String forma) {
+        this(forma, null, PhDefault.NONE);
     }
 
     /**
@@ -92,7 +115,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final Map<String, Attribute> attributes) {
-        this(null, attributes);
+        this("", null, attributes);
     }
 
     /**
@@ -100,7 +123,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
-        this(dta, PhDefault.NONE);
+        this("", dta, PhDefault.NONE);
     }
 
     /**
@@ -108,8 +131,21 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta        Object data
      * @param attributes Initial attributes to register
      */
-    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
+        this("", dta, attributes);
+    }
+
+    /**
+     * Primary ctor.
+     * @param forma      The forma of the object, taken from XMIR
+     * @param dta        Object data
+     * @param attributes Initial attributes to register
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private PhDefault(
+        final String forma, final byte[] dta, final Map<String, Attribute> attributes
+    ) {
+        this.fqn = forma;
         this.data = dta;
         this.initial = attributes;
     }
@@ -180,7 +216,9 @@ public class PhDefault implements Phi, Cloneable {
             if (this.attrs.containsKey(name)) {
                 object = this.attrs.get(name).get();
             } else if (name.equals(Phi.LAMBDA)) {
-                object = new AtomSafe(this).lambda();
+                object = new AtomTyped(
+                    this, PhDefault.ATOMS.declared(this.forma())
+                ).lambda();
             } else if (this instanceof Atom) {
                 object = this.take(Phi.LAMBDA).take(name);
             } else if (this.attrs.containsKey(Phi.PHI)) {
@@ -246,19 +284,11 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public String forma() {
-        final String name = this.oname();
         final String form;
-        if (PhDefault.class.getSimpleName().equals(name)) {
-            form = "[]";
+        if (this.fqn.isEmpty()) {
+            form = this.derived();
         } else {
-            final String pkg = PhDefault.TO_FORMA.matcher(
-                PhDefault.ROOT.matcher(this.getClass().getPackageName()).replaceAll("")
-            ).replaceAll("$1");
-            if (pkg.isEmpty()) {
-                form = String.join(".", PhPackage.GLOBAL, name);
-            } else {
-                form = String.join(".", PhPackage.GLOBAL, pkg, name);
-            }
+            form = this.fqn;
         }
         return form;
     }
@@ -312,6 +342,39 @@ public class PhDefault implements Phi, Cloneable {
             txt = Double.toString(value);
         }
         return txt;
+    }
+
+    /**
+     * Derive the forma from the Java class, when the object has no XMIR locator.
+     * @return The forma built from the class name and its package
+     */
+    private String derived() {
+        final String form;
+        final String name = this.oname();
+        if (PhDefault.class.getSimpleName().equals(name)) {
+            form = "[]";
+        } else {
+            form = this.packaged(name);
+        }
+        return form;
+    }
+
+    /**
+     * Build the forma from the package of this object and the given name.
+     * @param name The object name, as in source code
+     * @return The fully-qualified forma
+     */
+    private String packaged(final String name) {
+        final String form;
+        final String pkg = PhDefault.TO_FORMA.matcher(
+            PhDefault.ROOT.matcher(this.getClass().getPackageName()).replaceAll("")
+        ).replaceAll("$1");
+        if (pkg.isEmpty()) {
+            form = String.join(".", PhPackage.GLOBAL, name);
+        } else {
+            form = String.join(".", PhPackage.GLOBAL, pkg, name);
+        }
+        return form;
     }
 
     /**
@@ -426,6 +489,34 @@ public class PhDefault implements Phi, Cloneable {
         final Map<String, Attribute> attrs = new HashMap<>(0);
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
+    }
+
+    /**
+     * Load the declared return types of all atoms from the generated table.
+     * @return The atom types table, empty when the table is absent
+     */
+    private static AtomTypes atoms() {
+        final Map<String, String> table;
+        final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");
+        if (source == null) {
+            table = Collections.emptyMap();
+        } else {
+            try (
+                BufferedReader lines = new BufferedReader(
+                    new InputStreamReader(source, StandardCharsets.UTF_8)
+                )
+            ) {
+                table = lines.lines().filter(line -> line.contains(",")).collect(
+                    Collectors.toMap(
+                        line -> line.substring(0, line.indexOf(',')),
+                        line -> line.substring(line.indexOf(',') + 1)
+                    )
+                );
+            } catch (final IOException ex) {
+                throw new IllegalStateException("Failed to read the atom types table", ex);
+            }
+        }
+        return new AtomTypes(table);
     }
 
     /**

@@ -10,20 +10,10 @@
 [tail head length] > tuple
   # Empty tuple.
   # A tuple with no elements. When dataized, it represents an immutable, empty collection.
-  [] > empty
-    0 > length
-    error "Can't get tail from the empty tuple" > tail
-    error "Can't get head from the empty tuple" > head
-
-    # Take one element from the tuple, at the given position.
-    error "Can't get an object from the empty tuple" > [i] > at
-
-    # Create a new tuple with this element added to the end of it.
-    [x] > with
-      tuple > @
-        ^
-        x
-        (length.plus 1).as-number
+  tuple > empty
+    error "Can't get tail from the empty tuple"
+    error "Can't get head from the empty tuple"
+    0
 
   # Take one element from the tuple, at the given position.
   [i] > at

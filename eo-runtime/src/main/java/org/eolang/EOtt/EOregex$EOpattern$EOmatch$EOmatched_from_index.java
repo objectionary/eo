@@ -82,36 +82,67 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
                 this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
             ).asNumber().intValue()
         );
-        final Phi result;
+        final Phi result = match.take("matched");
         if (found) {
-            result = match.take("matched");
-            result.put(
-                EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
-            );
-            result.put(
-                EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
-            );
-            result.put("from", new Data.ToPhi(matcher.start()));
-            result.put("to", new Data.ToPhi(matcher.end()));
-            final Phi[] groups;
-            if (matcher.groupCount() > 0) {
-                groups = new Phi[matcher.groupCount() + 1];
-                for (int idx = 0; idx < groups.length; ++idx) {
-                    groups[idx] = new Data.ToPhi(matcher.group(idx));
-                }
-            } else {
-                groups = new Phi[]{new Data.ToPhi(matcher.group())};
-            }
-            result.put("groups", new Data.ToPhi(groups));
+            this.fill(result, matcher);
         } else {
-            result = match.take("not-matched");
-            result.put(
-                EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
-            );
+            this.blank(result);
         }
         return result;
+    }
+
+    /**
+     * Fill the matched block with the data of a real match.
+     * @param result The matched block to fill
+     * @param matcher The matcher positioned on the found subsequence
+     */
+    private void fill(final Phi result, final Matcher matcher) {
+        result.put(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+        );
+        result.put(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+        );
+        result.put("from", new Data.ToPhi(matcher.start()));
+        result.put("to", new Data.ToPhi(matcher.end()));
+        final Phi[] groups;
+        if (matcher.groupCount() > 0) {
+            groups = new Phi[matcher.groupCount() + 1];
+            for (int idx = 0; idx < groups.length; ++idx) {
+                groups[idx] = new Data.ToPhi(matcher.group(idx));
+            }
+        } else {
+            groups = new Phi[]{new Data.ToPhi(matcher.group())};
+        }
+        result.put("groups", new Data.ToPhi(groups));
+    }
+
+    /**
+     * Fill the matched block as a non-existent one: start is -1 and the from,
+     * to and groups fields hold error objects, exactly as the old not-matched
+     * block did.
+     * @param result The matched block to fill
+     */
+    private void blank(final Phi result) {
+        result.put(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+        );
+        result.put(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+            new Data.ToPhi(-1)
+        );
+        final Phi error = Phi.Φ.take("error");
+        final Phi from = error.copy();
+        from.put(0, new Data.ToPhi("Matched block does not exist, can't get 'from' position"));
+        result.put("from", from);
+        final Phi ending = error.copy();
+        ending.put(0, new Data.ToPhi("Matched block does not exist, can't get 'to' position"));
+        result.put("to", ending);
+        final Phi groups = error.copy();
+        groups.put(0, new Data.ToPhi("Matched block does not exist, can't get groups"));
+        result.put("groups", groups);
     }
 }

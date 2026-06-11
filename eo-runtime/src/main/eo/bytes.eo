@@ -78,7 +78,7 @@
 
   # Returns `org.eolang.true` if current sequence of bytes equals another object.
   # Before the actual comparison the object `b` is dataized.
-  [b] > eq /true
+  [b] > eq /bool
 
   # Returns total amount of current bytes as `org.eolang.number`.
   [] > size /number

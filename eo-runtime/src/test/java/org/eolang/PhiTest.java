@@ -55,9 +55,9 @@ final class PhiTest {
     @Test
     void takesDirectly() {
         MatcherAssert.assertThat(
-            "Phi should resolve nested attribute nan.gt and return false, but it didn't",
+            "Phi should resolve nested attribute nan.is-finite and return false, but it didn't",
             new Dataized(
-                Phi.Φ.take("nan").take("gt")
+                Phi.Φ.take("nan").take("is-finite")
             ).asBool(),
             Matchers.equalTo(false)
         );

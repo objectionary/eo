@@ -41,7 +41,7 @@
   # ptn2.matches "hello"                # doesn't recompile regex
   # ```
   # Returns `org.eolang.tt.regex.pattern` object.
-  [] > @ /pattern
+  [] > @ /Q.tt.regex.pattern
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
@@ -58,12 +58,13 @@
       (matched-from-index 1 0).matched > next
 
       # Get `position`-th block matched from `start` position.
-      # If string subsequence is found - returns `org.eolang.tt.regex.pattern.match.matched`
-      # object, returns `org.eolang.tt.regex.pattern.match.not-matched` otherwise.
+      # Always returns a `org.eolang.tt.regex.pattern.match.matched` object: a
+      # real one when the subsequence is found, or a non-existent one (with
+      # `start` equal to -1) when it is not.
       #
       # Attention! The object is for internal usage only, please
       # don't use the object programmatically outside of `regex` object.
-      [position start] > matched-from-index /matched
+      [position start] > matched-from-index /Q.tt.regex.pattern.match.matched
 
       # Block matched the pattern.
       # Here:
@@ -104,16 +105,6 @@
         # Returns the string subsequence captured by the group
         # by `index` during the `match` operation.
         groups.at index > [index] > group
-
-      # Block which does not match the provided pattern.
-      # Decorates `matched` block with corresponding `error`s.
-      [position] > not-matched
-        matched > @
-          position
-          -1
-          error "Matched block does not exist, can't get 'from' position"
-          error "Matched block does not exist, can't get 'to' position"
-          error "Matched block does not exist, can't get groups"
 
   # Tests that regex pattern matches against text containing lowercase letters.
   [] +> tests-matches-regex-against-the-pattern
