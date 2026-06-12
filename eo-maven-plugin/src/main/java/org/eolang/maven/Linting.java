@@ -456,9 +456,9 @@ final class Linting implements Step {
      */
     private static void logOne(final String severity, final String message) {
         if (Severity.WARNING.mnemo().equals(severity)) {
-            Logger.warn(Linting.class, message);
+            Logger.warn(Linting.class, "[LINT] %s", message);
         } else {
-            Logger.error(Linting.class, message);
+            Logger.error(Linting.class, "[LINT] %s", message);
         }
     }
 
