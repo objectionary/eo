@@ -24,61 +24,48 @@ final class MjAtomsTableTest {
 
     @Test
     void generatesAtomsTableFromXmir(@Mktmp final Path temp) throws Exception {
-        final String eo = String.join(
-            "\n",
-            "+package foo",
-            "",
-            "# Top object.",
-            "[] > thing",
-            "  # Atom returning bool.",
-            "  [x] > is-good /bool",
-            "  # Atom returning number.",
-            "  [] > size /number"
-        );
-        final Path xmir = temp.resolve("xmir/foo/thing.xmir");
         new Saved(
-            new EoSyntax(new InputOf(eo)).parsed().toString(),
-            xmir
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "# Top object.",
+                        "[] > thing",
+                        "  # Atom returning bool.",
+                        "  [x] > is-good /bool",
+                        "  # Atom returning number.",
+                        "  [] > size /number"
+                    )
+                )
+            ).parsed().toString(),
+            temp.resolve("xmir/foo/thing.xmir")
         ).value();
-        final Path output = temp.resolve("classes/org/eolang/atoms.csv");
         new FakeMaven(temp)
-            .with("atomsTableSourcesDir", temp.resolve("xmir").toFile())
-            .with("atomsTableOutput", output.toFile())
+            .with("atomsInputDir", temp.resolve("xmir").toFile())
+            .with("atomsOutput", temp.resolve("classes/org/eolang/atoms.csv").toFile())
             .execute(MjAtomsTable.class);
         MatcherAssert.assertThat(
-            "Generated CSV must exist",
-            Files.exists(output),
-            Matchers.is(true)
-        );
-        final String content = Files.readString(output);
-        MatcherAssert.assertThat(
-            "Atom with bool return type must appear in the table",
-            content,
-            Matchers.containsString("Φ.foo.thing.is-good,Φ.bool")
-        );
-        MatcherAssert.assertThat(
-            "Atom with number return type must appear in the table",
-            content,
-            Matchers.containsString("Φ.foo.thing.size,Φ.number")
+            "Generated CSV must contain entries for every declared atom",
+            Files.readString(temp.resolve("classes/org/eolang/atoms.csv")),
+            Matchers.allOf(
+                Matchers.containsString("Φ.foo.thing.is-good,Φ.bool"),
+                Matchers.containsString("Φ.foo.thing.size,Φ.number")
+            )
         );
     }
 
     @Test
     void writesEmptyTableWhenNoXmirSources(@Mktmp final Path temp) throws Exception {
-        final Path output = temp.resolve("classes/org/eolang/atoms.csv");
         new FakeMaven(temp)
-            .with("atomsTableSourcesDir", temp.resolve("nothing").toFile())
-            .with("atomsTableOutput", output.toFile())
+            .with("atomsInputDir", temp.resolve("nothing").toFile())
+            .with("atomsOutput", temp.resolve("classes/org/eolang/atoms.csv").toFile())
             .execute(MjAtomsTable.class);
         MatcherAssert.assertThat(
-            "Output CSV should be created even with no XMIR sources",
-            Files.exists(output),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
             "Output CSV should be empty when there are no XMIR sources",
-            Files.readString(output),
-            Matchers.equalTo("")
+            Files.readString(temp.resolve("classes/org/eolang/atoms.csv")),
+            Matchers.emptyString()
         );
     }
 }
