@@ -6,6 +6,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
