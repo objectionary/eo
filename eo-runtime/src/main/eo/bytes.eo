@@ -9,13 +9,6 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# @todo #4707:60min Remove `+unlint not-empty-atom` from all `.eo` files in eo-runtime.
-#  After restoring the `/name` syntax for atom return types, the `λ` marker now carries
-#  a `base` attribute, which makes the `not-empty-atom` lint (objectionary/lints 0.0.60)
-#  treat λ as a regular inner object and flag every atom with parameters or return type.
-#  We need to fix the rule upstream in `objectionary/lints` so that λ with `base` is
-#  still recognised as the atom marker, bump the lints dependency, and then drop the
-#  `+unlint not-empty-atom` lines added across eo-runtime.
 # The object encapsulates a chain of bytes, providing bitwise operations,
 # numeric conversions, and byte manipulation methods. Objects like `number`, `string`,
 # and integer types (`i16`, `i32`, `i64`) use `bytes` as their internal representation.
