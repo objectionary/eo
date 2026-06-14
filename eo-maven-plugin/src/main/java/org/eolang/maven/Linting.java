@@ -214,6 +214,7 @@ final class Linting implements Step {
         if (!this.skipSourceLints.isEmpty()) {
             Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
+        this.warm(programs);
         final int passed = new Threaded<>(
             programs,
             tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
@@ -260,6 +261,24 @@ final class Linting implements Step {
                     programs.size(), sum, details
                 )
             );
+        }
+    }
+
+    /**
+     * Compile every lint stylesheet once, in a single thread, before linting in parallel.
+     * <p>All sources share lint stylesheets that are compiled lazily on first use and cached
+     * statically. Triggering that compilation from many threads at once races inside Saxon and
+     * jcabi-xml, surfacing intermittently as "cannot find function lineno()" or DOM
+     * HIERARCHY_REQUEST_ERR failures. Running one source synchronously here forces the
+     * compilation up front, so the parallel pass only reuses the cached stylesheets.</p>
+     * @param programs The XMIR programs about to be linted
+     * @throws IOException If fails to read the XMIR
+     */
+    private void warm(final Collection<TjForeign> programs) throws IOException {
+        if (!programs.isEmpty()) {
+            new Source(new XMLDocument(new ListOf<>(programs).get(0).xmir()))
+                .without(this.skipSourceLints.toArray(new String[0]))
+                .defects();
         }
     }
 
