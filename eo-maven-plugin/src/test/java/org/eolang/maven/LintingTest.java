@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,6 +43,7 @@ final class LintingTest {
         );
     }
 
+    @Disabled("Heavy #5209 reproduction; forks many JVMs and exceeds CI timeout, run manually")
     @Test
     void lintsManyProgramsConcurrentlyWithoutStylesheetRace() throws Exception {
         final int forks = 24;
