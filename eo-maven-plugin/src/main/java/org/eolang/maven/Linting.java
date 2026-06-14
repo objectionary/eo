@@ -289,7 +289,7 @@ final class Linting implements Step {
      * @param seen Defects seen so far across all files
      * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
-     * @throws Exception If failed to lint
+     * @throws IOException If failed to lint
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private int lintOne(
@@ -297,7 +297,7 @@ final class Linting implements Step {
         final Map<Severity, Integer> counts,
         final Collection<String> seen,
         final String... unlints
-    ) throws Exception {
+    ) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Linting.DIR);
