@@ -1,0 +1,51 @@
++alias tt.regex
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tt
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Check that all signs in `text` are decimal digits.
+# Works only for english digits.
+[text] > is-digit
+  (regex "/^[0-9]+$/").matches text > @
+
+  # Tests that is-digit returns true for text containing only digits.
+  [] +> tests-checks-if-number-text-is-digit
+    is-digit > @
+      "2026"
+
+  # Tests that is-digit returns false for text containing a letter.
+  [] +> tests-checks-if-text-with-letter-is-not-digit
+    not. > @
+      is-digit
+        "1a2"
+
+  # Tests that is-digit returns true for a single digit.
+  [] +> tests-checks-if-single-digit-is-digit
+    is-digit > @
+      "7"
+
+  # Tests that is-digit returns false for empty text.
+  [] +> tests-checks-if-empty-text-is-not-digit
+    not. > @
+      is-digit
+        ""
+
+  # Tests that is-digit returns false for text with a space between digits.
+  [] +> tests-checks-if-text-with-space-is-not-digit
+    not. > @
+      is-digit
+        "12 34"
+
+  # Tests that is-digit returns false for text with a special character.
+  [] +> tests-checks-if-text-with-special-character-is-not-digit
+    not. > @
+      is-digit
+        "1🌵2"
+
+  # Tests that is-digit returns true for a very long digits number.
+  [] +> tests-checks-if-very-long-number-is-digit
+    is-digit > @
+      "123456789012345678901234567890123456789012345678901234567890"
