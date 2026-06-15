@@ -9,10 +9,11 @@
 # The byte of `char` is left-padded with a zero byte into a 16-bit word,
 # read as an integer and then expressed as a number.
 [char] > as-ascii
-  word.as-i16.as-number > @
-  concat. > word
-    00-
-    char.as-bytes
+  as-number. > @
+    as-i16.
+      concat.
+        00-
+        char.as-bytes
 
   # Tests that as-ascii reads the code of an uppercase letter.
   [] +> tests-reads-code-of-uppercase-letter

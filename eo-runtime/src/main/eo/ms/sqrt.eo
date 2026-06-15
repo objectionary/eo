@@ -17,7 +17,7 @@
       sqrt 0.0
       0.0
 
-  # Tests that sqrt of one is one.
+  # Tests that the sqrt of one equals one.
   [] +> tests-sqrt-one
     eq. > @
       sqrt 1.0

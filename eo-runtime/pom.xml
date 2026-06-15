@@ -270,6 +270,20 @@
                       skip entry entirely once the lint is removed from the lints repo.
                 -->
                 <lint>idempotent-attribute-is-not-first</lint>
+                <!--
+                @todo #5221:60min Enable `wrong-test-order` lint.
+                      The lint fires as a false positive when anonymous `>>` objects from
+                      the main body are floated past tests by vars-float-up transformation.
+                      Enable once objectionary/lints#954 is resolved.
+                -->
+                <lint>wrong-test-order</lint>
+                <!--
+                @todo #5221:30min Enable `compound-name` lint.
+                      Several objects in eo-runtime use compound names that follow system
+                      or platform naming conventions (e.g. neg-inf, groups-count, sin-family).
+                      Either rename the objects or adjust the lint rule, then enable it.
+                -->
+                <lint>compound-name</lint>
               </skipSourceLints>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>

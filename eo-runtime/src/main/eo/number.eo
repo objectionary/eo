@@ -114,7 +114,7 @@
   # For non-finite values (`nan`, `+inf`, `-inf`) the input is returned
   # unchanged. For finite inputs we truncate toward zero via `as-i64`,
   # which matches mathematical floor for every value except negative
-  # non-integers — where the truncated result is strictly greater than
+  # non-integers - where the truncated result is strictly greater than
   # the original, so we subtract `1` in that single case.
   [] > floor
     if. > @
