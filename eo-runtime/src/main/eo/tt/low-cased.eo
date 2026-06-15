@@ -1,6 +1,7 @@
 +alias ss.bytes-as-array
 +alias ss.list
 +alias ss.reduced
++alias tt.as-ascii
 +alias tt.up-cased
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -31,9 +32,9 @@
               7
               1
             byte
-        (up-cased text).ascii byte > code
-  (up-cased text).ascii "Z" > maxcode
-  (up-cased text).ascii "A" > mincode
+        as-ascii byte > code
+  as-ascii "Z" > maxcode
+  as-ascii "A" > mincode
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case
