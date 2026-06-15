@@ -16,11 +16,6 @@ import java.util.Map;
  * an empty string.</p>
  *
  * @since 0.57
- * @todo #5189:90min The table is not produced at build time yet; it is read
- *  from a hand-written {@code atoms.csv} resource by {@link PhDefault}. It must
- *  be generated automatically from the {@code atom} attribute of every lambda
- *  in the XMIR, so it never drifts from the EO sources, after which the
- *  hand-written {@code atoms.csv} can be removed.
  */
 public final class AtomTypes {
 
