@@ -66,14 +66,69 @@ final class PhSuggestions {
     private static final String EOP = "EO";
 
     /**
-     * Separators in EO names.
+     * Separators to remove for compact names.
      */
-    private static final Pattern SEPARATORS = Pattern.compile("[^A-Za-z0-9]+");
+    private static final Pattern COMPACT = Pattern.compile("[_\\s./-]+");
 
     /**
-     * All candidates.
+     * Separators in EO tokens.
      */
-    private static final Collection<String> ALL = PhSuggestions.discover();
+    private static final Pattern TOKENS = Pattern.compile("(?=[A-Z])|[^A-Za-z]+");
+
+    /**
+     * Minimum similarity score.
+     */
+    private static final double MIN_SCORE = 0.34D;
+
+    /**
+     * Jaro-Winkler score weight.
+     */
+    private static final double JWGT = 0.5D;
+
+    /**
+     * Jaccard score weight.
+     */
+    private static final double JGT = 0.3D;
+
+    /**
+     * Containment score weight.
+     */
+    private static final double CGT = 0.1D;
+
+    /**
+     * Prefix score weight.
+     */
+    private static final double PGT = 0.1D;
+
+    /**
+     * Maximum common prefix length.
+     */
+    private static final int PREF = 4;
+
+    /**
+     * Jaro-Winkler prefix scale.
+     */
+    private static final double PSCALE = 0.1D;
+
+    /**
+     * Maximum length penalty.
+     */
+    private static final double MAX_PENALTY = 0.15D;
+
+    /**
+     * Length penalty per character.
+     */
+    private static final double PENALTY = 0.01D;
+
+    /**
+     * Maximum similarity score.
+     */
+    private static final double TOP = 1.0D;
+
+    /**
+     * Empty similarity score.
+     */
+    private static final double ZERO = 0.0D;
 
     /**
      * Candidates.
@@ -82,9 +137,10 @@ final class PhSuggestions {
 
     /**
      * Ctor.
+     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     PhSuggestions() {
-        this(PhSuggestions.ALL);
+        this(PhSuggestions.discover());
     }
 
     /**
@@ -140,6 +196,7 @@ final class PhSuggestions {
             .distinct()
             .filter(candidate -> !candidate.equals(normalized))
             .map(candidate -> PhSuggestions.Ranked.ranked(normalized, candidate))
+            .filter(ranked -> ranked.score >= PhSuggestions.MIN_SCORE)
             .sorted()
             .limit(limit)
             .map(ranked -> PhSuggestions.display(name, ranked.name))
@@ -530,12 +587,13 @@ final class PhSuggestions {
     }
 
     /**
-     * Words of EO object name.
+     * Tokens of EO object name.
      * @param name EO object name
-     * @return Words
+     * @return Tokens
      */
-    private static Collection<String> words(final String name) {
-        return Arrays.stream(PhSuggestions.SEPARATORS.split(name))
+    private static Collection<String> tokens(final String name) {
+        return Arrays.stream(PhSuggestions.TOKENS.split(name))
+            .map(part -> part.toLowerCase(Locale.ENGLISH))
             .filter(Predicate.not(String::isEmpty))
             .collect(Collectors.toList());
     }
@@ -546,92 +604,190 @@ final class PhSuggestions {
      * @return Compact name
      */
     private static String compact(final String name) {
-        return PhSuggestions.SEPARATORS.matcher(name).replaceAll("");
+        return PhSuggestions.COMPACT.matcher(
+            name.toLowerCase(Locale.ENGLISH)
+        ).replaceAll("");
     }
 
     /**
-     * Longest common substring length.
+     * Composite similarity score.
      * @param left Left text
      * @param right Right text
-     * @return Length
+     * @return Score
      */
-    private static int common(final String left, final String right) {
-        final int[][] table = new int[left.length() + 1][right.length() + 1];
-        int max = 0;
-        for (int row = 1; row <= left.length(); ++row) {
-            for (int col = 1; col <= right.length(); ++col) {
-                if (left.charAt(row - 1) == right.charAt(col - 1)) {
-                    table[row][col] = table[row - 1][col - 1] + 1;
-                    max = Math.max(max, table[row][col]);
-                }
-            }
-        }
-        return max;
+    private static double score(final String left, final String right) {
+        return PhSuggestions.clamp(
+            PhSuggestions.JWGT * PhSuggestions.jaroWinkler(left, right)
+                + PhSuggestions.JGT * PhSuggestions.jaccard(left, right)
+                + PhSuggestions.CGT * PhSuggestions.containment(left, right)
+                + PhSuggestions.PGT * PhSuggestions.prefixScore(left, right)
+                - PhSuggestions.penalty(left, right)
+        );
     }
 
     /**
-     * Levenshtein distance.
+     * Jaccard similarity.
      * @param left Left text
      * @param right Right text
-     * @return Distance
+     * @return Score
      */
-    private static int distance(final String left, final String right) {
-        final int[] previous = new int[right.length() + 1];
-        final int[] current = new int[right.length() + 1];
-        for (int idx = 0; idx <= right.length(); ++idx) {
-            previous[idx] = idx;
+    private static double jaccard(final String left, final String right) {
+        final Set<String> lft = new TreeSet<>(PhSuggestions.tokens(left));
+        final Set<String> rgt = new TreeSet<>(PhSuggestions.tokens(right));
+        final double similarity;
+        if (lft.isEmpty() || rgt.isEmpty()) {
+            similarity = PhSuggestions.ZERO;
+        } else {
+            final Set<String> intersection = new TreeSet<>(lft);
+            intersection.retainAll(rgt);
+            final Set<String> union = new TreeSet<>(lft);
+            union.addAll(rgt);
+            similarity = 1.0D * intersection.size() / union.size();
         }
-        for (int row = 1; row <= left.length(); ++row) {
-            current[0] = row;
-            for (int col = 1; col <= right.length(); ++col) {
-                final int cost;
-                if (left.charAt(row - 1) == right.charAt(col - 1)) {
-                    cost = 0;
-                } else {
-                    cost = 1;
-                }
-                current[col] = Math.min(
-                    Math.min(current[col - 1] + 1, previous[col] + 1),
-                    previous[col - 1] + cost
-                );
-            }
-            System.arraycopy(current, 0, previous, 0, current.length);
-        }
-        return previous[right.length()];
+        return similarity;
     }
 
     /**
-     * Suggestion score.
-     * @since 1.0
+     * Containment score.
+     * @param left Left text
+     * @param right Right text
+     * @return Score
      */
-    private static final class Score {
-
-        /**
-         * Exact word matches.
-         */
-        private final int words;
-
-        /**
-         * Partial match score.
-         */
-        private final int partial;
-
-        /**
-         * Levenshtein distance.
-         */
-        private final int distance;
-
-        /**
-         * Ctor.
-         * @param words Word matches
-         * @param partial Partial match score
-         * @param distance Distance
-         */
-        Score(final int words, final int partial, final int distance) {
-            this.words = words;
-            this.partial = partial;
-            this.distance = distance;
+    private static double containment(final String left, final String right) {
+        final String first = PhSuggestions.compact(left);
+        final String second = PhSuggestions.compact(right);
+        final double score;
+        if (!first.isEmpty() && !second.isEmpty()
+            && (first.contains(second) || second.contains(first))) {
+            score = PhSuggestions.TOP;
+        } else {
+            score = PhSuggestions.ZERO;
         }
+        return score;
+    }
+
+    /**
+     * Prefix score.
+     * @param left Left text
+     * @param right Right text
+     * @return Score
+     */
+    private static double prefixScore(final String left, final String right) {
+        return 1.0D * Math.min(
+            PhSuggestions.PREF,
+            PhSuggestions.commonPrefix(
+                PhSuggestions.compact(left),
+                PhSuggestions.compact(right)
+            )
+        ) / PhSuggestions.PREF;
+    }
+
+    /**
+     * Length penalty.
+     * @param left Left text
+     * @param right Right text
+     * @return Penalty
+     */
+    private static double penalty(final String left, final String right) {
+        return Math.min(
+            PhSuggestions.MAX_PENALTY,
+            Math.max(0, right.length() - left.length()) * PhSuggestions.PENALTY
+        );
+    }
+
+    /**
+     * Jaro-Winkler similarity.
+     * @param left Left text
+     * @param right Right text
+     * @return Score
+     */
+    private static double jaroWinkler(final String left, final String right) {
+        final double jaro = PhSuggestions.jaro(left, right);
+        return PhSuggestions.clamp(
+            jaro + 1.0D * PhSuggestions.bprefix(left, right) * PhSuggestions.PSCALE
+                * (PhSuggestions.TOP - jaro)
+        );
+    }
+
+    /**
+     * Bounded common prefix.
+     * @param left Left text
+     * @param right Right text
+     * @return Prefix length
+     */
+    private static int bprefix(final String left, final String right) {
+        return Math.min(
+            PhSuggestions.PREF,
+            PhSuggestions.commonPrefix(
+                PhSuggestions.compact(left),
+                PhSuggestions.compact(right)
+            )
+        );
+    }
+
+    /**
+     * Jaro similarity.
+     * @param left Left text
+     * @param right Right text
+     * @return Score
+     */
+    private static double jaro(final String left, final String right) {
+        final double score;
+        if (left.equals(right)) {
+            score = PhSuggestions.TOP;
+        } else if (left.isEmpty() || right.isEmpty()) {
+            score = PhSuggestions.ZERO;
+        } else {
+            score = PhSuggestions.jaroMatched(left, right);
+        }
+        return score;
+    }
+
+    /**
+     * Jaro similarity for non-empty different texts.
+     * @param left Left text
+     * @param right Right text
+     * @return Score
+     */
+    private static double jaroMatched(final String left, final String right) {
+        final PhSuggestions.Matches matches = PhSuggestions.Matches.matched(left, right);
+        final double score;
+        if (matches.count == 0) {
+            score = PhSuggestions.ZERO;
+        } else {
+            score = (1.0D * matches.count / left.length()
+                + 1.0D * matches.count / right.length()
+                + (matches.count - matches.transpositions() / 2.0D) / matches.count)
+                / 3.0D;
+        }
+        return score;
+    }
+
+    /**
+     * Longest common prefix length.
+     * @param left Left text
+     * @param right Right text
+     * @return Prefix length
+     */
+    private static int commonPrefix(final String left, final String right) {
+        final int max = Math.min(left.length(), right.length());
+        int pos = 0;
+        while (pos < max && left.charAt(pos) == right.charAt(pos)) {
+            ++pos;
+        }
+        return pos;
+    }
+
+    /**
+     * Clamp score to similarity interval.
+     * @param score Raw score
+     * @return Clamped score
+     */
+    private static double clamp(final double score) {
+        return Math.max(
+            PhSuggestions.ZERO,
+            Math.min(PhSuggestions.TOP, score)
+        );
     }
 
     /**
@@ -646,41 +802,23 @@ final class PhSuggestions {
         private final String name;
 
         /**
-         * Exact word matches.
+         * Similarity score.
          */
-        private final int words;
-
-        /**
-         * Partial match score.
-         */
-        private final int partial;
-
-        /**
-         * Levenshtein distance.
-         */
-        private final int distance;
+        private final double score;
 
         /**
          * Ctor.
          * @param name Name
          * @param score Score
          */
-        Ranked(final String name, final PhSuggestions.Score score) {
+        Ranked(final String name, final double score) {
             this.name = name;
-            this.words = score.words;
-            this.partial = score.partial;
-            this.distance = score.distance;
+            this.score = score;
         }
 
         @Override
         public int compareTo(final PhSuggestions.Ranked other) {
-            int compared = Integer.compare(other.words, this.words);
-            if (compared == 0) {
-                compared = Integer.compare(other.partial, this.partial);
-            }
-            if (compared == 0) {
-                compared = Integer.compare(this.distance, other.distance);
-            }
+            int compared = Double.compare(other.score, this.score);
             if (compared == 0) {
                 compared = this.name.compareTo(other.name);
             }
@@ -694,8 +832,8 @@ final class PhSuggestions {
                 equal = true;
             } else if (obj instanceof PhSuggestions.Ranked) {
                 final PhSuggestions.Ranked other = (PhSuggestions.Ranked) obj;
-                equal = this.name.equals(other.name) && this.words == other.words
-                    && this.partial == other.partial && this.distance == other.distance;
+                equal = this.name.equals(other.name)
+                    && Double.compare(this.score, other.score) == 0;
             } else {
                 equal = false;
             }
@@ -704,7 +842,7 @@ final class PhSuggestions {
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.name, this.words, this.partial, this.distance);
+            return Objects.hash(this.name, this.score);
         }
 
         /**
@@ -716,27 +854,140 @@ final class PhSuggestions {
         private static PhSuggestions.Ranked ranked(final String origin, final String candidate) {
             return new PhSuggestions.Ranked(
                 candidate,
-                new PhSuggestions.Score(
-                    PhSuggestions.Ranked.matches(origin, candidate),
-                    PhSuggestions.common(
-                        PhSuggestions.compact(origin),
-                        PhSuggestions.compact(candidate)
-                    ),
-                    PhSuggestions.distance(origin, candidate)
-                )
+                PhSuggestions.score(origin, candidate)
             );
+        }
+    }
+
+    /**
+     * Jaro matches.
+     * @since 1.0
+     */
+    private static final class Matches {
+
+        /**
+         * Left text.
+         */
+        private final String left;
+
+        /**
+         * Right text.
+         */
+        private final String right;
+
+        /**
+         * Left matched positions.
+         */
+        private final boolean[] lefts;
+
+        /**
+         * Right matched positions.
+         */
+        private final boolean[] rights;
+
+        /**
+         * Match count.
+         */
+        private final int count;
+
+        /**
+         * Ctor.
+         * @param left Left text
+         * @param right Right text
+         * @param lefts Left matched positions
+         * @param rights Right matched positions
+         * @param count Match count
+         * @checkstyle ParameterNumberCheck (10 lines)
+         */
+        @SuppressWarnings("PMD.ArrayIsStoredDirectly")
+        Matches(
+            final String left,
+            final String right,
+            final boolean[] lefts,
+            final boolean[] rights,
+            final int count
+        ) {
+            this.left = left;
+            this.right = right;
+            this.lefts = lefts;
+            this.rights = rights;
+            this.count = count;
         }
 
         /**
-         * Word matches.
-         * @param origin Origin
-         * @param candidate Candidate
+         * Find matches for two texts.
+         * @param left Left text
+         * @param right Right text
          * @return Matches
          */
-        private static int matches(final String origin, final String candidate) {
-            return (int) PhSuggestions.words(origin).stream()
-                .filter(PhSuggestions.words(candidate)::contains)
-                .count();
+        private static PhSuggestions.Matches matched(final String left, final String right) {
+            final boolean[] lefts = new boolean[left.length()];
+            final boolean[] rights = new boolean[right.length()];
+            final int distance = Math.max(
+                0,
+                Math.max(left.length(), right.length()) / 2 - 1
+            );
+            int count = 0;
+            for (int pos = 0; pos < left.length(); ++pos) {
+                count += PhSuggestions.Matches.match(
+                    left, right, lefts, rights, pos, distance
+                );
+            }
+            return new PhSuggestions.Matches(left, right, lefts, rights, count);
+        }
+
+        /**
+         * Match one left position.
+         * @param left Left text
+         * @param right Right text
+         * @param lefts Left matched positions
+         * @param rights Right matched positions
+         * @param pos Left position
+         * @param distance Match distance
+         * @return Match count
+         * @checkstyle ParameterNumberCheck (10 lines)
+         */
+        private static int match(
+            final String left,
+            final String right,
+            final boolean[] lefts,
+            final boolean[] rights,
+            final int pos,
+            final int distance
+        ) {
+            final int start = Math.max(0, pos - distance);
+            final int end = Math.min(pos + distance + 1, right.length());
+            int found = 0;
+            for (int idx = start; idx < end; ++idx) {
+                if (!rights[idx] && left.charAt(pos) == right.charAt(idx)) {
+                    lefts[pos] = true;
+                    rights[idx] = true;
+                    found = 1;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        /**
+         * Count transpositions.
+         * @return Transpositions
+         */
+        private int transpositions() {
+            int trs = 0;
+            int ridx = 0;
+            for (int lidx = 0; lidx < this.left.length(); ++lidx) {
+                if (this.lefts[lidx]) {
+                    while (!this.rights[ridx]) {
+                        ++ridx;
+                    }
+                    if (this.left.charAt(lidx) != this.right.charAt(ridx)) {
+                        ++trs;
+                    }
+                    ++ridx;
+                }
+            }
+            return trs;
         }
     }
 }

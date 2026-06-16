@@ -19,17 +19,22 @@ final class PhSuggestionsTest {
     @Test
     void ranksClosestObjectFirst() {
         MatcherAssert.assertThat(
-            "The closest object must be suggested first",
-            new PhSuggestions(
-                Arrays.asList(
-                    "io.stdin",
-                    "io.stdout",
-                    "tt.sprintf",
-                    "tt.trimmed",
-                    "tt.concat"
-                )
-            ).suggestions("Φ.io.std1out", 5).get(0),
-            Matchers.equalTo("io.stdout")
+            "Closest and equal-score suggestions must be ranked predictably",
+            Arrays.asList(
+                new PhSuggestions(
+                    Arrays.asList(
+                        "io.stdin",
+                        "io.stdout",
+                        "tt.sprintf",
+                        "tt.trimmed",
+                        "tt.concat"
+                    )
+                ).suggestions("Φ.io.std1out", 5).get(0),
+                new PhSuggestions(
+                    Arrays.asList("aa.abe", "aa.abd")
+                ).suggestions("Φ.aa.abc", 5)
+            ),
+            Matchers.contains("io.stdout", Arrays.asList("aa.abd", "aa.abe"))
         );
     }
 
@@ -39,12 +44,12 @@ final class PhSuggestionsTest {
             "Suggestion list must be limited",
             new PhSuggestions(
                 Arrays.asList(
-                    "io.stdin",
                     "io.stdout",
-                    "io.console",
-                    "tt.sprintf",
-                    "tt.trimmed",
-                    "tt.concat"
+                    "io.stdouts",
+                    "io.stdout-as-bytes",
+                    "io.stdout-line",
+                    "io.stdout-length",
+                    "io.stdout-text"
                 )
             ).suggestions("Φ.io.std1out", 5),
             Matchers.iterableWithSize(5)
@@ -55,8 +60,13 @@ final class PhSuggestionsTest {
     void omitsMessageWithoutCandidates() {
         MatcherAssert.assertThat(
             "Suggestions must not render a section without candidates",
-            new PhSuggestions(Collections.emptyList()).message("Φ.io.std1out"),
-            Matchers.equalTo("")
+            Arrays.asList(
+                new PhSuggestions(Collections.emptyList()).message("Φ.io.std1out"),
+                new PhSuggestions(
+                    Arrays.asList("zz.qqq", "aa.bbb", "unrelated.object")
+                ).message("Φ.io.std1out")
+            ),
+            Matchers.contains("", "")
         );
     }
 
