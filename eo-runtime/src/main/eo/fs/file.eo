@@ -342,7 +342,7 @@
     .deleted
     .open
       "w"
-      true > [unused-f]
+      true > [f]
     .exists > @
 
   # Tests that opening a non-existent file in append mode creates the file.
@@ -352,7 +352,7 @@
     .deleted
     .open
       "a"
-      true > [unused-f]
+      true > [f]
     .exists > @
 
   # Tests that opening a non-existent file in wr mode creates the file.
@@ -362,7 +362,7 @@
     .deleted
     .open
       "w+"
-      true > [unused-f]
+      true > [f]
     .exists > @
 
   # Tests that opening a non-existent file in ra mode creates the file.
@@ -372,7 +372,7 @@
     .deleted
     .open
       "a+"
-      true > [unused-f]
+      true > [f]
     .exists > @
 
   # Tests that writing data to a file updates the file size correctly.
@@ -407,7 +407,7 @@
       f.write "Hello, world" > [f]
     .open
       "w"
-      true > [unused-f]
+      true > [f]
     .size
     .eq 0 > @
 
@@ -420,7 +420,7 @@
       f.write "Hello, world" > [f]
     .open
       "w+"
-      true > [unused-f]
+      true > [f]
     .size
     .eq 0 > @
 
@@ -433,7 +433,7 @@
       f.write "Hello, world" > [f]
     .open
       "a"
-      true > [unused-f]
+      true > [f]
     .size
     .eq 12 > @
 
@@ -446,7 +446,7 @@
       f.write "Hello, world" > [f]
     .open
       "a+"
-      true > [unused-f]
+      true > [f]
     .size
     .eq 12 > @
 
@@ -459,7 +459,7 @@
       f.write "Hello, world" > [f]
     .open
       "r"
-      true > [unused-f]
+      true > [f]
     .size
     .eq 12 > @
 

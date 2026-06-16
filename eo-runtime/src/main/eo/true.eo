@@ -9,4 +9,4 @@
 # It is the `bool` whose choice returns its first argument, so `if` picks
 # the `left` branch and the byte representation is `01-`.
 bool > true
-  left > [left unused-right]
+  left > [left right]

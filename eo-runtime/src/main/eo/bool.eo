@@ -71,7 +71,7 @@
     eq. > @
       a 42
       42
-    [unused-x] > a
+    [x] > a
       take > @
       [] > take
         ^.x > @
@@ -101,7 +101,7 @@
     [] > app
       f > @
         * 1 2 3
-      [unused-args] > f
+      [args] > f
         2 > @
         1 > a
     app > output
@@ -111,7 +111,7 @@
     eq. > @
       a.foo
       43
-    [unused-foo] > return
+    [foo] > return
     [] > a
       ^.return > @
         plus.

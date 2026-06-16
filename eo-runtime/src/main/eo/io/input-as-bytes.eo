@@ -17,7 +17,7 @@
 #   bytes-as-input 01-02-03-04-05
 # ```
 # After dataization, `bts` equals `01-02-03-04-05`.
-[unused-input] > input-as-bytes
+[input] > input-as-bytes
   malloc.of > @
     0
     [m] >>

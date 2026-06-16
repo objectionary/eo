@@ -12,7 +12,7 @@
 # one for the element, the second one
 # for the index. The result of dataization
 # the `func` should be boolean, that is `true` or `false`.
-[lst unused-func] > filteredi
+[lst func] > filteredi
   list > @
     recfilter lst
 
@@ -33,7 +33,7 @@
       filteredi
         list
           * 3 1 4 2 5
-        v.lt 3 > [v unused-i]
+        v.lt 3 > [v i]
       * 1 2
 
   # Tests that filtering with index based on string length works correctly.
@@ -42,7 +42,7 @@
       filteredi
         list
           * "Hello" "Name" "EO" "List"
-        v.length.gt 4 > [v unused-i]
+        v.length.gt 4 > [v i]
       * "Hello"
 
   # Tests that filtering an empty list with index returns an empty list.
@@ -51,7 +51,7 @@
       filteredi
         list
           *
-        v.lt 3 > [v unused-i]
+        v.lt 3 > [v i]
 
   # Tests that filtering elements by their index position works correctly.
   [] +> tests-filteredi-by-index
@@ -59,7 +59,7 @@
       filteredi
         list
           * 3 1 4
-        i.gt 0 > [unused-v i]
+        i.gt 0 > [v i]
       * 1 4
 
   # Tests that filtering boolean values with index works correctly.
@@ -68,5 +68,5 @@
       filteredi
         list
           * true false true
-        v.not > [v unused-i]
+        v.not > [v i]
       * false

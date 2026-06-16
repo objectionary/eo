@@ -50,13 +50,13 @@
   # For each collection element dataize the object
   # Here "func" must be an abstract object with
   # one free attribute, the element of the collection.
-  [unused-func] > each
+  [func] > each
     eachi > @
       ^
-      func item > [item unused-index] >>
+      func item > [item index] >>
 
   # Create a new list without the `element` which is `.eq` to given one.
-  [unused-element] > without
+  [element] > without
     list > @
       reduced
         ^
@@ -90,10 +90,10 @@
     reducedi > @
       list passed
       ^
-      accum.with item > [accum item unused-index]
+      accum.with item > [accum item index]
 
   # Get the first `index` elements from the start of the list.
-  [unused-index] > front
+  [index] > front
     if. > @
       idx.eq 0
       list *
@@ -189,15 +189,15 @@
   [] +> tests-list-should-not-be-empty-with-three-objects
     (list xs).is-empty.not > @
     * > xs
-      [unused-x]
-      [unused-y]
-      [unused-z]
+      [x]
+      [y]
+      [z]
 
   # Tests that a list with one anonymous object is not empty.
   [] +> tests-list-should-not-be-empty-with-one-anon-object
     (list xs).is-empty.not > @
     * > xs
-      [unused-f]
+      [f]
 
   # Tests that adding an element to the end of a list works correctly.
   [] +> tests-list-simple-with
@@ -246,7 +246,7 @@
     eq. > @
       malloc.for
         0
-        [unused-m]
+        [m]
           list
             * 1 2 3
           .each > @

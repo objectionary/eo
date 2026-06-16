@@ -8,17 +8,17 @@
 # Calculates the integral from `a` to `b`.
 # Here `func` is the integration function, `a` is the lower limit,
 # `b` is the upper limit, `n` is the number of partitions of the integration interval.
-[unused-fun a unused-b unused-n] > integral
+[fun a b n] > integral
   as-number. > @
     malloc.of
       8
-      [unused-sum] >>
+      [sum] >>
         malloc.for > @
           a
           [left] >>
             seq * > @
               while
-                [unused-i] >>
+                [i] >>
                   if. > @
                     (left.as-number.plus step).lt right
                     seq *
@@ -31,7 +31,7 @@
                         left.as-number.plus step
                       true
                     false
-                true > [unused-i]
+                true > [i]
               sum
             b > right
             ((right.minus left).div n).as-number > step

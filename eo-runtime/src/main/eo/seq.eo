@@ -45,7 +45,7 @@
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0.0
           [m] >>
@@ -61,7 +61,7 @@
   [] +> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0.0
           [m] >>
@@ -77,7 +77,7 @@
   [] +> tests-seq-single-dataization-int-less
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0
           [m] >>
@@ -93,7 +93,7 @@
   [] +> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0
           [m] >>
@@ -159,7 +159,7 @@
   [] +> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0
           [m] >>
@@ -176,7 +176,7 @@
   [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
       1
-      [unused-b]
+      [b]
         malloc.for > @
           0
           [m] >>

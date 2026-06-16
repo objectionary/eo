@@ -16,7 +16,7 @@
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
-[unused-pairs] > map
+[pairs] > map
   # Initializes the map by rebuilding pairs into internal structure.
   [] > @
     initialized > @
@@ -27,7 +27,7 @@
           rec-rebuild
             pairs
     # Pair of entries tuple and hashes list.
-    [unused-entries unused-hashes] > couple
+    [entries hashes] > couple
     # Recursively rebuilds pairs into map structure.
     [tup] > rec-rebuild
       if. > @
@@ -51,7 +51,7 @@
   # The object `key` must be dataizable.
   # The `value` is an object which is used as value stored in hash map by
   # given `key`.
-  [unused-key unused-value] > entry
+  [key value] > entry
 
   # Initialized hash map with rebuilt entries.
   [entries] > initialized
@@ -120,7 +120,7 @@
 
     # Returns the new `map` with added object
     # Replaces if there was one before.
-    [key unused-value] > with
+    [key value] > with
       map.initialized > @
         with.
           origin.

@@ -10,10 +10,10 @@
 # Map `lst` without index. Here "func" must be an abstract
 # object with one free attribute, for the element
 # of the collection.
-[lst unused-func] > mapped
+[lst func] > mapped
   mappedi > @
     lst
-    func item > [item unused-idx] >>
+    func item > [item idx] >>
 
   # Tests that mapping without index transforms elements correctly.
   [] +> tests-simple-list-mapping

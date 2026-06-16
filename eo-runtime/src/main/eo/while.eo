@@ -29,7 +29,7 @@
 # Only the first three strings are dataized for side effects while the last one
 # is returned as the result value assigned to the `last` object.
 # The `while` loop example produces identical behavior.
-[condition unused-body] > while
+[condition body] > while
   if. > @
     (condition 0).as-bool
     loop 0
@@ -54,7 +54,7 @@
       0
       malloc.for
         42
-        [unused-m]
+        [m]
           while > @
             i.eq 0 > [i]
             m.put i > [i] >>
@@ -63,18 +63,18 @@
   [] +> tests-simple-while-with-false-first
     not. > @
       while
-        false > [unused-i]
-        true > [unused-i]
+        false > [i]
+        true > [i]
 
   # Tests that while loop works with boolean expressions using malloc memory.
   [] +> tests-simple-bool-expression-via-malloc-in-while
     eq. > @
       malloc.for
         true
-        [unused-m]
+        [m]
           while > @
-            m > [unused-i] >>
-            m.put false > [unused-i] >>
+            m > [i] >>
+            m.put false > [i] >>
       false
 
   # Tests that while loop returns the last dataized object when loop completes.
@@ -82,25 +82,25 @@
     eq. > @
       malloc.for
         0
-        [unused-m]
+        [m]
           while > @
-            2.gt m > [unused-i] >>
-            m.put (m.as-number.plus 1) > [unused-i] >>
+            2.gt m > [i] >>
+            m.put (m.as-number.plus 1) > [i] >>
       3
 
   # Tests that while loop returns false when condition evaluates to false initially.
   [] +> tests-last-while-dataization-object-with-false-condition
     not. > @
       while
-        1.gt 2 > [unused-i]
-        true > [unused-i]
+        1.gt 2 > [i]
+        true > [i]
 
   # Tests that while loop performs simple iteration and updates counter correctly.
   [] +> tests-while-simple-iteration
     eq. > @
       malloc.for
         0
-        [unused-m]
+        [m]
           while > @
             i.lt 10 > [i]
             m.put i > [i] >>
@@ -113,18 +113,18 @@
     arr.length.plus -1 > max
     malloc.for > data
       0
-      [unused-acc] >>
+      [acc] >>
         malloc.for > @
           0
-          [unused-iter] >>
+          [iter] >>
             if. > @
               max.eq 0
               acc.put
                 acc.as-number.plus
                   arr.at 0
               while
-                max.gt iter > [unused-i] >>
-                [unused-i] >>
+                max.gt iter > [i] >>
+                [i] >>
                   seq > @
                     *
                       acc.put
@@ -140,13 +140,13 @@
     arr.length.plus -1 > max
     malloc.for > data
       0
-      [unused-acc] >>
+      [acc] >>
         malloc.for > @
           0
-          [unused-iter] >>
+          [iter] >>
             while > @
-              max.gt iter > [unused-i] >>
-              [unused-i] >>
+              max.gt iter > [i] >>
+              [i] >>
                 seq > @
                   *
                     acc.put
@@ -162,14 +162,14 @@
     arr.length > max
     malloc.for > data
       0
-      [unused-acc] >>
+      [acc] >>
         malloc.for > @
           0
-          [unused-iter] >>
+          [iter] >>
             seq > @
               *
                 while
-                  [unused-i] >>
+                  [i] >>
                     if. > @
                       max.gt iter
                       seq
@@ -182,7 +182,7 @@
                             iter.as-number.plus 1
                           true
                       false
-                  true > [unused-i]
+                  true > [i]
                 acc
 
   # Tests that while loop can iterate over single tuple element without explicit body.
@@ -192,14 +192,14 @@
     arr.length > max
     malloc.for > data
       0
-      [unused-acc] >>
+      [acc] >>
         malloc.for > @
           0
-          [unused-iter] >>
+          [iter] >>
             seq > @
               *
                 while
-                  [unused-i] >>
+                  [i] >>
                     if. > @
                       max.gt iter
                       seq
@@ -212,5 +212,5 @@
                             iter.as-number.plus 1
                           true
                       false
-                  true > [unused-i]
+                  true > [i]
                 acc

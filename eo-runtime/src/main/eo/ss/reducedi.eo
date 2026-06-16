@@ -11,7 +11,7 @@
 # Here "func" must be an abstract object with three free attributes.
 # The first one for the accumulator, the second one
 # for the element of the collection and the third one for the index.
-[lst start unused-func] > reducedi
+[lst start func] > reducedi
   if. > @
     lst.is-empty
     start
@@ -51,7 +51,7 @@
         list
           * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
         0
-        x.plus a > [a x unused-i]
+        x.plus a > [a x i]
       1
 
   # Tests that reducing an array of boolean values with index works correctly.
@@ -61,7 +61,7 @@
         list
           * true true false
         true
-        x.and a > [a x unused-i]
+        x.and a > [a x i]
 
   # Tests that reducing with nested functions and conditional logic works correctly.
   [] +> tests-list-reducedi-nested-functions
@@ -70,10 +70,10 @@
         list
           * 10 500
         0
-        [unused-acc x unused-i]
+        [acc x i]
           check x > @
           # Checks if element is less than 100 and adds or subtracts it.
-          [unused-el] > check
+          [el] > check
             if. > @
               ^.x.lt 100
               ^.acc.plus x

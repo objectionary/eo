@@ -56,7 +56,7 @@
           to body
 
       # Internal object that carries jump identifier and return value.
-      [unused-value] > jump
+      [value] > jump
         identifier > id
 
       # Performs forward jump returning given result immediately to caller.
@@ -96,10 +96,10 @@
         div 0
         0
     # Divides 42 by x, returns 0 if x is zero using forward jump.
-    [unused-x] > div
+    [x] > div
       malloc.for > @
         0
-        [unused-r] >>
+        [r] >>
           go.to > @
             [g] >>
               seq > @
@@ -116,7 +116,7 @@
       max 7 42
       42
     # Returns maximum of two numbers using forward jump for early return.
-    [a unused-b] > max
+    [a b] > max
       go.to > @
         [g] >>
           seq > @
@@ -131,11 +131,11 @@
   [] +> tests-nested-goto
     eq. > @
       go.to
-        [unused-g1]
+        [g1]
           seq > @
             *
               go.to
-                [unused-g2] >>
+                [g2] >>
                   g1.forward 42 > @
               7
       42
