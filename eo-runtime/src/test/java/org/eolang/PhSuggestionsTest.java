@@ -31,10 +31,10 @@ final class PhSuggestionsTest {
                     )
                 ).suggestions("Φ.io.std1out", 5).get(0),
                 new PhSuggestions(
-                    Arrays.asList("aa.abe", "aa.abd")
+                    Arrays.asList("aa.aby", "aa.abx")
                 ).suggestions("Φ.aa.abc", 5)
             ),
-            Matchers.contains("io.stdout", Arrays.asList("aa.abd", "aa.abe"))
+            Matchers.contains("io.stdout", Arrays.asList("aa.abx", "aa.aby"))
         );
     }
 
