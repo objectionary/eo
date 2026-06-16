@@ -122,6 +122,19 @@ final class MainTest {
     }
 
     @Test
+    void suggestsObjectsForNotFoundException() {
+        MatcherAssert.assertThat(
+            "Fails with suggestions for close object names",
+            MainTest.stderr("io.std1out"),
+            Matchers.allOf(
+                Matchers.containsString("Couldn't find object 'Φ.io.std1out'"),
+                Matchers.containsString("Did you mean?"),
+                Matchers.containsString("  - io.stdout")
+            )
+        );
+    }
+
+    @Test
     void readsStreamCorrectly() throws IOException {
         MatcherAssert.assertThat(
             "Reading stream should produce a non-empty line, but it didn't",
