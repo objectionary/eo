@@ -86,7 +86,7 @@
       #  from the runtime objects. Currently, it is not possible because syntax sugar for object
       #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
       #  here, in `matched`. Don't forget to remove this puzzle.
-      [position start from to groups] > matched
+      [position start unused-from to groups] > matched
         $ > matched
         groups.length > groups-count
         start.gte 0 > exists

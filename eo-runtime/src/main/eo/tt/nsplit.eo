@@ -11,7 +11,7 @@
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
 # If `limit` < 1, an error is returned.
-[text delimiter limit] > nsplit
+[text unused-delimiter limit] > nsplit
   if. > @
     1.gt limit
     error

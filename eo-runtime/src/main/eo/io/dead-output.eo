@@ -9,7 +9,7 @@
 [] > dead-output
   # Writes given `buffer` to nowhere.
   # Returns new instance of `output-block`.
-  [buffer] > write
+  [unused-buffer] > write
     output-block > @
 
     # Dead output block.
@@ -21,7 +21,7 @@
 
       # Writes given `buffer` to nowhere.
       # Returns new instance of `output-block`.
-      output-block > [buffer] > write
+      output-block > [unused-buffer] > write
 
   # Tests that dead-output can write bytes to nowhere without errors.
   dead-output.write 01-02-03 > [] +> writes-bytes-to-nowhere

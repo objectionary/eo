@@ -13,7 +13,7 @@
 # to highlight deprecated methods. EO compiler, when it meets the
 # `cti` object, takes its `message` and prints to the log/console
 # with the `level` severity level (use `INFO`, `WARN`, or `ERROR`).
-[delegate level message] > cti
+[delegate unused-level unused-message] > cti
   delegate > @
 
   # Tests that cti prints warning and returns the delegated value.

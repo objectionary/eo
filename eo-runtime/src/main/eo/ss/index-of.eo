@@ -8,7 +8,7 @@
 
 # Returns index of the first occurrence of `wanted` in `lst`.
 # If `lst` has no such element, returns -1.
-[lst wanted] > index-of
+[lst unused-wanted] > index-of
   number > @
     recidx lst
 

@@ -18,7 +18,7 @@
 #
 # The wrapped expression is not evaluated, and the surrounding test
 # passes trivially.
-[x] > nop
+[unused-x] > nop
   true > @
 
   # Tests that nop ignores its argument and behaves as TRUE.

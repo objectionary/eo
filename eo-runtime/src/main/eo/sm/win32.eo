@@ -35,7 +35,7 @@
     return code output > called
 
   # Structure for "GetSystemTime" function call.
-  [year month day day-of-week hour minute second milliseconds] > system-time
+  [unused-year unused-month unused-day unused-day-of-week unused-hour unused-minute unused-second unused-milliseconds] > system-time
 
   # The win32 `sockaddr_in` structure.
   [sin-family sin-port sin-addr] > sockaddr-in

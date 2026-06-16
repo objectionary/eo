@@ -82,7 +82,7 @@
 
   # Opens the file for I/O operations.
   # Since current file is a directory - returns an `error`.
-  [mode scope] > open
+  [unused-mode unused-scope] > open
     error > @
       sprintf
         "The file %s is a directory, can't open for I/O operations"
@@ -113,7 +113,7 @@
   [] +> throws-on-opening-directory
     tmpdir.open > @
       "w"
-      true > [d]
+      true > [unused-d]
 
   # Tests that deleting a directory recursively removes all contained files.
   [] +> tests-deletes-directory-with-files-recursively

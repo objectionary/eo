@@ -8,7 +8,7 @@
 
 # Returns index of the last occurrence of `wanted` in `lst`.
 # If `lst` has no such element, returns -1.
-[lst wanted] > last-index-of
+[lst unused-wanted] > last-index-of
   reclast lst > @
 
   # Recursively searches for last occurrence of wanted element.

@@ -11,7 +11,7 @@
 # object with two free attributes. The first
 # one for the element of the collection, the second one
 # for the index.
-[lst func] > mappedi
+[lst unused-func] > mappedi
   list > @
     reducedi
       lst

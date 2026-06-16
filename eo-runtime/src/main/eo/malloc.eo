@@ -69,7 +69,7 @@
 
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data is written into memory.
-  [object scope] > for
+  [object unused-scope] > for
     malloc.of > @
       bts.size
       [m] >>
@@ -159,14 +159,14 @@
       2
       malloc.for
         0
-        [f]
+        [unused-f]
           seq > @
             *
               second
               second
           malloc.of > second
             1
-            f.put (f.as-number.plus 1) > [s] >>
+            f.put (f.as-number.plus 1) > [unused-s] >>
 
   # Tests that malloc.for correctly writes the initial value provided during allocation.
   [] +> tests-malloc-for-writes-first-init-value
@@ -259,7 +259,7 @@
   [] +> tests-malloc-allocates-right-size-block
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.of > @
           10
           b.put (m.size.eq 10) > [m] >>
@@ -268,7 +268,7 @@
   [] +> tests-malloc-writes-and-reads
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.of > @
           12
           [m] >>
@@ -285,7 +285,7 @@
   [] +> tests-malloc-concacts-strings-with-offset
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.of > @
           3
           [m] >>
@@ -309,7 +309,7 @@
   [] +> tests-malloc-reads-with-offset-and-length
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.of > @
           10
           [m] >>
@@ -331,7 +331,7 @@
   [] +> tests-malloc-increases-block-size
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.for > @
           01-02-03-04
           [m] >>
@@ -344,7 +344,7 @@
   [] +> tests-malloc-decreases-block-size
     malloc.of > @
       1
-      [b]
+      [unused-b]
         malloc.for > @
           01-02-03-04-05
           [m] >>

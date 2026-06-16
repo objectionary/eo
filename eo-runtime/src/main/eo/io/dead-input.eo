@@ -10,7 +10,7 @@
 [] > dead-input
   # Read `size` amount of bytes from nowhere.
   # Returns new instance of `input-block`.
-  [size] > read
+  [unused-size] > read
     input-block > @
 
     # Dead input block.
@@ -22,7 +22,7 @@
 
       # Read `size` amount of bytes from nowhere.
       # Returns new instance of `input-block`.
-      input-block > [size] > read
+      input-block > [unused-size] > read
 
   # Tests that dead-input always returns empty bytes regardless of requested size.
   [] +> tests-reads-empty-bytes

@@ -341,7 +341,7 @@
         *
           2.div 0
           true
-      false > [e]
+      false > [unused-e]
       false
 
   # Checks that division by one returns the dividend.

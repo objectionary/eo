@@ -12,10 +12,10 @@
 # with one attribute for the element.
 # The result of dataization the `func`
 # should be boolean, that is `true` or `false`.
-[lst func] > filtered
+[lst unused-func] > filtered
   filteredi > @
     lst
-    func item > [item index] >>
+    func item > [item unused-index] >>
 
   # Tests that filtering without index using greater-than comparison works correctly.
   [] +> tests-simple-filtered

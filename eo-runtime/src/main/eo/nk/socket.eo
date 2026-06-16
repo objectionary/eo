@@ -79,7 +79,7 @@
   #
   # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
-  [recv] > as-input
+  [unused-recv] > as-input
     # Read `size` amount of bytes from socket.
     # Returns new instance of `input-block` with `buffer` read from socket.
     [size] > read
@@ -106,7 +106,7 @@
   #
   # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
-  [send] > as-output
+  [unused-send] > as-output
     # Write given `buffer` to the socket.
     # Here `buffer` is either sequence of bytes or and object that can be
     # dataized via `as-bytes` object.
@@ -159,7 +159,7 @@
     # Scoped posix socket that is passed as argument
     # to scope of `posix-socket.connect`, `posix-socket.listen` and `scoped-socket.accept`.
     # Here `sockfd` is the socket descriptor.
-    [sockfd] > scoped-socket
+    [unused-sockfd] > scoped-socket
       # Makes an `input` from `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
       ^.^.as-input recv > as-input
@@ -237,7 +237,7 @@
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
-    [scope] > connect
+    [unused-scope] > connect
       safe-socket > @
         [] >>
           if. > @
@@ -261,7 +261,7 @@
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
-    [scope] > listen
+    [unused-scope] > listen
       safe-socket > @
         [] >>
           if. > @
@@ -344,7 +344,7 @@
     # Scoped win32 socket that is passed as argument
     # to scope of `win32-socket.connect`, `win32-socket.listen` and `scoped-socket.accept`.
     # Here `sockfd` is the socket descriptor.
-    [sockfd] > scoped-socket
+    [unused-sockfd] > scoped-socket
       # Makes an `input` from win32 `socket`.
       # The object allows to use `socket` as input stream and `read` from it sequentially.
       ^.^.as-input recv > as-input
@@ -439,7 +439,7 @@
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
-    [scope] > connect
+    [unused-scope] > connect
       safe-socket > @
         [] >>
           if. > @
@@ -463,7 +463,7 @@
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
-    [scope] > listen
+    [unused-scope] > listen
       safe-socket > @
         [] >>
           if. > @

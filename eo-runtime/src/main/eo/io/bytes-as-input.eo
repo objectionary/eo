@@ -27,7 +27,7 @@
 # If requested amount of bytes is more than amount
 # of available bytes - only available bytes are included.
 # If there's no available bytes - empty bytes (`--`) are included.
-[bts] > bytes-as-input
+[unused-bts] > bytes-as-input
   # Read `size` amount of bytes from `bts`.
   # Returns new instance of `input-block` with set
   # sliced `data` and `buffer`.
@@ -41,7 +41,7 @@
     #
     # Here `data` is a sequence of bytes that can be read from,
     # `buffer` is a sequence of bytes that got from previous reading.
-    [data buffer] > input-block
+    [unused-data buffer] > input-block
       buffer > @
 
       # Read `size` amount of bytes from `data`.

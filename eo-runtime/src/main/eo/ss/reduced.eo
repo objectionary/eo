@@ -12,11 +12,11 @@
 # Here "func" must be an abstract object with two free attributes.
 # The first one for the accumulator, the second one for the element
 # of the collection.
-[lst start func] > reduced
+[lst start unused-func] > reduced
   reducedi > @
     lst
     start
-    func accum item > [accum item idx] >>
+    func accum item > [accum item unused-idx] >>
 
   # Tests that reducing a list without index access works correctly.
   [] +> tests-list-reduce-without-index

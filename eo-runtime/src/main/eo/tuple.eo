@@ -8,7 +8,7 @@
 
 # Tuple.
 # An ordered, immutable collection of elements.
-[tail head length] > tuple
+[unused-tail unused-head unused-length] > tuple
   # Empty tuple.
   # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   tuple > empty
@@ -62,7 +62,7 @@
       (arr *).elements.length
       0
     # Wrapper object that holds elements tuple for testing purposes.
-    [elements] > arr
+    [unused-elements] > arr
 
   # Check that tuple.length works properly for non-empty tuples.
   [] +> tests-non-empty-tuple-length-test
@@ -73,7 +73,7 @@
       .length
       5
     # Wrapper object that holds elements tuple for testing purposes.
-    [elements] > arr
+    [unused-elements] > arr
 
   # Tests that a tuple bound as an attribute with size 0 has correct length.
   [] +> tests-tuple-as-a-bound-attribute-size-0

@@ -10,7 +10,7 @@
 # Here `target` must be a `org.eolang.tt.regex` object.
 # The `replacement` here is a `string` that would be pasted instead of
 # matched text in original one.
-[text target replacement] > replaced
+[text target unused-replacement] > replaced
   if. > @
     matched.exists.not
     reinit

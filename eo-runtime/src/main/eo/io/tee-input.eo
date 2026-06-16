@@ -22,7 +22,7 @@
 # ```
 # After dataization `copied` is equal to `01-02-03-04-05` which are read
 # from memory.
-[input output] > tee-input
+[unused-input unused-output] > tee-input
   # Read `size` amount of bytes from `input`.
   # Returns new instance of `input-block` with set
   # `input` ready to be read, `output` ready to be written and bytes `buffer`.
@@ -38,7 +38,7 @@
     # Here `input` is an input ready to be read,
     # `output` is an output ready to be written,
     # `buffer` is a sequence of bytes that got from previous reading.
-    [input output buffer] > input-block
+    [unused-input unused-output buffer] > input-block
       buffer > @
 
       # Read `size` amount of bytes from `input`.
@@ -92,7 +92,7 @@
     eq. > @
       malloc.of
         6
-        [m1]
+        [unused-m1]
           malloc.of > @
             5
             [m2] >>

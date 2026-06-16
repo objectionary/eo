@@ -12,7 +12,7 @@
 # two free attributes: the element of the
 # collection and its index.
 # The result of `func` must be dataizable.
-[lst func] > eachi
+[lst unused-func] > eachi
   reducedi > @
     lst
     true
@@ -26,7 +26,7 @@
     eq. > @
       malloc.for
         0
-        [m]
+        [unused-m]
           eachi > @
             list
               * 1 2 3

@@ -31,7 +31,7 @@
         "some string"
         7
         5
-      true > [e]
+      true > [unused-e]
       false
 
   # Tests that nested try-catch blocks work correctly with exception propagation.
@@ -44,7 +44,7 @@
           5
         error e > [e]
         false
-      true > [e]
+      true > [unused-e]
       false
 
   # Tests that try block executes normally when no exception occurs.
