@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -31,7 +32,7 @@ import java.util.stream.Stream;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class PhSuggestions {
 
     /**
@@ -70,6 +71,11 @@ final class PhSuggestions {
     private static final Pattern SEPARATORS = Pattern.compile("[^A-Za-z0-9]+");
 
     /**
+     * All candidates.
+     */
+    private static final Collection<String> ALL = PhSuggestions.discover();
+
+    /**
      * Candidates.
      */
     private final Collection<String> candidates;
@@ -78,7 +84,7 @@ final class PhSuggestions {
      * Ctor.
      */
     PhSuggestions() {
-        this(PhSuggestions.Candidates.ALL);
+        this(PhSuggestions.ALL);
     }
 
     /**
@@ -133,7 +139,7 @@ final class PhSuggestions {
             .filter(Predicate.not(String::isEmpty))
             .distinct()
             .filter(candidate -> !candidate.equals(normalized))
-            .map(candidate -> new Ranked(normalized, candidate))
+            .map(candidate -> PhSuggestions.Ranked.ranked(normalized, candidate))
             .sorted()
             .limit(limit)
             .map(ranked -> PhSuggestions.display(name, ranked.name))
@@ -148,29 +154,75 @@ final class PhSuggestions {
     static Collection<String> names(final String resource) {
         final Collection<String> names;
         if (resource.startsWith(PhSuggestions.RROOT) && resource.endsWith(PhSuggestions.EXT)) {
-            final int ending = resource.length() - PhSuggestions.EXT.length();
-            final String relative = resource.substring(PhSuggestions.RROOT.length(), ending);
-            if (relative.endsWith("/package-info")) {
-                final String object = PhSuggestions.toObject(
-                    relative.substring(0, relative.length() - "/package-info".length())
-                );
-                if (object.isEmpty()) {
-                    names = Collections.emptyList();
-                } else {
-                    names = Collections.singleton(object);
-                }
-            } else if (PhSuggestions.internal(relative)) {
-                names = Collections.emptyList();
-            } else {
-                final String object = PhSuggestions.annotated(relative);
-                if (object.isEmpty()) {
-                    names = PhSuggestions.fallback(relative);
-                } else {
-                    names = Collections.singleton(object);
-                }
-            }
+            names = PhSuggestions.relative(
+                resource.substring(
+                    PhSuggestions.RROOT.length(),
+                    resource.length() - PhSuggestions.EXT.length()
+                )
+            );
         } else {
             names = Collections.emptyList();
+        }
+        return names;
+    }
+
+    /**
+     * Object names by relative class resource.
+     * @param relative Relative class resource
+     * @return EO object names
+     */
+    private static Collection<String> relative(final String relative) {
+        final Collection<String> names;
+        if (relative.endsWith("/package-info")) {
+            names = PhSuggestions.packageInfo(relative);
+        } else if (PhSuggestions.internal(relative)) {
+            names = Collections.emptyList();
+        } else {
+            names = PhSuggestions.object(relative);
+        }
+        return names;
+    }
+
+    /**
+     * Object names by package-info resource.
+     * @param relative Relative class resource
+     * @return EO object names
+     */
+    private static Collection<String> packageInfo(final String relative) {
+        return PhSuggestions.singleton(
+            PhSuggestions.toObject(
+                relative.substring(0, relative.length() - "/package-info".length())
+            )
+        );
+    }
+
+    /**
+     * Object names by plain class resource.
+     * @param relative Relative class resource
+     * @return EO object names
+     */
+    private static Collection<String> object(final String relative) {
+        final String object = PhSuggestions.annotated(relative);
+        final Collection<String> names;
+        if (object.isEmpty()) {
+            names = PhSuggestions.fallback(relative);
+        } else {
+            names = Collections.singleton(object);
+        }
+        return names;
+    }
+
+    /**
+     * Singleton object name.
+     * @param object Object name
+     * @return Collection
+     */
+    private static Collection<String> singleton(final String object) {
+        final Collection<String> names;
+        if (object.isEmpty()) {
+            names = Collections.emptyList();
+        } else {
+            names = Collections.singleton(object);
         }
         return names;
     }
@@ -182,9 +234,7 @@ final class PhSuggestions {
      */
     private static boolean internal(final String relative) {
         return Arrays.stream(relative.replace('$', '/').split("/"))
-            .anyMatch(
-                part -> part.startsWith("EOΦ") || part.startsWith("EOφ")
-            );
+            .anyMatch(part -> part.startsWith("EOΦ") || part.startsWith("EOφ"));
     }
 
     /**
@@ -211,7 +261,7 @@ final class PhSuggestions {
                     relative.replace('/', '.')
                 ),
                 false,
-                PhSuggestions.class.getClassLoader()
+                Thread.currentThread().getContextClassLoader()
             ).getAnnotation(XmirObject.class);
             if (xmir != null) {
                 object = PhSuggestions.inPackage(
@@ -320,20 +370,57 @@ final class PhSuggestions {
      */
     private static String dashes(final String name) {
         final StringBuilder out = new StringBuilder(name.length());
-        for (int pos = 0; pos < name.length(); ++pos) {
-            final char chr = name.charAt(pos);
-            if (chr == '_') {
-                if (pos + 1 < name.length() && name.charAt(pos + 1) == '_') {
-                    out.append('_');
-                    ++pos;
-                } else {
-                    out.append('-');
-                }
-            } else {
-                out.append(chr);
-            }
+        int pos = 0;
+        while (pos < name.length()) {
+            out.append(PhSuggestions.dash(name, pos));
+            pos += PhSuggestions.skip(name, pos);
         }
         return out.toString();
+    }
+
+    /**
+     * Convert one Java name character to EO name character.
+     * @param name Java name part
+     * @param pos Character position
+     * @return EO name character
+     */
+    private static char dash(final String name, final int pos) {
+        final char dash;
+        if (PhSuggestions.escaped(name, pos)) {
+            dash = '_';
+        } else if (name.charAt(pos) == '_') {
+            dash = '-';
+        } else {
+            dash = name.charAt(pos);
+        }
+        return dash;
+    }
+
+    /**
+     * Number of Java name characters consumed by EO name character.
+     * @param name Java name part
+     * @param pos Character position
+     * @return Characters consumed
+     */
+    private static int skip(final String name, final int pos) {
+        final int skip;
+        if (PhSuggestions.escaped(name, pos)) {
+            skip = 2;
+        } else {
+            skip = 1;
+        }
+        return skip;
+    }
+
+    /**
+     * Check if underscore is escaped.
+     * @param name Java name part
+     * @param pos Character position
+     * @return TRUE if underscore is escaped
+     */
+    private static boolean escaped(final String name, final int pos) {
+        return name.charAt(pos) == '_' && pos + 1 < name.length()
+            && name.charAt(pos + 1) == '_';
     }
 
     /**
@@ -351,7 +438,7 @@ final class PhSuggestions {
                     PhSuggestions.scan(path.toFile(), objects);
                 }
             } catch (final InvalidPathException | SecurityException ignored) {
-                // Suggestions must not hide the original lookup failure.
+                continue;
             }
         }
         return objects;
@@ -382,7 +469,7 @@ final class PhSuggestions {
                     .map(path -> path.replace(File.separatorChar, '/'))
                     .forEach(resource -> PhSuggestions.add(resource, objects));
             } catch (final IOException | SecurityException ignored) {
-                // Suggestions must not hide the original lookup failure.
+                objects.addAll(Collections.emptyList());
             }
         }
     }
@@ -402,7 +489,7 @@ final class PhSuggestions {
                 }
             }
         } catch (final IOException | SecurityException ignored) {
-            // Suggestions must not hide the original lookup failure.
+            objects.addAll(Collections.emptyList());
         }
     }
 
@@ -514,21 +601,36 @@ final class PhSuggestions {
     }
 
     /**
-     * Cached discovered candidates.
+     * Suggestion score.
      * @since 1.0
      */
-    private static final class Candidates {
+    private static final class Score {
 
         /**
-         * All candidates.
+         * Exact word matches.
          */
-        private static final Collection<String> ALL = PhSuggestions.discover();
+        private final int words;
+
+        /**
+         * Partial match score.
+         */
+        private final int partial;
+
+        /**
+         * Levenshtein distance.
+         */
+        private final int distance;
 
         /**
          * Ctor.
+         * @param words Word matches
+         * @param partial Partial match score
+         * @param distance Distance
          */
-        private Candidates() {
-            // Utility class.
+        Score(final int words, final int partial, final int distance) {
+            this.words = words;
+            this.partial = partial;
+            this.distance = distance;
         }
     }
 
@@ -536,7 +638,7 @@ final class PhSuggestions {
      * Ranked suggestion.
      * @since 1.0
      */
-    private static final class Ranked implements Comparable<Ranked> {
+    private static final class Ranked implements Comparable<PhSuggestions.Ranked> {
 
         /**
          * Candidate name.
@@ -560,21 +662,18 @@ final class PhSuggestions {
 
         /**
          * Ctor.
-         * @param origin Origin
-         * @param candidate Candidate
+         * @param name Name
+         * @param score Score
          */
-        Ranked(final String origin, final String candidate) {
-            this.name = candidate;
-            this.words = Ranked.matches(origin, candidate);
-            this.partial = PhSuggestions.common(
-                PhSuggestions.compact(origin),
-                PhSuggestions.compact(candidate)
-            );
-            this.distance = PhSuggestions.distance(origin, candidate);
+        Ranked(final String name, final PhSuggestions.Score score) {
+            this.name = name;
+            this.words = score.words;
+            this.partial = score.partial;
+            this.distance = score.distance;
         }
 
         @Override
-        public int compareTo(final Ranked other) {
+        public int compareTo(final PhSuggestions.Ranked other) {
             int compared = Integer.compare(other.words, this.words);
             if (compared == 0) {
                 compared = Integer.compare(other.partial, this.partial);
@@ -588,6 +687,46 @@ final class PhSuggestions {
             return compared;
         }
 
+        @Override
+        public boolean equals(final Object obj) {
+            final boolean equal;
+            if (this == obj) {
+                equal = true;
+            } else if (obj instanceof PhSuggestions.Ranked) {
+                final PhSuggestions.Ranked other = (PhSuggestions.Ranked) obj;
+                equal = this.name.equals(other.name) && this.words == other.words
+                    && this.partial == other.partial && this.distance == other.distance;
+            } else {
+                equal = false;
+            }
+            return equal;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.name, this.words, this.partial, this.distance);
+        }
+
+        /**
+         * Make ranked suggestion.
+         * @param origin Origin
+         * @param candidate Candidate
+         * @return Ranked suggestion
+         */
+        private static PhSuggestions.Ranked ranked(final String origin, final String candidate) {
+            return new PhSuggestions.Ranked(
+                candidate,
+                new PhSuggestions.Score(
+                    PhSuggestions.Ranked.matches(origin, candidate),
+                    PhSuggestions.common(
+                        PhSuggestions.compact(origin),
+                        PhSuggestions.compact(candidate)
+                    ),
+                    PhSuggestions.distance(origin, candidate)
+                )
+            );
+        }
+
         /**
          * Word matches.
          * @param origin Origin
@@ -595,9 +734,8 @@ final class PhSuggestions {
          * @return Matches
          */
         private static int matches(final String origin, final String candidate) {
-            final Collection<String> cwords = PhSuggestions.words(candidate);
             return (int) PhSuggestions.words(origin).stream()
-                .filter(cwords::contains)
+                .filter(PhSuggestions.words(candidate)::contains)
                 .count();
         }
     }

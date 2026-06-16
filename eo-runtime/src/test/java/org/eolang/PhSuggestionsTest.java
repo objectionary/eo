@@ -16,11 +16,6 @@ import org.junit.jupiter.api.Test;
  */
 final class PhSuggestionsTest {
 
-    /**
-     * Max suggestions.
-     */
-    private static final int LIMIT = 5;
-
     @Test
     void ranksClosestObjectFirst() {
         MatcherAssert.assertThat(
@@ -33,7 +28,7 @@ final class PhSuggestionsTest {
                     "tt.trimmed",
                     "tt.concat"
                 )
-            ).suggestions("Φ.io.std1out", PhSuggestionsTest.LIMIT).get(0),
+            ).suggestions("Φ.io.std1out", 5).get(0),
             Matchers.equalTo("io.stdout")
         );
     }
@@ -51,8 +46,8 @@ final class PhSuggestionsTest {
                     "tt.trimmed",
                     "tt.concat"
                 )
-            ).suggestions("Φ.io.std1out", PhSuggestionsTest.LIMIT),
-            Matchers.iterableWithSize(PhSuggestionsTest.LIMIT)
+            ).suggestions("Φ.io.std1out", 5),
+            Matchers.iterableWithSize(5)
         );
     }
 
@@ -71,7 +66,7 @@ final class PhSuggestionsTest {
             "Suggestion must keep org.eolang prefix when the missing object uses it",
             new PhSuggestions(
                 Arrays.asList("io.stdin", "io.stdout", "tt.sprintf")
-            ).suggestions("Φ.org.eolang.io.std1out", PhSuggestionsTest.LIMIT).get(0),
+            ).suggestions("Φ.org.eolang.io.std1out", 5).get(0),
             Matchers.equalTo("org.eolang.io.stdout")
         );
     }
@@ -113,7 +108,7 @@ final class PhSuggestionsTest {
     }
 
     @Test
-    void ignoresTestResource() {
+    void ignoresSpecResource() {
         MatcherAssert.assertThat(
             "Test classes must not become suggestions",
             PhSuggestions.names("org/eolang/EOnumberTest.class"),
