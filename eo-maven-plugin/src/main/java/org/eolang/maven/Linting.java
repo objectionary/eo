@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
@@ -65,6 +65,11 @@ final class Linting implements Step {
      * Subdirectory for linted cache.
      */
     static final String CACHE = "linted";
+
+    /**
+     * Lock for source lints.
+     */
+    private static final ReentrantLock SOURCE = new ReentrantLock();
 
     /**
      * Scoped foreign tojos.
@@ -293,15 +298,12 @@ final class Linting implements Step {
                         this.version,
                         new TojoHash(tojo).get()
                     ),
-                    src -> this.linted(
-                        xmir,
-                        unlints
-                    ).toString()
+                    src -> this.lintedAsString(xmir, unlints)
                 )
             ).apply(source, target, base.relativize(target));
         } else {
             new Saved(
-                this.linted(xmir, unlints).toString(),
+                this.lintedAsString(xmir, unlints),
                 target
             ).value();
         }
@@ -383,6 +385,23 @@ final class Linting implements Step {
             );
         }
         return pkg.size();
+    }
+
+    /**
+     * Lint XMIR and render it as text.
+     * @param xmir The XML before linting
+     * @param unlints Lints to skip
+     * @return Linted XMIR text
+     */
+    private String lintedAsString(final XML xmir, final String... unlints) {
+        final String text;
+        Linting.SOURCE.lock();
+        try {
+            text = this.linted(xmir, unlints).toString();
+        } finally {
+            Linting.SOURCE.unlock();
+        }
+        return text;
     }
 
     /**
@@ -527,7 +546,7 @@ final class Linting implements Step {
                     .map(Linting::toDefect)
                     .collect(Collectors.toList())
             )
-            .orElse(new ListOf<>());
+            .orElse(new ArrayList<>(0));
     }
 
     /**
