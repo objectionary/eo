@@ -37,6 +37,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * All tests for Input/Output operations.
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(MktmpResolver.class)
 final class InputOutputTest {
