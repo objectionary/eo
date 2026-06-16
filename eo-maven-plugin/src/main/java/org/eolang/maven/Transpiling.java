@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -94,6 +95,11 @@ final class Transpiling implements Step {
      * Java extension.
      */
     private static final String JAVA = "java";
+
+    /**
+     * Lock for XSL transformations.
+     */
+    private static final ReentrantLock TRANSFORM = new ReentrantLock();
 
     /**
      * XMIR sources to transpile.
@@ -221,7 +227,7 @@ final class Transpiling implements Step {
                     new CachePath(cdir, this.version, hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
-                        final String res = transform.apply(xmir).toString();
+                        final String res = Transpiling.transformed(transform, xmir);
                         Logger.debug(
                             this,
                             "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
@@ -241,9 +247,26 @@ final class Transpiling implements Step {
             ).apply(source, target, tail);
         } else {
             rewrite.compareAndSet(false, true);
-            new Saved(transform.apply(xmir).toString(), target).value();
+            new Saved(Transpiling.transformed(transform, xmir), target).value();
         }
         return this.javaGenerated(rewrite.get(), target, hsh.get());
+    }
+
+    /**
+     * Transform XMIR and render it as text.
+     * @param transform Transformation
+     * @param xmir XMIR
+     * @return Transformed XMIR text
+     */
+    private static String transformed(final Function<XML, XML> transform, final XML xmir) {
+        final String text;
+        Transpiling.TRANSFORM.lock();
+        try {
+            text = transform.apply(xmir).toString();
+        } finally {
+            Transpiling.TRANSFORM.unlock();
+        }
+        return text;
     }
 
     /**
