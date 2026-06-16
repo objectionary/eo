@@ -231,14 +231,6 @@
             <configuration>
               <skipSourceLints>
                 <!--
-                @todo #4148:30min. Enable `unused-void-attr` lint.
-                      We should enable this lint after the following issue with magic
-                      voids will be resolved: https://github.com/objectionary/lints/issues/574.
-                      Don't forget to enable `unused-void-attr` in the `test–compile`
-                      execution as well.
-                -->
-                <lint>unused-void-attr</lint>
-                <!--
                 @todo #4148:30min. Enable `duplicate-names-in-diff-context` lint.
                       For now its too pedantic.
                       See this: https://github.com/objectionary/lints/issues/578.
