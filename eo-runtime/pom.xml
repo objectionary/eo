@@ -56,6 +56,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-suggestions-fixture</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
       <!-- version from parent POM -->

@@ -4,17 +4,34 @@
  */
 package org.eolang;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Test case for {@link PhSuggestions}.
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
+@Isolated
 final class PhSuggestionsTest {
+
+    /**
+     * Java classpath system property.
+     */
+    private static final String CLASSPATH = "java.class.path";
+
+    /**
+     * Fixture artifact marker.
+     */
+    private static final String FIXTURE = "eo-suggestions-fixture";
 
     @Test
     void ranksClosestObjectFirst() {
@@ -36,6 +53,25 @@ final class PhSuggestionsTest {
             ),
             Matchers.contains("io.stdout", Arrays.asList("aa.abx", "aa.aby"))
         );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    void discoversObjectsFromDependency() {
+        final String origin = System.getProperty(PhSuggestionsTest.CLASSPATH);
+        try {
+            System.setProperty(
+                PhSuggestionsTest.CLASSPATH,
+                PhSuggestionsTest.fixture(System.getProperty(PhSuggestionsTest.CLASSPATH, ""))
+            );
+            MatcherAssert.assertThat(
+                "Default suggestions must discover objects from dependency classpath entries",
+                new PhSuggestions().suggestions("Φ.deps.prnter", 5),
+                Matchers.hasItem("deps.printer")
+            );
+        } finally {
+            PhSuggestionsTest.restore(origin);
+        }
     }
 
     @Test
@@ -135,5 +171,61 @@ final class PhSuggestionsTest {
             ),
             Matchers.emptyIterable()
         );
+    }
+
+    /**
+     * Find fixture classpath entry.
+     * @param classpath Classpath
+     * @return Fixture entry
+     */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    private static String fixture(final String classpath) {
+        final String separator = Pattern.quote(File.pathSeparator);
+        final List<String> entries = Arrays.stream(classpath.split(separator))
+            .filter(item -> item.contains(PhSuggestionsTest.FIXTURE))
+            .collect(Collectors.toList());
+        return entries.stream()
+            .filter(item -> item.endsWith(".jar"))
+            .findFirst()
+            .orElseGet(() -> PhSuggestionsTest.first(entries, classpath));
+    }
+
+    /**
+     * First fixture entry.
+     * @param entries Entries
+     * @param classpath Classpath
+     * @return Fixture entry
+     */
+    private static String first(final List<String> entries, final String classpath) {
+        return entries.stream()
+            .findFirst()
+            .orElseThrow(() -> PhSuggestionsTest.absent(classpath));
+    }
+
+    /**
+     * Absent fixture error.
+     * @param classpath Classpath
+     * @return Error
+     */
+    private static IllegalStateException absent(final String classpath) {
+        return new IllegalStateException(
+            String.format(
+                "Classpath doesn't contain '%s': %s",
+                PhSuggestionsTest.FIXTURE,
+                classpath
+            )
+        );
+    }
+
+    /**
+     * Restore classpath property.
+     * @param origin Original value
+     */
+    private static void restore(final String origin) {
+        if (origin == null) {
+            System.clearProperty(PhSuggestionsTest.CLASSPATH);
+        } else {
+            System.setProperty(PhSuggestionsTest.CLASSPATH, origin);
+        }
     }
 }
