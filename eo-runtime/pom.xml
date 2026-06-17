@@ -238,7 +238,7 @@
               <skipSourceLints>
                 <!-- Required to be skipped, since we in runtime origin library. -->
                 <lint>prohibited-package</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #4148:30min. Enable `unused-void-attr` lint.
                       We should enable this lint after the following issue with magic
                       voids will be resolved: https://github.com/objectionary/lints/issues/574.
@@ -246,7 +246,7 @@
                       execution as well.
                 -->
                 <lint>unused-void-attr</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #4148:30min. Enable `duplicate-names-in-diff-context` lint.
                       For now its too pedantic.
                       See this: https://github.com/objectionary/lints/issues/578.
@@ -254,36 +254,36 @@
                       names in the atoms, in order to enable this lint.
                 -->
                 <lint>duplicate-names-in-diff-context</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #4096:30min. Enable `sparse-decoration` lint.
                       After we merged EO tests together with their source objects, and removed
                       `+tests` meta, we have complains about sparse-decoration. Let's adjust and
                       enable it.
                 -->
                 <lint>sparse-decoration</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #4935:30min. Enable `comment-not-capitalized` lint.
                       The lint incorrectly flags comments starting with `@to-do` as not capitalized.
                       We should enable it after the lints repo fixes the issue to
                       ignore @to-do markers. See: https://github.com/objectionary/lints/issues/805
                 -->
                 <lint>comment-not-capitalized</lint>
-                <!--
-                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip. NOSONAR
+                <!-- NOSONAR
+                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip.
                       The lint relies on the `xi-cactus` positional marker that the legacy
                       ANTLR parser emitted; the new spec-driven parser does not produce
                       this marker, so the lint now fires on every formation. Drop this
                       skip entry entirely once the lint is removed from the lints repo.
                 -->
                 <lint>idempotent-attribute-is-not-first</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #5221:60min Enable `wrong-test-order` lint.
                       The lint fires as a false positive when anonymous `>>` objects from
                       the main body are floated past tests by vars-float-up transformation.
                       Enable once objectionary/lints#954 is resolved.
                 -->
                 <lint>wrong-test-order</lint>
-                <!--
+                <!-- NOSONAR
                 @todo #5221:30min Enable `compound-name` lint.
                       Several objects in eo-runtime use compound names that follow system
                       or platform naming conventions (e.g. neg-inf, groups-count, sin-family).
