@@ -6,7 +6,7 @@ sheets:
   - /org/eolang/parser/parse/vars-float-up.xsl
 asserts:
   - /object[not(errors)]
-  - //o[@name='main' and count(o)=3]
+  - //o[@name='main' and count(o)=5]
   - //o[@name='main']/o[contains(@name,'🌵')]
   - //o[@name='main']/o[@name='+tests-foo']/preceding-sibling::o[contains(@name,'🌵')]
   - //o[@name='main']/o[@name='+tests-foo' and not(following-sibling::o)]
