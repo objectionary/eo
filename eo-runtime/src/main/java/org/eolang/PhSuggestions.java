@@ -495,7 +495,7 @@ final class PhSuggestions {
                     PhSuggestions.scan(path.toFile(), objects);
                 }
             } catch (final InvalidPathException | SecurityException ignored) {
-                continue;
+                objects.addAll(Collections.emptyList());
             }
         }
         return objects;

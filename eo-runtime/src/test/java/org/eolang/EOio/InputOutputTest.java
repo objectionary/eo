@@ -103,6 +103,15 @@ final class InputOutputTest {
     private static final String OUTPUT = "output";
 
     /**
+     * Root EO package object.
+     * @return Root package
+     */
+    @SuppressWarnings("UnicodeInCode")
+    private static Phi root() {
+        return Phi.Φ;
+    }
+
+    /**
      * Redirects stdin.
      * @param temp Temporary directory
      * @param content Stdin content
@@ -939,7 +948,7 @@ final class InputOutputTest {
                                 new Dataized(
                                     new PhApplication(
                                         new PhApplication(
-                                            Phi.Φ.take("sm.win32").copy(),
+                                            InputOutputTest.root().take(InputOutputTest.WIN).copy(),
                                             0,
                                             new Data.ToPhi("WriteFile")
                                         ),

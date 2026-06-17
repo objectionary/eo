@@ -269,7 +269,7 @@
                 -->
                 <lint>comment-not-capitalized</lint>
                 <!--
-                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip.
+                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip. NOSONAR
                       The lint relies on the `xi-cactus` positional marker that the legacy
                       ANTLR parser emitted; the new spec-driven parser does not produce
                       this marker, so the lint now fires on every formation. Drop this
