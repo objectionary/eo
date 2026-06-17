@@ -4,11 +4,15 @@
  */
 package org.eolang;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,15 +53,20 @@ final class PhSuggestionsTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void discoversObjectsFromDependency() {
         final String origin = System.getProperty(PhSuggestionsTest.classpath());
+        final String fixture = PhSuggestionsTest.fixture();
         try {
-            System.setProperty(
-                PhSuggestionsTest.classpath(),
-                PhSuggestionsTest.fixture(System.getProperty(PhSuggestionsTest.classpath(), ""))
-            );
+            System.setProperty(PhSuggestionsTest.classpath(), fixture);
             MatcherAssert.assertThat(
                 "Default suggestions must discover objects from dependency classpath entries",
-                new PhSuggestions().suggestions("Φ.deps.prnter", 5),
-                Matchers.hasItem("deps.printer")
+                String.format(
+                    "%s%n%s",
+                    fixture,
+                    new PhSuggestions().suggestions("Φ.deps.prnter", 5)
+                ),
+                Matchers.allOf(
+                    Matchers.containsString(PhSuggestionsTest.marker()),
+                    Matchers.containsString("deps.printer")
+                )
             );
         } finally {
             PhSuggestionsTest.restore(origin);
@@ -172,48 +181,116 @@ final class PhSuggestionsTest {
     }
 
     /**
-     * Find fixture classpath entry.
-     * @param classpath Classpath
+     * Find fixture classpath entry through the test dependency class loader.
      * @return Fixture entry
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    private static String fixture(final String classpath) {
-        final String separator = Pattern.quote(File.pathSeparator);
-        final String marker = "eo-suggestions-fixture";
-        final List<String> entries = Arrays.stream(classpath.split(separator))
-            .filter(item -> item.contains(marker))
+    private static String fixture() {
+        final List<String> entries;
+        try {
+            entries = Collections.list(
+                Thread.currentThread().getContextClassLoader()
+                    .getResources(PhSuggestionsTest.resource())
+            ).stream()
+            .map(PhSuggestionsTest::entry)
+            .filter(item -> !item.isEmpty())
             .collect(Collectors.toList());
+        } catch (final IOException err) {
+            throw new IllegalStateException(
+                String.format("Can't locate '%s'", PhSuggestionsTest.resource()),
+                err
+            );
+        }
         return entries.stream()
             .filter(item -> item.endsWith(".jar"))
             .findFirst()
-            .orElseGet(() -> PhSuggestionsTest.first(entries, classpath));
+            .orElseGet(() -> PhSuggestionsTest.first(entries));
+    }
+
+    /**
+     * Java classpath entry that contains a resource URL.
+     * @param url Resource URL
+     * @return Classpath entry or empty string
+     */
+    private static String entry(final URL url) {
+        String entry = "";
+        try {
+            if ("jar".equals(url.getProtocol())) {
+                entry = PhSuggestionsTest.jar(url);
+            } else if ("file".equals(url.getProtocol())) {
+                entry = PhSuggestionsTest.root(url);
+            }
+        } catch (final IOException | URISyntaxException | IllegalArgumentException ignored) {
+            entry = "";
+        }
+        return entry;
+    }
+
+    /**
+     * JAR path from resource URL.
+     * @param url Resource URL
+     * @return JAR path
+     * @throws IOException If URL connection fails
+     * @throws URISyntaxException If JAR URL is not a valid URI
+     */
+    private static String jar(final URL url) throws IOException, URISyntaxException {
+        return Paths.get(
+            ((JarURLConnection) url.openConnection()).getJarFileURL().toURI()
+        ).toString();
+    }
+
+    /**
+     * Classpath root from file resource URL.
+     * @param url Resource URL
+     * @return Classpath root
+     * @throws URISyntaxException If URL is not a valid URI
+     */
+    private static String root(final URL url) throws URISyntaxException {
+        Path root = Paths.get(url.toURI());
+        for (int pos = 0; pos < PhSuggestionsTest.resource().split("/").length; ++pos) {
+            root = root.getParent();
+        }
+        return root.toString();
     }
 
     /**
      * First fixture entry.
      * @param entries Entries
-     * @param classpath Classpath
      * @return Fixture entry
      */
-    private static String first(final List<String> entries, final String classpath) {
+    private static String first(final List<String> entries) {
         return entries.stream()
             .findFirst()
-            .orElseThrow(() -> PhSuggestionsTest.absent(classpath));
+            .orElseThrow(PhSuggestionsTest::absent);
     }
 
     /**
      * Absent fixture error.
-     * @param classpath Classpath
      * @return Error
      */
-    private static IllegalStateException absent(final String classpath) {
+    private static IllegalStateException absent() {
         return new IllegalStateException(
             String.format(
-                "Classpath doesn't contain '%s': %s",
-                "eo-suggestions-fixture",
-                classpath
+                "Dependency class loader doesn't contain '%s' from '%s'",
+                PhSuggestionsTest.resource(),
+                PhSuggestionsTest.marker()
             )
         );
+    }
+
+    /**
+     * Fixture resource path.
+     * @return Resource path
+     */
+    private static String resource() {
+        return "org/eolang/EOdeps/EOprinter.class";
+    }
+
+    /**
+     * Fixture artifact marker.
+     * @return Artifact marker
+     */
+    private static String marker() {
+        return "eo-suggestions-fixture";
     }
 
     /**
