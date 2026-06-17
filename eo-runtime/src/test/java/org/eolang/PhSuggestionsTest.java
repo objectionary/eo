@@ -48,11 +48,11 @@ final class PhSuggestionsTest {
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void discoversObjectsFromDependency() {
-        final String origin = System.getProperty("java.class.path");
+        final String origin = System.getProperty(PhSuggestionsTest.classpath());
         try {
             System.setProperty(
-                "java.class.path",
-                PhSuggestionsTest.fixture(System.getProperty("java.class.path", ""))
+                PhSuggestionsTest.classpath(),
+                PhSuggestionsTest.fixture(System.getProperty(PhSuggestionsTest.classpath(), ""))
             );
             MatcherAssert.assertThat(
                 "Default suggestions must discover objects from dependency classpath entries",
@@ -164,6 +164,14 @@ final class PhSuggestionsTest {
     }
 
     /**
+     * Java classpath system property.
+     * @return Property name
+     */
+    private static String classpath() {
+        return "java.class.path";
+    }
+
+    /**
      * Find fixture classpath entry.
      * @param classpath Classpath
      * @return Fixture entry
@@ -214,9 +222,9 @@ final class PhSuggestionsTest {
      */
     private static void restore(final String origin) {
         if (origin == null) {
-            System.clearProperty("java.class.path");
+            System.clearProperty(PhSuggestionsTest.classpath());
         } else {
-            System.setProperty("java.class.path", origin);
+            System.setProperty(PhSuggestionsTest.classpath(), origin);
         }
     }
 }
