@@ -4,15 +4,21 @@
  */
 package org.eolang;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Isolated;
 
 /**
@@ -62,6 +68,37 @@ final class PhSuggestionsTest {
                 Matchers.allOf(
                     Matchers.containsString(PhSuggestionsTest.marker()),
                     Matchers.containsString("deps.printer")
+                )
+            );
+        } finally {
+            PhSuggestionsTest.restore(origin);
+        }
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    void discoversObjectsFromArbitraryDependencyJars(
+        @TempDir final Path temp
+    ) throws IOException {
+        final String origin = System.getProperty(PhSuggestionsTest.classpath());
+        final String first = PhSuggestionsTest.unique(temp, "first");
+        final String second = PhSuggestionsTest.unique(temp, "second");
+        final List<Path> jars = Arrays.asList(
+            PhSuggestionsTest.dependency(temp, "first.jar", String.format("%s.printer", first)),
+            PhSuggestionsTest.dependency(temp, "second.jar", String.format("%s.logger", second))
+        );
+        try {
+            System.setProperty(PhSuggestionsTest.classpath(), PhSuggestionsTest.join(jars));
+            final PhSuggestions suggestions = new PhSuggestions();
+            MatcherAssert.assertThat(
+                "Default suggestions must be built from classpath JAR entries",
+                Arrays.asList(
+                    suggestions.suggestions(String.format("Φ.%s.prnter", first), 5).get(0),
+                    suggestions.suggestions(String.format("Φ.%s.loger", second), 5).get(0)
+                ),
+                Matchers.contains(
+                    String.format("%s.printer", first),
+                    String.format("%s.logger", second)
                 )
             );
         } finally {
@@ -174,6 +211,56 @@ final class PhSuggestionsTest {
      */
     private static String classpath() {
         return "java.class.path";
+    }
+
+    /**
+     * Create dependency JAR with EO-style object resource.
+     * @param dir Directory
+     * @param name JAR file name
+     * @param object Object part
+     * @return JAR path
+     * @throws IOException If JAR can't be written
+     */
+    private static Path dependency(
+        final Path dir,
+        final String name,
+        final String object
+    ) throws IOException {
+        final Path jar = dir.resolve(name);
+        try (JarOutputStream output = new JarOutputStream(Files.newOutputStream(jar))) {
+            output.putNextEntry(
+                new JarEntry(
+                    String.format("org/eolang/EO%s.class", object.replace(".", "/EO"))
+                )
+            );
+            output.closeEntry();
+        }
+        return jar;
+    }
+
+    /**
+     * Join classpath entries.
+     * @param entries Entries
+     * @return Classpath
+     */
+    private static String join(final List<Path> entries) {
+        return entries.stream()
+            .map(Path::toString)
+            .collect(Collectors.joining(File.pathSeparator));
+    }
+
+    /**
+     * Unique EO package part based on JUnit temporary directory.
+     * @param temp Temporary directory
+     * @param prefix Prefix
+     * @return Unique package part
+     */
+    private static String unique(final Path temp, final String prefix) {
+        return String.format(
+            "%s%s",
+            prefix,
+            temp.getFileName().toString().replaceAll("[^A-Za-z0-9]", "")
+        );
     }
 
     /**
