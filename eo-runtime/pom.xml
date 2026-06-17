@@ -56,12 +56,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eolang</groupId>
-      <artifactId>eo-suggestions-fixture</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
       <!-- version from parent POM -->
@@ -331,6 +325,22 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>suggestions-fixture</id>
+      <activation>
+        <property>
+          <name>!skipSuggestionsFixture</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.eolang</groupId>
+          <artifactId>eo-suggestions-fixture</artifactId>
+          <version>${project.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
     <profile>
       <id>jacoco</id>
       <build>
