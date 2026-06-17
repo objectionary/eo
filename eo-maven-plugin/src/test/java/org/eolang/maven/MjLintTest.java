@@ -389,6 +389,30 @@ final class MjLintTest {
         );
     }
 
+    @Test
+    void failsOnUnusedAlias(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "+alias a.b.foo",
+            "",
+            "# No comments.",
+            "[] > main"
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "Linting must fail on an unused alias"
+        );
+        MatcherAssert.assertThat(
+            "Linted XMIR must report the unused alias by name",
+            new Xnav(maven.programTojo().linted())
+                .one("/object/errors/error[@severity='error']")
+                .text()
+                .orElseThrow(),
+            Matchers.stringContainsInOrder("a.b.foo", "is not used")
+        );
+    }
+
     /**
      * Program with WPA error.
      * @return Program with WPA error
