@@ -16,9 +16,15 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - uses: yegor256/copyrights-action@0.0.12
+      - uses: actions/setup-node@v6
         with:
-          globs: >-
+          node-version: 24
+      - name: Install copyrights checker
+        run: npm install --no-save --omit=dev --loglevel=error copyrights-action@0.0.12
+      - name: Check copyrights
+        run: node node_modules/copyrights-action/src/copyrights.js
+        env:
+          INPUT_GLOBS: >-
             **/LICENSE.txt
             **/*.sh
             **/*.yml

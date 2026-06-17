@@ -12,12 +12,52 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - name: Run JMH Benchmark Action
-        uses: volodya-lombrozo/jmh-benchmark-action@v1.0.3
+      - name: Check out PR branch
+        uses: actions/checkout@v6
         with:
+          path: pr
+      - name: Check out base branch
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          path: base
+      - name: Check out benchmark comparator
+        uses: actions/checkout@v6
+        with:
+          repository: volodya-lombrozo/jmh-benchmark-action
+          ref: v1.0.3
+          path: jmh-benchmark-action
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
           java-version: 21
-          base-ref: "master"
-          benchmark-command: |
-            mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
-            cp eo-parser/benchmark.json .
-          benchmark-file: "benchmark.json"
+      - name: Set up Groovy
+        uses: wtfjoke/setup-groovy@v3
+        with:
+          groovy-version: '4.x'
+      - name: Run benchmarks on base branch
+        working-directory: base
+        run: |
+          mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
+          cp eo-parser/benchmark.json .
+      - name: Run benchmarks on PR branch
+        working-directory: pr
+        run: |
+          mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
+          cp eo-parser/benchmark.json .
+      - name: Compare benchmark results
+        run: >-
+          ./jmh-benchmark-action/gradlew -p jmh-benchmark-action run --args="${{ github.workspace }}/base/benchmark.json ${{ github.workspace }}/pr/benchmark.json ${{ github.workspace }}/benchmark-comment.md --threshold=100"
+      - name: Save PR number to file
+        run: echo "${{ github.event.number }}" > pr-number
+      - name: Upload comment as an artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-comment
+          path: benchmark-comment.md
+      - name: Upload PR number as an artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-number
+          path: pr-number
