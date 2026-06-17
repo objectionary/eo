@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (20 lines)
- * @checkstyle TrailingCommentCheck (20 lines)
- */
-package org.eolang.EOdeps; // NOPMD
+package org.eolang.eodeps;
 
 /**
  * Dependency object used by runtime suggestion discovery tests.
