@@ -263,7 +263,7 @@
                 <!--
                 @todo #5221:30min Enable `compound-name` lint.
                       Several objects in eo-runtime use compound names that follow system
-                      or platform naming conventions (e.g. neg-inf, groups-count, sin-family).
+                      or platform naming conventions (e.g. neg-inf, sin-family).
                       Either rename the objects or adjust the lint rule, then enable it.
                 -->
                 <lint>compound-name</lint>

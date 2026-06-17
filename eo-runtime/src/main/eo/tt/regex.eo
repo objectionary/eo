@@ -76,7 +76,7 @@
       # - `groups`        - tuple of identified matched groups
       #
       # The block provides the next API to work with matched string subsequence:
-      # - `groups-count`  - to get amount of matched groups
+      # - `count`         - to get amount of matched groups
       # - `exists`        - to check if matched block is not empty
       # - `next`          - to get next matched block
       # - `text`          - to get matched subsequence as `string`
@@ -88,7 +88,7 @@
       #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
         $ > matched
-        groups.length > groups-count
+        groups.length > count
         start.gte 0 > exists
         if. > next
           exists
@@ -153,8 +153,8 @@
     ((regex "/[a-z]+/").match "123").next.to > @
 
   # Tests that accessing groups count on non-matched block throws error.
-  [] +> throws-on-getting-groups-count-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.groups-count > @
+  [] +> throws-on-getting-count-on-not-matched-block
+    ((regex "/[a-z]+/").match "123").next.count > @
 
   # Tests that accessing groups on non-matched block throws error.
   [] +> throws-on-getting-groups-on-not-matched-block
@@ -245,12 +245,12 @@
     and. > @
       and.
         and.
-          first.groups-count.eq 3
+          first.count.eq 3
           (first.group 1).eq "hello"
         (first.group 2).eq "1"
       and.
         and.
-          second.groups-count.eq 3
+          second.count.eq 3
           (second.group 1).eq "world"
         (second.group 2).eq "2"
     ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
