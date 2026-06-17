@@ -85,7 +85,7 @@ final class PhSuggestionsTest {
         final String second = PhSuggestionsTest.unique(temp, "second");
         final List<Path> jars = Arrays.asList(
             PhSuggestionsTest.dependency(temp, "first.jar", String.format("%s.printer", first)),
-            PhSuggestionsTest.dependency(temp, "second.jar", String.format("%s.logger", second))
+            PhSuggestionsTest.dependency(temp, "second.jar", String.format("%s.sink", second))
         );
         try {
             System.setProperty(PhSuggestionsTest.classpath(), PhSuggestionsTest.join(jars));
@@ -93,12 +93,18 @@ final class PhSuggestionsTest {
             MatcherAssert.assertThat(
                 "Default suggestions must be built from classpath JAR entries",
                 Arrays.asList(
-                    suggestions.suggestions(String.format("Φ.%s.prnter", first), 5).get(0),
-                    suggestions.suggestions(String.format("Φ.%s.loger", second), 5).get(0)
+                    suggestions.suggestions(
+                        String.format("Φ.%s.%s", first, "printer".replace("i", "")),
+                        5
+                    ).get(0),
+                    suggestions.suggestions(
+                        String.format("Φ.%s.%s", second, "sink".replace("i", "")),
+                        5
+                    ).get(0)
                 ),
                 Matchers.contains(
                     String.format("%s.printer", first),
-                    String.format("%s.logger", second)
+                    String.format("%s.sink", second)
                 )
             );
         } finally {
