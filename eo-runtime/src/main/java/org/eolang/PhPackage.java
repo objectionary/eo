@@ -139,7 +139,7 @@ final class PhPackage implements Phi {
                     String.format(
                         "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist",
                         fqn, target, pinfo
-                    ),
+                    ).concat(new PhSuggestions().message(fqn)),
                     phi
                 );
             } catch (final NoSuchMethodException | InvocationTargetException

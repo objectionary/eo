@@ -102,14 +102,18 @@ final class PhPackageTest {
     @Test
     void throwsExceptionIfCantFindPackageInfo() {
         MatcherAssert.assertThat(
-            "Exception message must mention missing package-info.class",
+            "Exception message must mention missing package-info.class and suggestions",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> Phi.Φ.take("test.package-info"),
+                () -> Phi.Φ.take("io.std1out"),
                 "We should throw if package-info.class is missing"
             ).getMessage(),
-            Matchers.equalTo(
-                "Couldn't find object 'Φ.test' because there's no class 'org.eolang.EOtest' or package-info class: 'org.eolang.EOtest.package-info', at least one of them must exist"
+            Matchers.allOf(
+                Matchers.containsString(
+                    "Couldn't find object 'Φ.io.std1out' because there's no class 'org.eolang.EOio.EOstd1out' or package-info class: 'org.eolang.EOio.EOstd1out.package-info', at least one of them must exist"
+                ),
+                Matchers.containsString("Did you mean?"),
+                Matchers.containsString("  - io.stdout")
             )
         );
     }
