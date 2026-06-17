@@ -23,16 +23,6 @@ import org.junit.jupiter.api.parallel.Isolated;
 @Isolated
 final class PhSuggestionsTest {
 
-    /**
-     * Java classpath system property.
-     */
-    private static final String CLASSPATH = "java.class.path";
-
-    /**
-     * Fixture artifact marker.
-     */
-    private static final String FIXTURE = "eo-suggestions-fixture";
-
     @Test
     void ranksClosestObjectFirst() {
         MatcherAssert.assertThat(
@@ -58,11 +48,11 @@ final class PhSuggestionsTest {
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void discoversObjectsFromDependency() {
-        final String origin = System.getProperty(PhSuggestionsTest.CLASSPATH);
+        final String origin = System.getProperty("java.class.path");
         try {
             System.setProperty(
-                PhSuggestionsTest.CLASSPATH,
-                PhSuggestionsTest.fixture(System.getProperty(PhSuggestionsTest.CLASSPATH, ""))
+                "java.class.path",
+                PhSuggestionsTest.fixture(System.getProperty("java.class.path", ""))
             );
             MatcherAssert.assertThat(
                 "Default suggestions must discover objects from dependency classpath entries",
@@ -181,8 +171,9 @@ final class PhSuggestionsTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static String fixture(final String classpath) {
         final String separator = Pattern.quote(File.pathSeparator);
+        final String marker = "eo-suggestions-fixture";
         final List<String> entries = Arrays.stream(classpath.split(separator))
-            .filter(item -> item.contains(PhSuggestionsTest.FIXTURE))
+            .filter(item -> item.contains(marker))
             .collect(Collectors.toList());
         return entries.stream()
             .filter(item -> item.endsWith(".jar"))
@@ -211,7 +202,7 @@ final class PhSuggestionsTest {
         return new IllegalStateException(
             String.format(
                 "Classpath doesn't contain '%s': %s",
-                PhSuggestionsTest.FIXTURE,
+                "eo-suggestions-fixture",
                 classpath
             )
         );
@@ -223,9 +214,9 @@ final class PhSuggestionsTest {
      */
     private static void restore(final String origin) {
         if (origin == null) {
-            System.clearProperty(PhSuggestionsTest.CLASSPATH);
+            System.clearProperty("java.class.path");
         } else {
-            System.setProperty(PhSuggestionsTest.CLASSPATH, origin);
+            System.setProperty("java.class.path", origin);
         }
     }
 }
