@@ -230,16 +230,6 @@
             </goals>
             <configuration>
               <skipSourceLints>
-                <!-- Required to be skipped, since we in runtime origin library. -->
-                <lint>prohibited-package</lint>
-                <!--
-                Tracked by issue #4148: enable `unused-void-attr` lint.
-                      We should enable this lint after the following issue with magic
-                      voids will be resolved: https://github.com/objectionary/lints/issues/574.
-                      Don't forget to enable `unused-void-attr` in the `test–compile`
-                      execution as well.
-                -->
-                <lint>unused-void-attr</lint>
                 <!--
                 Tracked by issue #4148: enable `duplicate-names-in-diff-context` lint.
                       For now its too pedantic.
