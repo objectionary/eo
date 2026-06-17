@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/vars-float-up.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='main' and count(o)=3]
+  - //o[@name='main']/o[contains(@name,'🌵')]
+  - //o[@name='main']/o[@name='+tests-foo']/preceding-sibling::o[contains(@name,'🌵')]
+  - //o[@name='main']/o[@name='+tests-foo' and not(following-sibling::o)]
+input: |
+  # Main.
+  [lst func] > main
+    filteredi > @
+      lst
+      func item > [item index] >>
+
+    # Foo.
+    [] +> tests-foo
+      true > @
