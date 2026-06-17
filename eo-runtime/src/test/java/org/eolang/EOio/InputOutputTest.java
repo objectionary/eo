@@ -37,7 +37,6 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * All tests for Input/Output operations.
@@ -47,7 +46,6 @@ import org.junit.jupiter.api.parallel.Isolated;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-@Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(MktmpResolver.class)
 final class InputOutputTest {
@@ -101,15 +99,6 @@ final class InputOutputTest {
      * Output.
      */
     private static final String OUTPUT = "output";
-
-    /**
-     * Root EO package object.
-     * @return Root package
-     */
-    @SuppressWarnings("UnicodeInCode")
-    private static Phi root() {
-        return Phi.Φ;
-    }
 
     /**
      * Redirects stdin.
@@ -948,7 +937,7 @@ final class InputOutputTest {
                                 new Dataized(
                                     new PhApplication(
                                         new PhApplication(
-                                            InputOutputTest.root().take(InputOutputTest.WIN).copy(),
+                                            Phi.Φ.take("sm.win32").copy(),
                                             0,
                                             new Data.ToPhi("WriteFile")
                                         ),

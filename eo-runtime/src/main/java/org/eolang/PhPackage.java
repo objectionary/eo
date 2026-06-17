@@ -112,7 +112,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    @SuppressWarnings("UnicodeInCode")
     public String φTerm() {
         return this.pkg;
     }
