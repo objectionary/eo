@@ -10,11 +10,4 @@ package org.eolang.eodeps;
  * @since 1.0
  */
 public final class EOprinter {
-
-    /**
-     * Ctor.
-     */
-    public EOprinter() {
-        // Fixture class.
-    }
 }

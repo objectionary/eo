@@ -35,7 +35,10 @@
             <configuration>
               <target>
                 <mkdir dir="${project.build.outputDirectory}/org/eolang/EOdeps"/>
-                <copy file="${project.build.outputDirectory}/org/eolang/eodeps/EOprinter.class" tofile="${project.build.outputDirectory}/org/eolang/EOdeps/EOprinter.class"/>
+                <copy
+                  file="${project.build.outputDirectory}/org/eolang/eodeps/EOprinter.class"
+                  tofile="${project.build.outputDirectory}/org/eolang/EOdeps/EOprinter.class"
+                />
               </target>
             </configuration>
           </execution>
