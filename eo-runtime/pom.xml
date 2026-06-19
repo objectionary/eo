@@ -244,22 +244,7 @@
                       `+tests` meta, we have complains about sparse-decoration. Let's adjust and
                       enable it.
                 -->
-                <lint>sparse-decoration</lint>
-                <!--
-                @todo #4935:30min. Enable `comment-not-capitalized` lint.
-                      The lint incorrectly flags comments starting with `@to-do` as not capitalized.
-                      We should enable it after the lints repo fixes the issue to
-                      ignore @to-do markers. See: https://github.com/objectionary/lints/issues/805
-                -->
-                <lint>comment-not-capitalized</lint>
-                <!--
-                @todo #5078:30min. Remove `idempotent-attribute-is-not-first` skip.
-                      The lint relies on the `xi🌵` positional marker that the legacy
-                      ANTLR parser emitted; the new spec-driven parser does not produce
-                      this marker, so the lint now fires on every formation. Drop this
-                      skip entry entirely once the lint is removed from the lints repo.
-                -->
-                <lint>idempotent-attribute-is-not-first</lint>
+                <!-- <lint>sparse-decoration</lint> -->
                 <!--
                 @todo #5221:30min Enable `compound-name` lint.
                       Several objects in eo-runtime use compound names that follow system

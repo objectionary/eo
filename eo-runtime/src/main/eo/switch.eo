@@ -122,15 +122,11 @@
           *
             [] >>
               c3 > @
-            []
-              "true case" > @
+            "true case"
       "true case"
     # Condition that evaluates to false for testing purposes.
-    [] > c1
-      false > @
+    false > c1
     # Condition that compares unequal strings returning false.
-    [] > c2
-      "1".eq "2" > @
+    "1".eq "2" > c2
     # Condition that evaluates to true for testing purposes.
-    [] > c3
-      true > @
+    true > c3
