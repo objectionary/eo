@@ -1,6 +1,8 @@
 +alias fs.file
 +alias fs.path
 +alias fs.tmpdir
++alias tt.contains
++alias tt.joined
 +alias tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -285,22 +287,15 @@
     (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
   # Tests that resolving nested paths and touching files works correctly.
-  # @todo #4096:30min Enable tests-resolves-and-touches unit test.
-  #  Now its disabled because of: "Can't #take("path"), the attribute is absent among other test 34
-  #  attrs. After we fix it, we should enable the test.
-  [] > tests-resolves-and-touches
-    seq > @
-      *
-        resolved.deleted.made
-        and.
-          f.exists
-          contains.
-            f.path
-            joined.
-              path.separator
-              * "foo" "bar"
-    (tmpdir.as-path.resolved "foo/bar").@ > resolved
-    resolved.tmpfile > f
+  [] +> tests-resolves-and-touches
+    and. > @
+      resolved.as-dir.made.tmpfile.exists
+      contains
+        resolved
+        joined
+          Q.fs.path.separator
+          * "foo" "bar"
+    tmpdir.as-path.resolved "foo/bar" > resolved
 
   # Tests that moving a file to a new location works correctly.
   [] +> tests-moves-a-file

@@ -43,12 +43,14 @@
       <xsl:if test="not(@name) and @as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
-      <xsl:apply-templates select="node()|@* except @as"/>
+      <xsl:apply-templates select="@* except @as"/>
+      <xsl:apply-templates select="node()[not(self::o and eo:test-attr(.))]"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
           <xsl:apply-templates select="." mode="full"/>
         </xsl:if>
       </xsl:for-each>
+      <xsl:apply-templates select="node()[self::o and eo:test-attr(.)]"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and ancestor::o[1][not(eo:abstract(.))]]">
