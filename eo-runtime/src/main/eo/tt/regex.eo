@@ -55,7 +55,7 @@
 
     # Creates a `matcher` that will match the given input against the pattern.
     [txt] > match
-      (matched-from-index 1 0).matched > next
+      matched-from-index 1 0 > next
 
       # Get `position`-th block matched from `start` position.
       # Always returns a `org.eolang.tt.regex.pattern.match.matched` object: a
@@ -81,21 +81,14 @@
       # - `next`          - to get next matched block
       # - `text`          - to get matched subsequence as `string`
       # - `group {index}` - to get string subsequence captured by `index`-th group.
-      # @todo #4411:35min Replace all left usages of `$ > oname`.
-      #  We should remove all the usages like `$ > matched` from the syntax, and
-      #  from the runtime objects. Currently, it is not possible because syntax sugar for object
-      #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
-      #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
-        $ > matched
         groups.length > groups-count
         start.gte 0 > exists
         if. > next
           exists
-          matched.
-            matched-from-index
-              position.plus 1
-              to
+          ^.matched-from-index
+            position.plus 1
+            to
           error "Matched block does not exist, can't get next"
         if. > text
           exists
