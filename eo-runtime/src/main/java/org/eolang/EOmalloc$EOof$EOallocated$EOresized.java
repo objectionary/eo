@@ -15,6 +15,7 @@ package org.eolang;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "malloc.of.allocated.resized")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault implements Atom {
 

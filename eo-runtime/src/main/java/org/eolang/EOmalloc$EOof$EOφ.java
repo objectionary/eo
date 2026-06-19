@@ -15,6 +15,7 @@ package org.eolang;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "malloc.of.@")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
 

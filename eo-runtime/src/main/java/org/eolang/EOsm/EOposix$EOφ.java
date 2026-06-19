@@ -30,6 +30,7 @@ import org.eolang.EOsm.Posix.SocketSyscall;
 import org.eolang.EOsm.Posix.StrerrorSyscall;
 import org.eolang.EOsm.Posix.WriteSyscall;
 import org.eolang.ExFailure;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -40,6 +41,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "posix.@")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOposix$EOφ extends PhDefault implements Atom {
 

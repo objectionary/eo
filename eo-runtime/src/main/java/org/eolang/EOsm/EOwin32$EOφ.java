@@ -31,6 +31,7 @@ import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
 import org.eolang.EOsm.Win32.WriteFileFuncCall;
 import org.eolang.ExFailure;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,6 +42,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "win32.@")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOwin32$EOφ extends PhDefault implements Atom {
 

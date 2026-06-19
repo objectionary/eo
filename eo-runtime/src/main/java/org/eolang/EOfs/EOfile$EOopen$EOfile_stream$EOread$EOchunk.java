@@ -17,6 +17,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Dataized;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -27,6 +28,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.file-stream.read.chunk")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOfile_stream$EOread$EOchunk
     extends PhDefault
