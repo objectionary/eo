@@ -120,87 +120,89 @@
 
   # Tests that the runtime handles deep nesting of objects.
   [] +> tests-nesting-blah-test
-    blah0 > @
-    [] > blah0
-      blah1 > @
-      [] > blah1
-        blah2 > @
-        [] > blah2
-          blah3 > @
-          [] > blah3
-            blah4 > @
-            [] > blah4
-              blah5 > @
-              [] > blah5
-                blah6 > @
-                [] > blah6
-                  blah7 > @
-                  [] > blah7
-                    blah8 > @
-                    [] > blah8
-                      blah9 > @
-                      [] > blah9
-                        blah10 > @
-                        [] > blah10
-                          blah11 > @
-                          [] > blah11
-                            blah12 > @
-                            [] > blah12
-                              blah13 > @
-                              [] > blah13
-                                blah14 > @
-                                [] > blah14
-                                  blah15 > @
-                                  [] > blah15
-                                    blah16 > @
-                                    [] > blah16
-                                      blah17 > @
-                                      [] > blah17
-                                        blah18 > @
-                                        [] > blah18
-                                          blah19 > @
-                                          [] > blah19
-                                            blah20 > @
-                                            [] > blah20
-                                              blah21 > @
-                                              [] > blah21
-                                                blah22 > @
-                                                [] > blah22
-                                                  blah23 > @
-                                                  [] > blah23
-                                                    blah24 > @
-                                                    [] > blah24
-                                                      blah25 > @
-                                                      [] > blah25
-                                                        blah26 > @
-                                                        [] > blah26
-                                                          blah27 > @
-                                                          [] > blah27
-                                                            blah28 > @
-                                                            [] > blah28
-                                                              blah29 > @
-                                                              [] > blah29
-                                                                blah30 > @
-                                                                [] > blah30
-                                                                  blah31 > @
-                                                                  [] > blah31
-                                                                    blah32 > @
-                                                                    [] > blah32
-                                                                      blah33 > @
-                                                                      [] > blah33
-                                                                        blah34 > @
-                                                                        [] > blah34
-                                                                          blah35 > @
-                                                                          [] > blah35
-                                                                            blah36 > @
-                                                                            [] > blah36
-                                                                              blah37 > @
-                                                                              [] > blah37
-                                                                                blah38 > @
-                                                                                [] > blah38
-                                                                                  blah39 > @
-                                                                                  [] > blah39
-                                                                                    true > @
+    eq. > @
+      blah0 0
+      39
+    [x] > blah0
+      blah1 (x.plus 1) > @
+      [x] > blah1
+        blah2 (x.plus 1) > @
+        [x] > blah2
+          blah3 (x.plus 1) > @
+          [x] > blah3
+            blah4 (x.plus 1) > @
+            [x] > blah4
+              blah5 (x.plus 1) > @
+              [x] > blah5
+                blah6 (x.plus 1) > @
+                [x] > blah6
+                  blah7 (x.plus 1) > @
+                  [x] > blah7
+                    blah8 (x.plus 1) > @
+                    [x] > blah8
+                      blah9 (x.plus 1) > @
+                      [x] > blah9
+                        blah10 (x.plus 1) > @
+                        [x] > blah10
+                          blah11 (x.plus 1) > @
+                          [x] > blah11
+                            blah12 (x.plus 1) > @
+                            [x] > blah12
+                              blah13 (x.plus 1) > @
+                              [x] > blah13
+                                blah14 (x.plus 1) > @
+                                [x] > blah14
+                                  blah15 (x.plus 1) > @
+                                  [x] > blah15
+                                    blah16 (x.plus 1) > @
+                                    [x] > blah16
+                                      blah17 (x.plus 1) > @
+                                      [x] > blah17
+                                        blah18 (x.plus 1) > @
+                                        [x] > blah18
+                                          blah19 (x.plus 1) > @
+                                          [x] > blah19
+                                            blah20 (x.plus 1) > @
+                                            [x] > blah20
+                                              blah21 (x.plus 1) > @
+                                              [x] > blah21
+                                                blah22 (x.plus 1) > @
+                                                [x] > blah22
+                                                  blah23 (x.plus 1) > @
+                                                  [x] > blah23
+                                                    blah24 (x.plus 1) > @
+                                                    [x] > blah24
+                                                      blah25 (x.plus 1) > @
+                                                      [x] > blah25
+                                                        blah26 (x.plus 1) > @
+                                                        [x] > blah26
+                                                          blah27 (x.plus 1) > @
+                                                          [x] > blah27
+                                                            blah28 (x.plus 1) > @
+                                                            [x] > blah28
+                                                              blah29 (x.plus 1) > @
+                                                              [x] > blah29
+                                                                blah30 (x.plus 1) > @
+                                                                [x] > blah30
+                                                                  blah31 (x.plus 1) > @
+                                                                  [x] > blah31
+                                                                    blah32 (x.plus 1) > @
+                                                                    [x] > blah32
+                                                                      blah33 (x.plus 1) > @
+                                                                      [x] > blah33
+                                                                        blah34 (x.plus 1) > @
+                                                                        [x] > blah34
+                                                                          blah35 (x.plus 1) > @
+                                                                          [x] > blah35
+                                                                            blah36 (x.plus 1) > @
+                                                                            [x] > blah36
+                                                                              blah37 (x.plus 1) > @
+                                                                              [x] > blah37
+                                                                                blah38 (x.plus 1) > @
+                                                                                [x] > blah38
+                                                                                  blah39 (x.plus 1) > @
+                                                                                  [x] > blah39
+                                                                                    x > @
 
   # Tests that the runtime compiles correctly with long duplicate names.
   [] +> tests-compiles-correctly-with-long-duplicate-names
