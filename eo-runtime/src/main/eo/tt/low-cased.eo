@@ -2,7 +2,6 @@
 +alias ss.list
 +alias ss.reduced
 +alias tt.as-ascii
-+alias tt.up-cased
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt
@@ -28,13 +27,16 @@
             slice.
               as-bytes.
                 as-i64.
-                  code.plus (up-cased text).distance
+                  code.plus distance
               7
               1
             byte
         as-ascii byte > code
   as-ascii "Z" > maxcode
   as-ascii "A" > mincode
+  minus. > distance
+    as-ascii "a"
+    as-ascii "A"
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case
