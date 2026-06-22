@@ -19,7 +19,7 @@
       error "Can't get the max number from an empty sequence"
       reduced
         lst
-        negative-infinity
+        ninf
         [max item]
           if. > @
             item.as-number.gt max
@@ -34,7 +34,7 @@
       error "Can't get the min number from an empty sequence"
       reduced
         lst
-        positive-infinity
+        pinf
         [min item]
           if. > @
             min.gt item.as-number

@@ -144,9 +144,9 @@ public interface Data {
                 if (Double.isNaN(value)) {
                     phi = Phi.Φ.take("nan");
                 } else if (value == Double.POSITIVE_INFINITY) {
-                    phi = Phi.Φ.take("positive-infinity");
+                    phi = Phi.Φ.take("pinf");
                 } else if (value == Double.NEGATIVE_INFINITY) {
-                    phi = Phi.Φ.take("negative-infinity");
+                    phi = Phi.Φ.take("ninf");
                 } else {
                     phi = Phi.Φ.take("number").copy();
                     final Phi bts = Phi.Φ.take("bytes").copy();

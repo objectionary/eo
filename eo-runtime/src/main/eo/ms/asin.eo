@@ -71,9 +71,9 @@
   # Tests that asin of +inf equals NaN.
   [] +> tests-asin-positive-infinity
     is-nan. > @
-      asin positive-infinity
+      asin pinf
 
   # Tests that asin of -inf equals NaN.
   [] +> tests-asin-negative-infinity
     is-nan. > @
-      asin negative-infinity
+      asin ninf

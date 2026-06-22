@@ -242,14 +242,14 @@
   # Tests that string comparison with positive infinity returns false.
   [] +> tests-compares-string-with-positive-infinity
     eq. > @
-      positive-infinity.eq "друг"
+      pinf.eq "друг"
       false
 
   # Tests that string comparison with negative infinity returns false.
   [] +> tests-compares-string-with-negative-infinity
     not. > @
       eq.
-        negative-infinity
+        ninf
         "друг"
 
   # Tests that single-line text block equals regular string.

@@ -61,11 +61,11 @@
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-infinity-n1
     eq. > @
-      exp positive-infinity
-      positive-infinity
+      exp pinf
+      pinf
 
   # Tests mathematical operation functionality.
   [] +> tests-exp-check-infinity-n2
     eq. > @
-      exp negative-infinity
+      exp ninf
       0
