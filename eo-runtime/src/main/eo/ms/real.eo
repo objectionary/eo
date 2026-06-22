@@ -8,3 +8,21 @@
 # Returns a floating point number.
 [num] > real
   num > @
+
+  # Tests that real of an integer returns the integer itself.
+  [] +> tests-real-of-int
+    eq. > @
+      real 5
+      5
+
+  # Tests that real of a float returns the float itself.
+  [] +> tests-real-of-float
+    eq. > @
+      real 5.5
+      5.5
+
+  # Tests that real of a negative float returns the negative float itself.
+  [] +> tests-real-of-negative-float
+    eq. > @
+      real -5.5
+      -5.5
