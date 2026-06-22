@@ -635,18 +635,18 @@
                           and.
                             (0.0.eq nan).eq false
                             (0.0.eq positive-infinity).eq false
-                          (0.0.eq neg-inf).eq false
+                          (0.0.eq ninf).eq false
                         (42.5.eq nan).eq false
                       (42.5.eq positive-infinity).eq false
-                    (42.5.eq neg-inf).eq false
+                    (42.5.eq ninf).eq false
                   (0.0.eq nan).eq false
                 (0.0.eq positive-infinity).eq false
-              (0.0.eq neg-inf).eq false
+              (0.0.eq ninf).eq false
             (42.5.eq nan).eq false
           (42.5.eq positive-infinity).eq false
-        (42.5.eq neg-inf).eq false
+        (42.5.eq ninf).eq false
       true
-    negative-infinity > neg-inf
+    negative-infinity > ninf
 
   # Times.
   # Tests that positive infinity times float zero returns NaN.
@@ -680,9 +680,9 @@
   # Tests that positive infinity times negative infinity returns negative infinity.
   [] +> tests-positive-infinity-times-negative-infinity
     eq. > @
-      positive-infinity.times neg-inf
-      neg-inf
-    negative-infinity > neg-inf
+      positive-infinity.times ninf
+      ninf
+    negative-infinity > ninf
 
   # Tests that positive infinity times positive infinity returns positive infinity.
   [] +> tests-positive-infinity-times-positive-infinity
