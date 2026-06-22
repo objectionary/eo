@@ -67,12 +67,12 @@
     is-nan. > @
       acos nan
 
-  # Tests that arccosine of positive-infinity is NaN.
+  # Tests that arccosine of pinf is NaN.
   [] +> tests-arccos-positive-infinity
     is-nan. > @
-      acos positive-infinity
+      acos pinf
 
-  # Tests that arccosine of negative-infinity is NaN.
+  # Tests that arccosine of ninf is NaN.
   [] +> tests-arccos-negative-infinity
     is-nan. > @
-      acos negative-infinity
+      acos ninf

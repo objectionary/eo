@@ -74,10 +74,10 @@
   # Tests that square root of positive infinity equals positive infinity.
   [] +> tests-sqrt-check-infinity-n1
     eq. > @
-      sqrt positive-infinity
-      positive-infinity
+      sqrt pinf
+      pinf
 
   # Tests that square root of negative infinity returns NaN.
   [] +> tests-sqrt-check-infinity-n2
     is-nan. > @
-      sqrt negative-infinity
+      sqrt ninf

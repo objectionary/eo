@@ -9,7 +9,7 @@
 # Returns the system-dependent line separator string.
 # On UNIX systems, it returns "\n";
 # on Microsoft Windows systems it returns "\r\n".
-string > line-separator
+string > eol
   as-bytes.
     if.
       os.is-windows

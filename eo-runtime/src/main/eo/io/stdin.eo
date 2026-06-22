@@ -1,5 +1,5 @@
 +alias io.console
-+alias sm.line-separator
++alias sm.eol
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package io
@@ -29,7 +29,7 @@
   # If there's no line to consume, it returns an empty string.
   [] > all-lines
     rec-read next-line -- true > @
-    line-separator > separator!
+    eol > separator!
 
     # Recursive reading from console by one line.
     #

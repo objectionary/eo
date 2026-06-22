@@ -30,11 +30,11 @@
     eq nan.as-bytes
     nan
     if.
-      eq positive-infinity.as-bytes
-      positive-infinity
+      eq pinf.as-bytes
+      pinf
       if.
-        eq negative-infinity.as-bytes
-        negative-infinity
+        eq ninf.as-bytes
+        ninf
         if.
           size.eq 8
           number as-bytes

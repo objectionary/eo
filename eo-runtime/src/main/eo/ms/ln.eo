@@ -20,7 +20,7 @@
   [] +> tests-ln-of-zero-is-negative-infinity
     eq. > @
       ln 0
-      negative-infinity
+      ninf
 
   # Tests that natural logarithm of 1 equals zero.
   [] +> tests-ln-of-one-is-zero
@@ -57,13 +57,13 @@
   # Tests that natural logarithm of positive infinity equals positive infinity.
   [] +> tests-ln-positive-infinity
     eq. > @
-      ln positive-infinity
-      positive-infinity
+      ln pinf
+      pinf
 
   # Tests that natural logarithm of negative infinity returns NaN.
   [] +> tests-ln-negative-infinity
     is-nan. > @
-      ln negative-infinity
+      ln ninf
 
   # Tests that natural logarithm of NaN returns NaN.
   [] +> tests-ln-nan
