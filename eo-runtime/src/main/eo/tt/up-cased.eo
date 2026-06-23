@@ -1,3 +1,4 @@
++alias tt.as-ascii
 +alias ss.bytes-as-array
 +alias ss.list
 +alias ss.reduced
@@ -30,20 +31,12 @@
               7
               1
             byte
-        ascii byte > code
-  ascii "z" > maxcode!
-  ascii "a" > mincode!
+        as-ascii byte > code
+  as-ascii "z" > maxcode!
+  as-ascii "a" > mincode!
   minus. > distance
     number mincode
-    ascii "A"
-
-  # Converts character to its ASCII numeric value as number.
-  [char] > ascii
-    as-number. > @
-      as-i64.
-        concat.
-          00-00-00-00-00-00-00
-          char.as-bytes
+    as-ascii "A"
 
   # Tests that up-cased converts lowercase text to uppercase.
   [] +> tests-converts-text-to-upper-case
