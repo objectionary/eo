@@ -53,7 +53,7 @@ final class ShaTest {
     }
 
     @Test
-    void sameDirectoryProducesSameHash(@Mktmp final Path temp) throws Exception {
+    void providesSameHashForSameDirectory(@Mktmp final Path temp) throws Exception {
         final Path dir = temp.resolve("C");
         Files.createDirectories(dir);
         Files.writeString(dir.resolve("a.txt"), "consistent");
