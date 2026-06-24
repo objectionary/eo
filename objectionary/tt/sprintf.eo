@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt
-+rt jvm org.eolang:eo-runtime:0.61.1
++rt jvm org.eolang:eo-runtime:0.61.2
 +rt node eo2js-runtime:0.0.0
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -116,3 +116,51 @@
       sprintf
         "%s %s %2$s is after %1$s"
         * "first" "second"
+
+  # Tests that sprintf truncates a positive float towards zero for %d.
+  [] +> truncates-positive-float-towards-zero-as-decimal
+    eq. > @
+      "42"
+      sprintf
+        "%d"
+        * 42.321
+
+  # Tests that sprintf truncates a negative float towards zero for %d.
+  [] +> truncates-negative-float-towards-zero-as-decimal
+    eq. > @
+      "-7"
+      sprintf
+        "%d"
+        * -7.89
+
+  # Tests that sprintf truncates rather than rounds a float for %d.
+  [] +> truncates-rather-than-rounds-float-as-decimal
+    eq. > @
+      "9"
+      sprintf
+        "%d"
+        * 9.99
+
+  # Tests that sprintf always pads a float to exactly six fraction digits.
+  [] +> formats-float-always-with-six-fraction-digits
+    eq. > @
+      "1.250000"
+      sprintf
+        "%f"
+        * 1.25
+
+  # Tests that sprintf carries the rounding of a float into the integer part.
+  [] +> rounds-float-carrying-into-integer-part
+    eq. > @
+      "1.000000"
+      sprintf
+        "%f"
+        * 0.9999999
+
+  # Tests that sprintf formats a zero float with six fraction digits.
+  [] +> formats-zero-float-with-six-fraction-digits
+    eq. > @
+      "0.000000"
+      sprintf
+        "%f"
+        * 0.0

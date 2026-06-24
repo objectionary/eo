@@ -1,9 +1,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+rt jvm org.eolang:eo-runtime:0.61.1
++rt jvm org.eolang:eo-runtime:0.61.2
 +rt node eo2js-runtime:0.0.0
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -77,60 +77,60 @@
   [] +> tests-zero-to-the-negative-pow-is-positive-infinity
     eq. > @
       pow 0 -52
-      positive-infinity
+      pinf
 
   # Tests that zero raised to negative infinity equals positive infinity.
   [] +> tests-zero-to-the-negative-infinity-pow-is-positive-infinity
     eq. > @
-      pow 0 negative-infinity
-      positive-infinity
+      pow 0 ninf
+      pinf
 
   # Tests that positive integer raised to negative infinity equals zero.
   [] +> tests-positive-int-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow 42 negative-infinity
+      pow 42 ninf
       0
 
   # Tests that positive float raised to negative infinity equals zero.
   [] +> tests-positive-float-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow 42.5 negative-infinity
+      pow 42.5 ninf
       0
 
   # Tests that negative integer raised to negative infinity equals zero.
   [] +> tests-negative-int-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow -42 negative-infinity
+      pow -42 ninf
       0
 
   # Tests that negative float raised to negative infinity equals zero.
   [] +> tests-negative-float-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow -42.5 negative-infinity
+      pow -42.5 ninf
       0
 
   # Tests that positive infinity raised to negative infinity equals zero.
   [] +> tests-positive-infinity-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow positive-infinity negative-infinity
+      pow pinf ninf
       0
 
   # Tests that negative infinity raised to negative infinity equals zero.
   [] +> tests-negative-infinity-to-the-pow-of-negative-infinity-is-zero
     eq. > @
-      pow negative-infinity negative-infinity
+      pow ninf ninf
       0
 
   # Tests that positive infinity raised to finite negative power equals zero.
   [] +> tests-positive-infinity-to-the-finite-negative-int-pow-is-zero
     eq. > @
-      pow positive-infinity -42
+      pow pinf -42
       0
 
   # Tests that positive infinity raised to finite negative float power equals zero.
   [] +> tests-positive-infinity-to-the-finite-negative-float-pow-is-zero
     eq. > @
-      pow positive-infinity -42.2
+      pow pinf -42.2
       0.0
 
   # Tests that 2 raised to the power of -1 equals 0.5.
@@ -173,23 +173,83 @@
   # Tests mathematical operation functionality.
   [] +> tests-zero-to-the-pow-of-positive-infinity-is-zero
     eq. > @
-      pow 0 positive-infinity
+      pow 0 pinf
       0
 
   # Tests mathematical operation functionality.
   [] +> tests-negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
     eq. > @
-      pow -10 positive-infinity
-      positive-infinity
+      pow -10 pinf
+      pinf
 
   # Tests mathematical operation functionality.
   [] +> tests-negative-float-to-the-pow-of-positive-infinity-is-infinity
     eq. > @
-      pow -4.2 positive-infinity
-      positive-infinity
+      pow -4.2 pinf
+      pinf
 
   # Tests mathematical operation functionality.
   [] +> tests-positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
     eq. > @
-      pow 42 positive-infinity
-      positive-infinity
+      pow 42 pinf
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      pow 42.5 pinf
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-infinity-to-the-pow-of-positive-int-is-positive-infinity
+    eq. > @
+      pow pinf 42
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-infinity-to-the-pow-of-positive-float-is-positive-infinity
+    eq. > @
+      pow pinf 10.8
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-infinity-to-the-pow-of-positive-infinity-is-positive-infinity
+    eq. > @
+      pow pinf pinf
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-infinity-to-the-pow-of-positive-float-is-positive-infinity
+    eq. > @
+      pow ninf 9.9
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-infinity-to-the-pow-of-even-positive-int-is-positive-infinity
+    eq. > @
+      pow ninf 10
+      pinf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-negative-infinity-to-the-pow-of-odd-positive-int-is-positive-infinity
+    eq. > @
+      pow ninf 9
+      ninf
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-int-to-the-pow-of-positive-int-is-int
+    eq. > @
+      pow 2 3
+      8
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-float-to-the-pow-of-positive-int-is-float
+    eq. > @
+      pow 3.5 4
+      150.0625
+
+  # Tests mathematical operation functionality.
+  [] +> tests-positive-int-to-the-pow-of-positive-float-is-float
+    eq. > @
+      pow 4 5
+      1024

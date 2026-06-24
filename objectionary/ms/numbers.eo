@@ -3,7 +3,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -19,7 +19,7 @@
       error "Can't get the max number from an empty sequence"
       reduced
         lst
-        negative-infinity
+        ninf
         [max item]
           if. > @
             item.as-number.gt max
@@ -34,7 +34,7 @@
       error "Can't get the min number from an empty sequence"
       reduced
         lst
-        positive-infinity
+        pinf
         [min item]
           if. > @
             min.gt item.as-number

@@ -1,11 +1,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.1
++rt jvm org.eolang:eo-runtime:0.61.2
 +rt node eo2js-runtime:0.0.0
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 # The `number` object is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
@@ -14,7 +15,7 @@
   times -1 > neg
   as-i64.as-i32 > as-i32
   as-i32.as-i16 > as-i16
-  as-bytes.eq nan.as-bytes > is-nan
+  as-bytes.eq 7F-F8-00-00-00-00-00-00 > is-nan
   and. > is-integer
     is-finite
     eq floor
@@ -22,8 +23,8 @@
     is-nan.not
     not.
       or.
-        eq positive-infinity
-        eq negative-infinity
+        as-bytes.eq 7F-F0-00-00-00-00-00-00
+        as-bytes.eq FF-F0-00-00-00-00-00-00
 
   # Convert this `org.eolang.number` to `org.eolang.i64` object and return it.
   [] > as-i64 /i64
@@ -73,7 +74,7 @@
   # Returns `org.eolang.true` if `$` > `x`.
   # Here `x` can be a `number` or any other object which
   # can be converted to 8 `bytes` via `as-bytes` object.
-  [x] > gt /true
+  [x] > gt /bool
 
   # Returns `true` if `$` >= `x`.
   # Here `x` can be a `number` or any other object which
@@ -113,7 +114,7 @@
   # For non-finite values (`nan`, `+inf`, `-inf`) the input is returned
   # unchanged. For finite inputs we truncate toward zero via `as-i64`,
   # which matches mathematical floor for every value except negative
-  # non-integers — where the truncated result is strictly greater than
+  # non-integers - where the truncated result is strictly greater than
   # the original, so we subtract `1` in that single case.
   [] > floor
     if. > @
@@ -234,11 +235,11 @@
             and.
               and.
                 (0.eq nan).eq false
-                (0.eq positive-infinity).eq false
-              (0.eq negative-infinity).eq false
+                (0.eq pinf).eq false
+              (0.eq ninf).eq false
             (42.eq nan).eq false
-          (42.eq positive-infinity).eq false
-        (42.eq negative-infinity).eq false
+          (42.eq pinf).eq false
+        (42.eq ninf).eq false
       true
 
   # Tests that one zero value equals another zero value.
@@ -449,4 +450,994 @@
 
   # Tests that a number created with infinite bytes is not finite.
   [] +> tests-number-with-infinite-bytes-is-not-finite
-    (number positive-infinity.as-bytes).is-finite.not > @
+    (number pinf.as-bytes).is-finite.not > @
+
+  # Equal to.
+  # Tests that positive infinity equals one divided by zero.
+  [] +> tests-positive-infinity-is-equal-to-one-div-zero
+    eq. > @
+      pinf
+      1.0.div 0.0
+
+  # Tests that positive infinity equals positive infinity.
+  [] +> tests-positive-infinity-eq-positive-infinity
+    eq. > @
+      pinf
+      pinf
+
+  # Tests that positive infinity is not equal to negative infinity.
+  [] +> tests-positive-infinity-not-eq-negative-infinity
+    not. > @
+      eq.
+        pinf
+        ninf
+
+  # Tests that positive infinity is not equal to NaN.
+  [] +> tests-positive-infinity-not-eq-nan
+    not. > @
+      eq.
+        pinf
+        nan
+
+  # Tests that positive infinity is not equal to an integer.
+  [] +> tests-positive-infinity-not-eq-int
+    not. > @
+      eq.
+        pinf
+        42
+
+  # Tests that positive infinity is not equal to a float.
+  [] +> tests-positive-infinity-not-eq-float
+    not. > @
+      eq.
+        pinf
+        42.5
+
+  # Less than.
+  # Tests that positive infinity is not less than positive infinity.
+  [] +> tests-positive-infinity-lt-positive-infinity
+    eq. > @
+      pinf.lt pinf
+      false
+
+  # Tests that positive infinity is not less than negative infinity.
+  [] +> tests-positive-infinity-not-lt-negative-infinity
+    eq. > @
+      pinf.lt ninf
+      false
+
+  # Tests that positive infinity is not less than NaN.
+  [] +> tests-positive-infinity-not-lt-nan
+    eq. > @
+      pinf.lt nan
+      false
+
+  # Tests that positive infinity is not less than an integer.
+  [] +> tests-positive-infinity-not-lt-int
+    eq. > @
+      pinf.lt 42
+      false
+
+  # Tests that positive infinity is not less than a float.
+  [] +> tests-positive-infinity-not-lt-float
+    eq. > @
+      pinf.lt 42.5
+      false
+
+  # Less or equal than.
+  # Tests that positive infinity is less than or equal to positive infinity.
+  [] +> tests-positive-infinity-lte-positive-infinity
+    eq. > @
+      pinf.lte pinf
+      true
+
+  # Tests that positive infinity is not less than or equal to negative infinity.
+  [] +> tests-positive-infinity-not-lte-negative-infinity
+    eq. > @
+      pinf.lte ninf
+      false
+
+  # Tests that positive infinity is not less than or equal to NaN.
+  [] +> tests-positive-infinity-not-lte-nan
+    eq. > @
+      pinf.lte nan
+      false
+
+  # Tests that positive infinity is not less than or equal to an integer.
+  [] +> tests-positive-infinity-not-lte-int
+    eq. > @
+      pinf.lte 42
+      false
+
+  # Tests that positive infinity is not less than or equal to a float.
+  [] +> tests-positive-infinity-not-lte-float
+    eq. > @
+      pinf.lte 42.5
+      false
+
+  # Greater than.
+  # Tests that positive infinity is not greater than positive infinity.
+  [] +> tests-positive-infinity-gt-positive-infinity
+    not. > @
+      gt.
+        pinf
+        pinf
+
+  # Tests that positive infinity is greater than negative infinity.
+  [] +> tests-positive-infinity-gt-negative-infinity
+    gt. > @
+      pinf
+      ninf
+
+  # Tests that positive infinity is not greater than NaN.
+  [] +> tests-positive-infinity-not-gt-nan
+    not. > @
+      gt.
+        pinf
+        nan
+
+  # Tests that positive infinity is greater than an integer.
+  [] +> tests-positive-infinity-gt-int
+    gt. > @
+      pinf
+      42
+
+  # Tests that positive infinity is greater than a float.
+  [] +> tests-positive-infinity-gt-float
+    gt. > @
+      pinf
+      42.5
+
+  # Greater or equal than.
+  # Tests that positive infinity is greater than or equal to positive infinity.
+  [] +> tests-positive-infinity-gte-positive-infinity
+    eq. > @
+      pinf.gte pinf
+      true
+
+  # Tests that positive infinity is greater than or equal to negative infinity.
+  [] +> tests-positive-infinity-gte-negative-infinity
+    eq. > @
+      pinf.gte ninf
+      true
+
+  # Tests that positive infinity is not greater than or equal to NaN.
+  [] +> tests-positive-infinity-not-gte-nan
+    eq. > @
+      pinf.gte nan
+      false
+
+  # Tests that positive infinity is greater than or equal to an integer.
+  [] +> tests-positive-infinity-gte-int
+    eq. > @
+      pinf.gte 42
+      true
+
+  # Tests that positive infinity is greater than or equal to a float.
+  [] +> tests-positive-infinity-gte-float
+    eq. > @
+      pinf.gte 42.5
+      true
+
+  # Tests that float comparison with NaN and infinities returns false under high load.
+  [] +> tests-float-equal-to-nan-and-infinites-is-false-highload
+    eq. > @
+      and.
+        and.
+          and.
+            and.
+              and.
+                and.
+                  and.
+                    and.
+                      and.
+                        and.
+                          and.
+                            (0.0.eq nan).eq false
+                            (0.0.eq pinf).eq false
+                          (0.0.eq ninf).eq false
+                        (42.5.eq nan).eq false
+                      (42.5.eq pinf).eq false
+                    (42.5.eq ninf).eq false
+                  (0.0.eq nan).eq false
+                (0.0.eq pinf).eq false
+              (0.0.eq ninf).eq false
+            (42.5.eq nan).eq false
+          (42.5.eq pinf).eq false
+        (42.5.eq ninf).eq false
+      true
+
+  # Times.
+  # Tests that positive infinity times float zero returns NaN.
+  [] +> tests-positive-infinity-times-float-zero
+    eq. > @
+      as-bytes.
+        pinf.times 0.0
+      nan.as-bytes
+
+  # Tests that positive infinity times negative float zero returns NaN.
+  [] +> tests-positive-infinity-times-neg-float-zero
+    eq. > @
+      as-bytes.
+        pinf.times -0.0
+      nan.as-bytes
+
+  # Tests that positive infinity times integer zero returns NaN.
+  [] +> tests-positive-infinity-times-int-zero
+    eq. > @
+      as-bytes.
+        pinf.times 0
+      nan.as-bytes
+
+  # Tests that positive infinity times NaN returns NaN.
+  [] +> tests-positive-infinity-times-nan
+    eq. > @
+      as-bytes.
+        pinf.times nan
+      nan.as-bytes
+
+  # Tests that positive infinity times negative infinity returns negative infinity.
+  [] +> tests-positive-infinity-times-negative-infinity
+    eq. > @
+      pinf.times ninf
+      ninf
+
+  # Tests that positive infinity times positive infinity returns positive infinity.
+  [] +> tests-positive-infinity-times-positive-infinity
+    eq. > @
+      pinf.times pinf
+      pinf
+
+  # Tests that positive infinity times a positive float returns positive infinity.
+  [] +> tests-positive-infinity-times-positive-float
+    eq. > @
+      pinf.times 42.5
+      pinf
+
+  # Tests that positive infinity times a positive integer returns positive infinity.
+  [] +> tests-positive-infinity-times-positive-int
+    eq. > @
+      pinf.times 42
+      pinf
+
+  # Tests that positive infinity times a negative float returns negative infinity.
+  [] +> tests-positive-infinity-times-negative-float
+    eq. > @
+      pinf.times -42.5
+      ninf
+
+  # Tests that positive infinity times a negative integer returns negative infinity.
+  [] +> tests-positive-infinity-times-negative-int
+    eq. > @
+      pinf.times -42
+      ninf
+
+  # Plus
+  # Tests that positive infinity plus NaN returns NaN.
+  [] +> tests-positive-infinity-plus-nan
+    eq. > @
+      as-bytes.
+        pinf.plus nan
+      nan.as-bytes
+
+  # Tests that positive infinity plus negative infinity returns NaN.
+  [] +> tests-positive-infinity-plus-negative-infinity
+    eq. > @
+      as-bytes.
+        pinf.plus ninf
+      nan.as-bytes
+
+  # Tests that positive infinity plus positive infinity returns positive infinity.
+  [] +> tests-positive-infinity-plus-positive-infinity
+    eq. > @
+      pinf.plus pinf
+      pinf
+
+  # Tests that positive infinity plus a positive float returns positive infinity.
+  [] +> tests-positive-infinity-plus-positive-float
+    eq. > @
+      pinf.plus 42.5
+      pinf
+
+  # Negation
+  # Tests that negation of positive infinity returns negative infinity.
+  [] +> tests-positive-infinity-neg-is-negative-infinity
+    eq. > @
+      pinf.neg
+      ninf
+
+  # Minus
+  # Tests that positive infinity minus NaN returns NaN.
+  [] +> tests-positive-infinity-minus-nan
+    eq. > @
+      as-bytes.
+        pinf.minus nan
+      nan.as-bytes
+
+  # Tests that positive infinity minus positive infinity returns NaN.
+  [] +> tests-positive-infinity-minus-positive-infinity
+    eq. > @
+      as-bytes.
+        pinf.minus pinf
+      nan.as-bytes
+
+  # Tests that positive infinity minus negative infinity returns positive infinity.
+  [] +> tests-positive-infinity-minus-negative-infinity
+    eq. > @
+      pinf.minus ninf
+      pinf
+
+  # Tests that positive infinity minus a positive float returns positive infinity.
+  [] +> tests-positive-infinity-minus-positive-float
+    eq. > @
+      pinf.minus 42.5
+      pinf
+
+  # Tests that positive infinity minus a positive integer returns positive infinity.
+  [] +> tests-positive-infinity-minus-positive-int
+    eq. > @
+      pinf.minus 42
+      pinf
+
+  # Tests that positive infinity minus a negative float returns positive infinity.
+  [] +> tests-positive-infinity-minus-negative-float
+    eq. > @
+      pinf.minus -42.5
+      pinf
+
+  # Tests that positive infinity minus a negative integer returns positive infinity.
+  [] +> tests-positive-infinity-minus-negative-int
+    eq. > @
+      pinf.minus -42
+      pinf
+
+  # Division
+  # Tests that positive infinity divided by float zero returns positive infinity.
+  [] +> tests-positive-infinity-div-float-zero
+    eq. > @
+      pinf.div 0.0
+      pinf
+
+  # Tests that positive infinity divided by negative float zero returns negative infinity.
+  [] +> tests-positive-infinity-div-neg-float-zero
+    eq. > @
+      pinf.div -0.0
+      ninf
+
+  # Tests that positive infinity divided by integer zero returns positive infinity.
+  [] +> tests-positive-infinity-div-int-zero
+    eq. > @
+      pinf.div 0
+      pinf
+
+  # Tests that positive infinity divided by negative integer zero returns negative infinity.
+  [] +> tests-positive-infinity-div-neg-int-zero
+    eq. > @
+      pinf.div -0
+      ninf
+
+  # Tests that positive infinity divided by NaN returns NaN.
+  [] +> tests-positive-infinity-div-nan
+    eq. > @
+      as-bytes.
+        pinf.div nan
+      nan.as-bytes
+
+  # Tests that positive infinity divided by negative infinity returns NaN.
+  [] +> tests-positive-infinity-div-negative-infinity
+    eq. > @
+      as-bytes.
+        pinf.div ninf
+      nan.as-bytes
+
+  # Tests that positive infinity divided by positive infinity returns NaN.
+  [] +> tests-positive-infinity-div-positive-infinity
+    eq. > @
+      as-bytes.
+        pinf.div pinf
+      nan.as-bytes
+
+  # Tests that positive infinity divided by a positive float returns positive infinity.
+  [] +> tests-positive-infinity-div-positive-float
+    eq. > @
+      pinf.div 42.5
+      pinf
+
+  # Tests that positive infinity divided by a positive integer returns positive infinity.
+  [] +> tests-positive-infinity-div-positive-int
+    eq. > @
+      pinf.div 42
+      pinf
+
+  # Tests that positive infinity divided by a negative float returns negative infinity.
+  [] +> tests-positive-infinity-div-negative-float
+    eq. > @
+      pinf.div -42.5
+      ninf
+
+  # Tests that positive infinity divided by a negative integer returns negative infinity.
+  [] +> tests-positive-infinity-div-negative-int
+    eq. > @
+      pinf.div -42
+      ninf
+
+  # Bytes.
+  # Tests that positive infinity as bytes equals one divided by zero as bytes.
+  [] +> tests-positive-infinity-as-bytes-is-valid
+    eq. > @
+      pinf.as-bytes
+      (1.0.div 0.0).as-bytes
+
+  # Tests that positive infinity floor equals itself.
+  [] +> tests-positive-infinity-floor-is-equal-to-self
+    pinf.floor.eq pinf > @
+
+  # Tests that positive infinity is not NaN.
+  [] +> tests-positive-infinity-is-not-nan
+    pinf.is-nan.not > @
+
+  # Tests that positive infinity is not finite.
+  [] +> tests-positive-infinity-is-not-finite
+    pinf.is-finite.not > @
+
+  # Tests that positive infinity is not an integer.
+  [] +> tests-positive-infinity-is-not-integer
+    pinf.is-integer.not > @
+
+  # Equal to.
+  # Tests that negative infinity equals negative one divided by zero.
+  [] +> tests-negative-infinity-is-equal-to-one-div-zero
+    eq. > @
+      ninf
+      -1.0.div 0.0
+
+  # Tests that negative infinity equals negative infinity.
+  [] +> tests-negative-infinity-eq-negative-infinity
+    eq. > @
+      ninf
+      ninf
+
+  # Tests that negative infinity is not equal to positive infinity.
+  [] +> tests-negative-infinity-not-eq-positive-infinity
+    not. > @
+      eq.
+        ninf
+        pinf
+
+  # Tests that negative infinity is not equal to NaN.
+  [] +> tests-negative-infinity-not-eq-nan
+    not. > @
+      eq.
+        ninf
+        nan
+
+  # Tests that negative infinity is not equal to an integer.
+  [] +> tests-negative-infinity-not-eq-int
+    not. > @
+      eq.
+        ninf
+        42
+
+  # Tests that negative infinity is not equal to a float.
+  [] +> tests-negative-infinity-not-eq-float
+    not. > @
+      eq.
+        ninf
+        42.5
+
+  # Less than.
+  # Tests that negative infinity is not less than negative infinity.
+  [] +> tests-negative-infinity-lt-negative-infinity
+    eq. > @
+      ninf.lt ninf
+      false
+
+  # Tests that negative infinity is less than positive infinity.
+  [] +> tests-negative-infinity-lt-positive-infinity
+    eq. > @
+      ninf.lt pinf
+      true
+
+  # Tests that negative infinity is not less than NaN.
+  [] +> tests-negative-infinity-not-lt-nan
+    eq. > @
+      ninf.lt nan
+      false
+
+  # Tests that negative infinity is less than an integer.
+  [] +> tests-negative-infinity-lt-int
+    lt. > @
+      ninf
+      42
+
+  # Tests that negative infinity is less than a float.
+  [] +> tests-negative-infinity-lt-float
+    lt. > @
+      ninf
+      42.5
+
+  # Less or equal than.
+  # Tests that negative infinity is less than or equal to negative infinity.
+  [] +> tests-negative-infinity-lte-negative-infinity
+    eq. > @
+      ninf.lte ninf
+      true
+
+  # Tests that negative infinity is less than or equal to positive infinity.
+  [] +> tests-negative-infinity-lte-positive-infinity
+    eq. > @
+      ninf.lte pinf
+      true
+
+  # Tests that negative infinity is not less than or equal to NaN.
+  [] +> tests-negative-infinity-not-lte-nan
+    eq. > @
+      ninf.lte nan
+      false
+
+  # Tests that negative infinity is less than or equal to an integer.
+  [] +> tests-negative-infinity-lte-int
+    eq. > @
+      ninf.lte 42
+      true
+
+  # Tests that negative infinity is less than or equal to a float.
+  [] +> tests-negative-infinity-lte-float
+    eq. > @
+      ninf.lte 42.5
+      true
+
+  # Greater than.
+  # Tests that negative infinity is not greater than negative infinity.
+  [] +> tests-negative-infinity-gt-negative-infinity
+    not. > @
+      gt.
+        ninf
+        ninf
+
+  # Tests that negative infinity is not greater than positive infinity.
+  [] +> tests-negative-infinity-not-gt-positive-infinity
+    eq. > @
+      ninf.gt pinf
+      false
+
+  # Tests that negative infinity is not greater than NaN.
+  [] +> tests-negative-infinity-not-gt-nan
+    eq. > @
+      ninf.gt nan
+      false
+
+  # Tests that negative infinity is not greater than an integer.
+  [] +> tests-negative-infinity-not-gt-int
+    eq. > @
+      ninf.gt 42
+      false
+
+  # Tests that negative infinity is not greater than a float.
+  [] +> tests-negative-infinity-not-gt-float
+    eq. > @
+      ninf.gt 42.5
+      false
+
+  # Greater or equal than.
+  # Tests that negative infinity is greater than or equal to negative infinity.
+  [] +> tests-negative-infinity-gte-negative-infinity
+    eq. > @
+      ninf.gte ninf
+      true
+
+  # Tests that negative infinity is not greater than or equal to positive infinity.
+  [] +> tests-negative-infinity-not-gte-positive-infinity
+    eq. > @
+      ninf.gte pinf
+      false
+
+  # Tests that negative infinity is not greater than or equal to NaN.
+  [] +> tests-negative-infinity-not-gte-nan
+    eq. > @
+      ninf.gte nan
+      false
+
+  # Tests that negative infinity is not greater than or equal to an integer.
+  [] +> tests-negative-infinity-not-gte-int
+    eq. > @
+      ninf.gte 42
+      false
+
+  # Tests that negative infinity is not greater than or equal to a float.
+  [] +> tests-negative-infinity-not-gte-float
+    eq. > @
+      ninf.gte 42.5
+      false
+
+  # Times.
+  # Tests that negative infinity times float zero returns NaN.
+  [] +> tests-negative-infinity-times-float-zero
+    eq. > @
+      as-bytes.
+        ninf.times 0.0
+      nan.as-bytes
+
+  # Tests that negative infinity times negative float zero returns NaN.
+  [] +> tests-negative-infinity-times-neg-float-zero
+    eq. > @
+      as-bytes.
+        ninf.times -0.0
+      nan.as-bytes
+
+  # Tests that negative infinity times integer zero returns NaN.
+  [] +> tests-negative-infinity-times-int-zero
+    eq. > @
+      as-bytes.
+        ninf.times 0
+      nan.as-bytes
+
+  # Tests that negative infinity times NaN returns NaN.
+  [] +> tests-negative-infinity-times-nan
+    eq. > @
+      as-bytes.
+        ninf.times nan
+      nan.as-bytes
+
+  # Tests that negative infinity times positive infinity returns negative infinity.
+  [] +> tests-negative-infinity-times-positive-infinity
+    eq. > @
+      ninf.times pinf
+      ninf
+
+  # Tests that negative infinity times negative infinity returns positive infinity.
+  [] +> tests-negative-infinity-times-negative-infinity
+    eq. > @
+      ninf.times ninf
+      pinf
+
+  # Tests that negative infinity times a positive float returns negative infinity.
+  [] +> tests-negative-infinity-times-positive-float
+    eq. > @
+      ninf.times 42.5
+      ninf
+
+  # Tests that negative infinity times a positive integer returns negative infinity.
+  [] +> tests-negative-infinity-times-positive-int
+    eq. > @
+      ninf.times 42
+      ninf
+
+  # Tests that negative infinity times a negative float returns positive infinity.
+  [] +> tests-negative-infinity-times-negative-float
+    eq. > @
+      ninf.times -42.5
+      pinf
+
+  # Tests that negative infinity times a negative integer returns positive infinity.
+  [] +> tests-negative-infinity-times-negative-int
+    eq. > @
+      ninf.times -42
+      pinf
+
+  # Plus.
+  # Tests that negative infinity plus NaN returns NaN.
+  [] +> tests-negative-infinity-plus-nan
+    eq. > @
+      as-bytes.
+        ninf.plus nan
+      nan.as-bytes
+
+  # Tests that negative infinity plus positive infinity returns NaN.
+  [] +> tests-negative-infinity-plus-positive-infinity
+    eq. > @
+      as-bytes.
+        ninf.plus pinf
+      nan.as-bytes
+
+  # Tests that negative infinity plus negative infinity returns negative infinity.
+  [] +> tests-negative-infinity-plus-negative-infinity
+    eq. > @
+      ninf
+      ninf.plus ninf
+
+  # Tests that negative infinity plus a positive float returns negative infinity.
+  [] +> tests-negative-infinity-plus-positive-float
+    eq. > @
+      ninf.plus 42.5
+      ninf
+
+  # Tests that negative infinity plus a positive integer returns negative infinity.
+  [] +> tests-negative-infinity-plus-positive-int
+    eq. > @
+      ninf.plus 42
+      ninf
+
+  # Tests that negative infinity plus a negative float returns negative infinity.
+  [] +> tests-negative-infinity-plus-negative-float
+    eq. > @
+      ninf.plus -42.5
+      ninf
+
+  # Tests that negative infinity plus a negative integer returns negative infinity.
+  [] +> tests-negative-infinity-plus-negative-int
+    eq. > @
+      ninf.plus -42
+      ninf
+
+  # Negation.
+  # Tests that negation of negative infinity returns positive infinity.
+  [] +> tests-negative-infinity-neg-is-positive-infinity
+    eq. > @
+      ninf.neg
+      pinf
+
+  # Minus.
+  # Tests that negative infinity minus NaN returns NaN.
+  [] +> tests-negative-infinity-minus-nan
+    eq. > @
+      as-bytes.
+        ninf.minus nan
+      nan.as-bytes
+
+  # Tests that negative infinity minus negative infinity returns NaN.
+  [] +> tests-negative-infinity-minus-negative-infinity
+    eq. > @
+      as-bytes.
+        ninf.minus ninf
+      nan.as-bytes
+
+  # Tests that negative infinity minus positive infinity returns negative infinity.
+  [] +> tests-negative-infinity-minus-positive-infinity
+    eq. > @
+      ninf.minus pinf
+      ninf
+
+  # Tests that negative infinity minus a positive float returns negative infinity.
+  [] +> tests-negative-infinity-minus-positive-float
+    eq. > @
+      ninf.minus 42.5
+      ninf
+
+  # Tests that negative infinity minus a positive integer returns negative infinity.
+  [] +> tests-negative-infinity-minus-positive-int
+    eq. > @
+      ninf.minus 42
+      ninf
+
+  # Tests that negative infinity minus a negative float returns negative infinity.
+  [] +> tests-negative-infinity-minus-negative-float
+    eq. > @
+      ninf.minus -42.5
+      ninf
+
+  # Tests that negative infinity minus a negative integer returns negative infinity.
+  [] +> tests-negative-infinity-minus-negative-int
+    eq. > @
+      ninf.minus -42
+      ninf
+
+  # Division.
+  # Tests that negative infinity divided by float zero returns negative infinity.
+  [] +> tests-negative-infinity-div-float-zero
+    eq. > @
+      ninf.div 0.0
+      ninf
+
+  # Tests that negative infinity divided by negative float zero returns positive infinity.
+  [] +> tests-negative-infinity-div-neg-float-zero
+    eq. > @
+      ninf.div -0.0
+      pinf
+
+  # Tests that negative infinity divided by integer zero returns negative infinity.
+  [] +> tests-negative-infinity-div-int-zero
+    eq. > @
+      ninf.div 0
+      ninf
+
+  # Tests that negative infinity divided by negative integer zero returns positive infinity.
+  [] +> tests-negative-infinity-div-neg-int-zero
+    eq. > @
+      ninf.div -0
+      pinf
+
+  # Tests that negative infinity divided by NaN returns NaN.
+  [] +> tests-negative-infinity-div-nan
+    eq. > @
+      as-bytes.
+        ninf.div nan
+      nan.as-bytes
+
+  # Tests that negative infinity divided by positive infinity returns NaN.
+  [] +> tests-negative-infinity-div-positive-infinity
+    eq. > @
+      as-bytes.
+        ninf.div pinf
+      nan.as-bytes
+
+  # Tests that negative infinity divided by negative infinity returns NaN.
+  [] +> tests-negative-infinity-div-negative-infinity
+    eq. > @
+      as-bytes.
+        ninf.div ninf
+      nan.as-bytes
+
+  # Tests that negative infinity divided by a positive float returns negative infinity.
+  [] +> tests-negative-infinity-div-positive-float
+    eq. > @
+      ninf.div 42.5
+      ninf
+
+  # Tests that negative infinity divided by a positive integer returns negative infinity.
+  [] +> tests-negative-infinity-div-positive-int
+    eq. > @
+      ninf.div 42
+      ninf
+
+  # Tests that negative infinity divided by a negative float returns positive infinity.
+  [] +> tests-negative-infinity-div-negative-float
+    eq. > @
+      ninf.div -42.5
+      pinf
+
+  # Tests that negative infinity divided by a negative integer returns positive infinity.
+  [] +> tests-negative-infinity-div-negative-int
+    eq. > @
+      ninf.div -42
+      pinf
+
+  # Bytes.
+  # Tests that negative infinity as bytes equals negative one divided by zero as bytes.
+  [] +> tests-negative-infinity-as-bytes-is-valid
+    eq. > @
+      ninf.as-bytes
+      (-1.0.div 0.0).as-bytes
+
+  # Tests that negative infinity floor equals itself.
+  [] +> tests-negative-infinity-floor-is-equal-to-self
+    ninf.floor.eq ninf > @
+
+  # Tests that negative infinity is not NaN.
+  [] +> tests-negative-infinity-is-not-nan
+    ninf.is-nan.not > @
+
+  # Tests that negative infinity is not finite.
+  [] +> tests-negative-infinity-is-not-finite
+    ninf.is-finite.not > @
+
+  # Tests that negative infinity is not an integer.
+  [] +> tests-negative-infinity-is-not-integer
+    ninf.is-integer.not > @
+
+  # Tests that NaN is not equal to a number.
+  [] +> tests-nan-not-eq-number
+    not. > @
+      eq.
+        nan
+        42
+
+  # Tests that NaN is not equal to NaN.
+  [] +> tests-nan-not-eq-nan
+    not. > @
+      eq.
+        nan
+        nan
+
+  # Tests that NaN is not less than a number.
+  [] +> tests-nan-not-lt-number
+    eq. > @
+      nan.lt 42
+      false
+
+  # Tests that NaN is not less than NaN.
+  [] +> tests-nan-not-lt-nan
+    eq. > @
+      nan.lt nan
+      false
+
+  # Tests that NaN is not less than or equal to a number.
+  [] +> tests-nan-not-lte-number
+    eq. > @
+      nan.lte 42
+      false
+
+  # Tests that NaN is not less than or equal to NaN.
+  [] +> tests-nan-not-lte-nan
+    eq. > @
+      nan.lte nan
+      false
+
+  # Tests that NaN is not greater than a number.
+  [] +> tests-nan-not-gt-number
+    eq. > @
+      nan.gt 42
+      false
+
+  # Tests that NaN is not greater than NaN.
+  [] +> tests-nan-not-gt-nan
+    eq. > @
+      nan.gt nan
+      false
+
+  # Tests that NaN is not greater than or equal to a number.
+  [] +> tests-nan-not-gte-number
+    eq. > @
+      nan.gte 42
+      false
+
+  # Tests that NaN is not greater than or equal to NaN.
+  [] +> tests-nan-not-gte-nan
+    eq. > @
+      nan.gte nan
+      false
+
+  # Tests that NaN multiplied by a number returns NaN.
+  [] +> tests-nan-times-number-is-nan
+    eq. > @
+      (nan.times 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN multiplied by NaN returns NaN.
+  [] +> tests-nan-times-nan-is-nan
+    eq. > @
+      (nan.times nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN divided by a number returns NaN.
+  [] +> tests-nan-div-number-is-nan
+    eq. > @
+      (nan.div 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN divided by NaN returns NaN.
+  [] +> tests-nan-div-nan-is-nan
+    eq. > @
+      (nan.div nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN plus a number returns NaN.
+  [] +> tests-nan-plus-number-is-nan
+    eq. > @
+      (nan.plus 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN plus NaN returns NaN.
+  [] +> tests-nan-plus-nan-is-nan
+    eq. > @
+      (nan.plus nan).as-bytes
+      nan.as-bytes
+
+  # Tests that negation of NaN returns NaN.
+  [] +> tests-nan-neg-is-nan
+    eq. > @
+      nan.@.as-bytes
+      nan.as-bytes
+
+  # Tests that NaN minus a number returns NaN.
+  [] +> tests-nan-minus-number-is-nan
+    eq. > @
+      (nan.minus 42).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN minus NaN returns NaN.
+  [] +> tests-nan-minus-nan-is-nan
+    eq. > @
+      (nan.minus nan).as-bytes
+      nan.as-bytes
+
+  # Tests that NaN as bytes equals the bytes of zero divided by zero.
+  [] +> tests-nan-as-bytes-is-bytes-of-zero-div-zero
+    eq. > @
+      nan.as-bytes
+      (0.0.div 0.0).as-bytes
+
+  # Tests that floor of NaN returns NaN.
+  [] +> tests-nan-floor-is-nan
+    eq. > @
+      nan.floor.as-bytes
+      nan.as-bytes
+
+  # Tests that NaN is detected as NaN.
+  nan.is-nan > [] +> nan-is-nan
+
+  # Tests that NaN is not a finite value.
+  nan.is-finite.not > [] +> nan-is-not-finite
+
+  # Tests that NaN is not an integer.
+  nan.is-integer.not > [] +> nan-is-not-integer

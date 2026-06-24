@@ -1,13 +1,15 @@
++alias tt.contains
 +alias fs.file
++alias tt.joined
 +alias fs.path
-+alias fs.tmpdir
 +alias tt.sprintf
++alias fs.tmpdir
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.61.1
++rt jvm org.eolang:eo-runtime:0.61.2
 +rt node eo2js-runtime:0.0.0
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -19,10 +21,10 @@
   (Q.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory /true
+  [] > is-directory /bool
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists /true
+  [] > exists /bool
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -39,7 +41,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > touch /true
+    [] > touch /bool
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -55,7 +57,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    [] > delete /true
+    [] > delete /bool
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   [] > size /number
@@ -163,7 +165,7 @@
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of the `file` object.
-    [] > process-file /true
+    [] > process-file /bool
 
     # File stream.
     # The objects provides an API for using file as input or output.
@@ -240,7 +242,7 @@
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes /true
+        [buffer] > written-bytes /bool
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
@@ -285,22 +287,15 @@
     (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
   # Tests that resolving nested paths and touching files works correctly.
-  # @todo #4096:30min Enable tests-resolves-and-touches unit test.
-  #  Now its disabled because of: "Can't #take("path"), the attribute is absent among other test 34
-  #  attrs. After we fix it, we should enable the test.
-  [] > tests-resolves-and-touches
-    seq > @
-      *
-        resolved.deleted.made
-        and.
-          f.exists
-          contains.
-            f.path
-            joined.
-              path.separator
-              * "foo" "bar"
-    (tmpdir.as-path.resolved "foo/bar").@ > resolved
-    resolved.tmpfile > f
+  [] +> tests-resolves-and-touches
+    and. > @
+      resolved.as-dir.made.tmpfile.exists
+      contains
+        resolved
+        joined
+          Q.fs.path.separator
+          * "foo" "bar"
+    tmpdir.as-path.resolved "foo/bar" > resolved
 
   # Tests that moving a file to a new location works correctly.
   [] +> tests-moves-a-file

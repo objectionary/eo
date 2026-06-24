@@ -3,9 +3,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+rt jvm org.eolang:eo-runtime:0.61.1
++rt jvm org.eolang:eo-runtime:0.61.2
 +rt node eo2js-runtime:0.0.0
-+version 0.61.1
++version 0.61.2
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -17,7 +17,7 @@
       sqrt 0.0
       0.0
 
-  # Tests that sqrt of one is one.
+  # Tests that the sqrt of one equals one.
   [] +> tests-sqrt-one
     eq. > @
       sqrt 1.0
@@ -74,10 +74,10 @@
   # Tests that square root of positive infinity equals positive infinity.
   [] +> tests-sqrt-check-infinity-n1
     eq. > @
-      sqrt positive-infinity
-      positive-infinity
+      sqrt pinf
+      pinf
 
   # Tests that square root of negative infinity returns NaN.
   [] +> tests-sqrt-check-infinity-n2
     is-nan. > @
-      sqrt negative-infinity
+      sqrt ninf
