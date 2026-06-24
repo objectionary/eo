@@ -18,8 +18,8 @@
 **EO** (stands for [Elegant Objects][book] or ISO 639-1 code of [Esperanto])
 is an object-oriented programming language based on [𝜑-calculus].
 We're aware of popular semi-OOP languages and we don't think
-  they are good enough, including: [Java], [Ruby], [C++],
-  [Smalltalk], [Python], [PHP], [C#].
+  they are good enough, including [Java], [Ruby], [C++], [Python], and [C#].
+Even [Smalltalk], [Eiffel], [Self], and [Io] are not good enough.
 All of them have something **we don't tolerate**:
 
 * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
@@ -359,29 +359,31 @@ to enhance the performance of EO components:
 
 [abstract objects]: https://www.yegor256.com/2020/12/01/abstract-objects.html
 [benchmark-gha]: https://github.com/objectionary/eo/actions/runs/25542370898
+[book]: http://www.yegor256.com/elegant-objects.html
 [C#]: https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29
 [C++]: https://en.wikipedia.org/wiki/C%2B%2B
 [composable decorators]: https://www.yegor256.com/2015/02/26/composable-decorators.html
+[Eiffel]: https://en.wikipedia.org/wiki/Eiffel_(programming_language)
 [eo-maven-plugin]: https://github.com/objectionary/eo/tree/master/eo-maven-plugin
 [eoc]: https://github.com/objectionary/eoc
+[Esperanto]: https://en.wikipedia.org/wiki/Esperanto
 [guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
 [home]: https://github.com/objectionary/home
+[Io]: https://en.wikipedia.org/wiki/Io_(programming_language)
 [Java SE]: https://www.oracle.com/java/technologies/downloads/
 [Java]: https://en.wikipedia.org/wiki/Java_%28programming_language%29
 [Maven]: https://maven.apache.org
 [npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 [our blog]: https://news.eolang.org
 [papers]: https://news.eolang.org/papers.html
-[PHP]: https://en.wikipedia.org/wiki/PHP
+[parser-spec]: https://github.com/objectionary/eo/blob/master/eo-parser/PARSER_SPEC.md
 [Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
 [Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
+[Self]: https://en.wikipedia.org/wiki/Self_(programming_language)
 [Smalltalk]: https://en.wikipedia.org/wiki/Smalltalk
 [xcop]: https://github.com/yegor256/xcop
 [XMIR HTML]: https://www.eolang.org/XMIR.html
 [XMIR]: https://news.eolang.org/2022-11-25-xmir-guide.html
 [XSD]: https://www.eolang.org/XMIR.xsd
 [YourKit Java Profiler]: https://www.yourkit.com/java/profiler
-[book]: http://www.yegor256.com/elegant-objects.html
 [𝜑-calculus]: https://arxiv.org/abs/2111.13384
-[Esperanto]: https://en.wikipedia.org/wiki/Esperanto
-[parser-spec]: https://github.com/objectionary/eo/blob/master/eo-parser/PARSER_SPEC.md
