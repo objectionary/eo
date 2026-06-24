@@ -397,21 +397,45 @@
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>         );
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>     }
 <a class="jxr_linenumber" name="L391" href="#L391">391</a> 
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     * Program with WPA error.</em>
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_javadoccomment">     * @return Program with WPA error</em>
-<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String[] probmlematic() {
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> String[]{
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>             <span class="jxr_string">"+package foo.x"</span>,
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>             <span class="jxr_string">"+alias a.b.nowhere"</span>,
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>             <span class="jxr_string">"+unlint unused-alias"</span>,
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>             <span class="jxr_string">""</span>,
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>             <span class="jxr_string">"# No comments."</span>,
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>             <span class="jxr_string">"[] &gt; main"</span>,
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>         };
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>     }
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> }
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     @Test
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">void</strong> failsOnUnusedAlias(@Mktmp <strong class="jxr_keyword">final</strong> Path temp) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>         <strong class="jxr_keyword">final</strong> FakeMaven maven = <strong class="jxr_keyword">new</strong> FakeMaven(temp).withProgram(
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>             <span class="jxr_string">"+package foo.x"</span>,
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>             <span class="jxr_string">"+alias a.b.foo"</span>,
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>             <span class="jxr_string">""</span>,
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>             <span class="jxr_string">"# No comments."</span>,
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             <span class="jxr_string">"[] &gt; main"</span>
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>         );
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>         Assertions.assertThrows(
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>             IllegalStateException.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>             () -&gt; maven.execute(<strong class="jxr_keyword">new</strong> FakeMaven.Lint()),
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <span class="jxr_string">"Linting must fail on an unused alias"</span>
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         );
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>             <span class="jxr_string">"Linted XMIR must report the unused alias by name"</span>,
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <strong class="jxr_keyword">new</strong> Xnav(maven.programTojo().linted())
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                 .one(<span class="jxr_string">"/object/errors/error[@severity='error']"</span>)
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>                 .text()
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 .orElseThrow(),
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>             Matchers.stringContainsInOrder(<span class="jxr_string">"a.b.foo"</span>, <span class="jxr_string">"is not used"</span>)
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         );
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     }
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">     * Program with WPA error.</em>
+<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">     * @return Program with WPA error</em>
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String[] probmlematic() {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> String[]{
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>             <span class="jxr_string">"+package foo.x"</span>,
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>             <span class="jxr_string">"+alias a.b.nowhere"</span>,
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             <span class="jxr_string">"+unlint unused-alias"</span>,
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>             <span class="jxr_string">""</span>,
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>             <span class="jxr_string">"# No comments."</span>,
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>             <span class="jxr_string">"[] &gt; main"</span>,
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         };
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     }
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

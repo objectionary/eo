@@ -464,9 +464,9 @@
 <a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> logOne(<strong class="jxr_keyword">final</strong> String severity, <strong class="jxr_keyword">final</strong> String message) {
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>         <strong class="jxr_keyword">if</strong> (Severity.WARNING.mnemo().equals(severity)) {
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>             Logger.warn(Linting.<strong class="jxr_keyword">class</strong>, message);
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>             Logger.warn(Linting.<strong class="jxr_keyword">class</strong>, <span class="jxr_string">"[LINT] %s"</span>, message);
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>             Logger.error(Linting.<strong class="jxr_keyword">class</strong>, message);
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>             Logger.error(Linting.<strong class="jxr_keyword">class</strong>, <span class="jxr_string">"[LINT] %s"</span>, message);
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>         }
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
 <a class="jxr_linenumber" name="L464" href="#L464">464</a> 

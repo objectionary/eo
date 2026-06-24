@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>eo:print – eo-maven-plugin</title>
+        <title>eo:atoms-table – eo-maven-plugin</title>
         <link media="all" rel="stylesheet" type="text/css" href="./css/jcabi.css">
                                             <link rel="icon" href="https://www.yegor256.com/images/books/elegant-objects/cactus.png">
                                         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin=anonymous></script>
@@ -86,19 +86,19 @@
                         </header>
                         <div id="here-goes-menu" class="menu-off"></div>
                                                                         <article itemprop="articleBody">
-                            <section><a id="eo.3Aprint"></a>
-<h1>eo:print</h1>
+                            <section><a id="eo.3Aatoms-table"></a>
+<h1>eo:atoms-table</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.61.2:print</p>
+<p>org.eolang:eo-maven-plugin:0.61.2:atoms-table</p>
 <p><strong>Description</strong>:</p>
-<p>Print XMIR to EO. 
-<p>This goal goes through all XMIR sources found in the specified directory, converts them back to EO format, and saves the resulting EO files in the specified output directory, preserving the original directory structure. Input XMIR files are found in <code>printSourcesDir</code><!-- no javadoc sites associated -->, output EO files are saved in <code>printOutputDir</code><!-- no javadoc sites associated -->.</p></p>
+<p>Generate the atom return types table from XMIR sources. 
+<p>Walks the XMIR sources in <code>atomsInputDir</code><!-- no javadoc sites associated -->, extracts the <code>forma</code> of every lambda atom together with its declared return type, and writes the result as a CSV file at <code>atomsOutput</code><!-- no javadoc sites associated -->. Each output line has the form <code>&lt;forma&gt;,&lt;return-type&gt;</code>; entries are sorted by <code>forma</code> to make the file stable across builds.</p></p>
 <p><strong>Attributes</strong>:</p>
 <ul>
 <li>Requires a Maven project to be executed.</li>
 <li>The goal is thread-safe and supports parallel builds.</li>
-<li>Since version: <code>0.33.0</code>.</li>
-<li>Binds by default to the <a class="externalLink" href="https://maven.apache.org/ref/current/maven-core/lifecycles.html">lifecycle phase</a>: <code>process-sources</code>.</li></ul><section><a id="Required_Parameters"></a>
+<li>Since version: <code>0.57</code>.</li>
+<li>Binds by default to the <a class="externalLink" href="https://maven.apache.org/ref/current/maven-core/lifecycles.html">lifecycle phase</a>: <code>process-classes</code>.</li></ul><section><a id="Required_Parameters"></a>
 <h2>Required Parameters</h2>
 <table class="bodyTable">
 <tr class="a">
@@ -106,6 +106,16 @@
 <th>Type</th>
 <th>Since</th>
 <th>Description</th></tr>
+<tr class="b">
+<td><a href="#atomsInputDir"><code>&lt;atomsInputDir&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>Directory with XMIR sources to scan for atoms.<br /><strong>Default</strong>: <code>${project.build.directory}/eo/1-parse</code><br /><strong>User Property</strong>: <code>eo.atomsInputDir</code></td></tr>
+<tr class="a">
+<td><a href="#atomsOutput"><code>&lt;atomsOutput&gt;</code></a></td>
+<td><code>File</code></td>
+<td><code>-</code></td>
+<td>Output CSV file with the atoms table.<br /><strong>Default</strong>: <code>${project.build.outputDirectory}/org/eolang/atoms.csv</code><br /><strong>User Property</strong>: <code>eo.atomsOutput</code></td></tr>
 <tr class="b">
 <td><a href="#discoverSelf"><code>&lt;discoverSelf&gt;</code></a></td>
 <td><code>boolean</code></td>
@@ -167,16 +177,6 @@
 <td><code>String</code></td>
 <td><code>-</code></td>
 <td>Format of "placed" file ("json" or "csv").<br /><strong>Default</strong>: <code>json</code><br /><strong>User Property</strong>: <code>eo.placedFormat</code></td></tr>
-<tr class="b">
-<td><a href="#printOutputDir"><code>&lt;printOutputDir&gt;</code></a></td>
-<td><code>File</code></td>
-<td><code>-</code></td>
-<td>Directory where printed EO files are placed.<br /><strong>Default</strong>: <code>${project.build.directory}/generated-sources/eo</code><br /><strong>User Property</strong>: <code>eo.printOutputDir</code></td></tr>
-<tr class="a">
-<td><a href="#printSourcesDir"><code>&lt;printSourcesDir&gt;</code></a></td>
-<td><code>File</code></td>
-<td><code>-</code></td>
-<td>Directory with XMIR sources to print.<br /><strong>Default</strong>: <code>${project.basedir}/src/main/xmir</code><br /><strong>User Property</strong>: <code>eo.printSourcesDir</code></td></tr>
 <tr class="b">
 <td><a href="#skipExperimentalLints"><code>&lt;skipExperimentalLints&gt;</code></a></td>
 <td><code>boolean</code></td>
@@ -284,7 +284,21 @@
 <td><code>boolean</code></td>
 <td><code>0.29.0</code></td>
 <td>If set to TRUE, the exception on exit will be printed in details to the log.<br /><strong>User Property</strong>: <code>eo.unrollExitError</code></td></tr></table></section><section><a id="Parameter_Details"></a>
-<h2>Parameter Details</h2><a id="cache"></a><section><a id="a.3Ccache.3E"></a>
+<h2>Parameter Details</h2><a id="atomsInputDir"></a><section><a id="a.3CatomsInputDir.3E"></a>
+<h3>&lt;atomsInputDir&gt;</h3>
+<div>Directory with XMIR sources to scan for atoms.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.atomsInputDir</code></li>
+<li><strong>Default</strong>: <code>${project.build.directory}/eo/1-parse</code></li></ul><hr /></section><a id="atomsOutput"></a><section><a id="a.3CatomsOutput.3E"></a>
+<h3>&lt;atomsOutput&gt;</h3>
+<div>Output CSV file with the atoms table.</div>
+<ul>
+<li><strong>Type</strong>: <code>java.io.File</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.atomsOutput</code></li>
+<li><strong>Default</strong>: <code>${project.build.outputDirectory}/org/eolang/atoms.csv</code></li></ul><hr /></section><a id="cache"></a><section><a id="a.3Ccache.3E"></a>
 <h3>&lt;cache&gt;</h3>
 <div>EO cache directory.</div>
 <ul>
@@ -400,21 +414,7 @@
 <li><strong>Type</strong>: <code>java.lang.String</code></li>
 <li><strong>Required</strong>: <code>Yes</code></li>
 <li><strong>User Property</strong>: <code>eo.placedFormat</code></li>
-<li><strong>Default</strong>: <code>json</code></li></ul><hr /></section><a id="printOutputDir"></a><section><a id="a.3CprintOutputDir.3E"></a>
-<h3>&lt;printOutputDir&gt;</h3>
-<div>Directory where printed EO files are placed.</div>
-<ul>
-<li><strong>Type</strong>: <code>java.io.File</code></li>
-<li><strong>Required</strong>: <code>Yes</code></li>
-<li><strong>User Property</strong>: <code>eo.printOutputDir</code></li>
-<li><strong>Default</strong>: <code>${project.build.directory}/generated-sources/eo</code></li></ul><hr /></section><a id="printSourcesDir"></a><section><a id="a.3CprintSourcesDir.3E"></a>
-<h3>&lt;printSourcesDir&gt;</h3>
-<div>Directory with XMIR sources to print.</div>
-<ul>
-<li><strong>Type</strong>: <code>java.io.File</code></li>
-<li><strong>Required</strong>: <code>Yes</code></li>
-<li><strong>User Property</strong>: <code>eo.printSourcesDir</code></li>
-<li><strong>Default</strong>: <code>${project.basedir}/src/main/xmir</code></li></ul><hr /></section><a id="rewriteBinaries"></a><section><a id="a.3CrewriteBinaries.3E"></a>
+<li><strong>Default</strong>: <code>json</code></li></ul><hr /></section><a id="rewriteBinaries"></a><section><a id="a.3CrewriteBinaries.3E"></a>
 <h3>&lt;rewriteBinaries&gt;</h3>
 <div>Rewrite binaries in output directory or not.</div>
 <ul>
