@@ -1,69 +1,66 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Tests for {@link Sha}.
+ * Test for {@link Sha}.
+ * @since 0.62
  */
+@ExtendWith(MktmpResolver.class)
 final class ShaTest {
 
     @Test
-    void doesNotCollideOnDifferentFileBoundaries(@TempDir final Path tmp)
-        throws Exception {
-        // Directory A: file1="ab", file2="c"  → concat = "abc"
-        final Path dirA = tmp.resolve("A");
-        Files.createDirectory(dirA);
-        Files.writeString(dirA.resolve("file1"), "ab");
-        Files.writeString(dirA.resolve("file2"), "c");
-
-        // Directory B: file1="a", file2="bc"  → concat = "abc"
-        final Path dirB = tmp.resolve("B");
-        Files.createDirectory(dirB);
-        Files.writeString(dirB.resolve("file1"), "a");
-        Files.writeString(dirB.resolve("file2"), "bc");
-
-        assertThat(
+    void doesNotCollideOnDifferentFileBoundaries(@Mktmp final Path temp) throws Exception {
+        final Path dira = temp.resolve("A");
+        Files.createDirectories(dira);
+        Files.writeString(dira.resolve("file1"), "ab");
+        Files.writeString(dira.resolve("file2"), "c");
+        final Path dirb = temp.resolve("B");
+        Files.createDirectories(dirb);
+        Files.writeString(dirb.resolve("file1"), "a");
+        Files.writeString(dirb.resolve("file2"), "bc");
+        MatcherAssert.assertThat(
             "directories with same content concatenation but different file boundaries must not collide",
-            new Sha(dirA).toString(),
-            not(equalTo(new Sha(dirB).toString()))
+            new Sha(dira).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(dirb).toString()))
         );
     }
 
     @Test
-    void doesNotCollideOnFileRename(@TempDir final Path tmp)
-        throws Exception {
-        // Same content, different file name
-        final Path dirA = tmp.resolve("A");
-        Files.createDirectory(dirA);
-        Files.writeString(dirA.resolve("foo.txt"), "hello");
-
-        final Path dirB = tmp.resolve("B");
-        Files.createDirectory(dirB);
-        Files.writeString(dirB.resolve("bar.txt"), "hello");
-
-        assertThat(
+    void doesNotCollideOnFileRename(@Mktmp final Path temp) throws Exception {
+        final Path dira = temp.resolve("A");
+        Files.createDirectories(dira);
+        Files.writeString(dira.resolve("foo.txt"), "hello");
+        final Path dirb = temp.resolve("B");
+        Files.createDirectories(dirb);
+        Files.writeString(dirb.resolve("bar.txt"), "hello");
+        MatcherAssert.assertThat(
             "directories differing only in file name must not collide",
-            new Sha(dirA).toString(),
-            not(equalTo(new Sha(dirB).toString()))
+            new Sha(dira).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(dirb).toString()))
         );
     }
 
     @Test
-    void sameDirectoryProducesSameHash(@TempDir final Path tmp)
-        throws Exception {
-        final Path dir = tmp.resolve("C");
-        Files.createDirectory(dir);
+    void sameDirectoryProducesSameHash(@Mktmp final Path temp) throws Exception {
+        final Path dir = temp.resolve("C");
+        Files.createDirectories(dir);
         Files.writeString(dir.resolve("a.txt"), "consistent");
-        assertThat(
+        MatcherAssert.assertThat(
             "same directory must always produce the same hash",
             new Sha(dir).toString(),
-            equalTo(new Sha(dir).toString())
+            Matchers.equalTo(new Sha(dir).toString())
         );
     }
 }
