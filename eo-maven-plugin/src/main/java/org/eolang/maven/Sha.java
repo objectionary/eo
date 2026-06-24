@@ -6,6 +6,8 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -55,22 +57,36 @@ final class Sha {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
         try (Stream<Path> walk = Files.walk(path)) {
             walk.filter(Files::isRegularFile)
-                .sorted(Comparator.comparing(Path::toString)).forEach(
-                    file -> {
-                        try (InputStream input = Files.newInputStream(file)) {
-                            final byte[] buffer = new byte[8192];
-                            int read = input.read(buffer);
-                            while (read != -1) {
-                                digest.update(buffer, 0, read);
-                                read = input.read(buffer);
-                            }
-                        } catch (final IOException ex) {
-                            throw new IllegalStateException(
-                                String.format("Failed to read '%s'", file), ex
-                            );
-                        }
-                    }
+    .sorted(Comparator.comparing(Path::toString)).forEach(
+        file -> {
+            try {
+                // 1. Hash the relative path so renames change the digest
+                final Path rel = path.relativize(file);
+                digest.update(
+                    rel.toString().getBytes(StandardCharsets.UTF_8)
                 );
+                // 2. NUL byte as unambiguous separator between path and content
+                digest.update((byte) 0);
+                // 3. Hash the file size so boundary shifts change the digest
+                final long size = Files.size(file);
+                digest.update(
+                    ByteBuffer.allocate(Long.BYTES).putLong(size).array()
+                );
+                try (InputStream input = Files.newInputStream(file)) {
+                    final byte[] buffer = new byte[8192];
+                    int read = input.read(buffer);
+                    while (read != -1) {
+                        digest.update(buffer, 0, read);
+                        read = input.read(buffer);
+                    }
+                }
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format("Failed to read '%s'", file), ex
+                );
+            }
+        }
+    );
         }
         return Base64.getEncoder().encodeToString(digest.digest());
     }
