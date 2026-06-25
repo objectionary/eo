@@ -118,7 +118,11 @@
   # the original, so we subtract `1` in that single case.
   [] > floor
     if. > @
-      ^.is-finite.not
+      or.
+        ^.is-finite.not
+        or.
+          ^.gte 4503599627370496
+          ^.lte -4503599627370496
       ^
       if.
         trunc.gt ^
@@ -393,6 +397,18 @@
     eq. > @
       -5.floor
       -5
+
+  # Tests that floor of a very large positive number >= 2^52 returns itself.
+  [] +> tests-floor-of-large-positive-integer
+    eq. > @
+      100000000000000000000.floor
+      100000000000000000000
+
+  # Tests that floor of a very large negative number <= -2^52 returns itself.
+  [] +> tests-floor-of-large-negative-integer
+    eq. > @
+      -100000000000000000000.floor
+      -100000000000000000000
 
   # Tests that floor of zero returns zero.
   [] +> tests-floor-of-zero
