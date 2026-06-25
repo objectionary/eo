@@ -123,6 +123,11 @@ final class Tokens {
             value = this.readNumber();
         } else if (Tokens.rootStart(first)) {
             value = this.readRoot();
+        } else if (first == 'T') {
+            value = new Value(
+                Value.Kind.TERM, "T", this.span.indent() + this.cursor, this.cursor + 1
+            );
+            this.cursor = this.cursor + 1;
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
         } else {
