@@ -21,4 +21,22 @@ final class PhTerminatedTest {
             "dataizing the bottom object must abort instead of returning data"
         );
     }
+
+    @Test
+    void failsWhenDispatched() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhTerminated().take("any"),
+            "dispatching an attribute on the bottom object must abort"
+        );
+    }
+
+    @Test
+    void failsWhenCopied() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhTerminated().copy(),
+            "copying the bottom object must abort"
+        );
+    }
 }
