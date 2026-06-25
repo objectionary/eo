@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 final class PhTerminatedTest {
 
     @Test
-    void cannotBeDataized() {
+    void failsWhenDataized() {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new Dataized(new PhTerminated()).take(),
