@@ -15,13 +15,9 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='foo'][count(o[@base='∅'])=3]
-  - /object/o[@name='foo']/o[1][@name='name' and @base='∅']
-  - /object/o[@name='foo']/o[2][@name='bar' and @base='∅']
-  - /object/o[@name='foo']/o[3][@name='test' and @base='∅']
-  - /object/o[@name='foo']/o[4][@name='φ' and @base='Φ.hello']
+  - /object/o[@name='fopen']/o[@name='e' and @base='∅' and @types='Φ.foo']
 input: |
-  [name] > foo
-    ? > bar
-    ? > test
-    hello > @
+  +alias foo
+
+  [] > fopen /file
+    ? > e /{foo}

@@ -215,6 +215,17 @@ final class EoTest {
     }
 
     @Test
+    void rejectsVoidBelowRegularAttribute() {
+        MatcherAssert.assertThat(
+            "a void declared after a regular attribute must be rejected",
+            EoTest.render("[] > foo", "  6 > six", "  ? > x", "  5 > five", "  ? > y"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'void attribute must be declared above')]"
+            )
+        );
+    }
+
+    @Test
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",

@@ -79,6 +79,13 @@ final class Level {
     private boolean taken;
 
     /**
+     * True once a non-void child has been added under this entry —
+     * after which a {@link Kind#VOID} child is rejected (R-3.4.7,
+     * voids must precede every other attribute).
+     */
+    private boolean plain;
+
+    /**
      * For {@link Kind#COMPACT_TUPLE}: the {@code N} count from {@code *N}.
      */
     private int count;
@@ -278,6 +285,27 @@ final class Level {
      */
     void consumeReceiver() {
         this.taken = true;
+    }
+
+    /**
+     * Observe a child of the given {@code kind} being added under this
+     * entry, enforcing the void-ordering rule (R-3.4.7): a
+     * {@link Kind#VOID} child is rejected once a non-void child has
+     * appeared, and every non-void child records that fact.
+     * @param shape Kind of the child being added
+     * @param line Source line of the child (for the error)
+     * @param column Source indent of the child (for the error)
+     */
+    void observeVoid(final Kind shape, final int line, final int column) {
+        if (shape == Kind.VOID && this.plain) {
+            throw new ParseError(
+                line, column,
+                "a void attribute must be declared above all other attributes"
+            );
+        }
+        if (shape != Kind.VOID) {
+            this.plain = true;
+        }
     }
 
     /**

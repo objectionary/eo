@@ -272,6 +272,13 @@ R-3.4.5. No double space between parameter names.
 R-3.4.6. The formation line may end with one of the optional name suffixes (§3.10).
 R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), and `move-voids-up` hoists it among the head voids in source order, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. `? > name` is the **only** shape the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). Reverse printing canonicalises every void to the bracket form, since the two are indistinguishable in XMIR.
 R-3.4.8. In an **atom** (a formation whose head carries `/sig`), a vertical void may carry a brace-delimited forma-list — `? > name /{forma (SPACE forma)*}` — declaring the formas the atom supplies as the arguments of that error branch. Each `forma` is a dotted name (`NAME ('.' NAME)*`), optionally rooted at `Q`. The list emits as a `@types` attribute on the void's `<o>`, whose space-separated tokens are resolved exactly like an `@atom`: a leading `Q.` is promoted to `Φ.` at parse (R-9.3), then each token is alias-expanded and, when dotless and non-special, prefixed with `Φ.`. Example: `? > not-found /{string io.file-error}` emits `<o name='not-found' base='∅' types='Φ.string io.file-error'/>`. A `/{…}` forma-list on a void outside an atom is an error.
+R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede all non-void attributes of the formation body. A void that follows a non-void child — or sits between non-void children — is an error (`a void attribute must be declared above all other attributes`). So
+```
+[] > foo
+  6 > six
+  ? > x
+```
+is rejected, whereas `? > x` above `6 > six` is accepted. (Bracket-head voids are always above the body, so the rule constrains only the relative order of body lines.)
 
 Outer kind: **`bare-formation`** (master; openness `open` for body).
 

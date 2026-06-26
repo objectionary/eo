@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 4
+message: "void attribute must be declared above"
+input: |
+  # No comments.
+  [] > foo
+    6 > six
+    ? > x
+    5 > five
+    ? > y
