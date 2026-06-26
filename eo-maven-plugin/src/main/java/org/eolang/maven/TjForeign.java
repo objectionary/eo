@@ -157,6 +157,15 @@ final class TjForeign {
     }
 
     /**
+     * Checks if tojo was discovered as a dependency of another object,
+     * rather than registered directly as a user source.
+     * @return True if discovered, false otherwise
+     */
+    boolean discovered() {
+        return this.delegate.exists(TjsForeign.Attribute.DISCOVERED_AT.getKey());
+    }
+
+    /**
      * Set the jar.
      * @param coordinates The coordinates of jar
      * @return The tojo itself
