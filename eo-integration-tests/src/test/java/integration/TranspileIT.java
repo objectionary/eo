@@ -26,14 +26,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration tests for transpile behavior.
  * @since 0.62
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class TranspileIT {
 
     @Test
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
-    void generatesTestSourcesForUserWrittenTests(final @Mktmp Path temp) throws IOException {
+    void generatesSourcesForUserWrittenObjects(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.properties()
