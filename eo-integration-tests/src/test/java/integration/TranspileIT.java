@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,107 +28,89 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.62
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
-@ExtendWith(MktmpResolver.class)
+@ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class TranspileIT {
 
     @Test
-    @ExtendWith(WeAreOnline.class)
-    @ExtendWith(MayBeSlow.class)
-    void generatesSourcesForUserWrittenObjects(final @Mktmp Path temp) throws IOException {
+    void generatesTestSourcesForUserWrittenTests(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                f.properties()
-                    .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
-                    .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files()
-                    .file("src/main/eo/simple.eo")
-                    .write(
-                        String.join(
-                            System.lineSeparator(),
-                            "# Simple.",
-                            "[] > simple",
-                            "  \"hello\" > @",
-                            "  [] +> tests-simple-works",
-                            "    true > @"
-                        ).getBytes(StandardCharsets.UTF_8)
-                    );
-                f.dependencies().append(
-                    "org.eolang",
-                    "eo-runtime",
-                    System.getProperty("eo.version", Manifests.read("EO-Version"))
+                TranspileIT.setup(f, TranspileIT.programWithTests());
+                MatcherAssert.assertThat(
+                    "User-written test sources must be generated",
+                    TranspileIT.generatedNames(temp),
+                    Matchers.hasItem("EOsimpleTest.java")
                 );
-                new EoMavenPlugin(f)
-                    .appended()
-                    .execution("compile")
-                    .goals("register", "compile", "transpile")
-                    .configuration()
-                    .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("skipLinting", Boolean.TRUE.toString());
-                f.exec("clean", "compile");
             }
-        );
-        final List<String> names;
-        try (Stream<Path> walk = Files.walk(temp.resolve("target/generated-test-sources"))) {
-            names = walk
-                .filter(Files::isRegularFile)
-                .map(p -> p.getFileName().toString())
-                .collect(Collectors.toList());
-        }
-        MatcherAssert.assertThat(
-            "User-written test sources must be generated",
-            names,
-            Matchers.hasItem("EOsimpleTest.java")
         );
     }
 
     @Test
-    @ExtendWith(WeAreOnline.class)
-    @ExtendWith(MayBeSlow.class)
-    void doesNotGenerateRuntimeTestSourcesForUserProject(final @Mktmp Path temp) throws IOException {
+    void doesNotGenerateRuntimeTestSourcesForUserProject(
+        final @Mktmp Path temp
+    ) throws IOException {
         new Farea(temp).together(
             f -> {
-                f.properties()
-                    .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
-                    .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files()
-                    .file("src/main/eo/simple.eo")
-                    .write(
-                        String.join(
-                            System.lineSeparator(),
-                            "# Simple.",
-                            "[] > simple",
-                            "  \"hello\" > @"
-                        ).getBytes(StandardCharsets.UTF_8)
-                    );
-                f.dependencies().append(
-                    "org.eolang",
-                    "eo-runtime",
-                    System.getProperty("eo.version", Manifests.read("EO-Version"))
+                TranspileIT.setup(f, TranspileIT.simpleProgram());
+                MatcherAssert.assertThat(
+                    "EO runtime test sources must not be generated in a user project",
+                    TranspileIT.generatedNames(temp),
+                    Matchers.not(Matchers.hasItem(Matchers.containsString("EOstringTest")))
                 );
-                new EoMavenPlugin(f)
-                    .appended()
-                    .execution("compile")
-                    .goals("register", "compile", "transpile")
-                    .configuration()
-                    .set("failOnWarning", Boolean.FALSE.toString())
-                    .set("skipLinting", Boolean.TRUE.toString());
-                f.exec("clean", "compile");
             }
         );
-        final Path generated = temp.resolve("target/generated-test-sources");
-        if (Files.exists(generated)) {
-            final List<String> names;
-            try (Stream<Path> walk = Files.walk(generated)) {
-                names = walk
-                    .filter(Files::isRegularFile)
+    }
+
+    private static void setup(final Farea farea, final byte[] program) throws IOException {
+        farea.properties()
+            .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
+            .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
+        farea.files().file("src/main/eo/simple.eo").write(program);
+        farea.dependencies().append(
+            "org.eolang", "eo-runtime",
+            System.getProperty("eo.version", Manifests.read("EO-Version"))
+        );
+        new EoMavenPlugin(farea).appended()
+            .execution("transpile-it")
+            .goals("register", "compile", "transpile")
+            .configuration()
+            .set("failOnWarning", Boolean.FALSE.toString())
+            .set("skipLinting", Boolean.TRUE.toString());
+        farea.exec("clean", "compile");
+    }
+
+    private static List<String> generatedNames(final Path temp) throws IOException {
+        final Path dir = temp.resolve("target/generated-test-sources");
+        final List<String> result;
+        if (Files.exists(dir)) {
+            try (Stream<Path> walk = Files.walk(dir)) {
+                result = walk.filter(Files::isRegularFile)
                     .map(p -> p.getFileName().toString())
                     .collect(Collectors.toList());
             }
-            MatcherAssert.assertThat(
-                "EO runtime test sources must not be generated in a user project, but these were found",
-                names,
-                Matchers.not(Matchers.hasItem(Matchers.containsString("EOstringTest")))
-            );
+        } else {
+            result = Collections.emptyList();
         }
+        return result;
+    }
+
+    private static byte[] simpleProgram() {
+        return String.join(
+            System.lineSeparator(),
+            "# Simple.",
+            "[] > simple",
+            "  \"hello\" > @"
+        ).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static byte[] programWithTests() {
+        return String.join(
+            System.lineSeparator(),
+            "# Simple.",
+            "[] > simple",
+            "  \"hello\" > @",
+            "  [] +> tests-simple-works",
+            "    true > @"
+        ).getBytes(StandardCharsets.UTF_8);
     }
 }
