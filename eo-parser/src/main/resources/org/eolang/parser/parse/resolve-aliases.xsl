@@ -44,6 +44,11 @@
       <xsl:apply-templates select="node()|@* except @atom"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="@types">
+    <xsl:attribute name="types">
+      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return (/object/metas/meta[head='alias' and part[1]=$t]/part[last()], $t)[1]"/>
+    </xsl:attribute>
+  </xsl:template>
   <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>
     <xsl:copy>
