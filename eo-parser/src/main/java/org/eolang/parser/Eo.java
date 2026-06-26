@@ -339,7 +339,6 @@ final class Eo implements Iterable<Directive> {
      * @return The classified line
      * @checkstyle NPathComplexityCheck (60 lines)
      */
-    @SuppressWarnings("PMD.NPathComplexity")
     private static Line classify(final Span span) {
         final Line line;
         if (span.blank()) {
@@ -352,22 +351,15 @@ final class Eo implements Iterable<Directive> {
             line = new LnFormation(span);
         } else if (span.head() == '.') {
             line = new LnMethod(span);
+        } else if (span.head() == '?') {
+            line = new LnVoid(span);
         } else if (span.head() >= 'a' && span.head() <= 'z') {
-            if (Eo.reversedDispatch(span)) {
-                line = new LnReversed(span);
-            } else if (Eo.onlyPhi(span)) {
-                line = new LnOnlyPhi(span);
-            } else if (Eo.compactTuple(span)) {
-                line = new LnCompactTuple(span);
-            } else {
-                line = new LnApplication(span);
-            }
+            line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (span.head() == '*'
             || span.head() == '"'
             || span.head() == '('
             || span.head() == 'Q'
             || span.head() == 'T'
-            || span.head() == '?'
             || span.head() == '@'
             || span.head() == '^'
             || span.head() == '$'
@@ -375,15 +367,7 @@ final class Eo implements Iterable<Directive> {
             || span.head() >= 'A' && span.head() <= 'F'
             || span.head() == '-'
             || Eo.signedDigit(span)) {
-            if (Eo.rootReversedDispatch(span)) {
-                line = new LnReversed(span);
-            } else if (Eo.onlyPhi(span)) {
-                line = new LnOnlyPhi(span);
-            } else if (Eo.compactTuple(span)) {
-                line = new LnCompactTuple(span);
-            } else {
-                line = new LnApplication(span);
-            }
+            line = Eo.applicative(span, Eo.rootReversedDispatch(span));
         } else if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             line = (stack, globals, emit) -> {
                 throw new ParseError(
@@ -398,6 +382,29 @@ final class Eo implements Iterable<Directive> {
                     "line shape not yet implemented in spec parser"
                 );
             };
+        }
+        return line;
+    }
+
+    /**
+     * Classify an application-like line — the inner dispatch shared by
+     * the identifier-headed and root-headed line groups (§3.1):
+     * reversed dispatch, only-phi formation, compact tuple, or plain
+     * application.
+     * @param span The line span
+     * @param reversed Whether the line is a reversed dispatch
+     * @return The line shape
+     */
+    private static Line applicative(final Span span, final boolean reversed) {
+        final Line line;
+        if (reversed) {
+            line = new LnReversed(span);
+        } else if (Eo.onlyPhi(span)) {
+            line = new LnOnlyPhi(span);
+        } else if (Eo.compactTuple(span)) {
+            line = new LnCompactTuple(span);
+        } else {
+            line = new LnApplication(span);
         }
         return line;
     }

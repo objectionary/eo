@@ -216,14 +216,6 @@ final class Value {
         TERM,
 
         /**
-         * {@code ?} — a vertical void attribute (§3.4). Declared as a
-         * {@code ? > name} body line; {@link Emissions} maps it to a
-         * {@code @base='∅'} void child, the same element a bracket
-         * parameter emits.
-         */
-        VOID,
-
-        /**
          * Paren group — {@code (expr)}. The {@code raw()} string holds
          * the bracketed text <em>including</em> the surrounding
          * parentheses; {@link Emissions} re-parses and emits the inner

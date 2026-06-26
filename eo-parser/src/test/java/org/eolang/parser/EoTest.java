@@ -168,6 +168,33 @@ final class EoTest {
     }
 
     @Test
+    void rejectsVoidWithMethodDispatch() {
+        MatcherAssert.assertThat(
+            "a `?.method` dispatch on the void marker must be rejected",
+            EoTest.render("[] > foo", "  ?.read > x"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void rejectsVoidAsArgument() {
+        MatcherAssert.assertThat(
+            "the void marker `?` must not be accepted as a horizontal argument",
+            EoTest.render("[] > foo", "  bar ? baz > x"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void rejectsVoidInReversedArgument() {
+        MatcherAssert.assertThat(
+            "the void marker `?` must not be accepted as a reversed-dispatch argument",
+            EoTest.render("[] > foo", "  bar. ? q > m"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",

@@ -128,11 +128,6 @@ final class Tokens {
                 Value.Kind.TERM, "T", this.span.indent() + this.cursor, this.cursor + 1
             );
             this.cursor = this.cursor + 1;
-        } else if (first == '?') {
-            value = new Value(
-                Value.Kind.VOID, "?", this.span.indent() + this.cursor, this.cursor + 1
-            );
-            this.cursor = this.cursor + 1;
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
         } else {
