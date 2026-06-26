@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * object. Keying by the full φ-expression and purity gating (so that
  * impure objects are never shared) come in later increments.</p>
  *
- * @since 0.60
+ * @since 0.74
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhSticky implements Phi {

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhSticky}.
- * @since 0.60
+ * @since 0.74
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class PhStickyTest {
@@ -41,7 +41,7 @@ final class PhStickyTest {
 
     /**
      * An object reporting a chosen forma, with one freshly-built attribute.
-     * @since 0.60
+     * @since 0.74
      */
     static final class Formed extends PhDefault {
 
