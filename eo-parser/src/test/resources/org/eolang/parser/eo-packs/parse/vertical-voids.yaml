@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/decorate.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo'][count(o[@base='∅'])=3]
+  - /object/o[@name='foo']/o[1][@name='name' and @base='∅']
+  - /object/o[@name='foo']/o[2][@name='bar' and @base='∅']
+  - /object/o[@name='foo']/o[3][@name='test' and @base='∅']
+  - /object/o[@name='foo']/o[4][@name='φ' and @base='Φ.hello']
+input: |
+  [name] > foo
+    ? > bar
+    ? > test
+    hello > @

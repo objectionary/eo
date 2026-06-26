@@ -98,7 +98,13 @@ enum Kind {
     /**
      * Triple-quoted {@code """…"""} text block.
      */
-    TEXT_BLOCK;
+    TEXT_BLOCK,
+
+    /**
+     * Vertical void attribute {@code ? > name} (R-3.4.7). A closed leaf
+     * that must precede every non-void child of its formation.
+     */
+    VOID;
 
     /**
      * Whether this kind is in the horizontally-completed set.

@@ -159,6 +159,73 @@ final class EoTest {
     }
 
     @Test
+    void parsesVerticalVoidAttribute() {
+        MatcherAssert.assertThat(
+            "a `? > x` body line must emit a void param inside the formation",
+            EoTest.render("[] > foo", "  ? > x"),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='x' and @base='∅']")
+        );
+    }
+
+    @Test
+    void rejectsVoidWithMethodDispatch() {
+        MatcherAssert.assertThat(
+            "a `?.method` dispatch on the void marker must be rejected",
+            EoTest.render("[] > foo", "  ?.read > x"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void rejectsVoidAsArgument() {
+        MatcherAssert.assertThat(
+            "the void marker `?` must not be accepted as a horizontal argument",
+            EoTest.render("[] > foo", "  bar ? baz > x"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void rejectsVoidInReversedArgument() {
+        MatcherAssert.assertThat(
+            "the void marker `?` must not be accepted as a reversed-dispatch argument",
+            EoTest.render("[] > foo", "  bar. ? q > m"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void parsesAtomVoidWithFormaList() {
+        MatcherAssert.assertThat(
+            "a void in an atom must carry its `/{…}` forma-list as a raw @types attribute",
+            EoTest.render("[] > fopen /file", "  ? > not-found /{string io.file-error}"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @types='string io.file-error']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsFormaListOutsideAtom() {
+        MatcherAssert.assertThat(
+            "a `/{…}` forma-list on a void outside an atom must be rejected",
+            EoTest.render("[] > foo", "  ? > x /{string}"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void rejectsVoidBelowRegularAttribute() {
+        MatcherAssert.assertThat(
+            "a void declared after a regular attribute must be rejected",
+            EoTest.render("[] > foo", "  6 > six", "  ? > x", "  5 > five", "  ? > y"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'void attribute must be declared above')]"
+            )
+        );
+    }
+
+    @Test
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",

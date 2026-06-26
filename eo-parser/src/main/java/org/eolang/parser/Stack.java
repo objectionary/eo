@@ -26,7 +26,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class Stack {
 
     /**
@@ -189,6 +188,7 @@ final class Stack {
             }
             parent = under.kind();
             patom = under.atom();
+            under.observeVoid(kind, line, indent);
         }
         if (!this.levels.isEmpty()) {
             this.opener.beforeChild(this.top());
@@ -251,6 +251,7 @@ final class Stack {
             final Level under = this.top();
             parent = under.kind();
             patom = under.atom();
+            under.observeVoid(kind, line, indent);
             this.opener.beforeChild(under);
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
