@@ -243,7 +243,9 @@ final class Transpiling implements Step {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
         }
-        return this.javaGenerated(rewrite.get(), target, hsh.get());
+        return this.javaGenerated(
+            rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
+        );
     }
 
     /**
@@ -327,13 +329,16 @@ final class Transpiling implements Step {
      * @param rewrite Rewrite .java files even if they exist
      * @param target Full target path to XMIR after transpilation optimizations
      * @param hsh Tojo hash
+     * @param tests Whether to generate test sources for this tojo
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private int javaGenerated(
         final boolean rewrite,
         final Path target,
-        final String hsh
+        final String hsh,
+        final boolean tests
     ) throws IOException {
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
@@ -363,7 +368,7 @@ final class Transpiling implements Step {
                         ),
                         tgt,
                         this.generatedDir
-                    ).exec(clazz, this.transpileTests);
+                    ).exec(clazz, tests);
                 }
             }
             Logger.debug(
