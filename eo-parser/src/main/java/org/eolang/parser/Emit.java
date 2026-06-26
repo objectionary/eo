@@ -278,6 +278,17 @@ final class Emit {
     }
 
     /**
+     * Add the {@code @types="forma …"} attribute to the most recently
+     * opened {@code <o>} — the space-separated forma-list of an atom's
+     * vertical void error-branch (R-3.4.8). Each token is resolved like
+     * an {@code @atom} by later passes.
+     * @param formas Space-separated forma list
+     */
+    void types(final String formas) {
+        this.append(new Directives().attr("types", formas));
+    }
+
+    /**
      * Add the {@code @as=tag} attribute to the most recently opened
      * {@code <o>} — inline-binding marker per §3.12 / §9.4. Numeric
      * tags must be pre-formatted as {@code αN} by the caller.

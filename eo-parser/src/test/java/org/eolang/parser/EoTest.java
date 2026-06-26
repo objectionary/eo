@@ -195,6 +195,26 @@ final class EoTest {
     }
 
     @Test
+    void parsesAtomVoidWithFormaList() {
+        MatcherAssert.assertThat(
+            "a void in an atom must carry its `/{…}` forma-list as a raw @types attribute",
+            EoTest.render("[] > fopen /file", "  ? > not-found /{string io.file-error}"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @types='string io.file-error']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsFormaListOutsideAtom() {
+        MatcherAssert.assertThat(
+            "a `/{…}` forma-list on a void outside an atom must be rejected",
+            EoTest.render("[] > foo", "  ? > x /{string}"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",
