@@ -167,6 +167,7 @@ The parser recognises the following lexical tokens:
 | `RHO` | `^` |
 | `ROOT` | `Q` |
 | `XI` | `$` |
+| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
 | `HEX` | `0x` followed by hex digits. |
@@ -1050,6 +1051,7 @@ Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 | `^` (RHO) | `ρ` | `@base='ρ'` for parent reference |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
+| `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 
 ### 9.4 Per-construct attribute emission

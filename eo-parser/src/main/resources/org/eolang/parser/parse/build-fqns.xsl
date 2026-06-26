@@ -203,7 +203,7 @@
       </xsl:element>
     </xsl:element>
   </xsl:template>
-  <xsl:template match="o[@base!='ξ' and @base!='ρ' and @base!=$eo:empty]" mode="no-dots">
+  <xsl:template match="o[@base!='ξ' and @base!='ρ' and @base!=$eo:empty and @base!=$eo:bottom]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>
     <xsl:apply-templates select="." mode="fqn">
       <xsl:with-param name="self" select="."/>

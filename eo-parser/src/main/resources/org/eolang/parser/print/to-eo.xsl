@@ -79,6 +79,9 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:choose>
+          <xsl:when test="@base=$eo:bottom">
+            <xsl:text>T</xsl:text>
+          </xsl:when>
           <xsl:when test="starts-with(@base, 'Φ.')">
             <xsl:value-of select="substring-after(@base, 'Φ.')"/>
           </xsl:when>

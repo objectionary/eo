@@ -49,7 +49,7 @@
   <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@base!=$eo:phi and @base!=$eo:program and @base!=$eo:rho and @base!=$eo:empty and @base!=$eo:xi]" mode="no-dots">
+  <xsl:template match="o[@base!=$eo:phi and @base!=$eo:program and @base!=$eo:rho and @base!=$eo:empty and @base!=$eo:xi and @base!=$eo:bottom]" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
@@ -64,7 +64,7 @@
   <xsl:template match="o[not(contains(@atom, '.'))]" mode="with-atom">
     <xsl:apply-templates select="." mode="atom-no-dots"/>
   </xsl:template>
-  <xsl:template match="o[@atom!=$eo:phi and @atom!=$eo:program and @atom!=$eo:rho and @atom!=$eo:empty and @atom!=$eo:xi]" mode="atom-no-dots">
+  <xsl:template match="o[@atom!=$eo:phi and @atom!=$eo:program and @atom!=$eo:rho and @atom!=$eo:empty and @atom!=$eo:xi and @atom!=$eo:bottom]" mode="atom-no-dots">
     <xsl:apply-templates select="." mode="atom-no-specials"/>
   </xsl:template>
   <xsl:template match="o[not(@atom=/object/metas/meta[head='alias']/part[1])]" mode="atom-no-specials">

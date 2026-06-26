@@ -141,6 +141,9 @@
       <xsl:when test="$first='ξ'">
         <xsl:value-of select="$rho"/>
       </xsl:when>
+      <xsl:when test="$first='⊥'">
+        <xsl:text>new PhTerminated()</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
           <xsl:text>FQN must start with either with Φ or ξ, but </xsl:text>
@@ -539,7 +542,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="@base='ξ' or @base='Φ'">
+      <xsl:when test="@base='ξ' or @base='Φ' or @base='⊥'">
         <xsl:value-of select="eo:fqn-start(@base, $rho)"/>
         <xsl:text>;</xsl:text>
       </xsl:when>

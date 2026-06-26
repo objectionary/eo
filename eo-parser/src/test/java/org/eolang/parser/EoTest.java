@@ -201,6 +201,15 @@ final class EoTest {
     }
 
     @Test
+    void parsesBottomTermInsideFormation() {
+        MatcherAssert.assertThat(
+            "a bare T term inside a formation must emit the bottom object as @base='⊥'",
+            EoTest.render("[] > main", "  T > x"),
+            XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@name='x' and @base='⊥']")
+        );
+    }
+
+    @Test
     void parsesHmethodInsideFormation() {
         MatcherAssert.assertThat(
             "a dotted-chain head inside a formation must emit flat siblings",

@@ -27,6 +27,7 @@
   <xsl:variable name="eo:clb" select="'('"/>
   <xsl:variable name="eo:crb" select="')'"/>
   <xsl:variable name="eo:empty" select="'∅'"/>
+  <xsl:variable name="eo:bottom" select="'⊥'"/>
   <xsl:variable name="eo:space" select="' '"/>
   <xsl:variable name="eo:new-line" select="'&#10;'"/>
 </xsl:stylesheet>

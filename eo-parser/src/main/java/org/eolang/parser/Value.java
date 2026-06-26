@@ -209,6 +209,13 @@ final class Value {
         ROOT,
 
         /**
+         * {@code T} — the bottom term, similar to {@code ⊥} in
+         * 𝜑-calculus (§9.3). A self-contained leaf carrying no
+         * arguments; {@link Emissions} maps it to {@code @base='⊥'}.
+         */
+        TERM,
+
+        /**
          * Paren group — {@code (expr)}. The {@code raw()} string holds
          * the bracketed text <em>including</em> the surrounding
          * parentheses; {@link Emissions} re-parses and emits the inner
