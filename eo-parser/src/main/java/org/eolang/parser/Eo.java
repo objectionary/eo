@@ -367,6 +367,7 @@ final class Eo implements Iterable<Directive> {
             || span.head() == '('
             || span.head() == 'Q'
             || span.head() == 'T'
+            || span.head() == '?'
             || span.head() == '@'
             || span.head() == '^'
             || span.head() == '$'

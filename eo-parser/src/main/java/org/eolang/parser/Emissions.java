@@ -140,6 +140,8 @@ final class Emissions {
             emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
+        } else if (value.kind() == Value.Kind.VOID) {
+            emit.object(name, "∅", line, value.pos());
         } else if (value.kind() == Value.Kind.GROUP) {
             final String inner = value.raw().substring(1, value.raw().length() - 1);
             final int phi = Emissions.topLevelInlinePhi(inner);

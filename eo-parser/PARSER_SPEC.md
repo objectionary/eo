@@ -168,6 +168,7 @@ The parser recognises the following lexical tokens:
 | `ROOT` | `Q` |
 | `XI` | `$` |
 | `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
+| `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
 | `HEX` | `0x` followed by hex digits. |
@@ -269,6 +270,7 @@ R-3.4.3. `^` (`RHO` token) is rejected as a parameter name; only `NAME` and `PHI
 R-3.4.4. No leading/trailing space inside `[ ]`.
 R-3.4.5. No double space between parameter names.
 R-3.4.6. The formation line may end with one of the optional name suffixes (§3.10).
+R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), and `move-voids-up` hoists it among the head voids in source order, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The `? > name` form requires a name suffix and is legal only as a direct child of a formation; a bare `?`, or a `?` line elsewhere, is an error. Reverse printing canonicalises every void to the bracket form, since the two are indistinguishable in XMIR.
 
 Outer kind: **`bare-formation`** (master; openness `open` for body).
 

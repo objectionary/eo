@@ -159,6 +159,15 @@ final class EoTest {
     }
 
     @Test
+    void parsesVerticalVoidAttribute() {
+        MatcherAssert.assertThat(
+            "a `? > x` body line must emit a void param inside the formation",
+            EoTest.render("[] > foo", "  ? > x"),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='x' and @base='∅']")
+        );
+    }
+
+    @Test
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",
