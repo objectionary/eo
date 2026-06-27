@@ -1,0 +1,54 @@
++alias tt.as-ascii
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tt
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Writes the ASCII `code` (0-255) as its single byte, the inverse of `as-ascii`.
+# The number is read as a 64-bit integer and its least-significant byte is taken.
+[code] > as-char
+  code.as-i64.as-bytes.slice 7 1 > @
+
+  # Tests that as-char writes the byte of an uppercase letter.
+  [] +> tests-writes-byte-of-uppercase-letter
+    eq. > @
+      "A"
+      string (as-char 65)
+
+  # Tests that as-char writes the byte of the last uppercase letter.
+  [] +> tests-writes-byte-of-last-uppercase-letter
+    eq. > @
+      "Z"
+      string (as-char 90)
+
+  # Tests that as-char writes the byte of a lowercase letter.
+  [] +> tests-writes-byte-of-lowercase-letter
+    eq. > @
+      "z"
+      string (as-char 122)
+
+  # Tests that as-char writes the byte of the zero digit.
+  [] +> tests-writes-byte-of-zero-digit
+    eq. > @
+      "0"
+      string (as-char 48)
+
+  # Tests that as-char writes the byte of the space character.
+  [] +> tests-writes-byte-of-space
+    eq. > @
+      " "
+      string (as-char 32)
+
+  # Tests that as-char writes the byte of the last printable character.
+  [] +> tests-writes-byte-of-last-printable
+    eq. > @
+      "~"
+      string (as-char 126)
+
+  # Tests that as-char round-trips through as-ascii.
+  [] +> tests-round-trips-through-as-ascii
+    eq. > @
+      "!"
+      string (as-char (as-ascii "!"))
