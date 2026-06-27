@@ -24,15 +24,22 @@ import org.eolang.XmirObject;
 /**
  * Sprintf.
  * @since 0.39.0
+ * @deprecated Use the pure-EO {@code tt.sprintf} object instead.
+ * @todo #4752:30min Remove this deprecated Java atom together with {@link SprintfArgs}
+ *  and {@code SprintfArgsTest}. It was superseded by the pure-EO implementation of
+ *  {@code sprintf} in {@code eo-runtime/src/main/eo/tt/sprintf.eo} and is kept here only
+ *  to avoid a duplicate-class clash with the transpiler-generated {@code EOsprintf}
+ *  during the transition. Delete it once the pure-EO version is merged.
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Deprecated
 @XmirObject(oname = "sprintf")
-public final class EOsprintf extends PhDefault implements Atom {
+public final class EOsprintfDeprecated extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOsprintf() {
+    public EOsprintfDeprecated() {
         super(new Attrs(
             new Attr("format", new AtVoid("format")),
             new Attr("args", new AtVoid("args"))
