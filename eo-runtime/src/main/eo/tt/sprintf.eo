@@ -1,4 +1,7 @@
 +alias tt.as-ascii
++alias tt.as-decimal
++alias tt.as-fixed
++alias tt.as-hex
 +alias tt.is-digit
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -53,7 +56,7 @@
           concat.
             concat.
               "the argument index ".as-bytes
-              dec idx
+              as-decimal idx
             " in sprintf is out of bounds".as-bytes
       switch
         *
@@ -62,13 +65,13 @@
             (args.at idx).as-bytes
           *
             spec.eq "d"
-            dec (number (args.at idx))
+            as-decimal (number (args.at idx))
           *
             spec.eq "f"
-            flt (number (args.at idx))
+            as-fixed (number (args.at idx)) 6
           *
             spec.eq "x"
-            hex (args.at idx)
+            as-hex (args.at idx)
           *
             spec.eq "b"
             if. (args.at idx).as-bool "true".as-bytes "false".as-bytes
@@ -81,69 +84,6 @@
                     "the format specifier ".as-bytes
                     spec.as-bytes
                   " in sprintf is unsupported".as-bytes
-
-  # Formats `n` as a signed decimal integer, truncating towards zero.
-  [n] > dec
-    if. > @
-      n.lt 0
-      concat. "-".as-bytes (digits (n.times -1))
-      digits n
-
-  # Formats the non-negative `n` as decimal digits.
-  [n] > digits
-    if. > @
-      n.lt 10
-      one-digit n.floor
-      concat. (digits q) (one-digit (n.minus (q.times 10)).floor)
-    (n.div 10).floor > q
-
-  # Converts a single decimal value `d` (0-9) to its ASCII byte.
-  [d] > one-digit
-    (d.plus 48).as-i64.as-bytes.slice 7 1 > @
-
-  # Formats `n` with six decimal places, rounding to the nearest micro-unit.
-  [n] > flt
-    if. > @
-      n.lt 0
-      concat. "-".as-bytes (positive (n.times -1))
-      positive n
-    # Formats the non-negative `a` as integer part, dot and six fraction digits.
-    [a] > positive
-      concat. (concat. (dec ip) ".".as-bytes) (rec-pad (m.minus (ip.times 1000000)) 6 --) > @
-      ((a.times 1000000).plus 0.5).floor > m
-      (m.div 1000000).floor > ip
-    # Emits exactly `count` least-significant digits of `value`, zero-padded.
-    [value count acc] > rec-pad
-      if. > @
-        count.eq 0
-        acc
-        rec-pad
-          (value.div 10).floor
-          (count.minus 1).as-number
-          concat. (one-digit (value.minus ((value.div 10).floor.times 10)).floor) acc
-
-  # Formats the bytes `bts` as uppercase hexadecimal pairs joined by a hyphen.
-  [bts] > hex
-    rec-hex 0 -- > @
-    # Recursively appends the hex pair of each byte, separated by a hyphen.
-    [index acc] > rec-hex
-      if. > @
-        index.eq bts.size
-        acc
-        rec-hex
-          (index.plus 1).as-number
-          if.
-            index.eq 0
-            pair
-            concat. (concat. acc "-".as-bytes) pair
-      as-ascii (bts.slice index 1) > bval
-      concat. (hex-digit (bval.div 16).floor) (hex-digit (bval.minus ((bval.div 16).floor.times 16))) > pair
-    # Converts a single hexadecimal value `h` (0-15) to its uppercase ASCII byte.
-    [h] > hex-digit
-      if. > @
-        h.lt 10
-        one-digit h
-        (h.plus 55).as-i64.as-bytes.slice 7 1
 
   # Tests that sprintf formats string with single %s placeholder.
   [] +> tests-prints-simple-string
