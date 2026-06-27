@@ -16,52 +16,58 @@ import org.junit.jupiter.api.Test;
 final class PhStickyTest {
 
     @Test
-    void memoizesThePredefinedExpression() {
+    void memoizesTheTargetedExpressionOfNan() {
         MatcherAssert.assertThat(
-            "PhSticky must serve the very same instance for its one predefined expression, but it didnt",
-            new PhSticky(new PhStickyTest.Formed("Φ.memoized")).take("alpha"),
+            "PhSticky must serve the very same is-finite of nan across the program, but it didnt",
+            Phi.Φ.take("nan").take("is-finite"),
             Matchers.sameInstance(
-                new PhSticky(new PhStickyTest.Formed("Φ.memoized")).take("alpha")
+                Phi.Φ.take("nan").take("is-finite")
             )
         );
     }
 
     @Test
-    void rebuildsEveryOtherExpression() {
+    void rebuildsExpressionWithAnotherKey() {
         MatcherAssert.assertThat(
-            "PhSticky must rebuild every expression other than its one predefined key, but it didnt",
-            new PhSticky(new PhStickyTest.Formed("Φ.elsewhere")).take("alpha"),
+            "PhSticky must rebuild an expression whose baked key is not the targeted one, but it didnt",
+            new PhSticky(new PhStickyTest.Formed(), "Φ.elsewhere").take("is-finite"),
             Matchers.not(
                 Matchers.sameInstance(
-                    new PhSticky(new PhStickyTest.Formed("Φ.elsewhere")).take("alpha")
+                    new PhSticky(new PhStickyTest.Formed(), "Φ.elsewhere").take("is-finite")
+                )
+            )
+        );
+    }
+
+    @Test
+    void rebuildsAnotherAttributeOfTheTargetedObject() {
+        MatcherAssert.assertThat(
+            "PhSticky must rebuild an attribute other than the targeted one, but it didnt",
+            new PhSticky(new PhStickyTest.Formed(), "Φ.nan").take("as-bytes"),
+            Matchers.not(
+                Matchers.sameInstance(
+                    new PhSticky(new PhStickyTest.Formed(), "Φ.nan").take("as-bytes")
                 )
             )
         );
     }
 
     /**
-     * An object reporting a chosen forma, with one freshly-built attribute.
+     * An object with a couple of freshly-built attributes.
      * @since 0.74
      */
     static final class Formed extends PhDefault {
 
         /**
-         * The forma this object reports.
-         */
-        private final String form;
-
-        /**
          * Ctor.
-         * @param forma The forma to report
          */
-        Formed(final String forma) {
-            super(new Attrs(new Attr("alpha", new AtComposite(Phi.Φ, rho -> new PhDefault()))));
-            this.form = forma;
-        }
-
-        @Override
-        public String forma() {
-            return this.form;
+        Formed() {
+            super(
+                new Attrs(
+                    new Attr("is-finite", new AtComposite(Phi.Φ, rho -> new PhDefault())),
+                    new Attr("as-bytes", new AtComposite(Phi.Φ, rho -> new PhDefault()))
+                )
+            );
         }
     }
 }

@@ -616,7 +616,9 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhSticky(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>, "</xsl:text>
+    <xsl:value-of select="@loc"/>
+    <xsl:text>");</xsl:text>
   </xsl:template>
   <!-- Location of object -->
   <xsl:template match="*" mode="located">
