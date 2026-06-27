@@ -47,16 +47,16 @@ public final class PhSticky implements Phi {
     /**
      * The static φ-expression of the wrapped object, baked by the transpiler.
      */
-    private final String key;
+    private final String locator;
 
     /**
      * Ctor.
      * @param phi The object to wrap
-     * @param locator The static φ-expression of the object
+     * @param loc The static φ-expression of the object
      */
-    public PhSticky(final Phi phi, final String locator) {
+    public PhSticky(final Phi phi, final String loc) {
         this.origin = phi;
-        this.key = locator;
+        this.locator = loc;
     }
 
     @Override
@@ -71,7 +71,7 @@ public final class PhSticky implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhSticky(this.origin.copy(), this.key);
+        return new PhSticky(this.origin.copy(), this.locator);
     }
 
     @Override
@@ -82,7 +82,7 @@ public final class PhSticky implements Phi {
     @Override
     public Phi take(final String name) {
         final Phi taken;
-        if (PhSticky.KEY.equals(String.join(".", this.key, name))) {
+        if (PhSticky.KEY.equals(String.join(".", this.locator, name))) {
             taken = PhSticky.MEMORY.computeIfAbsent(PhSticky.KEY, ignore -> this.origin.take(name));
         } else {
             taken = this.origin.take(name);
