@@ -134,17 +134,22 @@ final class BytesRaw implements Bytes {
 
     @Override
     public String asString() {
-        final StringBuilder out = new StringBuilder(3);
-        for (final byte bte : this.data) {
-            if (out.length() > 0) {
-                out.append('-');
-            }
-            out.append(String.format("%02X", bte));
-        }
+        final String result;
         if (this.data.length == 0) {
-            out.append("--");
+            result = "--";
+        } else if (this.data.length == 1) {
+            result = String.format("%02X-", this.data[0]);
+        } else {
+            final StringBuilder out = new StringBuilder(this.data.length * 3);
+            for (final byte bte : this.data) {
+                if (out.length() > 0) {
+                    out.append('-');
+                }
+                out.append(String.format("%02X", bte));
+            }
+            result = out.toString();
         }
-        return out.toString();
+        return result;
     }
 
     @Override
