@@ -12,10 +12,14 @@ package org.eolang.EOfs; // NOPMD
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import org.eolang.ExFailure;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -80,6 +84,34 @@ final class FilesTest {
             Matchers.equalTo("Hello, world".getBytes(StandardCharsets.UTF_8))
         );
         Files.INSTANCE.close(file);
+    }
+
+    @Test
+    void reusesExistingStreams(@Mktmp final Path dir) throws IOException {
+        final String file = dir.resolve("absent.txt").toFile().getAbsolutePath();
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final Map<String, Object[]> streams = new HashMap<>(0);
+        streams.put(
+            file,
+            new Object[]{
+                new ByteArrayInputStream("Hello".getBytes(StandardCharsets.UTF_8)),
+                output,
+            }
+        );
+        final Files files = new Files(streams);
+        files.open(file);
+        files.write(file, "!".getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            "The existing streams should be reused",
+            new Object[]{files.read(file, 5), output.toByteArray()},
+            Matchers.equalTo(
+                new Object[]{
+                    "Hello".getBytes(StandardCharsets.UTF_8),
+                    "!".getBytes(StandardCharsets.UTF_8),
+                }
+            )
+        );
+        files.close(file);
     }
 
     @Test

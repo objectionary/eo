@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,7 +48,15 @@ final class Files {
      * Ctor.
      */
     private Files() {
-        this.streams = new ConcurrentHashMap<>(0);
+        this(new ConcurrentHashMap<>(0));
+    }
+
+    /**
+     * Ctor.
+     * @param streams File streams
+     */
+    Files(final Map<String, Object[]> streams) {
+        this.streams = new ConcurrentHashMap<>(streams);
         this.lock = new ReentrantLock();
     }
 
@@ -60,8 +69,11 @@ final class Files {
     void open(final String name) throws IOException {
         this.lock.lock();
         try {
+            if (this.streams.containsKey(name)) {
+                return;
+            }
             final Path path = Paths.get(name);
-            this.streams.putIfAbsent(
+            this.streams.put(
                 name,
                 new Object[]{
                     java.nio.file.Files.newInputStream(path),
