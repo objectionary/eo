@@ -461,7 +461,7 @@ public class PhDefault implements Phi, Cloneable {
     private String structural() {
         final List<String> list = new ArrayList<>(this.attrs.size());
         if (this.data != null) {
-            list.add(String.format("D> %s", new BytesOf(this.data).asString()));
+            list.add(String.format("D> %s", PhDefault.termBytes(this.data)));
         }
         for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet().stream().filter(
             e -> !e.getKey().equals(Phi.RHO)
@@ -479,6 +479,29 @@ public class PhDefault implements Phi, Cloneable {
             term = String.format("[%s]", String.join(",", list));
         }
         return term;
+    }
+
+    /**
+     * Bytes representation for the φ-term D> slot.
+     * This is intentionally not {@link Bytes#asString()}.
+     * @param data Bytes
+     * @return Bytes as shown in φ-terms
+     */
+    private static String termBytes(final byte[] data) {
+        final String result;
+        if (data.length == 0) {
+            result = "--";
+        } else {
+            final StringBuilder out = new StringBuilder(data.length * 3);
+            for (final byte bte : data) {
+                if (out.length() > 0) {
+                    out.append('-');
+                }
+                out.append(String.format("%02X", bte));
+            }
+            result = out.toString();
+        }
+        return result;
     }
 
     /**
