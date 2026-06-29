@@ -18,7 +18,7 @@ final class MethodChainTest {
     void retainsMethodName() {
         MatcherAssert.assertThat(
             "name() must round-trip the method identifier without the leading dot",
-            new MethodChain("bar", 3, 7).name(),
+            new MethodChain("bar", 3, 7, false).name(),
             Matchers.equalTo("bar")
         );
     }
@@ -27,7 +27,7 @@ final class MethodChainTest {
     void retainsDotColumnForPosAttribute() {
         MatcherAssert.assertThat(
             "dot() must round-trip the column where the leading dot sits per R-9.1.3",
-            new MethodChain("bar", 3, 7).dot(),
+            new MethodChain("bar", 3, 7, false).dot(),
             Matchers.equalTo(3)
         );
     }
@@ -36,8 +36,17 @@ final class MethodChainTest {
     void retainsEndIndex() {
         MatcherAssert.assertThat(
             "end() must round-trip the cursor-advance position past the link",
-            new MethodChain("bar", 3, 7).end(),
+            new MethodChain("bar", 3, 7, false).end(),
             Matchers.equalTo(7)
+        );
+    }
+
+    @Test
+    void retainsFragileFlag() {
+        MatcherAssert.assertThat(
+            "fragile() must round-trip the `?.` dispatch marker",
+            new MethodChain("read", 3, 9, true).fragile(),
+            Matchers.equalTo(true)
         );
     }
 }
