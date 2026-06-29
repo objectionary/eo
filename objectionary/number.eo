@@ -1,8 +1,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.2
++rt jvm org.eolang:eo-runtime:0.61.3
 +rt node eo2js-runtime:0.0.0
-+version 0.61.2
++version 0.61.3
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -118,7 +118,11 @@
   # the original, so we subtract `1` in that single case.
   [] > floor
     if. > @
-      ^.is-finite.not
+      or.
+        ^.is-finite.not
+        or.
+          ^.gte 4503599627370496
+          ^.lte -4503599627370496
       ^
       if.
         trunc.gt ^
@@ -393,6 +397,18 @@
     eq. > @
       -5.floor
       -5
+
+  # Tests that floor of a very large positive number >= 2^52 returns itself.
+  [] +> tests-floor-of-large-positive-integer
+    eq. > @
+      100000000000000000000.floor
+      100000000000000000000
+
+  # Tests that floor of a very large negative number <= -2^52 returns itself.
+  [] +> tests-floor-of-large-negative-integer
+    eq. > @
+      -100000000000000000000.floor
+      -100000000000000000000
 
   # Tests that floor of zero returns zero.
   [] +> tests-floor-of-zero
