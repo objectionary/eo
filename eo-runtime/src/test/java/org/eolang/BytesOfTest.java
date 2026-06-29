@@ -94,6 +94,15 @@ final class BytesOfTest {
     }
 
     @Test
+    void convertsSingleByteToString() {
+        MatcherAssert.assertThat(
+            "Single byte should render with a trailing dash, but it didn't",
+            new BytesOf(new byte[]{(byte) 0xFF}).asString(),
+            Matchers.equalTo("FF-")
+        );
+    }
+
+    @Test
     void checksUnderflowForLong() {
         Assertions.assertThrows(
             ExFailure.class,

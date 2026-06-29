@@ -43,6 +43,15 @@ final class PhDefaultTest {
     }
 
     @Test
+    void printsSingleByteDataAsTerm() {
+        MatcherAssert.assertThat(
+            "Object with one data byte must render it without trailing dash in φ-term",
+            new PhDefault(new byte[] {(byte) 0x01}).φTerm(),
+            Matchers.equalTo("[D> 01]")
+        );
+    }
+
+    @Test
     void printsVoidAttributeAsTerm() {
         MatcherAssert.assertThat(
             "Object with unset void attribute must render it as question mark, but it didnt",
