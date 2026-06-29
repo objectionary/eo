@@ -64,12 +64,12 @@ final class Emissions {
             for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = chain.get(idx);
                 emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method();
+                emit.method(link.fragile());
                 emit.close();
             }
             final MethodChain last = chain.get(chain.size() - 1);
             emit.object(name, ".".concat(last.name()), line, last.dot());
-            emit.method();
+            emit.method(last.fragile());
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
@@ -178,12 +178,12 @@ final class Emissions {
             for (int idx = 0; idx < tail.size() - 1; idx = idx + 1) {
                 final MethodChain link = tail.get(idx);
                 emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method();
+                emit.method(link.fragile());
                 emit.close();
             }
             final MethodChain last = tail.get(tail.size() - 1);
             emit.object(null, ".".concat(last.name()), line, last.dot());
-            emit.method();
+            emit.method(last.fragile());
             if (value.binding() != null) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }

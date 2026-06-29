@@ -63,13 +63,13 @@ final class LnReversed implements Line {
         Blanks.checkPlain(this.span, globals, emit);
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = LnReversed.readHead(tokens);
-        if (tokens.atEnd() || tokens.current() != '.') {
+        if (tokens.atEnd() || !tokens.dispatchAhead()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + tokens.cursor(),
                 "reversed dispatch must end with a dot"
             );
         }
-        tokens.seek(tokens.cursor() + 1);
+        final boolean fragile = tokens.consumeDispatch();
         final List<Value> args = tokens.readArgs();
         if (!args.isEmpty()) {
             Bindings.checkReceiver(args.get(0), this.span);
@@ -100,6 +100,9 @@ final class LnReversed implements Line {
             ".".concat(head.raw()),
             this.span.line(), this.span.indent()
         );
+        if (fragile) {
+            emit.fragile();
+        }
         if (suffix.constant()) {
             emit.constant();
         }

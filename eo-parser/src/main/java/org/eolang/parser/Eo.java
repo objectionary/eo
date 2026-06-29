@@ -27,8 +27,8 @@ import org.xembly.Directive;
  * fall through to a placeholder error pending later additions.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (500 lines)
- * @checkstyle BooleanExpressionComplexityCheck (500 lines)
+ * @checkstyle CyclomaticComplexityCheck (560 lines)
+ * @checkstyle BooleanExpressionComplexityCheck (560 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
 final class Eo implements Iterable<Directive> {
@@ -352,7 +352,7 @@ final class Eo implements Iterable<Directive> {
         } else if (span.head() == '.') {
             line = new LnMethod(span);
         } else if (span.head() == '?') {
-            line = new LnVoid(span);
+            line = Eo.questioned(span);
         } else if (span.head() >= 'a' && span.head() <= 'z') {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (span.head() == '*'
@@ -452,6 +452,36 @@ final class Eo implements Iterable<Directive> {
         final String body = span.body();
         return body.length() >= 2
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
+    }
+
+    /**
+     * Classify a {@code ?}-headed line: a fragile method-continuation
+     * line ({@code ?.method}) when a {@code .} immediately follows the
+     * {@code ?} (R-3.5), otherwise a vertical void ({@code ? > name},
+     * §3.4).
+     * @param span The span (its head is {@code ?})
+     * @return The line shape
+     */
+    private static Line questioned(final Span span) {
+        final Line line;
+        if (Eo.qdot(span.body(), 0)) {
+            line = new LnMethod(span);
+        } else {
+            line = new LnVoid(span);
+        }
+        return line;
+    }
+
+    /**
+     * Whether the fragile {@code ?.} operator appears at {@code idx} in
+     * {@code body} — a {@code ?} immediately followed by a {@code .}.
+     * @param body The line body
+     * @param idx Index to test
+     * @return True if {@code ?.} starts at {@code idx}
+     */
+    private static boolean qdot(final String body, final int idx) {
+        return idx + 1 < body.length()
+            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     /**
@@ -569,6 +599,10 @@ final class Eo implements Iterable<Directive> {
                 reversed = idx + 1 >= body.length() || body.charAt(idx + 1) == ' ';
                 break;
             }
+            if (Eo.qdot(body, idx)) {
+                reversed = idx + 2 >= body.length() || body.charAt(idx + 2) == ' ';
+                break;
+            }
             if (Eo.nameTerminator(glyph)) {
                 break;
             }
@@ -591,8 +625,15 @@ final class Eo implements Iterable<Directive> {
         final char head = span.head();
         final String body = span.body();
         final boolean root = head == '^' || head == '@' || head == '$';
-        final boolean dotted = root && body.length() >= 2 && body.charAt(1) == '.';
-        return dotted && (body.length() == 2 || body.charAt(2) == ' ');
+        final boolean reversed;
+        if (root && body.length() >= 2 && body.charAt(1) == '.') {
+            reversed = body.length() == 2 || body.charAt(2) == ' ';
+        } else if (root && Eo.qdot(body, 1)) {
+            reversed = body.length() == 3 || body.charAt(3) == ' ';
+        } else {
+            reversed = false;
+        }
+        return reversed;
     }
 
     /**

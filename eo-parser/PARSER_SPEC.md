@@ -169,6 +169,7 @@ The parser recognises the following lexical tokens:
 | `XI` | `$` |
 | `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
+| `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
 | `HEX` | `0x` followed by hex digits. |
@@ -297,6 +298,7 @@ A line that begins with `.` is a *method-dispatch line*. The classifier produces
 R-3.5.1. Leading `.` consumes the dot. The position recorded for the dispatch (`@pos`) aligns with the `.` itself, not with the method name (§9.1.3).
 R-3.5.2. Name mapping inside the dispatch: `@` → `φ`, `^` → `ρ`. (Cross-references §9.3.)
 R-3.5.3. Horizontal arguments are accepted after the method name; they become args of the method.
+R-3.5.3a. **Fragile dispatch `?.`.** Anywhere the plain `.` dispatch operator is accepted, the fragile operator `?.` (`QDOT`, §2.3) is equally accepted: a horizontal chain link (`x?.read`, mixed `a.b?.c`), a `?.method` continuation line, and a reversed dispatch (`name?. …`). It parses identically to `.` and emits the same `<o>` — the only difference is an added `@fragile=''` marker on that link (§9.4). The operator is **syntax only** in this revision: the parser does not require `?.` for any receiver nor forbid `.`, because fragility is not known at parse time; enforcement (a fragile object must use `?.`) is a separate concern that reads the `@fragile` marker downstream. A `?` that is not immediately followed by `.` is the vertical-void marker (§3.4), not a dispatch.
 R-3.5.4. **Cross-line ownership of standalone-`.method` rejection.** A `.method` line carries an optional name suffix; the line's *legality* is decided cross-line, not per-line. Three rules own the rejection paths:
   - **R-5.2.3(b)** — same-indent `.method` after a horizontally-completed predecessor.
   - **R-5.2.5** — `.method` as a deeper-indent line (no previous sibling at this indent).
@@ -1078,6 +1080,7 @@ Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 | Inline binding `:label` | `@as='label'` on the argument `<o>` |
 | Inline binding `:N` | `@as='αN'` |
 | `.method` line | `@method` attribute (empty); `@base` is prefixed with `.`; `@pos` records the dot column (R-9.1.3) |
+| `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the operator's first character (the `?`). |
 | Unbound positional arg | `@as` is **not** emitted at parse time. It is added by a later post-parse pass |
 
 R-9.4.1. `@method` and `@as='αN'` are intermediate attributes; they may be transformed or removed by downstream XSL passes (`wrap-method-calls.xsl` and equivalents). The parser emits them; what happens after is out of scope.

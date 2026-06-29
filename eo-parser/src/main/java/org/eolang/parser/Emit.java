@@ -269,6 +269,29 @@ final class Emit {
     }
 
     /**
+     * Add the {@code @method=""} attribute to the most recently opened
+     * {@code <o>}, plus {@code @fragile=""} when the dispatch is the
+     * fragile {@code ?.} operator (R-3.5 / §9.4).
+     * @param fragile Whether the dispatch link is fragile ({@code ?.})
+     */
+    void method(final boolean fragile) {
+        this.method();
+        if (fragile) {
+            this.fragile();
+        }
+    }
+
+    /**
+     * Add the {@code @fragile=""} attribute to the most recently opened
+     * {@code <o>} — marks a {@code ?.} fragile dispatch (R-3.5 / §9.4).
+     * A reversed dispatch carries it without {@code @method}; a method
+     * link carries both (see {@link #method(boolean)}).
+     */
+    void fragile() {
+        this.append(new Directives().attr("fragile", ""));
+    }
+
+    /**
      * Add the {@code @star=""} attribute to the most recently opened
      * {@code <o>} (§9.4 compact-tuple wrapper marker and §9.4.2 star
      * head).

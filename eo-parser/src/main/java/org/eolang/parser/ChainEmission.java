@@ -94,14 +94,14 @@ final class ChainEmission {
                 this.emit.object(
                     null, ".".concat(link.name()), this.span.line(), link.dot()
                 );
-                this.emit.method();
+                this.emit.method(link.fragile());
                 this.emit.close();
             }
             final MethodChain last = this.chain.get(this.chain.size() - 1);
             this.emit.object(
                 name, ".".concat(last.name()), this.span.line(), last.dot()
             );
-            this.emit.method();
+            this.emit.method(last.fragile());
             if (this.suffix.constant()) {
                 this.emit.constant();
             }

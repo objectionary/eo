@@ -24,9 +24,9 @@ import java.util.List;
  * texts from §9.9.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (700 lines)
- * @checkstyle BooleanExpressionComplexityCheck (700 lines)
- * @checkstyle NPathComplexityCheck (700 lines)
+ * @checkstyle CyclomaticComplexityCheck (820 lines)
+ * @checkstyle BooleanExpressionComplexityCheck (820 lines)
+ * @checkstyle NPathComplexityCheck (820 lines)
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -473,13 +473,38 @@ final class Tokens {
      */
     List<MethodChain> readChain() {
         final List<MethodChain> chain = new ArrayList<>(0);
-        while (!this.atEnd() && this.current() == '.') {
+        while (!this.atEnd() && this.dispatchAhead()) {
             final int dot = this.span.indent() + this.cursor;
-            this.cursor = this.cursor + 1;
+            final boolean fragile = this.consumeDispatch();
             final Value name = this.readMethodName();
-            chain.add(new MethodChain(name.raw(), dot, name.end()));
+            chain.add(new MethodChain(name.raw(), dot, name.end(), fragile));
         }
         return chain;
+    }
+
+    /**
+     * Whether a dispatch operator begins at the cursor — a plain
+     * {@code .} or the fragile {@code ?.} (R-3.5). The {@code ?} alone,
+     * not followed by {@code .}, is not a dispatch.
+     * @return True if a {@code .} or {@code ?.} dispatch starts here
+     */
+    boolean dispatchAhead() {
+        return this.current() == '.' || Tokens.fragileAhead(this.body, this.cursor);
+    }
+
+    /**
+     * Consume a dispatch operator at the cursor — a plain {@code .} or
+     * the fragile {@code ?.} (R-3.5) — and report which it was. The
+     * cursor must sit on a {@link #dispatchAhead()} position.
+     * @return True if the consumed operator was the fragile {@code ?.}
+     */
+    boolean consumeDispatch() {
+        final boolean fragile = Tokens.fragileAhead(this.body, this.cursor);
+        if (fragile) {
+            this.cursor = this.cursor + 1;
+        }
+        this.cursor = this.cursor + 1;
+        return fragile;
     }
 
     /**
@@ -605,6 +630,18 @@ final class Tokens {
      */
     String body() {
         return this.body;
+    }
+
+    /**
+     * Whether the fragile {@code ?.} operator begins at {@code idx} —
+     * a {@code ?} immediately followed by a {@code .} (R-3.5).
+     * @param body Body
+     * @param idx Index
+     * @return True if {@code ?.} starts here
+     */
+    private static boolean fragileAhead(final String body, final int idx) {
+        return idx + 1 < body.length()
+            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     /**

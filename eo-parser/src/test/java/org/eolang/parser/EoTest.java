@@ -277,6 +277,17 @@ final class EoTest {
     }
 
     @Test
+    void parsesFragileHmethodInsideFormation() {
+        MatcherAssert.assertThat(
+            "a `?.` fragile dispatch must emit the method link with @fragile=''",
+            EoTest.render("[] > main", "  foo?.bar > x"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='.bar' and @method='' and @fragile='']"
+            )
+        );
+    }
+
+    @Test
     void parsesHmethodInsideFormation() {
         MatcherAssert.assertThat(
             "a dotted-chain head inside a formation must emit flat siblings",
@@ -285,6 +296,37 @@ final class EoTest {
                 "/object/o[@name='main']/o[@base='foo']",
                 "/object/o[@name='main']/o[@base='.bar' and @method='']"
             )
+        );
+    }
+
+    @Test
+    void parsesFragileVmethodContinuationLine() {
+        MatcherAssert.assertThat(
+            "a `?.read` continuation line must emit the link with @fragile=''",
+            EoTest.render("[] > main", "  foo > x", "  .bar", "  ?.read > y"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='.read' and @method='' and @fragile='']"
+            )
+        );
+    }
+
+    @Test
+    void parsesFragileReversedDispatch() {
+        MatcherAssert.assertThat(
+            "a `name?.` reversed dispatch must emit the link with @fragile='' and no @method",
+            EoTest.render("[] > main", "  mul?. x y > z"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@name='z' and @base='.mul' and @fragile='' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void keepsVoidLineDistinctFromFragileMethodLine() {
+        MatcherAssert.assertThat(
+            "a `? > name` line stays a void even though `?.` starts a method line",
+            EoTest.render("[] > foo", "  ? > x"),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='x' and @base='∅']")
         );
     }
 

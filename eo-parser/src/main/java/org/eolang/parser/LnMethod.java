@@ -45,6 +45,7 @@ import java.util.List;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnMethod implements Line {
 
     /**
@@ -66,7 +67,7 @@ final class LnMethod implements Line {
         this.precheck(stack);
         final Level top = stack.top();
         final Tokens tokens = this.dottedTokens();
-        tokens.seek(tokens.cursor() + 1);
+        final boolean fragile = tokens.consumeDispatch();
         final Value method = tokens.readMethodName();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -84,7 +85,7 @@ final class LnMethod implements Line {
             ".".concat(method.raw()),
             this.span.line(), method.pos() - 1
         );
-        emit.method();
+        emit.method(fragile);
         if (suffix.constant()) {
             emit.constant();
         }
@@ -134,14 +135,15 @@ final class LnMethod implements Line {
     }
 
     /**
-     * Build a token stream and verify the line opens with a dot. The
-     * cursor stays on the dot — callers seek past it after recording
-     * the column.
-     * @return Tokens positioned on the leading dot
+     * Build a token stream and verify the line opens a dispatch — a
+     * plain {@code .} or the fragile {@code ?.} (R-3.5). The cursor
+     * stays on the operator's first character; callers seek past it
+     * after recording the column.
+     * @return Tokens positioned on the leading dispatch operator
      */
     private Tokens dottedTokens() {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
-        if (tokens.atEnd() || tokens.current() != '.') {
+        if (tokens.atEnd() || !tokens.dispatchAhead()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation must start with a dot"

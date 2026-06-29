@@ -139,12 +139,12 @@ final class LnOnlyPhi implements Line {
             for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = chain.get(idx);
                 emit.object(null, ".".concat(link.name()), this.span.line(), link.dot());
-                emit.method();
+                emit.method(link.fragile());
                 emit.close();
             }
             final MethodChain last = chain.get(chain.size() - 1);
             emit.object("φ", ".".concat(last.name()), this.span.line(), last.dot());
-            emit.method();
+            emit.method(last.fragile());
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
