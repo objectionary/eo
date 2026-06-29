@@ -1,0 +1,83 @@
++alias tt.as-char
++alias tt.as-decimal
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tt
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Writes the number `n` as fixed-point decimal with exactly `places` fraction
+# digits, rounding to the nearest unit in the last place, so that `2.5` with
+# four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
+[n places] > as-fixed
+  if. > @
+    n.lt 0
+    concat. "-".as-bytes (positive (n.times -1))
+    positive n
+
+  # Ten raised to the power `p`, scaling the fraction part of the value.
+  [p] > pow10
+    if. > @
+      p.eq 0
+      1
+      (pow10 (p.minus 1).as-number).times 10
+
+  # Writes the non-negative `a` as integer part, dot and `places` fraction digits.
+  [a] > positive
+    concat. (concat. (as-decimal ip) ".".as-bytes) (rec-pad (m.minus (ip.times scale)) places --) > @
+    pow10 places > scale
+    ((a.times scale).plus 0.5).floor > m
+    (m.div scale).floor > ip
+
+  # Emits exactly `count` least-significant digits of `value`, zero-padded.
+  [value count acc] > rec-pad
+    if. > @
+      count.eq 0
+      acc
+      rec-pad
+        (value.div 10).floor
+        (count.minus 1).as-number
+        concat. (as-char ((value.minus ((value.div 10).floor.times 10)).floor.plus 48)) acc
+
+  # Tests that as-fixed pads an exact value with trailing zeros.
+  [] +> tests-pads-with-trailing-zeros
+    eq. > @
+      "1.250000"
+      string (as-fixed 1.25 6)
+
+  # Tests that as-fixed writes a negative value with a leading minus.
+  [] +> tests-writes-negative-value
+    eq. > @
+      "-2.500000"
+      string (as-fixed -2.5 6)
+
+  # Tests that as-fixed rounds to the nearest unit in the last place.
+  [] +> tests-rounds-to-last-place
+    eq. > @
+      "0.123457"
+      string (as-fixed 0.123456789 6)
+
+  # Tests that as-fixed carries the rounding into the integer part.
+  [] +> tests-carries-rounding-into-integer-part
+    eq. > @
+      "1.000000"
+      string (as-fixed 0.9999999 6)
+
+  # Tests that as-fixed writes zero with the requested fraction width.
+  [] +> tests-writes-zero
+    eq. > @
+      "0.000000"
+      string (as-fixed 0.0 6)
+
+  # Tests that as-fixed honours a custom number of places.
+  [] +> tests-honours-custom-places
+    eq. > @
+      "3.14"
+      string (as-fixed 3.14159 2)
+
+  # Tests that as-fixed writes a single fraction digit.
+  [] +> tests-writes-single-place
+    eq. > @
+      "2.5"
+      string (as-fixed 2.5 1)
