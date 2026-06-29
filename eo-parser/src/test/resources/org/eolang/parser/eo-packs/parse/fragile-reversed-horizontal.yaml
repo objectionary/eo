@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='z' and @base='.mul' and @fragile='' and not(@method)]
+  - /object/o[@name='main']/o[@base='.mul' and @fragile='']/o[1][@base='Φ.x']
+  - /object/o[@name='main']/o[@base='.mul' and @fragile='']/o[2][@base='Φ.y']
+input: |
+  [] > main
+    mul?. x y > z
