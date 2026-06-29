@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+asserts:
+  - /object[not(errors/error[@check='fragile-dispatch'])]
+  - /object/o[@name='foo']/o[@name='φ' and @base='.bar' and @fragile='']
+  - /object/o[@name='foo']/o[@base='.bar']/o[@base='baz' and not(@fragile)]
+input: |
+  [] > foo
+    bar?. > @
+      baz x y
