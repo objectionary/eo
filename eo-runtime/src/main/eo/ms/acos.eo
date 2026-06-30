@@ -1,6 +1,5 @@
 +alias ms.abs
 +alias ms.pi
-+alias ms.real
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
@@ -36,20 +35,18 @@
   [] +> tests-arccos-positive-calculated-test
     lt. > @
       abs
-        real
-          minus.
-            acos 0.6
-            0.927295
+        minus.
+          acos 0.6
+          0.927295
       0.000001
 
   # Tests acos calculation for a negative value inside [-1,1].
   [] +> tests-arccos-negative-calculated-test
     lt. > @
       abs
-        real
-          minus.
-            acos -0.6
-            2.214297
+        minus.
+          acos -0.6
+          2.214297
       0.000001
 
   # Tests that acos returns NaN for a positive value outside [-1,1].

@@ -1,5 +1,4 @@
 +alias ms.abs
-+alias ms.real
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
@@ -45,10 +44,9 @@
   [] +> tests-sqrt-check-zero-input
     lt. > @
       abs
-        real
-          minus.
-            0
-            sqrt 0
+        minus.
+          0
+          sqrt 0
       0.00000000001
 
   # Tests that square root of negative number returns NaN.
@@ -60,10 +58,9 @@
   [] +> tests-sqrt-check-float-input
     lt. > @
       abs
-        real
-          minus.
-            2
-            sqrt 4
+        minus.
+          2
+          sqrt 4
       0.00000000001
 
   # Tests that square root of NaN returns NaN.
