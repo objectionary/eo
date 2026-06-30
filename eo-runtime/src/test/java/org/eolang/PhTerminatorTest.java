@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhTerminated}.
+ * Test case for {@link PhTerminator}.
  * @since 0.73.1
  */
-final class PhTerminatedTest {
+final class PhTerminatorTest {
 
     @Test
     void failsWhenDataized() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new Dataized(new PhTerminated()).take(),
+            () -> new Dataized(new PhTerminator()).take(),
             "dataizing the bottom object must abort instead of returning data"
         );
     }
@@ -26,7 +26,7 @@ final class PhTerminatedTest {
     void failsWhenDispatched() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhTerminated().take("any"),
+            () -> new PhTerminator().take("any"),
             "dispatching an attribute on the bottom object must abort"
         );
     }
@@ -35,7 +35,7 @@ final class PhTerminatedTest {
     void failsWhenCopied() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhTerminated().copy(),
+            () -> new PhTerminator().copy(),
             "copying the bottom object must abort"
         );
     }

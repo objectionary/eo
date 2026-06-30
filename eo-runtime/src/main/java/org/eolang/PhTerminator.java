@@ -14,56 +14,58 @@ package org.eolang;
  *
  * @since 0.73.1
  */
-public final class PhTerminated implements Phi {
-
-    /**
-     * The message of the failure raised by every interaction with ⊥.
-     */
-    private static final String MESSAGE =
-        "the ⊥ object is a terminated computation and cannot be used";
+public final class PhTerminator implements Phi {
 
     @Override
     public Phi copy() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public boolean hasRho() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public Phi take(final String name) {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public void put(final int pos, final Phi object) {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public String locator() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public String forma() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public byte[] delta() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
     }
 
     @Override
     public String φTerm() {
-        throw new ExFailure(PhTerminated.MESSAGE);
+        throw PhTerminator.fail();
+    }
+
+    /**
+     * The failure raised by every interaction with ⊥.
+     * @return The exception to throw
+     */
+    private static ExFailure fail() {
+        return new ExFailure("the ⊥ object is a terminated computation and cannot be used");
     }
 }
