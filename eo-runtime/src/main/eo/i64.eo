@@ -221,6 +221,17 @@
   # Tests that i64 division by zero throws an error.
   2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
 
+  # Tests that i64 division by zero throws a catchable org.eolang.error,
+  # not an uncatchable JVM exception.
+  [] +> tests-i64-div-by-zero-throws-catchable-error
+    try > @
+      seq
+        *
+          2.as-i64.div 0.as-i64
+          false
+      true > [e]
+      false
+
   # Tests that i64 division by one returns the original value.
   [] +> tests-i64-div-by-i64-one
     eq. > @
