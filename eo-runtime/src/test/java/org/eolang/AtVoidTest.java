@@ -56,11 +56,11 @@ final class AtVoidTest {
     }
 
     @Test
-    void throwsOnGettingUnsetAttribute() {
-        Assertions.assertThrows(
-            ExUnset.class,
-            () -> new AtVoid("attr").get(),
-            "AtVoid must throw an exception when getting unset attribute"
+    void returnsTerminatorOnGettingUnsetAttribute() {
+        MatcherAssert.assertThat(
+            "AtVoid must return the bottom object when getting an unset attribute",
+            new AtVoid("attr").get(),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 

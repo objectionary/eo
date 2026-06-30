@@ -347,11 +347,13 @@ final class PhDefaultTest {
     }
 
     @Test
-    void failsGracefullyOnMissingAttribute() {
+    void failsGracefullyOnDataizingMissingAttribute() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
-            "Accessing a missing attribute should fail, but it didn't"
+            () -> new Dataized(
+                new PhSafe(new Data.ToPhi("Hey")).take("missing-attr")
+            ).take(),
+            "Dataizing a missing attribute (now the bottom object) should fail, but it didn't"
         );
     }
 
@@ -569,13 +571,13 @@ final class PhDefaultTest {
     }
 
     @Test
-    void verifiesThreadLocalNestingWithExceptionsThrows() {
-        Assertions.assertThrows(
-            ExUnset.class,
-            () -> this.phiWithContextAttribute(
-                "context-verifiesThreadLocalNestingWithExceptions"
+    void returnsTerminatorForAbsentAttribute() {
+        MatcherAssert.assertThat(
+            "Taking an absent attribute must return the bottom object, not throw",
+            this.phiWithContextAttribute(
+                "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
-            "Should throw exception for non-existent attribute"
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 

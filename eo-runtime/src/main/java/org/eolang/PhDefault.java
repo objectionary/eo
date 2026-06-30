@@ -224,17 +224,7 @@ public class PhDefault implements Phi, Cloneable {
             } else if (this.attrs.containsKey(Phi.PHI)) {
                 object = this.take(Phi.PHI).take(name);
             } else {
-                throw new ExUnset(
-                    String.format(
-                        "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
-                        name,
-                        this.attrs.size(),
-                        this.forma(),
-                        String.join(", ", this.attrs.keySet()),
-                        Phi.PHI,
-                        Phi.LAMBDA
-                    )
-                );
+                object = new PhTerminator();
             }
             PhDefault.debug(
                 String.format(

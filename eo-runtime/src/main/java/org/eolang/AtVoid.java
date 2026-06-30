@@ -60,14 +60,13 @@ public final class AtVoid implements Attribute {
     @Override
     public Phi get() {
         final Phi phi = this.object.get();
+        final Phi result;
         if (phi == null) {
-            throw new ExUnset(
-                String.format(
-                    "The attribute \"%s\" is not initialized, can't read", this.name
-                )
-            );
+            result = new PhTerminator();
+        } else {
+            result = phi;
         }
-        return phi;
+        return result;
     }
 
     @Override
