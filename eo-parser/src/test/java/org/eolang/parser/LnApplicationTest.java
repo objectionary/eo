@@ -442,8 +442,7 @@ final class LnApplicationTest {
             ParseError.class,
             () -> new LnApplication(new Span("\"\\uZZZZ\" > x", 1))
                 .into(new Stack(), new Globals(), new Emit()),
-            "a string with a non-hex \\u escape must be rejected instead of"
-                + " crashing with an uncaught NumberFormatException"
+            "a string with a non-hex \\u escape must be rejected, not crash"
         );
     }
 
