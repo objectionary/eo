@@ -250,8 +250,10 @@ final class PhDefaultTest {
     void copiesUnsetVoidAttribute() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new PhDefaultTest.Int()).copy().take(this.getVoid()),
-            "Unset void attribute should be copied with unset value"
+            () -> new Dataized(
+                new PhSafe(new PhDefaultTest.Int()).copy().take(this.getVoid())
+            ).take(),
+            "Copying must preserve the unset void, which reads as the bottom object and fails when dataized"
         );
     }
 
@@ -294,8 +296,10 @@ final class PhDefaultTest {
     void hasAccessToDependentOnContextAttributeThrows() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.PHI),
-            "Phi should not be accessible without setting void attribute, but it did"
+            () -> new Dataized(
+                new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.PHI)
+            ).take(),
+            "Phi depending on an unset void (now the bottom object) must fail when dataized, but it did not"
         );
     }
 

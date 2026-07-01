@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,20 +25,28 @@ final class PhTerminatorTest {
     }
 
     @Test
-    void failsWhenDispatched() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhTerminator().take("any"),
-            "dispatching an attribute on the bottom object must abort"
+    void propagatesOnDispatch() {
+        MatcherAssert.assertThat(
+            "dispatching an attribute on the bottom object must propagate another bottom, not abort",
+            new PhTerminator().take("any"),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
-    void failsWhenCopied() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhTerminator().copy(),
-            "copying the bottom object must abort"
+    void copiesIntoAnotherTerminator() {
+        MatcherAssert.assertThat(
+            "copying the bottom object must yield another bottom, not abort",
+            new PhTerminator().copy(),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void toleratesBinding() {
+        Assertions.assertDoesNotThrow(
+            () -> new PhTerminator().put(0, new PhTerminator()),
+            "binding an attribute into the bottom object must be a no-op, not abort"
         );
     }
 }
