@@ -9,15 +9,17 @@ env:
 jobs:
   pr-size:
     runs-on: ubuntu-24.04
-    # @todo #5186:30min Re-enable pr-size check once maidsafe/pr_size_checker
-    #  action is available again. The action's GitHub repository was not found
-    #  during the CI run, causing the check to fail unconditionally.
-    #  Replace or restore the action and remove this guard.
     if: ${{ vars.RUN_WORKFLOW == 'true' }}
     steps:
-      - uses: actions/checkout@v6
-      - run: git fetch origin master --depth=1
-      - uses: maidsafe/pr_size_checker@v3
-        with:
-          target_branch: master
-          max_lines_changed: 200
+      - name: Check pull request size
+        env:
+          ADDITIONS: ${{ github.event.pull_request.additions }}
+          DELETIONS: ${{ github.event.pull_request.deletions }}
+          MAX_LINES_CHANGED: 200
+        run: |
+          total=$((ADDITIONS + DELETIONS))
+          echo "Total lines changed: ${total}"
+          if [ "${total}" -gt "${MAX_LINES_CHANGED}" ]; then
+            echo "Pull request changes ${total} lines, exceeding the ${MAX_LINES_CHANGED}-line limit; consider breaking it down."
+            exit 1
+          fi
