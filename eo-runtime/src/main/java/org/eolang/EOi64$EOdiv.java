@@ -26,16 +26,19 @@ public final class EOi64$EOdiv extends PhDefault implements Atom {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
+        final long dividend = new Expect.I64(Expect.at(this, Phi.RHO)).it();
+        final long divisor = new Expect.I64(Expect.at(this, "x")).it();
+        if (divisor == 0L) {
+            throw new EOerror.ExError(
+                new Data.ToPhi("i64.div: division by zero")
+            );
+        }
         final Phi num = Phi.Φ.take("i64").copy();
         num.put(
             0,
-            new Data.ToPhi(
-                new BytesOf(
-                    new Expect.I64(Expect.at(this, Phi.RHO)).it()
-                        / new Expect.I64(Expect.at(this, "x")).it()
-                ).take()
-            )
+            new Data.ToPhi(new BytesOf(dividend / divisor).take())
         );
         return num;
     }
