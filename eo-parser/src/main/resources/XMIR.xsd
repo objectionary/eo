@@ -153,6 +153,16 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="types" type="non-empty">
+      <xs:annotation>
+        <xs:appinfo>Space-separated FQNs of an atom void error-branch forma-list</xs:appinfo>
+        <xs:documentation>
+          Used on a void error-branch attribute of an atom (the "/{…}" forma-list).
+          Holds the space-separated fully qualified names of the formas the atom
+          supplies as the arguments of that branch.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>
