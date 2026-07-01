@@ -308,6 +308,29 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <pluginRepositories>
+    <!--
+    The parent POM (com.jcabi:parent) points plugin resolution at
+    oss.sonatype.org, a host Sonatype has decommissioned. Re-declaring
+    the same id on Central shadows the dead host, since Maven merges
+    repositories by id and lets the child win. Without this, a cold
+    cache (every fork pull request) stalls on dead-host timeouts and
+    the qulice job burns its whole budget before a single check runs.
+    @todo #5284:30min Drop this override once com.jcabi:parent no
+     longer declares the decommissioned oss.sonatype.org plugin
+     repository, so plugin resolution relies on the parent again.
+    -->
+    <pluginRepository>
+      <id>oss.sonatype.org</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
   <build>
     <plugins>
       <plugin>
