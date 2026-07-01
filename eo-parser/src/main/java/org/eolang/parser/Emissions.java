@@ -116,11 +116,21 @@ final class Emissions {
                 new Hex(Double.parseDouble(value.raw())).asString()
             );
         } else if (value.kind() == Value.Kind.HEX) {
+            final long hex;
+            try {
+                hex = Long.parseLong(value.raw().substring(2), 16);
+            } catch (final NumberFormatException ex) {
+                final ParseError error = new ParseError(
+                    line, value.pos(),
+                    "hexadecimal literal is out of range"
+                );
+                error.initCause(ex);
+                throw error;
+            }
             emit.object(name, "Φ.number", line, value.pos());
             Emissions.bytesCarrier(
                 emit, line, value.pos(),
-                new Hex((double) Long.parseLong(value.raw().substring(2), 16))
-                    .asString()
+                new Hex((double) hex).asString()
             );
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());

@@ -566,6 +566,17 @@ final class LnApplicationTest {
     }
 
     @Test
+    void rejectsOversizedHexHead() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnApplication(new Span("0x10000000000000000 > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a HEX literal wider than a signed 64-bit long must raise a positioned"
+                .concat(" ParseError instead of an uncaught NumberFormatException")
+        );
+    }
+
+    @Test
     void emitsBytesHead() {
         final Emit emit = new Emit();
         new LnApplication(new Span("CA-FE > x", 1))
