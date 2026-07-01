@@ -121,7 +121,7 @@
         ? > cant-read /{string}
 
       # Write `data` with `offset` to the allocated block in memory
-      # and return `true`. If
+      # and return `true`.
       [offset data] > write /bool
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.

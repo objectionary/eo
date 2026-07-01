@@ -19,13 +19,21 @@ package org.eolang;
 public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
 
     /**
+     * Name of the error-branch void that holds the caller's read fallback.
+     */
+    private static final String FALLBACK = "cant-read";
+
+    /**
      * Ctor.
      */
     public EOmalloc$EOof$EOallocated$EOread() {
         super(new Attrs(
             new Attr("offset", new AtVoid("offset")),
             new Attr("length", new AtVoid("length")),
-            new Attr("cant-read", new AtVoid("cant-read"))
+            new Attr(
+                EOmalloc$EOof$EOallocated$EOread.FALLBACK,
+                new AtVoid(EOmalloc$EOof$EOallocated$EOread.FALLBACK)
+            )
         ));
     }
 
@@ -57,7 +65,7 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
         if (Heaps.INSTANCE.fits(id, offset, length)) {
             result = new Data.ToPhi(Heaps.INSTANCE.read(id, offset, length));
         } else {
-            result = this.take("cant-read");
+            result = this.take(EOmalloc$EOof$EOallocated$EOread.FALLBACK);
             result.put(
                 0,
                 new Data.ToPhi(

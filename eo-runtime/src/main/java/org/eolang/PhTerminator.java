@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import java.util.Objects;
+
 /**
  * The ⊥ ("bottom") object of φ-calculus — a terminated computation.
  *
@@ -43,14 +45,12 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        // No-op: ⊥ has no attributes; binding into it is ignored so the
-        // failure surfaces only when ⊥ is forced (delta/take).
+        Objects.requireNonNull(object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        // No-op: ⊥ has no attributes; binding into it is ignored so the
-        // failure surfaces only when ⊥ is forced (delta/take).
+        Objects.requireNonNull(object);
     }
 
     @Override
