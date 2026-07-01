@@ -21,15 +21,13 @@
   # max `org.eolang.i32` value `2147483647`.
   [] > as-i32
     if. > @
-      or.
-        left.eq 00-00-00-00
-        left.eq FF-FF-FF-FF
-      i32 (as-bytes.slice 4 4)
+      ^.eq left.as-i64
+      left
       error
         sprintf
           "Can't convert i64 number %d to i32 because it's out of i32 bounds"
           * as-number
-    (as-bytes.slice 0 4).as-bytes > left
+    i32 (as-bytes.slice 4 4) > left
 
   # Convert this `org.eolang.i64` to `org.eolang.number` object and return it.
   [] > as-number /number
@@ -108,6 +106,24 @@
 
   # Tests that converting i64 to i32 throws error when out of bounds.
   3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
+
+  # Tests that i32 max value converts to i32 without error.
+  [] +> tests-i64-i32-max-converts-without-error
+    eq. > @
+      2147483647.as-i64
+      2147483647.as-i64.as-i32.as-i64
+
+  # Tests that i32 min value converts to i32 without error.
+  [] +> tests-i64-i32-min-converts-without-error
+    eq. > @
+      -2147483648.as-i64
+      -2147483648.as-i64.as-i32.as-i64
+
+  # Tests that i32 max plus one throws when converted to i32.
+  2147483648.as-i64.as-i32 > [] +> throws-on-converting-i32-max-plus-one-to-i32
+
+  # Tests that i32 min minus one throws when converted to i32.
+  -2147483649.as-i64.as-i32 > [] +> throws-on-converting-i32-min-minus-one-to-i32
 
   # Tests that i64 less-than comparison returns true for smaller values.
   [] +> tests-i64-less-true
