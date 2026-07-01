@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -23,13 +26,30 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Regex.@ object.
+ * Regex.compile object.
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "regex.@")
+@XmirObject(oname = "regex.compile")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOregex$EOφ extends PhDefault implements Atom {
+public final class EOregex$EOcompile extends PhDefault implements Atom {
+
+    /**
+     * Name of the error-branch void that holds the caller's compile fallback.
+     */
+    private static final String FALLBACK = "cant-compile";
+
+    /**
+     * Ctor.
+     */
+    public EOregex$EOcompile() {
+        super(new Attrs(
+            new Attr(
+                EOregex$EOcompile.FALLBACK,
+                new AtVoid(EOregex$EOcompile.FALLBACK)
+            )
+        ));
+    }
 
     @Override
     public Phi lambda() {
@@ -55,7 +75,7 @@ public final class EOregex$EOφ extends PhDefault implements Atom {
      * @return The fallback object carrying the message
      */
     private Phi fallback(final String message) {
-        final Phi cant = this.take(Phi.RHO).take("cant-compile");
+        final Phi cant = this.take(EOregex$EOcompile.FALLBACK);
         cant.put(0, new Data.ToPhi(message));
         return cant;
     }

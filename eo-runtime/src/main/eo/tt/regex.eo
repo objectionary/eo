@@ -24,11 +24,7 @@
 # /s - Enables dotall mode.
 # /u - Enables Unicode-aware case folding.
 [expression] > regex
-  # Recovery object for an `expression` that cannot be compiled into a pattern
-  # (a missing slash or invalid syntax). When compilation fails the pattern is
-  # replaced by this fallback, or by the bottom object (⊥) when none was
-  # provided, which terminates on use.
-  ? > cant-compile
+  compile > @
 
   # Compile regular expression into pattern.
   # ```
@@ -47,7 +43,8 @@
   # ptn2.matches "hello"                # doesn't recompile regex
   # ```
   # Returns `org.eolang.tt.regex.pattern` object.
-  [] > @ /Q.tt.regex.pattern
+  [] > compile /Q.tt.regex.pattern
+    ? > cant-compile /{string}
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
@@ -250,22 +247,20 @@
   [] +> tests-invalid-regex-syntax-returns-provided-fallback
     eq. > @
       "recovered"
-      regex
-        "/[a-z/"
+      (regex "/[a-z/").compile
         "recovered" > [msg]
 
   # Tests that a missing slash with a `cant-compile` fallback yields the fallback.
   [] +> tests-missing-slash-returns-provided-fallback
     eq. > @
       "no-slash"
-      regex
-        "(.)+"
+      (regex "(.)+").compile
         "no-slash" > [msg]
 
   # Tests that an invalid pattern with no `cant-compile` fallback yields the bottom
   # object (⊥) that terminates when used.
   [] +> throws-on-compiling-invalid-regex-without-fallback
-    regex "/[a-z/" > @
+    (regex "/[a-z/").compile > @
 
   # Tests that regex with capturing groups returns correct group count and content.
   [] +> tests-regex-contains-valid-groups-on-each-matched-block
