@@ -129,9 +129,19 @@ final class Emissions {
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
             emit.object(name, "Φ.string", line, value.pos());
+            final String unescaped;
+            try {
+                unescaped = Emissions.unescape(value.raw());
+            } catch (final NumberFormatException ex) {
+                final ParseError error = new ParseError(
+                    line, value.pos(), "invalid unicode escape in string literal"
+                );
+                error.initCause(ex);
+                throw error;
+            }
             Emissions.bytesCarrier(
                 emit, line, value.pos(),
-                new Hex(Emissions.unescape(value.raw())).asString()
+                new Hex(unescaped).asString()
             );
         } else if (value.kind() == Value.Kind.STAR) {
             emit.object(name, "Φ.tuple", line, value.pos());
