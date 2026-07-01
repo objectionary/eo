@@ -114,14 +114,14 @@
           read source length
 
       # Read `length` bytes with `offset` from the allocated block in memory and return them
-      # as `org.eolang.bytes`. When the requested range is outside the allocated block, the
+      # as `bytes`. When the requested range is outside the allocated block, the
       # read returns the caller-supplied `cant-read` fallback object instead, or the bottom
       # object (⊥) when no fallback was provided, which terminates on use.
       [offset length] > read /bytes
-        ? > cant-read
+        ? > cant-read /{string}
 
       # Write `data` with `offset` to the allocated block in memory
-      # and return `org.eolang.true`.
+      # and return `true`. If
       [offset data] > write /bool
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
@@ -325,14 +325,22 @@
   # Tests that an out-of-bounds read returns the caller-supplied `cant-read`
   # fallback object instead of terminating.
   [] +> tests-malloc-read-over-a-limit-returns-fallback
-    malloc.of > @
-      1
-      [b]
-        malloc.of > @
-          10
-          [m] >>
-            b.put > @
-              (m.read 0 100 01-02).eq 01-02
+    eq. > @
+      01-02
+      malloc.of
+        1
+        [m]
+          m.read > @
+            0
+            10
+            01-02 > [ex]
+
+  # Tests that an out-of-bounds read with no `cant-read` fallback yields the bottom
+  # object (⊥), which terminates the program when dataized.
+  [] +> throws-on-reading-over-a-limit-without-fallback
+    malloc.for > @
+      10
+      m.read 0 100 > [m]
 
   # Creates memory block of zero bytes (this should be a legal operation).
   [] +> tests-allocates-zero-bytes
