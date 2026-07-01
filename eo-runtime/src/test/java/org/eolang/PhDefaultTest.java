@@ -250,8 +250,10 @@ final class PhDefaultTest {
     void copiesUnsetVoidAttribute() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new PhDefaultTest.Int()).copy().take(this.getVoid()),
-            "Unset void attribute should be copied with unset value"
+            () -> new Dataized(
+                new PhSafe(new PhDefaultTest.Int()).copy().take(this.getVoid())
+            ).take(),
+            "Copying must preserve the unset void, which reads as the bottom object and fails when dataized"
         );
     }
 
@@ -294,8 +296,10 @@ final class PhDefaultTest {
     void hasAccessToDependentOnContextAttributeThrows() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.PHI),
-            "Phi should not be accessible without setting void attribute, but it did"
+            () -> new Dataized(
+                new PhSafe(new PhDefaultTest.Int().copy()).take(Phi.PHI)
+            ).take(),
+            "Phi depending on an unset void (now the bottom object) must fail when dataized, but it did not"
         );
     }
 
@@ -347,11 +351,13 @@ final class PhDefaultTest {
     }
 
     @Test
-    void failsGracefullyOnMissingAttribute() {
+    void failsGracefullyOnDataizingMissingAttribute() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
-            "Accessing a missing attribute should fail, but it didn't"
+            () -> new Dataized(
+                new PhSafe(new Data.ToPhi("Hey")).take("missing-attr")
+            ).take(),
+            "Dataizing a missing attribute (now the bottom object) should fail, but it didn't"
         );
     }
 
@@ -569,13 +575,13 @@ final class PhDefaultTest {
     }
 
     @Test
-    void verifiesThreadLocalNestingWithExceptionsThrows() {
-        Assertions.assertThrows(
-            ExUnset.class,
-            () -> this.phiWithContextAttribute(
-                "context-verifiesThreadLocalNestingWithExceptions"
+    void returnsTerminatorForAbsentAttribute() {
+        MatcherAssert.assertThat(
+            "Taking an absent attribute must return the bottom object, not throw",
+            this.phiWithContextAttribute(
+                "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
-            "Should throw exception for non-existent attribute"
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 

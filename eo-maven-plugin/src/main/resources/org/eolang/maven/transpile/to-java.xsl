@@ -142,7 +142,7 @@
         <xsl:value-of select="$rho"/>
       </xsl:when>
       <xsl:when test="$first='⊥'">
-        <xsl:text>new PhTerminated()</xsl:text>
+        <xsl:text>new PhTerminator()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">

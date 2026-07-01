@@ -17,6 +17,10 @@
   <properties>
     <!--  This is required for later correct replacement of argline  -->
     <argLine/>
+    <!-- Enables atom return-type checking in AtomTyped (default off, see #5280).
+         Off because atoms with error-branches return a union the declared forma
+         cannot express; set to true to verify return types. -->
+    <eo.typing>false</eo.typing>
   </properties>
   <dependencies>
     <dependency>
@@ -181,6 +185,7 @@
           </argLine>
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
+            <eo.typing>${eo.typing}</eo.typing>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>

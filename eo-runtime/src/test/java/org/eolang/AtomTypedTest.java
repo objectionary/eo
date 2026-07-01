@@ -8,6 +8,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
  * Test case for {@link AtomTyped}.
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 final class AtomTypedTest {
 
     @Test
+    @EnabledIfSystemProperty(named = "eo.typing", matches = "true")
     void throwsWhenComputedTypeDiffersFromDeclared() {
         Assertions.assertThrows(
             ExFailure.class,

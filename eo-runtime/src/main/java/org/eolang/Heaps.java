@@ -125,13 +125,21 @@ final class Heaps {
     }
 
     /**
-     * Get data from the block in memory by identifier.
-     * @param identifier Identifier of the pointer
+     * Whether the given range fits inside the allocated block — the
+     * single source of truth for the read-bounds rule.
+     *
+     * <p>If the block is not allocated, the request is a structural
+     * (unpredictable) failure and aborts with {@link ExFailure}, which
+     * EO cannot catch. A range that exceeds an allocated block is a
+     * predictable failure, reported as {@code false} so the caller can
+     * fall back rather than read garbage.</p>
+     *
+     * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @return Bytes from the block in memory
+     * @return True if the range lies within the allocated block
      */
-    byte[] read(final int identifier, final int offset, final int length) {
+    boolean fits(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -142,18 +150,33 @@ final class Heaps {
                     )
                 );
             }
-            final byte[] bytes = this.blocks.get(identifier);
-            if (offset + length > bytes.length) {
+            return offset + length <= this.blocks.get(identifier).length;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Get data from the block in memory by identifier.
+     * @param identifier Identifier of the pointer
+     * @param offset Offset to start reading from
+     * @param length Length of bytes to read
+     * @return Bytes from the block in memory
+     */
+    byte[] read(final int identifier, final int offset, final int length) {
+        this.lock.lock();
+        try {
+            if (!this.fits(identifier, offset, length)) {
                 throw new ExFailure(
                     String.format(
                         "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                         length,
                         offset,
-                        bytes.length
+                        this.blocks.get(identifier).length
                     )
                 );
             }
-            return Arrays.copyOfRange(bytes, offset, offset + length);
+            return Arrays.copyOfRange(this.blocks.get(identifier), offset, offset + length);
         } finally {
             this.lock.unlock();
         }
