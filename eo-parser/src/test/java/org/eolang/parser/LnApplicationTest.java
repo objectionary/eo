@@ -437,6 +437,16 @@ final class LnApplicationTest {
     }
 
     @Test
+    void rejectsStringWithInvalidUnicodeEscape() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnApplication(new Span("\"\\uZZZZ\" > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a string with a non-hex \\u escape must be rejected, not crash"
+        );
+    }
+
+    @Test
     void emitsRootIdentifierAsHead() {
         final Emit emit = new Emit();
         new LnApplication(new Span("Q > x", 1))
