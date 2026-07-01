@@ -33,35 +33,62 @@ public final class EOregex$EOφ extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Phi regex = this.take(Phi.RHO);
-        final String expression = new Dataized(regex.take("expression")).asString();
-        if (!expression.startsWith("/")) {
-            throw new ExFailure("Wrong regex syntax: \"/\" is missing");
-        }
+        final String expression = new Dataized(this.take(Phi.RHO).take("expression")).asString();
         final int last = expression.lastIndexOf('/');
-        if (last == 0) {
-            throw new ExFailure("Wrong regex syntax: closing \"/\" is missing");
+        final Phi result;
+        if (expression.startsWith("/")) {
+            if (last == 0) {
+                result = this.fallback("regex is missing the closing slash");
+            } else {
+                result = this.compile(expression, last);
+            }
+        } else {
+            result = this.fallback("regex is missing the opening slash");
         }
+        return result;
+    }
+
+    /**
+     * The caller-supplied {@code cant-compile} recovery for an expression that
+     * cannot become a pattern, or the bottom object (⊥) when none was bound.
+     * @param message Why the expression could not be compiled
+     * @return The fallback object carrying the message
+     */
+    private Phi fallback(final String message) {
+        final Phi cant = this.take(Phi.RHO).take("cant-compile");
+        cant.put(0, new Data.ToPhi(message));
+        return cant;
+    }
+
+    /**
+     * Compile the expression into a serialized pattern, or fall back when its
+     * body is invalid. An invalid body is only discoverable by compiling, so
+     * the {@link PatternSyntaxException} is caught at that boundary and routed
+     * to the fallback; a serialization {@link IOException} on an in-memory
+     * stream is unpredictable and aborts as a system failure.
+     * @param expression The Perl-format expression, slashes included
+     * @param last Index of the closing slash in the expression
+     * @return The compiled pattern, or the {@code cant-compile} fallback
+     */
+    private Phi compile(final String expression, final int last) {
         final StringBuilder builder = new StringBuilder();
         if (!expression.endsWith("/")) {
             builder.append("(?").append(expression.substring(last + 1)).append(')');
         }
         builder.append(expression, 1, last);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Phi pattern = regex.take("pattern");
+        Phi result;
         try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream ous = new ObjectOutputStream(baos);
             ous.writeObject(Pattern.compile(builder.toString()));
-            pattern.put(0, new Data.ToPhi(baos.toByteArray()));
             ous.close();
-            return pattern;
-        } catch (final PatternSyntaxException exception) {
-            throw new ExFailure(
-                "Regular expression syntax is invalid",
-                exception
-            );
+            result = this.take(Phi.RHO).take("pattern");
+            result.put(0, new Data.ToPhi(baos.toByteArray()));
+        } catch (final PatternSyntaxException ex) {
+            result = this.fallback("regex syntax is invalid");
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new ExFailure("cannot serialize the compiled regex pattern", ex);
         }
+        return result;
     }
 }
