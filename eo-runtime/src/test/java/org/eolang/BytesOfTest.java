@@ -163,4 +163,13 @@ final class BytesOfTest {
             "sshift with negative bits should throw exception, but it didn't"
         );
     }
+
+    @Test
+    void shiftsIntegerMinValueWithoutOverflow() {
+        MatcherAssert.assertThat(
+            "Shifting by Integer.MIN_VALUE bits should produce all-zero bytes, but it didn't",
+            new BytesOf(0xFF000000L).shift(Integer.MIN_VALUE).asNumber(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
 }
