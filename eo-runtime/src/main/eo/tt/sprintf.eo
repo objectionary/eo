@@ -22,32 +22,35 @@
 # - %b - converts object to boolean, `true` or `false`.
 [format args] > sprintf
   string (walk 0 0 --) > @
+  format.as-bytes > raw
+  raw.size > length
+  "%".as-bytes > percent
 
-  # Zero-based argument index referenced by the digit character `char`, so that
+  # Zero-based argument index referenced by the digit byte `char`, so that
   # `1` points at the first argument.
   [char] > arg-index
     (as-ascii char).minus (as-ascii "1") > @
 
-  # Recursively walks `format` from character `index`, where `auto` points at
-  # the next sequential argument and `acc` accumulates the resulting bytes.
+  # Recursively walks `format` bytes from position `index`, where `auto` points
+  # at the next sequential argument and `acc` accumulates the resulting bytes.
   [index auto acc] > walk
     if. > @
-      index.gte format.length
+      index.gte length
       acc
       if.
-        char.eq "%"
+        char.eq percent
         if.
-          next.eq "%"
-          walk (index.plus 2).as-number auto (concat. acc "%".as-bytes)
+          next.eq percent
+          walk (index.plus 2).as-number auto (concat. acc percent)
           if.
-            is-digit next
-            walk (index.plus 4).as-number auto (concat. acc (formatted (format.slice (index.plus 3) 1) (arg-index next)))
+            is-digit (string next)
+            walk (index.plus 4).as-number auto (concat. acc (formatted (raw.slice (index.plus 3) 1) (arg-index (string next))))
             walk (index.plus 2).as-number (auto.plus 1).as-number (concat. acc (formatted next auto))
-        walk (index.plus 1).as-number auto (concat. acc char.as-bytes)
-    format.slice index 1 > char
-    format.slice (index.plus 1) 1 > next
+        walk (index.plus 1).as-number auto (concat. acc char)
+    raw.slice index 1 > char
+    raw.slice (index.plus 1) 1 > next
 
-  # Converts the argument at `idx` to bytes according to the `spec` character.
+  # Converts the argument at `idx` to bytes according to the `spec` byte.
   [spec idx] > formatted
     if. > @
       idx.gte args.length
@@ -61,19 +64,19 @@
       switch
         *
           *
-            spec.eq "s"
+            spec.eq "s".as-bytes
             (args.at idx).as-bytes
           *
-            spec.eq "d"
+            spec.eq "d".as-bytes
             as-decimal (number (args.at idx))
           *
-            spec.eq "f"
+            spec.eq "f".as-bytes
             as-fixed (number (args.at idx)) 6
           *
-            spec.eq "x"
+            spec.eq "x".as-bytes
             as-hex (args.at idx)
           *
-            spec.eq "b"
+            spec.eq "b".as-bytes
             if. (args.at idx).as-bool "true".as-bytes "false".as-bytes
           *
             true
@@ -82,7 +85,7 @@
                 concat.
                   concat.
                     "the format specifier ".as-bytes
-                    spec.as-bytes
+                    spec
                   " in sprintf is unsupported".as-bytes
 
   # Tests that sprintf formats string with single %s placeholder.
