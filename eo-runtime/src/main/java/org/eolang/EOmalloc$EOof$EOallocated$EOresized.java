@@ -29,16 +29,8 @@ public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault impleme
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
-        final int id = Expect.at(rho, "id")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
-        final int size = Expect.at(this, "new-size")
-            .that(phi -> new Dataized(phi).asNumber())
-            .otherwise("must be a number")
-            .that(Double::intValue)
-            .it();
+        final int id = new Expect.Natural(Expect.at(rho, "id")).it();
+        final int size = new Expect.Natural(Expect.at(this, "new-size")).it();
         Heaps.INSTANCE.resize(id, size);
         return rho;
     }
