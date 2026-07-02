@@ -79,6 +79,18 @@ final class HeapsTest {
     }
 
     @Test
+    void failsOnWriteIfOffsetPlusLengthOverflows() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.write(
+                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10),
+                Integer.MAX_VALUE, new byte[] {0x01}
+            ),
+            "Heaps should throw an exception on write when offset + data.length overflows int, but it didn't"
+        );
+    }
+
+    @Test
     void failsOnReadFromEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
