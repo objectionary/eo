@@ -85,7 +85,18 @@ final class SprintfArgs {
             }
             final long arg;
             if (positional != null) {
-                arg = Long.parseLong(positional.substring(0, positional.length() - 1)) - 1L;
+                final String digits = positional.substring(0, positional.length() - 1);
+                try {
+                    arg = Long.parseLong(digits) - 1L;
+                } catch (final NumberFormatException ex) {
+                    throw new ExFailure(
+                        String.format(
+                            "The argument index %s is out of bounds (total arguments: %d)",
+                            digits, this.length
+                        ),
+                        ex
+                    );
+                }
             } else {
                 arg = auto;
                 auto += 1L;
