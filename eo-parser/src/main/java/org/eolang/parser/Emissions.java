@@ -20,7 +20,7 @@ import java.util.List;
  * @checkstyle CyclomaticComplexityCheck (600 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods", "PMD.CognitiveComplexity"})
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods"})
 final class Emissions {
 
     /**
@@ -116,43 +116,14 @@ final class Emissions {
                 new Hex(Double.parseDouble(value.raw())).asString()
             );
         } else if (value.kind() == Value.Kind.HEX) {
-            final long hex;
-            try {
-                hex = Long.parseLong(value.raw().substring(2), 16);
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(),
-                    "hexadecimal literal is out of range"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            emit.object(name, "Φ.number", line, value.pos());
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex((double) hex).asString()
-            );
+            Emissions.openHex(emit, name, value, line);
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
             emit.set(value.raw());
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
-            emit.object(name, "Φ.string", line, value.pos());
-            final String unescaped;
-            try {
-                unescaped = Emissions.unescape(value.raw());
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(), "invalid unicode escape in string literal"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex(unescaped).asString()
-            );
+            Emissions.openString(emit, name, value, line);
         } else if (value.kind() == Value.Kind.STAR) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
@@ -161,16 +132,7 @@ final class Emissions {
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.kind() == Value.Kind.GROUP) {
-            final String inner = value.raw().substring(1, value.raw().length() - 1);
-            final int phi = Emissions.topLevelInlinePhi(inner);
-            if (phi >= 0) {
-                Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
-            } else {
-                final Span sub = new Span(
-                    " ".repeat(value.pos() + 1).concat(inner), line
-                );
-                Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
-            }
+            Emissions.openGroup(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
@@ -292,6 +254,86 @@ final class Emissions {
             }
         }
         return out.toString();
+    }
+
+    /**
+     * Open an {@code <o>} for a {@link Value.Kind#HEX} value.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openHex(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final long hex;
+        try {
+            hex = Long.parseLong(value.raw().substring(2), 16);
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(),
+                "hexadecimal literal is out of range"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        emit.object(name, "Φ.number", line, value.pos());
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex((double) hex).asString()
+        );
+    }
+
+    /**
+     * Open an {@code <o>} for a {@link Value.Kind#STRING} value.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openString(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.object(name, "Φ.string", line, value.pos());
+        final String unescaped;
+        try {
+            unescaped = Emissions.unescape(value.raw());
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(), "invalid unicode escape in string literal"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(unescaped).asString()
+        );
+    }
+
+    /**
+     * Open an {@code <o>} for a {@link Value.Kind#GROUP} value.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openGroup(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final String inner = value.raw().substring(1, value.raw().length() - 1);
+        final int phi = Emissions.topLevelInlinePhi(inner);
+        if (phi >= 0) {
+            Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
+        } else {
+            final Span sub = new Span(
+                " ".repeat(value.pos() + 1).concat(inner), line
+            );
+            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+        }
     }
 
     /**
