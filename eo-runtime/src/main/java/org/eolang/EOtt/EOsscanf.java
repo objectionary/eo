@@ -42,7 +42,7 @@ public final class EOsscanf extends PhDefault implements Atom {
 
     static {
         EOsscanf.CONVERSION.put('s', ToPhi::new);
-        EOsscanf.CONVERSION.put('d', str -> new Data.ToPhi(Long.parseLong(str)));
+        EOsscanf.CONVERSION.put('d', str -> new Data.ToPhi(EOsscanf.parsed(str)));
         EOsscanf.CONVERSION.put('f', str -> new Data.ToPhi(Double.parseDouble(str)));
     }
 
@@ -120,6 +120,26 @@ public final class EOsscanf extends PhDefault implements Atom {
             }
         }
         return new Data.ToPhi(output.toArray(new Phi[0]));
+    }
+
+    /**
+     * Parse a digits-only match as {@code long} for the {@code %d} conversion,
+     * rejecting a match with more digits than {@code long} can hold.
+     * @param str Matched digits
+     * @return The parsed value
+     */
+    private static long parsed(final String str) {
+        try {
+            return Long.parseLong(str);
+        } catch (final NumberFormatException ex) {
+            throw new ExFailure(
+                String.format(
+                    "The number %s doesn't fit into long range for the '%%d' conversion",
+                    str
+                ),
+                ex
+            );
+        }
     }
 
     /**
