@@ -24,85 +24,89 @@
   data > @
   bytes data > as-bytes
   eq 01- > as-bool
-  # Converts this chain of eight bytes into a number.
-  # Returns an error if the byte count is not exactly eight.
-  if. > as-number
-    eq nan.as-bytes
-    nan
-    if.
-      eq pinf.as-bytes
-      pinf
-      if.
-        eq ninf.as-bytes
-        ninf
-        if.
-          size.eq 8
-          number as-bytes
-          error
-            sprintf
-              "Can't convert non 8 length bytes to a number, bytes are %x"
-              * as-bytes
-  # Converts this chain of eight bytes into an i64 number.
-  # Returns an error if the byte count is not exactly eight.
-  if. > as-i64
-    size.eq 8
-    i64 as-bytes
-    error
-      sprintf
-        "Can't convert non 8 length bytes to i64, bytes are %x"
-        * as-bytes
-  # Converts this chain of four bytes into an i32 number.
-  # Returns an error if the byte count is not exactly four.
-  if. > as-i32
-    size.eq 4
-    i32 as-bytes
-    error
-      sprintf
-        "Can't convert non 4 length bytes to i32, bytes are %x"
-        * as-bytes
-  # Converts this chain of two bytes into an i16 number.
-  # Returns an error if the byte count is not exactly two.
-  if. > as-i16
-    size.eq 2
-    i16 as-bytes
-    error
-      sprintf
-        "Can't convert non 2 length bytes to i16, bytes are %x"
-        * as-bytes
 
-  # Returns `org.eolang.true` if current sequence of bytes equals another object.
+  # Converts this chain of eight bytes into a number.
+  [cant-convert] > as-number
+    if. > @
+      eq nan.as-bytes
+      nan
+      if.
+        eq pinf.as-bytes
+        pinf
+        if.
+          eq ninf.as-bytes
+          ninf
+          if.
+            size.eq 8
+            number as-bytes
+            cant-convert
+              sprintf
+                "Can't convert non 8 length bytes to a number, bytes are %x"
+                * as-bytes
+
+  # Converts this chain of eight bytes into an i64 number.
+  [cant-convert] > as-i64
+    if. > @
+      size.eq 8
+      i64 as-bytes
+      cant-convert
+        sprintf
+          "Can't convert non 8 length bytes to i64, bytes are %x"
+          * as-bytes
+
+  # Converts this chain of four bytes into an i32 number.
+  [cant-convert] > as-i32
+    if. > @
+      size.eq 4
+      i32 as-bytes
+      cant-convert
+        sprintf
+          "Can't convert non 4 length bytes to i32, bytes are %x"
+          * as-bytes
+
+  # Converts this chain of two bytes into an i16 number.
+  [cant-convert] > as-i16
+    if. > @
+      size.eq 2
+      i16 as-bytes
+      cant-convert
+        sprintf
+          "Can't convert non 2 length bytes to i16, bytes are %x"
+          * as-bytes
+
+  # Returns `true` if current sequence of bytes equals another object.
   # Before the actual comparison the object `b` is dataized.
   [b] > eq /bool
 
-  # Returns total amount of current bytes as `org.eolang.number`.
+  # Returns total amount of current bytes as `number`.
   [] > size /number
 
-  # Represents a sub-sequence of `org.eolang.bytes` inside the current one.
+  # Represents a sub-sequence of `bytes` inside the current one.
   # When the requested range lies outside the current bytes, the slice
   # returns the caller-supplied `cant-slice` fallback instead, or the
   # bottom object (⊥) when none was provided, which terminates on use.
   [start len] > slice /bytes
     ? > cant-slice /{string}
 
-  # Calculates the bitwise AND operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise AND operation and returns result as `bytes`.
   [b] > and /bytes
 
-  # Calculates the bitwise OR operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise OR operation and returns result as `bytes`.
   [b] > or /bytes
 
-  # Calculates the bitwise XOR operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise XOR operation and returns result as `bytes`.
   [b] > xor /bytes
 
-  # Calculates the bitwise NOT operation and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise NOT operation and returns result as `bytes`.
   [] > not /bytes
 
   # Calculates the bitwise left shift.
   right x.neg > [x] > left
 
-  # Calculates the bitwise right shift and returns result as `org.eolang.bytes`.
+  # Calculates the bitwise right shift and returns result as `bytes`.
   [x] > right /bytes
 
-  # Concatenation of two byte sequences and returns result as `org.eolang.bytes`.
+  # Concatenation of two byte sequences and returns result as `bytes`.
   [b] > concat /bytes
 
   # Tests that a slice of bytes can be extracted from a larger byte sequence.
@@ -499,13 +503,29 @@
       FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
       FF-FF-FF-FF-00-00-00-01
 
-  # Tests that conversion to number throws error for wrong-sized bytes.
+  # Tests that a wrong-sized conversion to number with no fallback yields the bottom
+  # object (⊥) that terminates when used.
   [] +> throws-on-bytes-of-wrong-size-as-number
     01-01-01-01.as-number > @
 
-  # Tests that conversion to i64 throws error for wrong-sized bytes.
+  # Tests that a wrong-sized conversion to number with a fallback yields the fallback.
+  [] +> tests-wrong-size-as-number-returns-provided-fallback
+    eq. > @
+      "recovered"
+      01-01-01-01.as-number
+        "recovered" > [msg]
+
+  # Tests that a wrong-sized conversion to i64 with no fallback yields the bottom
+  # object (⊥) that terminates when used.
   [] +> throws-on-bytes-of-wrong-size-as-i64
     01-01-01-01.as-i64 > @
+
+  # Tests that a wrong-sized conversion to i64 with a fallback yields the fallback.
+  [] +> tests-wrong-size-as-i64-returns-provided-fallback
+    eq. > @
+      "recovered"
+      01-01-01-01.as-i64
+        "recovered" > [msg]
 
   # Tests that an out-of-bounds slice with no `cant-slice` fallback yields the bottom
   # object (⊥) that terminates when used.

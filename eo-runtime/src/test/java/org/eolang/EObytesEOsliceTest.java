@@ -48,11 +48,11 @@ final class EObytesEOsliceTest {
     @Test
     void throwsOnOutOfBoundsSlice() {
         MatcherAssert.assertThat(
-            "error message is correct for out of bounds slice",
+            "an out-of-bounds slice with no fallback must terminate with the reason",
             new UncheckedText(
                 new TextOf(
                     Assertions.assertThrows(
-                        EOerror.ExError.class,
+                        ExAbstract.class,
                         () -> new Dataized(
                             new PhApplication(
                                 new PhApplication(
@@ -67,11 +67,11 @@ final class EObytesEOsliceTest {
                                 new Data.ToPhi(10)
                             )
                         ).asString(),
-                        "doesnt throw on out of bounds slice"
+                        "doesnt terminate on out of bounds slice"
                     )
                 )
             ).asString(),
-            Matchers.containsString("is out of bounds for bytes of size 5")
+            Matchers.containsString("bytes of size 5")
         );
     }
 
