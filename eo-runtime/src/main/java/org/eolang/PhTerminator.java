@@ -19,14 +19,15 @@ package org.eolang;
  * propagates through copying and dispatch and surfaces the failure at
  * the outer dataization, not at the point it was produced.</p>
  *
- * <p>A ⊥ may carry a <em>cause</em>: it has a single slot, addressable at
- * position 0 or as the attribute {@code cause} (as in {@code T "why it
- * failed"}). Any other {@code put} — including the ρ-binding the runtime
- * performs as ⊥ propagates — is ignored, keeping ⊥ tolerant. The first
- * object put into the slot is remembered and used as the panic message
- * when the ⊥ is finally forced. The cause is write-once and never handed
- * back by {@link #take(String)}, so EO code can neither read it nor catch
- * it — it exists only to explain the termination at the very top.</p>
+ * <p>A ⊥ may carry a <em>cause</em>: it has a single slot, addressable only
+ * at position 0 (as in {@code T "why it failed"}). A {@code put} at any other
+ * position, or any {@code put} by name, aborts — ⊥ has no named attributes,
+ * and the ρ-binding the runtime would otherwise attempt is excluded upstream
+ * in {@link AtWithRho}. The first object put at position 0 is remembered and
+ * used as the panic message when the ⊥ is finally forced. The cause is
+ * write-once and never handed back by {@link #take(String)}, so EO code can
+ * neither read it nor catch it — it exists only to explain the termination
+ * at the very top.</p>
  *
  * @since 0.73.1
  */
@@ -55,16 +56,21 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        if (pos == 0) {
-            this.remember(object);
+        if (pos != 0) {
+            throw new ExFailure(
+                "the ⊥ object only accepts a cause at position 0, not %d", pos
+            );
+        }
+        if (this.cause == null) {
+            this.cause = object;
         }
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        if ("cause".equals(name)) {
-            this.remember(object);
-        }
+        throw new ExFailure(
+            "the ⊥ object does not accept attributes by name, but got '%s'", name
+        );
     }
 
     @Override
@@ -91,16 +97,5 @@ public final class PhTerminator implements Phi {
     @Override
     public String φTerm() {
         return "⊥";
-    }
-
-    /**
-     * Remember the first object put into this ⊥ as its cause, ignoring any
-     * later ones so the birth reason survives propagation.
-     * @param object The object being put
-     */
-    private void remember(final Phi object) {
-        if (this.cause == null) {
-            this.cause = object;
-        }
     }
 }
