@@ -183,6 +183,14 @@
       tuple.empty.length
       0
 
+  # Tests that getting the head of an empty tuple terminates because it does not exist.
+  [] +> throws-on-getting-head-from-empty-tuple
+    tuple.empty.head > @
+
+  # Tests that getting the tail of an empty tuple terminates because it does not exist.
+  [] +> throws-on-getting-tail-from-empty-tuple
+    tuple.empty.tail > @
+
   # Tests that adding a number to an empty tuple creates a tuple with that element.
   [] +> tests-creates-empty-tuple-with-number
     eq. > @
