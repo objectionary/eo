@@ -46,7 +46,65 @@ final class PhTerminatorTest {
     void toleratesBinding() {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(0, new PhTerminator()),
-            "binding an attribute into the bottom object must be a no-op, not abort"
+            "putting an object into the bottom object must not abort"
+        );
+    }
+
+    @Test
+    void reportsTheGivenCauseOnPanic() {
+        final PhTerminator bottom = new PhTerminator();
+        bottom.put(0, new Data.ToPhi("cannot proceed here"));
+        MatcherAssert.assertThat(
+            "forcing the bottom object must not hide the cause that was put into it",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(bottom).take()
+            ).getMessage(),
+            Matchers.containsString("cannot proceed here")
+        );
+    }
+
+    @Test
+    void keepsTheFirstCause() {
+        final PhTerminator bottom = new PhTerminator();
+        bottom.put(0, new Data.ToPhi("the birth reason"));
+        bottom.put(0, new Data.ToPhi("a later reason"));
+        MatcherAssert.assertThat(
+            "a later object put into the bottom object must not overwrite its first cause",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(bottom).take()
+            ).getMessage(),
+            Matchers.containsString("the birth reason")
+        );
+    }
+
+    @Test
+    void hidesTheCauseFromTake() {
+        final PhTerminator bottom = new PhTerminator();
+        bottom.put(0, new Data.ToPhi("secret cause"));
+        MatcherAssert.assertThat(
+            "taking an attribute must not hand back the cause, only another bottom",
+            bottom.take("cause"),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void rejectsPutAtOtherPositions() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
+            "putting into the bottom object anywhere but position 0 must abort"
+        );
+    }
+
+    @Test
+    void rejectsPutByName() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhTerminator().put("cause", new Data.ToPhi("nope")),
+            "putting into the bottom object by name, even cause, must abort"
         );
     }
 }
