@@ -105,20 +105,30 @@ final class PhTerminatorTest {
     }
 
     @Test
-    void rejectsPutAtOtherPositions() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
-            "putting into the bottom object anywhere but the cause slot must abort"
+    void ignoresPutAtOtherPositions() {
+        final PhTerminator bottom = new PhTerminator();
+        bottom.put(1, new Data.ToPhi("ignored"));
+        MatcherAssert.assertThat(
+            "putting at a position other than the cause slot must not become the cause",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(bottom).take()
+            ).getMessage(),
+            Matchers.not(Matchers.containsString("ignored"))
         );
     }
 
     @Test
-    void rejectsPutUnderOtherNames() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhTerminator().put("other", new Data.ToPhi("nope")),
-            "putting into the bottom object under any name but cause must abort"
+    void ignoresPutUnderOtherNames() {
+        final PhTerminator bottom = new PhTerminator();
+        bottom.put("ρ", new Data.ToPhi("ignored"));
+        MatcherAssert.assertThat(
+            "putting under a name other than cause must not become the cause",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(bottom).take()
+            ).getMessage(),
+            Matchers.not(Matchers.containsString("ignored"))
         );
     }
 }

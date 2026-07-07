@@ -21,11 +21,12 @@ package org.eolang;
  *
  * <p>A ⊥ may carry a <em>cause</em>: it has a single slot, addressable at
  * position 0 or as the attribute {@code cause} (as in {@code T "why it
- * failed"}), and any other {@code put} aborts. The first object put there
- * is remembered and used as the panic message when the ⊥ is finally forced.
- * The cause is write-once and never handed back by {@link #take(String)},
- * so EO code can neither read it nor catch it — it exists only to explain
- * the termination at the very top.</p>
+ * failed"}). Any other {@code put} — including the ρ-binding the runtime
+ * performs as ⊥ propagates — is ignored, keeping ⊥ tolerant. The first
+ * object put into the slot is remembered and used as the panic message
+ * when the ⊥ is finally forced. The cause is write-once and never handed
+ * back by {@link #take(String)}, so EO code can neither read it nor catch
+ * it — it exists only to explain the termination at the very top.</p>
  *
  * @since 0.73.1
  */
@@ -54,22 +55,16 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        if (pos != 0) {
-            throw new ExFailure(
-                "the ⊥ object only accepts a cause at position 0, not %d", pos
-            );
+        if (pos == 0) {
+            this.remember(object);
         }
-        this.remember(object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!"cause".equals(name)) {
-            throw new ExFailure(
-                "the ⊥ object only accepts a cause named 'cause', not '%s'", name
-            );
+        if ("cause".equals(name)) {
+            this.remember(object);
         }
-        this.remember(object);
     }
 
     @Override
