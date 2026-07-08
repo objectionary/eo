@@ -4,12 +4,9 @@
 # yamllint disable rule:line-length
 name: pr-size
 on: pull_request
-env:
-  RUN_WORKFLOW: false
 jobs:
   pr-size:
     runs-on: ubuntu-24.04
-    if: ${{ vars.RUN_WORKFLOW == 'true' }}
     steps:
       - name: Check pull request size
         env:
