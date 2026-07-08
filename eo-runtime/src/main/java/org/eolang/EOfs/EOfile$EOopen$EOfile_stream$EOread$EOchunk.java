@@ -17,6 +17,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Dataized;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -54,7 +55,7 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOchunk
             return new ToPhi(
                 Files.INSTANCE.read(
                     path.toString(),
-                    new Dataized(this.take("size")).asNumber().intValue()
+                    new Expect.Natural(Expect.at(this, "size")).it()
                 )
             );
         } catch (final IOException ex) {
