@@ -262,6 +262,8 @@ public class Expect<T> {
                 .otherwise("must be a number")
                 .must(number -> number % 1 == 0)
                 .otherwise("must be an integer")
+                .must(number -> number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE)
+                .otherwise("must fit into int range")
                 .that(Double::intValue)
                 .it();
         }
@@ -394,6 +396,8 @@ public class Expect<T> {
                 .otherwise("must be a number")
                 .must(number -> number % 1 == 0)
                 .otherwise("must be an integer")
+                .must(number -> number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE)
+                .otherwise("must fit into int range")
                 .that(Double::intValue)
                 .must(integer -> integer >= 0)
                 .otherwise("must be greater or equal to zero")
