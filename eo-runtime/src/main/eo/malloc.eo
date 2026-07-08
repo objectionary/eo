@@ -382,6 +382,12 @@
       1
       m.resized -1 > [m]
 
+  # Tests that malloc throws an error when attempting to resize to a fractional size.
+  [] +> throws-on-changing-size-to-fractional
+    malloc.of > @
+      1
+      m.resized 1.5 > [m]
+
   # Tests that malloc.empty creates a memory block with zero size.
   [] +> tests-malloc-empty-is-empty
     malloc.empty > @
