@@ -99,11 +99,11 @@
             matched-from-index
               position.plus 1
               to
-          error "Matched block does not exist, can't get next"
+          T "Matched block does not exist, can't get next"
         if. > text
           exists
           group 0
-          error "Matched block does not exist, can't get text"
+          T "Matched block does not exist, can't get text"
 
         # Returns the string subsequence captured by the group
         # by `index` during the `match` operation.
