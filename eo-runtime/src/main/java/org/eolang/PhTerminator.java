@@ -21,10 +21,12 @@ package org.eolang;
  *
  * <p>A ⊥ may carry a <em>cause</em>: it has a single slot, addressable only
  * at position 0 (as in {@code T "why it failed"}). A {@code put} at any other
- * position, or any {@code put} by name, aborts — ⊥ has no named attributes,
- * and the ρ-binding the runtime would otherwise attempt is excluded upstream
- * in {@link AtWithRho}. The first object put at position 0 is remembered and
- * used as the panic message when the ⊥ is finally forced. The cause is
+ * position, or any {@code put} by name other than ρ, aborts — ⊥ has no named
+ * attributes. The ρ-binding the runtime attempts on every take (via
+ * {@link AtWithRho}) is silently ignored, since a ⊥ has no ρ; this keeps its
+ * cause from being masked by a ρ-rejection while it propagates. The first
+ * object put at position 0 is remembered and used as the panic message when
+ * the ⊥ is finally forced. The cause is
  * write-once and never handed back by {@link #take(String)}, so EO code can
  * neither read it nor catch it — it exists only to explain the termination
  * at the very top.</p>
@@ -68,9 +70,11 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final String name, final Phi object) {
-        throw new ExFailure(
-            "the ⊥ object does not accept attributes by name, but got '%s'", name
-        );
+        if (!Phi.RHO.equals(name)) {
+            throw new ExFailure(
+                "the ⊥ object does not accept attributes by name, but got '%s'", name
+            );
+        }
     }
 
     @Override

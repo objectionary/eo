@@ -6,6 +6,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -105,6 +106,28 @@ final class AtWithRhoTest {
             "AtWithRho must call copy() on original object",
             res,
             Matchers.not(Matchers.is(obj))
+        );
+    }
+
+    @Test
+    void keepsCauseVisibleWhenBindingRhoOntoWrappedBottom() {
+        MatcherAssert.assertThat(
+            "AtWithRho must not mask the cause of a wrapped bottom object when it binds ρ",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(
+                    new AtWithRho(
+                        new AtComposite(
+                            new PhDefault(),
+                            phi -> new PhApplication(
+                                new PhTerminator(), 0, new Data.ToPhi("the deep reason")
+                            )
+                        ),
+                        new PhDefault()
+                    ).get()
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("the deep reason")
         );
     }
 }
