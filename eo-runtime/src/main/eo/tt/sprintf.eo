@@ -148,6 +148,13 @@
         "%d"
         * 9.99
 
+  # Tests that sprintf throws an error for %d when the number doesn't fit
+  # into long range, instead of silently saturating to Long.MAX_VALUE.
+  [] +> throws-on-formatting-huge-number-as-decimal
+    sprintf > @
+      "%d"
+      * 1.0e30
+
   # Tests that sprintf always pads a float to exactly six fraction digits.
   [] +> formats-float-always-with-six-fraction-digits
     eq. > @

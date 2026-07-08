@@ -40,7 +40,7 @@ final class SprintfArgs {
 
     static {
         SprintfArgs.CONVERSION.put('s', Dataized::asString);
-        SprintfArgs.CONVERSION.put('d', element -> element.asNumber().longValue());
+        SprintfArgs.CONVERSION.put('d', element -> SprintfArgs.toLong(element.asNumber()));
         SprintfArgs.CONVERSION.put('f', Dataized::asNumber);
         SprintfArgs.CONVERSION.put('x', element -> SprintfArgs.bytesToHex(element.take()));
         SprintfArgs.CONVERSION.put('b', Dataized::asBool);
@@ -132,6 +132,25 @@ final class SprintfArgs {
             );
         }
         return SprintfArgs.CONVERSION.get(symbol).apply(element);
+    }
+
+    /**
+     * Convert a number to {@code long} for the {@code %d} conversion, rejecting
+     * a value outside {@code long} range instead of silently saturating to
+     * {@link Long#MAX_VALUE}/{@link Long#MIN_VALUE} as {@link Double#longValue()} does.
+     * @param number Number to convert
+     * @return The number as {@code long}
+     */
+    private static long toLong(final double number) {
+        if (number < Long.MIN_VALUE || number > Long.MAX_VALUE) {
+            throw new ExFailure(
+                String.format(
+                    "The number %s doesn't fit into long range for the '%%d' conversion",
+                    number
+                )
+            );
+        }
+        return (long) number;
     }
 
     /**
