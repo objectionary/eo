@@ -95,7 +95,14 @@
   [b] > or /bytes
 
   # Calculates the bitwise XOR operation and returns result as `bytes`.
-  [b] > xor /bytes
+  [b] > xor
+    or. > @
+      and.
+        ^
+        b.not
+      and.
+        ^.not
+        b
 
   # Calculates the bitwise NOT operation and returns result as `bytes`.
   [] > not /bytes
