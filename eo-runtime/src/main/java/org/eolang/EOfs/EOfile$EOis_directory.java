@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -23,6 +24,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.is-directory")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOis_directory extends PhDefault implements Atom {
 

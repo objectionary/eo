@@ -22,6 +22,7 @@ import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -32,6 +33,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "dir.walk")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdir$EOwalk extends PhDefault implements Atom {
 

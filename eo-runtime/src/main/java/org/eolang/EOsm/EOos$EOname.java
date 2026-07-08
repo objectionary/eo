@@ -11,6 +11,7 @@ package org.eolang.EOsm; // NOPMD
 
 import org.eolang.Atom;
 import org.eolang.Data;
+import org.eolang.Impure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -21,6 +22,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "os.name")
+@Impure
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOos$EOname extends PhDefault implements Atom {
 
