@@ -226,8 +226,12 @@ final class CacheTest {
             source.getFileName()
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        instance.update(CacheTest.hash(first).getBytes(StandardCharsets.UTF_8));
-        instance.update(CacheTest.hash(second).getBytes(StandardCharsets.UTF_8));
+        instance.update(
+            String.format("file1.txt\u0000%s", CacheTest.hash(first)).getBytes(StandardCharsets.UTF_8)
+        );
+        instance.update(
+            String.format("file2.txt\u0000%s", CacheTest.hash(second)).getBytes(StandardCharsets.UTF_8)
+        );
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
@@ -235,6 +239,40 @@ final class CacheTest {
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(Base64.getEncoder().encodeToString(instance.digest()))
+        );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    void generatesDifferentHashesForFoldersWithDifferentlyNamedIdenticalFiles(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path cache = temp.resolve("cache");
+        Files.createDirectories(cache);
+        final String content = "same content";
+        final Path first = temp.resolve("dirA");
+        Files.createDirectories(first);
+        Files.writeString(first.resolve("original-name.eo"), content, StandardCharsets.UTF_8);
+        new Cache(cache, p -> "compiled-a").apply(
+            first, temp.resolve("out-a.txt"), first.getFileName()
+        );
+        final Path second = temp.resolve("dirB");
+        Files.createDirectories(second);
+        Files.writeString(
+            second.resolve("completely-different-name.eo"), content, StandardCharsets.UTF_8
+        );
+        new Cache(cache, p -> "compiled-b").apply(
+            second, temp.resolve("out-b.txt"), second.getFileName()
+        );
+        MatcherAssert.assertThat(
+            "Directories with identically-content but differently-named files "
+                + "must produce different hashes",
+            Files.readString(cache.resolve("dirA.sha256"), StandardCharsets.UTF_8),
+            Matchers.not(
+                Matchers.equalTo(
+                    Files.readString(cache.resolve("dirB.sha256"), StandardCharsets.UTF_8)
+                )
+            )
         );
     }
 
