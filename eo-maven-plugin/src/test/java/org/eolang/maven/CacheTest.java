@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -146,11 +147,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
             Files.readString(base.resolve(String.format("%s.sha256", tail)), encoding),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(temp, source))
         );
     }
 
@@ -176,12 +173,7 @@ final class CacheTest {
                 cache.resolve(String.format("%s.sha256", tail)),
                 StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256")
-                        .digest(content.getBytes(StandardCharsets.UTF_8))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(temp, source))
         );
     }
 
@@ -202,7 +194,7 @@ final class CacheTest {
                 cache.resolve(String.format("%s.sha256", tail)),
                 StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(CacheTest.hash(content))
+            Matchers.equalTo(CacheTest.hash(temp, source))
         );
     }
 
@@ -218,16 +210,18 @@ final class CacheTest {
         final String first = "file1 content";
         final String second = "file2 content";
         final String result = String.format("%s%s", first, second);
-        Files.writeString(source.resolve("file1.txt"), first, StandardCharsets.UTF_8);
-        Files.writeString(source.resolve("file2.txt"), second, StandardCharsets.UTF_8);
+        final Path file1 = source.resolve("file1.txt");
+        final Path file2 = source.resolve("file2.txt");
+        Files.writeString(file1, first, StandardCharsets.UTF_8);
+        Files.writeString(file2, second, StandardCharsets.UTF_8);
         new Cache(cache, p -> result).apply(
             source,
             temp.resolve("out.txt"),
             source.getFileName()
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        instance.update(CacheTest.hash(first).getBytes(StandardCharsets.UTF_8));
-        instance.update(CacheTest.hash(second).getBytes(StandardCharsets.UTF_8));
+        instance.update(CacheTest.hash(source, file1).getBytes(StandardCharsets.UTF_8));
+        instance.update(CacheTest.hash(source, file2).getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
@@ -238,10 +232,24 @@ final class CacheTest {
         );
     }
 
-    private static String hash(final String content) throws NoSuchAlgorithmException {
-        return Base64.getEncoder().encodeToString(
-            MessageDigest.getInstance("SHA-256")
-                .digest(content.getBytes(StandardCharsets.UTF_8))
-        );
+    /**
+     * Compute the SHA-256 hash of a file, based on its path relative to
+     * {@code root}, its size, and its content.
+     * @param root The root directory used to relativize the file path.
+     * @param file The file to hash.
+     * @return Base64-encoded SHA-256 hash.
+     * @throws NoSuchAlgorithmException If SHA-256 is not available.
+     * @throws IOException If the file cannot be read.
+     */
+    private static String hash(final Path root, final Path file)
+        throws NoSuchAlgorithmException, IOException {
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final Path rel = root.relativize(file);
+        digest.update(rel.toString().getBytes(StandardCharsets.UTF_8));
+        digest.update((byte) 0);
+        final long size = Files.size(file);
+        digest.update(ByteBuffer.allocate(Long.BYTES).putLong(size).array());
+        digest.update(Files.readAllBytes(file));
+        return Base64.getEncoder().encodeToString(digest.digest());
     }
 }
