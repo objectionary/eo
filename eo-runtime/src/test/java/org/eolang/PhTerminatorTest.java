@@ -107,4 +107,12 @@ final class PhTerminatorTest {
             "putting into the bottom object by name, even cause, must abort"
         );
     }
+
+    @Test
+    void toleratesRhoBinding() {
+        Assertions.assertDoesNotThrow(
+            () -> new PhTerminator().put(Phi.RHO, new PhDefault()),
+            "binding ρ onto the bottom object must not abort"
+        );
+    }
 }

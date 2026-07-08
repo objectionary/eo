@@ -7,8 +7,8 @@ package org.eolang;
 
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
- * The terminator ⊥ ({@link PhTerminator}) is excluded: it is not a real object and never
- * takes a \rho, so no container leaks into it as it propagates.
+ * The terminator ⊥ ({@link PhTerminator}) silently ignores this \rho itself, so no container
+ * leaks into it and its cause is not masked as it propagates.
  * This attribute is NOT thread safe!
  * @since 0.36.0
  * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
@@ -52,7 +52,7 @@ final class AtWithRho implements Attribute {
     @Override
     public Phi get() {
         Phi ret = this.original.get();
-        if (!(ret instanceof PhTerminator) && !ret.hasRho()) {
+        if (!ret.hasRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);
         }
