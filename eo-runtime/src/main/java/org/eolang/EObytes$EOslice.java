@@ -42,7 +42,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
         final int start = this.natural("start");
         final int len = this.natural("len");
         final Phi result;
-        if (start + len <= bytes.length) {
+        if ((long) start + len <= bytes.length) {
             result = new Data.ToPhi(Arrays.copyOfRange(bytes, start, start + len));
         } else {
             result = this.take(EObytes$EOslice.FALLBACK);
