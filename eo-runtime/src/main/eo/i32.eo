@@ -24,18 +24,19 @@
 
   # Convert this `org.eolang.i32` to `org.eolang.i16`.
   # The `org.eolang.error` is returned if the `org.eolang.i32` number is more than
-  # max `org.eolang.i16` value `32767`.
+  # max `org.eolang.i16` value `32767` or less than min `org.eolang.i16` value `-32768`.
+  # The conversion is validated by converting `left` back up to `org.eolang.i32` and
+  # comparing it against the original value, so the check is exact for both signs
+  # instead of relying on the upper two bytes alone.
   [] > as-i16
     if. > @
-      or.
-        left.eq 00-00
-        left.eq FF-FF
-      i16 (as-bytes.slice 2 2)
+      ^.eq left.as-i32
+      left
       error
         sprintf
           "Can't convert i32 number %d to i16 because it's out of i16 bounds"
           * as-i64.as-number
-    (as-bytes.slice 0 2).as-bytes > left
+    i16 (as-bytes.slice 2 2) > left
 
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i32` object.
@@ -134,6 +135,16 @@
     eq. > @
       -123.as-i64.as-i32
       -123.as-i64.as-i32.as-i16.as-i32
+
+  # Tests that converting an i32 just above the i16 upper bound throws an error,
+  # even though its upper two bytes happen to be 00-00.
+  [] +> throws-on-converting-i16-max-plus-one-to-i16
+    32768.as-i64.as-i32.as-i16 > @
+
+  # Tests that converting an i32 just below the i16 lower bound throws an error,
+  # even though its upper two bytes happen to be FF-FF.
+  [] +> throws-on-converting-i16-min-minus-one-to-i16
+    -32769.as-i64.as-i32.as-i16 > @
 
   # Tests that i32 less-than comparison returns true for smaller values.
   [] +> tests-i32-less-true
