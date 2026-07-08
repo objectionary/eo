@@ -99,6 +99,34 @@ final class HeapsTest {
     }
 
     @Test
+    void failsOnReadIfOffsetPlusLengthOverflows() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.read(
+                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10),
+                Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1
+            ),
+            "Heaps must fail on out-of-bounds read when offset + length overflows int"
+        );
+    }
+
+    @Test
+    void failsCleanlyOnNegativeReadArguments() {
+        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.read(idx, -5, 3),
+            "Heaps must reject a negative offset with a clean ExFailure, not a raw JVM exception"
+        );
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.read(idx, 2, -3),
+            "Heaps must reject a negative length with a clean ExFailure, not a raw JVM exception"
+        );
+        Heaps.INSTANCE.free(idx);
+    }
+
+    @Test
     void readsByOffsetAndLength() {
         final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
