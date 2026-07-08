@@ -541,6 +541,17 @@
         10
         "recovered" > [msg]
 
+  # Tests that a slice whose `start + len` overflows a 32-bit int does not
+  # wrap around into a negative value and slip through the bounds check, but
+  # is detected as out-of-bounds and yields the `cant-slice` fallback.
+  [] +> tests-slice-with-overflowing-start-plus-len-returns-fallback
+    eq. > @
+      "recovered"
+      20-1F-EE-B5-90.slice
+        2000000000
+        2000000000
+        "recovered" > [msg]
+
   # Tests that bytes can be correctly converted to i64 integer.
   [] +> tests-bytes-converts-to-i64
     eq. > @
