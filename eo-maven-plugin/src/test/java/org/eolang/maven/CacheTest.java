@@ -26,19 +26,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.TooManyMethods")
 final class CacheTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesSource(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-folder");
         Files.createDirectories(base);
         final Path source = temp.resolve("source.eo");
         Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path target = temp.resolve("target.xmir");
-        final Path tail = source.getFileName();
         final String content = "compiled";
-        new Cache(base, p -> content).apply(source, target, tail);
+        new Cache(base, p -> content).apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Target file must be created from source",
             Files.readString(target),
@@ -207,7 +206,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void generatesCorrectHashForEntireFolderWithSeveralFiles(
         @Mktmp final Path temp
     ) throws IOException, NoSuchAlgorithmException {
@@ -217,20 +215,21 @@ final class CacheTest {
         Files.createDirectories(source);
         final String first = "file1 content";
         final String second = "file2 content";
-        final String result = String.format("%s%s", first, second);
         Files.writeString(source.resolve("file1.txt"), first, StandardCharsets.UTF_8);
         Files.writeString(source.resolve("file2.txt"), second, StandardCharsets.UTF_8);
-        new Cache(cache, p -> result).apply(
+        new Cache(cache, p -> String.format("%s%s", first, second)).apply(
             source,
             temp.resolve("out.txt"),
             source.getFileName()
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
         instance.update(
-            String.format("file1.txt\u0000%s", CacheTest.hash(first)).getBytes(StandardCharsets.UTF_8)
+            String.format("file1.txt\u0000%s", CacheTest.hash(first))
+                .getBytes(StandardCharsets.UTF_8)
         );
         instance.update(
-            String.format("file2.txt\u0000%s", CacheTest.hash(second)).getBytes(StandardCharsets.UTF_8)
+            String.format("file2.txt\u0000%s", CacheTest.hash(second))
+                .getBytes(StandardCharsets.UTF_8)
         );
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
@@ -243,7 +242,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void generatesDifferentHashesForFoldersWithDifferentlyNamedIdenticalFiles(
         @Mktmp final Path temp
     ) throws IOException {
@@ -265,8 +263,7 @@ final class CacheTest {
             second, temp.resolve("out-b.txt"), second.getFileName()
         );
         MatcherAssert.assertThat(
-            "Directories with identically-content but differently-named files "
-                + "must produce different hashes",
+            "Directories with identical content but differently named files must produce different hashes",
             Files.readString(cache.resolve("dirA.sha256"), StandardCharsets.UTF_8),
             Matchers.not(
                 Matchers.equalTo(
