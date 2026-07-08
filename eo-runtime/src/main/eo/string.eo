@@ -45,7 +45,7 @@
     [index csize len] > inclen
       if. > @
         (index.plus csize).gt size
-        error
+        T
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
             * csize index as-bytes
@@ -71,7 +71,7 @@
               if.
                 (byte.and p4).eq r4
                 inclen index 4 accum
-                error
+                T
                   sprintf
                     "Unknown byte format (%x), can't recognize character"
                     * byte

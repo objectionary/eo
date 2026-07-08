@@ -10,11 +10,11 @@
 
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
-# If `limit` < 1, an error is returned.
-[text delimiter limit] > nsplit
+# If `limit` < 1, the `cant-split` fallback is returned, or ⊥ when unbound.
+[text delimiter limit cant-split] > nsplit
   if. > @
     1.gt limit
-    error
+    cant-split
       sprintf
         "Invalid limit %d for nsplit, must be at least 1"
         * limit
@@ -93,19 +93,29 @@
           10
       * "a" "b" "c"
 
-  # Tests that nsplit throws error with limit 0.
+  # Tests that nsplit terminates with ⊥ on limit 0 when no fallback is given.
   [] +> throws-on-nsplit-with-limit-zero
     nsplit > @
       "text"
       "-"
       0
 
-  # Tests that nsplit throws error with negative limit.
+  # Tests that nsplit terminates with ⊥ on a negative limit when no fallback is given.
   [] +> throws-on-nsplit-with-negative-limit
     nsplit > @
       "text"
       "-"
       -1
+
+  # Tests that nsplit with an invalid limit and a fallback yields the fallback.
+  [] +> tests-nsplit-invalid-limit-returns-provided-fallback
+    eq. > @
+      "fallback"
+      nsplit
+        "text"
+        "-"
+        0
+        "fallback" > [msg]
 
   # Tests that nsplit handles empty strings between delimiters.
   [] +> tests-nsplit-with-empty-strings
