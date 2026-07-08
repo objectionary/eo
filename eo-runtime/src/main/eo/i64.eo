@@ -17,13 +17,14 @@
   as-i32.as-i16 > as-i16
 
   # Convert this `org.eolang.i64` to `org.eolang.i32`.
-  # The `org.eolang.error` is returned if the `org.eolang.i64` number is more than
-  # max `org.eolang.i32` value `2147483647`.
-  [] > as-i32
+  # When the number is out of i32 bounds, the caller-supplied `cant-convert`
+  # fallback is returned, or the bottom object (⊥) when none was provided,
+  # which terminates on use.
+  [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64
       left
-      error
+      cant-convert
         sprintf
           "Can't convert i64 number %d to i32 because it's out of i32 bounds"
           * as-number
@@ -107,8 +108,16 @@
       -234.as-i64
       -234.as-i64.as-i32.as-i64
 
-  # Tests that converting i64 to i32 throws error when out of bounds.
+  # Tests that converting i64 to i32 out of bounds with no fallback yields the
+  # bottom object (⊥) that terminates when used.
   3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
+
+  # Tests that an out-of-bounds i64-to-i32 conversion with a fallback yields it.
+  [] +> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
+    eq. > @
+      "recovered"
+      3147483647.as-i64.as-i32
+        "recovered" > [msg]
 
   # Tests that i32 max value converts to i32 without error.
   [] +> tests-i64-i32-max-converts-without-error
