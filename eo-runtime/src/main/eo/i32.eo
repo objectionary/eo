@@ -28,11 +28,11 @@
   # The conversion is validated by converting `left` back up to `org.eolang.i32` and
   # comparing it against the original value, so the check is exact for both signs
   # instead of relying on the upper two bytes alone.
-  [] > as-i16
+  [cant-convert] > as-i16
     if. > @
       ^.eq left.as-i32
       left
-      error
+      cant-convert
         sprintf
           "Can't convert i32 number %d to i16 because it's out of i16 bounds"
           * as-i64.as-number
@@ -90,11 +90,12 @@
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `org.eolang.i32` object.
-  # An `error` is returned if `x` is equal to 0.
-  [x] > div
+  # When `x` is zero, the caller-supplied `cant-divide` fallback is returned,
+  # or the bottom object (⊥) when none was provided, which terminates on use.
+  [x cant-divide] > div
     if. > @
       xval.eq zero
-      error
+      cant-divide
         sprintf
           "Can't divide %d by i32 zero"
           * as-i64.as-number
@@ -267,11 +268,28 @@
       -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
       2147483647.as-i64.as-i32
 
-  # Tests that i32 division by zero throws an error.
+  # Tests that i32 division by zero with no fallback yields the bottom object
+  # (⊥) that terminates when used.
   2.as-i64.as-i32.div 0.as-i64.as-i32 > [] +> throws-on-division-i32-by-i32-zero
 
-  # Tests that converting i32 to i16 throws error when out of bounds.
+  # Tests that i32 division by zero with a provided fallback yields the fallback.
+  [] +> tests-i32-div-by-zero-returns-provided-fallback
+    eq. > @
+      "recovered"
+      2.as-i64.as-i32.div
+        0.as-i64.as-i32
+        "recovered" > [msg]
+
+  # Tests that converting i32 to i16 out of bounds with no fallback yields the
+  # bottom object (⊥) that terminates when used.
   247483647.as-i64.as-i32.as-i16 > [] +> throws-on-converting-to-i16-if-out-of-bounds
+
+  # Tests that an out-of-bounds i32-to-i16 conversion with a fallback yields it.
+  [] +> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
+    eq. > @
+      "recovered"
+      247483647.as-i64.as-i32.as-i16
+        "recovered" > [msg]
 
   # Tests that i32 division by one returns the original value.
   [] +> tests-i32-div-by-i32-one

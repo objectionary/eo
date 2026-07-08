@@ -75,11 +75,12 @@
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `org.eolang.i16` object.
-  # An `org.eolang.error` is returned if `x` is equal to `0`.
-  [x] > div
+  # When `x` is zero, the caller-supplied `cant-divide` fallback is returned,
+  # or the bottom object (⊥) when none was provided, which terminates on use.
+  [x cant-divide] > div
     if. > @
       xval.eq zero
-      error
+      cant-divide
         sprintf
           "Can't divide %d by i16 zero"
           * as-i32.as-i64.as-number
@@ -230,8 +231,17 @@
       -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
       32767.as-i64.as-i32.as-i16
 
-  # Tests that i16 division by zero throws an error.
+  # Tests that i16 division by zero with no fallback yields the bottom object
+  # (⊥) that terminates when used.
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] +> throws-on-division-i16-by-i16-zero
+
+  # Tests that i16 division by zero with a provided fallback yields the fallback.
+  [] +> tests-i16-div-by-zero-returns-provided-fallback
+    eq. > @
+      "recovered"
+      2.as-i64.as-i32.as-i16.div
+        0.as-i64.as-i32.as-i16
+        "recovered" > [msg]
 
   # Tests that i16 division by one returns the original value.
   [] +> tests-i16-div-by-i16-one
