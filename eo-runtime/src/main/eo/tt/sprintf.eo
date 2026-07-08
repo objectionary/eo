@@ -1,8 +1,11 @@
++alias tt.as-ascii
++alias tt.as-decimal
++alias tt.as-fixed
++alias tt.as-hex
++alias tt.is-digit
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -17,7 +20,74 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
-[format args] > sprintf /string
+[format args] > sprintf
+  string (walk 0 0 --) > @
+  format.as-bytes > raw
+  raw.size > length
+  "%".as-bytes > percent
+
+  # Zero-based argument index referenced by the digit byte `char`, so that
+  # `1` points at the first argument.
+  [char] > arg-index
+    (as-ascii char).minus (as-ascii "1") > @
+
+  # Recursively walks `format` bytes from position `index`, where `auto` points
+  # at the next sequential argument and `acc` accumulates the resulting bytes.
+  [index auto acc] > walk
+    if. > @
+      index.gte length
+      acc
+      if.
+        char.eq percent
+        if.
+          next.eq percent
+          walk (index.plus 2).as-number auto (concat. acc percent)
+          if.
+            is-digit (string next)
+            walk (index.plus 4).as-number auto (concat. acc (formatted (raw.slice (index.plus 3) 1) (arg-index (string next))))
+            walk (index.plus 2).as-number (auto.plus 1).as-number (concat. acc (formatted next auto))
+        walk (index.plus 1).as-number auto (concat. acc char)
+    raw.slice index 1 > char
+    raw.slice (index.plus 1) 1 > next
+
+  # Converts the argument at `idx` to bytes according to the `spec` byte.
+  [spec idx] > formatted
+    if. > @
+      idx.gte args.length
+      error
+        string
+          concat.
+            concat.
+              "the argument index ".as-bytes
+              as-decimal idx
+            " in sprintf is out of bounds".as-bytes
+      switch
+        *
+          *
+            spec.eq "s".as-bytes
+            (args.at idx).as-bytes
+          *
+            spec.eq "d".as-bytes
+            as-decimal (number (args.at idx))
+          *
+            spec.eq "f".as-bytes
+            as-fixed (number (args.at idx)) 6
+          *
+            spec.eq "x".as-bytes
+            as-hex (args.at idx)
+          *
+            spec.eq "b".as-bytes
+            if. (args.at idx).as-bool "true".as-bytes "false".as-bytes
+          *
+            true
+            error
+              string
+                concat.
+                  concat.
+                    "the format specifier ".as-bytes
+                    spec
+                  " in sprintf is unsupported".as-bytes
+
   # Tests that sprintf formats string with single %s placeholder.
   [] +> tests-prints-simple-string
     eq. > @
