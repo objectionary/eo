@@ -150,7 +150,9 @@ final class Heaps {
                     )
                 );
             }
-            return offset + length <= this.blocks.get(identifier).length;
+            return offset >= 0
+                && length >= 0
+                && (long) offset + length <= this.blocks.get(identifier).length;
         } finally {
             this.lock.unlock();
         }
