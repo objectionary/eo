@@ -58,6 +58,11 @@
   [] +> throws-on-sscanf-with-wrong-format
     sscanf "%l" "error" > @
 
+  # Tests that sscanf throws error for %d when the digits don't fit
+  # into long range, instead of an uncaught NumberFormatException.
+  [] +> throws-on-sscanf-with-oversized-int
+    sscanf "%d" "99999999999999999999" > @
+
   # Tests that sscanf parses multiple values with different format specifiers.
   [] +> tests-sscanf-with-string-int-float
     eq. > @
