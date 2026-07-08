@@ -59,13 +59,13 @@
   [] +> tests-opens-posix-tcp-socket
     or. > @
       os.is-windows
-      try
-        sd.gt 0
-        ex > [ex]
-        code.
-          posix
-            "close"
-            * sd
+      seq
+        *
+          code.
+            posix
+              "close"
+              * sd
+          sd.gt 0
     code. > sd
       posix
         "socket"
