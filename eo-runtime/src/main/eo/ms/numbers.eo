@@ -12,9 +12,10 @@
 [sequence] > numbers
   sequence > @
 
-  # Find max element in the numbers sequence.
-  [] > max
-    ? > cant-max
+  # Find max element in the numbers sequence. An empty sequence yields the
+  # caller-supplied `cant-max` fallback, or the bottom object (⊥) when none
+  # was provided.
+  [cant-max] > max
     if. > @
       lst.is-empty
       cant-max "cannot get the max number from an empty sequence"
@@ -28,9 +29,10 @@
             max
     list sequence > lst
 
-  # Find min element in the numbers sequence.
-  [] > min
-    ? > cant-min
+  # Find min element in the numbers sequence. An empty sequence yields the
+  # caller-supplied `cant-min` fallback, or the bottom object (⊥) when none
+  # was provided.
+  [cant-min] > min
     if. > @
       lst.is-empty
       cant-min "cannot get the min number from an empty sequence"
