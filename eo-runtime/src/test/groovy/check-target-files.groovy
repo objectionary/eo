@@ -7,7 +7,7 @@ List<String> expected = [
   'eo/1-parse/bytes.xmir',
   'eo/1-parse/fs/dir.xmir',
   'eo/5-transpile/malloc.xmir',
-  'generated-sources/org/eolang/EOdataized.java',
+  'generated-sources/org/eolang/EOseq.java',
   'generated-sources/org/eolang/EOnk/EOsocket.java',
   'generated-test-sources/org/eolang/EOtryEOAtomTest.java',
   'classes/org/eolang/package-info.class',

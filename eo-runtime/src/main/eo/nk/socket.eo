@@ -29,7 +29,8 @@
 #
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
-# retrieved from scope dataization. The error is returned is any of the described steps failed.
+# retrieved from scope dataization. On failure at any of the described steps, the fallback of the
+# corresponding operation is returned (or the bottom object when it is left unbound).
 #
 # To listen to the incoming connections as server you should do:
 #
@@ -51,7 +52,8 @@
 # starts listening for incoming connections, dataizes provided scope, closes the socket
 # and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
-# The error is returned is any of the described steps failed.
+# On failure at any of the described steps, the fallback of the corresponding operation is
+# returned (or the bottom object when it is left unbound).
 [address port] > socket
   if. > @
     os.is-windows
@@ -141,13 +143,7 @@
       posix
         "inet_addr"
         * address
-    if. > addrint
-      addr.eq posix.inaddr-none
-      error
-        sprintf
-          "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
-          * address strerror.code
-      addr.as-i32
+    addr.as-i32 > addrint
     posix.sockaddr-in > sockaddr
       posix.af-inet.as-i16
       htons port
@@ -169,11 +165,12 @@
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.
-      # On success the `number` of sent bytes is returned, otherwise `error` is returned.
-      [buffer] > send
+      # On success the `number` of sent bytes is returned, otherwise the `cant-send`
+      # fallback is returned, or ⊥ when unbound.
+      [buffer cant-send] > send
         if. > @
           sent.eq -1
-          error
+          cant-send
             sprintf
               "Failed to send message through the socket #%d, reason: %s"
               * sockfd strerror.code
@@ -186,11 +183,12 @@
 
       # Receive bytes from the socket.
       # Here `size` must be a `number` of desired bytes to receive.
-      # On success the received `bytes` are returned, otherwise `error` is returned.
-      [size] > recv
+      # On success the received `bytes` are returned, otherwise the `cant-receive`
+      # fallback is returned, or ⊥ when unbound.
+      [size cant-receive] > recv
         if. > @
           received.code.eq -1
-          error
+          cant-receive
             sprintf
               "Failed to receive data from the socket #%d, reason: %s"
               * sockfd strerror.code
@@ -208,7 +206,7 @@
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
-        error
+        T
           sprintf
             "Couldn't close the socket #%d because '%s'"
             * sockfd strerror.code
@@ -222,27 +220,33 @@
     #
     # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
-    [scope] > safe-socket
+    [scope cant] > safe-socket
       if. > @
         sd.eq -1
-        error
+        cant
           sprintf
             "Couldn't create a socket because '%s'"
             * strerror.code
         try
-          scope
+          if.
+            addr.eq posix.inaddr-none
+            cant
+              sprintf
+                "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
+                * address strerror.code
+            scope
           error ex > [ex]
           closed-socket sd
 
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
-    [scope] > connect
+    [scope cant-connect] > connect
       safe-socket > @
         [] >>
           if. > @
             connected.eq -1
-            error
+            cant-connect
               sprintf
                 "Couldn't connect to %s:%d on socket #%d because '%s'"
                 * sock.address sock.port sock.sd sock.strerror.code
@@ -256,23 +260,24 @@
             posix
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
+        cant-connect
 
     # Listen for connections on a socket.
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
-    [scope] > listen
+    [scope cant-listen] > listen
       safe-socket > @
         [] >>
           if. > @
             bound.eq -1
-            error
+            cant-listen
               sprintf
                 "Couldn't bind the socket #%d to %s:%d because '%s'"
                 * sock.sd sock.address sock.port sock.strerror.code
             if.
               listened.eq -1
-              error
+              cant-listen
                 sprintf
                   "Failed to listen to %s:%d on the socket #%d because '%s'"
                   * sock.address sock.port sock.sd sock.strerror.code
@@ -286,11 +291,11 @@
                       # On success the client socket is returned, otherwise `error` is returned.
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
-                      [scope] > accept
+                      [scope cant-accept] > accept
                         try > @
                           if.
                             client.eq -1
-                            error
+                            cant-accept
                               sprintf
                                 "Failed to accept a connection on the socket #%d because '%s'"
                                 * sock.sd sock.strerror.code
@@ -314,6 +319,7 @@
             posix
               "listen"
               * sock.sd 2048
+        cant-listen
 
   # The win32 platform specified socket.
   #
@@ -328,13 +334,7 @@
       win32
         "inet_addr"
         * address
-    if. > addrint
-      addr.eq win32.inaddr-none
-      error
-        sprintf
-          "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
-          * address err.code
-      addr.as-i32
+    addr.as-i32 > addrint
     win32.sockaddr-in > sockaddr
       win32.af-inet.as-i16
       htons port
@@ -354,11 +354,12 @@
 
       # Send bytes through the socket.
       # Here `buffer` must be an object that can be dataized.
-      # On success the `number` of sent bytes is returned, otherwise `error` is returned.
-      [buffer] > send
+      # On success the `number` of sent bytes is returned, otherwise the `cant-send`
+      # fallback is returned, or ⊥ when unbound.
+      [buffer cant-send] > send
         if. > @
           sent.eq -1
-          error
+          cant-send
             sprintf
               "Failed to send message through the socket #%d, WSA error code is #%d"
               * sockfd err.code
@@ -371,11 +372,12 @@
 
       # Receive bytes from the socket.
       # Here `size` must be a `number` of desired bytes to receive.
-      # On success the received `bytes` are returned, otherwise `error` is returned.
-      [size] > recv
+      # On success the received `bytes` are returned, otherwise the `cant-receive`
+      # fallback is returned, or ⊥ when unbound.
+      [size cant-receive] > recv
         if. > @
           received.code.eq -1
-          error
+          cant-receive
             sprintf
               "Failed to receive data from the socket #%d, WSA error code is #%d"
               * sockfd err.code
@@ -393,7 +395,7 @@
     [sockfd] > closed-socket
       if. > @
         closed.eq win32.socket-error
-        error
+        T
           sprintf
             "Couldn't close a Win32 the socket #%d, WSA error code is #%d"
             * sockfd err.code
@@ -408,28 +410,34 @@
     #
     # Note: This object is intended for internal use only. Please do not use
     # the object programmatically outside of `socket` object.
-    [scope] > safe-socket
+    [scope cant] > safe-socket
       if. > @
         (started.eq 0).not
-        error
+        cant
           sprintf
             "Couldn't initialize Winsock via 'WSAStartup' call, WSA error code: %d"
             * started
         try
           if.
             sd.eq -1
-            error
+            cant
               sprintf
                 "Couldn't create a Win32 socket, WSA error code: %d"
                 * err.code
             try
-              scope
+              if.
+                addr.eq win32.inaddr-none
+                cant
+                  sprintf
+                    "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
+                    * address err.code
+                scope
               error ex > [ex]
               closed-socket sd
           error ex > [ex]
           if.
             (win32 "WSACleanup" *).code.eq win32.socket-error
-            error "Couldn't cleanup Winsock resources"
+            T "Couldn't cleanup Winsock resources"
             true
       code. > started
         win32
@@ -439,12 +447,12 @@
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
     # set to `scoped-socket` object and used as connector for socket messaging.
-    [scope] > connect
+    [scope cant-connect] > connect
       safe-socket > @
         [] >>
           if. > @
             connected.eq -1
-            error
+            cant-connect
               sprintf
                 "Couldn't connect to '%s:%d' on Win32 socket #%d, WSA error code: %d"
                 * sock.address sock.port sock.sd sock.err.code
@@ -458,23 +466,24 @@
             win32
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
+        cant-connect
 
     # Listen for connections on a socket.
     # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
     # this free attribute is set to abstract object which decorates `scoped-socket` and also
     # has attribute `accept` to accept other socket connections.
-    [scope] > listen
+    [scope cant-listen] > listen
       safe-socket > @
         [] >>
           if. > @
             bound.eq -1
-            error
+            cant-listen
               sprintf
                 "Couldn't bind Win32 socket #%d to '%s:%d', WSA error code: %d"
                 * sock.sd sock.address sock.port sock.err.code
             if.
               listened.eq -1
-              error
+              cant-listen
                 sprintf
                   "Failed to listen for connections to '%s:%d' on socket #%d, WSA error code: %d"
                   * sock.address sock.port sock.sd sock.err.code
@@ -488,11 +497,11 @@
                       # On success the client socket is returned, otherwise `error` is returned.
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
-                      [scope] > accept
+                      [scope cant-accept] > accept
                         try > @
                           if.
                             client.eq -1
-                            error
+                            cant-accept
                               sprintf
                                 "Failed to accept a connection on Win32 socket #%d, WSA error code: %d"
                                 * sock.sd sock.err.code
@@ -516,3 +525,4 @@
             win32
               "listen"
               * sock.sd 2048
+        cant-listen
