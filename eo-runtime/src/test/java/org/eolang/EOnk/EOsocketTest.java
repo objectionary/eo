@@ -80,6 +80,23 @@ final class EOsocketTest {
     }
 
     @Test
+    void returnsFallbackWhenConnectionIsRefused() throws IOException {
+        final EOsocketTest.RandomServer refused = new EOsocketTest.RandomServer().started();
+        refused.stop();
+        final Phi socket = Phi.Φ.take("nk.socket").copy();
+        socket.put(0, new Data.ToPhi(this.localhost()));
+        socket.put(1, new Data.ToPhi(refused.port));
+        final Phi connect = socket.take("connect").copy();
+        connect.put(0, new EOsocketTest.Simple());
+        connect.put(1, new EOsocketTest.Simple());
+        MatcherAssert.assertThat(
+            "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
+            new Dataized(connect).take(),
+            Matchers.equalTo(new byte[]{1})
+        );
+    }
+
+    @Test
     @SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
