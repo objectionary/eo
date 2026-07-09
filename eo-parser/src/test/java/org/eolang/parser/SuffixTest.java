@@ -174,20 +174,20 @@ final class SuffixTest {
 
     @Test
     void rejectsTrailingGarbageAfterAuto() {
+        final Span span = new Span("5 >> garbage", 1);
         Assertions.assertThrows(
             ParseError.class,
-            () -> new Suffix(">> garbage", new Span("5 >> garbage", 1), 2),
+            () -> new Suffix(">> garbage", span, 2),
             "an auto-name suffix must consume the complete tail"
         );
     }
 
     @Test
     void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
+        final Span span = new Span("[] +> foo garbage", 1);
         Assertions.assertThrows(
             ParseError.class,
-            () -> new Suffix(
-                "+> foo garbage", new Span("[] +> foo garbage", 1), 3
-            ),
+            () -> new Suffix("+> foo garbage", span, 3),
             "a test suffix must consume the complete tail"
         );
     }
