@@ -303,6 +303,7 @@ final class Suffix {
                 "test attribute requires a name"
             );
         }
+        Suffix.endsClean(tail, idx, span, home);
         return new Suffix.Parsed(Form.TEST, tail.substring(start, idx), "", false);
     }
 
@@ -331,6 +332,7 @@ final class Suffix {
                 "auto-named atom is forbidden"
             );
         }
+        Suffix.endsClean(tail, trailing, span, home);
         return new Suffix.Parsed(Form.AUTO, "", "", cnst);
     }
 
