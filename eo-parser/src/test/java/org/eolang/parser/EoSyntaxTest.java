@@ -4,12 +4,6 @@
  */
 package org.eolang.parser;
 
-import com.github.lombrozo.xnav.Xnav;
-import com.jcabi.log.Logger;
-import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,6 +12,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.cactoos.io.InputOf;
@@ -45,6 +40,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.xml.sax.SAXParseException;
+
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrDefault;
 
 /**
  * Test case for {@link EoSyntax}.
@@ -477,10 +479,7 @@ final class EoSyntaxTest {
                 new String(
                     new EoSyntax(
                         new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
-                            )
+                            "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
