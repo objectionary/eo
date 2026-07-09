@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -50,14 +51,29 @@ final class OyRemote implements Objectionary {
      * @checkstyle ConstructorsCodeFreeCheck (15 lines)
      */
     OyRemote(final CommitHash hash, final Proxy... proxies) {
-        this.program = new OyRemote.UrlOy(
-            "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
-            hash
+        this(
+            new OyRemote.UrlOy(
+                "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
+                hash
+            ),
+            new OyRemote.UrlOy(
+                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                hash
+            ),
+            proxies
         );
-        this.directory = new OyRemote.UrlOy(
-            "https://github.com/objectionary/home/tree/%s/objects/%s",
-            hash
-        );
+    }
+
+    /**
+     * Ctor for testing.
+     * @param program Address template to program
+     * @param directory Address template to directory
+     * @param proxies Proxies to use
+     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
+     */
+    OyRemote(final UrlOy program, final UrlOy directory, final Proxy... proxies) {
+        this.program = program;
+        this.directory = directory;
         this.http = OyRemote.client(proxies);
     }
 
@@ -78,7 +94,7 @@ final class OyRemote implements Objectionary {
             name, url
         );
         return new InputWithFallback(
-            () -> this.send(url, HttpResponse.BodyHandlers.ofInputStream()).body(),
+            () -> this.fetch(url),
             input -> {
                 throw new IOException(
                     String.format(
@@ -111,6 +127,25 @@ final class OyRemote implements Objectionary {
             );
         }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
+    }
+
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private InputStream fetch(final URL url) throws IOException {
+        final HttpResponse<InputStream> response = this.send(
+            url, HttpResponse.BodyHandlers.ofInputStream()
+        );
+        final int code = response.statusCode();
+        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
+            throw new IOException(
+                String.format("Transient HTTP error %d for %s, will retry", code, url)
+            );
+        }
+        if (code < HttpURLConnection.HTTP_OK || code >= HttpURLConnection.HTTP_BAD_REQUEST) {
+            throw new IOException(
+                String.format("HTTP error %d for %s", code, url)
+            );
+        }
+        return response.body();
     }
 
     private <T> HttpResponse<T> send(

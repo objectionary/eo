@@ -4,10 +4,13 @@
  */
 package org.eolang.maven;
 
+import com.sun.net.httpserver.HttpServer;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -108,6 +111,36 @@ final class OyRemoteTest {
             ).contains(stdout),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void doesNotReturnThrottledResponseBodyAsSource() throws Exception {
+        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext(
+            "/",
+            exchange -> {
+                final byte[] body = "429: Too Many Requests".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(429, body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s.eo", server.getAddress().getPort()
+            );
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new OyRemote.UrlOy(tpl, "stub"),
+                    new OyRemote.UrlOy(tpl, "stub")
+                ).get("org.eolang.foo").stream(),
+                "Expected an IOException instead of the throttled HTTP body being returned as EO source"
+            );
+        } finally {
+            server.stop(0);
+        }
     }
 
     @Test
