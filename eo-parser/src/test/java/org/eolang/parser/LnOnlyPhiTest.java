@@ -32,12 +32,24 @@ final class LnOnlyPhiTest {
     }
 
     @Test
-    void marksHorizontallyCompleted() {
+    void opensBarePhiForVerticalArgs() {
         final Stack stack = new Stack();
         new LnOnlyPhi(new Span("right > [x] > left", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "an only-phi line cannot accept deeper children — must be HORIZONTAL_COMPLETED",
+            "a bare-φ only-phi line must stay OPEN so its φ accepts vertical args",
+            stack.top().openness(),
+            Matchers.equalTo(Openness.OPEN)
+        );
+    }
+
+    @Test
+    void marksHorizontallyCompletedWhenPhiHasHargs() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("right arg > [x] > left", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "an only-phi whose φ carries horizontal args cannot accept a body — must be HORIZONTAL_COMPLETED",
             stack.top().openness(),
             Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
         );

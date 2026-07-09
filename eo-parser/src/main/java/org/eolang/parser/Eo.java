@@ -652,13 +652,16 @@ final class Eo implements Iterable<Directive> {
      * <p>Runs semantic checks on the popped level and balances the XML
      * cursor with an {@link Emit#close()} — every {@link Level} pushed
      * corresponds to one open {@code <o>} that must be closed when the
-     * level pops.</p>
+     * level pops. Two kinds open a second {@code <o>} and so emit an
+     * extra close: a compact tuple (its {@code Φ.tuple} wrapper) and an
+     * open only-phi formation (its φ application, left open for vertical
+     * arguments per §4.5).</p>
      *
-     * <p>For this slice the only semantic check is R-5.3.1 (naming
-     * requirement for plain children of formations and top-level
-     * objects). The atom-body, bare-reversed, compact-tuple, test-depth
-     * and only-phi-closure checks attach as their owning line shapes
-     * are implemented.</p>
+     * <p>Checks: R-5.3.1 (naming requirement for plain children of
+     * formations and top-level objects), the only-phi argument-naming
+     * ban (§4.5), bare-reversed receiver presence, and the compact-tuple
+     * count. Atom-body and test-depth checks attach as their owning line
+     * shapes are implemented.</p>
      *
      * @param level The level being closed
      * @param emit The directives sink
@@ -669,14 +672,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
-        if (!level.named()
-            && (level.parent() == Kind.TOP_LEVEL
-                || level.parent() == Kind.BARE_FORMATION)) {
-            emit.error(
-                level.start(), level.indent(),
-                "object inside formation must have a name"
-            );
-        }
+        Eo.checkNaming(level, emit);
         if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
@@ -686,7 +682,36 @@ final class Eo implements Iterable<Directive> {
         if (level.kind() == Kind.COMPACT_TUPLE) {
             Eo.closeCompactTuple(level, emit);
         }
+        if (level.kind() == Kind.ONLY_PHI_FORMATION
+            && level.openness() != Openness.HORIZONTAL_COMPLETED) {
+            emit.close();
+        }
         emit.close();
+    }
+
+    /**
+     * Report naming violations on the popped level: a plain child of a
+     * formation or top-level object that lacks a name (R-5.3.1), and an
+     * only-phi argument that carries one — the formation binds only φ,
+     * so its φ's arguments may not be named (§4.5).
+     * @param level The level being closed
+     * @param emit The directives sink
+     */
+    private static void checkNaming(final Level level, final Emit emit) {
+        if (!level.named()
+            && (level.parent() == Kind.TOP_LEVEL
+                || level.parent() == Kind.BARE_FORMATION)) {
+            emit.error(
+                level.start(), level.indent(),
+                "object inside formation must have a name"
+            );
+        }
+        if (level.argument() && level.named()) {
+            emit.error(
+                level.start(), level.indent(),
+                "argument of an only-phi formation cannot carry a name suffix"
+            );
+        }
     }
 
     /**
